@@ -621,7 +621,7 @@
   "summary": "সামারি",
   "customerType": "গ্রাহক ধরন",
   "pleaseSelectCustomerType": "গ্রাহক ধরন সিলেক্ট করুন",
-  "createSupportTicket": "সাপোর্ট টিকেট তৈরি করুন",
+  "createSupportTicket": "সহায়তার জন্য টিকেট তৈরি করুন",
   "PPPoECustomerReport": "পিপিওই গ্রাহক রিপোর্ট",
   "staticCustomerReport": "স্ট্যাটিক গ্রাহক রিপোর্ট",
   "netFeeId": "নেটফি আইডি",
@@ -781,5 +781,9 @@
   "addPoleBox": "পোল বক্স যোগ করুন",
   "editPoleBox": "পোল বক্স এডিট করুন",
   "antToDeleteSupport": "সাপোর্ট নম্বর ডিলিট করতে চান?",
-  "office&customer": "অফিস&গ্রাহক"
+  "office&customer": "অফিস&গ্রাহক",
+  "selectTicketType": "টিকিটের ধরণ নির্বাচন করুন",
+  "selectStaff": "কর্মচারি নির্বাচন করুন",
+  "enterSupportText": "সাহায্যের বিষয়বস্তু লিখুন",
+  "selectTicketCategory": "টিকিটের বিভাগ নির্বাচন করুন"
 }

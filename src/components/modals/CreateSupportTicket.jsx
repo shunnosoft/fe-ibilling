@@ -19,6 +19,8 @@ const CreateSupportTicket = ({
   const [supportTicket, setSupportTicket] = useState({
     message: "",
     assignPerson: "",
+    ticketType: "",
+    ticketCategory: "",
   });
   const [loading, setLoading] = useState(false);
   const onChangeHandler = ({ target: { name, value } }) => {
@@ -29,6 +31,8 @@ const CreateSupportTicket = ({
     const assignedPerson = supportTicket.assignPerson.split("-");
     const data = {
       message: supportTicket.message,
+      ticketType: supportTicket.ticketType,
+      ticketCategory: supportTicket.ticketCategory,
       ...(assignedPerson[1] === "manager"
         ? { manager: assignedPerson[0] }
         : { collector: assignedPerson[0] }),
@@ -64,7 +68,9 @@ const CreateSupportTicket = ({
           <div className="modal-body">
             <div className="input-group mb-3">
               <div className="w-100">
-                <label htmlFor="message">Enter support text</label>
+                <label className="text-secondary" htmlFor="message">
+                  {t("enterSupportText")}
+                </label>
                 <input
                   className="form-control mw-100"
                   type="text"
@@ -75,30 +81,66 @@ const CreateSupportTicket = ({
                 />
               </div>
               {role !== "collector" && (
-                <div className="w-100 mt-3">
-                  <label htmlFor="assignedPerson">Select Staff</label>
-                  <select
-                    name="assignPerson"
-                    id="assignPerson"
-                    onChange={onChangeHandler}
-                    className="form-select mw-100"
-                  >
-                    <option value="">...</option>
-                    {role === "ispOwner" && (
-                      <option value={`${manager?.id}-manager`}>
-                        {manager.name}(Manager)
-                      </option>
-                    )}
-
-                    {collectors &&
-                      collectors.map((item) => (
-                        <option value={`${item?.id}-collector`}>
-                          {item.name}
+                <>
+                  <div className="w-100 mt-3">
+                    <label className="text-secondary" htmlFor="assignedPerson">
+                      {t("selectStaff")}
+                    </label>
+                    <select
+                      name="assignPerson"
+                      id="assignPerson"
+                      onChange={onChangeHandler}
+                      className="form-select mt-0 mw-100"
+                    >
+                      <option value="">...</option>
+                      {role === "ispOwner" && (
+                        <option value={`${manager?.id}-manager`}>
+                          {manager.name}(Manager)
                         </option>
-                      ))}
-                  </select>
-                </div>
+                      )}
+
+                      {collectors &&
+                        collectors.map((item) => (
+                          <option value={`${item?.id}-collector`}>
+                            {item.name}
+                          </option>
+                        ))}
+                    </select>
+                  </div>
+
+                  <div className="w-100 mt-3">
+                    <label className="text-secondary" htmlFor="ticketType">
+                      {t("selectTicketType")}
+                    </label>
+                    <select
+                      name="ticketType"
+                      id="ticketType"
+                      onChange={onChangeHandler}
+                      className="form-select mt-0 mw-100"
+                    >
+                      <option value="">...</option>
+                      <option value="high">{t("high")}</option>
+                      <option value="medium">{t("medium")}</option>
+                      <option value="low">{t("low")}</option>
+                    </select>
+                  </div>
+                </>
               )}
+
+              <div className="w-100 mt-3">
+                <label className="text-secondary" htmlFor="ticketCategory">
+                  {t("selectTicketCategory")}
+                </label>
+                <select
+                  name="ticketCategory"
+                  id="ticketCategory"
+                  onChange={onChangeHandler}
+                  className="form-select mt-0 mw-100"
+                >
+                  <option value="">...</option>
+                  <option value="net">net</option>
+                </select>
+              </div>
 
               <button
                 className="btn btn-success ms-auto shadow-none mt-3"

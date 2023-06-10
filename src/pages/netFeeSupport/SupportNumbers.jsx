@@ -102,7 +102,7 @@ const SupportNumbers = () => {
                 aria-expanded="false"
               />
               <ul className="dropdown-menu" aria-labelledby="customerDrop">
-                {/* <li
+                <li
                   data-bs-toggle="modal"
                   data-bs-target="#supportEdit"
                   onClick={() => numberEditHandler(original.id)}
@@ -113,7 +113,7 @@ const SupportNumbers = () => {
                       <p className="actionP">{t("edit")}</p>
                     </div>
                   </div>
-                </li> */}
+                </li>
 
                 <li
                   data-bs-toggle="modal"

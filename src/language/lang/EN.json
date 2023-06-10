@@ -774,5 +774,9 @@
   "addPoleBox": "Add Pole Box",
   "editPoleBox": "Edit Pole Box",
   "antToDeleteSupport": "Want to Delete Support Number?",
-  "office&customer": "Office&Customer"
+  "office&customer": "Office&Customer",
+  "selectTicketType": "Select Ticket Type",
+  "selectStaff": "Select Staff",
+  "enterSupportText": "Enter Support Text",
+  "selectTicketCategory": "Select Ticket Category"
 }

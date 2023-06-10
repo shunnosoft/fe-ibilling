@@ -168,6 +168,12 @@ export const ispOwnerPermission = (perm) => {
       label: "Pole Box",
       isChecked: perm?.poleBox,
     },
+    {
+      id: 29,
+      value: "showCustomerPanelPackage",
+      label: "Show Customer Panel Package",
+      isChecked: perm?.showCustomerPanelPackage,
+    },
   ];
   return permission;
 };

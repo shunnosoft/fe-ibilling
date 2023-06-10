@@ -14,6 +14,9 @@ export default function ClientProfile() {
     (state) => state.persistedReducer.auth?.currentUser.customer
   );
 
+  // ispOwner permission
+  const permission = userData?.ispOwner.bpSettings;
+
   // get payment get way status
   const hasPG = userData.ispOwner.bpSettings.hasPG;
 
@@ -48,11 +51,15 @@ export default function ClientProfile() {
                 <td>{userData?.name}</td>
               </tr>
               <tr>
+                <td>Mobile</td>
+                <td>{userData?.mobile}</td>
+              </tr>
+              <tr>
                 <td>Address</td>
                 <td>{userData?.address}</td>
               </tr>
               <tr>
-                <td>Package</td>
+                {permission?.showCustomerPanelPackage && <td>Package</td>}
                 {userData.userType === "pppoe" && (
                   <td>
                     {!userData?.reseller &&
@@ -128,40 +135,49 @@ export default function ClientProfile() {
           </div>
         </div>
         <div className="up_downLoad">
-          <div className="up_down upload">
-            <p className="text-white">Upload</p>
-            {userData.userType === "simple-queue" && (
-              <h3>
-                {parseInt(userData.queue.maxLimit.split("/")[0] / 1000000)}MBps
-              </h3>
-            )}
-            {userData.userType === "pppoe" && (
-              <h3>
-                {!userData?.reseller &&
-                  (findAliasName(userData?.pppoe.profile)?.aliasName ||
-                    findAliasName(userData?.pppoe.profile)?.name)}
-                {userData?.reseller &&
-                  findAliasName(userData?.pppoe.profile)?.name}
-              </h3>
-            )}
-          </div>
-          <div className="up_down download">
-            <p className="text-white">Downlaod</p>
-            {userData.userType === "pppoe" && (
-              <h3>
-                {!userData?.reseller &&
-                  (findAliasName(userData?.pppoe.profile)?.aliasName ||
-                    findAliasName(userData?.pppoe.profile)?.name)}
-                {userData?.reseller &&
-                  findAliasName(userData?.pppoe.profile)?.name}
-              </h3>
-            )}
-            {userData.userType === "simple-queue" && (
-              <h3>
-                {parseInt(userData.queue.maxLimit.split("/")[1] / 1000000)}MBps
-              </h3>
-            )}
-          </div>
+          {permission?.showCustomerPanelPackage ? (
+            <>
+              <div className="up_down upload">
+                <p className="text-white">Upload</p>
+                {userData.userType === "simple-queue" && (
+                  <h3>
+                    {parseInt(userData.queue.maxLimit.split("/")[0] / 1000000)}
+                    MBps
+                  </h3>
+                )}
+                {userData.userType === "pppoe" && (
+                  <h3>
+                    {!userData?.reseller &&
+                      (findAliasName(userData?.pppoe.profile)?.aliasName ||
+                        findAliasName(userData?.pppoe.profile)?.name)}
+                    {userData?.reseller &&
+                      findAliasName(userData?.pppoe.profile)?.name}
+                  </h3>
+                )}
+              </div>
+              <div className="up_down download">
+                <p className="text-white">Downlaod</p>
+                {userData.userType === "pppoe" && (
+                  <h3>
+                    {!userData?.reseller &&
+                      (findAliasName(userData?.pppoe.profile)?.aliasName ||
+                        findAliasName(userData?.pppoe.profile)?.name)}
+                    {userData?.reseller &&
+                      findAliasName(userData?.pppoe.profile)?.name}
+                  </h3>
+                )}
+                {userData.userType === "simple-queue" && (
+                  <h3>
+                    {parseInt(userData.queue.maxLimit.split("/")[1] / 1000000)}
+                    MBps
+                  </h3>
+                )}
+              </div>
+            </>
+          ) : (
+            ""
+          )}
+
           {hasPG && (
             <div
               data-bs-toggle="modal"
