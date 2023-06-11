@@ -19,6 +19,7 @@ const animatedComponents = makeAnimated();
 
 export default function CustomerBillCollect({ single, customerData }) {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
 
   const options = [
     { value: "January", label: t("january") },
@@ -71,7 +72,6 @@ export default function CustomerBillCollect({ single, customerData }) {
     (state) => state.persistedReducer.auth?.userData?.id
   );
 
-  const dispatch = useDispatch();
   const [isLoading, setLoading] = useState(false);
 
   //billing date
@@ -80,7 +80,7 @@ export default function CustomerBillCollect({ single, customerData }) {
   const [medium, setMedium] = useState("cash");
   const [noteCheck, setNoteCheck] = useState(false);
   const [note, setNote] = useState("");
-  const [selectedMonth, setSelectedMonth] = useState(null);
+  const [selectedMonth, setSelectedMonth] = useState([]);
   const [billAmount, setBillAmount] = useState();
   const [balanceDue, setBalanceDue] = useState();
   const [billType, setBillType] = useState("bill");
@@ -152,6 +152,27 @@ export default function CustomerBillCollect({ single, customerData }) {
         ? 0
         : data?.monthlyFee
     );
+
+    let temp = [];
+
+    const dataMonth = new Date(data?.billingCycle).getMonth();
+
+    if (data?.balance === 0 && data?.paymentStatus === "unpaid") {
+      setSelectedMonth(options[dataMonth]);
+    } else if (data?.balance === 0 && data?.paymentStatus === "paid") {
+      temp.push(options[dataMonth + 1]);
+      setSelectedMonth(temp);
+    } else if (data?.balance > 0 && data?.paymentStatus === "paid") {
+      const modVal = (data?.balance + 1) % data?.monthlyFee;
+      temp.push(options[dataMonth + modVal]);
+      setSelectedMonth(temp);
+    } else if (data?.balance < 0 && data?.paymentStatus === "unpaid") {
+      const modVal = Math.abs((data?.balance - 1) % data?.monthlyFee);
+      for (let i = dataMonth - modVal; i <= dataMonth; i++) {
+        temp.push(options[i]);
+      }
+      setSelectedMonth(temp);
+    }
   }, [data]);
 
   const handleFormValue = (event) => {
@@ -206,6 +227,7 @@ export default function CustomerBillCollect({ single, customerData }) {
       });
       sendingData.month = monthValues.join(",");
     }
+
     billCollect(
       dispatch,
       sendingData,
@@ -363,6 +385,24 @@ export default function CustomerBillCollect({ single, customerData }) {
                       </select>
                     </div>
                   </div>
+                  <div className="month mb-3">
+                    <label
+                      className="form-check-label changeLabelFontColor"
+                      htmlFor="selectMonth"
+                    >
+                      {t("selectMonth")}
+                    </label>
+                    <Select
+                      className="mt-1"
+                      value={selectedMonth}
+                      onChange={(data) => setSelectedMonth(data)}
+                      options={options}
+                      isMulti={true}
+                      placeholder={t("selectMonth")}
+                      isSearchable
+                      id="selectMonth"
+                    />
+                  </div>
 
                   <div className="d-flex justify-content-between align-items-center">
                     {(role === "ispOwner" || permission.billDiscount) && (
@@ -422,25 +462,7 @@ export default function CustomerBillCollect({ single, customerData }) {
                           </div>
                         </div>
                       </div>
-                      <div className="month pt-2">
-                        <label
-                          className="form-check-label changeLabelFontColor"
-                          htmlFor="selectMonth"
-                        >
-                          {t("selectMonth")}
-                        </label>
-                        <Select
-                          className="mt-1"
-                          defaultValue={selectedMonth}
-                          onChange={setSelectedMonth}
-                          options={options}
-                          isMulti={true}
-                          placeholder={t("selectMonth")}
-                          isSearchable
-                          components={animatedComponents}
-                          id="selectMonth"
-                        />
-                      </div>
+
                       <div class="form-floating mt-3">
                         <textarea
                           cols={200}
