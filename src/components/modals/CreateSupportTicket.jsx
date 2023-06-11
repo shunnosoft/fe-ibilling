@@ -46,6 +46,11 @@ const CreateSupportTicket = ({
   };
 
   const createSupportTicketHandler = () => {
+    if (!supportTicket.ticketType) {
+      alert("Enter Ticket Type");
+      return;
+    }
+
     const assignedPerson = supportTicket.assignPerson.split("-");
     const data = {
       message: supportTicket.message,
@@ -61,10 +66,6 @@ const CreateSupportTicket = ({
 
     if (!supportTicket.ticketCategory) {
       delete data.ticketCategory;
-    }
-
-    if (!supportTicket.ticketType) {
-      delete data.ticketType;
     }
 
     createSupportTicketApi(dispatch, data, setLoading);

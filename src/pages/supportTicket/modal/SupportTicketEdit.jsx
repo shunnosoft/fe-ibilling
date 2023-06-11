@@ -32,30 +32,34 @@ const SupportTicketEdit = ({ ticketEditId, allCollector }) => {
     let statusValue = e.target.value;
     setSupportTicketStatusValue(statusValue);
   };
+
+  //collector id
   const handleCollectorId = (e) => {
     let value = e.target.value;
     setSupportTicketCollectorId(value);
   };
 
-  const supportTicketStatusSubmit = (e) => {
-    e.preventDefault();
-
+  //submithandler
+  const supportTicketStatusSubmit = () => {
     const data = {
       status: supportTicketStatusValue,
       collector: supportTicketCollectorId,
       ticketType,
       ticketCategory,
     };
+
     if (!ticketCategory) {
       delete data.ticketCategory;
     }
 
     if (!ticketType) {
-      delete data.ticketType;
+      alert("Select Ticket Type");
+      return;
     }
-
     supportTicketsEditApi(dispatch, data, ticketEditId);
   };
+
+  //initially setting all values
   useEffect(() => {
     if (singleTicket) {
       setSupportTicketStatusValue(singleTicket.status);
@@ -64,6 +68,7 @@ const SupportTicketEdit = ({ ticketEditId, allCollector }) => {
       setSupportTicketCollectorId(singleTicket.collector);
     }
   }, [singleTicket]);
+
   return (
     <div
       class="modal fade"
@@ -190,7 +195,7 @@ const SupportTicketEdit = ({ ticketEditId, allCollector }) => {
               class="btn btn-secondary"
               data-bs-dismiss="modal"
             >
-              cancel
+              Cancel
             </button>
             {singleTicket?.status === "completed" ? (
               <button
