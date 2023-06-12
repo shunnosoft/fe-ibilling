@@ -21,8 +21,6 @@ import { useEffect } from "react";
 import ReactToPrint from "react-to-print";
 import { useRef } from "react";
 import RechargePrintInvoice from "../../../pages/Customer/customerCRUD/bulkOpration/RechargePrintInvoice";
-import apiLink from "../../../api/apiLink";
-const animatedComponents = makeAnimated();
 
 const options = [
   { value: "January", label: "জানুয়ারী" },
@@ -154,6 +152,35 @@ export default function CustomerBillCollect({ single, customerData }) {
         data?.mikrotikPackage,
         setPackageRate
       );
+
+    let temp = [];
+
+    const dataMonth = new Date(data?.billingCycle).getMonth();
+
+    if (data?.balance === 0 && data?.paymentStatus === "unpaid") {
+      setSelectedMonth(options[dataMonth]);
+    } else if (data?.balance === 0 && data?.paymentStatus === "paid") {
+      temp.push(options[dataMonth + 1]);
+      if (dataMonth + 1 > 11) setSelectedMonth([]);
+      else setSelectedMonth(temp);
+    } else if (data?.balance > 0 && data?.paymentStatus === "paid") {
+      const modVal = Math.floor(data?.balance / data?.monthlyFee);
+
+      temp.push(options[dataMonth + modVal + 1]);
+
+      if (dataMonth + modVal + 1 > 11) setSelectedMonth([]);
+      else setSelectedMonth(temp);
+    } else if (data?.balance < 0 && data?.paymentStatus === "unpaid") {
+      const modVal = Math.floor(Math.abs(data?.balance / data?.monthlyFee));
+      let diff = dataMonth - modVal;
+      if (diff < 0) {
+        diff = 0;
+      }
+      for (let i = diff; i <= dataMonth; i++) {
+        temp.push(options[i]);
+      }
+      setSelectedMonth(temp);
+    }
   }, [data]);
 
   //form resetFunction
@@ -336,6 +363,24 @@ export default function CustomerBillCollect({ single, customerData }) {
                           </select>
                         </div>
                       </div>
+                      <div className="month mb-3">
+                        <label
+                          className="form-check-label changeLabelFontColor"
+                          htmlFor="selectMonth"
+                        >
+                          {t("selectMonth")}
+                        </label>
+                        <Select
+                          className="mt-1"
+                          value={selectedMonth}
+                          onChange={(data) => setSelectedMonth(data)}
+                          options={options}
+                          isMulti={true}
+                          placeholder={t("selectMonth")}
+                          isSearchable
+                          id="selectMonth"
+                        />
+                      </div>
                       <div className="d-flex justify-content-between align-items-center">
                         <div className="w-50">
                           <label className="form-control-label changeLabelFontColor">
@@ -405,25 +450,7 @@ export default function CustomerBillCollect({ single, customerData }) {
                               </div>
                             </div>
                           </div>
-                          <div className="month pt-2">
-                            <label
-                              className="form-check-label changeLabelFontColor"
-                              htmlFor="selectMonth"
-                            >
-                              {t("selectMonth")}
-                            </label>
-                            <Select
-                              className="mt-1"
-                              defaultValue={selectedMonth}
-                              onChange={setSelectedMonth}
-                              options={options}
-                              isMulti={true}
-                              placeholder={t("selectMonth")}
-                              isSearchable
-                              components={animatedComponents}
-                              id="selectMonth"
-                            />
-                          </div>
+
                           <div class="form-floating mt-3">
                             <textarea
                               cols={200}

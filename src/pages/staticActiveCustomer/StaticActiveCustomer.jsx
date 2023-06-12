@@ -62,6 +62,10 @@ const StaticActiveCustomer = () => {
     getStaticActiveCustomer(dispatch, ispOwnerId, mikrotikId, setIsloading);
   }, [mikrotikId]);
 
+  useEffect(() => {
+    setMikrotikId(mikrotik[0]?.id);
+  }, [mikrotik]);
+
   const columns = React.useMemo(
     () => [
       {

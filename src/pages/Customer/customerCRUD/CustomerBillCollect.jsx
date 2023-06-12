@@ -10,12 +10,10 @@ import { billCollect } from "../../../features/apiCalls";
 import Loader from "../../../components/common/Loader";
 import DatePicker from "react-datepicker";
 import Select from "react-select";
-import makeAnimated from "react-select/animated";
 import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
 import ReactToPrint from "react-to-print";
 import RechargePrintInvoice from "./bulkOpration/RechargePrintInvoice";
-const animatedComponents = makeAnimated();
 
 export default function CustomerBillCollect({ single, customerData }) {
   const { t } = useTranslation();
@@ -161,14 +159,23 @@ export default function CustomerBillCollect({ single, customerData }) {
       setSelectedMonth(options[dataMonth]);
     } else if (data?.balance === 0 && data?.paymentStatus === "paid") {
       temp.push(options[dataMonth + 1]);
-      setSelectedMonth(temp);
+      if (dataMonth + 1 > 11) setSelectedMonth([]);
+      else setSelectedMonth(temp);
     } else if (data?.balance > 0 && data?.paymentStatus === "paid") {
-      const modVal = (data?.balance + 1) % data?.monthlyFee;
-      temp.push(options[dataMonth + modVal]);
-      setSelectedMonth(temp);
+      const modVal = Math.floor(data?.balance / data?.monthlyFee);
+      temp.push(options[dataMonth + modVal + 1]);
+
+      if (dataMonth + modVal + 1 > 11) setSelectedMonth([]);
+      else setSelectedMonth(temp);
     } else if (data?.balance < 0 && data?.paymentStatus === "unpaid") {
-      const modVal = Math.abs((data?.balance - 1) % data?.monthlyFee);
-      for (let i = dataMonth - modVal; i <= dataMonth; i++) {
+      const modVal = Math.floor(Math.abs(data?.balance / data?.monthlyFee));
+
+      let diff = dataMonth - modVal;
+      if (diff < 0) {
+        diff = 0;
+      }
+
+      for (let i = diff; i <= dataMonth; i++) {
         temp.push(options[i]);
       }
       setSelectedMonth(temp);

@@ -14,7 +14,6 @@ import makeAnimated from "react-select/animated";
 import { useTranslation } from "react-i18next";
 import ReactToPrint from "react-to-print";
 import RechargePrintInvoice from "../../../pages/Customer/customerCRUD/bulkOpration/RechargePrintInvoice";
-const animatedComponents = makeAnimated();
 
 const options = [
   { value: "January", label: "জানুয়ারী" },
@@ -42,7 +41,9 @@ export default function CustomerBillCollect({ single, customerData }) {
   const ispOwner = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
+
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
+
   const currentUser = useSelector(
     (state) => state.persistedReducer.auth?.currentUser
   );
@@ -81,7 +82,7 @@ export default function CustomerBillCollect({ single, customerData }) {
   const [medium, setMedium] = useState("cash");
   const [noteCheck, setNoteCheck] = useState(false);
   const [note, setNote] = useState("");
-  const [selectedMonth, setSelectedMonth] = useState(null);
+  const [selectedMonth, setSelectedMonth] = useState([]);
   const resellerRechargePrint = useRef();
 
   const [responseData, setResponseData] = useState({});
@@ -100,6 +101,38 @@ export default function CustomerBillCollect({ single, customerData }) {
     setNoteCheck(false);
     setSelectedMonth(null);
   };
+
+  useEffect(() => {
+    let temp = [];
+
+    const dataMonth = new Date(data?.billingCycle).getMonth();
+
+    if (data?.balance === 0 && data?.paymentStatus === "unpaid") {
+      setSelectedMonth(options[dataMonth]);
+    } else if (data?.balance === 0 && data?.paymentStatus === "paid") {
+      temp.push(options[dataMonth + 1]);
+      if (dataMonth + 1 > 11) setSelectedMonth([]);
+      else setSelectedMonth(temp);
+    } else if (data?.balance > 0 && data?.paymentStatus === "paid") {
+      const modVal = Math.floor(data?.balance / data?.monthlyFee);
+      temp.push(options[dataMonth + modVal + 1]);
+
+      if (dataMonth + modVal + 1 > 11) setSelectedMonth([]);
+      else setSelectedMonth(temp);
+    } else if (data?.balance < 0 && data?.paymentStatus === "unpaid") {
+      const modVal = Math.floor(Math.abs(data?.balance / data?.monthlyFee));
+
+      let diff = dataMonth - modVal;
+      if (diff < 0) {
+        diff = 0;
+      }
+
+      for (let i = diff; i <= dataMonth; i++) {
+        temp.push(options[i]);
+      }
+      setSelectedMonth(temp);
+    }
+  }, [data]);
 
   //print button is clicked after successful response
   useEffect(() => {
@@ -272,6 +305,25 @@ export default function CustomerBillCollect({ single, customerData }) {
                           </select>
                         </div>
                       </div>
+
+                      <div className="month mb-3">
+                        <label
+                          className="form-check-label changeLabelFontColor"
+                          htmlFor="selectMonth"
+                        >
+                          {t("selectMonth")}
+                        </label>
+                        <Select
+                          className="mt-1"
+                          value={selectedMonth}
+                          onChange={(data) => setSelectedMonth(data)}
+                          options={options}
+                          isMulti={true}
+                          placeholder={t("selectMonth")}
+                          isSearchable
+                          id="selectMonth"
+                        />
+                      </div>
                       <div className="d-flex justify-content-between align-items-center">
                         <div className="w-50 mb-3">
                           <label className="form-control-label changeLabelFontColor">
@@ -337,25 +389,7 @@ export default function CustomerBillCollect({ single, customerData }) {
                               </div>
                             </div>
                           </div>
-                          <div className="month mt-2">
-                            <label
-                              className="form-check-label changeLabelFontColor"
-                              htmlFor="selectMonth"
-                            >
-                              {t("selectMonth")}
-                            </label>
-                            <Select
-                              className="mt-1"
-                              defaultValue={selectedMonth}
-                              onChange={setSelectedMonth}
-                              options={options}
-                              isMulti={true}
-                              placeholder={t("selectMonth")}
-                              isSearchable
-                              components={animatedComponents}
-                              id="selectMonth"
-                            />
-                          </div>
+
                           <div class="form-floating mt-3">
                             <textarea
                               cols={200}
