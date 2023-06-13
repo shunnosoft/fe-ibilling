@@ -46,6 +46,11 @@ const CreateSupportTicket = ({
   };
 
   const createSupportTicketHandler = () => {
+    if (!supportTicket.assignPerson) {
+      alert("Select Staff");
+      return;
+    }
+
     if (!supportTicket.ticketType) {
       alert("Enter Ticket Type");
       return;
@@ -67,7 +72,6 @@ const CreateSupportTicket = ({
     if (!supportTicket.ticketCategory) {
       delete data.ticketCategory;
     }
-
     createSupportTicketApi(dispatch, data, setLoading);
   };
 
@@ -121,11 +125,13 @@ const CreateSupportTicket = ({
                       className="form-select mt-0 mw-100"
                     >
                       <option value="">...</option>
-                      {role === "ispOwner" && (
-                        <option value={`${manager?.id}-manager`}>
-                          {manager.name}(Manager)
-                        </option>
-                      )}
+                      {/* {role === "ispOwner" &&
+                        manager &&
+                        manager?.map((man) => (
+                          <option value={`${man?.id}-manager`}>
+                            {man.name} (Manager)
+                          </option>
+                        ))} */}
 
                       {collectors &&
                         collectors.map((item) => (
