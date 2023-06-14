@@ -149,26 +149,34 @@ export default function SubArea() {
         Header: t("subArea"),
         accessor: "name",
       },
-      // {
-      //   width: "25%",
-      //   Header: <div className="text-center">{t("poleBox")}</div>,
-      //   id: "option1",
 
-      //   Cell: ({ row: { original } }) => (
-      //     <div
-      //       style={{
-      //         display: "flex",
-      //         alignItems: "center",
-      //         justifyContent: "center",
-      //       }}
-      //     >
-      //       <Link to={`/poleBox/${original.id}`} className="gotoSubAreaBtn">
-      //         {t("poleBox")}
-      //         <ArrowRightShort style={{ fontSize: "19px" }} />
-      //       </Link>
-      //     </div>
-      //   ),
-      // },
+      {
+        width: bpSettings?.poleBox ? "25%" : "0%",
+        Header: bpSettings?.poleBox && (
+          <div className="text-center">{t("poleBox")}</div>
+        ),
+        id: "option1",
+
+        Cell: ({ row: { original } }) => {
+          return (
+            bpSettings?.poleBox && (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Link to={`/poleBox/${original.id}`} className="gotoSubAreaBtn">
+                  {t("poleBox")}
+                  <ArrowRightShort style={{ fontSize: "19px" }} />
+                </Link>
+              </div>
+            )
+          );
+        },
+      },
+
       {
         width: "25%",
         Header: () => <div className="text-center">{t("action")}</div>,
@@ -191,54 +199,35 @@ export default function SubArea() {
                 aria-expanded="false"
               />
               <ul className="dropdown-menu" aria-labelledby="areaDropdown">
-                {checkMikrotikName?.name !== name ? (
-                  <>
-                    {bpSettings?.poleBox && (
-                      <li>
-                        <Link to={`/poleBox/${original.id}`}>
-                          <div className="dropdown-item">
-                            <div className="customerAction">
-                              <AlignBottom />
-                              <p className="actionP">{t("poleBox")}</p>
-                            </div>
-                          </div>
-                        </Link>
-                      </li>
-                    )}
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#subAreaEditModal"
+                  onClick={() => {
+                    setSubAreaID(original.id);
+                    setSubAreaName(original.name);
+                    setIspId(original.ispOwner);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <PenFill />
+                      <p className="actionP">{t("edit")}</p>
+                    </div>
+                  </div>
+                </li>
 
-                    <li
-                      data-bs-toggle="modal"
-                      data-bs-target="#subAreaEditModal"
-                      onClick={() => {
-                        setSubAreaID(original.id);
-                        setSubAreaName(original.name);
-                        setIspId(original.ispOwner);
-                      }}
-                    >
-                      <div className="dropdown-item">
-                        <div className="customerAction">
-                          <PenFill />
-                          <p className="actionP">{t("edit")}</p>
-                        </div>
-                      </div>
-                    </li>
-
-                    <li
-                      onClick={() => {
-                        deleteSingleSubAarea(original.id, original.ispOwner);
-                      }}
-                    >
-                      <div className="dropdown-item actionManager">
-                        <div className="customerAction">
-                          <ArchiveFill />
-                          <p className="actionP">{t("delete")}</p>
-                        </div>
-                      </div>
-                    </li>
-                  </>
-                ) : (
-                  ""
-                )}
+                <li
+                  onClick={() => {
+                    deleteSingleSubAarea(original.id, original.ispOwner);
+                  }}
+                >
+                  <div className="dropdown-item actionManager">
+                    <div className="customerAction">
+                      <ArchiveFill />
+                      <p className="actionP">{t("delete")}</p>
+                    </div>
+                  </div>
+                </li>
               </ul>
             </>
           </div>
@@ -256,9 +245,6 @@ export default function SubArea() {
         <div className="container-fluied collector">
           <div className="container">
             <FontColor>
-              {/* modals */}
-
-              <SubAreaPost name={name || ""} id={id || ""} />
               {/* Edit MOdal */}
               <div
                 className="modal fade modal-dialog-scrollable "
@@ -353,6 +339,7 @@ export default function SubArea() {
           </div>
         </div>
       </div>
+      <SubAreaPost name={name || ""} id={id || ""} />
     </>
   );
 }

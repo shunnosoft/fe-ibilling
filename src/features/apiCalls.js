@@ -730,6 +730,25 @@ export const addPoleBox = async (dispatch, data, setIsLoading) => {
   setIsLoading(false);
 };
 
+export const addPoleBox2 = async (dispatch, data, setIsLoading) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.post("/ispOwner/poleBox/post", data);
+
+    dispatch(AddPoleBoxSuccess(res.data));
+    document.querySelector("#poleBoxAdd2").click();
+    langMessage(
+      "success",
+      "পোল বক্স সংযুক্ত সফল হয়েছে",
+      "Pole Box Added Successfully"
+    );
+  } catch (error) {
+    document.querySelector("#poleBoxAdd2").click();
+    toast.error(error.response?.data.message);
+  }
+  setIsLoading(false);
+};
+
 // PATCH sub area
 export const editSubArea = async (dispatch, data, setIsLoading, setShow) => {
   setIsLoading(true);

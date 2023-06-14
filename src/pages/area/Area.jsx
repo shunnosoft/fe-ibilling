@@ -8,6 +8,8 @@ import {
   ArrowRightShort,
   PlusLg,
   ArrowClockwise,
+  AlignBottom,
+  PlugFill,
 } from "react-bootstrap-icons";
 import Loader from "../../components/common/Loader";
 
@@ -31,11 +33,13 @@ import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
 import SubAreaModal from "./areaModals/SubAreaModal";
 import { getSubAreasApi } from "../../features/actions/customerApiCall";
+import PoleBoxModal from "./areaModals/PoleBoxModal";
+import PoleBoxAddModal2 from "./areaModals/PoleBoxAddModal2";
+import TestModal from "./areaModals/testModal";
 
 export default function Area() {
   const { t } = useTranslation();
   const area = useSelector((state) => state?.area?.area);
-  const [loading, setIsloading] = useState(false);
   const dispatch = useDispatch();
   const cus = useSelector((state) => state?.customer?.customer);
   const storeSubArea = useSelector((state) => state.area?.subArea);
@@ -116,8 +120,8 @@ export default function Area() {
       },
       {
         width: "25%",
-        Header: <div className="text-center">{t("subArea")}</div>,
-        id: "option1",
+        Header: t("subArea"),
+        accessor: "subArea",
 
         Cell: ({ row: { original } }) => (
           <div
@@ -134,6 +138,44 @@ export default function Area() {
           </div>
         ),
       },
+      {
+        width: "25%",
+        Header: t("poleBox"),
+        accessor: "poleBox",
+
+        Cell: ({ row: { original } }) => (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <button
+              title={t("poleBox")}
+              style={{ padding: "0.10rem .5rem" }}
+              className="btn btn-sm btn-primary mx-1"
+              data-bs-toggle="modal"
+              data-bs-target="#poleBoxModal"
+              onClick={() => setAreaID(original.id)}
+            >
+              <AlignBottom />
+            </button>
+
+            <button
+              title={t("addPoleBox")}
+              style={{ padding: "0.10rem .5rem" }}
+              className="btn btn-sm btn-primary mx-1"
+              data-bs-toggle="modal"
+              data-bs-target="#poleBoxAdd2"
+              onClick={() => setAreaID(original.id)}
+            >
+              Add PoleBox
+            </button>
+          </div>
+        ),
+      },
+
       {
         width: "25%",
         Header: () => <div className="text-center">{t("action")}</div>,
@@ -215,6 +257,9 @@ export default function Area() {
 
       {/* subAreas modal */}
       <SubAreaModal areaId={areaID} />
+      <PoleBoxModal areaId={areaID} />
+      {/* <PoleBoxAddModal2 areaId={areaID} /> */}
+      <TestModal areaId={areaID} />
     </>
   );
 }
