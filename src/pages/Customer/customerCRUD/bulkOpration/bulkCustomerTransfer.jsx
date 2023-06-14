@@ -11,6 +11,9 @@ const BulkCustomerTransfer = ({ bulkCustomer, modalId }) => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
+  // get user role
+  const role = useSelector((state) => state.persistedReducer.auth.role);
+
   //get all reseller
   const reseller = useSelector((state) => state?.reseller?.reseller);
 
@@ -64,7 +67,7 @@ const BulkCustomerTransfer = ({ bulkCustomer, modalId }) => {
   };
 
   useEffect(() => {
-    fetchReseller(dispatch, ispOwner, setIsLoading);
+    if (role === "ispOwner") fetchReseller(dispatch, ispOwner, setIsLoading);
   }, []);
 
   return (

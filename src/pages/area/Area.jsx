@@ -31,7 +31,8 @@ import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
 import SubAreaModal from "./areaModals/SubAreaModal";
 import { getSubAreasApi } from "../../features/actions/customerApiCall";
-
+import SubArea from "../../pages/subArea/SubArea";
+//subArea/SubArea
 export default function Area() {
   const { t } = useTranslation();
   const area = useSelector((state) => state?.area?.area);
@@ -103,7 +104,7 @@ export default function Area() {
   const columns = React.useMemo(
     () => [
       {
-        width: "25%",
+        width: "15%",
         Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
@@ -116,44 +117,35 @@ export default function Area() {
       },
       {
         width: "25%",
-        Header: <div className="text-center">{t("subArea")}</div>,
-        id: "option1",
-
+        Header: t("subArea"),
+        accessor: "subArea",
         Cell: ({ row: { original } }) => (
           <div
+            className="gotoSubAreaBtn"
             style={{
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
+              width: "6rem",
             }}
+            data-bs-toggle="modal"
+            data-bs-target="#subAreaEditModal"
+            onClick={() => getAreaSubarea(original.id)}
           >
-            <Link to={`/subArea/${original.id}`} className="gotoSubAreaBtn">
-              {t("subArea")}
-              <ArrowRightShort style={{ fontSize: "19px" }} />
-            </Link>
+            {t("subArea")}
           </div>
         ),
       },
       {
-        width: "25%",
-        Header: () => <div className="text-center">{t("action")}</div>,
-        id: "option",
+        width: "10%",
+        Header: t("action"),
 
         Cell: ({ row: { original } }) => (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <ActionButton
-              getAreaSubarea={getAreaSubarea}
-              getSpecificArea={getSpecificArea}
-              deleteSingleArea={deleteSingleArea}
-              data={original}
-            />
-          </div>
+          <ActionButton
+            getSpecificArea={getSpecificArea}
+            deleteSingleArea={deleteSingleArea}
+            data={original}
+          />
         ),
       },
     ],
@@ -214,7 +206,8 @@ export default function Area() {
       <AreaEdit areaId={editAreaId} />
 
       {/* subAreas modal */}
-      <SubAreaModal areaId={areaID} />
+      {/* <SubAreaModal areaId={areaID} /> */}
+      <SubArea areaId={areaID} isOpen={isOpen} setIsOpen={setIsOpen} />
     </>
   );
 }

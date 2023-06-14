@@ -40,7 +40,6 @@ import Manager from "./pages/manager/Manager";
 import Area from "./pages/area/Area";
 import Mikrotik from "./pages/mikrotik/Mikrotik";
 import ConfigMikrotik from "./pages/configMikrotik/ConfigMikrotik";
-import SubArea from "./pages/subArea/SubArea";
 // import Account from "./pages/account/Account";
 import Message from "./pages/message/Message";
 import Invoice from "./pages/invoice/Invoice";
@@ -697,15 +696,6 @@ function App() {
 
               <Route path="*" element={<NotFound />} />
             </Route>
-
-            <Route
-              path="/subArea/:areaId"
-              element={
-                <PrivateRoute user={user}>
-                  <SubArea />
-                </PrivateRoute>
-              }
-            />
 
             <Route
               path="/poleBox/:subAreaId"

@@ -23,6 +23,7 @@ const SupportCall = ({ isOpen }) => {
         onHide={handleClose}
         backdrop="static"
         keyboard={false}
+        size="lg"
         centered
       >
         <ModalHeader closeButton>
@@ -45,6 +46,15 @@ const SupportCall = ({ isOpen }) => {
                     <Telephone className="text-info" /> 01321141785
                   </h5>
                 </td>
+                <td>
+                  <span className="badge bg-success fs-6">
+                    <small className="fs-6">02:00 PM</small>
+                  </span>
+                  &nbsp;&nbsp; {t("to")} &nbsp;&nbsp;
+                  <span className="badge bg-danger fs-6">
+                    <small className="fs-6">11:00 PM</small>
+                  </span>
+                </td>
               </tr>
               <tr>
                 <td className="mt-3 support">
@@ -55,6 +65,15 @@ const SupportCall = ({ isOpen }) => {
                     <Telephone className="text-info" /> 01896192223
                   </h5>
                 </td>
+                <td>
+                  <span className="badge bg-success fs-6">
+                    <small className="fs-6">11:00 AM</small>
+                  </span>
+                  &nbsp;&nbsp; {t("to")} &nbsp;&nbsp;
+                  <span className="badge bg-danger fs-6">
+                    <small className="fs-6">08:00 PM</small>
+                  </span>
+                </td>
               </tr>
               <tr>
                 <td className="mt-3 support">
@@ -64,6 +83,15 @@ const SupportCall = ({ isOpen }) => {
                   <h5 className="text-secondary">
                     <Telephone className="text-info" /> 01896192224
                   </h5>
+                </td>
+                <td>
+                  <span className="badge bg-success fs-6">
+                    <small className="fs-6">02:00 PM</small>
+                  </span>
+                  &nbsp;&nbsp; {t("to")} &nbsp;&nbsp;
+                  <span className="badge bg-danger fs-6">
+                    <small className="fs-6">11:00 PM</small>
+                  </span>
                 </td>
               </tr>
               <tr>
@@ -78,6 +106,15 @@ const SupportCall = ({ isOpen }) => {
                     <Telephone className="text-info" /> 01321141787
                   </h5>
                 </td>
+                <td>
+                  <span className="badge bg-success fs-6">
+                    <small className="fs-6">10:00 AM</small>
+                  </span>
+                  &nbsp;&nbsp; {t("to")} &nbsp;&nbsp;
+                  <span className="badge bg-danger fs-6">
+                    <small className="fs-6">07:00 PM</small>
+                  </span>
+                </td>
               </tr>
               <tr>
                 <td className="mt-3 support">
@@ -88,6 +125,15 @@ const SupportCall = ({ isOpen }) => {
                     <Telephone className="text-info" /> 01896192227
                   </h5>
                 </td>
+                <td>
+                  <span className="badge bg-success fs-6">
+                    <small className="fs-6">10:00 AM</small>
+                  </span>
+                  &nbsp;&nbsp; {t("to")} &nbsp;&nbsp;
+                  <span className="badge bg-danger fs-6">
+                    <small className="fs-6">08:00 PM</small>
+                  </span>
+                </td>
               </tr>
               <tr>
                 <td className="mt-3 support">
@@ -97,6 +143,15 @@ const SupportCall = ({ isOpen }) => {
                   <h5 className="text-secondary">
                     <Telephone className="text-info" /> 01896192229
                   </h5>
+                </td>
+                <td>
+                  <span className="badge bg-success fs-6">
+                    <small className="fs-6">10:00 AM</small>
+                  </span>
+                  &nbsp;&nbsp; {t("to")} &nbsp;&nbsp;
+                  <span className="badge bg-danger fs-6">
+                    <small className="fs-6">09:00 PM</small>
+                  </span>
                 </td>
               </tr>
             </tbody>

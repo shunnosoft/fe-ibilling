@@ -1,15 +1,5 @@
-import { useState } from "react";
-import { Form, Formik } from "formik";
+import React, { useState } from "react";
 import * as Yup from "yup";
-import { useSelector, useDispatch } from "react-redux";
-
-// internal imports
-import "../../collector/collector.css";
-import { FtextField } from "../../../components/common/FtextField";
-import Loader from "../../../components/common/Loader";
-
-import { addSubArea } from "../../../features/apiCalls";
-import { useTranslation } from "react-i18next";
 import {
   Modal,
   ModalBody,
@@ -17,60 +7,72 @@ import {
   ModalHeader,
   ModalTitle,
 } from "react-bootstrap";
+import { useTranslation } from "react-i18next";
+import { editSubArea } from "../../../features/apiCalls";
+import { useDispatch } from "react-redux";
+import { Form, Formik } from "formik";
+import { FtextField } from "../../../components/common/FtextField";
+import Loader from "../../../components/common/Loader";
 
-export default function SubAreaPost({ postShow, setPostShow, name, id }) {
+const SubAreaEdit = ({
+  subAreaID,
+  subAreaName,
+  ispId,
+  editShow,
+  setEditShow,
+}) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
-  const auth = useSelector((state) => state.persistedReducer.auth.currentUser);
+  //Loading state
   const [isLoading, setIsLoading] = useState(false);
 
-  //validator
+  //subArea edit validator
   const linemanValidator = Yup.object({
     name: Yup.string().required(t("enterName")),
   });
 
   //modal show handler
   const handleClose = () => {
-    setPostShow(false);
+    setEditShow(false);
   };
 
-  const subAreaHandler = async (data) => {
-    if (auth.ispOwner) {
-      const sendingData = {
-        name: data.name,
-        area: id,
-        ispOwner: auth.ispOwner.id,
-      };
-      addSubArea(dispatch, sendingData, setIsLoading, setPostShow);
-    }
+  // Edit subarea
+  const subAreaEditHandler = async (data) => {
+    setIsLoading(true);
+    const IDs = {
+      ispOwnerID: ispId,
+      ispOwner: ispId,
+      id: subAreaID,
+      name: data.name,
+    };
+    editSubArea(dispatch, IDs, setIsLoading, setEditShow);
   };
 
   return (
     <Modal
-      show={postShow}
+      show={editShow}
       onHide={handleClose}
       backdrop="static"
       keyboard={false}
     >
       <ModalHeader closeButton>
-        <ModalTitle>
-          {name || ""} - {t("addSubArea")}
-        </ModalTitle>
+        <ModalTitle>{t("editSubArea")}</ModalTitle>
       </ModalHeader>
       <ModalBody>
         <Formik
           initialValues={{
-            name: "",
+            name: subAreaName || "",
           }}
           validationSchema={linemanValidator}
           onSubmit={(values) => {
-            subAreaHandler(values);
+            subAreaEditHandler(values);
           }}
+          enableReinitialize
         >
           {() => (
-            <Form id="subAreaPost">
-              <FtextField type="text" label={t("nameSubArea")} name="name" />
+            <Form id="subAreaEdit">
+              <FtextField type="text" label={t("subAreaName")} name="name" />
             </Form>
           )}
         </Formik>
@@ -86,7 +88,7 @@ export default function SubAreaPost({ postShow, setPostShow, name, id }) {
         </button>
         <button
           type="submit"
-          form="subAreaPost"
+          form="subAreaEdit"
           className="btn btn-success customBtn"
           disabled={isLoading}
         >
@@ -95,4 +97,6 @@ export default function SubAreaPost({ postShow, setPostShow, name, id }) {
       </ModalFooter>
     </Modal>
   );
-}
+};
+
+export default SubAreaEdit;
