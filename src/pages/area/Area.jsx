@@ -46,6 +46,11 @@ export default function Area() {
   const cus = useSelector((state) => state?.customer?.customer);
   const storeSubArea = useSelector((state) => state.area?.subArea);
 
+  // get bp settings
+  const bpSettings = useSelector(
+    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
+  );
+
   const [isLoading, setIsLoading] = useState(false);
   const [customerLoading, setCustomerLoading] = useState(false);
   const [mikrotikLoading, setMikrotikLoading] = useState(false);
@@ -54,7 +59,6 @@ export default function Area() {
 
   const [areaID, setAreaID] = useState("");
   const [areaId, setAreaId] = useState("");
-  console.log(areaId);
 
   //modal handler state
   const [isOpen, setIsOpen] = useState(false);
@@ -137,6 +141,7 @@ export default function Area() {
               alignItems: "center",
               justifyContent: "center",
               width: "6rem",
+              cursor: "pointer",
             }}
             onClick={() => getAreaSubarea(original.id)}
           >
@@ -145,25 +150,33 @@ export default function Area() {
         ),
       },
       {
-        width: "25%",
-        Header: t("poleBox"),
-        Cell: ({ row: { original } }) => (
-          <div
-            className="gotoSubAreaBtn"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              width: "6rem",
-            }}
-            onClick={() => {
-              setAreaId(original?.id);
-              setPoleShow(true);
-            }}
-          >
-            {t("poleBox")}
-          </div>
+        width: bpSettings?.poleBox ? "25%" : "0%",
+        Header: bpSettings?.poleBox && (
+          <div className="text-center">{t("poleBox")}</div>
         ),
+        id: "option1",
+        Cell: ({ row: { original } }) => {
+          return (
+            bpSettings?.poleBox && (
+              <div
+                className="gotoSubAreaBtn"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "6rem",
+                  cursor: "pointer",
+                }}
+                onClick={() => {
+                  setAreaId(original?.id);
+                  setPoleShow(true);
+                }}
+              >
+                {t("poleBox")}
+              </div>
+            )
+          );
+        },
       },
       {
         width: "10%",

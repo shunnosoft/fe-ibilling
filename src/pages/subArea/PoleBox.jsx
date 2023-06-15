@@ -10,20 +10,13 @@ import {
 } from "react-bootstrap-icons";
 
 // internal imports
-import { getArea } from "../../features/apiCalls";
-
 import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
-import {
-  getPoleBoxApi,
-  getSubAreasApi,
-} from "../../features/actions/customerApiCall";
 import PoleBoxPost from "./poleBoxModals/PoleBoxPost";
 import PoleBoxEdit from "./poleBoxModals/PoleBoxEdit";
 import { Modal, ModalBody, ModalHeader } from "react-bootstrap";
 
 export default function PoleBox({ areaId, poleShow, setPoleShow }) {
-  console.log(areaId);
   const { t } = useTranslation();
 
   //get all sub Area
@@ -31,24 +24,17 @@ export default function PoleBox({ areaId, poleShow, setPoleShow }) {
 
   //get all pole Box
   const poleBox = useSelector((state) => state.area?.poleBox);
-  console.log(poleBox);
-
-  // Loading state
-  const [isLoading, setIsLoading] = useState(false);
 
   //Modal handler state
   const [postShow, setPostShow] = useState(false);
   const [editShow, setEditShow] = useState(false);
 
   const [pole, setPole] = useState([]);
-  console.log(pole);
   const [poleId, setPoleId] = useState("");
-  const [subAreaId, setSubAreaId] = useState("");
 
   //filtering all poleBox under selected subarea
   useEffect(() => {
     const subPoleBox = storeSubArea.filter((sub) => sub.area === areaId);
-    console.log(subPoleBox);
     let temp = [];
     subPoleBox?.map((val) =>
       poleBox.map((pole) => {
@@ -82,7 +68,7 @@ export default function PoleBox({ areaId, poleShow, setPoleShow }) {
       },
       {
         width: "20%",
-        Header: t("name"),
+        Header: t("poleBox"),
         accessor: "name",
       },
       {
@@ -150,15 +136,6 @@ export default function PoleBox({ areaId, poleShow, setPoleShow }) {
           <div className="container-fluied collector">
             <div className="container">
               <div className="collectorTitle d-flex justify-content-between align-items-center px-5">
-                <div
-                  className="allSubArea mt-0"
-                  onClick={() => {
-                    setPoleShow(false);
-                  }}
-                >
-                  <ArrowLeftShort className="arrowLeftSize" />
-                  <span style={{ marginLeft: "3px" }}>{t("subArea")}</span>
-                </div>
                 <div>{t("poleBox")}</div>
                 <div
                   title={t("addPoleBox")}
@@ -187,7 +164,6 @@ export default function PoleBox({ areaId, poleShow, setPoleShow }) {
         setPostShow={setPostShow}
       />
       <PoleBoxEdit
-        areaId={areaId}
         poleId={poleId}
         editShow={editShow}
         setEditShow={setEditShow}

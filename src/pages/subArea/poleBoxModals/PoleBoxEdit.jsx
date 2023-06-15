@@ -15,7 +15,7 @@ import {
   ModalTitle,
 } from "react-bootstrap";
 
-const PoleBoxEdit = ({ areaId, poleId, editShow, setEditShow }) => {
+const PoleBoxEdit = ({ poleId, editShow, setEditShow }) => {
   const dispatch = useDispatch();
 
   // get ispOwner Id
@@ -28,24 +28,8 @@ const PoleBoxEdit = ({ areaId, poleId, editShow, setEditShow }) => {
     (val) => val.id === poleId
   );
 
-  //get all sub Area
-  const storeSubArea = useSelector((state) => state.area?.subArea);
-
   // Loading state
   const [isLoading, setIsLoading] = useState(false);
-
-  const [subArea, setSubArea] = useState([]);
-  const [subAreaId, setSubAreaId] = useState("");
-
-  useEffect(() => {
-    let sub = [];
-    storeSubArea?.map((val) => {
-      if (val.area === areaId) {
-        sub.push(val);
-      }
-    });
-    setSubArea(sub);
-  }, [storeSubArea, areaId]);
 
   const linemanValidator = Yup.object({
     name: Yup.string().required(t("enterName")),
@@ -61,7 +45,6 @@ const PoleBoxEdit = ({ areaId, poleId, editShow, setEditShow }) => {
     const sendingData = {
       name: data.name,
       description: data.description,
-      subArea: subAreaId,
     };
     editPoleBox(
       dispatch,
