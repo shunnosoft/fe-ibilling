@@ -17,6 +17,7 @@ import SupportTicketEdit from "./modal/SupportTicketEdit";
 import SupportTicketDelete from "./modal/SupportTicketDelete";
 import { badge } from "../../components/common/Utils";
 import apiLink from "../../api/apiLink";
+import { getOwnerUsers } from "../../features/getIspOwnerUsersApi";
 
 const Ticket = () => {
   const { t } = useTranslation();
@@ -32,10 +33,19 @@ const Ticket = () => {
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
 
+  // get manager
+  const manager = useSelector((state) => state.manager?.manager);
+
+  // get owner users
+  const ownerUsers = useSelector((state) => state?.ownerUsers?.ownerUser);
+
   //get all ticket Category
   const ticketCategory = useSelector(
     (state) => state.supportTicket.ticketCategory
   );
+
+  // get all role
+  const role = useSelector((state) => state.persistedReducer.auth.role);
 
   // declare state
   const [isLoading, setIsLoading] = useState(false);
@@ -46,10 +56,12 @@ const Ticket = () => {
   const [status, setStatus] = useState("");
   const [ticketType, setTicketType] = useState("");
   const [category, setCategory] = useState("");
+  const [staff, setStaff] = useState("");
 
   //get all support ticket
   useEffect(() => {
     getAllSupportTickets(dispatch, ispOwner, setIsLoading);
+    getOwnerUsers(dispatch, ispOwner);
   }, []);
 
   //set main data
@@ -85,13 +97,13 @@ const Ticket = () => {
   //table columns
   const columns = useMemo(
     () => [
-      {
-        width: "6%",
-        Header: "#",
-        id: "row",
-        accessor: (row) => Number(row.id + 1),
-        Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
-      },
+      // {
+      //   width: "6%",
+      //   Header: "#",
+      //   id: "row",
+      //   accessor: (row) => Number(row.id + 1),
+      //   Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
+      // },
 
       {
         width: "10%",
@@ -104,9 +116,24 @@ const Ticket = () => {
         accessor: "customer.name",
       },
       {
-        width: "10%",
-        Header: t("supportMessage"),
+        width: "8%",
+        Header: t("message"),
         accessor: "message",
+      },
+      {
+        width: "8%",
+        Header: t("staff"),
+        accessor: "assignedStaff",
+        Cell: ({ cell: { value } }) => {
+          const performer = ownerUsers?.find((item) => item[value]);
+
+          return (
+            <div>
+              {performer &&
+                performer[value].name + "(" + performer[value].role + ")"}
+            </div>
+          );
+        },
       },
 
       {
@@ -120,7 +147,7 @@ const Ticket = () => {
 
       {
         width: "10%",
-        Header: t("ticketType"),
+        Header: t("type"),
         accessor: "ticketType",
       },
 
@@ -197,7 +224,7 @@ const Ticket = () => {
         ),
       },
     ],
-    [t, ticketCategory]
+    [t, ticketCategory, ownerUsers]
   );
 
   //filter handler
@@ -217,6 +244,10 @@ const Ticket = () => {
       );
     }
 
+    if (staff) {
+      filterData = filterData.filter((temp) => temp?.assignedStaff === staff);
+    }
+
     setMainData(filterData);
   };
 
@@ -233,6 +264,29 @@ const Ticket = () => {
           {ticketCategory.map((cat) => (
             <option value={cat?.id}>{cat?.name}</option>
           ))}
+        </select>
+
+        <select
+          className="form-select mx-2"
+          onChange={(e) => setStaff(e.target.value)}
+        >
+          <option value="" defaultValue>
+            {t("staff")}
+          </option>
+
+          {role === "ispOwner" &&
+            manager &&
+            manager?.map((man) => (
+              <option value={man?.user}>{man?.name} (Manager)</option>
+            ))}
+
+          {allCollector?.map((collector) => {
+            return (
+              <option value={collector?.user}>
+                {collector?.name} (collector)
+              </option>
+            );
+          })}
         </select>
 
         <select

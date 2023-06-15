@@ -62,12 +62,8 @@ const SupportTicketEdit = ({ ticketEditId, allCollector }) => {
       status: supportTicketStatusValue,
       ticketType,
       ticketCategory,
+      assignedStaff: supportTicketStaffId,
     };
-
-    const assignedPerson = supportTicketStaffId.split("-");
-    if (assignedPerson[1] === "manager") {
-      data.manager = assignedPerson[0];
-    } else data.collector = assignedPerson[0];
 
     if (!ticketCategory) {
       delete data.ticketCategory;
@@ -87,10 +83,8 @@ const SupportTicketEdit = ({ ticketEditId, allCollector }) => {
       setTicketCategory(singleTicket.ticketCategory);
       setTicketType(singleTicket.ticketType);
 
-      if (singleTicket.collector)
-        setSupportTicketStaffId(singleTicket.collector + "-collector");
-      if (singleTicket.manager)
-        setSupportTicketStaffId(singleTicket.manager + "-manager");
+      if (singleTicket.assignedStaff)
+        setSupportTicketStaffId(singleTicket.assignedStaff);
     }
   }, [singleTicket]);
 
@@ -155,22 +149,22 @@ const SupportTicketEdit = ({ ticketEditId, allCollector }) => {
             >
               <option value="">Select Collector</option>
 
-              {/* {role === "ispOwner" &&
+              {role === "ispOwner" &&
                 manager &&
                 manager?.map((man) => (
                   <option
-                    value={`${man?.id}-manager`}
-                    selected={singleTicket?.manager === man?.id}
+                    value={man?.user}
+                    selected={singleTicket?.assignedStaff === man?.user}
                   >
                     {man?.name} (Manager)
                   </option>
-                ))} */}
+                ))}
 
               {allCollector?.map((collector) => {
                 return (
                   <option
-                    value={`${collector?.id}-collector`}
-                    selected={singleTicket?.collector === collector?.id}
+                    value={collector?.user}
+                    selected={singleTicket?.assignedStaff === collector?.user}
                   >
                     {collector?.name}
                   </option>

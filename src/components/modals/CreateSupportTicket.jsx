@@ -56,22 +56,21 @@ const CreateSupportTicket = ({
       return;
     }
 
-    const assignedPerson = supportTicket.assignPerson.split("-");
     const data = {
       message: supportTicket.message,
       ticketType: supportTicket.ticketType,
       ticketCategory: supportTicket.ticketCategory,
-      ...(assignedPerson[1] === "manager"
-        ? { manager: assignedPerson[0] }
-        : { collector: assignedPerson[0] }),
+      assignedStaff: supportTicket.assignPerson,
+
       ...(customer?.reseller ? { reseller } : { ispOwner }),
       customer: customer.id,
-      ...(role === "collector" && { collector: userData.id }),
+      ...(role === "collector" && { assignedStaff: userData.user }),
     };
 
     if (!supportTicket.ticketCategory) {
       delete data.ticketCategory;
     }
+
     createSupportTicketApi(dispatch, data, setLoading);
   };
 
@@ -125,19 +124,17 @@ const CreateSupportTicket = ({
                       className="form-select mt-0 mw-100"
                     >
                       <option value="">...</option>
-                      {/* {role === "ispOwner" &&
+                      {role === "ispOwner" &&
                         manager &&
                         manager?.map((man) => (
-                          <option value={`${man?.id}-manager`}>
+                          <option value={man?.user}>
                             {man.name} (Manager)
                           </option>
-                        ))} */}
+                        ))}
 
                       {collectors &&
                         collectors.map((item) => (
-                          <option value={`${item?.id}-collector`}>
-                            {item.name}
-                          </option>
+                          <option value={item?.user}>{item.name}</option>
                         ))}
                     </select>
                   </div>

@@ -392,7 +392,7 @@ export default function CustomerBillCollect({ single, customerData }) {
                       </select>
                     </div>
                   </div>
-                  <div className="month mb-3">
+                  <div className="month mb-2">
                     <label
                       className="form-check-label changeLabelFontColor"
                       htmlFor="selectMonth"
@@ -440,7 +440,7 @@ export default function CustomerBillCollect({ single, customerData }) {
 
                   {noteCheck && (
                     <>
-                      <div className="mt-3">
+                      <div className="mt-1">
                         <div className="d-flex">
                           <div className="me-2">
                             <label className="form-control-label changeLabelFontColor">
@@ -519,7 +519,7 @@ export default function CustomerBillCollect({ single, customerData }) {
                     </div>
                   </>
 
-                  <div className="mt-4">
+                  <div className="mt-1">
                     <button type="submit" className="btn btn-success">
                       {isLoading ? <Loader /> : t("submit")}
                     </button>
