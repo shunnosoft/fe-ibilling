@@ -8,14 +8,8 @@ import {
   ArrowLeftShort,
   PlusCircle,
 } from "react-bootstrap-icons";
-import { useNavigate, useParams } from "react-router-dom";
 
 // internal imports
-import { ToastContainer } from "react-toastify";
-import useDash from "../../assets/css/dash.module.css";
-import Sidebar from "../../components/admin/sidebar/Sidebar";
-import { FourGround, FontColor } from "../../assets/js/theme";
-import Footer from "../../components/admin/footer/Footer";
 import { getArea } from "../../features/apiCalls";
 
 import Table from "../../components/table/Table";
@@ -26,76 +20,78 @@ import {
 } from "../../features/actions/customerApiCall";
 import PoleBoxPost from "./poleBoxModals/PoleBoxPost";
 import PoleBoxEdit from "./poleBoxModals/PoleBoxEdit";
+import { Modal, ModalBody, ModalHeader } from "react-bootstrap";
 
-export default function PoleBox() {
+export default function PoleBox({ areaId, poleShow, setPoleShow }) {
+  console.log(areaId);
   const { t } = useTranslation();
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const { subAreaId } = useParams();
 
   //get all sub Area
   const storeSubArea = useSelector((state) => state.area?.subArea);
 
   //get all pole Box
   const poleBox = useSelector((state) => state.area?.poleBox);
+  console.log(poleBox);
 
-  // get ispOwner Id
-  const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerId
-  );
+  // Loading state
+  const [isLoading, setIsLoading] = useState(false);
+
+  //Modal handler state
+  const [postShow, setPostShow] = useState(false);
+  const [editShow, setEditShow] = useState(false);
 
   const [pole, setPole] = useState([]);
+  console.log(pole);
   const [poleId, setPoleId] = useState("");
-  const [areadId, setAreaId] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [isLoadingPole, setIsLoadingPole] = useState(false);
-
-  //api calls area subarea and poleBox
-  useEffect(() => {
-    getArea(dispatch, ispOwnerId, setIsLoading);
-    getSubAreasApi(dispatch, ispOwnerId);
-    getPoleBoxApi(dispatch, ispOwnerId, setIsLoadingPole);
-  }, [subAreaId]);
+  const [subAreaId, setSubAreaId] = useState("");
 
   //filtering all poleBox under selected subarea
   useEffect(() => {
-    const oneSubArea = storeSubArea?.find((val) => {
-      return val.id === subAreaId;
-    });
-    if (oneSubArea) {
-      setAreaId(oneSubArea.area);
-      const temp = poleBox?.filter((val) => val.subArea === subAreaId);
-      setPole(temp);
-    }
-  }, [storeSubArea, poleBox]);
+    const subPoleBox = storeSubArea.filter((sub) => sub.area === areaId);
+    console.log(subPoleBox);
+    let temp = [];
+    subPoleBox?.map((val) =>
+      poleBox.map((pole) => {
+        if (pole.subArea === val.id) {
+          temp.push({ ...pole, subAreaName: val.name });
+        }
+      })
+    );
+    setPole(temp);
+  }, [areaId, storeSubArea, poleBox]);
 
-  // go back to area
-  const gotoAllArea = () => {
-    navigate(`/subArea/${areadId}`);
+  //modal show handler
+  const handleClose = () => {
+    setPoleShow(false);
   };
 
   //create column of table
   const columns = React.useMemo(
     () => [
       {
-        width: "20%",
+        width: "15%",
         Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        width: "25%",
+        width: "20%",
+        Header: t("subAreaName"),
+        accessor: "subAreaName",
+      },
+      {
+        width: "20%",
         Header: t("name"),
         accessor: "name",
       },
       {
-        width: "35%",
+        width: "30%",
         Header: t("description"),
         accessor: "description",
       },
       {
-        width: "20%",
+        width: "15%",
         Header: () => <div className="text-center">{t("action")}</div>,
         id: "option",
 
@@ -118,10 +114,9 @@ export default function PoleBox() {
               <ul className="dropdown-menu" aria-labelledby="areaDropdown">
                 <>
                   <li
-                    data-bs-toggle="modal"
-                    data-bs-target="#poleBoxEditModal"
                     onClick={() => {
                       setPoleId(original.id);
+                      setEditShow(true);
                     }}
                   >
                     <div className="dropdown-item">
@@ -131,19 +126,6 @@ export default function PoleBox() {
                       </div>
                     </div>
                   </li>
-
-                  {/* <li
-                      onClick={() => {
-                        deleteSingleSubAarea(original.id, original.ispOwner);
-                      }}
-                    >
-                      <div className="dropdown-item actionManager">
-                        <div className="customerAction">
-                          <ArchiveFill />
-                          <p className="actionP">{t("delete")}</p>
-                        </div>
-                      </div>
-                    </li> */}
                 </>
               </ul>
             </>
@@ -156,52 +138,60 @@ export default function PoleBox() {
 
   return (
     <>
-      <Sidebar />
-      <ToastContainer position="top-right" theme="colored" />
-      <div className={useDash.dashboardWrapper}>
-        <div className="container-fluied collector">
-          <div className="container">
-            <FontColor>
-              <FourGround>
-                <div className="collectorTitle d-flex justify-content-between align-items-center px-5">
-                  <div className="allSubArea mt-0" onClick={gotoAllArea}>
-                    <ArrowLeftShort className="arrowLeftSize" />
-                    <span style={{ marginLeft: "3px" }}>{t("subArea")}</span>
-                  </div>
-                  <div>{t("poleBox")}</div>
-                  <div
-                    title={t("addPoleBox")}
-                    className="header_icon"
-                    data-bs-toggle="modal"
-                    data-bs-target="#poleBoxPostModal"
-                  >
-                    <PlusCircle />
-                  </div>
+      <Modal
+        show={poleShow}
+        onHide={handleClose}
+        backdrop="static"
+        keyboard={false}
+        size="xl"
+      >
+        <ModalHeader closeButton></ModalHeader>
+        <ModalBody>
+          <div className="container-fluied collector">
+            <div className="container">
+              <div className="collectorTitle d-flex justify-content-between align-items-center px-5">
+                <div
+                  className="allSubArea mt-0"
+                  onClick={() => {
+                    setPoleShow(false);
+                  }}
+                >
+                  <ArrowLeftShort className="arrowLeftSize" />
+                  <span style={{ marginLeft: "3px" }}>{t("subArea")}</span>
                 </div>
-              </FourGround>
+                <div>{t("poleBox")}</div>
+                <div
+                  title={t("addPoleBox")}
+                  className="header_icon"
+                  onClick={() => setPostShow(true)}
+                >
+                  <PlusCircle />
+                </div>
+              </div>
 
-              <FourGround>
-                <div className="collectorWrapper mt-2 py-2">
-                  <Table
-                    isLoading={isLoadingPole}
-                    columns={columns}
-                    data={pole}
-                  ></Table>
-                </div>
-              </FourGround>
-              <Footer />
-            </FontColor>
+              <div className="collectorWrapper mt-2 py-2">
+                <Table
+                  // isLoading={isLoadingPole}
+                  columns={columns}
+                  data={pole}
+                ></Table>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+        </ModalBody>
+      </Modal>
 
-      {/* modals section */}
-
-      {/* Add New Pole Box */}
-      <PoleBoxPost subAreaId={subAreaId} />
-
-      {/* Edit Pole Box */}
-      <PoleBoxEdit poleId={poleId} subAreaId={subAreaId} />
+      <PoleBoxPost
+        areaId={areaId}
+        postShow={postShow}
+        setPostShow={setPostShow}
+      />
+      <PoleBoxEdit
+        areaId={areaId}
+        poleId={poleId}
+        editShow={editShow}
+        setEditShow={setEditShow}
+      />
     </>
   );
 }

@@ -6,39 +6,21 @@ import {
   ThreeDots,
   PenFill,
   ArchiveFill,
-  ArrowLeftShort,
   PlusCircle,
-  ArrowRightShort,
-  AlignBottom,
 } from "react-bootstrap-icons";
-import Loader from "../../components/common/Loader";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { Form, Formik } from "formik";
-import * as Yup from "yup";
 
 // internal imports
-import { toast, ToastContainer } from "react-toastify";
-import useDash from "../../assets/css/dash.module.css";
-import Sidebar from "../../components/admin/sidebar/Sidebar";
-import { FourGround, FontColor } from "../../assets/js/theme";
-import Footer from "../../components/admin/footer/Footer";
+import { toast } from "react-toastify";
 import SubAreaPost from "./subAreaModals/SubAreaPost";
-import { FtextField } from "../../components/common/FtextField";
-import {
-  deleteSubArea,
-  getArea,
-  editSubArea,
-  fetchMikrotik,
-} from "../../features/apiCalls";
-
+import { deleteSubArea, getArea, fetchMikrotik } from "../../features/apiCalls";
 import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
 import { getSubAreasApi } from "../../features/actions/customerApiCall";
+import { Modal, ModalBody, ModalHeader } from "react-bootstrap";
+import SubAreaEdit from "./subAreaModals/SubAreaEdit";
 
-export default function SubArea() {
+export default function SubArea({ isOpen, setIsOpen, areaId }) {
   const { t } = useTranslation();
-  const navigate = useNavigate();
-  const { areaId } = useParams();
   const area = useSelector((state) => state.area.area);
   const storeSubArea = useSelector((state) => state.area?.subArea);
   const [subAreas, setSubAreas] = useState([]);
@@ -48,12 +30,15 @@ export default function SubArea() {
   const [name, setName] = useState("");
   const [checkMikrotikName, setCheckMikrotikName] = useState();
   const [id, setId] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const cus = useSelector((state) => state?.customer?.customer);
 
-  const linemanValidator = Yup.object({
-    name: Yup.string().required(t("enterName")),
-  });
+  //Loading state
+  const [isLoading, setIsLoading] = useState(false);
+  const [isLoader, setIsLoader] = useState(false);
+
+  //modal handler state
+  const [postShow, setPostShow] = useState(false);
+  const [editShow, setEditShow] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -62,35 +47,13 @@ export default function SubArea() {
     (state) => state.persistedReducer.auth.ispOwnerId
   );
 
-  // get bp settings
-  const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
-  );
-
   // get mikrotik
   const mikrotiks = useSelector((state) => state.mikrotik.mikrotik);
 
   useEffect(() => {
     getArea(dispatch, ispOwnerId, setIsLoading);
-    getSubAreasApi(dispatch, ispOwnerId);
+    getSubAreasApi(dispatch, ispOwnerId, setIsLoader);
   }, [areaId]);
-
-  // go back to area
-  const gotoAllArea = () => {
-    navigate("/area");
-  };
-
-  // Edit subarea
-  const subAreaEditHandler = async (data) => {
-    setIsLoading(true);
-    const IDs = {
-      ispOwnerID: ispId,
-      ispOwner: ispId,
-      id: subAreaID,
-      name: data.name,
-    };
-    editSubArea(dispatch, IDs, setIsLoading);
-  };
 
   useEffect(() => {
     const oneArea = area.find((val) => {
@@ -111,8 +74,13 @@ export default function SubArea() {
     setCheckMikrotikName(match);
   }, [name]);
 
+  //modal show handler
+  const handleClose = () => {
+    setIsOpen(false);
+  };
+
   // delete sub area
-  const deleteSingleSubAarea = (id, ispOwner) => {
+  const deleteSingleSubAarea = (id) => {
     let isCustomer = false;
     cus.map((customer) => {
       if (customer.subArea === id) {
@@ -124,7 +92,6 @@ export default function SubArea() {
     } else {
       let con = window.confirm(t("doYouWantDeleteSubArea"));
       if (con) {
-        setIsLoading(true);
         const IDs = {
           ispOwnerId: ispOwnerId,
           subAreaId: id,
@@ -138,58 +105,23 @@ export default function SubArea() {
   const columns = React.useMemo(
     () => [
       {
-        width: "30%",
+        width: "25%",
         Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        width: "25%",
+        width: "50%",
         Header: t("subArea"),
         accessor: "name",
       },
-
-      {
-        width: bpSettings?.poleBox ? "25%" : "0%",
-        Header: bpSettings?.poleBox && (
-          <div className="text-center">{t("poleBox")}</div>
-        ),
-        id: "option1",
-
-        Cell: ({ row: { original } }) => {
-          return (
-            bpSettings?.poleBox && (
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Link to={`/poleBox/${original.id}`} className="gotoSubAreaBtn">
-                  {t("poleBox")}
-                  <ArrowRightShort style={{ fontSize: "19px" }} />
-                </Link>
-              </div>
-            )
-          );
-        },
-      },
-
       {
         width: "25%",
-        Header: () => <div className="text-center">{t("action")}</div>,
-        id: "option",
+        Header: t("action"),
 
         Cell: ({ row: { original } }) => (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
+          <div>
             <>
               <ThreeDots
                 className="dropdown-toggle ActionDots"
@@ -199,35 +131,42 @@ export default function SubArea() {
                 aria-expanded="false"
               />
               <ul className="dropdown-menu" aria-labelledby="areaDropdown">
-                <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#subAreaEditModal"
-                  onClick={() => {
-                    setSubAreaID(original.id);
-                    setSubAreaName(original.name);
-                    setIspId(original.ispOwner);
-                  }}
-                >
-                  <div className="dropdown-item">
-                    <div className="customerAction">
-                      <PenFill />
-                      <p className="actionP">{t("edit")}</p>
-                    </div>
-                  </div>
-                </li>
+                {checkMikrotikName?.name !== name ? (
+                  <>
+                    <li
+                      data-bs-toggle="modal"
+                      data-bs-target="#subAreaEditModal"
+                      onClick={() => {
+                        setSubAreaID(original.id);
+                        setSubAreaName(original.name);
+                        setIspId(original.ispOwner);
+                        setEditShow(true);
+                      }}
+                    >
+                      <div className="dropdown-item">
+                        <div className="customerAction">
+                          <PenFill />
+                          <p className="actionP">{t("edit")}</p>
+                        </div>
+                      </div>
+                    </li>
 
-                <li
-                  onClick={() => {
-                    deleteSingleSubAarea(original.id, original.ispOwner);
-                  }}
-                >
-                  <div className="dropdown-item actionManager">
-                    <div className="customerAction">
-                      <ArchiveFill />
-                      <p className="actionP">{t("delete")}</p>
-                    </div>
-                  </div>
-                </li>
+                    <li
+                      onClick={() => {
+                        deleteSingleSubAarea(original.id, original.ispOwner);
+                      }}
+                    >
+                      <div className="dropdown-item actionManager">
+                        <div className="customerAction">
+                          <ArchiveFill />
+                          <p className="actionP">{t("delete")}</p>
+                        </div>
+                      </div>
+                    </li>
+                  </>
+                ) : (
+                  ""
+                )}
               </ul>
             </>
           </div>
@@ -239,107 +178,55 @@ export default function SubArea() {
 
   return (
     <>
-      <Sidebar />
-      <ToastContainer position="top-right" theme="colored" />
-      <div className={useDash.dashboardWrapper}>
-        <div className="container-fluied collector">
-          <div className="container">
-            <FontColor>
+      <Modal
+        show={isOpen}
+        onHide={handleClose}
+        backdrop="static"
+        keyboard={false}
+        size="xl"
+      >
+        <ModalHeader closeButton></ModalHeader>
+        <ModalBody>
+          <div className="container-fluied collector">
+            <div className="container">
               {/* Edit MOdal */}
-              <div
-                className="modal fade modal-dialog-scrollable "
-                id="subAreaEditModal"
-                tabIndex="-1"
-                aria-labelledby="exampleModalLabel"
-                aria-hidden="true"
-              >
-                <div className="modal-dialog">
-                  <div className="modal-content">
-                    <div className="modal-header">
-                      <h5 className="modal-title" id="exampleModalLabel">
-                        {t("editSubArea")}
-                      </h5>
-                      <button
-                        type="button"
-                        className="btn-close"
-                        data-bs-dismiss="modal"
-                        aria-label="Close"
-                      ></button>
-                    </div>
-                    <div className="modal-body">
-                      <Formik
-                        initialValues={{
-                          name: subAreaName || "",
-                        }}
-                        validationSchema={linemanValidator}
-                        onSubmit={(values) => {
-                          subAreaEditHandler(values);
-                        }}
-                        enableReinitialize
-                      >
-                        {() => (
-                          <Form>
-                            <FtextField
-                              type="text"
-                              label={t("subAreaName")}
-                              name="name"
-                            />
-
-                            <div className="modal-footer">
-                              <button
-                                type="button"
-                                className="btn btn-secondary"
-                                data-bs-dismiss="modal"
-                              >
-                                {t("cancel")}
-                              </button>
-                              <button
-                                type="submit"
-                                className="btn btn-success customBtn"
-                                disabled={isLoading}
-                              >
-                                {isLoading ? <Loader /> : t("save")}
-                              </button>
-                            </div>
-                          </Form>
-                        )}
-                      </Formik>
-                    </div>
-                  </div>
+              <div className="collectorTitle d-flex justify-content-between align-items-center px-5">
+                <div>
+                  {name || ""} {t("ofSubArea")}
+                </div>
+                <div
+                  title={t("addSubArea")}
+                  className="header_icon"
+                  onClick={() => setPostShow(true)}
+                >
+                  <PlusCircle />
                 </div>
               </div>
-              {/* Edit MOdal */}
-              <FourGround>
-                <div className="collectorTitle d-flex justify-content-between align-items-center px-5">
-                  <div className="allSubArea mt-0" onClick={gotoAllArea}>
-                    <ArrowLeftShort className="arrowLeftSize" />
-                    <span style={{ marginLeft: "3px" }}>{t("area")}</span>
-                  </div>
-                  <div>
-                    {name || ""} {t("ofSubArea")}
-                  </div>
-                  <div
-                    title={t("addSubArea")}
-                    className="header_icon"
-                    data-bs-toggle="modal"
-                    data-bs-target="#subAreaModal"
-                  >
-                    <PlusCircle />
-                  </div>
-                </div>
-              </FourGround>
 
-              <FourGround>
-                <div className="collectorWrapper mt-2 py-2">
-                  <Table columns={columns} data={subAreas}></Table>
-                </div>
-              </FourGround>
-              <Footer />
-            </FontColor>
+              <div className="collectorWrapper mt-2 py-2">
+                <Table
+                  isLoading={isLoader}
+                  columns={columns}
+                  data={subAreas}
+                ></Table>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-      <SubAreaPost name={name || ""} id={id || ""} />
+        </ModalBody>
+      </Modal>
+      <SubAreaPost
+        name={name || ""}
+        id={id || ""}
+        postShow={postShow}
+        setPostShow={setPostShow}
+      />
+      <SubAreaEdit
+        subAreaID={subAreaID}
+        subAreaName={subAreaName}
+        ispId={ispId}
+        editShow={editShow}
+        setEditShow={setEditShow}
+      />
     </>
   );
 }

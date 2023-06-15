@@ -3,13 +3,15 @@ import apiLink from "../../api/apiLink";
 import { getPoleBoxSuccess, getSubareas } from "../areaSlice";
 import { deleteCustomerSuccess } from "../customerSlice";
 
-export const getSubAreasApi = async (dispatch, ispOwnerId) => {
+export const getSubAreasApi = async (dispatch, ispOwnerId, setIsLoading) => {
+  setIsLoading(true);
   try {
     const res = await apiLink.get("ispOwner/subArea/v2/" + ispOwnerId);
     dispatch(getSubareas(res.data.subAreas));
   } catch (error) {
     console.log(error);
   }
+  setIsLoading(false);
 };
 
 export const getPoleBoxApi = async (dispatch, ispOwnerId, setIsLoading) => {

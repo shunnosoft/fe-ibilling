@@ -781,5 +781,6 @@
   "selectTicketCategory": "Select Ticket Category",
   "ticketCategory": "Ticket Category",
   "addCategory": "Add Category",
-  "ticketType": "Ticket Type"
+  "ticketType": "Ticket Type",
+  "to": "to"
 }

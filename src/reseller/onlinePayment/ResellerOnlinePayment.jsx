@@ -9,7 +9,6 @@ import {
 import { useTranslation } from "react-i18next";
 import Loader from "../../components/common/Loader";
 import { useSelector } from "react-redux";
-import { resellerRecharge } from "../../features/getIspOwnerUsersApi";
 import apiLink from "../../api/apiLink";
 
 const ResellerOnlinePayment = ({ show, setShow }) => {
@@ -18,10 +17,6 @@ const ResellerOnlinePayment = ({ show, setShow }) => {
   // reseller data
   const resellerData = useSelector(
     (state) => state.persistedReducer.auth?.userData
-  );
-  // reseller data
-  const ispOwnerData = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerData
   );
 
   // payment amount state
@@ -45,19 +40,6 @@ const ResellerOnlinePayment = ({ show, setShow }) => {
 
   // modal close handler
   const handleClose = () => setShow(false);
-
-  // deposit payment handler
-  const resellerPaymentHandler = async () => {
-    const data = {
-      amount: paymentAmount,
-      merchantInvoiceNumber: Date.now(),
-      intent: "sale",
-      reseller: userData.id,
-      ispOwner: userData.ispOwner,
-    };
-
-    resellerRecharge(data, setIsLoading);
-  };
 
   const bKash = window.bkash;
 

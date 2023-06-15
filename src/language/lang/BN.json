@@ -788,5 +788,6 @@
   "selectTicketCategory": "টিকিটের বিভাগ নির্বাচন করুন",
   "ticketCategory": "টিকেট ক্যাটাগরি",
   "addCategory": "ক্যাটাগরি যোগ করুন",
-  "ticketType": "টিকিটের ধরন"
+  "ticketType": "টিকিটের ধরন",
+  "to": "থেকে"
 }

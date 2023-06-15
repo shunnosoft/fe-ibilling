@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
@@ -9,20 +9,49 @@ import { FtextField } from "../../../components/common/FtextField";
 import Loader from "../../../components/common/Loader";
 import { addPoleBox } from "../../../features/apiCalls";
 import { useTranslation } from "react-i18next";
+import {
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  ModalTitle,
+} from "react-bootstrap";
 
-export default function PoleBoxPost({ subAreaId }) {
+export default function PoleBoxPost({ areaId, postShow, setPostShow }) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
   //get current user(ispOwner)
   const auth = useSelector((state) => state.persistedReducer.auth.currentUser);
 
+  //get all sub Area
+  const storeSubArea = useSelector((state) => state.area?.subArea);
+
+  //Loading state
   const [isLoading, setIsLoading] = useState(false);
+
+  const [subArea, setSubArea] = useState([]);
+  const [subAreaId, setSubAreaId] = useState("");
+
+  useEffect(() => {
+    let sub = [];
+    storeSubArea?.map((val) => {
+      if (val.area === areaId) {
+        sub.push(val);
+      }
+    });
+    setSubArea(sub);
+  }, [storeSubArea, areaId]);
 
   //validator
   const linemanValidator = Yup.object({
     name: Yup.string().required(t("enterName")),
   });
+
+  //modal show handler
+  const handleClose = () => {
+    setPostShow(false);
+  };
 
   //pole box post handler
   const poleBoxPost = async (data) => {
@@ -33,91 +62,96 @@ export default function PoleBoxPost({ subAreaId }) {
         subArea: subAreaId,
         ispOwner: auth.ispOwner.id,
       };
-      addPoleBox(dispatch, sendingData, setIsLoading);
+      addPoleBox(dispatch, sendingData, setIsLoading, setPostShow);
     }
   };
 
   return (
-    <div>
-      <div
-        className="modal fade modal-dialog-scrollable "
-        id="poleBoxPostModal"
-        tabIndex="-1"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
+    <>
+      <Modal
+        show={postShow}
+        onHide={handleClose}
+        backdrop="static"
+        keyboard={false}
+        centered
       >
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLabel">
-                {t("addPoleBox")}
-              </h5>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body">
-              <Formik
-                initialValues={{
-                  name: "",
-                  description: "",
-                }}
-                validationSchema={linemanValidator}
-                onSubmit={(values) => {
-                  poleBoxPost(values);
-                }}
-              >
-                {() => (
-                  <Form>
-                    <div>
-                      <div>
-                        <FtextField type="text" label={t("name")} name="name" />
+        <ModalHeader closeButton>
+          <ModalTitle>{t("addPoleBox")}</ModalTitle>
+        </ModalHeader>
+        <ModalBody>
+          <Formik
+            initialValues={{
+              name: "",
+              description: "",
+            }}
+            validationSchema={linemanValidator}
+            onSubmit={(values) => {
+              poleBoxPost(values);
+            }}
+          >
+            {() => (
+              <Form id="polePost">
+                <div>
+                  <div>
+                    <div className="w-100 me-2 mb-3">
+                      <label className="form-control-label changeLabelFontColor">
+                        {t("subArea")}
+                      </label>
 
-                        <label
-                          className="changeLabelFontColor"
-                          htmlFor="description"
-                        >
-                          {t("description")}
-                        </label>
-                        <Field
-                          className="form-control shadow-none"
-                          style={{
-                            height: "100px",
-                            width: "100%",
-                            padding: "10px",
-                          }}
-                          component="textarea"
-                          name="description"
-                        />
-                      </div>
+                      <select
+                        className="form-select mt-0 mw-100"
+                        onChange={(e) => setSubAreaId(e.target.value)}
+                      >
+                        <option value=""> {t("subArea")} </option>
+
+                        {subArea?.map((val) => (
+                          <option value={`${val.id}`}>{val.name}</option>
+                        ))}
+                      </select>
                     </div>
 
-                    <div className="modal-footer">
-                      <button
-                        type="button"
-                        className="btn btn-secondary"
-                        data-bs-dismiss="modal"
-                      >
-                        {t("cancel")}
-                      </button>
-                      <button
-                        type="submit"
-                        className="btn btn-success customBtn"
-                        disabled={isLoading}
-                      >
-                        {isLoading ? <Loader /> : t("save")}
-                      </button>
-                    </div>
-                  </Form>
-                )}
-              </Formik>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+                    <FtextField type="text" label={t("name")} name="name" />
+
+                    <label
+                      className="changeLabelFontColor"
+                      htmlFor="description"
+                    >
+                      {t("description")}
+                    </label>
+                    <Field
+                      className="form-control shadow-none"
+                      style={{
+                        height: "100px",
+                        width: "100%",
+                        padding: "10px",
+                      }}
+                      component="textarea"
+                      name="description"
+                    />
+                  </div>
+                </div>
+              </Form>
+            )}
+          </Formik>
+        </ModalBody>
+        <ModalFooter>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={handleClose}
+          >
+            {t("cancel")}
+          </button>
+          <button
+            type="submit"
+            form="polePost"
+            className="btn btn-success customBtn"
+            disabled={isLoading}
+          >
+            {isLoading ? <Loader /> : t("save")}
+          </button>
+        </ModalFooter>
+      </Modal>
+    </>
   );
 }

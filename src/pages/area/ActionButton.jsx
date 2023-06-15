@@ -9,7 +9,6 @@ import {
 import { useTranslation } from "react-i18next";
 
 export default function ActionButton({
-  getAreaSubarea,
   getSpecificArea,
   deleteSingleArea,
   data,
@@ -26,19 +25,6 @@ export default function ActionButton({
           aria-expanded="false"
         />
         <ul className="dropdown-menu" aria-labelledby="areaDropdown">
-          <li
-            data-bs-toggle="modal"
-            data-bs-target="#subareaModal"
-            onClick={() => getAreaSubarea(data.id)}
-          >
-            <div className="dropdown-item">
-              <div className="customerAction">
-                <GeoAlt />
-                <p className="actionP"> {t("subArea")}</p>
-              </div>
-            </div>
-          </li>
-
           <li
             data-bs-toggle="modal"
             data-bs-target="#areaEditModal"

@@ -3,9 +3,13 @@ import { Button, Modal } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import SMSPurchase from "./SMSPurchase";
 import { getAllCustomerCount } from "../../features/apiCalls";
+import { useSelector } from "react-redux";
 
 const MessageAlert = ({ ispOwner }) => {
   const { t } = useTranslation();
+
+  // get user role
+  const role = useSelector((state) => state.persistedReducer.auth.role);
 
   // show modal state
   const [show, setShow] = useState(false);
@@ -35,7 +39,7 @@ const MessageAlert = ({ ispOwner }) => {
 
   useEffect(() => {
     if (ispOwner) {
-      getAllCustomerCount(ispOwner.id, setCustomerCount);
+      role === "ispOwner" && getAllCustomerCount(ispOwner.id, setCustomerCount);
     }
   }, [ispOwner]);
 

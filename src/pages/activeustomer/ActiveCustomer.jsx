@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import "../collector/collector.css";
 import "../configMikrotik/configmikrotik.css";
 import {
@@ -9,6 +9,7 @@ import {
   ArchiveFill,
   Server,
   Envelope,
+  FileExcelFill,
 } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -30,6 +31,7 @@ import CustomerDelete from "../Customer/customerCRUD/CustomerDelete";
 import IndeterminateCheckbox from "../../components/table/bulkCheckbox";
 import BulkCustomerDelete from "../Customer/customerCRUD/bulkOpration/BulkdeleteModal";
 import BulkCustomerMessage from "../Customer/customerCRUD/bulkOpration/BulkCustomerMessage";
+import { CSVLink } from "react-csv";
 
 export default function ConfigMikrotik() {
   const { t } = useTranslation();
@@ -55,6 +57,11 @@ export default function ConfigMikrotik() {
   // get bp settings
   const bpSettings = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
+  );
+
+  // get isp owner data
+  const ispOwnerData = useSelector(
+    (state) => state.persistedReducer.auth.userData
   );
 
   // mikrotik loading state
@@ -176,6 +183,61 @@ export default function ConfigMikrotik() {
     setAllUsers(allMikrotikUsers);
     setMikrotikId(mikrotik[0]?.id);
   }, [allMikrotikUsers, mikrotik]);
+
+  const sortingCustomer = useMemo(() => {
+    return [...allUsers].sort((a, b) => {
+      a = parseInt(a.customerId?.replace(/[^0-9]/g, ""));
+      b = parseInt(b.customerId?.replace(/[^0-9]/g, ""));
+
+      return a - b;
+    });
+  }, [allUsers]);
+
+  const tableData = useMemo(() => sortingCustomer, [allUsers]);
+
+  // csv table header
+  const customerForCsVTableInfoHeader = [
+    { label: "customer_id", key: "customerId" },
+    { label: "name_of_client", key: "name" },
+    { label: "PPPoE_Name", key: "pppoeName" },
+    { label: "Allocated_ip", key: "ip" },
+    { label: "address_of_client", key: "customerAddress" },
+    { label: "activation_date", key: "createdAt" },
+    { label: "bandwidth_allocation MB", key: "package" },
+    { label: "password", key: "password" },
+    { label: "client_phone", key: "mobile" },
+    { label: "status", key: "status" },
+    { label: "payment Status", key: "paymentStatus" },
+    { label: "email", key: "email" },
+    { label: "balance", key: "balance" },
+    { label: "billing_cycle", key: "billingCycle" },
+    { label: "selling_bandwidthBDT (Excluding VAT).", key: "monthlyFee" },
+  ];
+
+  //export customer data
+  let customerForCsVTableInfo = useMemo(
+    () =>
+      tableData.map((customer) => {
+        return {
+          customerId: customer.customerId,
+          name: customer.name,
+          pppoeName: customer.pppoe?.name,
+          ip: customer.ip,
+          customerAddress: customer.address,
+          createdAt: moment(customer.createdAt).format("MM/DD/YYYY"),
+          package: customer?.pppoe?.profile,
+          password: customer?.pppoe?.password,
+          mobile: customer?.mobile || "",
+          status: customer.status,
+          paymentStatus: customer.paymentStatus,
+          email: customer.email || "",
+          monthlyFee: customer.monthlyFee,
+          balance: customer.balance,
+          billingCycle: moment(customer.billingCycle).format("MMM-DD-YYYY"),
+        };
+      }),
+    [allUsers]
+  );
 
   // table column
   const columns = React.useMemo(
@@ -365,6 +427,16 @@ export default function ConfigMikrotik() {
                         ></ArrowClockwise>
                       )}
                     </div>
+                  </div>
+                  <div className="addAndSettingIcon">
+                    <CSVLink
+                      data={customerForCsVTableInfo}
+                      filename={ispOwnerData.company}
+                      headers={customerForCsVTableInfoHeader}
+                      title="Customer BTRC Report New"
+                    >
+                      <FileExcelFill className="addcutmButton" />
+                    </CSVLink>
                   </div>
                 </div>
               </FourGround>

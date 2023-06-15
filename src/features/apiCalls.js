@@ -688,36 +688,33 @@ export const deleteArea = async (dispatch, data, setIsLoading) => {
 
 //subarea
 
-export const addSubArea = async (dispatch, data, setIsLoading) => {
+export const addSubArea = async (dispatch, data, setIsLoading, setPostShow) => {
+  setIsLoading(false);
   try {
     const res = await apiLink.post("/ispOwner/subArea", data);
 
     dispatch(AddSubAreaSuccess(res.data));
-    setIsLoading(false);
-    document.querySelector("#subAreaModal").click();
+    setPostShow(false);
     langMessage(
       "success",
       "সাব-এরিয়া সংযুক্ত সফল হয়েছে",
       "Sub-Area Added Successfully"
     );
-
-    // hideModal();
   } catch (error) {
-    setIsLoading(false);
-    document.querySelector("#subAreaModal").click();
     toast.error(error.response?.data.message);
   }
+  setIsLoading(false);
 };
 
 //Pole Box Post
 
-export const addPoleBox = async (dispatch, data, setIsLoading) => {
+export const addPoleBox = async (dispatch, data, setIsLoading, setPostShow) => {
   setIsLoading(true);
   try {
     const res = await apiLink.post("/ispOwner/poleBox/post", data);
 
     dispatch(AddPoleBoxSuccess(res.data));
-    document.querySelector("#poleBoxPostModal").click();
+    setPostShow(false);
     langMessage(
       "success",
       "পোল বক্স সংযুক্ত সফল হয়েছে",
@@ -750,7 +747,12 @@ export const addPoleBox2 = async (dispatch, data, setIsLoading) => {
 };
 
 // PATCH sub area
-export const editSubArea = async (dispatch, data, setIsLoading, setShow) => {
+export const editSubArea = async (
+  dispatch,
+  data,
+  setIsLoading,
+  setEditShow
+) => {
   setIsLoading(true);
   const { ispOwnerID, id, ...rest } = data;
   await apiLink({
@@ -763,8 +765,7 @@ export const editSubArea = async (dispatch, data, setIsLoading, setShow) => {
   })
     .then((res) => {
       dispatch(EditSubAreaSuccess(res.data));
-      // setShow(false);
-      document.querySelector("#subAreaEditModal").click();
+      setEditShow(false);
       langMessage(
         "success",
         "সাব-এরিয়া আপডেট সফল হয়েছে",
@@ -785,7 +786,8 @@ export const editPoleBox = async (
   sendingData,
   ispOwnerId,
   poleId,
-  setIsLoading
+  setIsLoading,
+  setEditShow
 ) => {
   setIsLoading(true);
   await apiLink({
@@ -798,7 +800,7 @@ export const editPoleBox = async (
   })
     .then((res) => {
       dispatch(EditPoleBoxSuccess(res.data));
-      document.querySelector("#poleBoxEditModal").click();
+      setEditShow(false);
       langMessage(
         "success",
         "পোল বক্স আপডেট সফল হয়েছে",
@@ -816,30 +818,23 @@ export const editPoleBox = async (
 // DELETE sub area
 export const deleteSubArea = async (dispatch, data, setIsLoading) => {
   const { ispOwnerId, subAreaId, areaId } = data;
-
-  await apiLink({
-    url: `/ispOwner/subArea/${ispOwnerId}/${subAreaId}`,
-    method: "DELETE",
-  })
-    .then((res) => {
-      if (res.status === 204) {
-        dispatch(DeleteSubAreaSuccess({ areaId, subAreaId }));
-        setIsLoading(false);
-        document.querySelector("#subAreaModal").click();
-        langMessage(
-          "success",
-          "সাব-এরিয়া ডিলিট সফল হয়েছে",
-          "Sub-Area Deleted Successfully"
-        );
-        // getArea(dispatch, ispOwnerId);
-      }
-    })
-    .catch((err) => {
-      if (err.response) {
-        setIsLoading(false);
-        toast.error(err.response.data.message);
-      }
-    });
+  setIsLoading(true);
+  try {
+    const res = await apiLink.delete(
+      `/ispOwner/subArea/${ispOwnerId}/${subAreaId}`
+    );
+    if (res) {
+      dispatch(DeleteSubAreaSuccess({ areaId, subAreaId }));
+      langMessage(
+        "success",
+        "সাব-এরিয়া ডিলিট সফল হয়েছে",
+        "Sub-Area Deleted Successfully"
+      );
+    }
+  } catch (error) {
+    toast.error(error.response.data.message);
+  }
+  setIsLoading(false);
 };
 
 // Collector
@@ -1027,11 +1022,10 @@ export const getStaticActiveCustomer = async (
       `mikrotik/arpList/${ispOwnerId}/${mikrotikId}`
     );
     dispatch(getStaticCustomerActiveSuccess(res.data.arpList));
-    setIsloading(false);
   } catch (error) {
     console.log(error.response.data.message);
-    setIsloading(false);
   }
+  setIsloading(false);
 };
 
 export const addCustomer = async (dispatch, data, setIsloading, resetForm) => {

@@ -32,11 +32,13 @@ import Table from "../../components/table/Table";
 
 import { useTranslation } from "react-i18next";
 import SubAreaModal from "./areaModals/SubAreaModal";
-import { getSubAreasApi } from "../../features/actions/customerApiCall";
-import PoleBoxModal from "./areaModals/PoleBoxModal";
-import PoleBoxAddModal2 from "./areaModals/PoleBoxAddModal2";
-import TestModal from "./areaModals/testModal";
-
+import {
+  getPoleBoxApi,
+  getSubAreasApi,
+} from "../../features/actions/customerApiCall";
+import SubArea from "../../pages/subArea/SubArea";
+import PoleBox from "../subArea/PoleBox";
+//subArea/SubArea
 export default function Area() {
   const { t } = useTranslation();
   const area = useSelector((state) => state?.area?.area);
@@ -47,12 +49,16 @@ export default function Area() {
   const [isLoading, setIsLoading] = useState(false);
   const [customerLoading, setCustomerLoading] = useState(false);
   const [mikrotikLoading, setMikrotikLoading] = useState(false);
+  const [isLoadingPole, setIsLoadingPole] = useState(false);
   const [editAreaId, setEditAreaId] = useState("");
 
   const [areaID, setAreaID] = useState("");
+  const [areaId, setAreaId] = useState("");
+  console.log(areaId);
 
-  //modal open
+  //modal handler state
   const [isOpen, setIsOpen] = useState(false);
+  const [poleShow, setPoleShow] = useState(false);
 
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
@@ -65,6 +71,7 @@ export default function Area() {
     if (area.length === 0) getArea(dispatch, ispOwnerId, setIsLoading);
     if (storeSubArea.length === 0) getSubAreasApi(dispatch, ispOwnerId);
     if (cus.length === 0) getCustomer(dispatch, ispOwnerId, setCustomerLoading);
+    getPoleBoxApi(dispatch, ispOwnerId, setIsLoadingPole);
     fetchMikrotik(dispatch, ispOwnerId, setMikrotikLoading);
   }, [dispatch, ispOwnerId]);
 
@@ -107,7 +114,7 @@ export default function Area() {
   const columns = React.useMemo(
     () => [
       {
-        width: "25%",
+        width: "15%",
         Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
@@ -122,80 +129,52 @@ export default function Area() {
         width: "25%",
         Header: t("subArea"),
         accessor: "subArea",
-
         Cell: ({ row: { original } }) => (
           <div
+            className="gotoSubAreaBtn"
             style={{
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
+              width: "6rem",
             }}
+            onClick={() => getAreaSubarea(original.id)}
           >
-            <Link to={`/subArea/${original.id}`} className="gotoSubAreaBtn">
-              {t("subArea")}
-              <ArrowRightShort style={{ fontSize: "19px" }} />
-            </Link>
+            {t("subArea")}
           </div>
         ),
       },
       {
         width: "25%",
         Header: t("poleBox"),
-        accessor: "poleBox",
-
         Cell: ({ row: { original } }) => (
           <div
+            className="gotoSubAreaBtn"
             style={{
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
+              width: "6rem",
+            }}
+            onClick={() => {
+              setAreaId(original?.id);
+              setPoleShow(true);
             }}
           >
-            <button
-              title={t("poleBox")}
-              style={{ padding: "0.10rem .5rem" }}
-              className="btn btn-sm btn-primary mx-1"
-              data-bs-toggle="modal"
-              data-bs-target="#poleBoxModal"
-              onClick={() => setAreaID(original.id)}
-            >
-              <AlignBottom />
-            </button>
-
-            <button
-              title={t("addPoleBox")}
-              style={{ padding: "0.10rem .5rem" }}
-              className="btn btn-sm btn-primary mx-1"
-              data-bs-toggle="modal"
-              data-bs-target="#poleBoxAdd2"
-              onClick={() => setAreaID(original.id)}
-            >
-              Add PoleBox
-            </button>
+            {t("poleBox")}
           </div>
         ),
       },
-
       {
-        width: "25%",
-        Header: () => <div className="text-center">{t("action")}</div>,
-        id: "option",
+        width: "10%",
+        Header: t("action"),
 
         Cell: ({ row: { original } }) => (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <ActionButton
-              getAreaSubarea={getAreaSubarea}
-              getSpecificArea={getSpecificArea}
-              deleteSingleArea={deleteSingleArea}
-              data={original}
-            />
-          </div>
+          <ActionButton
+            getSpecificArea={getSpecificArea}
+            deleteSingleArea={deleteSingleArea}
+            data={original}
+          />
         ),
       },
     ],
@@ -256,10 +235,9 @@ export default function Area() {
       <AreaEdit areaId={editAreaId} />
 
       {/* subAreas modal */}
-      <SubAreaModal areaId={areaID} />
-      <PoleBoxModal areaId={areaID} />
-      {/* <PoleBoxAddModal2 areaId={areaID} /> */}
-      <TestModal areaId={areaID} />
+      {/* <SubAreaModal areaId={areaID} /> */}
+      <SubArea areaId={areaID} isOpen={isOpen} setIsOpen={setIsOpen} />
+      <PoleBox areaId={areaId} poleShow={poleShow} setPoleShow={setPoleShow} />
     </>
   );
 }
