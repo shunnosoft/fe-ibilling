@@ -38,18 +38,13 @@ export default function SubArea({ isOpen, setIsOpen, areaId }) {
 
   //modal handler state
   const [postShow, setPostShow] = useState(false);
-  const [editShow, setEditShow] = useState();
+  const [editShow, setEditShow] = useState(false);
 
   const dispatch = useDispatch();
 
   // get ispOwner Id
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
-  );
-
-  // get bp settings
-  const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
   );
 
   // get mikrotik
@@ -117,19 +112,9 @@ export default function SubArea({ isOpen, setIsOpen, areaId }) {
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        width: "25%",
+        width: "50%",
         Header: t("subArea"),
         accessor: "name",
-      },
-      {
-        width: "25%",
-        Header: t("poleBox"),
-        Cell: ({ row: { original } }) => (
-          <div
-
-          // onClick={() => getAreaSubarea(original.id)}
-          ></div>
-        ),
       },
       {
         width: "25%",

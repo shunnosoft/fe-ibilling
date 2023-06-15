@@ -32,8 +32,12 @@ import Table from "../../components/table/Table";
 
 import { useTranslation } from "react-i18next";
 import SubAreaModal from "./areaModals/SubAreaModal";
-import { getSubAreasApi } from "../../features/actions/customerApiCall";
+import {
+  getPoleBoxApi,
+  getSubAreasApi,
+} from "../../features/actions/customerApiCall";
 import SubArea from "../../pages/subArea/SubArea";
+import PoleBox from "../subArea/PoleBox";
 //subArea/SubArea
 export default function Area() {
   const { t } = useTranslation();
@@ -45,12 +49,16 @@ export default function Area() {
   const [isLoading, setIsLoading] = useState(false);
   const [customerLoading, setCustomerLoading] = useState(false);
   const [mikrotikLoading, setMikrotikLoading] = useState(false);
+  const [isLoadingPole, setIsLoadingPole] = useState(false);
   const [editAreaId, setEditAreaId] = useState("");
 
   const [areaID, setAreaID] = useState("");
+  const [areaId, setAreaId] = useState("");
+  console.log(areaId);
 
-  //modal open
+  //modal handler state
   const [isOpen, setIsOpen] = useState(false);
+  const [poleShow, setPoleShow] = useState(false);
 
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
@@ -63,6 +71,7 @@ export default function Area() {
     if (area.length === 0) getArea(dispatch, ispOwnerId, setIsLoading);
     if (storeSubArea.length === 0) getSubAreasApi(dispatch, ispOwnerId);
     if (cus.length === 0) getCustomer(dispatch, ispOwnerId, setCustomerLoading);
+    getPoleBoxApi(dispatch, ispOwnerId, setIsLoadingPole);
     fetchMikrotik(dispatch, ispOwnerId, setMikrotikLoading);
   }, [dispatch, ispOwnerId]);
 
@@ -132,6 +141,27 @@ export default function Area() {
             onClick={() => getAreaSubarea(original.id)}
           >
             {t("subArea")}
+          </div>
+        ),
+      },
+      {
+        width: "25%",
+        Header: t("poleBox"),
+        Cell: ({ row: { original } }) => (
+          <div
+            className="gotoSubAreaBtn"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "6rem",
+            }}
+            onClick={() => {
+              setAreaId(original?.id);
+              setPoleShow(true);
+            }}
+          >
+            {t("poleBox")}
           </div>
         ),
       },
@@ -207,6 +237,7 @@ export default function Area() {
       {/* subAreas modal */}
       {/* <SubAreaModal areaId={areaID} /> */}
       <SubArea areaId={areaID} isOpen={isOpen} setIsOpen={setIsOpen} />
+      <PoleBox areaId={areaId} poleShow={poleShow} setPoleShow={setPoleShow} />
     </>
   );
 }

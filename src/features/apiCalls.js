@@ -708,13 +708,13 @@ export const addSubArea = async (dispatch, data, setIsLoading, setPostShow) => {
 
 //Pole Box Post
 
-export const addPoleBox = async (dispatch, data, setIsLoading) => {
+export const addPoleBox = async (dispatch, data, setIsLoading, setPostShow) => {
   setIsLoading(true);
   try {
     const res = await apiLink.post("/ispOwner/poleBox/post", data);
 
     dispatch(AddPoleBoxSuccess(res.data));
-    document.querySelector("#poleBoxPostModal").click();
+    setPostShow(false);
     langMessage(
       "success",
       "পোল বক্স সংযুক্ত সফল হয়েছে",
@@ -786,7 +786,8 @@ export const editPoleBox = async (
   sendingData,
   ispOwnerId,
   poleId,
-  setIsLoading
+  setIsLoading,
+  setEditShow
 ) => {
   setIsLoading(true);
   await apiLink({
@@ -799,7 +800,7 @@ export const editPoleBox = async (
   })
     .then((res) => {
       dispatch(EditPoleBoxSuccess(res.data));
-      document.querySelector("#poleBoxEditModal").click();
+      setEditShow(false);
       langMessage(
         "success",
         "পোল বক্স আপডেট সফল হয়েছে",
