@@ -117,9 +117,19 @@ export default function SubArea({ isOpen, setIsOpen, areaId }) {
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        width: "50%",
+        width: "25%",
         Header: t("subArea"),
         accessor: "name",
+      },
+      {
+        width: "25%",
+        Header: t("poleBox"),
+        Cell: ({ row: { original } }) => (
+          <div
+
+          // onClick={() => getAreaSubarea(original.id)}
+          ></div>
+        ),
       },
       {
         width: "25%",

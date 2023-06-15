@@ -1,5 +1,11 @@
 import React from "react";
-import { ArchiveFill, GeoAlt, PenFill, ThreeDots } from "react-bootstrap-icons";
+import {
+  AlignBottom,
+  ArchiveFill,
+  GeoAlt,
+  PenFill,
+  ThreeDots,
+} from "react-bootstrap-icons";
 import { useTranslation } from "react-i18next";
 
 export default function ActionButton({

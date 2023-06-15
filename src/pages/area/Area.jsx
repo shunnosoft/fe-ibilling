@@ -8,6 +8,8 @@ import {
   ArrowRightShort,
   PlusLg,
   ArrowClockwise,
+  AlignBottom,
+  PlugFill,
 } from "react-bootstrap-icons";
 import Loader from "../../components/common/Loader";
 
@@ -36,7 +38,6 @@ import SubArea from "../../pages/subArea/SubArea";
 export default function Area() {
   const { t } = useTranslation();
   const area = useSelector((state) => state?.area?.area);
-  const [loading, setIsloading] = useState(false);
   const dispatch = useDispatch();
   const cus = useSelector((state) => state?.customer?.customer);
   const storeSubArea = useSelector((state) => state.area?.subArea);
@@ -128,8 +129,6 @@ export default function Area() {
               justifyContent: "center",
               width: "6rem",
             }}
-            data-bs-toggle="modal"
-            data-bs-target="#subAreaEditModal"
             onClick={() => getAreaSubarea(original.id)}
           >
             {t("subArea")}

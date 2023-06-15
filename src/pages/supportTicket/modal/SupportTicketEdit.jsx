@@ -4,17 +4,26 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { supportTicketsEditApi } from "../../../features/supportTicketApi";
 import { t } from "i18next";
+import { getManger } from "../../../features/apiCalls";
 
 const SupportTicketEdit = ({ ticketEditId, allCollector }) => {
   const dispatch = useDispatch();
   const [supportTicketStatusValue, setSupportTicketStatusValue] = useState("");
-  const [supportTicketCollectorId, setSupportTicketCollectorId] = useState("");
+  const [supportTicketStaffId, setSupportTicketStaffId] = useState("");
   const [ticketType, setTicketType] = useState("");
   const [ticketCategory, setTicketCategory] = useState("");
 
   // storing data form redux
   const supportTickets = useSelector(
     (state) => state.supportTicket.supportTickets
+  );
+
+  // get all role
+  const role = useSelector((state) => state.persistedReducer.auth.role);
+
+  // get isp owner id
+  const ispOwner = useSelector(
+    (state) => state.persistedReducer.auth.ispOwnerId
   );
 
   //get single ticket
@@ -33,20 +42,32 @@ const SupportTicketEdit = ({ ticketEditId, allCollector }) => {
     setSupportTicketStatusValue(statusValue);
   };
 
+  // get manager
+  const manager = useSelector((state) => state.manager?.manager);
+
   //collector id
   const handleCollectorId = (e) => {
     let value = e.target.value;
-    setSupportTicketCollectorId(value);
+    setSupportTicketStaffId(value);
   };
 
   //submithandler
   const supportTicketStatusSubmit = () => {
+    if (!supportTicketStaffId) {
+      alert("Select Staff");
+      return;
+    }
+
     const data = {
       status: supportTicketStatusValue,
-      collector: supportTicketCollectorId,
       ticketType,
       ticketCategory,
     };
+
+    const assignedPerson = supportTicketStaffId.split("-");
+    if (assignedPerson[1] === "manager") {
+      data.manager = assignedPerson[0];
+    } else data.collector = assignedPerson[0];
 
     if (!ticketCategory) {
       delete data.ticketCategory;
@@ -65,9 +86,17 @@ const SupportTicketEdit = ({ ticketEditId, allCollector }) => {
       setSupportTicketStatusValue(singleTicket.status);
       setTicketCategory(singleTicket.ticketCategory);
       setTicketType(singleTicket.ticketType);
-      setSupportTicketCollectorId(singleTicket.collector);
+
+      if (singleTicket.collector)
+        setSupportTicketStaffId(singleTicket.collector + "-collector");
+      if (singleTicket.manager)
+        setSupportTicketStaffId(singleTicket.manager + "-manager");
     }
   }, [singleTicket]);
+
+  useEffect(() => {
+    role === "ispOwner" && getManger(dispatch, ispOwner);
+  }, []);
 
   return (
     <div
@@ -124,11 +153,23 @@ const SupportTicketEdit = ({ ticketEditId, allCollector }) => {
               required
               onChange={handleCollectorId}
             >
-              <option>Select Collector</option>
+              <option value="">Select Collector</option>
+
+              {/* {role === "ispOwner" &&
+                manager &&
+                manager?.map((man) => (
+                  <option
+                    value={`${man?.id}-manager`}
+                    selected={singleTicket?.manager === man?.id}
+                  >
+                    {man?.name} (Manager)
+                  </option>
+                ))} */}
+
               {allCollector?.map((collector) => {
                 return (
                   <option
-                    value={collector.id}
+                    value={`${collector?.id}-collector`}
                     selected={singleTicket?.collector === collector?.id}
                   >
                     {collector?.name}
