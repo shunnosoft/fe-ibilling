@@ -10,7 +10,10 @@ import moment from "moment";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { getCollectorApi } from "../../features/supportTicketApi";
+import {
+  getCollectorApi,
+  getTicketCategoryApi,
+} from "../../features/supportTicketApi";
 import { useSelector } from "react-redux";
 import { PenFill, ThreeDots } from "react-bootstrap-icons";
 import { badge } from "../../components/common/Utils";
@@ -23,7 +26,12 @@ const CollectorSupportTicket = () => {
   const supportTickets = useSelector(
     (state) => state.supportTicket.supportTickets
   );
-  // console.log(supportTickets);
+
+  //get all ticket Category
+  const ticketCategory = useSelector(
+    (state) => state.supportTicket.ticketCategory
+  );
+
   const ispOwner = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
@@ -34,10 +42,12 @@ const CollectorSupportTicket = () => {
 
   // declare state
   const [isLoading, setIsLoading] = useState(false);
+  const [categoryLoading, setCategoryLoading] = useState(false);
   const [supportTicketId, setSupportTicketId] = useState("");
 
   useEffect(() => {
     getCollectorApi(dispatch, ispOwner, collectorId, setIsLoading);
+    getTicketCategoryApi(dispatch, ispOwner, setCategoryLoading);
   }, []);
 
   // handle edit function
@@ -45,16 +55,17 @@ const CollectorSupportTicket = () => {
     setSupportTicketId(ticketId);
   };
 
+  //Category Name finding function
+  const CategoryNameCalculation = (val) => {
+    if (val) {
+      const temp = ticketCategory?.find((cat) => cat?.id === val);
+
+      return temp?.name || "";
+    } else return "";
+  };
+
   const columns = useMemo(
     () => [
-      {
-        width: "8%",
-        Header: "#",
-        id: "row",
-        accessor: (row) => Number(row.id + 1),
-        Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
-      },
-
       {
         width: "8%",
         Header: "Id",
@@ -77,6 +88,23 @@ const CollectorSupportTicket = () => {
         accessor: "status",
         Cell: ({ cell: { value } }) => {
           return badge(value);
+        },
+      },
+      {
+        width: "8%",
+        Header: t("type"),
+        accessor: "ticketType",
+        Cell: ({ cell: { value } }) => {
+          return badge(value);
+        },
+      },
+
+      {
+        width: "17%",
+        Header: t("category"),
+        accessor: "ticketCategory",
+        Cell: ({ cell: { value } }) => {
+          return CategoryNameCalculation(value);
         },
       },
 
@@ -130,7 +158,7 @@ const CollectorSupportTicket = () => {
         ),
       },
     ],
-    [t]
+    [t, ticketCategory]
   );
   return (
     <>

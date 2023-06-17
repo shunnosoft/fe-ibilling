@@ -52,7 +52,7 @@ export default function SubArea({ isOpen, setIsOpen, areaId }) {
 
   useEffect(() => {
     getArea(dispatch, ispOwnerId, setIsLoading);
-    getSubAreasApi(dispatch, ispOwnerId, setIsLoader);
+    getSubAreasApi(dispatch, ispOwnerId);
   }, [areaId]);
 
   useEffect(() => {

@@ -1,10 +1,5 @@
 import React, { useMemo } from "react";
-import Sidebar from "../../components/admin/sidebar/Sidebar";
-import { FontColor, FourGround } from "../../assets/js/theme";
-import Footer from "../../components/admin/footer/Footer";
-import useDash from "../../assets/css/dash.module.css";
 import { useTranslation } from "react-i18next";
-import { ToastContainer } from "react-toastify";
 import Table from "../../components/table/Table";
 import moment from "moment";
 import { useState } from "react";
@@ -97,31 +92,23 @@ const Ticket = () => {
   //table columns
   const columns = useMemo(
     () => [
-      // {
-      //   width: "6%",
-      //   Header: "#",
-      //   id: "row",
-      //   accessor: (row) => Number(row.id + 1),
-      //   Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
-      // },
-
       {
-        width: "10%",
-        Header: t("customerId"),
+        width: "5%",
+        Header: t("id"),
         accessor: "customer.customerId",
       },
       {
-        width: "10%",
+        width: "12%",
         Header: t("name"),
         accessor: "customer.name",
       },
       {
-        width: "8%",
+        width: "20%",
         Header: t("message"),
         accessor: "message",
       },
       {
-        width: "8%",
+        width: "13%",
         Header: t("staff"),
         accessor: "assignedStaff",
         Cell: ({ cell: { value } }) => {
@@ -146,14 +133,17 @@ const Ticket = () => {
       },
 
       {
-        width: "10%",
+        width: "8%",
         Header: t("type"),
         accessor: "ticketType",
+        Cell: ({ cell: { value } }) => {
+          return badge(value);
+        },
       },
 
       {
-        width: "13%",
-        Header: t("ticketCategory"),
+        width: "17%",
+        Header: t("category"),
         accessor: "ticketCategory",
         Cell: ({ cell: { value } }) => {
           return CategoryNameCalculation(value);

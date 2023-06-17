@@ -29,6 +29,7 @@
   "previousValue": "Previous Value",
   "presentValue": "Present Value",
   "print": "Print",
+  "id": "ID",
   "all": "All",
   "logOut": "Logout",
   "logIn": "Login",
@@ -782,5 +783,6 @@
   "ticketCategory": "Ticket Category",
   "addCategory": "Add Category",
   "ticketType": "Ticket Type",
-  "to": "to"
+  "to": "to",
+  "category": "Category"
 }

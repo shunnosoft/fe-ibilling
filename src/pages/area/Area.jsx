@@ -209,7 +209,7 @@ export default function Area() {
                     <h2>{t("area")} </h2>
                     <div className="reloadBtn">
                       {isLoading ? (
-                        <Loader></Loader>
+                        <Loader />
                       ) : (
                         <ArrowClockwise
                           onClick={() => reloadHandler()}
