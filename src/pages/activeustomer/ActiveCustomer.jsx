@@ -143,6 +143,10 @@ export default function ConfigMikrotik() {
       customer = customerItData.filter((item) => item.status === "inactive");
       setAllUsers(customer);
       setStatus(true);
+    } else if (e.target.value === "expiredOffline") {
+      customer = customerItData.filter((item) => item.status === "expired");
+      setAllUsers(customer);
+      setStatus(true);
     }
   };
 
@@ -486,6 +490,9 @@ export default function ConfigMikrotik() {
                           </option>
                           <option value="inactiveOffline">
                             {t("inactiveOffline")}
+                          </option>
+                          <option value="expiredOffline">
+                            {t("expiredOffline")}
                           </option>
                         </select>
                       </div>
