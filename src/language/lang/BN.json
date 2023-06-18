@@ -790,5 +790,7 @@
   "addCategory": "ক্যাটাগরি যোগ করুন",
   "ticketType": "টিকিটের ধরন",
   "to": "থেকে",
-  "category": "ক্যটাগরি"
+  "category": "ক্যটাগরি",
+  "selectCollector": "কালেক্টর নির্বাচন করুন",
+  "updateSupportTicket": "আপডেট সাপোর্ট টিকিট"
 }

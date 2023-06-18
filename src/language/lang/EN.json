@@ -784,5 +784,7 @@
   "addCategory": "Add Category",
   "ticketType": "Ticket Type",
   "to": "to",
-  "category": "Category"
+  "category": "Category",
+  "selectCollector": "Select Collector",
+  "updateSupportTicket": "Update Support Ticket"
 }

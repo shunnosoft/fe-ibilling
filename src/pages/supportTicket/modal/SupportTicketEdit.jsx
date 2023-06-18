@@ -104,7 +104,7 @@ const SupportTicketEdit = ({ ticketEditId, allCollector }) => {
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLabel">
-              Support Status
+              {t("updateSupportTicket")}
             </h5>
             <button
               type="button"
@@ -114,7 +114,7 @@ const SupportTicketEdit = ({ ticketEditId, allCollector }) => {
             ></button>
           </div>
           <div class="modal-body">
-            <label>Status</label>
+            <label>{t("status")}</label>
             <select
               style={{ width: "100%" }}
               class="form-select mw-100"
@@ -141,13 +141,13 @@ const SupportTicketEdit = ({ ticketEditId, allCollector }) => {
               </option>
             </select>
             <div style={{ margin: "1.2rem" }}></div>
-            <label>Assign Collector</label>
+            <label>{t("selectStaff")}</label>
             <select
               class="form-select mw-100"
               required
               onChange={handleCollectorId}
             >
-              <option value="">Select Collector</option>
+              <option value="">{t("selectCollector")}</option>
 
               {role === "ispOwner" &&
                 manager &&
@@ -230,7 +230,7 @@ const SupportTicketEdit = ({ ticketEditId, allCollector }) => {
               class="btn btn-secondary"
               data-bs-dismiss="modal"
             >
-              Cancel
+              {t("cancel")}
             </button>
             {singleTicket?.status === "completed" ? (
               <button
@@ -240,7 +240,7 @@ const SupportTicketEdit = ({ ticketEditId, allCollector }) => {
                 onClick={supportTicketStatusSubmit}
                 disabled
               >
-                Save
+                {t("save")}
               </button>
             ) : (
               <button
@@ -249,7 +249,7 @@ const SupportTicketEdit = ({ ticketEditId, allCollector }) => {
                 data-bs-dismiss="modal"
                 onClick={supportTicketStatusSubmit}
               >
-                Save
+                {t("save")}
               </button>
             )}
           </div>

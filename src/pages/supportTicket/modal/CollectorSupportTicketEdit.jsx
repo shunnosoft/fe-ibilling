@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { collectorSupportTicketsEditApi } from "../../../features/supportTicketApi";
+import { t } from "i18next";
 
 const CollectorSupportTicketEdit = ({ supportTicketId }) => {
   const dispatch = useDispatch();
@@ -46,7 +47,7 @@ const CollectorSupportTicketEdit = ({ supportTicketId }) => {
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLabel">
-              Support Status
+              {t("updateSupportTicket")}
             </h5>
             <button
               type="button"
@@ -56,7 +57,7 @@ const CollectorSupportTicketEdit = ({ supportTicketId }) => {
             ></button>
           </div>
           <div class="modal-body">
-            <label>Status</label>
+            <label>{t("status")}</label>
             <select
               style={{ width: "100%" }}
               class="form-select mw-100"
@@ -89,7 +90,7 @@ const CollectorSupportTicketEdit = ({ supportTicketId }) => {
               class="btn btn-secondary"
               data-bs-dismiss="modal"
             >
-              cancel
+              {t("cancel")}
             </button>
             {singleTicket?.status === "completed" ? (
               <button
@@ -99,7 +100,7 @@ const CollectorSupportTicketEdit = ({ supportTicketId }) => {
                 onClick={collectorSupportTicketStatusSubmit}
                 disabled
               >
-                Save
+                {t("save")}
               </button>
             ) : (
               <button
@@ -108,7 +109,7 @@ const CollectorSupportTicketEdit = ({ supportTicketId }) => {
                 data-bs-dismiss="modal"
                 onClick={collectorSupportTicketStatusSubmit}
               >
-                Save
+                {t("save")}
               </button>
             )}
           </div>

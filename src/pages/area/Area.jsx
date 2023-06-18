@@ -151,9 +151,7 @@ export default function Area() {
       },
       {
         width: bpSettings?.poleBox ? "25%" : "0%",
-        Header: bpSettings?.poleBox && (
-          <div className="text-center">{t("poleBox")}</div>
-        ),
+        Header: bpSettings?.poleBox && <div>{t("poleBox")}</div>,
         id: "option1",
         Cell: ({ row: { original } }) => {
           return (

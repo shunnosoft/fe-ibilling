@@ -52,6 +52,7 @@ export default function SubArea({ isOpen, setIsOpen, areaId }) {
 
   useEffect(() => {
     getArea(dispatch, ispOwnerId, setIsLoading);
+    setIsLoader(true);
     getSubAreasApi(dispatch, ispOwnerId);
   }, [areaId]);
 
@@ -64,6 +65,7 @@ export default function SubArea({ isOpen, setIsOpen, areaId }) {
       setId(oneArea.id);
       const sub = storeSubArea.filter((val) => val.area === areaId);
       setSubAreas(sub);
+      setIsLoader(false);
     }
 
     fetchMikrotik(dispatch, ispOwnerId, setIsLoading);
