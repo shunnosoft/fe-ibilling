@@ -172,7 +172,7 @@ export default function ConfigMikrotik() {
 
   // api call for get update static customer
   useEffect(() => {
-    fetchMikrotik(dispatch, ispOwnerId, setIsloading);
+    !mikrotik.length && fetchMikrotik(dispatch, ispOwnerId, setIsloading);
     if (mikrotikId) {
       fetchpppoeUser(dispatch, IDs, singleMik?.name, setMtkLoading, "user");
     }
@@ -181,7 +181,7 @@ export default function ConfigMikrotik() {
   // set mikrotik and customer into state
   useEffect(() => {
     setAllUsers(allMikrotikUsers);
-    setMikrotikId(mikrotik[0]?.id);
+    !mikrotikId && setMikrotikId(mikrotik[0]?.id);
   }, [allMikrotikUsers, mikrotik]);
 
   const sortingCustomer = useMemo(() => {
