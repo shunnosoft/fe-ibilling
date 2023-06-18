@@ -174,6 +174,12 @@ export const ispOwnerPermission = (perm) => {
       label: "Show Customer Panel Package",
       isChecked: perm?.showCustomerPanelPackage,
     },
+    {
+      id: 30,
+      value: "resellerMinusBalance",
+      label: "Reseller Minus Balance",
+      isChecked: perm?.resellerMinusBalance,
+    },
   ];
   return permission;
 };

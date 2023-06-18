@@ -129,6 +129,13 @@ export const resellerPermissions = (permission, bpSettings) => {
       isChecked: permission?.dailyRechargeFeature,
       disabled: !bpSettings?.dailyRechargeFeature,
     },
+    {
+      id: 19,
+      label: "Minus Balance",
+      value: "minusBalance",
+      isChecked: permission?.minusBalance,
+      disabled: !bpSettings?.resellerMinusBalance,
+    },
   ];
 
   const permissionBn = [
@@ -261,6 +268,13 @@ export const resellerPermissions = (permission, bpSettings) => {
       value: "dailyRechargeFeature",
       isChecked: permission?.dailyRechargeFeature,
       disabled: !bpSettings?.dailyRechargeFeature,
+    },
+    {
+      id: 19,
+      label: "মাইনাস ব্যালান্স",
+      value: "minusBalance",
+      isChecked: permission?.minusBalance,
+      disabled: !bpSettings?.resellerMinusBalance,
     },
   ];
 

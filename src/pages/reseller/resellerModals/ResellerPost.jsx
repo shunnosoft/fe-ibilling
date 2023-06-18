@@ -19,6 +19,7 @@ import {
   postReseller,
 } from "../../../features/apiCalls";
 import { useTranslation } from "react-i18next";
+import { resellerPermissions } from "./resellerPermission";
 // import { postReseller, fetchReseller } from "../../../features/resellerSlice";
 
 export default function ResellerPost() {
@@ -76,11 +77,14 @@ export default function ResellerPost() {
     if (!bpSettings.hasMikrotik) {
       getPackagewithoutmikrotik(ispOwnerId, dispatch, setIsLoading);
     }
-    if (localStorage.getItem("netFee:lang") === "en") {
-      setPermissions(resellerPermissionEng);
-    } else {
-      setPermissions(resellerPermissionBan);
-    }
+    // if (localStorage.getItem("netFee:lang") === "en") {
+    //   setPermissions(resellerPermissionEng);
+    // } else {
+    //   setPermissions(resellerPermissionBan);
+    // }
+    const perms = resellerPermissions("", bpSettings);
+    const filterdPermission = perms.filter((p) => p.disabled === false);
+    setPermissions(filterdPermission);
   }, []);
 
   const permissionHandler = (e) => {
