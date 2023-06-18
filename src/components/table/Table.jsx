@@ -36,6 +36,7 @@ const Table = (props) => {
     selectedFlatRows,
     allColumns,
     getToggleHideAllColumnsProps,
+    rows,
   } = useTable(
     { columns, data, autoResetGlobalFilter: false },
     useGlobalFilter,
@@ -70,7 +71,7 @@ const Table = (props) => {
     <>
       <GlobalFilter
         filter={globalFilter}
-        data={data}
+        data={rows}
         setFilter={setGlobalFilter}
         customComponent={customComponent}
         toggleColumnButton={
