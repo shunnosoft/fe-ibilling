@@ -107,6 +107,7 @@ import InactiveCustomer from "./pages/inactiveCustomer/InactiveCustomer";
 import ResellerCollection from "./pages/reseller/resellerCollection/ResellerCollection";
 import SupportNumbers from "./pages/netFeeSupport/SupportNumbers";
 import PoleBox from "./pages/subArea/PoleBox";
+import MikrotikCustomer from "./pages/configMikrotik/mikrotikCustomer/Customers";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
@@ -715,6 +716,18 @@ function App() {
                   </PrivateRoute>
                 ) : (
                   <Navigate to={"/home"}></Navigate>
+                )
+              }
+            />
+            <Route
+              path="/mikrotik/customer/:ispOwnerId/:mikrotikId"
+              element={
+                bpSettings?.hasMikrotik ? (
+                  <PrivateRoute user={user}>
+                    <MikrotikCustomer />
+                  </PrivateRoute>
+                ) : (
+                  <Navigate to={"/home"} />
                 )
               }
             />

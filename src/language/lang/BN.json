@@ -793,5 +793,9 @@
   "category": "ক্যটাগরি",
   "selectCollector": "কালেক্টর নির্বাচন করুন",
   "updateSupportTicket": "আপডেট সাপোর্ট টিকিট",
-  "expiredOffline": "এক্সপায়ার্ড অফলাইন"
+  "expiredOffline": "এক্সপায়ার্ড অফলাইন",
+  "extraNetFeeUser": "অতিরিক্ত নেটফি গ্রাহক",
+  "extraMikrotikUsers": "অতিরিক্ত মাইক্রোটিক গ্রাহক",
+  "crossCustomer": "ক্রস গ্রাহক",
+  "lastLoggedOut": "লাস্ট লগ আউট"
 }

@@ -104,18 +104,18 @@ export default function Mikrotik() {
         id: "option1",
 
         Cell: ({ row: { original } }) => (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
+          <div className="d-flex justify-content-center align-items-center">
             <Link
               to={`/mikrotik/${original.ispOwner}/${original.id}`}
               className="mikrotikConfigureButtom"
             >
               {t("configure")} <ArrowRightShort style={{ fontSize: "19px" }} />
+            </Link>
+            <Link
+              to={`/mikrotik/customer/${original.ispOwner}/${original.id}`}
+              className="mikrotikConfigureButtom"
+            >
+              <ArrowRightShort style={{ fontSize: "19px" }} />
             </Link>
 
             <button
