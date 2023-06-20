@@ -234,13 +234,17 @@ const ManagerPost = () => {
 
                           <div className="autoDisable mb-2">
                             <input
+                              id="addStaff"
                               type="checkBox"
                               checked={addStaffStatus}
                               onChange={(e) =>
                                 setAddStaffStatus(e.target.checked)
                               }
                             />
-                            <label className="ps-2"> {t("addStaff")} </label>
+                            <label className="ps-2" htmlFor="addStaff">
+                              {" "}
+                              {t("addStaff")}{" "}
+                            </label>
                           </div>
 
                           {addStaffStatus && (
@@ -292,7 +296,7 @@ const ManagerPost = () => {
                     </Tab>
 
                     <Tab eventKey="permission" title={t("changePermission")}>
-                      <div className="AllAreaClass">
+                      <div className="displayGrid3">
                         <div className="CheckboxContainer">
                           <input
                             type="checkbox"
@@ -334,7 +338,7 @@ const ManagerPost = () => {
                   </Tabs>
 
                   {/* Button */}
-                  <div className="submitSection">
+                  <div className="modal-footer">
                     <button
                       type="button"
                       className="btn btn-secondary"

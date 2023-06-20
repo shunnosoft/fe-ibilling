@@ -234,7 +234,7 @@ export default function CollectorEdit({ collectorId }) {
                     </div>
 
                     <b className="mt-2"> {t("changePermission")} </b>
-                    <div className="AllAreaClass">
+                    <div className="displayGrid3">
                       {permissions.map((val, key) => (
                         <div
                           className={!val?.disabled && "CheckboxContainer"}

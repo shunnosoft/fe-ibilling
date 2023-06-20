@@ -83,7 +83,6 @@ export default function CustomerReport(props) {
   const handlePrint = (val, stat) => {
     setStatus(stat);
     setPrintVal(val);
-    console.log(val);
     setTimeout(function () {
       if (val.note || val.start || val.end || val.month) {
         document.getElementById("PrintPppoeWithNote").click();
@@ -215,7 +214,7 @@ export default function CustomerReport(props) {
                               <p>
                                 {t("promiseDate")}{" "}
                                 <b className="text-secondary">
-                                  {moment(val.prevState?.billingCycle).format(
+                                  {moment(val.prevState?.promiseDate).format(
                                     "MMM DD YYYY hh:mm a"
                                   )}
                                 </b>
@@ -225,15 +224,15 @@ export default function CustomerReport(props) {
                               <p>
                                 {t("billDate")}{" "}
                                 <b className="text-secondary">
-                                  {moment(val.current?.billingCycle).format(
-                                    "MMM DD YYYY hh:mm a"
-                                  )}
+                                  {moment(
+                                    val.currentState?.billingCycle
+                                  ).format("MMM DD YYYY hh:mm a")}
                                 </b>
                               </p>
                               <p>
                                 {t("promiseDate")}{" "}
                                 <b className="text-secondary">
-                                  {moment(val.current?.billingCycle).format(
+                                  {moment(val.currentState?.promiseDate).format(
                                     "MMM DD YYYY hh:mm a"
                                   )}
                                 </b>
@@ -265,7 +264,7 @@ export default function CustomerReport(props) {
                             {/* conditional rendering because print component doesnot perform with conditon  */}
 
                             {val.note || val.start || val.end || val.month ? (
-                              <td className="text-center">
+                              <td>
                                 <div style={{ display: "none" }}>
                                   <BillCollectInvoiceWithNote
                                     ref={billRefwithNote}
@@ -348,7 +347,7 @@ export default function CustomerReport(props) {
                                         color="#dc3545"
                                         style={{ cursor: "pointer" }}
                                       />
-                                      <span> {t("deleteReport")}</span>
+                                      <span>{t("delete")}</span>
                                     </button>
                                   </div>
                                 ) : (
@@ -356,7 +355,7 @@ export default function CustomerReport(props) {
                                 )}
                               </td>
                             ) : (
-                              <td className="text-center">
+                              <td>
                                 <div style={{ display: "none" }}>
                                   <BillCollectInvoiceWithoutNote
                                     ref={billRefwithOutNote}
@@ -441,7 +440,7 @@ export default function CustomerReport(props) {
                                         color="#dc3545"
                                         style={{ cursor: "pointer" }}
                                       />{" "}
-                                      <span> {t("deleteReport")}</span>
+                                      <span> {t("delete")}</span>
                                     </button>
                                   ) : (
                                     ""

@@ -143,6 +143,12 @@ import {
   getUnpaidCustomerSuccess,
 } from "./dashboardInformationSlice";
 import { Flag } from "react-bootstrap-icons";
+import {
+  deleteMikrotikCustomerSuccess,
+  deleteNetFeeCustomerSuccess,
+  getMikrotikCustomerSuccess,
+  getNetFeeCustomerSuccess,
+} from "./customerCrossCheckSlice";
 
 const netFeeLang = localStorage.getItem("netFee:lang");
 const langMessage = (color, bangla, english) => {
@@ -1135,7 +1141,41 @@ export const deleteStaticCustomerApi = async (
   setIsLoading(false);
 };
 
-//Mikrotik
+export const deleteNetFeeCustomer = async (dispatch, data, setIsLoading) => {
+  try {
+    setIsLoading(true);
+    await apiLink.delete(
+      `/ispOwner/customer/${data.ispID}/${data.customerID}?mikrotik=${data.mikrotik}`
+    );
+    dispatch(deleteNetFeeCustomerSuccess(data.customerID));
+    langMessage(
+      "success",
+      "কাস্টমার ডিলিট সফল হয়েছে",
+      "Customer Deleted Successfully"
+    );
+  } catch (err) {
+    toast.error(err.response.data.message);
+  }
+  setIsLoading(false);
+};
+
+export const deleteMikrotikCustomer = async (dispatch, data, setIsLoading) => {
+  try {
+    setIsLoading(true);
+    await apiLink.delete(
+      `/ispOwner/mikrotik-customer-delete/${data.ispOwnerId}/${data.mikrotikId}?name=${data.name}`
+    );
+    dispatch(deleteMikrotikCustomerSuccess(data.name));
+    langMessage(
+      "success",
+      "কাস্টমার ডিলিট সফল হয়েছে",
+      "Customer Deleted Successfully"
+    );
+  } catch (err) {
+    toast.error(err.response.data.message);
+  }
+  setIsLoading(false);
+};
 
 // get Mikrotik Sync user
 export const fetchMikrotikSyncUser = async (dispatch, data, setIsLoading) => {
@@ -1346,6 +1386,45 @@ export const mikrotikTesting = async (IDs) => {
         "Sorry, No mikrotik Connection!"
       );
     });
+};
+export const netFeeCustomerGet = async (
+  mikrotikId,
+  ispOwnerId,
+  setIsLoading,
+  dispatch
+) => {
+  setIsLoading(true);
+  await apiLink({
+    method: "GET",
+    url: `/mikrotik/netFee/users/${ispOwnerId}/${mikrotikId}`,
+  })
+    .then((res) => {
+      dispatch(getNetFeeCustomerSuccess(res.data));
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  setIsLoading(false);
+};
+
+export const getExtraMikrotikCustomers = async (
+  mikrotikId,
+  ispOwnerId,
+  setIsLoading,
+  dispatch
+) => {
+  setIsLoading(true);
+  await apiLink({
+    method: "GET",
+    url: `/mikrotik/extra/users/${ispOwnerId}/${mikrotikId}`,
+  })
+    .then((res) => {
+      dispatch(getMikrotikCustomerSuccess(res.data));
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  setIsLoading(false);
 };
 
 // get PPPoE user
