@@ -31,6 +31,7 @@ import productSlice from "../features/inventorySlice";
 
 import hotspotSlice from "../features/hotspotSlice";
 import customerNoteSlice from "../features/customerNoteSlice";
+import customerCrossCheckSlice from "../features/customerCrossCheckSlice";
 import netfeeSettingsSlice from "../features/netfeeSettinsSlice";
 import resellerDataSlice from "../features/resellerDataSlice";
 import userSlice from "../features/userSlice";
@@ -89,6 +90,7 @@ const store = configureStore({
     resellerSupport: resellerSupportSlice,
     dashboardInformation: dashboardInformationSlice,
     resellerProfile: resellerProfileSlice,
+    crossCustomer: customerCrossCheckSlice,
   },
 
   middleware: (getDefaultMiddleware) =>

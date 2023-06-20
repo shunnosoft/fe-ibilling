@@ -136,6 +136,13 @@ export const resellerPermissions = (permission, bpSettings) => {
       isChecked: permission?.minusBalance,
       disabled: !bpSettings?.resellerMinusBalance,
     },
+    // {
+    //   id: 20,
+    //   label: "Bulk Payment Status Edit",
+    //   value: "bulkPaymentStatusEdit",
+    //   isChecked: permission?.bulkPaymentStatusEdit,
+    //   disabled: !bpSettings?.bulkPaymentStatusEdit,
+    // },
   ];
 
   const permissionBn = [
@@ -276,6 +283,13 @@ export const resellerPermissions = (permission, bpSettings) => {
       isChecked: permission?.minusBalance,
       disabled: !bpSettings?.resellerMinusBalance,
     },
+    // {
+    //   id: 20,
+    //   label: "বাল্ক পেমেন্ট স্ট্যাটাস এডিট",
+    //   value: "bulkPaymentStatusEdit",
+    //   isChecked: permission?.bulkPaymentStatusEdit,
+    //   disabled: !bpSettings?.bulkPaymentStatusEdit,
+    // },
   ];
 
   if (localStorage.getItem("netFee:lang") === "bn") return permissionBn;

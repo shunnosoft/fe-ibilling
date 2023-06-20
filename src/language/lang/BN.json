@@ -794,5 +794,11 @@
   "selectCollector": "কালেক্টর নির্বাচন করুন",
   "updateSupportTicket": "আপডেট সাপোর্ট টিকিট",
   "expiredOffline": "এক্সপায়ার্ড অফলাইন",
-  "editPaymentStatus": "পেমেন্ট স্ট্যাটাস আপডেট"
+  "editPaymentStatus": "পেমেন্ট স্ট্যাটাস আপডেট",
+  "myOffer": "মাই অফার",
+  "extraNetFeeUser": "অতিরিক্ত নেটফি গ্রাহক",
+  "extraMikrotikUsers": "অতিরিক্ত মাইক্রোটিক গ্রাহক",
+  "crossCustomer": "ক্রস গ্রাহক",
+  "lastLoggedOut": "লাস্ট লগ আউট",
+  "allUsers": "মোট গ্রাহক"
 }

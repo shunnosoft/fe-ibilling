@@ -180,6 +180,12 @@ export const ispOwnerPermission = (perm) => {
       label: "Reseller Minus Balance",
       isChecked: perm?.resellerMinusBalance,
     },
+    {
+      id: 31,
+      value: "bulkPaymentStatusEdit",
+      label: "Bulk Payment Status Edit",
+      isChecked: perm?.bulkPaymentStatusEdit,
+    },
   ];
   return permission;
 };

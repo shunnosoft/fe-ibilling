@@ -45,6 +45,7 @@ import getName from "../../utils/getLocationName";
 import { CSVLink } from "react-csv";
 import DeleteByMobileModal from "./modal/DeleteByMobileModal";
 import { useTranslation } from "react-i18next";
+import IspOwnerCustomerUpdate from "./modal/IspOwnerCustomerUpdate";
 
 const districts = districtsJSON.districts;
 
@@ -54,6 +55,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isPermission, setIsPermission] = useState(false);
+  const [isShow, setIsShow] = useState(false);
 
   // import dispatch
   const dispatch = useDispatch();
@@ -97,6 +99,9 @@ export default function Home() {
 
   // customer type state
   const [queueType, setQueueType] = useState("");
+
+  // Owner id
+  const [ispOwnerId, setIspOwnerId] = useState("");
 
   // get isp owner
   let ispOwners = useSelector((state) => state.admin?.ispOwners);
@@ -451,6 +456,20 @@ export default function Home() {
                       </div>
                     </div>
                   </li>
+                  <li
+                    onClick={() => {
+                      setIspOwnerId(original?.id);
+                      setCompanyName(original?.company);
+                      setIsShow(true);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                        <p className="actionP">Multiple Customer Update</p>
+                      </div>
+                    </div>
+                  </li>
                   <Link to={`/admin/netFee/support/${original.id}`}>
                     <li>
                       <div className="dropdown-item">
@@ -741,6 +760,12 @@ export default function Home() {
                 invoiceId={invoiceId}
                 companyName={companyName}
                 isOpen={isOpen}
+              />
+              <IspOwnerCustomerUpdate
+                isShow={isShow}
+                setIsShow={setIsShow}
+                ispOwnerId={ispOwnerId}
+                companyName={companyName}
               />
               <Note ownerId={ownerId} companyName={companyName} />
               <FileUpload ownerID={ownerId} mikrotikStatus={mikrotikStatus} />

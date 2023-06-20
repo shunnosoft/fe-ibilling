@@ -108,6 +108,17 @@ export const collectorPermission = (
           ispOwnerPermission?.instantRechargeBillPrint &&
           managerPermission?.instantRechargeBillPrint),
     },
+    {
+      id: 14,
+      value: "bulkPaymentStatusEdit",
+      label: "বাল্ক পেমেন্ট স্ট্যাটাস এডিট",
+      isChecked: permission?.bulkPaymentStatusEdit,
+      disabled: !(role === "ispOwner"
+        ? ispOwnerPermission?.bulkPaymentStatusEdit
+        : role === "manager" &&
+          ispOwnerPermission?.bulkPaymentStatusEdit &&
+          managerPermission?.bulkPaymentStatusEdit),
+    },
   ];
 
   const permissionEn = [
@@ -213,6 +224,17 @@ export const collectorPermission = (
         : role === "manager" &&
           ispOwnerPermission?.instantRechargeBillPrint &&
           managerPermission?.instantRechargeBillPrint),
+    },
+    {
+      id: 14,
+      value: "bulkPaymentStatusEdit",
+      label: "Bulk Payment Status Edit",
+      isChecked: permission?.bulkPaymentStatusEdit,
+      disabled: !(role === "ispOwner"
+        ? ispOwnerPermission?.bulkPaymentStatusEdit
+        : role === "manager" &&
+          ispOwnerPermission?.bulkPaymentStatusEdit &&
+          managerPermission?.bulkPaymentStatusEdit),
     },
   ];
 

@@ -289,7 +289,7 @@ const ManagerEdit = ({ managerId }) => {
                     </Tab>
 
                     <Tab eventKey="permission" title={t("changePermission")}>
-                      <div className="AllAreaClass">
+                      <div className="displayGrid3">
                         <div className="CheckboxContainer">
                           <input
                             type="checkbox"

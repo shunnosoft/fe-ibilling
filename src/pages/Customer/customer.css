@@ -168,6 +168,12 @@
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 20px;
 }
+
+.ownerStatus {
+  display: grid;
+  color: black;
+  grid-template-columns: repeat(2, 1fr);
+}
 .newDisplayforpackage {
   display: flex;
   align-items: center;
