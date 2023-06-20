@@ -44,6 +44,15 @@ const CollectorSupportTicket = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [categoryLoading, setCategoryLoading] = useState(false);
   const [supportTicketId, setSupportTicketId] = useState("");
+  const [mainData, setMainData] = useState(supportTickets);
+  const [status, setStatus] = useState("");
+  const [ticketType, setTicketType] = useState("");
+  const [category, setCategory] = useState("");
+
+  //set main data
+  useEffect(() => {
+    setMainData(supportTickets);
+  }, [supportTickets]);
 
   useEffect(() => {
     getCollectorApi(dispatch, ispOwner, collectorId, setIsLoading);
@@ -62,6 +71,27 @@ const CollectorSupportTicket = () => {
 
       return temp?.name || "";
     } else return "";
+  };
+
+  //filter handler
+  const filterHandler = () => {
+    let filterData = [...supportTickets];
+
+    if (status) {
+      filterData = filterData.filter((temp) => temp.status === status);
+    }
+
+    if (ticketType) {
+      filterData = filterData.filter((temp) => temp.ticketType === ticketType);
+    }
+
+    if (category) {
+      filterData = filterData.filter(
+        (temp) => temp?.ticketCategory === category
+      );
+    }
+
+    setMainData(filterData);
   };
 
   const columns = useMemo(
@@ -177,11 +207,59 @@ const CollectorSupportTicket = () => {
               </FourGround>
               <FourGround>
                 <div className="collectorWrapper mt-2 py-2">
+                  <div className="selectFilteringg">
+                    <select
+                      className="form-select"
+                      onChange={(e) => setCategory(e.target.value)}
+                    >
+                      <option value="" defaultValue>
+                        {t("ticketCategory")}
+                      </option>
+                      {ticketCategory.map((cat) => (
+                        <option value={cat?.id}>{cat?.name}</option>
+                      ))}
+                    </select>
+
+                    <select
+                      className="form-select mx-2"
+                      onChange={(e) => setTicketType(e.target.value)}
+                    >
+                      <option value="" defaultValue>
+                        {t("ticketType")}
+                      </option>
+
+                      <option value="high">{t("High")}</option>
+                      <option value="medium"> {t("Medium")} </option>
+                      <option value="low"> {t("Low")} </option>
+                    </select>
+                    <select
+                      className="form-select"
+                      onChange={(e) => setStatus(e.target.value)}
+                    >
+                      <option value="" selected>
+                        {t("status")}
+                      </option>
+
+                      <option value="processing">{t("Processing")}</option>
+                      <option value="completed">{t("Completed")}</option>
+                      <option value="pending">{t("Pending")}</option>
+                    </select>
+
+                    <div>
+                      <button
+                        className="btn btn-outline-primary w-110 mt-2 ms-2"
+                        type="button"
+                        onClick={filterHandler}
+                      >
+                        {t("filter")}
+                      </button>
+                    </div>
+                  </div>
                   <div className="table-section">
                     <Table
                       isLoading={isLoading}
                       columns={columns}
-                      data={supportTickets}
+                      data={mainData}
                     ></Table>
                   </div>
                 </div>

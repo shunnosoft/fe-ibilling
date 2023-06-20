@@ -84,6 +84,24 @@ export const bulkStatusEdit = async (dispatch, data, setIsLoading) => {
   }
 };
 
+//bulk Payment Status Edit
+export const bulkPaymentStatusEdit = async (dispatch, data, setIsLoading) => {
+  try {
+    setIsLoading(true);
+    const res = await apiLink.patch("/customer/bulk-payment-status", data);
+    document.querySelector("#bulkPaymentStatusEdit").click();
+    dispatch(bulkUpdate(res.data.data));
+    toast.success("কাস্টমার স্টাটাস আপডেট সফল হয়েছে!");
+    setIsLoading(false);
+  } catch (err) {
+    if (err.response) {
+      setIsLoading(false);
+      document.querySelector("#bulkPaymentStatusEdit").click();
+      toast.error(err.response.data.message);
+    }
+  }
+};
+
 export const bulkPackageEdit = async (dispatch, data, setIsLoading) => {
   try {
     setIsLoading(true);

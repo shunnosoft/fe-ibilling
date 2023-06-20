@@ -76,6 +76,7 @@ import BulkMikrotikEdit from "./customerCRUD/bulkOpration/bulkMikrotikEdit";
 import BulkRecharge from "./customerCRUD/bulkOpration/BulkRecharge";
 import CustomersNumber from "./CustomersNumber";
 import "./client.css";
+import BulkPaymentStatusEdit from "./customerCRUD/bulkOpration/BulkPaymentStatusEdit";
 
 const PPPOECustomer = () => {
   const dispatch = useDispatch();
@@ -1354,6 +1355,11 @@ const PPPOECustomer = () => {
         bulkCustomer={bulkCustomers}
         modalId="bulkPromiseDateEdit"
       />
+      <BulkPaymentStatusEdit
+        bulkCustomer={bulkCustomers}
+        modalId="bulkPaymentStatusEdit"
+      />
+
       {bpSettings.hasMikrotik && (
         <>
           <BulkStatusEdit
@@ -1477,6 +1483,37 @@ const PPPOECustomer = () => {
                   <div className="menu_label2">{t("editStatus")}</div>
                 </li>
               )}
+
+              <hr className="mt-0 mb-0" />
+              {((role === "ispOwner" && bpSettings?.bulkPaymentStatusEdit) ||
+                (bpSettings?.bulkPaymentStatusEdit &&
+                  permission?.bulkPaymentStatusEdit &&
+                  role === "manager") ||
+                (role === "collector" &&
+                  bpSettings.bulkPaymentStatusEdit &&
+                  permission.bulkPaymentStatusEdit)) && (
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#bulkPaymentStatusEdit"
+                  type="button"
+                  className="p-1"
+                >
+                  <div className="menu_icon2">
+                    <button
+                      className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-info"
+                      title={t("editPaymentStatus")}
+                    >
+                      <i className="fas fa-edit fa-xs  "></i>
+                      <span className="button_title">
+                        {" "}
+                        {t("editPaymentStatus")}
+                      </span>
+                    </button>
+                  </div>
+                  <div className="menu_label2">{t("editPaymentStatus")}</div>
+                </li>
+              )}
+
               <hr className="mt-0 mb-0" />
               {((role === "ispOwner" && bpSettings?.bulkBillingCycleEdit) ||
                 (bpSettings?.bulkBillingCycleEdit &&

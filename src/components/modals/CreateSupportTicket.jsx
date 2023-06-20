@@ -46,8 +46,8 @@ const CreateSupportTicket = ({
   };
 
   const createSupportTicketHandler = () => {
-    if (!supportTicket.assignPerson) {
-      alert("Select Staff");
+    if (!supportTicket.message) {
+      alert("Enter Message");
       return;
     }
 
@@ -62,10 +62,35 @@ const CreateSupportTicket = ({
       ticketCategory: supportTicket.ticketCategory,
       assignedStaff: supportTicket.assignPerson,
 
-      ...(customer?.reseller ? { reseller } : { ispOwner }),
+      // ...(customer?.reseller ? { reseller } : { ispOwner }),
       customer: customer.id,
-      ...(role === "collector" && { assignedStaff: userData.user }),
+      // ...(role === "collector" && { assignedStaff: userData.user }),
     };
+
+    if (role === "ispOwner") data.ispOwner = ispOwner;
+
+    if (role === "manager") {
+      data.manager = userData.id;
+      data.ispOwner = ispOwner;
+    }
+
+    //IspOwner Collector
+    if (role === "collector" && !userData.reseller) {
+      data.collector = userData.id;
+      data.ispOwner = ispOwner;
+    }
+
+    //Reseller Collector
+    if (role === "collector" && userData.reseller) {
+      data.collector = userData.id;
+      data.reseller = userData.reseller;
+    }
+
+    if (role !== "collector" && !data.assignedStaff) {
+      alert("Select Staff");
+      return;
+    }
+    if (role === "collector") delete data.assignedStaff;
 
     if (!supportTicket.ticketCategory) {
       delete data.ticketCategory;
@@ -111,15 +136,16 @@ const CreateSupportTicket = ({
                   value={supportTicket.message}
                 />
               </div>
-              {role !== "collector" && (
-                <>
+
+              <>
+                {role !== "collector" && (
                   <div className="w-100 mt-3">
                     <label className="text-secondary" htmlFor="assignedPerson">
                       {t("selectStaff")}
                     </label>
                     <select
                       name="assignPerson"
-                      id="assignPerson"
+                      id="assignedPerson"
                       onChange={onChangeHandler}
                       className="form-select mt-0 mw-100"
                     >
@@ -138,43 +164,43 @@ const CreateSupportTicket = ({
                         ))}
                     </select>
                   </div>
+                )}
 
-                  <div className="w-100 mt-3">
-                    <label className="text-secondary" htmlFor="ticketType">
-                      {t("selectTicketType")}
-                    </label>
-                    <select
-                      name="ticketType"
-                      id="ticketType"
-                      onChange={onChangeHandler}
-                      className="form-select mt-0 mw-100"
-                    >
-                      <option value="">...</option>
-                      <option value="high">{t("High")}</option>
-                      <option value="medium">{t("Medium")}</option>
-                      <option value="low">{t("Low")}</option>
-                    </select>
-                  </div>
+                <div className="w-100 mt-3">
+                  <label className="text-secondary" htmlFor="ticketType">
+                    {t("selectTicketType")}
+                  </label>
+                  <select
+                    name="ticketType"
+                    id="ticketType"
+                    onChange={onChangeHandler}
+                    className="form-select mt-0 mw-100"
+                  >
+                    <option value="">...</option>
+                    <option value="high">{t("High")}</option>
+                    <option value="medium">{t("Medium")}</option>
+                    <option value="low">{t("Low")}</option>
+                  </select>
+                </div>
 
-                  <div className="w-100 mt-3">
-                    <label className="text-secondary" htmlFor="ticketCategory">
-                      {t("selectTicketCategory")}
-                    </label>
-                    <select
-                      name="ticketCategory"
-                      id="ticketCategory"
-                      onChange={onChangeHandler}
-                      className="form-select mt-0 mw-100"
-                    >
-                      <option value="">...</option>
-                      {allTicketCategory &&
-                        allTicketCategory.map((item) => (
-                          <option value={item?.id}>{item.name}</option>
-                        ))}
-                    </select>
-                  </div>
-                </>
-              )}
+                <div className="w-100 mt-3">
+                  <label className="text-secondary" htmlFor="ticketCategory">
+                    {t("selectTicketCategory")}
+                  </label>
+                  <select
+                    name="ticketCategory"
+                    id="ticketCategory"
+                    onChange={onChangeHandler}
+                    className="form-select mt-0 mw-100"
+                  >
+                    <option value="">...</option>
+                    {allTicketCategory &&
+                      allTicketCategory.map((item) => (
+                        <option value={item?.id}>{item.name}</option>
+                      ))}
+                  </select>
+                </div>
+              </>
 
               <button
                 className="btn btn-success ms-auto shadow-none mt-3"

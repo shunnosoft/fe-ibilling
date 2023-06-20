@@ -793,5 +793,6 @@
   "category": "ক্যটাগরি",
   "selectCollector": "কালেক্টর নির্বাচন করুন",
   "updateSupportTicket": "আপডেট সাপোর্ট টিকিট",
-  "expiredOffline": "এক্সপায়ার্ড অফলাইন"
+  "expiredOffline": "এক্সপায়ার্ড অফলাইন",
+  "editPaymentStatus": "পেমেন্ট স্ট্যাটাস আপডেট"
 }
