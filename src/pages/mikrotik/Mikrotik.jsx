@@ -7,6 +7,7 @@ import {
   ArrowClockwise,
   ArchiveFill,
   PlugFill,
+  PersonDash,
 } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -34,6 +35,7 @@ export default function Mikrotik() {
   const permission = useSelector(
     (state) => state.persistedReducer.auth.userData.bpSettings
   );
+  console.log({ permission });
 
   let allmikrotiks = [];
   allmikrotiks = useSelector((state) => state.mikrotik.mikrotik);
@@ -77,29 +79,29 @@ export default function Mikrotik() {
   const columns = React.useMemo(
     () => [
       {
-        width: "15%",
+        width: "18%",
         Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        width: "22%",
+        width: "20%",
         Header: t("name"),
         accessor: "name",
       },
       {
-        width: "22%",
+        width: "20%",
         Header: t("host"),
         accessor: "host",
       },
       {
-        width: "20%",
+        width: "15%",
         Header: t("port"),
         accessor: "port",
       },
       {
-        width: "21%",
+        width: "37%",
         Header: <div className="text-center">{t("action")}</div>,
         id: "option1",
 
@@ -111,12 +113,14 @@ export default function Mikrotik() {
             >
               {t("configure")} <ArrowRightShort style={{ fontSize: "19px" }} />
             </Link>
-            <Link
-              to={`/mikrotik/customer/${original.ispOwner}/${original.id}`}
-              className="mikrotikConfigureButtom"
-            >
-              <ArrowRightShort style={{ fontSize: "19px" }} />
-            </Link>
+            {permission.customerType.includes("pppoe") && (
+              <Link
+                to={`/mikrotik/customer/${original.ispOwner}/${original.id}`}
+                className="mikrotikConfigureButtom ms-1"
+              >
+                <PersonDash />
+              </Link>
+            )}
 
             <button
               title={t("checkConnection")}
