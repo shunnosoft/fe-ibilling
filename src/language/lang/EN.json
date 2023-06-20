@@ -787,5 +787,6 @@
   "category": "Category",
   "selectCollector": "Select Collector",
   "updateSupportTicket": "Update Support Ticket",
-  "expiredOffline": "Expired Offline"
+  "expiredOffline": "Expired Offline",
+  "myOffer": "My Offer"
 }
