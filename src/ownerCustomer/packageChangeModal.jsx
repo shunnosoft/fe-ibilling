@@ -15,6 +15,7 @@ const PackageChangeModal = () => {
   const userData = useSelector(
     (state) => state.persistedReducer.auth?.currentUser.customer
   );
+  console.log(userData);
 
   // package select option
   const options = packages.map((item) => {
@@ -30,19 +31,34 @@ const PackageChangeModal = () => {
 
   // package select option
   const [selectedPackage, setSelectedPackage] = useState(null);
+  console.log(selectedPackage);
 
   // handle submit method
   const changePackageController = () => {
     const sendingData = {
+      customer: userData.id,
       mikrotikPackage: selectedPackage.value,
-      pppoe: {
-        service: "pppoe",
-        disabled: userData.pppoe.disabled,
-        name: userData.pppoe.name,
-        password: userData.pppoe.password,
-        profile: selectedPackage.name,
-      },
+      mikrotikPackageName: selectedPackage.label,
+      name: userData.name,
+      mobile: userData.mobile,
+      customerId: userData.customerId,
+      previousPackage: userData.mikrotikPackage,
+      previousPackageName: userData.pppoe.profile,
+      status: "pending",
+      // pppoe: {
+      //   service: "pppoe",
+      //   disabled: userData.pppoe.disabled,
+      //   name: userData.pppoe.name,
+      //   password: userData.pppoe.password,
+      //   profile: selectedPackage.label,
+      // },
     };
+    if (userData.reseller) {
+      sendingData.reseller = userData.reseller;
+    } else {
+      sendingData.ispOwner = userData.ispOwner.id;
+    }
+    console.log(sendingData);
     changePackageApi(sendingData, setLoading);
   };
 
