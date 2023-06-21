@@ -61,7 +61,6 @@ const BulkPaymentStatusEdit = ({ bulkCustomer, modalId }) => {
             {t("unpaid")}
           </label>
         </div>
-
         <div className="modal-footer" style={{ border: "none" }}>
           <button
             type="button"

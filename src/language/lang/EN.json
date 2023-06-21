@@ -794,5 +794,6 @@
   "extraNetFeeUser": "Extra NetFee Users",
   "crossCustomer": "Cross Customer",
   "lastLoggedOut": "Last Logged Out",
-  "allUsers": "All Users"
+  "allUsers": "All Users",
+  "packageChange": "Package Change"
 }

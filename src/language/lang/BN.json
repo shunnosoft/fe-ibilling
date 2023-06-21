@@ -800,5 +800,6 @@
   "extraMikrotikUsers": "অতিরিক্ত মাইক্রোটিক গ্রাহক",
   "crossCustomer": "ক্রস গ্রাহক",
   "lastLoggedOut": "লাস্ট লগ আউট",
-  "allUsers": "মোট গ্রাহক"
+  "allUsers": "মোট গ্রাহক",
+  "packageChange": "প্যাকেজ পরিবর্তন"
 }
