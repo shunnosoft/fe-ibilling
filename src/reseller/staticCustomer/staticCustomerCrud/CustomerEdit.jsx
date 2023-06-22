@@ -771,7 +771,7 @@ export default function CustomerEdit({ single }) {
                       <div className="static_edit_item">
                         <p> {t("status")} </p>
                         {(role === "reseller" ||
-                          permission.customerActivate) && (
+                          permission?.customerActivate) && (
                           <>
                             <div className="form-check form-check-inline">
                               <input
@@ -796,7 +796,7 @@ export default function CustomerEdit({ single }) {
                           </>
                         )}
                         {(role === "reseller" ||
-                          permission.customerDeactivate) && (
+                          permission?.customerDeactivate) && (
                           <div className="form-check form-check-inline">
                             <input
                               className="form-check-input"

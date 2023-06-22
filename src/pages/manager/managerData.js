@@ -1,5 +1,4 @@
 export const managerPermission = (permission, bpSettings, lang) => {
-  console.log(bpSettings);
   const permissionEng = [
     {
       id: 1,
@@ -208,6 +207,13 @@ export const managerPermission = (permission, bpSettings, lang) => {
       value: "supportTicketCategory",
       label: "Support Ticket Category",
       isChecked: permission?.supportTicketCategory || false,
+      disabled: false,
+    },
+    {
+      id: 31,
+      value: "bulkPaymentStatusEdit",
+      label: "Bulk Payment Status Edit",
+      isChecked: permission?.bulkPaymentStatusEdit || false,
       disabled: false,
     },
   ];
@@ -421,6 +427,13 @@ export const managerPermission = (permission, bpSettings, lang) => {
       value: "supportTicketCategory",
       label: "সাপোর্ট টিকেট ক্যাটাগরি",
       isChecked: permission?.supportTicketCategory || false,
+      disabled: false,
+    },
+    {
+      id: 31,
+      value: "bulkPaymentStatusEdit",
+      label: "বাল্ক পেমেন্ট স্ট্যাটাস এডিট",
+      isChecked: permission?.bulkPaymentStatusEdit || false,
       disabled: false,
     },
   ];

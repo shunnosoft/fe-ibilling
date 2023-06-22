@@ -788,8 +788,12 @@
   "selectCollector": "Select Collector",
   "updateSupportTicket": "Update Support Ticket",
   "expiredOffline": "Expired Offline",
+  "editPaymentStatus": "Edit Payment Status",
+  "myOffer": "My Offer",
   "extraMikrotikUsers": "Extra Mikrotik Users",
   "extraNetFeeUser": "Extra NetFee Users",
   "crossCustomer": "Cross Customer",
-  "lastLoggedOut": "Last Logged Out"
+  "lastLoggedOut": "Last Logged Out",
+  "allUsers": "All Users",
+  "packageChange": "Package Change"
 }

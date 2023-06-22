@@ -378,3 +378,22 @@ export const getReseller = async (
     console.log(error);
   }
 };
+
+// ispOwner customer status update api call
+export const updateIspOwnerCustomerStatus = async (
+  data,
+  setIsLoading,
+  setIsShow
+) => {
+  setIsLoading(true);
+  const { ispOwner, filter, paymentStatus, balance } = data;
+  try {
+    const res = await apiLink.patch(
+      `${ispOwner}?filter=${filter}&paymentStatus=${paymentStatus}&balanceZero=${balance}`
+    );
+    setIsShow(false);
+  } catch (err) {
+    console.log(err.response);
+  }
+  setIsLoading(false);
+};

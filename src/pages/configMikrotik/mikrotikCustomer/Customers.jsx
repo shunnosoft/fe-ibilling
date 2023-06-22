@@ -11,6 +11,7 @@ import { FontColor, FourGround } from "../../../assets/js/theme";
 import { Tab, Tabs } from "react-bootstrap";
 import NetFeeCustomer from "./netFeeCustomer/NetFeeCustomer";
 import MikrotikCustomer from "./mikrotikCustomer/MikrotikCustomer";
+import AllCustomer from "./allCustomer/AllCustomer";
 
 const Customers = () => {
   const { t } = useTranslation();
@@ -40,6 +41,9 @@ const Customers = () => {
               </FourGround>
               <FourGround>
                 <Tabs id="uncontrolled-tab-example" className="mb-3">
+                  <Tab eventKey="allUsers" title={t("allUsers")}>
+                    <AllCustomer />
+                  </Tab>
                   <Tab eventKey="extraNetFeeUsers" title={t("extraNetFeeUser")}>
                     <NetFeeCustomer />
                   </Tab>
