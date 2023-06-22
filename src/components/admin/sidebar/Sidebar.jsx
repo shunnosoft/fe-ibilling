@@ -1291,22 +1291,24 @@ export default function Sidebar() {
                               </NavLink>
                             )}
 
-                          <NavLink
-                            key={14}
-                            to="/netFee/packageChange"
-                            className={(navInfo) =>
-                              navInfo.isActive ? activeClass.active : ""
-                            }
-                          >
-                            <FontColor>
-                              <li className="sidebarItems" id="packageChange">
-                                <div className="sidebarIcon">{<Award />}</div>
-                                <span className="sidebarLinksName">
-                                  {t("packageChange")}
-                                </span>
-                              </li>
-                            </FontColor>
-                          </NavLink>
+                          {userRole === "ispOwner" && (
+                            <NavLink
+                              key={14}
+                              to="/netFee/packageChange"
+                              className={(navInfo) =>
+                                navInfo.isActive ? activeClass.active : ""
+                              }
+                            >
+                              <FontColor>
+                                <li className="sidebarItems" id="packageChange">
+                                  <div className="sidebarIcon">{<Award />}</div>
+                                  <span className="sidebarLinksName">
+                                    {t("packageChange")}
+                                  </span>
+                                </li>
+                              </FontColor>
+                            </NavLink>
+                          )}
                         </Accordion.Body>
                       </Accordion.Item>
                     </>

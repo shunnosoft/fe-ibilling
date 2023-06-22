@@ -133,6 +133,7 @@ import {
   postIspOwnerSupports,
   updateIspOwnerSupports,
   updateNetFeeSupport,
+  updatePackageChangeRequest,
 } from "./netFeeSupportSlice";
 import {
   getActiveCustomerSuccess,
@@ -3220,6 +3221,7 @@ export const getPackageChangeApi = async (dispatch, ispOwner, setIsLoading) => {
   setIsLoading(false);
 };
 
+//package change api for accept and reject request
 export const packageChangeAcceptReject = async (
   dispatch,
   status,
@@ -3227,7 +3229,6 @@ export const packageChangeAcceptReject = async (
   setAccLoading
 ) => {
   setAccLoading(true);
-  console.log(data);
   try {
     let res;
     if (status === "accepted") {
@@ -3236,24 +3237,21 @@ export const packageChangeAcceptReject = async (
       res = await apiLink.patch(`ispOwner/reject/package/change`, data);
     }
 
-    console.log(res.data);
-
-    // dispatch(updateDepositSuccess(res.data));
-    // if (res.data.status === "accepted") {
-    //   langMessage(
-    //     "success",
-    //     "ডিপোজিট গ্রহণ সফল হয়েছে।",
-    //     "Deposite Accepted Successfully"
-    //   );
-    // } else if (res.data.status === "rejected") {
-    //   langMessage(
-    //     "success",
-    //     "ডিপোজিট বাতিল সফল হয়েছে।",
-    //     "Deposit Cancellation Successfully"
-    //   );
-    // }
+    dispatch(updatePackageChangeRequest(res.data));
+    if (res.data.status === "accepted") {
+      langMessage(
+        "success",
+        "প্যাকেজ পরিবর্তন গ্রহণ সফল হয়েছে।",
+        "Package Change Accepted Successfully"
+      );
+    } else if (res.data.status === "rejected") {
+      langMessage(
+        "success",
+        "প্যাকেজ পরিবর্তন বাতিল সফল হয়েছে।",
+        "Package Change Cancelled Successfully"
+      );
+    }
   } catch (error) {
-    console.log(error.response);
     toast.error(error.response?.data.message);
   }
   setAccLoading(false);

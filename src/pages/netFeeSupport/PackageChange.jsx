@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { ToastContainer } from "react-toastify";
 import { FontColor, FourGround } from "../../assets/js/theme";
-import { PersonPlusFill } from "react-bootstrap-icons";
 import Table from "../../components/table/Table";
 import Footer from "../../components/admin/footer/Footer";
 import { useTranslation } from "react-i18next";
@@ -14,6 +13,7 @@ import {
 } from "../../features/apiCalls";
 import useDash from "../../assets/css/dash.module.css";
 import Loader from "../../components/common/Loader";
+import moment from "moment";
 
 const PackageChange = () => {
   const { t } = useTranslation();
@@ -38,13 +38,19 @@ const PackageChange = () => {
   const [packageLoading, setPackageLoading] = useState(false);
   const [acceptLoading, setAccLoading] = useState(false);
 
+  //api calls
   useEffect(() => {
     getPackageChangeApi(dispatch, ispOwner, setIsLoading);
     getAllPackages(dispatch, ispOwner, setPackageLoading);
   }, []);
 
-  // bill report accept & reject handler
+  // package change accept & reject handler
   const packageChangeRequestHandler = (status, item) => {
+    //finding the package name
+    const getPackage = allPackages?.find(
+      (pac) => pac.id === item.mikrotikPackage
+    );
+
     let data = {};
     if (status === "rejected") {
       data = {
@@ -59,30 +65,35 @@ const PackageChange = () => {
         status,
         id: item.id,
         pppoe: {
-          profile: item.mikrotikPackageName,
+          profile: getPackage.name,
         },
       };
     }
-
-    packageChangeAcceptReject(dispatch, status, data, setAccLoading);
+    const con = window.confirm("Are You Sure?");
+    if (con) {
+      //api call
+      packageChangeAcceptReject(dispatch, status, data, setAccLoading);
+    }
   };
 
+  //function to find package from id and show it in table
   const findPackage = (packageId) => {
     const getPackage = allPackages?.find((item) => item.id === packageId);
     return getPackage?.name;
   };
 
+  //columns for table
   const columns = React.useMemo(
     () => [
       {
-        width: "12%",
+        width: "6%",
         Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        width: "12%",
+        width: "9%",
         Header: t("customerId"),
         accessor: "customerId",
       },
@@ -93,8 +104,17 @@ const PackageChange = () => {
       },
       {
         Header: t("mobile"),
-        width: "12%",
+        width: "8%",
         accessor: "mobile",
+      },
+
+      {
+        width: "8%",
+        Header: t("createdAt"),
+        accessor: "createdAt",
+        Cell: ({ cell: { value } }) => {
+          return moment(value).format("MMM DD YYYY hh:mm a");
+        },
       },
 
       {
@@ -110,7 +130,7 @@ const PackageChange = () => {
         Cell: ({ cell: { value } }) => <>{findPackage(value)}</>,
       },
       {
-        width: "11%",
+        width: "8%",
         Header: t("action"),
 
         Cell: ({ row: { original } }) => (
@@ -123,26 +143,32 @@ const PackageChange = () => {
           >
             <div>
               {original.status === "pending" ? (
-                <div>
-                  <span
-                    style={{ cursor: "pointer" }}
-                    class="badge bg-success shadow me-1"
-                    onClick={() => {
-                      packageChangeRequestHandler("accepted", original);
-                    }}
-                  >
-                    {t("accept")}
-                  </span>
-                  <span
-                    style={{ cursor: "pointer" }}
-                    class="badge bg-danger shadow"
-                    onClick={() => {
-                      packageChangeRequestHandler("rejected", original);
-                    }}
-                  >
-                    {t("cancel")}
-                  </span>
-                </div>
+                acceptLoading ? (
+                  <div className="loaderDiv">
+                    <Loader />
+                  </div>
+                ) : (
+                  <div>
+                    <span
+                      style={{ cursor: "pointer" }}
+                      class="badge bg-success shadow me-1"
+                      onClick={() => {
+                        packageChangeRequestHandler("accepted", original);
+                      }}
+                    >
+                      {t("accept")}
+                    </span>
+                    <span
+                      style={{ cursor: "pointer" }}
+                      class="badge bg-danger shadow"
+                      onClick={() => {
+                        packageChangeRequestHandler("rejected", original);
+                      }}
+                    >
+                      {t("cancel")}
+                    </span>
+                  </div>
+                )
               ) : (
                 <span class="badge bg-warning shadow">{original.status}</span>
               )}
@@ -165,20 +191,6 @@ const PackageChange = () => {
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
                   <div>{t("packageChange")}</div>
-                  <div
-                    className="d-flex"
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "end",
-                    }}
-                  >
-                    <PersonPlusFill
-                      className="addcutmButton"
-                      title={t("addSupportTicket")}
-                      //onClick={() => setShow(true)}
-                    />
-                  </div>
                 </div>
               </FourGround>
               <FourGround>

@@ -588,10 +588,7 @@ function App() {
             <Route
               path="/netFee/packageChange"
               element={
-                user &&
-                (userRole === "ispOwner" ||
-                  userRole === "manager" ||
-                  userRole === "reseller") ? (
+                user && userRole === "ispOwner" ? (
                   <PackageChange />
                 ) : (
                   <Navigate to={"/home"} />

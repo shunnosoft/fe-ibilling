@@ -801,5 +801,7 @@
   "crossCustomer": "ক্রস গ্রাহক",
   "lastLoggedOut": "লাস্ট লগ আউট",
   "allUsers": "মোট গ্রাহক",
-  "packageChange": "প্যাকেজ পরিবর্তন"
+  "packageChange": "প্যাকেজ পরিবর্তন",
+  "previousPackage": "পূর্ববর্তী প্যাকেজ",
+  "requestedPackage": "অনুরোধকৃত প্যাকেজ"
 }

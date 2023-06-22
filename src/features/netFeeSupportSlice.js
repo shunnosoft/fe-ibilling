@@ -50,10 +50,11 @@ export const netFeeSupportSlice = createSlice({
       state.packageChangeRequest = action.payload;
     },
 
-    deleteIspOwnerPackageChangeRequest: (state, action) => {
-      state.packageChangeRequest = state.packageChangeRequest.filter(
-        (item) => item.id !== action.payload.id
+    updatePackageChangeRequest: (state, action) => {
+      const supportRequestIndex = state.packageChangeRequest.findIndex(
+        (item) => item.id === action.payload.id
       );
+      state.packageChangeRequest[supportRequestIndex] = action.payload;
     },
   },
 });
@@ -69,5 +70,6 @@ export const {
   deleteIspOwnerSupports,
   getIspOwnerPackageChangeRequest,
   deleteIspOwnerPackageChangeRequest,
+  updatePackageChangeRequest,
 } = netFeeSupportSlice.actions;
 export default netFeeSupportSlice.reducer;

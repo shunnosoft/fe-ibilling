@@ -795,5 +795,7 @@
   "crossCustomer": "Cross Customer",
   "lastLoggedOut": "Last Logged Out",
   "allUsers": "All Users",
-  "packageChange": "Package Change"
+  "packageChange": "Package Change",
+  "previousPackage": "Previous Package",
+  "requestedPackage": "Requested Package"
 }
