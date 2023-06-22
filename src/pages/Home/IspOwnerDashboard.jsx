@@ -16,7 +16,6 @@ import moment from "moment";
 // internal imports
 import "./home.css";
 import { FourGround, FontColor } from "../../assets/js/theme";
-import { monthsName } from "./homeData";
 import {
   fetchReseller,
   getCollector,
@@ -166,13 +165,28 @@ export default function IspOwnerDashboard() {
     setCount(tempCount);
   }, [ChartsData]);
 
+  const monthsName = [
+    { value: "January", label: t("january") },
+    { value: "February", label: t("february") },
+    { value: "March", label: t("march") },
+    { value: "April", label: t("april") },
+    { value: "May", label: t("may") },
+    { value: "June", label: t("june") },
+    { value: "July", label: t("July") },
+    { value: "August", label: t("august") },
+    { value: "September", label: t("september") },
+    { value: "October", label: t("october") },
+    { value: "November", label: t("november") },
+    { value: "December", label: t("december") },
+  ];
+
   //chartsData for graph
   const chartsData = {
     labels: collection,
     datasets: [
       showGraphData === "amount"
         ? {
-            label: t("এমাউন্ট"),
+            label: t("amount"),
             data: label,
             backgroundColor: "rgb(110 110 110 / 24%)",
             borderJoinStyle: "round",
@@ -181,7 +195,7 @@ export default function IspOwnerDashboard() {
             borderWidth: 2,
           }
         : {
-            label: t("বিল"),
+            label: t("bill"),
             data: count,
             borderColor: "#0cc30c",
             borderWidth: 2,
@@ -654,20 +668,22 @@ export default function IspOwnerDashboard() {
                   <h4>{t("collection")}</h4>
                   <div>
                     <input
+                      id="amount"
                       type="radio"
                       name="graphSelectRadio"
                       checked={showGraphData === "amount" && "checked"}
                       onChange={() => setShowGraphData("amount")}
                     />
-                     <label htmlFor="html">{t("amount")}</label>
+                     <label htmlFor="amount">{t("amount")}</label>
                   </div>
                   <div>
                     <input
+                      id="bill"
                       type="radio"
                       name="graphSelectRadio"
                       onChange={() => setShowGraphData("bill")}
                     />
-                      <label htmlFor="css">{t("bill")}</label>
+                      <label htmlFor="bill">{t("bill")}</label>
                   </div>
                 </div>
 
@@ -706,7 +722,7 @@ export default function IspOwnerDashboard() {
                         value={index}
                         key={index}
                       >
-                        {val}
+                        {val.label}
                       </option>
                     ))}
                   </select>

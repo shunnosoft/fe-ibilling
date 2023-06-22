@@ -77,10 +77,14 @@ export default function MikrotikPost() {
               >
                 {() => (
                   <Form>
-                    <FtextField type="text" label={t("name")} name="name" />
                     <FtextField
                       type="text"
-                      label={t("userName")}
+                      label={t("mikrotikName")}
+                      name="name"
+                    />
+                    <FtextField
+                      type="text"
+                      label={t("mikrotikUserName")}
                       name="username"
                     />
                     <FtextField
@@ -88,10 +92,14 @@ export default function MikrotikPost() {
                       label={t("mikrotikIP")}
                       name="host"
                     />
-                    <FtextField type="text" label={t("port")} name="port" />
+                    <FtextField
+                      type="text"
+                      label={t("mikrotikPort")}
+                      name="port"
+                    />
                     <FtextField
                       type="password"
-                      label={t("password")}
+                      label={t("mikrotikPassword")}
                       name="password"
                     />
 

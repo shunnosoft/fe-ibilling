@@ -794,5 +794,11 @@
   "extraNetFeeUser": "Extra NetFee Users",
   "crossCustomer": "Cross Customer",
   "lastLoggedOut": "Last Logged Out",
-  "allUsers": "All Users"
+  "allUsers": "All Users",
+  "mikrotikName": "Mikrotik Name",
+  "mikrotikUserName": "Mikrotik User Name",
+  "mikrotikPort": "Mikrotik Port",
+  "mikrotikPassword": "Mikrotik Password",
+  "resellerDelete": "Do you want to delete the reseller?",
+  "allPermission": "All Permission"
 }

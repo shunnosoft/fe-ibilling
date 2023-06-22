@@ -349,7 +349,6 @@
   "addNewMikrotik": " নতুন মাইক্রোটিক অ্যাড করুন",
   "userName": "ইউজারনেম",
   "mikrotikIP": "মাইক্রোটিক আইপি",
-  "port": "পোর্ট",
   "customerId": " গ্রাহক আইডি:",
   "balance": "ব্যালেন্স",
   "ip": "আই পি",
@@ -800,5 +799,11 @@
   "extraMikrotikUsers": "অতিরিক্ত মাইক্রোটিক গ্রাহক",
   "crossCustomer": "ক্রস গ্রাহক",
   "lastLoggedOut": "লাস্ট লগ আউট",
-  "allUsers": "মোট গ্রাহক"
+  "allUsers": "মোট গ্রাহক",
+  "mikrotikName": "মাইক্রোটিকের নাম",
+  "mikrotikUserName": "মাইক্রোটিকের ইউজারনেম",
+  "mikrotikPort": "মাইক্রোটিক পোর্ট",
+  "mikrotikPassword": "মাইক্রোটিক পাসওয়ার্ড",
+  "resellerDelete": "আপনি কি রিসেলার মুছতে চান?",
+  "allPermission": "সকল পারমিশান"
 }

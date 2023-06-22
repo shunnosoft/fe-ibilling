@@ -262,9 +262,11 @@ export default function ResellerPost() {
                               />
                             ))}
                           </div>
-
-                          {/* second part */}
-                          <div className="secondSection text-start">
+                        </div>
+                      </Tab>
+                      <Tab eventKey="permission" title={t("changePermission")}>
+                        <div className="displayGrid3 secondSection text-start">
+                          <div>
                             <input
                               className="form-check-input"
                               id="souceCheck"
@@ -276,30 +278,29 @@ export default function ResellerPost() {
                               className="form-check-label"
                               htmlFor="souceCheck"
                             >
-                              <p className="radioTitle">পারমিশন দিন</p>
+                              <p className="radioTitle">{t("allPermission")}</p>
                             </label>
-
-                            {permissions.map((item, i) => (
-                              <div key={i} className="displayFlex">
-                                <input
-                                  id={i + "" + item}
-                                  key={i}
-                                  type="checkbox"
-                                  className="form-check-input"
-                                  checked={item.isChecked}
-                                  onChange={permissionHandler}
-                                  name={item.value}
-                                />
-                                <label htmlFor={i + "" + item}>
-                                  {item.label}
-                                </label>
-                              </div>
-                            ))}
                           </div>
+
+                          {permissions.map((item, i) => (
+                            <div key={i} className="displayFlex">
+                              <input
+                                id={i + "" + item}
+                                key={i}
+                                type="checkbox"
+                                className="form-check-input"
+                                checked={item.isChecked}
+                                onChange={permissionHandler}
+                                name={item.value}
+                              />
+                              <label htmlFor={i + "" + item}>
+                                {item.label}
+                              </label>
+                            </div>
+                          ))}
                         </div>
                       </Tab>
                       <Tab eventKey="package" title={t("package")}>
-                        {" "}
                         <div className="d-flex mt-5 justify-content-evenly">
                           <div className="form-check ">
                             <p className="radioTitle">{t("status")}</p>

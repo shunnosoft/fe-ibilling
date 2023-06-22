@@ -387,70 +387,71 @@ export default function ResellerEdit({ resellerId }) {
                               />
                             ))}
                           </div>
+                        </div>
 
-                          <div className="secondSection text-start">
-                            <div className="permission-section">
-                              <input
-                                id="permissionEdit"
-                                type="checkbox"
-                                className="form-check-input"
-                                onChange={handleChange}
-                                name="allChecked"
-                                checked={permissions.every(
-                                  (item) => item.isChecked
-                                )}
-                              />
-                              <label
-                                htmlFor="permissionEdit"
-                                className="form-check-label"
-                              >
-                                <p className="radioTitle ms-1">পারমিশন দিন</p>
-                              </label>
-                              {permissions.map((val, key) => {
-                                return (
-                                  <div
-                                    key={val + "" + key}
-                                    className="displayFlex"
-                                  >
-                                    <input
-                                      id={key + "reseller" + val}
-                                      key={val + "" + key}
-                                      type="checkbox"
-                                      className="form-check-input"
-                                      checked={val.isChecked}
-                                      onChange={handleChange}
-                                      name={val.value}
-                                    />
-                                    <label htmlFor={key + "reseller" + val}>
-                                      {val.label}
-                                    </label>
-                                  </div>
-                                );
-                              })}
-                            </div>
-
-                            <div className="status_section mt-3">
-                              <p className="radioTitle">{t("status")}</p>
-                              <div className="form-check ps-0">
-                                <div className="d-flex">
-                                  {RADIO.map((val, key) => (
-                                    <div key={key} className="form-check">
-                                      <FtextField
-                                        label={val.label}
-                                        className="form-check-input"
-                                        type="radio"
-                                        name="status"
-                                        value={val.value}
-                                      />
-                                    </div>
-                                  ))}
+                        <div className="status_section mt-3">
+                          <p className="radioTitle">{t("status")}</p>
+                          <div className="form-check ps-0">
+                            <div className="d-flex">
+                              {RADIO.map((val, key) => (
+                                <div key={key} className="form-check">
+                                  <FtextField
+                                    label={val.label}
+                                    className="form-check-input"
+                                    type="radio"
+                                    name="status"
+                                    value={val.value}
+                                  />
                                 </div>
-                              </div>
+                              ))}
                             </div>
                           </div>
                         </div>
                       </Tab>
                       {/* end basic part */}
+
+                      <Tab eventKey="permission" title={t("changePermission")}>
+                        <div className="displayGrid3 secondSection text-start">
+                          <div className="permission-section">
+                            <input
+                              id="permissionEdit"
+                              type="checkbox"
+                              className="form-check-input"
+                              onChange={handleChange}
+                              name="allChecked"
+                              checked={permissions.every(
+                                (item) => item.isChecked
+                              )}
+                            />
+                            <label
+                              htmlFor="permissionEdit"
+                              className="form-check-label"
+                            >
+                              <p className="radioTitle ms-1">
+                                {t("allPermission")}
+                              </p>
+                            </label>
+                          </div>
+                          {permissions.map((val, key) => {
+                            return (
+                              <div key={val + "" + key} className="displayFlex">
+                                <input
+                                  id={key + "reseller" + val}
+                                  key={val + "" + key}
+                                  type="checkbox"
+                                  className="form-check-input"
+                                  checked={val.isChecked}
+                                  onChange={handleChange}
+                                  name={val.value}
+                                />
+                                <label htmlFor={key + "reseller" + val}>
+                                  {val.label}
+                                </label>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </Tab>
 
                       {/* package part */}
                       <Tab eventKey="package" title={t("package")}>
