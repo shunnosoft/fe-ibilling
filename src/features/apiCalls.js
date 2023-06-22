@@ -109,6 +109,7 @@ import {
   editPackageSuccess,
   deletePackageSuccess,
   getpackageSuccess,
+  getAllPackagesSuccess,
 } from "./packageSlice";
 import {
   addExpenditureSectorsSuccess,
@@ -126,6 +127,7 @@ import {
   AddNetFeeSupport,
   deleteIspOwnerSupports,
   deleteNetFeeSupport,
+  getIspOwnerPackageChangeRequest,
   getIspOwnerSupports,
   getNetFeeSupport,
   postIspOwnerSupports,
@@ -1038,7 +1040,6 @@ export const addCustomer = async (dispatch, data, setIsloading, resetForm) => {
   setIsloading(true);
   try {
     const res = await apiLink.post("/ispOwner/customer", data);
-    console.log(res.data);
     dispatch(addCustomerSuccess(res.data));
     setIsloading(false);
     langMessage(
@@ -2533,6 +2534,18 @@ export const getPackagewithoutmikrotik = async (
   }
   setIsLoading(false);
 };
+export const getAllPackages = async (dispatch, ispOwnerId, setIsLoading) => {
+  try {
+    setIsLoading(true);
+    const res = await apiLink.get(
+      `/mikrotik/ppp/mikrotik/package/${ispOwnerId}`
+    );
+    dispatch(getAllPackagesSuccess(res.data.packages));
+  } catch (error) {
+    console.log(error.response?.data.message);
+  }
+  setIsLoading(false);
+};
 
 export const getQueuePackageByIspOwnerId = async (
   ispOwnerId,
@@ -3191,6 +3204,59 @@ export const getIspOwnerSupportNumbers = async (
     toast.error(error.response?.data?.message);
   }
   setIsLoading(false);
+};
+
+// ispOwner Package Change
+export const getPackageChangeApi = async (dispatch, ispOwner, setIsLoading) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.get(
+      `ispOwner/customer/package/changes/data?ispOwnerId=${ispOwner}`
+    );
+    dispatch(getIspOwnerPackageChangeRequest(res.data));
+  } catch (error) {
+    toast.error(error.response?.data?.message);
+  }
+  setIsLoading(false);
+};
+
+export const packageChangeAcceptReject = async (
+  dispatch,
+  status,
+  data,
+  setAccLoading
+) => {
+  setAccLoading(true);
+  console.log(data);
+  try {
+    let res;
+    if (status === "accepted") {
+      res = await apiLink.patch(`ispOwner/accept/package/change`, data);
+    } else if (status === "rejected") {
+      res = await apiLink.patch(`ispOwner/reject/package/change`, data);
+    }
+
+    console.log(res.data);
+
+    // dispatch(updateDepositSuccess(res.data));
+    // if (res.data.status === "accepted") {
+    //   langMessage(
+    //     "success",
+    //     "ডিপোজিট গ্রহণ সফল হয়েছে।",
+    //     "Deposite Accepted Successfully"
+    //   );
+    // } else if (res.data.status === "rejected") {
+    //   langMessage(
+    //     "success",
+    //     "ডিপোজিট বাতিল সফল হয়েছে।",
+    //     "Deposit Cancellation Successfully"
+    //   );
+    // }
+  } catch (error) {
+    console.log(error.response);
+    toast.error(error.response?.data.message);
+  }
+  setAccLoading(false);
 };
 
 // create ispOwner customr supporter

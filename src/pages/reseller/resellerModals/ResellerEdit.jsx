@@ -374,9 +374,9 @@ export default function ResellerEdit({ resellerId }) {
                       className="mb-3"
                     >
                       <Tab eventKey="basic" title={t("basic")}>
-                        <div className="TakesInputFields">
+                        <div className="d-flex justify-content-center">
                           {/* Basic part */}
-                          <div>
+                          <div className="col-6">
                             {RPD.map((val, key) => (
                               <FtextField
                                 key={key}
@@ -386,24 +386,23 @@ export default function ResellerEdit({ resellerId }) {
                                 // disabled={val.disabled}
                               />
                             ))}
-                          </div>
-                        </div>
-
-                        <div className="status_section mt-3">
-                          <p className="radioTitle">{t("status")}</p>
-                          <div className="form-check ps-0">
-                            <div className="d-flex">
-                              {RADIO.map((val, key) => (
-                                <div key={key} className="form-check">
-                                  <FtextField
-                                    label={val.label}
-                                    className="form-check-input"
-                                    type="radio"
-                                    name="status"
-                                    value={val.value}
-                                  />
+                            <div className="status_section mt-3">
+                              <p className="radioTitle">{t("status")}</p>
+                              <div className="form-check ps-0">
+                                <div className="d-flex">
+                                  {RADIO.map((val, key) => (
+                                    <div key={key} className="form-check">
+                                      <FtextField
+                                        label={val.label}
+                                        className="form-check-input"
+                                        type="radio"
+                                        name="status"
+                                        value={val.value}
+                                      />
+                                    </div>
+                                  ))}
                                 </div>
-                              ))}
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -662,7 +661,7 @@ export default function ResellerEdit({ resellerId }) {
                       {/* end area part */}
                     </Tabs>
 
-                    <div className="modal-footer modalFooterEdit">
+                    <div className="modal-footer">
                       <button
                         type="submit"
                         className="btn btn-success"

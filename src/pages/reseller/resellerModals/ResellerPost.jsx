@@ -249,9 +249,9 @@ export default function ResellerPost() {
                       className="mb-3"
                     >
                       <Tab eventKey="basic" title={t("basic")}>
-                        <div className="TakesInputFields">
+                        <div className="d-flex justify-content-center">
                           {/* first part */}
-                          <div>
+                          <div className="col-6">
                             {RPD.map((val, key) => (
                               <FtextField
                                 key={key}
@@ -603,7 +603,7 @@ export default function ResellerPost() {
                         </div>
                       </Tab>
                     </Tabs>
-                    <div className="modal-footer modalFooterEdit">
+                    <div className="modal-footer">
                       <button
                         type="submit"
                         className="btn btn-success"

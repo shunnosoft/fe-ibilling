@@ -31,8 +31,8 @@ export const changePackageApi = async (data, setLoading) => {
     const confirm = window.confirm("Are you want to update your package");
     if (confirm) {
       setLoading(true);
-      await apiLink.patch("/customer/package", data);
-      toast.success("Your package has updated");
+      await apiLink.post("/customer/package", data);
+      toast.success("Waiting for Admin Acceptance");
       document.getElementById("change_package_modal").click();
     }
   } catch (error) {
@@ -122,4 +122,16 @@ export const ispOwnerSupportNumbers = async (
     console.log(error);
   }
   setLoading(false);
+};
+
+// customer change package
+export const customerPackage = async (userData, setChangePackage) => {
+  try {
+    const res = await apiLink.get(
+      `customer/get/changes/package/${userData.id}/${userData?.ispOwner.id}`
+    );
+    setChangePackage(res.data);
+  } catch (error) {
+    console.log(error);
+  }
 };

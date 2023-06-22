@@ -108,6 +108,7 @@ import ResellerCollection from "./pages/reseller/resellerCollection/ResellerColl
 import SupportNumbers from "./pages/netFeeSupport/SupportNumbers";
 import PoleBox from "./pages/subArea/PoleBox";
 import MikrotikCustomer from "./pages/configMikrotik/mikrotikCustomer/Customers";
+import PackageChange from "./pages/netFeeSupport/PackageChange";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
@@ -578,6 +579,20 @@ function App() {
                   userRole === "manager" ||
                   userRole === "collector") ? (
                   <SupportNumbers />
+                ) : (
+                  <Navigate to={"/home"} />
+                )
+              }
+            />
+
+            <Route
+              path="/netFee/packageChange"
+              element={
+                user &&
+                (userRole === "ispOwner" ||
+                  userRole === "manager" ||
+                  userRole === "reseller") ? (
+                  <PackageChange />
                 ) : (
                   <Navigate to={"/home"} />
                 )

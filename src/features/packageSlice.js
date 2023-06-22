@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   packages: [],
+  allPackages: [],
 };
 
 const packageSlice = createSlice({
@@ -10,6 +11,9 @@ const packageSlice = createSlice({
   reducers: {
     getpackageSuccess: (state, action) => {
       state.packages = action.payload;
+    },
+    getAllPackagesSuccess: (state, action) => {
+      state.allPackages = action.payload;
     },
     editPackageSuccess: (state, action) => {
       // console.log(action.payload)
@@ -30,9 +34,10 @@ const packageSlice = createSlice({
 
 export const {
   getpackageSuccess,
+  getAllPackagesSuccess,
   editPackageSuccess,
   addPackageSuccess,
   deletePackageSuccess,
-  } = packageSlice.actions;
+} = packageSlice.actions;
 
 export default packageSlice.reducer;

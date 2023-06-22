@@ -805,5 +805,6 @@
   "mikrotikPort": "মাইক্রোটিক পোর্ট",
   "mikrotikPassword": "মাইক্রোটিক পাসওয়ার্ড",
   "resellerDelete": "আপনি কি রিসেলার মুছতে চান?",
-  "allPermission": "সকল পারমিশান"
+  "allPermission": "সকল পারমিশান",
+  "packageChange": "প্যাকেজ পরিবর্তন"
 }
