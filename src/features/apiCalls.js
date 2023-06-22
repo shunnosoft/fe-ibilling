@@ -109,6 +109,7 @@ import {
   editPackageSuccess,
   deletePackageSuccess,
   getpackageSuccess,
+  getAllPackagesSuccess,
 } from "./packageSlice";
 import {
   addExpenditureSectorsSuccess,
@@ -1039,7 +1040,6 @@ export const addCustomer = async (dispatch, data, setIsloading, resetForm) => {
   setIsloading(true);
   try {
     const res = await apiLink.post("/ispOwner/customer", data);
-    console.log(res.data);
     dispatch(addCustomerSuccess(res.data));
     setIsloading(false);
     langMessage(
@@ -2534,6 +2534,18 @@ export const getPackagewithoutmikrotik = async (
   }
   setIsLoading(false);
 };
+export const getAllPackages = async (dispatch, ispOwnerId, setIsLoading) => {
+  try {
+    setIsLoading(true);
+    const res = await apiLink.get(
+      `/mikrotik/ppp/mikrotik/package/${ispOwnerId}`
+    );
+    dispatch(getAllPackagesSuccess(res.data.packages));
+  } catch (error) {
+    console.log(error.response?.data.message);
+  }
+  setIsLoading(false);
+};
 
 export const getQueuePackageByIspOwnerId = async (
   ispOwnerId,
@@ -3201,7 +3213,6 @@ export const getPackageChangeApi = async (dispatch, ispOwner, setIsLoading) => {
     const res = await apiLink.get(
       `ispOwner/customer/package/changes/data?ispOwnerId=${ispOwner}`
     );
-    console.log(res.data);
     dispatch(getIspOwnerPackageChangeRequest(res.data));
   } catch (error) {
     toast.error(error.response?.data?.message);

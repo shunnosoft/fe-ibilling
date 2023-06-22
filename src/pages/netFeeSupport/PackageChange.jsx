@@ -8,6 +8,7 @@ import Footer from "../../components/admin/footer/Footer";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  getAllPackages,
   getPackageChangeApi,
   packageChangeAcceptReject,
 } from "../../features/apiCalls";
@@ -28,17 +29,18 @@ const PackageChange = () => {
     (state) => state.netFeeSupport?.packageChangeRequest
   );
 
-  console.log(packageChangeRequest);
-
   // get user role form redux
   const userRole = useSelector((state) => state.persistedReducer.auth?.role);
+  const allPackages = useSelector((state) => state.package.allPackages);
 
   //Loading state
   const [isLoading, setIsLoading] = useState(false);
+  const [packageLoading, setPackageLoading] = useState(false);
   const [acceptLoading, setAccLoading] = useState(false);
 
   useEffect(() => {
     getPackageChangeApi(dispatch, ispOwner, setIsLoading);
+    getAllPackages(dispatch, ispOwner, setPackageLoading);
   }, []);
 
   // bill report accept & reject handler
@@ -63,6 +65,11 @@ const PackageChange = () => {
     }
 
     packageChangeAcceptReject(dispatch, status, data, setAccLoading);
+  };
+
+  const findPackage = (packageId) => {
+    const getPackage = allPackages?.find((item) => item.id === packageId);
+    return getPackage?.name;
   };
 
   const columns = React.useMemo(
@@ -93,12 +100,14 @@ const PackageChange = () => {
       {
         width: "10%",
         Header: t("previousPackage"),
-        accessor: "previousPackageName",
+        accessor: "previousPackage",
+        Cell: ({ cell: { value } }) => <>{findPackage(value)}</>,
       },
       {
         width: "10%",
         Header: t("requestedPackage"),
-        accessor: "mikrotikPackageName",
+        accessor: "mikrotikPackage",
+        Cell: ({ cell: { value } }) => <>{findPackage(value)}</>,
       },
       {
         width: "11%",
@@ -142,7 +151,7 @@ const PackageChange = () => {
         ),
       },
     ],
-    [t]
+    [t, allPackages]
   );
 
   return (

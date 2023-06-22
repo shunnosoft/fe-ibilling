@@ -38,12 +38,10 @@ const PackageChangeModal = () => {
     const sendingData = {
       customer: userData.id,
       mikrotikPackage: selectedPackage.value,
-      mikrotikPackageName: selectedPackage.label,
       name: userData.name,
       mobile: userData.mobile,
       customerId: userData.customerId,
       previousPackage: userData.mikrotikPackage,
-      previousPackageName: userData.pppoe.profile,
       status: "pending",
       // pppoe: {
       //   service: "pppoe",
