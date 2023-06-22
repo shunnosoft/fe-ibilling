@@ -14,6 +14,7 @@ import {
 import useDash from "../../assets/css/dash.module.css";
 import Loader from "../../components/common/Loader";
 import moment from "moment";
+import { ArrowClockwise } from "react-bootstrap-icons";
 
 const PackageChange = () => {
   const { t } = useTranslation();
@@ -82,23 +83,20 @@ const PackageChange = () => {
     return getPackage?.name;
   };
 
+  const reloadHandler = () => {
+    getPackageChangeApi(dispatch, ispOwner, setIsLoading);
+  };
+
   //columns for table
   const columns = React.useMemo(
     () => [
-      {
-        width: "6%",
-        Header: "#",
-        id: "row",
-        accessor: (row) => Number(row.id + 1),
-        Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
-      },
       {
         width: "9%",
         Header: t("customerId"),
         accessor: "customerId",
       },
       {
-        width: "10%",
+        width: "8%",
         Header: t("name"),
         accessor: "name",
       },
@@ -109,7 +107,7 @@ const PackageChange = () => {
       },
 
       {
-        width: "8%",
+        width: "10%",
         Header: t("createdAt"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
@@ -124,7 +122,7 @@ const PackageChange = () => {
         Cell: ({ cell: { value } }) => <>{findPackage(value)}</>,
       },
       {
-        width: "10%",
+        width: "12%",
         Header: t("requestedPackage"),
         accessor: "mikrotikPackage",
         Cell: ({ cell: { value } }) => <>{findPackage(value)}</>,
@@ -189,8 +187,15 @@ const PackageChange = () => {
           <div className="container">
             <FontColor>
               <FourGround>
-                <div className="collectorTitle d-flex justify-content-between px-5">
+                <div className="collectorTitle d-flex px-5">
                   <div>{t("packageChange")}</div>
+                  <div className="reloadBtn">
+                    {isLoading ? (
+                      <Loader />
+                    ) : (
+                      <ArrowClockwise onClick={reloadHandler} />
+                    )}
+                  </div>
                 </div>
               </FourGround>
               <FourGround>
