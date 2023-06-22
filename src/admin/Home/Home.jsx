@@ -400,7 +400,7 @@ export default function Home() {
                   <li
                     onClick={() => {
                       setPermissionId(original?.id);
-                      setIsPermission({ ...isPermission, [false]: true });
+                      setIsPermission(true);
                     }}
                   >
                     <div className="dropdown-item">
@@ -752,7 +752,11 @@ export default function Home() {
                 data={ispOwners}
               ></Table>
 
-              <Permissions ownerId={permissionId} openIs={isPermission} />
+              <Permissions
+                ownerId={permissionId}
+                isPermission={isPermission}
+                setIsPermission={setIsPermission}
+              />
               <EditModal ownerId={ownerId} />
               <DetailsModal ownerId={ownerId} />
               <AddProprietorModal ownerId={ownerId} />

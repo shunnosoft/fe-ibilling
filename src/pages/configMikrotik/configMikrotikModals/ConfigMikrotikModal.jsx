@@ -87,13 +87,13 @@ export default function ConfigMikrotikModal(props) {
                   <Form>
                     <FtextField
                       type="text"
-                      label={t("name")}
+                      label={t("mikrotikName")}
                       name="name"
                       disabled
                     />
                     <FtextField
                       type="text"
-                      label={t("userName")}
+                      label={t("mikrotikUserName")}
                       name="username"
                     />
                     <FtextField
@@ -101,10 +101,14 @@ export default function ConfigMikrotikModal(props) {
                       label={t("mikrotikIP")}
                       name="host"
                     />
-                    <FtextField type="text" label={t("port")} name="port" />
+                    <FtextField
+                      type="text"
+                      label={t("mikrotikPort")}
+                      name="port"
+                    />
                     <FtextField
                       type="password"
-                      label={t("password")}
+                      label={t("mikrotikPassword")}
                       name="password"
                     />
 

@@ -350,7 +350,7 @@
   "userName": "ইউজারনেম",
   "mikrotikIP": "মাইক্রোটিক আইপি",
   "port": "পোর্ট",
-  "customerId": " গ্রাহক আইডি",
+  "customerId": " গ্রাহক আইডি:",
   "balance": "ব্যালেন্স",
   "ip": "আই পি",
   "ID": "আইডি",
@@ -803,5 +803,11 @@
   "allUsers": "মোট গ্রাহক",
   "packageChange": "প্যাকেজ পরিবর্তন",
   "previousPackage": "পূর্ববর্তী প্যাকেজ",
-  "requestedPackage": "অনুরোধকৃত প্যাকেজ"
+  "requestedPackage": "অনুরোধকৃত প্যাকেজ",
+  "mikrotikName": "মাইক্রোটিকের নাম",
+  "mikrotikUserName": "মাইক্রোটিকের ইউজারনেম",
+  "mikrotikPort": "মাইক্রোটিক পোর্ট",
+  "mikrotikPassword": "মাইক্রোটিক পাসওয়ার্ড",
+  "resellerDelete": "আপনি কি রিসেলার মুছতে চান?",
+  "allPermission": "সকল পারমিশান"
 }

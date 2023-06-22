@@ -15,7 +15,7 @@ import {
 } from "react-bootstrap";
 import Loader from "../../../components/common/Loader";
 
-const Permissions = ({ ownerId, openIs }) => {
+const Permissions = ({ ownerId, isPermission, setIsPermission }) => {
   const dispatch = useDispatch();
   // get isp owner
   let ispOwners = useSelector((state) => state.admin?.ispOwners);
@@ -29,20 +29,14 @@ const Permissions = ({ ownerId, openIs }) => {
   // permission state
   const [permissions, setPermissions] = useState([]);
 
-  //modal handler
-  const [show, setShow] = useState(false);
-
-  const handleClose = () => setShow(false);
+  const handleClose = () => setIsPermission(false);
 
   // set permission in state
   useEffect(() => {
-    if (openIs) {
-      setShow(openIs);
-    }
     if (ownerData) {
       setPermissions(ispOwnerPermission(ownerData?.bpSettings));
     }
-  }, [openIs, ownerData, ispOwners]);
+  }, [ownerData, ispOwners]);
 
   // handle change
   const handleChange = (e) => {
@@ -69,13 +63,13 @@ const Permissions = ({ ownerId, openIs }) => {
       bpSettings: updatePermission,
     };
 
-    updateOwner(ownerId, sendingData, setIsLoading, dispatch);
+    updateOwner(ownerId, sendingData, setIsLoading, dispatch, setIsPermission);
   };
 
   return (
     <>
       <Modal
-        show={show}
+        show={isPermission}
         onHide={handleClose}
         backdrop="static"
         keyboard={false}

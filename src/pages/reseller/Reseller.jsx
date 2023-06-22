@@ -109,7 +109,10 @@ export default function Reseller() {
   // delete reseller
   const deleteSingleReseller = (ispId, resellerId) => {
     const IDs = { ispId: ispId, resellerId: resellerId };
-    deleteReseller(dispatch, IDs, setIsLoading);
+    const confirm = window.confirm(t("resellerDelete"));
+    if (confirm) {
+      deleteReseller(dispatch, IDs, setIsLoading);
+    }
   };
 
   // reseller and area api call

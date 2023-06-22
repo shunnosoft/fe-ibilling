@@ -123,3 +123,15 @@ export const ispOwnerSupportNumbers = async (
   }
   setLoading(false);
 };
+
+// customer change package
+export const customerPackage = async (userData, setChangePackage) => {
+  try {
+    const res = await apiLink.get(
+      `customer/get/changes/package/${userData.id}/${userData?.ispOwner.id}`
+    );
+    setChangePackage(res.data);
+  } catch (error) {
+    console.log(error);
+  }
+};

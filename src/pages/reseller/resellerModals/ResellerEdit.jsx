@@ -374,9 +374,9 @@ export default function ResellerEdit({ resellerId }) {
                       className="mb-3"
                     >
                       <Tab eventKey="basic" title={t("basic")}>
-                        <div className="TakesInputFields">
+                        <div className="d-flex justify-content-center">
                           {/* Basic part */}
-                          <div>
+                          <div className="col-6">
                             {RPD.map((val, key) => (
                               <FtextField
                                 key={key}
@@ -386,49 +386,6 @@ export default function ResellerEdit({ resellerId }) {
                                 // disabled={val.disabled}
                               />
                             ))}
-                          </div>
-
-                          <div className="secondSection text-start">
-                            <div className="permission-section">
-                              <input
-                                id="permissionEdit"
-                                type="checkbox"
-                                className="form-check-input"
-                                onChange={handleChange}
-                                name="allChecked"
-                                checked={permissions.every(
-                                  (item) => item.isChecked
-                                )}
-                              />
-                              <label
-                                htmlFor="permissionEdit"
-                                className="form-check-label"
-                              >
-                                <p className="radioTitle ms-1">পারমিশন দিন</p>
-                              </label>
-                              {permissions.map((val, key) => {
-                                return (
-                                  <div
-                                    key={val + "" + key}
-                                    className="displayFlex"
-                                  >
-                                    <input
-                                      id={key + "reseller" + val}
-                                      key={val + "" + key}
-                                      type="checkbox"
-                                      className="form-check-input"
-                                      checked={val.isChecked}
-                                      onChange={handleChange}
-                                      name={val.value}
-                                    />
-                                    <label htmlFor={key + "reseller" + val}>
-                                      {val.label}
-                                    </label>
-                                  </div>
-                                );
-                              })}
-                            </div>
-
                             <div className="status_section mt-3">
                               <p className="radioTitle">{t("status")}</p>
                               <div className="form-check ps-0">
@@ -451,6 +408,49 @@ export default function ResellerEdit({ resellerId }) {
                         </div>
                       </Tab>
                       {/* end basic part */}
+
+                      <Tab eventKey="permission" title={t("changePermission")}>
+                        <div className="displayGrid3 secondSection text-start">
+                          <div className="permission-section">
+                            <input
+                              id="permissionEdit"
+                              type="checkbox"
+                              className="form-check-input"
+                              onChange={handleChange}
+                              name="allChecked"
+                              checked={permissions.every(
+                                (item) => item.isChecked
+                              )}
+                            />
+                            <label
+                              htmlFor="permissionEdit"
+                              className="form-check-label"
+                            >
+                              <p className="radioTitle ms-1">
+                                {t("allPermission")}
+                              </p>
+                            </label>
+                          </div>
+                          {permissions.map((val, key) => {
+                            return (
+                              <div key={val + "" + key} className="displayFlex">
+                                <input
+                                  id={key + "reseller" + val}
+                                  key={val + "" + key}
+                                  type="checkbox"
+                                  className="form-check-input"
+                                  checked={val.isChecked}
+                                  onChange={handleChange}
+                                  name={val.value}
+                                />
+                                <label htmlFor={key + "reseller" + val}>
+                                  {val.label}
+                                </label>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </Tab>
 
                       {/* package part */}
                       <Tab eventKey="package" title={t("package")}>
@@ -661,7 +661,7 @@ export default function ResellerEdit({ resellerId }) {
                       {/* end area part */}
                     </Tabs>
 
-                    <div className="modal-footer modalFooterEdit">
+                    <div className="modal-footer">
                       <button
                         type="submit"
                         className="btn btn-success"

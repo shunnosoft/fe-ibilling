@@ -14,6 +14,17 @@ export default function ClientProfile() {
     (state) => state.persistedReducer.auth?.currentUser.customer
   );
 
+  const bpSettings = useSelector(
+    (state) => state.persistedReducer.auth?.userData?.bpSettings
+  );
+
+  // get all packages
+  const ppPackage = useSelector((state) =>
+    bpSettings?.hasMikrotik
+      ? state?.mikrotik?.packagefromDatabase
+      : state?.package?.packages
+  );
+
   // ispOwner permission
   const permission = userData?.ispOwner.bpSettings;
 
@@ -21,12 +32,17 @@ export default function ClientProfile() {
   const hasPG = userData.ispOwner.bpSettings.hasPG;
 
   // get all packages
-  const packages = useSelector((state) => state.package.packages);
+  // const packages = useSelector((state) => state.package.packages);
 
   // find alias name method
   const findAliasName = (ownPackage) => {
-    const findItem = packages.find((item) => item.name.includes(ownPackage));
+    const findItem = ppPackage.find((item) => item.name.includes(ownPackage));
     return findItem;
+  };
+
+  const staticMikrotikPackage = (value) => {
+    const temp = ppPackage.find((val) => val.id === value);
+    return temp;
   };
 
   // get package api call
@@ -71,9 +87,13 @@ export default function ClientProfile() {
                 )}
                 {userData.userType === "simple-queue" && (
                   <td>
-                    {" "}
                     {parseInt(userData.queue.maxLimit.split("/")[1] / 1000000)}
                     MBps
+                  </td>
+                )}
+                {userData.userType === "firewall-queue" && (
+                  <td>
+                    {staticMikrotikPackage(userData?.mikrotikPackage)?.name}
                   </td>
                 )}
               </tr>

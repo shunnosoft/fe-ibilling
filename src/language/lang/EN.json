@@ -797,5 +797,11 @@
   "allUsers": "All Users",
   "packageChange": "Package Change",
   "previousPackage": "Previous Package",
-  "requestedPackage": "Requested Package"
+  "requestedPackage": "Requested Package",
+  "mikrotikName": "Mikrotik Name",
+  "mikrotikUserName": "Mikrotik User Name",
+  "mikrotikPort": "Mikrotik Port",
+  "mikrotikPassword": "Mikrotik Password",
+  "resellerDelete": "Do you want to delete the reseller?",
+  "allPermission": "All Permission"
 }

@@ -1,8 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getPackagesByIspOwer } from "../features/getIspOwnerUsersApi";
+import {
+  customerPackage,
+  getPackagesByIspOwer,
+} from "../features/getIspOwnerUsersApi";
 import PackageChangeModal from "./packageChangeModal";
+import moment from "moment";
 
 //package change functional korte hobe
 export default function Packages() {
@@ -22,9 +26,18 @@ export default function Packages() {
     return findItem;
   };
 
+  const packageChange = (value) => {
+    const temp = packages.find((item) => item.id === value);
+    return temp;
+  };
+
+  // customer package
+  const [changePackage, setChangePackage] = useState("");
+
   // get packages api call
   useEffect(() => {
     getPackagesByIspOwer(dispatch);
+    customerPackage(userData, setChangePackage);
   }, []);
 
   return (
@@ -51,14 +64,38 @@ export default function Packages() {
             {userData?.monthlyFee} TK
           </span>{" "}
         </p>
-        <button
-          data-bs-toggle="modal"
-          data-bs-target="#change_package_modal"
-          className="btn btn-sm btn-success ms-3"
-        >
-          Change package
-        </button>
+        {userData.userType === "pppoe" && (
+          <button
+            data-bs-toggle="modal"
+            data-bs-target="#change_package_modal"
+            className="btn btn-sm btn-success ms-3"
+            disabled={changePackage.status === "pending"}
+          >
+            Change package
+          </button>
+        )}
       </div>
+
+      {changePackage && (
+        <div className="mt-3">
+          <p style={{ color: "#3eff00" }}>Change Package :</p>
+          <div className="packages_info_wraper d-flex justify-content-between w-25">
+            <p>{moment(changePackage.createdAt).format("YYYY-MM-DD")}</p>
+            <p>{packageChange(changePackage.mikrotikPackage)?.name}</p>
+            <div>
+              {changePackage.status === "pending" ? (
+                <span className="badge bg-warning text-dark">
+                  {changePackage.status}
+                </span>
+              ) : (
+                <span className="badge bg-success text-white">
+                  {changePackage.status}
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       <h3 className="text-uppercase mt-3">Our packages</h3>
 

@@ -122,6 +122,7 @@ export default function Customer() {
 
   const [mikrotikPac, setMikrotikPac] = useState([]);
   const [Customers1, setCustomers1] = useState([]);
+  console.log(Customers1);
   const [Customers2, setCustomers2] = useState([]);
 
   // set customer id in state for note

@@ -15,7 +15,6 @@ const PackageChangeModal = () => {
   const userData = useSelector(
     (state) => state.persistedReducer.auth?.currentUser.customer
   );
-  console.log(userData);
 
   // package select option
   const options = packages.map((item) => {
@@ -31,7 +30,6 @@ const PackageChangeModal = () => {
 
   // package select option
   const [selectedPackage, setSelectedPackage] = useState(null);
-  console.log(selectedPackage);
 
   // handle submit method
   const changePackageController = () => {
@@ -43,13 +41,6 @@ const PackageChangeModal = () => {
       customerId: userData.customerId,
       previousPackage: userData.mikrotikPackage,
       status: "pending",
-      // pppoe: {
-      //   service: "pppoe",
-      //   disabled: userData.pppoe.disabled,
-      //   name: userData.pppoe.name,
-      //   password: userData.pppoe.password,
-      //   profile: selectedPackage.label,
-      // },
     };
     if (userData.reseller) {
       sendingData.reseller = userData.reseller;
