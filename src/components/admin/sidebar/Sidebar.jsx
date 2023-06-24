@@ -1291,16 +1291,31 @@ export default function Sidebar() {
                               </NavLink>
                             )}
 
-                          {userRole === "ispOwner" && (
+                          {(userRole === "ispOwner" ||
+                            userRole === "reseller") && (
                             <NavLink
                               key={14}
-                              to="/netFee/packageChange"
+                              to={
+                                userRole === "reseller"
+                                  ? "/reseller/customer/package/changes"
+                                  : "/netFee/packageChange"
+                              }
                               className={(navInfo) =>
                                 navInfo.isActive ? activeClass.active : ""
                               }
                             >
                               <FontColor>
-                                <li className="sidebarItems" id="packageChange">
+                                <li
+                                  className="sidebarItems"
+                                  id={
+                                    window.location.pathname ===
+                                    (userRole === "reseller"
+                                      ? "/reseller/customer/package/changes"
+                                      : "/netFee/packageChange")
+                                      ? "active"
+                                      : ""
+                                  }
+                                >
                                   <div className="sidebarIcon">{<Award />}</div>
                                   <span className="sidebarLinksName">
                                     {t("packageChange")}
