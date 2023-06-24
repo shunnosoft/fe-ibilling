@@ -74,29 +74,33 @@ export default function ClientProfile() {
                 <td>Address</td>
                 <td>{userData?.address}</td>
               </tr>
-              <tr>
-                {permission?.showCustomerPanelPackage && <td>Package</td>}
-                {userData.userType === "pppoe" && (
-                  <td>
-                    {!userData?.reseller &&
-                      (findAliasName(userData?.pppoe.profile)?.aliasName ||
-                        findAliasName(userData?.pppoe.profile)?.name)}
-                    {userData?.reseller &&
-                      findAliasName(userData?.pppoe.profile)?.name}
-                  </td>
-                )}
-                {userData.userType === "simple-queue" && (
-                  <td>
-                    {parseInt(userData.queue.maxLimit.split("/")[1] / 1000000)}
-                    MBps
-                  </td>
-                )}
-                {userData.userType === "firewall-queue" && (
-                  <td>
-                    {staticMikrotikPackage(userData?.mikrotikPackage)?.name}
-                  </td>
-                )}
-              </tr>
+              {permission?.showCustomerPanelPackage && (
+                <tr>
+                  <td>Package</td>
+                  {userData.userType === "pppoe" && (
+                    <td>
+                      {!userData?.reseller &&
+                        (findAliasName(userData?.pppoe.profile)?.aliasName ||
+                          findAliasName(userData?.pppoe.profile)?.name)}
+                      {userData?.reseller &&
+                        findAliasName(userData?.pppoe.profile)?.name}
+                    </td>
+                  )}
+                  {userData.userType === "simple-queue" && (
+                    <td>
+                      {parseInt(
+                        userData.queue.maxLimit.split("/")[1] / 1000000
+                      )}
+                      MBps
+                    </td>
+                  )}
+                  {userData.userType === "firewall-queue" && (
+                    <td>
+                      {staticMikrotikPackage(userData?.mikrotikPackage)?.name}
+                    </td>
+                  )}
+                </tr>
+              )}
               <tr>
                 <td>Balance</td>
                 <td>{userData?.balance}</td>
