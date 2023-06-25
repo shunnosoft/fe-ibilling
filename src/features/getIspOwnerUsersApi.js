@@ -125,11 +125,9 @@ export const ispOwnerSupportNumbers = async (
 };
 
 // customer change package
-export const customerPackage = async (userData, setChangePackage) => {
+export const customerPackage = async (customerId, setChangePackage) => {
   try {
-    const res = await apiLink.get(
-      `customer/get/changes/package/${userData.id}/${userData?.ispOwner.id}`
-    );
+    const res = await apiLink.get(`customer/get/changes/package/${customerId}`);
     setChangePackage(res.data);
   } catch (error) {
     console.log(error);

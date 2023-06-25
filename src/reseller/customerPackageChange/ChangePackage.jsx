@@ -146,6 +146,7 @@ const ChangePackage = () => {
               <div
                 style={{
                   display: "flex",
+                  cursor: "pointer",
                 }}
               >
                 <span
@@ -158,18 +159,18 @@ const ChangePackage = () => {
                 </span>
                 <span
                   style={{ cursor: "pointer" }}
-                  class="badge bg-danger 6-rem"
+                  class="badge bg-warning"
                   onClick={() => {
                     packageRejectedHandler("rejected", original);
                   }}
                 >
-                  {t("cancel")}
+                  {t("rejected")}
                 </span>
               </div>
             ) : original.status === "accepted" ? (
-              <span class="badge bg-success">{original.status}</span>
+              <span class="badge bg-success">{t(original.status)}</span>
             ) : (
-              <span class="badge bg-danger">{original.status}</span>
+              <span class="badge bg-warning">{t(original.status)}</span>
             )}
           </div>
         ),

@@ -17,6 +17,9 @@ export default function Packages() {
     (state) => state.persistedReducer.auth?.currentUser.customer
   );
 
+  // ispOwner permission
+  const permission = userData?.ispOwner.bpSettings;
+
   // get all packages
   const packages = useSelector((state) => state.package.packages);
 
@@ -37,7 +40,7 @@ export default function Packages() {
   // get packages api call
   useEffect(() => {
     getPackagesByIspOwer(dispatch);
-    customerPackage(userData, setChangePackage);
+    customerPackage(userData.id, setChangePackage);
   }, []);
 
   return (
@@ -58,12 +61,15 @@ export default function Packages() {
             </span>
           )}
         </p>
-        <p>
-          Package rate:{" "}
-          <span className="badge bg-warning text-dark">
-            {userData?.monthlyFee} TK
-          </span>{" "}
-        </p>
+        {permission?.showCustomerPanelPackage && (
+          <p>
+            Package rate:{" "}
+            <span className="badge bg-warning text-dark">
+              {userData?.monthlyFee} TK
+            </span>{" "}
+          </p>
+        )}
+
         {userData.userType === "pppoe" && (
           <button
             data-bs-toggle="modal"
@@ -117,10 +123,12 @@ export default function Packages() {
                   {userData?.reseller && (
                     <h5 className="card-title">{item.name}</h5>
                   )}
-                  <p className="card-text">
-                    {item.rate} TK /{" "}
-                    <span className="badge bg-secondary">Month</span>
-                  </p>
+                  {permission?.showCustomerPanelPackage && (
+                    <p className="card-text">
+                      {item.rate} TK /{" "}
+                      <span className="badge bg-secondary">Month</span>
+                    </p>
+                  )}
                 </div>
               </div>
             </div>

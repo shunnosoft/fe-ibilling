@@ -724,7 +724,7 @@ export const rejectChangePackage = async (dispatch, data, setIsLoading) => {
 
   try {
     const res = await apiLink.patch(`reseller/reject/package/change`, data);
-    dispatch(getResellerChangePackageRequest(res.data));
+    dispatch(updateResellerChangePackageRequest(res.data));
   } catch (error) {
     console.log(error.response);
   }
