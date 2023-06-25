@@ -15,6 +15,7 @@ import {
   ArrowLeft,
   CashStack,
   FileExcelFill,
+  GearFill,
   PenFill,
   PersonFill,
   PrinterFill,
@@ -33,10 +34,14 @@ import ReactToPrint from "react-to-print";
 import PrintCustomer from "./customerPDF";
 import BulkBillingCycleEdit from "../resellerModals/bulkBillingCycleEdit";
 import FormatNumber from "../../../components/common/NumberFormat";
-import { fetchMikrotik } from "../../../features/apiCalls";
+import { fetchMikrotik, getArea } from "../../../features/apiCalls";
 import BulkStatusEdit from "../resellerModals/bulkStatusEdit";
 import BulkCustomerTransfer from "../resellerModals/bulkCustomerTransfer";
 import BulkPromiseDateEdit from "../../Customer/customerCRUD/bulkOpration/BulkPromiseDateEdit";
+import BulkSubAreaEdit from "../../Customer/customerCRUD/bulkOpration/bulkSubAreaEdit";
+import BulkPaymentStatusEdit from "../../Customer/customerCRUD/bulkOpration/BulkPaymentStatusEdit";
+import BulkAutoConnectionEdit from "../../Customer/customerCRUD/bulkOpration/bulkAutoConnectionEdit";
+import { getSubAreasApi } from "../../../features/actions/customerApiCall";
 
 // get specific customer
 
@@ -103,6 +108,9 @@ const ResellerCustomer = () => {
   // check mikrotik checkbox
   const [mikrotikCheck, setMikrotikCheck] = useState(false);
 
+  //bulk menu show and hide
+  const [isMenuOpen, setMenuOpen] = useState(false);
+
   //bulk-operations
   const [bulkCustomer, setBulkCustomer] = useState([]);
 
@@ -118,6 +126,9 @@ const ResellerCustomer = () => {
     if (customer.length === 0)
       getResellerCustomer(dispatch, resellerId, setIsLoading);
     // fetchMikrotik(dispatch, ispOwnerId, setIsLoading);
+
+    getArea(dispatch, ispOwnerId, setIsLoading);
+    getSubAreasApi(dispatch, ispOwnerId);
   }, []);
 
   // set customer at state
@@ -656,7 +667,223 @@ const ResellerCustomer = () => {
         bulkCustomer={bulkCustomer}
         modalId="bulkTransferToReseller"
       />
+
+      <BulkSubAreaEdit bulkCustomer={bulkCustomer} modalId="customerBulkEdit" />
+
+      <BulkPaymentStatusEdit
+        bulkCustomer={bulkCustomer}
+        modalId="bulkPaymentStatusEdit"
+      />
+
+      <BulkAutoConnectionEdit
+        bulkCustomer={bulkCustomer}
+        modalId="autoDisableEditModal"
+      />
+
       {bulkCustomer.length > 0 && (
+        <div className="client_wraper2">
+          <div
+            className={`settings_wraper2 ${
+              isMenuOpen ? "show-menu2" : "hide-menu2"
+            }`}
+          >
+            <ul className="client_service_list2 ps-0">
+              <li
+                data-bs-toggle="modal"
+                data-bs-target="#returnCustomer"
+                type="button"
+                className="p-1"
+              >
+                <div className="menu_icon2">
+                  <button
+                    className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-primary"
+                    title={t("returnCustomer")}
+                  >
+                    <i class="fa-solid fa-right-left"></i>
+                    <span className="button_title">{t("returnCustomer")}</span>
+                  </button>
+                </div>
+                <div className="menu_label2">{t("returnCustomer")}</div>
+              </li>
+
+              <hr className="mt-0 mb-0" />
+
+              {bpSettings.resellerCustomerBulkBillingCycleEdit && (
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#customerBillingCycle"
+                  type="button"
+                  className="p-1"
+                >
+                  <div className="menu_icon2">
+                    <button
+                      className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-primary"
+                      title={t("editBillingCycle")}
+                    >
+                      <i class="fas fa-edit"></i>
+                      <span className="button_title">
+                        {t("editBillingCycle")}
+                      </span>
+                    </button>
+                  </div>
+                  <div className="menu_label2">{t("editBillingCycle")}</div>
+                </li>
+              )}
+
+              <hr className="mt-0 mb-0" />
+
+              {bpSettings.resellerCustomerBulkStatusEdit && (
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#bulkStatusEdit"
+                  type="button"
+                  className="p-1"
+                >
+                  <div className="menu_icon2">
+                    <button
+                      className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-primary"
+                      title={t("editStatus")}
+                    >
+                      <i className="fas fa-edit"></i>
+                      <span className="button_title">{t("editStatus")}</span>
+                    </button>
+                  </div>
+                  <div className="menu_label2">{t("editStatus")}</div>
+                </li>
+              )}
+
+              <hr className="mt-0 mb-0" />
+
+              {bpSettings.resellerCustomerBulkPromiseDateEdit && (
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#bulkPromiseDateEdit"
+                  type="button"
+                  className="p-1"
+                >
+                  <div className="menu_icon2">
+                    <button
+                      className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-primary"
+                      title={t("editPromiseDate")}
+                    >
+                      <i className="fas fa-edit"></i>
+                      <span className="button_title">
+                        {t("editPromiseDate")}
+                      </span>
+                    </button>
+                  </div>
+                  <div className="menu_label2">{t("editPromiseDate")}</div>
+                </li>
+              )}
+
+              <hr className="mt-0 mb-0" />
+
+              <li
+                data-bs-toggle="modal"
+                data-bs-target="#bulkTransferToReseller"
+                type="button"
+                className="p-1"
+              >
+                <div className="menu_icon2">
+                  <button
+                    className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-primary"
+                    title={t("transferResellerToReseller")}
+                  >
+                    <i className="fa-solid fa-right-left"></i>
+                    <span className="button_title">
+                      {t("transferResellerToReseller")}
+                    </span>
+                  </button>
+                </div>
+                <div className="menu_label2">
+                  {t("transferResellerToReseller")}
+                </div>
+              </li>
+
+              <hr className="mt-0 mb-0" />
+
+              {bpSettings.resellerCustomerBulkAreaEdit && (
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#customerBulkEdit"
+                  type="button"
+                  className="p-1"
+                >
+                  <div className="menu_icon2">
+                    <button
+                      className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-primary"
+                      title={t("editArea")}
+                    >
+                      <i class="fas fa-map-marked-alt fa-xs"></i>
+                      <span className="button_title">{t("editArea")}</span>
+                    </button>
+                  </div>
+                  <div className="menu_label2">{t("editArea")}</div>
+                </li>
+              )}
+
+              <hr className="mt-0 mb-0" />
+
+              {bpSettings.resellerCustomerBulkPaymentStatusEdit && (
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#bulkPaymentStatusEdit"
+                  type="button"
+                  className="p-1"
+                >
+                  <div className="menu_icon2">
+                    <button
+                      className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-primary"
+                      title={t("editPaymentStatus")}
+                    >
+                      <i className="fas fa-edit fa-xs  "></i>
+                      <span className="button_title">
+                        {t("editPaymentStatus")}
+                      </span>
+                    </button>
+                  </div>
+                  <div className="menu_label2">{t("editPaymentStatus")}</div>
+                </li>
+              )}
+
+              <hr className="mt-0 mb-0" />
+
+              {bpSettings.resellerCustomerBulkAutoConnectionEdit && (
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#autoDisableEditModal"
+                  type="button"
+                  className="p-1"
+                >
+                  <div className="menu_icon2">
+                    <button
+                      className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-primary"
+                      title={t("autoConnectOnOff")}
+                    >
+                      <i class="fas fa-power-off fa-xs"></i>
+                      <span className="button_title">
+                        {t("autoConnectOnOff")}
+                      </span>
+                    </button>
+                  </div>
+                  <div className="menu_label2">{t("autoConnectOnOff")}</div>
+                </li>
+              )}
+            </ul>
+
+            <div className="setting_icon_wraper2">
+              <div
+                onClick={() => setMenuOpen(!isMenuOpen)}
+                className="client_setting_icon2"
+              >
+                <GearFill />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* {bulkCustomer.length > 0 && (
         <div className="bulkActionButton">
           <button
             className="bulk_action_button"
@@ -669,6 +896,7 @@ const ResellerCustomer = () => {
             <i class="fa-solid fa-right-left"></i>
             <span className="button_title"> {t("returnCustomer")} </span>
           </button>
+
           {bpSettings.resellerCustomerBulkBillingCycleEdit && (
             <button
               className="bulk_action_button"
@@ -724,7 +952,7 @@ const ResellerCustomer = () => {
             </span>
           </button>
         </div>
-      )}
+      )} */}
     </>
   );
 };
