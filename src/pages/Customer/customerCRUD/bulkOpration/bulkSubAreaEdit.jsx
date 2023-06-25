@@ -58,6 +58,7 @@ const BulkSubAreaEdit = ({ bulkCustomer, modalId }) => {
 
   const submitHandler = (e) => {
     e.preventDefault();
+    const form = e.target;
     if (!selectedValue.area) {
       setError({
         ...error,
@@ -85,6 +86,12 @@ const BulkSubAreaEdit = ({ bulkCustomer, modalId }) => {
       if (confirm) {
         bulksubAreaEdit(dispatch, data, setIsLoading);
       }
+      setSelectedValue({
+        area: "",
+        subArea: "",
+      });
+      setAreaName("");
+      form.reset();
     }
   };
   const subAreaEditHandler = (e) => {
