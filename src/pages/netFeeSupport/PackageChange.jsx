@@ -91,23 +91,23 @@ const PackageChange = () => {
   const columns = React.useMemo(
     () => [
       {
-        width: "9%",
+        width: "14%",
         Header: t("customerId"),
         accessor: "customerId",
       },
       {
-        width: "8%",
+        width: "14%",
         Header: t("name"),
         accessor: "name",
       },
       {
         Header: t("mobile"),
-        width: "8%",
+        width: "14%",
         accessor: "mobile",
       },
 
       {
-        width: "10%",
+        width: "14%",
         Header: t("createdAt"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
@@ -116,29 +116,24 @@ const PackageChange = () => {
       },
 
       {
-        width: "10%",
+        width: "14%",
         Header: t("previousPackage"),
         accessor: "previousPackage",
         Cell: ({ cell: { value } }) => <>{findPackage(value)}</>,
       },
       {
-        width: "12%",
+        width: "15%",
         Header: t("requestedPackage"),
         accessor: "mikrotikPackage",
         Cell: ({ cell: { value } }) => <>{findPackage(value)}</>,
       },
       {
-        width: "8%",
-        Header: t("action"),
+        width: "14%",
+        Header: <div className="text-center">{t("action")}</div>,
+        id: "option1",
 
         Cell: ({ row: { original } }) => (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
+          <div className="d-flex justify-content-center align-items-center">
             <div>
               {original.status === "pending" ? (
                 acceptLoading ? (
@@ -146,7 +141,7 @@ const PackageChange = () => {
                     <Loader />
                   </div>
                 ) : (
-                  <div>
+                  <div className="d-flex justify-content-center align-items-center">
                     <span
                       style={{ cursor: "pointer" }}
                       class="badge bg-success shadow me-1"

@@ -31,6 +31,8 @@ import {
   PersonDash,
   Shop,
   Award,
+  PhoneVibrate,
+  ArrowRepeat,
 } from "react-bootstrap-icons";
 import { NavLink, Router } from "react-router-dom";
 import activeClass from "../../../assets/css/active.module.css";
@@ -1278,10 +1280,15 @@ export default function Sidebar() {
                                 <FontColor>
                                   <li
                                     className="sidebarItems"
-                                    id="supportNumber"
+                                    id={
+                                      window.location.pathname ===
+                                      "/netFee/supportNumber"
+                                        ? "active"
+                                        : ""
+                                    }
                                   >
                                     <div className="sidebarIcon">
-                                      {<Award />}
+                                      <PhoneVibrate />
                                     </div>
                                     <span className="sidebarLinksName">
                                       {t("supportNumbers")}
@@ -1316,7 +1323,9 @@ export default function Sidebar() {
                                       : ""
                                   }
                                 >
-                                  <div className="sidebarIcon">{<Award />}</div>
+                                  <div className="sidebarIcon">
+                                    <ArrowRepeat />
+                                  </div>
                                   <span className="sidebarLinksName">
                                     {t("packageChange")}
                                   </span>
