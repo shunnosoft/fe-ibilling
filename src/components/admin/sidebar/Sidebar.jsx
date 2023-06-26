@@ -31,6 +31,13 @@ import {
   PersonDash,
   Shop,
   Award,
+  PhoneVibrate,
+  ArrowRepeat,
+  TelephoneFill,
+  Whatsapp,
+  BookmarksFill,
+  BellFill,
+  Headset,
 } from "react-bootstrap-icons";
 import { NavLink, Router } from "react-router-dom";
 import activeClass from "../../../assets/css/active.module.css";
@@ -1189,7 +1196,7 @@ export default function Sidebar() {
                         <Accordion.Header
                           onClick={() => handleActiveAccordian("7")}
                         >
-                          <div className="sidebarIcon">{<WalletFill />}</div>
+                          <div className="sidebarIcon">{<Headset />}</div>
                           <span className="sidebarLinksName">
                             {t("support")}
                           </span>
@@ -1232,7 +1239,7 @@ export default function Sidebar() {
                             </FontColor>
                           </NavLink>
 
-                          {userRole !== "collector" && (
+                          {/* {userRole !== "collector" && (
                             <NavLink
                               key={12}
                               to={
@@ -1264,7 +1271,7 @@ export default function Sidebar() {
                                 </li>
                               </FontColor>
                             </NavLink>
-                          )}
+                          )} */}
 
                           {userRole !== "reseller" &&
                             !user?.collector?.reseller && (
@@ -1278,10 +1285,15 @@ export default function Sidebar() {
                                 <FontColor>
                                   <li
                                     className="sidebarItems"
-                                    id="supportNumber"
+                                    id={
+                                      window.location.pathname ===
+                                      "/netFee/supportNumber"
+                                        ? "active"
+                                        : ""
+                                    }
                                   >
                                     <div className="sidebarIcon">
-                                      {<Award />}
+                                      <PhoneVibrate />
                                     </div>
                                     <span className="sidebarLinksName">
                                       {t("supportNumbers")}
@@ -1316,7 +1328,9 @@ export default function Sidebar() {
                                       : ""
                                   }
                                 >
-                                  <div className="sidebarIcon">{<Award />}</div>
+                                  <div className="sidebarIcon">
+                                    <ArrowRepeat />
+                                  </div>
                                   <span className="sidebarLinksName">
                                     {t("packageChange")}
                                   </span>
@@ -1328,6 +1342,100 @@ export default function Sidebar() {
                       </Accordion.Item>
                     </>
                     {/* )} */}
+                    {userRole !== "collector" && (
+                      <>
+                        <Accordion.Item eventKey="8">
+                          <Accordion.Header
+                            onClick={() => handleActiveAccordian("8")}
+                          >
+                            <div className="sidebarIcon">{<BellFill />}</div>
+                            <span className="sidebarLinksName">
+                              {t("netFeeSupport")}
+                            </span>
+                          </Accordion.Header>
+                          <Accordion.Body>
+                            <NavLink
+                              key={18}
+                              to={"/reseller/support/ticket"}
+                              className={(navInfo) =>
+                                navInfo.isActive ? activeClass.active : ""
+                              }
+                            >
+                              <FontColor>
+                                <li
+                                  className="sidebarItems"
+                                  // id={
+                                  //   window.location.pathname ===
+                                  //   "/reseller/support/ticket"
+                                  //     ? "active"
+                                  //     : ""
+                                  // }
+                                >
+                                  <div className="sidebarIcon">
+                                    {<BookmarksFill />}
+                                  </div>
+                                  <span className="sidebarLinksName">
+                                    {t("supportTicket")}
+                                  </span>
+                                </li>
+                              </FontColor>
+                            </NavLink>
+                            <NavLink
+                              key={19}
+                              to={"/reseller/support/ticket"}
+                              className={(navInfo) =>
+                                navInfo.isActive ? activeClass.active : ""
+                              }
+                            >
+                              <FontColor>
+                                <li
+                                  className="sidebarItems"
+                                  // id={
+                                  //   window.location.pathname ===
+                                  //   "/reseller/support/ticket"
+                                  //     ? "active"
+                                  //     : ""
+                                  // }
+                                >
+                                  <div className="sidebarIcon">
+                                    {<Whatsapp />}
+                                  </div>
+                                  <span className="sidebarLinksName">
+                                    {t("whatsAppLive")}
+                                  </span>
+                                </li>
+                              </FontColor>
+                            </NavLink>
+                            <NavLink
+                              key={20}
+                              to={"/reseller/support/ticket"}
+                              className={(navInfo) =>
+                                navInfo.isActive ? activeClass.active : ""
+                              }
+                            >
+                              <FontColor>
+                                <li
+                                  className="sidebarItems"
+                                  // id={
+                                  //   window.location.pathname ===
+                                  //   "/reseller/support/ticket"
+                                  //     ? "active"
+                                  //     : ""
+                                  // }
+                                >
+                                  <div className="sidebarIcon">
+                                    {<TelephoneFill />}
+                                  </div>
+                                  <span className="sidebarLinksName">
+                                    {t("supportNumbers")}
+                                  </span>
+                                </li>
+                              </FontColor>
+                            </NavLink>
+                          </Accordion.Body>
+                        </Accordion.Item>
+                      </>
+                    )}
                   </Accordion>
                 </div>
               </ul>

@@ -47,7 +47,7 @@ const PackageChangeModal = () => {
     } else {
       sendingData.ispOwner = userData.ispOwner.id;
     }
-    console.log(sendingData);
+
     changePackageApi(sendingData, setLoading);
   };
 

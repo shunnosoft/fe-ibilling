@@ -1580,7 +1580,7 @@ const PPPOECustomer = () => {
                   <div className="menu_icon2">
                     <button
                       className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-secondary"
-                      title={t("autoConnectOnOff")}
+                      title={t("automaticConnectionOff")}
                     >
                       <i class="fas fa-power-off fa-xs"></i>
                       <span className="button_title">
@@ -1611,7 +1611,7 @@ const PPPOECustomer = () => {
                     <div className="menu_icon2">
                       <button
                         className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-danger"
-                        title={t("package")}
+                        title={t("changeMikrotik")}
                       >
                         <i class="fas fa-server fa-xs"></i>
                         <span className="button_title">
@@ -1638,7 +1638,7 @@ const PPPOECustomer = () => {
                     <div className="menu_icon2">
                       <button
                         className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-primary"
-                        title={t("package")}
+                        title={t("updatePackage")}
                       >
                         <i class="fas fa-wifi fa-xs"></i>
                         <span className="button_title">
@@ -1665,7 +1665,7 @@ const PPPOECustomer = () => {
                     <div className="menu_icon2">
                       <button
                         className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-2 bg-warning"
-                        title={t("package")}
+                        title={t("bulkRecharge")}
                       >
                         <i className="fas fa-dollar fa-xs "></i>
                         <span className="button_title">
