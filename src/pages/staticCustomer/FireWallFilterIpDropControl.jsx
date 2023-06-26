@@ -52,7 +52,7 @@ const FireWallFilterIpDropControl = () => {
 
   // fire wall filter all ip drop delete and reset api call handler
   useEffect(() => {
-    if (apiCall === "removeRequest") {
+    if (apiCall === "removeRequest" && fireWallIpFilterDrop.length) {
       removeFireWallAllIpDrop(dispatch, setIpLoading, ispOwner, mikrotikId);
     }
 
@@ -123,13 +123,14 @@ const FireWallFilterIpDropControl = () => {
                       id="fireWallIpDropApiCall"
                       onChange={(e) => apiCallChangeHandler(e.target.checked)}
                       checked={
-                        fireWallIpFilterDrop[0]?.status === "delete" ||
+                        fireWallIpFilterDrop[0]?.status === "delete" &&
                         fireWallIpFilterDrop[0]?.status !== "drop"
                       }
                     ></input>
                     <label
                       class="form-check-label text-secondary"
                       for="fireWallIpDropApiCall"
+                      style={{ cursor: "pointer" }}
                     >
                       {fireWallIpFilterDrop[0]?.status === "delete"
                         ? t("bringBackFireWallIpDrop")

@@ -190,7 +190,7 @@ const FireWallFilter = () => {
   // fire wall filter all ip drop delete and reset api call handler
 
   useEffect(() => {
-    if (apiCall === "removeRequest") {
+    if (apiCall === "removeRequest" && fireWallIpFilterDrop.length) {
       removeFireWallAllIpDrop(dispatch, setIpLoading, ispOwner, mikrotikId);
     }
 
@@ -224,20 +224,20 @@ const FireWallFilter = () => {
             </div>
 
             <div className="addAndSettingIcon d-flex flex-column align-items-start">
-              <div class="form-check form-switch">
+              <div className="form-check form-switch">
                 <input
-                  class="form-check-input"
+                  className="form-check-input"
                   type="checkbox"
                   role="switch"
                   id="fireWallIpDropApiCall"
                   checked={
-                    fireWallIpFilterDrop[0]?.status === "delete" ||
+                    fireWallIpFilterDrop[0]?.status === "delete" &&
                     fireWallIpFilterDrop[0]?.status !== "drop"
                   }
                   onChange={(e) => apiCallChangeHandler(e.target.checked)}
                 ></input>
                 <label
-                  class="form-check-label text-secondary"
+                  className="form-check-label text-secondary"
                   for="fireWallIpDropApiCall"
                 >
                   {fireWallIpFilterDrop[0]?.status === "delete"
