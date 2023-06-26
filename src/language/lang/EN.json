@@ -803,5 +803,6 @@
   "mikrotikPort": "Mikrotik Port",
   "mikrotikPassword": "Mikrotik Password",
   "resellerDelete": "Do you want to delete the reseller?",
-  "allPermission": "All Permission"
+  "allPermission": "All Permission",
+  "whatsAppLive": "What's App Live"
 }

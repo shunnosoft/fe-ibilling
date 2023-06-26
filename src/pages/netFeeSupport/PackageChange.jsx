@@ -91,23 +91,23 @@ const PackageChange = () => {
   const columns = React.useMemo(
     () => [
       {
-        width: "14%",
-        Header: t("customerId"),
+        width: "8%",
+        Header: t("id"),
         accessor: "customerId",
       },
       {
-        width: "14%",
+        width: "12%",
         Header: t("name"),
         accessor: "name",
       },
       {
         Header: t("mobile"),
-        width: "14%",
+        width: "12%",
         accessor: "mobile",
       },
 
       {
-        width: "14%",
+        width: "17%",
         Header: t("createdAt"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
@@ -116,13 +116,13 @@ const PackageChange = () => {
       },
 
       {
-        width: "14%",
+        width: "17%",
         Header: t("previousPackage"),
         accessor: "previousPackage",
         Cell: ({ cell: { value } }) => <>{findPackage(value)}</>,
       },
       {
-        width: "15%",
+        width: "20%",
         Header: t("requestedPackage"),
         accessor: "mikrotikPackage",
         Cell: ({ cell: { value } }) => <>{findPackage(value)}</>,
