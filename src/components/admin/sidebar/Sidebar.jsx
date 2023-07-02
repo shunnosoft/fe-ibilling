@@ -46,6 +46,7 @@ import { useSelector } from "react-redux";
 import { Accordion } from "react-bootstrap";
 // the hook
 import { useTranslation } from "react-i18next";
+import SupportCall from "../../../pages/netFeeSupport/supportOpration/SupportCall";
 
 export default function Sidebar() {
   const { t, i18n } = useTranslation();
@@ -76,6 +77,7 @@ export default function Sidebar() {
     document.querySelector(".sidebar").classList.remove("toggleSidebar");
   };
 
+  const [isOpen, setIsOpen] = useState(false);
   const [activeKey, setActiveKey] = useState();
   const location = window.location.pathname;
 
@@ -1354,9 +1356,9 @@ export default function Sidebar() {
                             </span>
                           </Accordion.Header>
                           <Accordion.Body>
-                            <NavLink
-                              key={18}
-                              to={"/reseller/support/ticket"}
+                            <a
+                              href={`http://139.84.135.222:5020/support-ticket/create?&netfeeID=${getIspOwnerData?.netFeeId}`}
+                              target="_blank"
                               className={(navInfo) =>
                                 navInfo.isActive ? activeClass.active : ""
                               }
@@ -1364,12 +1366,12 @@ export default function Sidebar() {
                               <FontColor>
                                 <li
                                   className="sidebarItems"
-                                  // id={
-                                  //   window.location.pathname ===
-                                  //   "/reseller/support/ticket"
-                                  //     ? "active"
-                                  //     : ""
-                                  // }
+                                  id={
+                                    window.location.pathname ===
+                                    "/support-ticket"
+                                      ? "active"
+                                      : ""
+                                  }
                                 >
                                   <div className="sidebarIcon">
                                     {<BookmarksFill />}
@@ -1379,7 +1381,7 @@ export default function Sidebar() {
                                   </span>
                                 </li>
                               </FontColor>
-                            </NavLink>
+                            </a>
                             <NavLink
                               key={19}
                               to={"/reseller/support/ticket"}
@@ -1388,15 +1390,7 @@ export default function Sidebar() {
                               }
                             >
                               <FontColor>
-                                <li
-                                  className="sidebarItems"
-                                  // id={
-                                  //   window.location.pathname ===
-                                  //   "/reseller/support/ticket"
-                                  //     ? "active"
-                                  //     : ""
-                                  // }
-                                >
+                                <li className="sidebarItems">
                                   <div className="sidebarIcon">
                                     {<Whatsapp />}
                                   </div>
@@ -1406,9 +1400,7 @@ export default function Sidebar() {
                                 </li>
                               </FontColor>
                             </NavLink>
-                            <NavLink
-                              key={20}
-                              to={"/reseller/support/ticket"}
+                            <a
                               className={(navInfo) =>
                                 navInfo.isActive ? activeClass.active : ""
                               }
@@ -1416,22 +1408,22 @@ export default function Sidebar() {
                               <FontColor>
                                 <li
                                   className="sidebarItems"
-                                  // id={
-                                  //   window.location.pathname ===
-                                  //   "/reseller/support/ticket"
-                                  //     ? "active"
-                                  //     : ""
-                                  // }
+                                  title={t("netFeeSupportTeam")}
                                 >
                                   <div className="sidebarIcon">
                                     {<TelephoneFill />}
                                   </div>
-                                  <span className="sidebarLinksName">
+                                  <span
+                                    className="sidebarLinksName"
+                                    onClick={() =>
+                                      setIsOpen({ ...isOpen, [false]: true })
+                                    }
+                                  >
                                     {t("supportNumbers")}
                                   </span>
                                 </li>
                               </FontColor>
-                            </NavLink>
+                            </a>
                           </Accordion.Body>
                         </Accordion.Item>
                       </>
@@ -1550,6 +1542,7 @@ export default function Sidebar() {
         </div>
         {/* <span className="unblock"></span> */}
       </div>
+      <SupportCall isOpen={isOpen} />
     </TitleColor>
   );
 }

@@ -93,6 +93,8 @@ const ResellerCustomer = () => {
   // loading local state
   const [isLoading, setIsLoading] = useState(false);
 
+  const [areaLoading, setAreaLoading] = useState(false);
+
   // status local state
   const [filterStatus, setFilterStatus] = useState(null);
 
@@ -127,7 +129,7 @@ const ResellerCustomer = () => {
       getResellerCustomer(dispatch, resellerId, setIsLoading);
     // fetchMikrotik(dispatch, ispOwnerId, setIsLoading);
 
-    getArea(dispatch, ispOwnerId, setIsLoading);
+    getArea(dispatch, ispOwnerId, setAreaLoading);
     getSubAreasApi(dispatch, ispOwnerId);
   }, []);
 
@@ -696,7 +698,7 @@ const ResellerCustomer = () => {
               >
                 <div className="menu_icon2">
                   <button
-                    className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-primary"
+                    className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-secondary"
                     title={t("returnCustomer")}
                   >
                     <i class="fa-solid fa-right-left"></i>
@@ -741,7 +743,7 @@ const ResellerCustomer = () => {
                 >
                   <div className="menu_icon2">
                     <button
-                      className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-primary"
+                      className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-warning"
                       title={t("editStatus")}
                     >
                       <i className="fas fa-edit"></i>
@@ -786,7 +788,7 @@ const ResellerCustomer = () => {
               >
                 <div className="menu_icon2">
                   <button
-                    className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-primary"
+                    className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-warning"
                     title={t("transferResellerToReseller")}
                   >
                     <i className="fa-solid fa-right-left"></i>
@@ -811,7 +813,7 @@ const ResellerCustomer = () => {
                 >
                   <div className="menu_icon2">
                     <button
-                      className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-primary"
+                      className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-success"
                       title={t("editArea")}
                     >
                       <i class="fas fa-map-marked-alt fa-xs"></i>
@@ -833,7 +835,7 @@ const ResellerCustomer = () => {
                 >
                   <div className="menu_icon2">
                     <button
-                      className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-primary"
+                      className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-info"
                       title={t("editPaymentStatus")}
                     >
                       <i className="fas fa-edit fa-xs  "></i>
@@ -857,7 +859,7 @@ const ResellerCustomer = () => {
                 >
                   <div className="menu_icon2">
                     <button
-                      className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-primary"
+                      className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-danger"
                       title={t("autoConnectOnOff")}
                     >
                       <i class="fas fa-power-off fa-xs"></i>
@@ -882,77 +884,6 @@ const ResellerCustomer = () => {
           </div>
         </div>
       )}
-
-      {/* {bulkCustomer.length > 0 && (
-        <div className="bulkActionButton">
-          <button
-            className="bulk_action_button"
-            title={t("returnCustomer")}
-            data-bs-toggle="modal"
-            data-bs-target="#returnCustomer"
-            type="button"
-            class="btn btn-dark btn-floating btn-sm"
-          >
-            <i class="fa-solid fa-right-left"></i>
-            <span className="button_title"> {t("returnCustomer")} </span>
-          </button>
-
-          {bpSettings.resellerCustomerBulkBillingCycleEdit && (
-            <button
-              className="bulk_action_button"
-              title={t("editBillingCycle")}
-              data-bs-toggle="modal"
-              data-bs-target="#customerBillingCycle"
-              type="button"
-              class="btn btn-warning btn-floating btn-sm"
-            >
-              <i class="fas fa-edit"></i>
-              <span className="button_title"> {t("editBillingCycle")} </span>
-            </button>
-          )}
-
-          {bpSettings.resellerCustomerBulkStatusEdit && (
-            <button
-              className="bulk_action_button btn btn-info btn-floating btn-sm"
-              title={t("editStatus")}
-              data-bs-toggle="modal"
-              data-bs-target="#bulkStatusEdit"
-              type="button"
-            >
-              <i className="fas fa-edit"></i>
-              <span className="button_title"> {t("editStatus")}</span>
-            </button>
-          )}
-
-          {bpSettings.resellerCustomerBulkPromiseDateEdit && (
-            <button
-              className="bulk_action_button"
-              title={t("editPromiseDate")}
-              data-bs-toggle="modal"
-              data-bs-target="#bulkPromiseDateEdit"
-              type="button"
-              class="btn btn-dark btn-floating btn-sm"
-            >
-              <i class="fas fa-calendar-week"></i>
-              <span className="button_title"> {t("editPromiseDate")} </span>
-            </button>
-          )}
-
-          <button
-            className="bulk_action_button btn btn-primary btn-floating btn-sm"
-            title={t("transferResellerToReseller")}
-            data-bs-toggle="modal"
-            data-bs-target="#bulkTransferToReseller"
-            type="button"
-          >
-            <i className="fa-solid fa-right-left"></i>
-            <span className="button_title">
-              {" "}
-              {t("transferResellerToReseller")}{" "}
-            </span>
-          </button>
-        </div>
-      )} */}
     </>
   );
 };

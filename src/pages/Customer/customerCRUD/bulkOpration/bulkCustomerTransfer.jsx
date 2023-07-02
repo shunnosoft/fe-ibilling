@@ -88,7 +88,7 @@ const BulkCustomerTransfer = ({ bulkCustomer, modalId }) => {
       <div className="area-section">
         <label htmlFor="selectReseller">{t("subArea")}</label>
         <select
-          onClick={(e) => setSubAreaId(e.target.value)}
+          onChange={(e) => setSubAreaId(e.target.value)}
           id="selectReseller"
           className="form-select mw-100 mt-0"
         >

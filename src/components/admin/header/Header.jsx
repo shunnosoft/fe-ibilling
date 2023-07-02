@@ -23,9 +23,6 @@ import {
 import i18n from "../../../language/i18n/i18n";
 import FormatNumber from "../../common/NumberFormat";
 import { useTranslation } from "react-i18next";
-import MessageAlert from "../../../pages/message/MessageAlert";
-import SupportDetails from "./netFeeSupport/SupportDetails";
-import SupportCall from "../../../pages/netFeeSupport/supportOpration/SupportCall";
 import ResellerOnlinePayment from "../../../reseller/onlinePayment/ResellerOnlinePayment";
 
 export default function Header(props) {
@@ -151,7 +148,7 @@ export default function Header(props) {
               {/* <Link to="/netFee/support">
                 <SupportDetails />
               </Link> */}
-              {userRole !== "admin" && userRole !== "superadmin" ? (
+              {/* {userRole !== "admin" && userRole !== "superadmin" ? (
                 <div
                   style={{ cursor: "pointer", width: "190px" }}
                   className="fw-bold text-primary me-1"
@@ -163,7 +160,7 @@ export default function Header(props) {
                 </div>
               ) : (
                 ""
-              )}
+              )} */}
 
               {currentUser && userRole === "ispOwner" ? (
                 <div style={{ marginRight: "20px" }} className="refreshDiv">
@@ -462,7 +459,7 @@ export default function Header(props) {
       </FourGround>
       <ResellerOnlinePayment show={paymentShow} setShow={setPaymentShow} />
       {/* <MessageAlert ispOwner={ispOwner} /> */}
-      <SupportCall isOpen={isOpen} />
+      {/* <SupportCall isOpen={isOpen} /> */}
     </div>
   );
 }
