@@ -77,6 +77,7 @@ import BulkRecharge from "./customerCRUD/bulkOpration/BulkRecharge";
 import CustomersNumber from "./CustomersNumber";
 import "./client.css";
 import BulkPaymentStatusEdit from "./customerCRUD/bulkOpration/BulkPaymentStatusEdit";
+import CreateInvoice from "./customerCRUD/CreateInvoice";
 
 const PPPOECustomer = () => {
   const dispatch = useDispatch();
@@ -754,6 +755,23 @@ const PPPOECustomer = () => {
                     </div>
                   </li>
                 )}
+                {(permission?.createInvoice || role === "ispOwner") && (
+                  <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#createInvoiceModal"
+                    onClick={() => {
+                      getSpecificCustomer(original.id);
+                      setCustomerData(original);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <CurrencyDollar />
+                        <p className="actionP">{t("recharge")}</p>
+                      </div>
+                    </div>
+                  </li>
+                )}
               </ul>
             </div>
           </div>
@@ -1335,6 +1353,8 @@ const PPPOECustomer = () => {
       <TransferToReseller customerId={customerId} />
       {/* password reset modal */}
       <PasswordReset resetCustomerId={userId} />
+      {/* create temp invoice */}
+      <CreateInvoice single={customerId} customerData={customerData} />
       {/* bulk Modal */}
       {((role === "ispOwner" && bpSettings?.bulkAreaEdit) ||
         permission?.bulkAreaEdit) && (

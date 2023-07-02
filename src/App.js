@@ -110,6 +110,7 @@ import PoleBox from "./pages/subArea/PoleBox";
 import MikrotikCustomer from "./pages/configMikrotik/mikrotikCustomer/Customers";
 import PackageChange from "./pages/netFeeSupport/PackageChange";
 import ChangePackage from "./reseller/customerPackageChange/ChangePackage";
+import CustomerInvoice from "./pages/customerInvoice/CustomerInvoice";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
@@ -536,6 +537,16 @@ function App() {
               element={
                 user && (userRole === "ispOwner" || userRole === "manager") ? (
                   <InactiveCustomer />
+                ) : (
+                  <Navigate to={"/home"} />
+                )
+              }
+            />
+            <Route
+              path="customer/invoice"
+              element={
+                user && (userRole === "ispOwner" || userRole === "manager") ? (
+                  <CustomerInvoice />
                 ) : (
                   <Navigate to={"/home"} />
                 )

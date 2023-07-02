@@ -6,7 +6,7 @@ import * as Yup from "yup";
 import { FtextField } from "../../../components/common/FtextField";
 import "../../Customer/customer.css";
 import { useDispatch } from "react-redux";
-import { billCollect } from "../../../features/apiCalls";
+import { billCollect, createCustomerInvoice } from "../../../features/apiCalls";
 import Loader from "../../../components/common/Loader";
 import DatePicker from "react-datepicker";
 import Select from "react-select";
@@ -15,7 +15,7 @@ import { useEffect } from "react";
 import ReactToPrint from "react-to-print";
 import RechargePrintInvoice from "./bulkOpration/RechargePrintInvoice";
 
-export default function CustomerBillCollect({ single, customerData }) {
+export default function CreateInvoice({ single, customerData }) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
@@ -79,6 +79,7 @@ export default function CustomerBillCollect({ single, customerData }) {
   const [noteCheck, setNoteCheck] = useState(false);
   const [note, setNote] = useState("");
   const [selectedMonth, setSelectedMonth] = useState([]);
+  console.log(selectedMonth);
   const [billAmount, setBillAmount] = useState();
   const [balanceDue, setBalanceDue] = useState();
   const [billType, setBillType] = useState("bill");
@@ -217,7 +218,6 @@ export default function CustomerBillCollect({ single, customerData }) {
       ispOwner: ispOwner,
       user: currentUser?.user.id,
       collectorId: currentUserId, //when collector is logged in
-      userType: data?.userType,
       medium,
       package: data?.pppoe.profile,
     };
@@ -232,17 +232,12 @@ export default function CustomerBillCollect({ single, customerData }) {
       const monthValues = selectedMonth.map((item) => {
         return item.value;
       });
+      console.log({ monthValues });
       sendingData.month = monthValues.join(",");
     }
+    console.log(sendingData);
 
-    billCollect(
-      dispatch,
-      sendingData,
-      setLoading,
-      resetForm,
-      setResponseData,
-      setTest
-    );
+    createCustomerInvoice(dispatch, sendingData, setLoading, resetForm);
 
     setAmount(data.amount);
   };
@@ -250,7 +245,7 @@ export default function CustomerBillCollect({ single, customerData }) {
   return (
     <div
       className="modal fade"
-      id="collectCustomerBillModal"
+      id="createInvoiceModal"
       tabIndex="-1"
       aria-labelledby="customerModalDetails"
       aria-hidden="true"

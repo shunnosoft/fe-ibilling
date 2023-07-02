@@ -2154,6 +2154,32 @@ export const billCollect = async (
   setLoading(false);
 };
 
+//create invoice
+export const createCustomerInvoice = async (
+  dispatch,
+  billData,
+  setLoading,
+  resetForm = null
+) => {
+  setLoading(true);
+  try {
+    const res = await apiLink.post("/bill/customer/invoice", billData);
+    // dispatch(updateBalance(res.data));
+    console.log(res.data);
+    document.querySelector("#createInvoiceModal").click();
+    langMessage(
+      "success",
+      `${res.data.billType} বিল গ্রহণ সফল হয়েছে।`,
+      `${res.data.billType} Acceptance is Successful.`
+    );
+    resetForm();
+  } catch (error) {
+    document.querySelector("#createInvoiceModal").click();
+    toast.error(error.response?.data.message);
+  }
+  setLoading(false);
+};
+
 export const addDeposit = async (dispatch, data, setLoading) => {
   setLoading(true);
   try {
