@@ -35,7 +35,6 @@ export default function Mikrotik() {
   const permission = useSelector(
     (state) => state.persistedReducer.auth.userData.bpSettings
   );
-  console.log({ permission });
 
   let allmikrotiks = [];
   allmikrotiks = useSelector((state) => state.mikrotik.mikrotik);

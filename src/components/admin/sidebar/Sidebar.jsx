@@ -634,6 +634,33 @@ export default function Sidebar() {
                         {(userRole === "ispOwner" ||
                           userRole === "manager") && (
                           <NavLink
+                            key={125}
+                            to={"/customer/invoice"}
+                            className={(navInfo) =>
+                              navInfo.isActive ? activeClass.active : ""
+                            }
+                          >
+                            <FontColor>
+                              <li
+                                className="sidebarItems"
+                                id={
+                                  window.location.pathname ===
+                                  "/customer/invoice"
+                                    ? "active"
+                                    : ""
+                                }
+                              >
+                                <div className="sidebarIcon">{<People />}</div>
+                                <span className="sidebarLinksName">
+                                  {t("invoice")}
+                                </span>
+                              </li>
+                            </FontColor>
+                          </NavLink>
+                        )}
+                        {(userRole === "ispOwner" ||
+                          userRole === "manager") && (
+                          <NavLink
                             key={124}
                             to={"/inactive/customer"}
                             className={(navInfo) =>
