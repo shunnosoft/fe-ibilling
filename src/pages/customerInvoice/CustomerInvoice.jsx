@@ -1,17 +1,23 @@
-import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useTranslation } from "react-i18next";
 import { FontColor, FourGround } from "../../assets/js/theme";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import Loader from "../../components/common/Loader";
 import useDash from "../../assets/css/dash.module.css";
-import { useState } from "react";
 import {
   ArrowClockwise,
   FileExcelFill,
   PrinterFill,
   ThreeDots,
+  CurrencyDollar,
 } from "react-bootstrap-icons";
-import { getIspOwnerInvoice } from "../../features/apiCalls";
+import { getCustomer, getIspOwnerInvoice } from "../../features/apiCalls";
 import { useDispatch, useSelector } from "react-redux";
 import Footer from "../../components/admin/footer/Footer";
 import Table from "../../components/table/Table";
@@ -21,6 +27,7 @@ import { CSVLink } from "react-csv";
 import ReactToPrint from "react-to-print";
 import PrintReport from "../report/ReportPDF";
 import FormatNumber from "../../components/common/NumberFormat";
+import CustomerBillCollectInvoice from "../Customer/customerCRUD/CustomerBillCollectInvoice";
 
 const CustomerInvoice = () => {
   const { t } = useTranslation();
@@ -47,8 +54,16 @@ const CustomerInvoice = () => {
   // Loading state
   const [isLoading, setIsLoading] = useState(false);
 
+  const [customerLoading, setCustomerLoading] = useState(false);
+
   // customer state
   const [customerInvoice, setCustomerInvoice] = useState([]);
+
+  // customer id state
+  const [customerId, setCustomerId] = useState("");
+
+  // single customer object state
+  const [customerData, setCustomerData] = useState({});
 
   //filter state
   const [filterOptions, setFilterOption] = useState({
@@ -61,6 +76,9 @@ const CustomerInvoice = () => {
   useEffect(() => {
     allInvoice.length === 0 &&
       getIspOwnerInvoice(dispatch, ispOwnerId, setIsLoading);
+
+    // get customer api
+    getCustomer(dispatch, ispOwnerId, setCustomerLoading);
   }, []);
 
   // set all customer in state
@@ -155,6 +173,21 @@ const CustomerInvoice = () => {
                     </div>
                   </div>
                 </li> */}
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#rechargeInvoiceModal"
+                  onClick={() => {
+                    setCustomerId(original.customer.id);
+                    setCustomerData(original);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <CurrencyDollar />
+                      <p className="actionP">{t("recharge")}</p>
+                    </div>
+                  </div>
+                </li>
               </ul>
             </div>
           </div>
@@ -500,6 +533,10 @@ const CustomerInvoice = () => {
           </div>
         </div>
       </div>
+      <CustomerBillCollectInvoice
+        single={customerId}
+        customerData={customerData}
+      />
     </>
   );
 };
