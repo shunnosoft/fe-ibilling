@@ -42,6 +42,10 @@ import {
   updateResellerSupport,
 } from "./resellerSupportSlice";
 import { getResellerProfile } from "./resellerProfileSlice";
+import {
+  getResellerChangePackageRequest,
+  updateResellerChangePackageRequest,
+} from "./netFeeSupportSlice";
 
 const netFeeLang = localStorage.getItem("netFee:lang");
 const langMessage = (color, bangla, english) => {
@@ -677,6 +681,50 @@ export const putResellerNetFeeSupport = async (
       "নেটফি সাপর্ট আপডেট সফল হয়েছে",
       "NetFee Support Update Successfully"
     );
+  } catch (error) {
+    console.log(error.response);
+  }
+
+  setIsLoading(false);
+};
+
+// get reseller customer change request
+export const getChangePackage = async (dispatch, resellerId, setIsLoading) => {
+  setIsLoading(true);
+
+  try {
+    const res = await apiLink.get(
+      `reseller/customer/package/changes/data?resellerId=${resellerId}`
+    );
+    dispatch(getResellerChangePackageRequest(res.data));
+  } catch (error) {
+    console.log(error.response);
+  }
+
+  setIsLoading(false);
+};
+
+//accepted package
+export const acceptedChangePackage = async (dispatch, data, setIsLoading) => {
+  setIsLoading(true);
+
+  try {
+    const res = await apiLink.patch(`reseller/accept/package/change`, data);
+    dispatch(updateResellerChangePackageRequest(res.data));
+  } catch (error) {
+    console.log(error.response);
+  }
+
+  setIsLoading(false);
+};
+
+//reject package
+export const rejectChangePackage = async (dispatch, data, setIsLoading) => {
+  setIsLoading(true);
+
+  try {
+    const res = await apiLink.patch(`reseller/reject/package/change`, data);
+    dispatch(updateResellerChangePackageRequest(res.data));
   } catch (error) {
     console.log(error.response);
   }

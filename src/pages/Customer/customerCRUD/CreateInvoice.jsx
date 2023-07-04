@@ -220,6 +220,7 @@ export default function CreateInvoice({ single, customerData }) {
       collectorId: currentUserId, //when collector is logged in
       medium,
       package: data?.pppoe.profile,
+      invoiceType: "customerInvoice",
     };
 
     if (note) sendingData.note = note;

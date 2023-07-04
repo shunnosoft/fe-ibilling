@@ -70,6 +70,7 @@ const NewCustomer = () => {
   const ispOwnerData = useSelector(
     (state) => state.persistedReducer.auth.userData
   );
+  console.log(ispOwnerData);
 
   // filter function
   const onClickFilter = (value) => {
@@ -521,93 +522,96 @@ const NewCustomer = () => {
               <FourGround>
                 <div className="collectorWrapper mt-2 py-2">
                   <div className="addCollector">
-                    <Tabs
-                      defaultActiveKey={"pppoe"}
-                      id="uncontrolled-tab-example"
-                      className="mb-3"
-                    >
-                      <Tab eventKey="pppoe" title={t("PPPoE")}>
-                        {/* filter selector */}
-                        <div className="selectFilteringg">
-                          <div>
-                            <DatePicker
-                              className="form-control mw-100"
-                              selected={startDate}
-                              onChange={(date) => setStartDate(date)}
-                              dateFormat="MMM dd yyyy"
-                              placeholderText={t("selectBillDate")}
-                            />
-                          </div>
-                          <div className="mx-2">
-                            <DatePicker
-                              className="form-control mw-100"
-                              selected={endDate}
-                              onChange={(date) => setEndDate(date)}
-                              dateFormat="MMM dd yyyy"
-                              placeholderText={t("selectBillDate")}
-                            />
-                          </div>
-                          <div className="">
-                            <button
-                              className="btn btn-outline-primary w-140 "
-                              type="button"
-                              onClick={() => onClickFilter("pppoe")}
-                            >
-                              {t("filter")}
-                            </button>
-                          </div>
-                        </div>
+                    <Tabs id="uncontrolled-tab-example" className="mb-3">
+                      {ispOwnerData?.bpSettings.customerType.map(
+                        (type) =>
+                          (type === "pppoe" && (
+                            <Tab eventKey="pppoe" title={t("PPPoE")}>
+                              {/* filter selector */}
+                              <div className="selectFilteringg">
+                                <div>
+                                  <DatePicker
+                                    className="form-control mw-100"
+                                    selected={startDate}
+                                    onChange={(date) => setStartDate(date)}
+                                    dateFormat="MMM dd yyyy"
+                                    placeholderText={t("selectBillDate")}
+                                  />
+                                </div>
+                                <div className="mx-2">
+                                  <DatePicker
+                                    className="form-control mw-100"
+                                    selected={endDate}
+                                    onChange={(date) => setEndDate(date)}
+                                    dateFormat="MMM dd yyyy"
+                                    placeholderText={t("selectBillDate")}
+                                  />
+                                </div>
+                                <div className="">
+                                  <button
+                                    className="btn btn-outline-primary w-140 "
+                                    type="button"
+                                    onClick={() => onClickFilter("pppoe")}
+                                  >
+                                    {t("filter")}
+                                  </button>
+                                </div>
+                              </div>
 
-                        <div className="table-section">
-                          <Table
-                            customComponent={customComponent}
-                            isLoading={pppoeLoading}
-                            columns={pppoeColumns}
-                            data={mainData}
-                          ></Table>
-                        </div>
-                      </Tab>
-                      <Tab eventKey="static" title={t("static")}>
-                        {/* filter selector */}
-                        <div className="selectFilteringg">
-                          <div>
-                            <DatePicker
-                              className="form-control mw-100"
-                              selected={startDate}
-                              onChange={(date) => setStartDate(date)}
-                              dateFormat="MMM dd yyyy"
-                              placeholderText={t("selectBillDate")}
-                            />
-                          </div>
-                          <div className="mx-2">
-                            <DatePicker
-                              className="form-control mw-100"
-                              selected={endDate}
-                              onChange={(date) => setEndDate(date)}
-                              dateFormat="MMM dd yyyy"
-                              placeholderText={t("selectBillDate")}
-                            />
-                          </div>
-                          <div className="">
-                            <button
-                              className="btn btn-outline-primary w-140 "
-                              type="button"
-                              onClick={() => onClickFilter("static")}
-                            >
-                              {t("filter")}
-                            </button>
-                          </div>
-                        </div>
+                              <div className="table-section">
+                                <Table
+                                  customComponent={customComponent}
+                                  isLoading={pppoeLoading}
+                                  columns={pppoeColumns}
+                                  data={mainData}
+                                ></Table>
+                              </div>
+                            </Tab>
+                          )) ||
+                          (type === "static" && (
+                            <Tab eventKey="static" title={t("static")}>
+                              {/* filter selector */}
+                              <div className="selectFilteringg">
+                                <div>
+                                  <DatePicker
+                                    className="form-control mw-100"
+                                    selected={startDate}
+                                    onChange={(date) => setStartDate(date)}
+                                    dateFormat="MMM dd yyyy"
+                                    placeholderText={t("selectBillDate")}
+                                  />
+                                </div>
+                                <div className="mx-2">
+                                  <DatePicker
+                                    className="form-control mw-100"
+                                    selected={endDate}
+                                    onChange={(date) => setEndDate(date)}
+                                    dateFormat="MMM dd yyyy"
+                                    placeholderText={t("selectBillDate")}
+                                  />
+                                </div>
+                                <div className="">
+                                  <button
+                                    className="btn btn-outline-primary w-140 "
+                                    type="button"
+                                    onClick={() => onClickFilter("static")}
+                                  >
+                                    {t("filter")}
+                                  </button>
+                                </div>
+                              </div>
 
-                        <div className="table-section">
-                          <Table
-                            customComponent={customComponentStatic}
-                            isLoading={staticLoading}
-                            columns={staticColumns}
-                            data={staticData}
-                          ></Table>
-                        </div>
-                      </Tab>
+                              <div className="table-section">
+                                <Table
+                                  customComponent={customComponentStatic}
+                                  isLoading={staticLoading}
+                                  columns={staticColumns}
+                                  data={staticData}
+                                ></Table>
+                              </div>
+                            </Tab>
+                          ))
+                      )}
                     </Tabs>
                   </div>
                 </div>

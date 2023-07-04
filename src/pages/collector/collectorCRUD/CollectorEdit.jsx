@@ -10,6 +10,7 @@ import { FtextField } from "../../../components/common/FtextField";
 import { editCollector, getManger } from "../../../features/apiCalls";
 import { collectorPermission } from "./collectorPermission";
 import { useTranslation } from "react-i18next";
+import { Tab, Tabs } from "react-bootstrap";
 
 // import { getArea } from "../../../features/areaSlice";
 // import {
@@ -162,105 +163,120 @@ export default function CollectorEdit({ collectorId }) {
               >
                 {(formik) => (
                   <Form>
-                    <div className="collectorInputs">
-                      {collectorData.map((val, key) => (
-                        <FtextField
-                          key={key}
-                          type={val.type}
-                          label={val.label}
-                          name={val.name}
-                          validation={"true"}
-                        />
-                      ))}
+                    <Tabs
+                      defaultActiveKey={"basic"}
+                      id="uncontrolled-tab-example"
+                      className="mb-3"
+                    >
+                      <Tab eventKey="basic" title={t("basic")}>
+                        <div className="d-flex justify-content-center">
+                          <div className="col-6">
+                            {collectorData.map((val, key) => (
+                              <FtextField
+                                key={key}
+                                type={val.type}
+                                label={val.label}
+                                name={val.name}
+                                validation={"true"}
+                              />
+                            ))}
 
-                      {/* status */}
-                      <div className="form-check customerFormCheck">
-                        <div className="label">
-                          <label className="form-control-label changeLabelFontColor">
-                            {t("status")}
-                            <span className="text-danger">*</span>
-                          </label>
+                            <div className="collectorStatus">
+                              <div className="label">
+                                <label className="form-control-label changeLabelFontColor">
+                                  {t("status")}
+                                  <span className="text-danger">*</span>
+                                </label>
+                              </div>
+                              <div className="form-check form-check-inline">
+                                <FtextField
+                                  label="Active"
+                                  className="form-check-input"
+                                  type="radio"
+                                  name="status"
+                                  value="active"
+                                />
+                              </div>
+                              <div className="form-check form-check-inline">
+                                <FtextField
+                                  label="Inactive"
+                                  className="form-check-input"
+                                  type="radio"
+                                  name="status"
+                                  value="inactive"
+                                />
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                        <div className="form-check form-check-inline">
-                          <FtextField
-                            label="Active"
-                            className="form-check-input"
-                            type="radio"
-                            name="status"
-                            value="active"
-                          />
+                      </Tab>
+                      <Tab eventKey="area" title={t("area")}>
+                        <b className="mt-2"> {t("selectArea")} </b>
+                        <div className="AllAreaClass">
+                          {area?.map((val, key) => (
+                            <div key={key}>
+                              <h6 className="areaParent">{val.name}</h6>
+                              {storeSubArea?.map(
+                                (v, k) =>
+                                  v.area === val.id && (
+                                    <div key={k} className="displayFlex">
+                                      <input
+                                        id={v.id}
+                                        type="checkbox"
+                                        className="getValueUsingClass_Edit"
+                                        value={v.id}
+                                        checked={
+                                          allowedAreas?.includes(v.id)
+                                            ? true
+                                            : false
+                                        }
+                                        onChange={setAreaHandler}
+                                      />
+                                      <label htmlFor={v.id}>{v.name}</label>
+                                    </div>
+                                  )
+                              )}
+                            </div>
+                          ))}
                         </div>
-                        <div className="form-check form-check-inline">
-                          <FtextField
-                            label="Inactive"
-                            className="form-check-input"
-                            type="radio"
-                            name="status"
-                            value="inactive"
-                          />
+                      </Tab>
+                      <Tab
+                        eventKey="changePermission"
+                        title={t("changePermission")}
+                      >
+                        <b className="mt-2"> {t("changePermission")} </b>
+                        <div className="displayGrid3">
+                          {permissions.map((val, key) => (
+                            <div
+                              className={!val?.disabled && "CheckboxContainer"}
+                              key={key}
+                            >
+                              {!val.disabled && (
+                                <>
+                                  <input
+                                    type="checkbox"
+                                    className="CheckBox"
+                                    name={val.value}
+                                    checked={val.isChecked}
+                                    onChange={handleChange}
+                                    id={val.value + key}
+                                  />
+                                  <label
+                                    htmlFor={val.value + key}
+                                    className="checkboxLabel"
+                                  >
+                                    {val.label}
+                                  </label>
+                                </>
+                              )}
+                            </div>
+                          ))}
                         </div>
-                      </div>
-                      {/* status */}
-                    </div>
+                      </Tab>
+                    </Tabs>
 
                     {/* area */}
-                    <b className="mt-2"> {t("selectArea")} </b>
-                    <div className="AllAreaClass">
-                      {area?.map((val, key) => (
-                        <div key={key}>
-                          <h6 className="areaParent">{val.name}</h6>
-                          {storeSubArea?.map(
-                            (v, k) =>
-                              v.area === val.id && (
-                                <div key={k} className="displayFlex">
-                                  <input
-                                    id={v.id}
-                                    type="checkbox"
-                                    className="getValueUsingClass_Edit"
-                                    value={v.id}
-                                    checked={
-                                      allowedAreas?.includes(v.id)
-                                        ? true
-                                        : false
-                                    }
-                                    onChange={setAreaHandler}
-                                  />
-                                  <label htmlFor={v.id}>{v.name}</label>
-                                </div>
-                              )
-                          )}
-                        </div>
-                      ))}
-                    </div>
 
-                    <b className="mt-2"> {t("changePermission")} </b>
-                    <div className="displayGrid3">
-                      {permissions.map((val, key) => (
-                        <div
-                          className={!val?.disabled && "CheckboxContainer"}
-                          key={key}
-                        >
-                          {!val.disabled && (
-                            <>
-                              <input
-                                type="checkbox"
-                                className="CheckBox"
-                                name={val.value}
-                                checked={val.isChecked}
-                                onChange={handleChange}
-                                id={val.value + key}
-                              />
-                              <label
-                                htmlFor={val.value + key}
-                                className="checkboxLabel"
-                              >
-                                {val.label}
-                              </label>
-                            </>
-                          )}
-                        </div>
-                      ))}
-                    </div>
                     {/* area */}
 
                     <div className="modal-footer">

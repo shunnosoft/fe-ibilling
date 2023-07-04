@@ -1238,7 +1238,7 @@ const PPPOECustomer = () => {
                       <div className="displexFlexSys">
                         <div
                           id="custom-form-select"
-                          className="d-flex flex-wrap"
+                          className="displayGrid6"
                           style={{ columnGap: "5px" }}
                         >
                           {filterInputs.map(
@@ -1260,9 +1260,9 @@ const PPPOECustomer = () => {
                           )}
 
                           {/* date picker for filter billing cycle */}
-                          <div className="mt-3" style={{ width: "200px" }}>
+                          <div>
                             <DatePicker
-                              className="form-control"
+                              className="form-control mt-3"
                               selected={filterOptions.filterDate}
                               onChange={(date) =>
                                 setFilterOption({
@@ -1277,7 +1277,7 @@ const PPPOECustomer = () => {
 
                           <div>
                             <button
-                              className="btn btn-outline-primary mt-3 w-6rem ms-2"
+                              className="btn btn-outline-primary w-6rem mt-3"
                               type="button"
                               onClick={handleActiveFilter}
                               id="filterBtn"
