@@ -9,6 +9,7 @@ const paymentSlice = createSlice({
     collectorDeposite: [],
     allBills: [],
     myDeposit: [],
+    customerInvoice: [],
   },
   reducers: {
     getTotalBalanceSuccess: (state, action) => {
@@ -52,6 +53,9 @@ const paymentSlice = createSlice({
       state.allBills = [];
       state.allDeposit = [];
     },
+    getIspOwnerCustomerInvoice: (state, action) => {
+      state.customerInvoice = action.payload;
+    },
   },
 });
 
@@ -65,5 +69,6 @@ export const {
   updateDepositSuccess,
   addDepositSucces,
   getCollectorDeposite,
+  getIspOwnerCustomerInvoice,
 } = paymentSlice.actions;
 export default paymentSlice.reducer;

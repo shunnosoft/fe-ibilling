@@ -1260,18 +1260,20 @@ const PPPOECustomer = () => {
                           )}
 
                           {/* date picker for filter billing cycle */}
-                          <DatePicker
-                            className="form-control mt-3"
-                            selected={filterOptions.filterDate}
-                            onChange={(date) =>
-                              setFilterOption({
-                                ...filterOptions,
-                                filterDate: date,
-                              })
-                            }
-                            dateFormat="dd/MM/yyyy"
-                            placeholderText={t("selectDate")}
-                          />
+                          <div>
+                            <DatePicker
+                              className="form-control mt-3"
+                              selected={filterOptions.filterDate}
+                              onChange={(date) =>
+                                setFilterOption({
+                                  ...filterOptions,
+                                  filterDate: date,
+                                })
+                              }
+                              dateFormat="dd/MM/yyyy"
+                              placeholderText={t("selectDate")}
+                            />
+                          </div>
 
                           <div>
                             <button

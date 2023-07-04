@@ -679,6 +679,7 @@ export default function Report() {
                         filterData={filterData}
                         currentCustomers={mainData}
                         ref={componentRef}
+                        status="report"
                       />
                     </div>
                     {/* print report end*/}

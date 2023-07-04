@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 
 const PrintReport = React.forwardRef((props, ref) => {
   const { t } = useTranslation();
-  const { currentCustomers, filterData } = props;
+  const { currentCustomers, filterData, status } = props;
   const ispOwnerData = useSelector(
     (state) => state.persistedReducer.auth.userData
   );
@@ -35,20 +35,37 @@ const PrintReport = React.forwardRef((props, ref) => {
           </div>
         </div>
 
-        <ul className="d-flex justify-content-around filter_list">
-          <li>
-            {t("area")} : {filterData.area}
-          </li>
-          <li>
-            {t("subArea")} : {filterData.subArea}
-          </li>
-          <li>
-            {t("collector")} : {filterData.collector}
-          </li>
-          <li>
-            {t("date")} : {startDate} - {endDate}
-          </li>
-        </ul>
+        {status === "report" && (
+          <ul className="d-flex justify-content-around filter_list">
+            <li>
+              {t("area")} : {filterData.area}
+            </li>
+            <li>
+              {t("subArea")} : {filterData.subArea}
+            </li>
+            <li>
+              {t("collector")} : {filterData.collector}
+            </li>
+            <li>
+              {t("date")} : {startDate} - {endDate}
+            </li>
+          </ul>
+        )}
+
+        {status === "invoice" && (
+          <ul className="d-flex justify-content-around filter_list">
+            <li>
+              {t("billType")} : {filterData.billType}
+            </li>
+            <li>
+              {t("medium")} : {filterData.medium}
+            </li>
+            <li>
+              {t("date")} : {startDate} - {endDate}
+            </li>
+          </ul>
+        )}
+
         <ul className="d-flex justify-content-center filter_list">
           <li>
             {t("totalData")} {currentCustomers.length}
