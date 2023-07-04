@@ -809,5 +809,7 @@
   "rejectedRequest": "Do you want to rejected the request on the package?",
   "sslCommerz": "SSLCOMMERZ",
   "uddoktaPay": "uddoktaPay",
-  "billInvoice": "Bill Invoice"
+  "billInvoice": "Bill Invoice",
+  "addPermission": "Add Permission",
+  "selected": "Selected"
 }

@@ -815,5 +815,7 @@
   "rejectedRequest": "আপনি কি প্যাকেজের অনুরোধ বাতিল করতে চান?",
   "sslCommerz": "এসএসএলকমর্জ",
   "uddoktaPay": "উদ্দোক্তাপে",
-  "billInvoice": "বিল ইনভয়েস"
+  "billInvoice": "বিল ইনভয়েস",
+  "addPermission": "পারমিশান যোগ করুন",
+  "selected": "নির্বাচিত"
 }

@@ -454,6 +454,20 @@ const PPPOECustomer = () => {
   //custom table header component
   const customComponent = (
     <div className="text-center" style={{ fontSize: "18px", display: "flex" }}>
+      {bulkCustomers?.length ? (
+        <>
+          {t("selected")}&nbsp;{" "}
+          <span
+            style={{ backgroundColor: "#2C7CCC" }}
+            className=" px-1 py-0 rounded-pill text-small"
+          >
+            {bulkCustomers?.length}
+          </span>
+          &nbsp; &nbsp;
+        </>
+      ) : (
+        ""
+      )}
       {t("monthlyFee")}&nbsp; {FormatNumber(dueMonthlyFee.totalMonthlyFee)}
       &nbsp;
       {t("tk")} &nbsp;&nbsp; {t("due")}&nbsp;
