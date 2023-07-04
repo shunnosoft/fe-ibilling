@@ -1235,63 +1235,61 @@ const PPPOECustomer = () => {
                 {(permission?.viewCustomerList || role !== "collector") && (
                   <div className="collectorWrapper mt-2 py-2">
                     <div className="addCollector">
-                      <div className="displexFlexSys">
-                        <div
-                          id="custom-form-select"
-                          className="displayGrid6"
-                          style={{ columnGap: "5px" }}
-                        >
-                          {filterInputs.map(
-                            (item) =>
-                              item.isVisible && (
-                                <select
-                                  className="form-select shadow-none"
-                                  onChange={item.onChange}
-                                  value={item.value}
-                                >
-                                  <option value="">{item.firstOptions}</option>
-                                  {item.options?.map((opt) => (
-                                    <option value={opt[item.valueAccessor]}>
-                                      {opt[item.textAccessor]}
-                                    </option>
-                                  ))}
-                                </select>
-                              )
-                          )}
+                      <div
+                        id="custom-form-select"
+                        className="displayGrid6"
+                        style={{ columnGap: "5px" }}
+                      >
+                        {filterInputs.map(
+                          (item) =>
+                            item.isVisible && (
+                              <select
+                                className="form-select shadow-none"
+                                onChange={item.onChange}
+                                value={item.value}
+                              >
+                                <option value="">{item.firstOptions}</option>
+                                {item.options?.map((opt) => (
+                                  <option value={opt[item.valueAccessor]}>
+                                    {opt[item.textAccessor]}
+                                  </option>
+                                ))}
+                              </select>
+                            )
+                        )}
 
-                          {/* date picker for filter billing cycle */}
-                          <div>
-                            <DatePicker
-                              className="form-control mt-3"
-                              selected={filterOptions.filterDate}
-                              onChange={(date) =>
-                                setFilterOption({
-                                  ...filterOptions,
-                                  filterDate: date,
-                                })
-                              }
-                              dateFormat="dd/MM/yyyy"
-                              placeholderText={t("selectDate")}
-                            />
-                          </div>
+                        {/* date picker for filter billing cycle */}
+                        <div>
+                          <DatePicker
+                            className="form-control mt-3"
+                            selected={filterOptions.filterDate}
+                            onChange={(date) =>
+                              setFilterOption({
+                                ...filterOptions,
+                                filterDate: date,
+                              })
+                            }
+                            dateFormat="dd/MM/yyyy"
+                            placeholderText={t("selectDate")}
+                          />
+                        </div>
 
-                          <div>
-                            <button
-                              className="btn btn-outline-primary w-6rem mt-3"
-                              type="button"
-                              onClick={handleActiveFilter}
-                              id="filterBtn"
-                            >
-                              {t("filter")}
-                            </button>
-                            <button
-                              className="btn btn-outline-secondary ms-1 w-6rem mt-3"
-                              type="button"
-                              onClick={handleFilterReset}
-                            >
-                              {t("reset")}
-                            </button>
-                          </div>
+                        <div className="gridButton">
+                          <button
+                            className="btn btn-outline-primary w-6rem mt-3"
+                            type="button"
+                            onClick={handleActiveFilter}
+                            id="filterBtn"
+                          >
+                            {t("filter")}
+                          </button>
+                          <button
+                            className="btn btn-outline-secondary w-6rem ms-1 mt-3"
+                            type="button"
+                            onClick={handleFilterReset}
+                          >
+                            {t("reset")}
+                          </button>
                         </div>
                       </div>
 

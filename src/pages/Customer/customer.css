@@ -54,6 +54,13 @@
   display: grid;
   grid-template-columns: repeat(6, 1fr);
 }
+
+.gridButton {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 2px;
+}
+
 .ifCannotSelectBill {
   display: none;
   text-align: center;
