@@ -21,7 +21,11 @@ import { FourGround, FontColor } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
 
 import Loader from "../../components/common/Loader";
-import { fetchMikrotik, fetchpppoeUser } from "../../features/apiCalls";
+import {
+  fetchMikrotik,
+  fetchpppoeUser,
+  getArea,
+} from "../../features/apiCalls";
 
 import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
@@ -32,6 +36,7 @@ import IndeterminateCheckbox from "../../components/table/bulkCheckbox";
 import BulkCustomerDelete from "../Customer/customerCRUD/bulkOpration/BulkdeleteModal";
 import BulkCustomerMessage from "../Customer/customerCRUD/bulkOpration/BulkCustomerMessage";
 import { CSVLink } from "react-csv";
+import { getSubAreasApi } from "../../features/actions/customerApiCall";
 
 export default function ConfigMikrotik() {
   const { t } = useTranslation();
@@ -42,11 +47,18 @@ export default function ConfigMikrotik() {
 
   // get all static customer
   let allMikrotikUsers = useSelector((state) => state?.mikrotik?.pppoeUser);
+  console.log(allMikrotikUsers);
 
   // get isp owner id
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
+
+  //get all areas
+  const areas = useSelector((state) => state.area?.area);
+
+  // get all subarea
+  const subAreas = useSelector((state) => state.area?.subArea);
 
   // bulk customer state
   const [bulkCustomers, setBulkCustomer] = useState([]);
@@ -99,6 +111,9 @@ export default function ConfigMikrotik() {
 
   // offline customer state
   const [customerItData, setCustomerItData] = useState("");
+
+  // subArea ids state
+  const [subareaIds, setSubareaIds] = useState([]);
 
   // find single mikrotik details
   const singleMik = mikrotik.find((item) => item.id === mikrotikId);
@@ -174,6 +189,14 @@ export default function ConfigMikrotik() {
     fetchMikrotik(dispatch, ispOwnerId, setIsloading);
   };
 
+  useEffect(() => {
+    // get area api
+    if (areas.length === 0) getArea(dispatch, ispOwnerId, setIsloading);
+
+    // get sub area api
+    if (subAreas.length === 0) getSubAreasApi(dispatch, ispOwnerId);
+  }, []);
+
   // api call for get update static customer
   useEffect(() => {
     !mikrotik.length && fetchMikrotik(dispatch, ispOwnerId, setIsloading);
@@ -187,6 +210,29 @@ export default function ConfigMikrotik() {
     setAllUsers(allMikrotikUsers);
     !mikrotikId && setMikrotikId(mikrotik[0]?.id);
   }, [allMikrotikUsers, mikrotik]);
+
+  // area subarea handler
+  const areaSubareaHandler = (e) => {
+    const areaSubIds = subAreas.filter((item) => item?.area === e.target.value);
+    setSubareaIds(areaSubIds);
+
+    if (e.target.value !== "") {
+      const temp = allMikrotikUsers.filter(
+        (item) => item.area == e.target.value
+      );
+      setAllUsers(temp);
+    } else {
+      setAllUsers(allMikrotikUsers);
+    }
+  };
+
+  // subarea handle
+  const subAreasHandler = (e) => {
+    const temp = allMikrotikUsers.filter(
+      (item) => item.subArea == e.target.value
+    );
+    setAllUsers(temp);
+  };
 
   const sortingCustomer = useMemo(() => {
     return [...allUsers].sort((a, b) => {
@@ -460,6 +506,34 @@ export default function ConfigMikrotik() {
                         ))}
                       </select>
                     </div>
+
+                    {/* <div className="mikrotik-filter ms-4">
+                      <h6 className="mb-0"> {t("selectArea")} </h6>
+                      <select
+                        id="selectMikrotikOption"
+                        className="form-select mt-0"
+                        onChange={areaSubareaHandler}
+                      >
+                        <option value="">{t("allArea")}</option>
+                        {areas.map((item) => (
+                          <option value={item.id}>{item.name}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="mikrotik-filter ms-4">
+                      <h6 className="mb-0"> {t("selectSubArea")} </h6>
+                      <select
+                        id="selectMikrotikOption"
+                        className="form-select mt-0"
+                        onChange={subAreasHandler}
+                      >
+                        <option value="">{t("subArea")}</option>
+                        {subareaIds.map((item) => (
+                          <option value={item.id}>{item.name}</option>
+                        ))}
+                      </select>
+                    </div> */}
 
                     <div className="mikrotik-filter ms-4">
                       <h6 className="mb-0"> {t("selectCustomer")} </h6>

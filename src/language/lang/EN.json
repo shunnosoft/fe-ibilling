@@ -294,7 +294,7 @@
   "addNewExpenditureSector": "Add New Expenditure Sector",
   "expenditureSectorsName": "Expenditure Sector's Name",
   "editExpenditure": "Edit Expenditure",
-  "selectSubArea": "Please Select Sub-Area",
+  "selectSubArea": "Select Sub-Area",
   "addNewCustomer": "Add New Customer",
   "selectArea": "Select Area",
   "updateArea": "Update Area",
@@ -806,5 +806,8 @@
   "allPermission": "All Permission",
   "whatsAppLive": "What's App Live",
   "acceptedRequest": "Do you want to accept the request on the package?",
-  "rejectedRequest": "Do you want to rejected the request on the package?"
+  "rejectedRequest": "Do you want to rejected the request on the package?",
+  "sslCommerz": "SSLCOMMERZ",
+  "uddoktaPay": "uddoktaPay",
+  "billInvoice": "Bill Invoice"
 }

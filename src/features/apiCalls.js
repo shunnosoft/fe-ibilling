@@ -90,6 +90,7 @@ import {
   addDepositSucces,
   getCollectorDeposite,
   editBillReportSuccess,
+  getIspOwnerCustomerInvoice,
 } from "./paymentSlice";
 import { getChartSuccess, getCardDataSuccess } from "./chartsSlice";
 import {
@@ -3354,4 +3355,20 @@ export const deleteIspOwnerSupporterNumber = async (
   } catch (error) {
     toast.error(error.response?.data?.message);
   }
+};
+
+// get ispOwner customr invoice
+export const getIspOwnerInvoice = async (
+  dispatch,
+  ispOwnerId,
+  setIsLoading
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.get(`bill/customer/invoice/${ispOwnerId}`);
+    dispatch(getIspOwnerCustomerInvoice(res.data));
+  } catch (error) {
+    toast.error(error.response?.data?.message);
+  }
+  setIsLoading(false);
 };
