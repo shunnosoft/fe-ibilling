@@ -10,6 +10,7 @@ import "../../Customer/customer.css";
 import { FtextField } from "../../../components/common/FtextField";
 import { addCollector } from "../../../features/apiCalls";
 import { useTranslation } from "react-i18next";
+import { Tab, Tabs } from "react-bootstrap";
 
 export default function CollectorPost() {
   const { t } = useTranslation();
@@ -111,100 +112,111 @@ export default function CollectorPost() {
               >
                 {() => (
                   <Form>
-                    <div className="collectorInputs">
-                      {collectorData.map((val, key) => (
-                        <FtextField
-                          key={key}
-                          type={val.type}
-                          label={val.label}
-                          name={val.name}
-                          validation={"true"}
-                        />
-                      ))}
-
-                      {/* status */}
-                      <div className="form-check customerFormCheck d-flex justify-content-around">
-                        <div className="collectorStatus mt-2">
-                          <div className="label">
-                            <label className="form-control-label changeLabelFontColor">
-                              {t("status")}
-                              <span className="text-danger">*</span>
-                            </label>
-                          </div>
-                          <div className="form-check form-check-inline">
+                    <Tabs
+                      defaultActiveKey="details"
+                      id="uncontrolled-tab-example"
+                      className="mb-3"
+                    >
+                      <Tab eventKey="details" title={t("details")}>
+                        <div className="collectorInputs">
+                          {collectorData.map((val, key) => (
                             <FtextField
-                              label="Active"
-                              className="form-check-input"
-                              type="radio"
-                              name="status"
-                              value="active"
+                              key={key}
+                              type={val.type}
+                              label={val.label}
+                              name={val.name}
+                              validation={"true"}
                             />
+                          ))}
+
+                          {/* status */}
+                          <div className="form-check customerFormCheck d-flex justify-content-around">
+                            <div className="collectorStatus mt-2">
+                              <div className="label">
+                                <label className="form-control-label changeLabelFontColor">
+                                  {t("status")}
+                                  <span className="text-danger">*</span>
+                                </label>
+                              </div>
+                              <div className="form-check form-check-inline">
+                                <FtextField
+                                  label="Active"
+                                  className="form-check-input"
+                                  type="radio"
+                                  name="status"
+                                  value="active"
+                                />
+                              </div>
+                              <div className="form-check form-check-inline">
+                                <FtextField
+                                  label="Inactive"
+                                  className="form-check-input"
+                                  type="radio"
+                                  name="status"
+                                  value="inactive"
+                                />
+                              </div>
+                            </div>
+                            {role === "ispOwner" && (
+                              <div className="autoDisable">
+                                <input
+                                  id="addStaffStatus"
+                                  type="checkBox"
+                                  checked={addStaffStatus}
+                                  onChange={(e) =>
+                                    setAddStaffStatus(e.target.checked)
+                                  }
+                                />
+                                <label
+                                  htmlFor="addStaffStatus"
+                                  className="ps-2"
+                                >
+                                  {" "}
+                                  {t("addStaff")}{" "}
+                                </label>
+                              </div>
+                            )}
                           </div>
-                          <div className="form-check form-check-inline">
+                          {/* status */}
+
+                          {role === "ispOwner" && addStaffStatus && (
                             <FtextField
-                              label="Inactive"
-                              className="form-check-input"
-                              type="radio"
-                              name="status"
-                              value="inactive"
+                              type="number"
+                              label={t("salary")}
+                              name="salary"
                             />
-                          </div>
-                        </div>
-                        {role === "ispOwner" && (
-                          <div className="autoDisable">
-                            <input
-                              id="addStaffStatus"
-                              type="checkBox"
-                              checked={addStaffStatus}
-                              onChange={(e) =>
-                                setAddStaffStatus(e.target.checked)
-                              }
-                            />
-                            <label htmlFor="addStaffStatus" className="ps-2">
-                              {" "}
-                              {t("addStaff")}{" "}
-                            </label>
-                          </div>
-                        )}
-                      </div>
-                      {/* status */}
-
-                      {role === "ispOwner" && addStaffStatus && (
-                        <FtextField
-                          type="number"
-                          label={t("salary")}
-                          name="salary"
-                        />
-                      )}
-                    </div>
-
-                    {/* area */}
-                    {/* area section*/}
-                    <b className="mt-2"> {t("selectArea")} </b>
-                    <div className="AllAreaClass">
-                      {area?.map((val, key) => (
-                        <div key={key}>
-                          <h6 className="areaParent">{val.name}</h6>
-                          {storeSubArea?.map(
-                            (v, k) =>
-                              v.area === val.id && (
-                                <div key={k} className="displayFlex">
-                                  <input
-                                    id={v.id + "subAreas"}
-                                    type="checkbox"
-                                    className="getValueUsingClass"
-                                    value={v.id}
-                                    onChange={setAreaHandler}
-                                  />
-                                  <label htmlFor={v.id + "subAreas"}>
-                                    {v.name}
-                                  </label>
-                                </div>
-                              )
                           )}
                         </div>
-                      ))}
-                    </div>
+                      </Tab>
+                      <Tab eventKey="area" title={t("area")}>
+                        <b className="mt-2"> {t("selectArea")} </b>
+                        <div className="AllAreaClass">
+                          {area?.map((val, key) => (
+                            <div key={key}>
+                              <h6 className="areaParent">{val.name}</h6>
+                              {storeSubArea?.map(
+                                (v, k) =>
+                                  v.area === val.id && (
+                                    <div key={k} className="displayFlex">
+                                      <input
+                                        id={v.id + "subAreas"}
+                                        type="checkbox"
+                                        className="getValueUsingClass"
+                                        value={v.id}
+                                        onChange={setAreaHandler}
+                                      />
+                                      <label htmlFor={v.id + "subAreas"}>
+                                        {v.name}
+                                      </label>
+                                    </div>
+                                  )
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </Tab>
+                    </Tabs>
+
                     {/* area */}
                     <div className="modal-footer">
                       <button
