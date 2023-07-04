@@ -27,7 +27,7 @@ import { CSVLink } from "react-csv";
 import ReactToPrint from "react-to-print";
 import PrintReport from "../report/ReportPDF";
 import FormatNumber from "../../components/common/NumberFormat";
-import CustomerBillCollectInvoice from "../Customer/customerCRUD/CustomerBillCollectInvoice";
+import CustomerBillCollectInvoice from "./invoiceCollect/CustomerBillCollectInvoice";
 
 const CustomerInvoice = () => {
   const { t } = useTranslation();
@@ -50,6 +50,7 @@ const CustomerInvoice = () => {
 
   // all customer invoice
   const allInvoice = useSelector((state) => state?.payment?.customerInvoice);
+  console.log(allInvoice);
 
   // Loading state
   const [isLoading, setIsLoading] = useState(false);
@@ -60,10 +61,7 @@ const CustomerInvoice = () => {
   const [customerInvoice, setCustomerInvoice] = useState([]);
 
   // customer id state
-  const [customerId, setCustomerId] = useState("");
-
-  // single customer object state
-  const [customerData, setCustomerData] = useState({});
+  const [invoiceId, setInvoiceId] = useState("");
 
   //filter state
   const [filterOptions, setFilterOption] = useState({
@@ -104,9 +102,19 @@ const CustomerInvoice = () => {
         accessor: "package",
       },
       {
+        width: "9%",
+        Header: t("monthly"),
+        accessor: "customer.monthlyFee",
+      },
+      {
+        width: "8%",
+        Header: t("amount"),
+        accessor: "amount",
+      },
+      {
         width: "8%",
         Header: t("balance"),
-        accessor: "amount",
+        accessor: "balance",
       },
       {
         width: "10%",
@@ -118,17 +126,6 @@ const CustomerInvoice = () => {
         Header: t("due"),
         accessor: "due",
       },
-      {
-        width: "8%",
-        Header: t("agent"),
-        accessor: "medium",
-      },
-      {
-        width: "15%",
-        Header: t("collector"),
-        accessor: "name",
-      },
-
       {
         width: "12%",
         Header: t("createdAt"),
@@ -177,8 +174,7 @@ const CustomerInvoice = () => {
                   data-bs-toggle="modal"
                   data-bs-target="#rechargeInvoiceModal"
                   onClick={() => {
-                    setCustomerId(original.customer.id);
-                    setCustomerData(original);
+                    setInvoiceId(original.id);
                   }}
                 >
                   <div className="dropdown-item">
@@ -533,10 +529,7 @@ const CustomerInvoice = () => {
           </div>
         </div>
       </div>
-      <CustomerBillCollectInvoice
-        single={customerId}
-        customerData={customerData}
-      />
+      <CustomerBillCollectInvoice invoiceId={invoiceId} />
     </>
   );
 };
