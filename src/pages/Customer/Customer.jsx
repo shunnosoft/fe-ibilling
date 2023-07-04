@@ -512,7 +512,7 @@ const PPPOECustomer = () => {
         accessor: "customerId",
       },
       {
-        width: "9%",
+        width: "8%",
         Header: t("name"),
         accessor: "name",
       },
@@ -549,8 +549,8 @@ const PPPOECustomer = () => {
         accessor: "pppoe.profile",
       },
       {
-        width: "8%",
-        Header: t("mountly"),
+        width: "9%",
+        Header: t("monthly"),
         accessor: "monthlyFee",
       },
       {
