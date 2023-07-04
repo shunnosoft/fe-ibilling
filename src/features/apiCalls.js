@@ -2155,6 +2155,41 @@ export const billCollect = async (
   setLoading(false);
 };
 
+//bill recharge from invoice
+export const billCollectInvoice = async (
+  dispatch,
+  billData,
+  setLoading,
+  resetForm = null,
+  setResponseData,
+  setTest
+) => {
+  setLoading(true);
+  try {
+    const res = await apiLink.post("/bill/monthlyBill", billData);
+    if (billData.userType === "pppoe") {
+      dispatch(updateBalance(res.data));
+      setResponseData(res.data);
+      setTest(true);
+    } else {
+      dispatch(updateBalanceStaticCustomer(res.data));
+      setResponseData(res.data);
+      setTest(true);
+    }
+    document.querySelector("#rechargeInvoiceModal").click();
+    langMessage(
+      "success",
+      `${res.data.billType} বিল গ্রহণ সফল হয়েছে।`,
+      `${res.data.billType} Acceptance is Successful.`
+    );
+    resetForm();
+  } catch (error) {
+    document.querySelector("#rechargeInvoiceModal").click();
+    toast.error(error.response?.data.message);
+  }
+  setLoading(false);
+};
+
 //create invoice
 export const createCustomerInvoice = async (
   dispatch,

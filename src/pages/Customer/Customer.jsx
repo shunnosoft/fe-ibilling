@@ -454,6 +454,20 @@ const PPPOECustomer = () => {
   //custom table header component
   const customComponent = (
     <div className="text-center" style={{ fontSize: "18px", display: "flex" }}>
+      {bulkCustomers?.length ? (
+        <>
+          {t("selected")}&nbsp;{" "}
+          <span
+            style={{ backgroundColor: "#2C7CCC" }}
+            className=" px-1 py-0 rounded-pill text-small"
+          >
+            {bulkCustomers?.length}
+          </span>
+          &nbsp; &nbsp;
+        </>
+      ) : (
+        ""
+      )}
       {t("monthlyFee")}&nbsp; {FormatNumber(dueMonthlyFee.totalMonthlyFee)}
       &nbsp;
       {t("tk")} &nbsp;&nbsp; {t("due")}&nbsp;
@@ -512,7 +526,7 @@ const PPPOECustomer = () => {
         accessor: "customerId",
       },
       {
-        width: "9%",
+        width: "8%",
         Header: t("name"),
         accessor: "name",
       },
@@ -549,8 +563,8 @@ const PPPOECustomer = () => {
         accessor: "pppoe.profile",
       },
       {
-        width: "8%",
-        Header: t("mountly"),
+        width: "9%",
+        Header: t("monthly"),
         accessor: "monthlyFee",
       },
       {

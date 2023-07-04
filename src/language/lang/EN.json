@@ -804,10 +804,12 @@
   "mikrotikPassword": "Mikrotik Password",
   "resellerDelete": "Do you want to delete the reseller?",
   "allPermission": "All Permission",
+  "whatsAppLive": "What's App Live",
   "acceptedRequest": "Do you want to accept the request on the package?",
   "rejectedRequest": "Do you want to rejected the request on the package?",
-  "whatsAppLive": "What's App Live",
   "sslCommerz": "SSLCOMMERZ",
   "uddoktaPay": "uddoktaPay",
-  "billInvoice": "Bill Invoice"
+  "billInvoice": "Bill Invoice",
+  "addPermission": "Add Permission",
+  "selected": "Selected"
 }

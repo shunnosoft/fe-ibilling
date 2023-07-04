@@ -295,7 +295,7 @@ const ManagerPost = () => {
                       </div>
                     </Tab>
 
-                    <Tab eventKey="permission" title={t("changePermission")}>
+                    <Tab eventKey="permission" title={t("addPermission")}>
                       <div className="displayGrid3">
                         <div className="CheckboxContainer">
                           <input

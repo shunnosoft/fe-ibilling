@@ -1,17 +1,23 @@
-import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useTranslation } from "react-i18next";
 import { FontColor, FourGround } from "../../assets/js/theme";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import Loader from "../../components/common/Loader";
 import useDash from "../../assets/css/dash.module.css";
-import { useState } from "react";
 import {
   ArrowClockwise,
   FileExcelFill,
   PrinterFill,
   ThreeDots,
+  CurrencyDollar,
 } from "react-bootstrap-icons";
-import { getIspOwnerInvoice } from "../../features/apiCalls";
+import { getCustomer, getIspOwnerInvoice } from "../../features/apiCalls";
 import { useDispatch, useSelector } from "react-redux";
 import Footer from "../../components/admin/footer/Footer";
 import Table from "../../components/table/Table";
@@ -21,6 +27,7 @@ import { CSVLink } from "react-csv";
 import ReactToPrint from "react-to-print";
 import PrintReport from "../report/ReportPDF";
 import FormatNumber from "../../components/common/NumberFormat";
+import CustomerBillCollectInvoice from "./invoiceCollect/CustomerBillCollectInvoice";
 
 const CustomerInvoice = () => {
   const { t } = useTranslation();
@@ -43,12 +50,18 @@ const CustomerInvoice = () => {
 
   // all customer invoice
   const allInvoice = useSelector((state) => state?.payment?.customerInvoice);
+  console.log(allInvoice);
 
   // Loading state
   const [isLoading, setIsLoading] = useState(false);
 
+  const [customerLoading, setCustomerLoading] = useState(false);
+
   // customer state
   const [customerInvoice, setCustomerInvoice] = useState([]);
+
+  // customer id state
+  const [invoiceId, setInvoiceId] = useState("");
 
   //filter state
   const [filterOptions, setFilterOption] = useState({
@@ -61,6 +74,9 @@ const CustomerInvoice = () => {
   useEffect(() => {
     allInvoice.length === 0 &&
       getIspOwnerInvoice(dispatch, ispOwnerId, setIsLoading);
+
+    // get customer api
+    getCustomer(dispatch, ispOwnerId, setCustomerLoading);
   }, []);
 
   // set all customer in state
@@ -86,9 +102,19 @@ const CustomerInvoice = () => {
         accessor: "package",
       },
       {
+        width: "9%",
+        Header: t("monthly"),
+        accessor: "customer.monthlyFee",
+      },
+      {
+        width: "8%",
+        Header: t("amount"),
+        accessor: "amount",
+      },
+      {
         width: "8%",
         Header: t("balance"),
-        accessor: "amount",
+        accessor: "balance",
       },
       {
         width: "10%",
@@ -100,17 +126,6 @@ const CustomerInvoice = () => {
         Header: t("due"),
         accessor: "due",
       },
-      {
-        width: "8%",
-        Header: t("agent"),
-        accessor: "medium",
-      },
-      {
-        width: "15%",
-        Header: t("collector"),
-        accessor: "name",
-      },
-
       {
         width: "12%",
         Header: t("createdAt"),
@@ -155,6 +170,20 @@ const CustomerInvoice = () => {
                     </div>
                   </div>
                 </li> */}
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#rechargeInvoiceModal"
+                  onClick={() => {
+                    setInvoiceId(original.id);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <CurrencyDollar />
+                      <p className="actionP">{t("recharge")}</p>
+                    </div>
+                  </div>
+                </li>
               </ul>
             </div>
           </div>
@@ -500,6 +529,7 @@ const CustomerInvoice = () => {
           </div>
         </div>
       </div>
+      <CustomerBillCollectInvoice invoiceId={invoiceId} />
     </>
   );
 };
