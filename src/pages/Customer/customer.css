@@ -49,6 +49,11 @@
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 20px;
 }
+
+.displayGrid6 {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+}
 .ifCannotSelectBill {
   display: none;
   text-align: center;

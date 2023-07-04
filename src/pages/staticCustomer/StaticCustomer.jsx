@@ -1128,221 +1128,177 @@ export default function Customer() {
                 {permission?.viewCustomerList || role !== "collector" ? (
                   <div className="collectorWrapper mt-2 py-2">
                     <div className="addCollector">
-                      <div className="displexFlexSys">
-                        {/* filter selector */}
-                        {/* filter selector */}
-                        <div className="d-flex flex-wrap">
-                          <select
-                            className="form-select "
-                            onChange={(e) => {
-                              onChangeArea(e.target.value);
-                              setFilterOption({
-                                ...filterOptions,
-                                area: JSON.parse(e.target.value).id,
-                              });
-                            }}
+                      <div className="displayGrid6">
+                        <select
+                          className="form-select shadow-none "
+                          onChange={(e) => {
+                            onChangeArea(e.target.value);
+                            setFilterOption({
+                              ...filterOptions,
+                              area: JSON.parse(e.target.value).id,
+                            });
+                          }}
+                        >
+                          <option
+                            value={JSON.stringify({
+                              id: "",
+                              name: "",
+                              subAreas: [],
+                            })}
+                            defaultValue
+                            selected={filterOptions.area === ""}
                           >
+                            {t("allArea")}
+                          </option>
+                          {Customers2.some((c) => c.area === "noArea") && (
                             <option
                               value={JSON.stringify({
-                                id: "",
+                                id: "noArea",
                                 name: "",
                                 subAreas: [],
                               })}
-                              defaultValue
-                              selected={filterOptions.area === ""}
+                              selected={filterOptions.area === "noArea"}
                             >
-                              {t("allArea")}
+                              {t("customerWithoutArea")}
                             </option>
-                            {Customers2.some((c) => c.area === "noArea") && (
-                              <option
-                                value={JSON.stringify({
-                                  id: "noArea",
-                                  name: "",
-                                  subAreas: [],
-                                })}
-                                selected={filterOptions.area === "noArea"}
-                              >
-                                {t("customerWithoutArea")}
-                              </option>
-                            )}
-                            {(role === "collector" ? allArea : allareas)?.map(
-                              (area, key) => {
-                                return (
-                                  <option
-                                    selected={filterOptions.area === area.id}
-                                    key={key}
-                                    value={JSON.stringify(area)}
-                                  >
-                                    {area.name}
-                                  </option>
-                                );
-                              }
-                            )}
-                          </select>
-
-                          {/* //Todo */}
-                          <select
-                            className="form-select ms-2"
-                            onChange={(e) => {
-                              onChangeSubArea(e.target.value);
-                              setFilterOption({
-                                ...filterOptions,
-                                subArea: e.target.value,
-                              });
-                            }}
-                          >
-                            <option
-                              selected={filterOptions.subArea === ""}
-                              value=""
-                              defaultValue
-                            >
-                              {t("subArea")}
-                            </option>
-                            {subAreas?.map((sub, key) => (
-                              <option
-                                selected={filterOptions.subArea === sub.id}
-                                key={key}
-                                value={sub.id}
-                              >
-                                {sub.name}
-                              </option>
-                            ))}
-                          </select>
-                          <select
-                            className="form-select ms-2"
-                            onChange={(e) => {
-                              setFilterOption({
-                                ...filterOptions,
-                                status: e.target.value,
-                              });
-                            }}
-                          >
-                            <option
-                              selected={filterOptions.status === ""}
-                              value=""
-                              defaultValue
-                            >
-                              {t("status")}
-                            </option>
-                            <option
-                              selected={filterOptions.status === "active"}
-                              value="active"
-                            >
-                              {t("active")}
-                            </option>
-                            <option
-                              selected={filterOptions.status === "inactive"}
-                              value="inactive"
-                            >
-                              {t("in active")}
-                            </option>
-                            <option
-                              selected={filterOptions.status === "expired"}
-                              value="expired"
-                            >
-                              {t("expired")}
-                            </option>
-                          </select>
-
-                          <select
-                            className="form-select ms-2"
-                            onChange={(e) => {
-                              setFilterOption({
-                                ...filterOptions,
-                                paymentStatus: e.target.value,
-                              });
-                            }}
-                          >
-                            <option
-                              selected={filterOptions.paymentStatus === ""}
-                              value=""
-                              defaultValue
-                            >
-                              {t("paymentStatus")}
-                            </option>
-                            <option
-                              selected={filterOptions.paymentStatus === "free"}
-                              value="free"
-                            >
-                              {t("free")}
-                            </option>
-                            <option
-                              selected={filterOptions.paymentStatus === "paid"}
-                              value="paid"
-                            >
-                              {t("payPaid")}
-                            </option>
-                            <option
-                              selected={
-                                filterOptions.paymentStatus === "unpaid"
-                              }
-                              value="unpaid"
-                            >
-                              {t("unpaid")}
-                            </option>
-                            <option
-                              selected={
-                                filterOptions.paymentStatus === "partial"
-                              }
-                              value="partial"
-                            >
-                              {t("partial")}
-                            </option>
-                            <option
-                              selected={
-                                filterOptions.paymentStatus === "advance"
-                              }
-                              value="advance"
-                            >
-                              {t("advance")}
-                            </option>
-                            <option
-                              selected={
-                                filterOptions.paymentStatus === "overdue"
-                              }
-                              value="overdue"
-                            >
-                              {t("overDue")}
-                            </option>
-                          </select>
-                          {bpSettings?.hasMikrotik && (
-                            <select
-                              className="form-select ms-2"
-                              onChange={(e) => {
-                                mikrotikHandler(e.target.value);
-                              }}
-                            >
-                              <option
-                                selected={filterOptions.mikrotik === ""}
-                                value=""
-                                defaultValue
-                              >
-                                {t("mikrotik")}
-                              </option>
-
-                              {mikrotiks.map((m, i) => {
-                                return (
-                                  <option
-                                    key={i}
-                                    selected={
-                                      filterOptions.mikrotik === `${m.id}`
-                                    }
-                                    value={m.id}
-                                  >
-                                    {m.name}
-                                  </option>
-                                );
-                              })}
-                            </select>
                           )}
+                          {(role === "collector" ? allArea : allareas)?.map(
+                            (area, key) => {
+                              return (
+                                <option
+                                  selected={filterOptions.area === area.id}
+                                  key={key}
+                                  value={JSON.stringify(area)}
+                                >
+                                  {area.name}
+                                </option>
+                              );
+                            }
+                          )}
+                        </select>
 
+                        {/* //Todo */}
+                        <select
+                          className="form-select shadow-none"
+                          onChange={(e) => {
+                            onChangeSubArea(e.target.value);
+                            setFilterOption({
+                              ...filterOptions,
+                              subArea: e.target.value,
+                            });
+                          }}
+                        >
+                          <option
+                            selected={filterOptions.subArea === ""}
+                            value=""
+                            defaultValue
+                          >
+                            {t("subArea")}
+                          </option>
+                          {subAreas?.map((sub, key) => (
+                            <option
+                              selected={filterOptions.subArea === sub.id}
+                              key={key}
+                              value={sub.id}
+                            >
+                              {sub.name}
+                            </option>
+                          ))}
+                        </select>
+                        <select
+                          className="form-select shadow-none"
+                          onChange={(e) => {
+                            setFilterOption({
+                              ...filterOptions,
+                              status: e.target.value,
+                            });
+                          }}
+                        >
+                          <option
+                            selected={filterOptions.status === ""}
+                            value=""
+                            defaultValue
+                          >
+                            {t("status")}
+                          </option>
+                          <option
+                            selected={filterOptions.status === "active"}
+                            value="active"
+                          >
+                            {t("active")}
+                          </option>
+                          <option
+                            selected={filterOptions.status === "inactive"}
+                            value="inactive"
+                          >
+                            {t("in active")}
+                          </option>
+                          <option
+                            selected={filterOptions.status === "expired"}
+                            value="expired"
+                          >
+                            {t("expired")}
+                          </option>
+                        </select>
+
+                        <select
+                          className="form-select shadow-none"
+                          onChange={(e) => {
+                            setFilterOption({
+                              ...filterOptions,
+                              paymentStatus: e.target.value,
+                            });
+                          }}
+                        >
+                          <option
+                            selected={filterOptions.paymentStatus === ""}
+                            value=""
+                            defaultValue
+                          >
+                            {t("paymentStatus")}
+                          </option>
+                          <option
+                            selected={filterOptions.paymentStatus === "free"}
+                            value="free"
+                          >
+                            {t("free")}
+                          </option>
+                          <option
+                            selected={filterOptions.paymentStatus === "paid"}
+                            value="paid"
+                          >
+                            {t("payPaid")}
+                          </option>
+                          <option
+                            selected={filterOptions.paymentStatus === "unpaid"}
+                            value="unpaid"
+                          >
+                            {t("unpaid")}
+                          </option>
+                          <option
+                            selected={filterOptions.paymentStatus === "partial"}
+                            value="partial"
+                          >
+                            {t("partial")}
+                          </option>
+                          <option
+                            selected={filterOptions.paymentStatus === "advance"}
+                            value="advance"
+                          >
+                            {t("advance")}
+                          </option>
+                          <option
+                            selected={filterOptions.paymentStatus === "overdue"}
+                            value="overdue"
+                          >
+                            {t("overDue")}
+                          </option>
+                        </select>
+                        {bpSettings?.hasMikrotik && (
                           <select
-                            className="form-select "
+                            className="form-select shadow-none"
                             onChange={(e) => {
-                              setFilterOption({
-                                ...filterOptions,
-                                package: e.target.value,
-                              });
+                              mikrotikHandler(e.target.value);
                             }}
                           >
                             <option
@@ -1350,15 +1306,15 @@ export default function Customer() {
                               value=""
                               defaultValue
                             >
-                              {t("package")}
+                              {t("mikrotik")}
                             </option>
 
-                            {mikrotikPac?.map((m, i) => {
+                            {mikrotiks.map((m, i) => {
                               return (
                                 <option
                                   key={i}
                                   selected={
-                                    filterOptions.package === `${m.name}`
+                                    filterOptions.mikrotik === `${m.id}`
                                   }
                                   value={m.id}
                                 >
@@ -1367,78 +1323,107 @@ export default function Customer() {
                               );
                             })}
                           </select>
+                        )}
 
-                          <select
-                            onChange={(e) =>
-                              setFilterOption({
-                                ...filterOptions,
-                                freeUser: e.target.value,
-                              })
-                            }
-                            className="form-select ms-2"
+                        <select
+                          className="form-select shadow-none "
+                          onChange={(e) => {
+                            setFilterOption({
+                              ...filterOptions,
+                              package: e.target.value,
+                            });
+                          }}
+                        >
+                          <option
+                            selected={filterOptions.mikrotik === ""}
+                            value=""
+                            defaultValue
                           >
-                            <option
-                              selected={filterOptions.freeUser === "allUser"}
-                              value="allUser"
-                            >
-                              {t("sokolCustomer")}
-                            </option>
-                            <option
-                              selected={filterOptions.freeUser === "freeUser"}
-                              value="freeUser"
-                            >
-                              {t("freeCustomer")}
-                            </option>
-                            <option
-                              selected={
-                                filterOptions.freeUser === "nonFreeUser"
-                              }
-                              value="nonFreeUser"
-                            >
-                              {t("nonFreeCustomer")}
-                            </option>
-                          </select>
-                          <input
-                            className="form-select ms-2"
-                            type="date"
-                            onChange={(e) =>
-                              setFilterOption({
-                                ...filterOptions,
-                                filterDate: e.target.value,
-                              })
-                            }
-                          />
-                          <select
-                            className="form-select ms-2"
-                            onChange={(e) =>
-                              setFilterOption({
-                                ...filterOptions,
-                                dayFilter: e.target.value,
-                              })
-                            }
+                            {t("package")}
+                          </option>
+
+                          {mikrotikPac?.map((m, i) => {
+                            return (
+                              <option
+                                key={i}
+                                selected={filterOptions.package === `${m.name}`}
+                                value={m.id}
+                              >
+                                {m.name}
+                              </option>
+                            );
+                          })}
+                        </select>
+
+                        <select
+                          onChange={(e) =>
+                            setFilterOption({
+                              ...filterOptions,
+                              freeUser: e.target.value,
+                            })
+                          }
+                          className="form-select shadow-none"
+                        >
+                          <option
+                            selected={filterOptions.freeUser === "allUser"}
+                            value="allUser"
                           >
-                            <option value="">{t("filterBillDate")}</option>
-                            <option value="1">{t("oneDayLeft")}</option>
-                            <option value="2">{t("twoDayLeft")}</option>
-                            <option value="3">{t("threeDayLeft")}</option>
-                            <option value="4">{t("fourDayLeft")}</option>
-                          </select>
-                          <div>
-                            <button
-                              className="btn btn-outline-primary w-6rem mt-2 ms-2"
-                              type="button"
-                              onClick={handleActiveFilter}
-                            >
-                              {t("filter")}
-                            </button>
-                            <button
-                              className="btn btn-outline-secondary ms-2 w-6rem mt-2"
-                              type="button"
-                              onClick={handleFilterReset}
-                            >
-                              {t("reset")}
-                            </button>
-                          </div>
+                            {t("sokolCustomer")}
+                          </option>
+                          <option
+                            selected={filterOptions.freeUser === "freeUser"}
+                            value="freeUser"
+                          >
+                            {t("freeCustomer")}
+                          </option>
+                          <option
+                            selected={filterOptions.freeUser === "nonFreeUser"}
+                            value="nonFreeUser"
+                          >
+                            {t("nonFreeCustomer")}
+                          </option>
+                        </select>
+                        <input
+                          className="form-select shadow-none"
+                          type="date"
+                          onChange={(e) =>
+                            setFilterOption({
+                              ...filterOptions,
+                              filterDate: e.target.value,
+                            })
+                          }
+                        />
+                        <select
+                          className="form-select shadow-none"
+                          onChange={(e) =>
+                            setFilterOption({
+                              ...filterOptions,
+                              dayFilter: e.target.value,
+                            })
+                          }
+                        >
+                          <option value="">{t("filterBillDate")}</option>
+                          <option value="1">{t("oneDayLeft")}</option>
+                          <option value="2">{t("twoDayLeft")}</option>
+                          <option value="3">{t("threeDayLeft")}</option>
+                          <option value="4">{t("fourDayLeft")}</option>
+                        </select>
+
+                        <div>
+                          <button
+                            className="btn btn-outline-primary w-6rem mt-2"
+                            type="button"
+                            onClick={handleActiveFilter}
+                          >
+                            {t("filter")}
+                          </button>
+                          <button
+                            className="btn btn-outline-secondary w-6rem ms-2 mt-2"
+                            type="button"
+                            onClick={handleFilterReset}
+                          >
+                            {t("reset")}
+                          </button>
                         </div>
                       </div>
                     </div>
