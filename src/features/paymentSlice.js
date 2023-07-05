@@ -53,8 +53,13 @@ const paymentSlice = createSlice({
       state.allBills = [];
       state.allDeposit = [];
     },
-    getIspOwnerCustomerInvoice: (state, action) => {
+    getCustomerInvoice: (state, action) => {
       state.customerInvoice = action.payload;
+    },
+    updateCustomerInvoice: (state, { payload }) => {
+      state.customerInvoice[
+        state.customerInvoice.findIndex((item) => item.id === payload.id)
+      ] = payload;
     },
   },
 });
@@ -69,6 +74,6 @@ export const {
   updateDepositSuccess,
   addDepositSucces,
   getCollectorDeposite,
-  getIspOwnerCustomerInvoice,
+  getCustomerInvoice,
 } = paymentSlice.actions;
 export default paymentSlice.reducer;

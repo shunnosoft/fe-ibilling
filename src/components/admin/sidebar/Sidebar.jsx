@@ -631,8 +631,10 @@ export default function Sidebar() {
                             </FontColor>
                           </NavLink>
                         )}
-                        {(userRole === "ispOwner" ||
-                          userRole === "manager") && (
+                        {((userRole === "ispOwner" &&
+                          bpSettings?.customerInvoice) ||
+                          (userRole === "manager" &&
+                            permission?.customerInvoice)) && (
                           <NavLink
                             key={125}
                             to={"/customer/invoice"}

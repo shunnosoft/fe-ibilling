@@ -50,7 +50,6 @@ const CustomerInvoice = () => {
 
   // all customer invoice
   const allInvoice = useSelector((state) => state?.payment?.customerInvoice);
-  console.log(allInvoice);
 
   // Loading state
   const [isLoading, setIsLoading] = useState(false);

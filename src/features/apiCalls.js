@@ -91,6 +91,7 @@ import {
   getCollectorDeposite,
   editBillReportSuccess,
   getIspOwnerCustomerInvoice,
+  getCustomerInvoice,
 } from "./paymentSlice";
 import { getChartSuccess, getCardDataSuccess } from "./chartsSlice";
 import {
@@ -1943,19 +1944,6 @@ export const deleteReseller = async (dispatch, IDs, setIsLoading) => {
     });
 };
 
-//profile Update
-
-// const profileUpdate =async(dispatch,data)=>{
-//   try {
-//     const res = await apiLink.post()
-
-//   } catch (error) {
-//     toast.success("Profile Update failed")
-
-//   }
-
-// }
-
 //password update
 export const passwordUpdate = async ({
   data,
@@ -2161,21 +2149,13 @@ export const billCollectInvoice = async (
   billData,
   setLoading,
   resetForm = null,
-  setResponseData,
-  setTest
+  invoiceId
 ) => {
   setLoading(true);
   try {
-    const res = await apiLink.post("/bill/monthlyBill", billData);
-    if (billData.userType === "pppoe") {
-      dispatch(updateBalance(res.data));
-      setResponseData(res.data);
-      setTest(true);
-    } else {
-      dispatch(updateBalanceStaticCustomer(res.data));
-      setResponseData(res.data);
-      setTest(true);
-    }
+    const res = await apiLink.patch(`/bill/invoice/${invoiceId}`, billData);
+    dispatch(updateFireWallFilterIpDrop(res.data));
+
     document.querySelector("#rechargeInvoiceModal").click();
     langMessage(
       "success",
@@ -3401,7 +3381,7 @@ export const getIspOwnerInvoice = async (
   setIsLoading(true);
   try {
     const res = await apiLink.get(`bill/customer/invoice/${ispOwnerId}`);
-    dispatch(getIspOwnerCustomerInvoice(res.data));
+    dispatch(getCustomerInvoice(res.data));
   } catch (error) {
     toast.error(error.response?.data?.message);
   }

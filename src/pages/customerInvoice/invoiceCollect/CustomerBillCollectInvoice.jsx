@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { Form, Formik } from "formik";
 import { useSelector } from "react-redux";
 import * as Yup from "yup";
@@ -7,8 +7,6 @@ import { FtextField } from "../../../components/common/FtextField";
 import "../../Customer/customer.css";
 import { useDispatch } from "react-redux";
 import Loader from "../../../components/common/Loader";
-import DatePicker from "react-datepicker";
-import Select from "react-select";
 import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
 import { billCollectInvoice } from "../../../features/apiCalls";
@@ -22,23 +20,12 @@ export default function CustomerBillCollectInvoice({ invoiceId }) {
 
   const invoice = allInvoice.find((item) => item.id === invoiceId);
 
-  // get all customer
-  const customer = useSelector((state) => state?.customer?.customer);
-
-  // find editable data
-  // const data = customer?.find((item) => item.id === single);
-
   // get all role
   const role = useSelector((state) => state.persistedReducer.auth.role);
 
   // get user permission
   const permission = useSelector(
     (state) => state.persistedReducer.auth.userData.permissions
-  );
-
-  // get bpSettings
-  const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
   );
 
   // get ispOwner info
@@ -61,12 +48,7 @@ export default function CustomerBillCollectInvoice({ invoiceId }) {
 
   const [isLoading, setLoading] = useState(false);
 
-  //billing date
-  const [startDate, setStartDate] = useState(false);
-  const [endDate, setEndDate] = useState(false);
   const [medium, setMedium] = useState("cash");
-  const [note, setNote] = useState("");
-  const [selectedMonth, setSelectedMonth] = useState([]);
   const [billAmount, setBillAmount] = useState();
   const [balanceDue, setBalanceDue] = useState();
   const [billType, setBillType] = useState("bill");
@@ -77,27 +59,23 @@ export default function CustomerBillCollectInvoice({ invoiceId }) {
   //Validation
   const BillValidatoin = Yup.object({
     amount: Yup.number()
-      .min(0, t("billNotAcceptable"))
+      .min(invoice?.amount, t("billNotAcceptable"))
       .integer(t("decimalNumberNotAcceptable")),
     due: Yup.number()
-      .min(0, t("dueNotAcceptable"))
+      .min(invoice?.due, t("dueNotAcceptable"))
       .max(
         invoice?.balance < 0 ? Math.abs(invoice?.balance) : 0,
         t("dueNotAcceptable")
       )
       .integer(t("decimalNumberNotAcceptable")),
     discount: Yup.number()
-      .min(0, t("discountNotAcceptable"))
+      .min(invoice?.discount, t("discountNotAcceptable"))
       .max(maxDiscount, t("discountNotAcceptable"))
       .integer(t("decimalNumberNotAcceptable")),
   });
 
   //form resetFunction
   const resetForm = () => {
-    setStartDate(false);
-    setEndDate(false);
-    setNote("");
-    setSelectedMonth(null);
     setBillAmount(
       invoice?.balance > 0 && invoice?.balance <= invoice?.customer?.monthlyFee
         ? invoice?.customer?.monthlyFee - invoice?.balance
@@ -108,11 +86,14 @@ export default function CustomerBillCollectInvoice({ invoiceId }) {
   };
 
   useEffect(() => {
-    setBalanceDue(invoice?.balance < 0 ? Math.abs(invoice?.balance) : 0);
+    setBalanceDue(
+      invoice?.customer.balance < 0 ? Math.abs(invoice?.customer.balance) : 0
+    );
     setBillAmount(
-      invoice?.balance > 0 && invoice?.balance <= invoice?.customer?.monthlyFee
-        ? invoice?.customer?.monthlyFee - invoice?.balance
-        : invoice?.balance > invoice?.customer?.monthlyFee
+      invoice?.customer.balance > 0 &&
+        invoice?.customer.balance <= invoice?.customer?.monthlyFee
+        ? invoice?.customer?.monthlyFee - invoice?.customer.balance
+        : invoice?.customer.balance > invoice?.customer?.monthlyFee
         ? 0
         : invoice?.customer?.monthlyFee
     );
@@ -128,7 +109,7 @@ export default function CustomerBillCollectInvoice({ invoiceId }) {
   };
 
   // bill amount
-  const customerBillHandler = (formValue) => {
+  const invoiceSubmitHandler = (formValue) => {
     if (balanceDue > (invoice?.balance < 0 ? Math.abs(invoice?.balance) : 0)) {
       setLoading(false);
       return alert(t("dueNotAcceptable"));
@@ -166,16 +147,7 @@ export default function CustomerBillCollectInvoice({ invoiceId }) {
     }
     if (invoice?.month) sendingData.month = invoice?.month;
 
-    console.log(sendingData);
-
-    // billCollectInvoice(
-    //   dispatch,
-    //   sendingData,
-    //   setLoading,
-    //   resetForm,
-    //   setResponseData,
-    //   setTest
-    // );
+    billCollectInvoice(dispatch, sendingData, setLoading, resetForm, invoiceId);
 
     setAmount(invoice?.amount);
   };
@@ -210,18 +182,22 @@ export default function CustomerBillCollectInvoice({ invoiceId }) {
             <Formik
               initialValues={{
                 amount:
-                  invoice?.balance > 0 &&
-                  invoice?.balance <= invoice?.customer?.monthlyFee
-                    ? invoice?.customer?.monthlyFee - invoice?.balance
-                    : invoice?.balance > invoice?.customer?.monthlyFee
+                  invoice?.customer.balance > 0 &&
+                  invoice?.customer.balance <= invoice?.customer?.monthlyFee
+                    ? invoice?.customer?.monthlyFee - invoice?.customer.balance
+                    : invoice?.customer.balance > invoice?.customer?.monthlyFee
                     ? 0
                     : invoice?.customer?.monthlyFee,
-                due: invoice?.balance < 0 ? Math.abs(invoice?.balance) : 0,
-                discount: 0,
+
+                due:
+                  invoice?.customer.balance < 0
+                    ? Math.abs(invoice?.customer.balance)
+                    : 0,
+                discount: invoice?.discount ? invoice?.discount : 0,
               }}
               validationSchema={BillValidatoin}
               onSubmit={(values) => {
-                customerBillHandler(values);
+                invoiceSubmitHandler(values);
               }}
               enableReinitialize
             >
@@ -259,7 +235,7 @@ export default function CustomerBillCollectInvoice({ invoiceId }) {
                         </td>
                         <td>{t("balance")}</td>
                         <td className="text-info">
-                          <b>{invoice?.balance}</b>
+                          <b>{invoice?.customer.balance}</b>
                         </td>
                       </tr>
                     </tbody>
