@@ -811,5 +811,7 @@
   "uddoktaPay": "uddoktaPay",
   "billInvoice": "Bill Invoice",
   "addPermission": "Add Permission",
-  "selected": "Selected"
+  "selected": "Selected",
+  "customerInvoice": "Customer Invoice",
+  "totalAmount": "Total Amount"
 }

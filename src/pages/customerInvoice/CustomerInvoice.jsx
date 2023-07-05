@@ -16,6 +16,7 @@ import {
   PrinterFill,
   ThreeDots,
   CurrencyDollar,
+  ArchiveFill,
 } from "react-bootstrap-icons";
 import { getCustomer, getIspOwnerInvoice } from "../../features/apiCalls";
 import { useDispatch, useSelector } from "react-redux";
@@ -28,11 +29,13 @@ import ReactToPrint from "react-to-print";
 import PrintReport from "../report/ReportPDF";
 import FormatNumber from "../../components/common/NumberFormat";
 import CustomerBillCollectInvoice from "./invoiceCollect/CustomerBillCollectInvoice";
+import CustomerInvoicePrint from "./customerInvoicePrint/CustomerInvoicePrint";
 
 const CustomerInvoice = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const componentRef = useRef();
+  const cusOffice = useRef();
 
   var today = new Date();
   var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
@@ -40,20 +43,22 @@ const CustomerInvoice = () => {
   firstDay.setHours(0, 0, 0, 0);
   today.setHours(23, 59, 59, 999);
 
-  // const [dateStart, setStartDate] = useState(firstDay);
-  // const [dateEnd, setEndDate] = useState(today);
-
   // get isp owner id
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
   );
 
+  // get isp owner data
+  const ispOwnerData = useSelector(
+    (state) => state.persistedReducer.auth.userData
+  );
+
   // all customer invoice
   const allInvoice = useSelector((state) => state?.payment?.customerInvoice);
-  console.log(allInvoice);
 
   // Loading state
   const [isLoading, setIsLoading] = useState(false);
+  const [show, setShow] = useState(false);
 
   const [customerLoading, setCustomerLoading] = useState(false);
 
@@ -62,6 +67,13 @@ const CustomerInvoice = () => {
 
   // customer id state
   const [invoiceId, setInvoiceId] = useState("");
+
+  // single customer invoice state
+  const [singleInvoice, setSingleInvoice] = useState({});
+  console.log(singleInvoice);
+
+  // status handle state
+  const [status, setStatus] = useState("");
 
   //filter state
   const [filterOptions, setFilterOption] = useState({
@@ -84,114 +96,10 @@ const CustomerInvoice = () => {
     setCustomerInvoice(allInvoice);
   }, [allInvoice]);
 
-  const columns = useMemo(
-    () => [
-      {
-        width: "8%",
-        Header: t("id"),
-        accessor: "customer.customerId",
-      },
-      {
-        width: "11%",
-        Header: t("PPPoEName"),
-        accessor: "customer.pppoe.name",
-      },
-      {
-        width: "10%",
-        Header: t("package"),
-        accessor: "package",
-      },
-      {
-        width: "9%",
-        Header: t("monthly"),
-        accessor: "customer.monthlyFee",
-      },
-      {
-        width: "8%",
-        Header: t("amount"),
-        accessor: "amount",
-      },
-      {
-        width: "8%",
-        Header: t("balance"),
-        accessor: "balance",
-      },
-      {
-        width: "10%",
-        Header: t("discount"),
-        accessor: "discount",
-      },
-      {
-        width: "8%",
-        Header: t("due"),
-        accessor: "due",
-      },
-      {
-        width: "12%",
-        Header: t("createdAt"),
-        accessor: "createdAt",
-        Cell: ({ cell: { value } }) => {
-          return moment(value).format("MMM DD YYYY hh:mm a");
-        },
-      },
-      {
-        width: "10%",
-        Header: () => <div className="text-center">{t("action")}</div>,
-        id: "option",
-
-        Cell: ({ row: { original } }) => (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <div className="dropdown">
-              <ThreeDots
-                className="dropdown-toggle ActionDots"
-                id="areaDropdown"
-                type="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              />
-              <ul className="dropdown-menu" aria-labelledby="customerDrop">
-                {/* <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#reportEditModal"
-                  onClick={() => {
-                    getReportId(original?.id);
-                  }}
-                >
-                  <div className="dropdown-item">
-                    <div className="customerAction">
-                      <PenFill />
-                      <p className="actionP">{t("edit")}</p>
-                    </div>
-                  </div>
-                </li> */}
-                <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#rechargeInvoiceModal"
-                  onClick={() => {
-                    setInvoiceId(original.id);
-                  }}
-                >
-                  <div className="dropdown-item">
-                    <div className="customerAction">
-                      <CurrencyDollar />
-                      <p className="actionP">{t("recharge")}</p>
-                    </div>
-                  </div>
-                </li>
-              </ul>
-            </div>
-          </div>
-        ),
-      },
-    ],
-    [t]
-  );
+  //reload handler
+  const reloadHandler = () => {
+    getIspOwnerInvoice(dispatch, ispOwnerId, setIsLoading);
+  };
 
   // invoice filter
   const filterInputs = [
@@ -275,8 +183,7 @@ const CustomerInvoice = () => {
   var { billType, medium, startDate, endDate } = filterOptions;
   const handleActiveFilter = () => {
     let tempCustomers = allInvoice.reduce((acc, c) => {
-      // const { billType, medium, startDate, endDate } = filterOptions;
-
+      // create date and filter date format
       const createDate = new Date(
         moment(c.createdAt).format("YYYY-MM-DD")
       ).getTime();
@@ -338,10 +245,33 @@ const CustomerInvoice = () => {
 
   const tableData = useMemo(() => sortingCustomerInvoice, [customerInvoice]);
 
-  //reload handler
-  const reloadHandler = () => {
-    getIspOwnerInvoice(dispatch, ispOwnerId, setIsLoading);
-  };
+  // set csv header
+  const customerInvoiceForCsVHeader = [
+    { label: "Name", key: "name" },
+    { label: "Package", key: "package" },
+    { label: "Bill_Amount", key: "amount" },
+    { label: "Bill_Due", key: "due" },
+    { label: "Bill_Medium", key: "medium" },
+    { label: "Collector_Name", key: "collector" },
+    { label: "Bill_Collect_Date", key: "createdAt" },
+  ];
+
+  // get data from customer invoice for csv
+  let customerInvoiceForCsV = useMemo(
+    () =>
+      tableData.map((data) => {
+        return {
+          name: data?.customer?.name,
+          package: data.package,
+          amount: data.amount,
+          due: data.due,
+          medium: data.medium,
+          collector: data.name,
+          createdAt: moment(data.createdAt).format("MM/DD/YYYY"),
+        };
+      }),
+    [customerInvoice]
+  );
 
   // customer invoice total amount count
   const addAllBills = useCallback(() => {
@@ -359,7 +289,7 @@ const CustomerInvoice = () => {
     <div style={{ fontSize: "18px", display: "flex" }}>
       {
         <div>
-          {t("totalBalance")} {FormatNumber(addAllBills().balance)} {t("tk")}
+          {t("totalAmount")} {FormatNumber(addAllBills().balance)} {t("tk")}
           &nbsp;&nbsp;
         </div>
       }
@@ -375,6 +305,164 @@ const CustomerInvoice = () => {
     endDate: filterOptions.endDate,
     totalBill: addAllBills().balance,
   };
+
+  // invoice print handler
+  const invoicePrintHandler = (value, status) => {
+    setSingleInvoice(value);
+    setStatus(status);
+
+    setTimeout(function () {
+      document.getElementById("invoicePrint").click();
+    }, 100);
+  };
+
+  // customer invoice delete handler
+  const invoiceDeleteHandler = (id) => {
+    const confirm = window.confirm();
+
+    if (confirm) {
+    }
+  };
+
+  const columns = useMemo(
+    () => [
+      {
+        width: "8%",
+        Header: t("id"),
+        accessor: "customer.customerId",
+      },
+      {
+        width: "11%",
+        Header: t("PPPoEName"),
+        accessor: "customer.pppoe.name",
+      },
+      {
+        width: "10%",
+        Header: t("package"),
+        accessor: "package",
+      },
+      {
+        width: "9%",
+        Header: t("monthly"),
+        accessor: "customer.monthlyFee",
+      },
+      {
+        width: "8%",
+        Header: t("amount"),
+        accessor: "amount",
+      },
+      {
+        width: "8%",
+        Header: t("balance"),
+        accessor: "balance",
+      },
+      {
+        width: "10%",
+        Header: t("discount"),
+        accessor: "discount",
+      },
+      {
+        width: "8%",
+        Header: t("due"),
+        accessor: "due",
+      },
+      {
+        width: "12%",
+        Header: t("createdAt"),
+        accessor: "createdAt",
+        Cell: ({ cell: { value } }) => {
+          return moment(value).format("MMM DD YYYY hh:mm a");
+        },
+      },
+      {
+        width: "10%",
+        Header: () => <div className="text-center">{t("action")}</div>,
+        id: "option",
+
+        Cell: ({ row: { original } }) => (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <div className="dropdown">
+              <ThreeDots
+                className="dropdown-toggle ActionDots"
+                id="areaDropdown"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              />
+              <ul className="dropdown-menu" aria-labelledby="customerDrop">
+                <li
+                  onClick={() => {
+                    setInvoiceId(original.id);
+                    setShow(true);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <CurrencyDollar />
+                      <p className="actionP">{t("recharge")}</p>
+                    </div>
+                  </div>
+                </li>
+                <li
+                  onClick={() => {
+                    invoicePrintHandler(original, "both");
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <PrinterFill />
+                      <p className="actionP">{t("office&customer")}</p>
+                    </div>
+                  </div>
+                </li>
+                <li
+                  onClick={() => {
+                    invoicePrintHandler(original, "customer");
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <PrinterFill />
+                      <p className="actionP">{t("customer")}</p>
+                    </div>
+                  </div>
+                </li>
+                {/* <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#reportEditModal"
+                  onClick={() => {
+                    getReportId(original?.id);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <PenFill />
+                      <p className="actionP">{t("edit")}</p>
+                    </div>
+                  </div>
+                </li> */}
+                <li onClick={() => invoiceDeleteHandler(original.id)}>
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <ArchiveFill />
+                      <p className="actionP">{t("delete")}</p>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        ),
+      },
+    ],
+    [t]
+  );
 
   return (
     <>
@@ -399,14 +487,14 @@ const CustomerInvoice = () => {
                   </div>
                   <div className="report_bill d-flex">
                     <div className="addAndSettingIcon">
-                      {/* <CSVLink
-                          data={reportForCsVTableInfo}
-                          filename={ispOwnerData.company}
-                          headers={reportForCsVTableInfoHeader}
-                          title="Bill Report"
-                        >
-                          <FileExcelFill className="addcutmButton" />
-                        </CSVLink> */}
+                      <CSVLink
+                        data={customerInvoiceForCsV}
+                        filename={ispOwnerData.company}
+                        headers={customerInvoiceForCsVHeader}
+                        title={t("customerInvoice")}
+                      >
+                        <FileExcelFill className="addcutmButton" />
+                      </CSVLink>
                     </div>
 
                     <div className="addAndSettingIcon">
@@ -418,7 +506,7 @@ const CustomerInvoice = () => {
                             className="addcutmButton"
                           />
                         )}
-                        content={() => componentRef.current}
+                        content={() => cusOffice.current}
                       />
                     </div>
                   </div>
@@ -485,7 +573,7 @@ const CustomerInvoice = () => {
                       </div>
 
                       {/* filter and reset control button */}
-                      <div>
+                      <div className="gridButton">
                         <button
                           className="btn btn-outline-primary w-6rem mt-3"
                           type="button"
@@ -514,6 +602,34 @@ const CustomerInvoice = () => {
                       />
                     </div>
                   </div>
+                  <>
+                    <div style={{ display: "none" }}>
+                      <ReactToPrint
+                        documentTitle={t("billInvoice")}
+                        trigger={() => (
+                          <div type="button" id="invoicePrint"></div>
+                        )}
+                        content={() => cusOffice.current}
+                      />
+                      <CustomerInvoicePrint
+                        ref={cusOffice}
+                        invoiceData={{
+                          name: singleInvoice?.customer?.name,
+                          mobile: singleInvoice?.customer?.mobile,
+                          address: singleInvoice?.customer?.address,
+                          package: singleInvoice.package,
+                          amount: singleInvoice.amount,
+                          due: singleInvoice.due,
+                          discount: singleInvoice.discount,
+                          billType: singleInvoice.billType,
+                          medium: singleInvoice.medium,
+                          billingCycle: singleInvoice?.customer?.billingCycle,
+                          status: status,
+                        }}
+                        ispOwnerData={ispOwnerData}
+                      />
+                    </div>
+                  </>
                   <div className="table-section">
                     <Table
                       isLoading={isLoading}
@@ -529,7 +645,11 @@ const CustomerInvoice = () => {
           </div>
         </div>
       </div>
-      <CustomerBillCollectInvoice invoiceId={invoiceId} />
+      <CustomerBillCollectInvoice
+        show={show}
+        setShow={setShow}
+        invoiceId={invoiceId}
+      />
     </>
   );
 };

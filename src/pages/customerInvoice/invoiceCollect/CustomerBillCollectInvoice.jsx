@@ -12,8 +12,13 @@ import Select from "react-select";
 import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
 import { billCollectInvoice } from "../../../features/apiCalls";
+import { Modal, ModalBody, ModalHeader, ModalTitle } from "react-bootstrap";
 
-export default function CustomerBillCollectInvoice({ invoiceId }) {
+export default function CustomerBillCollectInvoice({
+  show,
+  setShow,
+  invoiceId,
+}) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
@@ -118,6 +123,11 @@ export default function CustomerBillCollectInvoice({ invoiceId }) {
     );
   }, [invoice]);
 
+  //modal show handler
+  const handleClose = () => {
+    setShow(false);
+  };
+
   const handleFormValue = (event) => {
     if (event.target.name === "amount") {
       setBillAmount(event.target.value);
@@ -181,16 +191,16 @@ export default function CustomerBillCollectInvoice({ invoiceId }) {
   };
 
   return (
-    <div
-      className="modal fade"
-      id="rechargeInvoiceModal"
-      tabIndex="-1"
-      aria-labelledby="customerModalDetails"
-      aria-hidden="true"
-    >
-      <div className="modal-dialog modal-dialog-scrollable">
-        <div className="modal-content px-3">
-          <div className="modal-header">
+    <>
+      <Modal
+        show={show}
+        onHide={handleClose}
+        backdrop="static"
+        keyboard={false}
+        centered
+      >
+        <ModalHeader closeButton>
+          <ModalTitle>
             <h5
               style={{ color: "#0abb7a" }}
               className="modal-title"
@@ -198,138 +208,134 @@ export default function CustomerBillCollectInvoice({ invoiceId }) {
             >
               {t("recharge")}
             </h5>
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-              onClick={resetForm}
-            ></button>
-          </div>
-          <div className="modal-body">
-            <Formik
-              initialValues={{
-                amount:
-                  invoice?.balance > 0 &&
-                  invoice?.balance <= invoice?.customer?.monthlyFee
-                    ? invoice?.customer?.monthlyFee - invoice?.balance
-                    : invoice?.balance > invoice?.customer?.monthlyFee
-                    ? 0
-                    : invoice?.customer?.monthlyFee,
-                due: invoice?.balance < 0 ? Math.abs(invoice?.balance) : 0,
-                discount: 0,
-              }}
-              validationSchema={BillValidatoin}
-              onSubmit={(values) => {
-                customerBillHandler(values);
-              }}
-              enableReinitialize
-            >
-              {() => (
-                <Form onChange={handleFormValue}>
-                  <table
-                    className="table table-bordered"
-                    style={{ lineHeight: "12px" }}
-                  >
-                    <tbody>
-                      <tr>
-                        <td>{t("id")}</td>
-                        <td>
-                          <b>{invoice?.customer?.customerId}</b>
-                        </td>
-                        <td>{t("pppoe")}</td>
-                        <td>
-                          <b>{invoice?.customer?.pppoe?.name}</b>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>{t("name")}</td>
-                        <td>
-                          <b>{invoice?.customer?.name}</b>
-                        </td>
-                        <td>{t("mobile")}</td>
-                        <td className="text-primary">
-                          <b>{invoice?.customer?.mobile}</b>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>{t("monthly")}</td>
-                        <td className="text-success">
-                          <b>{invoice?.customer?.monthlyFee}</b>
-                        </td>
-                        <td>{t("balance")}</td>
-                        <td className="text-info">
-                          <b>{invoice?.balance}</b>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                  <h6>
-                    <span className="text-success">{t("totalBillAmount")}</span>
-                    <span className="text-danger">{totalAmount} </span>
-                  </h6>
+          </ModalTitle>
+        </ModalHeader>
+        <ModalBody>
+          <Formik
+            initialValues={{
+              amount:
+                invoice?.balance > 0 &&
+                invoice?.balance <= invoice?.customer?.monthlyFee
+                  ? invoice?.customer?.monthlyFee - invoice?.balance
+                  : invoice?.balance > invoice?.customer?.monthlyFee
+                  ? 0
+                  : invoice?.customer?.monthlyFee,
+              due: invoice?.balance < 0 ? Math.abs(invoice?.balance) : 0,
+              discount: 0,
+            }}
+            validationSchema={BillValidatoin}
+            onSubmit={(values) => {
+              customerBillHandler(values);
+            }}
+            enableReinitialize
+          >
+            {() => (
+              <Form onChange={handleFormValue} id="recharge">
+                <table
+                  className="table table-bordered"
+                  style={{ lineHeight: "12px" }}
+                >
+                  <tbody>
+                    <tr>
+                      <td>{t("id")}</td>
+                      <td>
+                        <b>{invoice?.customer?.customerId}</b>
+                      </td>
+                      <td>{t("pppoe")}</td>
+                      <td>
+                        <b>{invoice?.customer?.pppoe?.name}</b>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>{t("name")}</td>
+                      <td>
+                        <b>{invoice?.customer?.name}</b>
+                      </td>
+                      <td>{t("mobile")}</td>
+                      <td className="text-primary">
+                        <b>{invoice?.customer?.mobile}</b>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>{t("monthly")}</td>
+                      <td className="text-success">
+                        <b>{invoice?.customer?.monthlyFee}</b>
+                      </td>
+                      <td>{t("balance")}</td>
+                      <td className="text-info">
+                        <b>{invoice?.balance}</b>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <h6>
+                  <span className="text-success">{t("totalBillAmount")}</span>
+                  <span className="text-danger">{totalAmount} </span>
+                </h6>
 
-                  <div className="bill_collect_form">
-                    <div className="w-100 me-2">
+                <div className="bill_collect_form">
+                  <div className="w-100 me-2">
+                    <FtextField
+                      type="number"
+                      name="amount"
+                      label={t("amount")}
+                      value={billAmount}
+                    />
+                  </div>
+                  <div className="w-100 me-2">
+                    <FtextField type="number" name="due" label={t("due")} />
+                  </div>
+                </div>
+                <div className="d-flex justify-content-between align-items-center">
+                  <div className="d-inline w-100 mb-3 me-2">
+                    <label
+                      htmlFor="receiver_type"
+                      className="form-control-label changeLabelFontColor"
+                    >
+                      {t("medium")}
+                    </label>
+
+                    <select
+                      as="select"
+                      id="receiver_type"
+                      className="form-select mt-0 mw-100"
+                      aria-label="Default select example"
+                      onChange={(e) => setMedium(e.target.value)}
+                      defaultValue={invoice?.medium}
+                      key={invoice?.medium}
+                    >
+                      <option value="cash">{t("handCash")}</option>
+                      <option value="bKash"> {t("bKash")} </option>
+                      <option value="rocket"> {t("rocket")} </option>
+                      <option value="nagad"> {t("nagad")} </option>
+                      <option value="others"> {t("others")} </option>
+                    </select>
+                  </div>
+                  <div className="w-100">
+                    {(role === "ispOwner" || permission.billDiscount) && (
                       <FtextField
                         type="number"
-                        name="amount"
-                        label={t("amount")}
-                        value={billAmount}
+                        name="discount"
+                        label={t("discount")}
                       />
-                    </div>
-                    <div className="w-100 me-2">
-                      <FtextField type="number" name="due" label={t("due")} />
-                    </div>
+                    )}
                   </div>
-                  <div className="d-flex justify-content-between align-items-center">
-                    <div className="d-inline w-100 mb-3 me-2">
-                      <label
-                        htmlFor="receiver_type"
-                        className="form-control-label changeLabelFontColor"
-                      >
-                        {t("medium")}
-                      </label>
+                </div>
 
-                      <select
-                        as="select"
-                        id="receiver_type"
-                        className="form-select mt-0 mw-100"
-                        aria-label="Default select example"
-                        onChange={(e) => setMedium(e.target.value)}
-                        defaultValue={invoice?.medium}
-                        key={invoice?.medium}
-                      >
-                        <option value="cash">{t("handCash")}</option>
-                        <option value="cash">{t("handCash")}</option>
-                        <option value="bKash"> {t("bKash")} </option>
-                        <option value="rocket"> {t("rocket")} </option>
-                        <option value="nagad"> {t("nagad")} </option>
-                        <option value="others"> {t("others")} </option>
-                      </select>
-                    </div>
-                    <div className="w-100">
-                      {(role === "ispOwner" || permission.billDiscount) && (
-                        <FtextField
-                          type="number"
-                          name="discount"
-                          label={t("discount")}
-                        />
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="mt-1">
-                    <button type="submit" className="btn btn-success">
-                      {isLoading ? <Loader /> : t("submit")}
-                    </button>
-                  </div>
-                </Form>
-              )}
-            </Formik>
-          </div>
-        </div>
-      </div>
-    </div>
+                <div className="mt-1">
+                  <button
+                    type="submit"
+                    form="recharge"
+                    className="btn btn-success"
+                  >
+                    {isLoading ? <Loader /> : t("submit")}
+                  </button>
+                </div>
+              </Form>
+            )}
+          </Formik>
+        </ModalBody>
+      </Modal>
+    </>
   );
 }

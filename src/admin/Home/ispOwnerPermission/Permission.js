@@ -182,18 +182,12 @@ export const ispOwnerPermission = (perm) => {
     },
     {
       id: 31,
-      value: "bulkPaymentStatusEdit",
-      label: "Bulk Payment Status Edit",
-      isChecked: perm?.bulkPaymentStatusEdit,
-    },
-    {
-      id: 32,
       value: "resellerCustomerBulkAutoConnectionEdit",
       label: "Reseller Customer Bulk Auto Connection Edit",
       isChecked: perm?.resellerCustomerBulkAutoConnectionEdit,
     },
     {
-      id: 33,
+      id: 32,
       value: "resellerCustomerBulkAreaEdit",
       label: "Reseller Customer Bulk Area Edit",
       isChecked: perm?.resellerCustomerBulkAreaEdit,
@@ -203,6 +197,18 @@ export const ispOwnerPermission = (perm) => {
       value: "resellerCustomerBulkPaymentStatusEdit",
       label: "Reseller Customer Bulk Payment Status Edit",
       isChecked: perm?.resellerCustomerBulkPaymentStatusEdit,
+    },
+    {
+      id: 34,
+      value: "bulkPaymentStatusEdit",
+      label: "Bulk Payment Status Edit",
+      isChecked: perm?.bulkPaymentStatusEdit,
+    },
+    {
+      id: 35,
+      value: "customerInvoice",
+      label: "Customer Invoice",
+      isChecked: perm?.customerInvoice,
     },
   ];
   return permission;

@@ -817,5 +817,7 @@
   "uddoktaPay": "উদ্দোক্তাপে",
   "billInvoice": "বিল ইনভয়েস",
   "addPermission": "পারমিশান যোগ করুন",
-  "selected": "নির্বাচিত"
+  "selected": "নির্বাচিত",
+  "customerInvoice": "কাস্টমার ইনভয়েস",
+  "totalAmount": "মোট টাকা"
 }
