@@ -811,5 +811,7 @@
   "uddoktaPay": "uddoktaPay",
   "billInvoice": "Bill Invoice",
   "addPermission": "Add Permission",
-  "selected": "Selected"
+  "selected": "Selected",
+  "promiseDateChange": "Promise Date Change",
+  "changedCustomer": "Changed Customer"
 }

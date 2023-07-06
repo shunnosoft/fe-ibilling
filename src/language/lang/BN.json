@@ -817,5 +817,7 @@
   "uddoktaPay": "উদ্দোক্তাপে",
   "billInvoice": "বিল ইনভয়েস",
   "addPermission": "পারমিশান যোগ করুন",
-  "selected": "নির্বাচিত"
+  "selected": "নির্বাচিত",
+  "promiseDateChange": "প্রমিজ তারিখ পরিবর্তন",
+  "changedCustomer": "পরিবর্তিত গ্রাহক"
 }
