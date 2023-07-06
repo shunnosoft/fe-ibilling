@@ -52,12 +52,9 @@ export default function CustomerBillCollectInvoice({
   );
 
   const [isLoading, setLoading] = useState(false);
-
   const [medium, setMedium] = useState("cash");
   const [billAmount, setBillAmount] = useState();
   const [balanceDue, setBalanceDue] = useState();
-  const [billType, setBillType] = useState("bill");
-  const [amount, setAmount] = useState(null);
   const totalAmount = Number(billAmount) + Number(balanceDue);
   const maxDiscount = totalAmount;
 
@@ -68,10 +65,6 @@ export default function CustomerBillCollectInvoice({
       .integer(t("decimalNumberNotAcceptable")),
     due: Yup.number()
       .min(invoice?.due, t("dueNotAcceptable"))
-      .max(
-        invoice?.balance < 0 ? Math.abs(invoice?.balance) : 0,
-        t("dueNotAcceptable")
-      )
       .integer(t("decimalNumberNotAcceptable")),
     discount: Yup.number()
       .min(invoice?.discount, t("discountNotAcceptable"))
@@ -81,27 +74,12 @@ export default function CustomerBillCollectInvoice({
 
   //form resetFunction
   const resetForm = () => {
-    setBillAmount(
-      invoice?.balance > 0 && invoice?.balance <= invoice?.customer?.monthlyFee
-        ? invoice?.customer?.monthlyFee - invoice?.balance
-        : invoice?.balance > invoice?.customer?.monthlyFee
-        ? 0
-        : invoice?.customer?.monthlyFee
-    );
+    setBillAmount(invoice?.amount);
   };
 
   useEffect(() => {
-    setBalanceDue(
-      invoice?.customer.balance < 0 ? Math.abs(invoice?.customer.balance) : 0
-    );
-    setBillAmount(
-      invoice?.customer.balance > 0 &&
-        invoice?.customer.balance <= invoice?.customer?.monthlyFee
-        ? invoice?.customer?.monthlyFee - invoice?.customer.balance
-        : invoice?.customer.balance > invoice?.customer?.monthlyFee
-        ? 0
-        : invoice?.customer?.monthlyFee
-    );
+    setBalanceDue(invoice?.due);
+    setBillAmount(invoice?.amount);
   }, [invoice]);
 
   //modal show handler
@@ -120,30 +98,16 @@ export default function CustomerBillCollectInvoice({
 
   // bill amount
   const invoiceSubmitHandler = (formValue) => {
-    if (balanceDue > (invoice?.balance < 0 ? Math.abs(invoice?.balance) : 0)) {
-      setLoading(false);
-      return alert(t("dueNotAcceptable"));
-    }
-
-    if (balanceDue < 0) {
-      setLoading(false);
-      return alert(t("dueNotAcceptable"));
-    }
-    if (maxDiscount < formValue.discount) {
-      setLoading(false);
-      return alert(t("discountNotAcceptable"));
-    }
-
     const sendingData = {
       amount: formValue.amount + formValue.due,
       discount: formValue.discount,
       name: userData.name,
       collectedBy: currentUser?.user.role,
-      billType: billType,
+      billType: "bill",
       customer: invoice?.customer?.id,
       ispOwner: ispOwner,
       user: currentUser?.user.id,
-      collectorId: currentUserId, //when collector is logged in
+      collectorId: currentUserId,
       userType: invoice?.customer?.userType,
       medium,
       package: invoice?.customer?.pppoe.profile,
@@ -165,8 +129,6 @@ export default function CustomerBillCollectInvoice({
       invoiceId,
       setShow
     );
-
-    setAmount(invoice?.amount);
   };
 
   return (
@@ -192,19 +154,9 @@ export default function CustomerBillCollectInvoice({
         <ModalBody>
           <Formik
             initialValues={{
-              amount:
-                invoice?.customer.balance > 0 &&
-                invoice?.customer.balance <= invoice?.customer?.monthlyFee
-                  ? invoice?.customer?.monthlyFee - invoice?.customer.balance
-                  : invoice?.customer.balance > invoice?.customer?.monthlyFee
-                  ? 0
-                  : invoice?.customer?.monthlyFee,
-
-              due:
-                invoice?.customer.balance < 0
-                  ? Math.abs(invoice?.customer.balance)
-                  : 0,
-              discount: invoice?.discount ? invoice?.discount : 0,
+              amount: invoice?.amount,
+              due: invoice?.due,
+              discount: invoice?.discount,
             }}
             validationSchema={BillValidatoin}
             onSubmit={(values) => {

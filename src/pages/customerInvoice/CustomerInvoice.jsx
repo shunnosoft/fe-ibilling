@@ -76,7 +76,6 @@ const CustomerInvoice = () => {
 
   // single customer invoice state
   const [singleInvoice, setSingleInvoice] = useState({});
-  console.log(singleInvoice);
 
   // status handle state
   const [status, setStatus] = useState("");
