@@ -814,5 +814,7 @@
   "selected": "Selected",
   "customerInvoice": "Customer Invoice",
   "totalAmount": "Total Amount",
-  "deleteCustomerInvoice": "Want to delete customer bill invoice?"
+  "deleteCustomerInvoice": "Want to delete customer bill invoice?",
+  "promiseDateChange": "Promise Date Change",
+  "changedCustomer": "Changed Customer"
 }

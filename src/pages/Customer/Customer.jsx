@@ -203,6 +203,7 @@ const PPPOECustomer = () => {
     freeUser: "",
     filterDate: null,
     dayFilter: "",
+    changedPromiseDate: "",
   });
 
   // customers number update or delete modal show state
@@ -310,10 +311,26 @@ const PPPOECustomer = () => {
         freeUser,
         filterDate,
         dayFilter,
+        changedPromiseDate,
       } = filterOptions;
 
       const billingCycle = new Date(
         moment(c.billingCycle).format("YYYY-MM-DD")
+      ).getTime();
+
+      const promiseDate = new Date(
+        moment(c.promiseDate).format("YYYY-MM-DD")
+      ).getTime();
+
+      let today = new Date();
+      let lastDayOfMonth = new Date(
+        today.getFullYear(),
+        today.getMonth() + 1,
+        0
+      ).getTime();
+
+      const todayDate = new Date(
+        moment(new Date()).format("YYYY-MM-DD")
       ).getTime();
 
       const filterDateData = new Date(
@@ -364,6 +381,11 @@ const PPPOECustomer = () => {
           ? moment(c.billingCycle).diff(moment(), "days") ===
             Number(filterOptions.dayFilter)
           : true,
+        changedPromiseDate: changedPromiseDate
+          ? billingCycle == todayDate &&
+            billingCycle < promiseDate &&
+            promiseDate < lastDayOfMonth
+          : true,
       };
 
       //check if condition pass got for next step or is fail stop operation
@@ -398,6 +420,9 @@ const PPPOECustomer = () => {
       if (!isPass) return acc;
 
       isPass = conditions["dayFilter"];
+      if (!isPass) return acc;
+
+      isPass = conditions["changedPromiseDate"];
       if (!isPass) return acc;
 
       if (isPass) acc.push(c);
@@ -1293,7 +1318,22 @@ const PPPOECustomer = () => {
                           />
                         </div>
 
-                        <div className="gridButton">
+                        <select
+                          className="form-select shadow-none"
+                          onChange={(e) =>
+                            setFilterOption({
+                              ...filterOptions,
+                              changedPromiseDate: e.target.value,
+                            })
+                          }
+                        >
+                          <option value="">{t("promiseDateChange")}</option>
+                          <option value="changedPromiseDate">
+                            {t("changedCustomer")}
+                          </option>
+                        </select>
+
+                        <div>
                           <button
                             className="btn btn-outline-primary w-6rem mt-3"
                             type="button"
@@ -1303,7 +1343,7 @@ const PPPOECustomer = () => {
                             {t("filter")}
                           </button>
                           <button
-                            className="btn btn-outline-secondary w-6rem ms-1 mt-3"
+                            className="btn btn-outline-secondary ms-1 w-6rem mt-3"
                             type="button"
                             onClick={handleFilterReset}
                           >
@@ -1311,18 +1351,18 @@ const PPPOECustomer = () => {
                           </button>
                         </div>
                       </div>
+                    </div>
 
-                      <div className="table-section">
-                        <Table
-                          customComponent={customComponent}
-                          isLoading={customerLoading}
-                          columns={columns}
-                          data={tableData}
-                          bulkState={{
-                            setBulkCustomer,
-                          }}
-                        ></Table>
-                      </div>
+                    <div className="table-section">
+                      <Table
+                        customComponent={customComponent}
+                        isLoading={customerLoading}
+                        columns={columns}
+                        data={tableData}
+                        bulkState={{
+                          setBulkCustomer,
+                        }}
+                      ></Table>
                     </div>
                   </div>
                 )}

@@ -820,5 +820,7 @@
   "selected": "নির্বাচিত",
   "customerInvoice": "কাস্টমার ইনভয়েস",
   "totalAmount": "মোট টাকা",
-  "deleteCustomerInvoice": "গ্রাহক বিল ইনভয়েস মুছতে চান?"
+  "deleteCustomerInvoice": "গ্রাহক বিল ইনভয়েস মুছতে চান?",
+  "promiseDateChange": "প্রমিজ তারিখ পরিবর্তন",
+  "changedCustomer": "পরিবর্তিত গ্রাহক"
 }
