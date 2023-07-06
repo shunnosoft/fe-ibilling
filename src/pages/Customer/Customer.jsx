@@ -769,7 +769,10 @@ const PPPOECustomer = () => {
                     </div>
                   </li>
                 )}
-                {(permission?.createInvoice || role === "ispOwner") && (
+                {((role === "ispOwner" && bpSettings?.customerInvoice) ||
+                  (role === "manager" && permission?.customerInvoice)) &&
+                (!(original?.monthlyFee <= original?.balance) ||
+                  original?.paymentStatus !== "paid") ? (
                   <li
                     data-bs-toggle="modal"
                     data-bs-target="#createInvoiceModal"
@@ -781,10 +784,12 @@ const PPPOECustomer = () => {
                     <div className="dropdown-item">
                       <div className="customerAction">
                         <CurrencyDollar />
-                        <p className="actionP">{t("recharge")}</p>
+                        <p className="actionP">{t("invoice")}</p>
                       </div>
                     </div>
                   </li>
+                ) : (
+                  ""
                 )}
               </ul>
             </div>

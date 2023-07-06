@@ -813,5 +813,6 @@
   "addPermission": "Add Permission",
   "selected": "Selected",
   "customerInvoice": "Customer Invoice",
-  "totalAmount": "Total Amount"
+  "totalAmount": "Total Amount",
+  "deleteCustomerInvoice": "Want to delete customer bill invoice?"
 }

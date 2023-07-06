@@ -91,6 +91,9 @@ import {
   getCollectorDeposite,
   editBillReportSuccess,
   getIspOwnerCustomerInvoice,
+  getCustomerInvoice,
+  updateCustomerInvoice,
+  deleteCustomerInvoice,
 } from "./paymentSlice";
 import { getChartSuccess, getCardDataSuccess } from "./chartsSlice";
 import {
@@ -1943,19 +1946,6 @@ export const deleteReseller = async (dispatch, IDs, setIsLoading) => {
     });
 };
 
-//profile Update
-
-// const profileUpdate =async(dispatch,data)=>{
-//   try {
-//     const res = await apiLink.post()
-
-//   } catch (error) {
-//     toast.success("Profile Update failed")
-
-//   }
-
-// }
-
 //password update
 export const passwordUpdate = async ({
   data,
@@ -2161,22 +2151,15 @@ export const billCollectInvoice = async (
   billData,
   setLoading,
   resetForm = null,
-  setResponseData,
-  setTest
+  invoiceId,
+  setShow
 ) => {
   setLoading(true);
   try {
-    const res = await apiLink.post("/bill/monthlyBill", billData);
-    if (billData.userType === "pppoe") {
-      dispatch(updateBalance(res.data));
-      setResponseData(res.data);
-      setTest(true);
-    } else {
-      dispatch(updateBalanceStaticCustomer(res.data));
-      setResponseData(res.data);
-      setTest(true);
-    }
-    document.querySelector("#rechargeInvoiceModal").click();
+    const res = await apiLink.patch(`/bill/invoice/${invoiceId}`, billData);
+    dispatch(updateCustomerInvoice(res.data));
+
+    setShow(false);
     langMessage(
       "success",
       `${res.data.billType} বিল গ্রহণ সফল হয়েছে।`,
@@ -2184,7 +2167,6 @@ export const billCollectInvoice = async (
     );
     resetForm();
   } catch (error) {
-    document.querySelector("#rechargeInvoiceModal").click();
     toast.error(error.response?.data.message);
   }
   setLoading(false);
@@ -2201,12 +2183,11 @@ export const createCustomerInvoice = async (
   try {
     const res = await apiLink.post("/bill/customer/invoice", billData);
     // dispatch(updateBalance(res.data));
-    console.log(res.data);
     document.querySelector("#createInvoiceModal").click();
     langMessage(
       "success",
-      `${res.data.billType} বিল গ্রহণ সফল হয়েছে।`,
-      `${res.data.billType} Acceptance is Successful.`
+      `${res.data.billType} ইনভয়েস তৈরি সফল হয়েছে।`,
+      `${res.data.billType} Invoice Create Successful.`
     );
     resetForm();
   } catch (error) {
@@ -3401,9 +3382,24 @@ export const getIspOwnerInvoice = async (
   setIsLoading(true);
   try {
     const res = await apiLink.get(`bill/customer/invoice/${ispOwnerId}`);
-    dispatch(getIspOwnerCustomerInvoice(res.data));
+    dispatch(getCustomerInvoice(res.data));
   } catch (error) {
     toast.error(error.response?.data?.message);
   }
   setIsLoading(false);
+};
+
+// customer temp invoice  delete api
+export const deleteIspOwnerCustomerInvoice = async (dispatch, invoiceId) => {
+  try {
+    const res = await apiLink.delete(`/bill/invoice/${invoiceId}`);
+    dispatch(deleteCustomerInvoice(res.data));
+    langMessage(
+      "success",
+      "ইনভয়েস ডিলিট সফল হয়েছে",
+      "Invoice Delete successful"
+    );
+  } catch (error) {
+    toast.error(error.response?.data.message);
+  }
 };

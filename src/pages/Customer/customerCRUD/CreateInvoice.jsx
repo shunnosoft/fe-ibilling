@@ -79,7 +79,6 @@ export default function CreateInvoice({ single, customerData }) {
   const [noteCheck, setNoteCheck] = useState(false);
   const [note, setNote] = useState("");
   const [selectedMonth, setSelectedMonth] = useState([]);
-  console.log(selectedMonth);
   const [billAmount, setBillAmount] = useState();
   const [balanceDue, setBalanceDue] = useState();
   const [billType, setBillType] = useState("bill");
@@ -111,7 +110,7 @@ export default function CreateInvoice({ single, customerData }) {
   //Validation
   const BillValidatoin = Yup.object({
     amount: Yup.number()
-      .min(0, t("billNotAcceptable"))
+      .min(Math.floor(data?.monthlyFee / 3), t("billNotAcceptable"))
       .integer(t("decimalNumberNotAcceptable")),
     due: Yup.number()
       .min(0, t("dueNotAcceptable"))
@@ -233,10 +232,8 @@ export default function CreateInvoice({ single, customerData }) {
       const monthValues = selectedMonth.map((item) => {
         return item.value;
       });
-      console.log({ monthValues });
       sendingData.month = monthValues.join(",");
     }
-    console.log(sendingData);
 
     createCustomerInvoice(dispatch, sendingData, setLoading, resetForm);
 

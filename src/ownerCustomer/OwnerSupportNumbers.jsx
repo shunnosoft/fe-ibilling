@@ -68,7 +68,16 @@ const OwnerSupportNumbers = () => {
           )}
         </>
       ) : (
-        ""
+        <>
+          <div className="text-center mt-3">
+            <p
+              className="fs-4 fst-italic text-warning"
+              style={{ fontWeight: "500" }}
+            >
+              Support number not found<span className="text-danger">!</span>
+            </p>
+          </div>
+        </>
       )}
     </div>
   );

@@ -545,7 +545,9 @@ function App() {
             <Route
               path="customer/invoice"
               element={
-                user && (userRole === "ispOwner" || userRole === "manager") ? (
+                user &&
+                ((userRole === "ispOwner" && bpSettings?.customerInvoice) ||
+                  (userRole === "manager" && permissions?.customerInvoice)) ? (
                   <CustomerInvoice />
                 ) : (
                   <Navigate to={"/home"} />

@@ -18,7 +18,11 @@ import {
   CurrencyDollar,
   ArchiveFill,
 } from "react-bootstrap-icons";
-import { getCustomer, getIspOwnerInvoice } from "../../features/apiCalls";
+import {
+  deleteIspOwnerCustomerInvoice,
+  getCustomer,
+  getIspOwnerInvoice,
+} from "../../features/apiCalls";
 import { useDispatch, useSelector } from "react-redux";
 import Footer from "../../components/admin/footer/Footer";
 import Table from "../../components/table/Table";
@@ -30,6 +34,8 @@ import PrintReport from "../report/ReportPDF";
 import FormatNumber from "../../components/common/NumberFormat";
 import CustomerBillCollectInvoice from "./invoiceCollect/CustomerBillCollectInvoice";
 import CustomerInvoicePrint from "./customerInvoicePrint/CustomerInvoicePrint";
+import { badge } from "../../components/common/Utils";
+import { ToastContainer } from "react-toastify";
 
 const CustomerInvoice = () => {
   const { t } = useTranslation();
@@ -276,12 +282,12 @@ const CustomerInvoice = () => {
   // customer invoice total amount count
   const addAllBills = useCallback(() => {
     var balance = 0;
-    let discount = 0;
+    let due = 0;
     customerInvoice.forEach((item) => {
       balance = balance + item.amount;
-      discount = discount + item.discount;
+      due = due + item.due;
     });
-    return { balance, discount };
+    return { balance, due };
   }, [customerInvoice]);
 
   // set custom component value in customer bill amount
@@ -289,11 +295,11 @@ const CustomerInvoice = () => {
     <div style={{ fontSize: "18px", display: "flex" }}>
       {
         <div>
-          {t("totalAmount")} {FormatNumber(addAllBills().balance)} {t("tk")}
-          &nbsp;&nbsp;
+          {t("totalAmount")} ৳{FormatNumber(addAllBills().balance)}
+          &nbsp;&nbsp;&nbsp;
+          {t("due")} ৳{FormatNumber(addAllBills().due)}
         </div>
       }
-      {t("discount")}: {FormatNumber(addAllBills().discount)} {t("tk")}
     </div>
   );
 
@@ -317,17 +323,18 @@ const CustomerInvoice = () => {
   };
 
   // customer invoice delete handler
-  const invoiceDeleteHandler = (id) => {
-    const confirm = window.confirm();
+  const invoiceDeleteHandler = (invoiceId) => {
+    const confirm = window.confirm(t("deleteCustomerInvoice"));
 
     if (confirm) {
+      deleteIspOwnerCustomerInvoice(dispatch, invoiceId);
     }
   };
 
   const columns = useMemo(
     () => [
       {
-        width: "8%",
+        width: "7%",
         Header: t("id"),
         accessor: "customer.customerId",
       },
@@ -337,12 +344,12 @@ const CustomerInvoice = () => {
         accessor: "customer.pppoe.name",
       },
       {
-        width: "10%",
+        width: "9%",
         Header: t("package"),
         accessor: "package",
       },
       {
-        width: "9%",
+        width: "8%",
         Header: t("monthly"),
         accessor: "customer.monthlyFee",
       },
@@ -357,7 +364,15 @@ const CustomerInvoice = () => {
         accessor: "balance",
       },
       {
-        width: "10%",
+        width: "9%",
+        Header: t("paymentStatus"),
+        accessor: "paymentStatus",
+        Cell: ({ cell: { value } }) => {
+          return badge(value);
+        },
+      },
+      {
+        width: "9%",
         Header: t("discount"),
         accessor: "discount",
       },
@@ -367,7 +382,7 @@ const CustomerInvoice = () => {
         accessor: "due",
       },
       {
-        width: "12%",
+        width: "10%",
         Header: t("createdAt"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
@@ -375,7 +390,7 @@ const CustomerInvoice = () => {
         },
       },
       {
-        width: "10%",
+        width: "8%",
         Header: () => <div className="text-center">{t("action")}</div>,
         id: "option",
 
@@ -396,19 +411,22 @@ const CustomerInvoice = () => {
                 aria-expanded="false"
               />
               <ul className="dropdown-menu" aria-labelledby="customerDrop">
-                <li
-                  onClick={() => {
-                    setInvoiceId(original.id);
-                    setShow(true);
-                  }}
-                >
-                  <div className="dropdown-item">
-                    <div className="customerAction">
-                      <CurrencyDollar />
-                      <p className="actionP">{t("recharge")}</p>
+                {original?.paymentStatus !== "paid" && (
+                  <li
+                    onClick={() => {
+                      setInvoiceId(original.id);
+                      setShow(true);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <CurrencyDollar />
+                        <p className="actionP">{t("recharge")}</p>
+                      </div>
                     </div>
-                  </div>
-                </li>
+                  </li>
+                )}
+
                 <li
                   onClick={() => {
                     invoicePrintHandler(original, "both");
@@ -466,6 +484,7 @@ const CustomerInvoice = () => {
 
   return (
     <>
+      <ToastContainer position="top-right" theme="colored" />
       <Sidebar />
       <div className={useDash.dashboardWrapper}>
         <div className="container-fluied collector">
