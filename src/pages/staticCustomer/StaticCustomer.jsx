@@ -1486,7 +1486,7 @@ export default function Customer() {
                           </option>
                         </select>
 
-                        <div>
+                        <div className="gridButton">
                           <button
                             className="btn btn-outline-primary w-6rem mt-2"
                             type="button"

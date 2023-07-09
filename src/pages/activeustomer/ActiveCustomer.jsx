@@ -47,7 +47,6 @@ export default function ConfigMikrotik() {
 
   // get all static customer
   let allMikrotikUsers = useSelector((state) => state?.mikrotik?.pppoeUser);
-  console.log(allMikrotikUsers);
 
   // get isp owner id
   const ispOwnerId = useSelector(
@@ -213,25 +212,48 @@ export default function ConfigMikrotik() {
 
   // area subarea handler
   const areaSubareaHandler = (e) => {
-    const areaSubIds = subAreas.filter((item) => item?.area === e.target.value);
-    setSubareaIds(areaSubIds);
+    let tempCustomers = allMikrotikUsers.reduce((acc, c) => {
+      // find area all subareas
+      let allSub = [];
+      if (e.target.value !== "") {
+        allSub = subAreas.filter((val) => val.area === e.target.value);
+      }
+      setSubareaIds(allSub);
 
-    if (e.target.value !== "") {
-      const temp = allMikrotikUsers.filter(
-        (item) => item.area == e.target.value
-      );
-      setAllUsers(temp);
-    } else {
-      setAllUsers(allMikrotikUsers);
-    }
+      const condition = {
+        area:
+          e.target.value !== ""
+            ? allSub.some((sub) => sub.id === c.subArea)
+            : true,
+      };
+
+      let isPass = false;
+      isPass = condition["area"];
+      if (!isPass) return acc;
+
+      if (isPass) acc.push(c);
+      return acc;
+    }, []);
+
+    setAllUsers(tempCustomers);
   };
 
   // subarea handle
   const subAreasHandler = (e) => {
-    const temp = allMikrotikUsers.filter(
-      (item) => item.subArea == e.target.value
-    );
-    setAllUsers(temp);
+    let subAreaCustomers = allMikrotikUsers.reduce((acc, c) => {
+      const condition = {
+        subArea: e.target.value !== "" ? c.subArea === e.target.value : true,
+      };
+
+      let isPass = false;
+      isPass = condition["subArea"];
+      if (!isPass) return acc;
+
+      if (isPass) acc.push(c);
+      return acc;
+    }, []);
+
+    setAllUsers(subAreaCustomers);
   };
 
   const sortingCustomer = useMemo(() => {
@@ -507,7 +529,7 @@ export default function ConfigMikrotik() {
                       </select>
                     </div>
 
-                    {/* <div className="mikrotik-filter ms-4">
+                    <div className="mikrotik-filter ms-4">
                       <h6 className="mb-0"> {t("selectArea")} </h6>
                       <select
                         id="selectMikrotikOption"
@@ -533,7 +555,7 @@ export default function ConfigMikrotik() {
                           <option value={item.id}>{item.name}</option>
                         ))}
                       </select>
-                    </div> */}
+                    </div>
 
                     <div className="mikrotik-filter ms-4">
                       <h6 className="mb-0"> {t("selectCustomer")} </h6>

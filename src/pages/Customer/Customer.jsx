@@ -1333,7 +1333,7 @@ const PPPOECustomer = () => {
                           </option>
                         </select>
 
-                        <div>
+                        <div className="gridButton">
                           <button
                             className="btn btn-outline-primary w-6rem mt-3"
                             type="button"
