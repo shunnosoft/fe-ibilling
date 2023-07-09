@@ -77,6 +77,7 @@ import BulkMikrotikEdit from "../Customer/customerCRUD/bulkOpration/bulkMikrotik
 import BulkBalanceEdit from "../Customer/customerCRUD/bulkOpration/BulkBalanceEdit";
 import BulkPackageEdit from "../Customer/customerCRUD/bulkOpration/bulkPackageEdit";
 import BulkRecharge from "../Customer/customerCRUD/bulkOpration/BulkRecharge";
+import StaticCreateInvoice from "./StaticCreateInvoice";
 
 export default function Customer() {
   //call hooks
@@ -118,6 +119,8 @@ export default function Customer() {
   //declare local state
   const [isLoading, setIsloading] = useState(false);
   const [customerLoading, setCustomerLoading] = useState(false);
+  const [show, setShow] = useState(false);
+
   const [cusSearch, setCusSearch] = useState("");
 
   const [mikrotikPac, setMikrotikPac] = useState([]);
@@ -148,6 +151,7 @@ export default function Customer() {
   // get specific customer
   const [singleCustomer, setSingleCustomer] = useState("");
   const [singleData, setSingleData] = useState();
+  const [customerData, setCustomerData] = useState({});
 
   const [allArea, setAreas] = useState([]);
 
@@ -847,6 +851,28 @@ export default function Customer() {
                     </div>
                   </li>
                 )}
+
+                {((role === "ispOwner" && bpSettings?.customerInvoice) ||
+                  (role === "manager" && permission?.customerInvoice)) &&
+                (!(original?.monthlyFee <= original?.balance) ||
+                  original?.paymentStatus !== "paid") ? (
+                  <li
+                    onClick={() => {
+                      setShow(true);
+                      getSpecificCustomer(original.id);
+                      setCustomerData(original);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <CurrencyDollar />
+                        <p className="actionP">{t("invoice")}</p>
+                      </div>
+                    </div>
+                  </li>
+                ) : (
+                  ""
+                )}
               </ul>
             </div>
           </div>
@@ -941,27 +967,30 @@ export default function Customer() {
                         </div>
                       )}
                       {role === "ispOwner" &&
-                        (bpSettings?.queueType === "simple-queue" ||
-                          bpSettings?.queueType === "core-queue") && (
-                          <div
-                            className="addAndSettingIcon"
-                            title={t("fireWallFilterIpDrop")}
+                      (bpSettings?.queueType === "simple-queue" ||
+                        bpSettings?.queueType === "core-queue") &&
+                      bpSettings?.hasMikrotik ? (
+                        <div
+                          className="addAndSettingIcon"
+                          title={t("fireWallFilterIpDrop")}
+                        >
+                          <svg
+                            data-bs-toggle="modal"
+                            data-bs-target="#fireWallFilterIpDropControl"
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="20"
+                            height="20"
+                            fill="currentColor"
+                            className="bi bi-receipt-cutoff addcutmButton"
+                            viewBox="0 0 16 16"
                           >
-                            <svg
-                              data-bs-toggle="modal"
-                              data-bs-target="#fireWallFilterIpDropControl"
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="20"
-                              height="20"
-                              fill="currentColor"
-                              className="bi bi-receipt-cutoff addcutmButton"
-                              viewBox="0 0 16 16"
-                            >
-                              <path d="M3 4.5a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5zM11.5 4a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1z" />
-                              <path d="M2.354.646a.5.5 0 0 0-.801.13l-.5 1A.5.5 0 0 0 1 2v13H.5a.5.5 0 0 0 0 1h15a.5.5 0 0 0 0-1H15V2a.5.5 0 0 0-.053-.224l-.5-1a.5.5 0 0 0-.8-.13L13 1.293l-.646-.647a.5.5 0 0 0-.708 0L11 1.293l-.646-.647a.5.5 0 0 0-.708 0L9 1.293 8.354.646a.5.5 0 0 0-.708 0L7 1.293 6.354.646a.5.5 0 0 0-.708 0L5 1.293 4.354.646a.5.5 0 0 0-.708 0L3 1.293 2.354.646zm-.217 1.198.51.51a.5.5 0 0 0 .707 0L4 1.707l.646.647a.5.5 0 0 0 .708 0L6 1.707l.646.647a.5.5 0 0 0 .708 0L8 1.707l.646.647a.5.5 0 0 0 .708 0L10 1.707l.646.647a.5.5 0 0 0 .708 0L12 1.707l.646.647a.5.5 0 0 0 .708 0l.509-.51.137.274V15H2V2.118l.137-.274z" />
-                            </svg>
-                          </div>
-                        )}
+                            <path d="M3 4.5a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5zM11.5 4a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1z" />
+                            <path d="M2.354.646a.5.5 0 0 0-.801.13l-.5 1A.5.5 0 0 0 1 2v13H.5a.5.5 0 0 0 0 1h15a.5.5 0 0 0 0-1H15V2a.5.5 0 0 0-.053-.224l-.5-1a.5.5 0 0 0-.8-.13L13 1.293l-.646-.647a.5.5 0 0 0-.708 0L11 1.293l-.646-.647a.5.5 0 0 0-.708 0L9 1.293 8.354.646a.5.5 0 0 0-.708 0L7 1.293 6.354.646a.5.5 0 0 0-.708 0L5 1.293 4.354.646a.5.5 0 0 0-.708 0L3 1.293 2.354.646zm-.217 1.198.51.51a.5.5 0 0 0 .707 0L4 1.707l.646.647a.5.5 0 0 0 .708 0L6 1.707l.646.647a.5.5 0 0 0 .708 0L8 1.707l.646.647a.5.5 0 0 0 .708 0L10 1.707l.646.647a.5.5 0 0 0 .708 0L12 1.707l.646.647a.5.5 0 0 0 .708 0l.509-.51.137.274V15H2V2.118l.137-.274z" />
+                          </svg>
+                        </div>
+                      ) : (
+                        ""
+                      )}
 
                       {((role === "manager" && permission?.customerEdit) ||
                         role === "ispOwner") && (
@@ -1074,6 +1103,14 @@ export default function Customer() {
               {/* password reset modal */}
               <PasswordReset resetCustomerId={userId} />
               {/* bulk Modal */}
+
+              {/* static customer create invoice */}
+              <StaticCreateInvoice
+                show={show}
+                setShow={setShow}
+                single={singleCustomer}
+                customerData={customerData}
+              />
 
               <BulkSubAreaEdit
                 bulkCustomer={bulkCustomer}
