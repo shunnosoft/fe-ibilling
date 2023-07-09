@@ -478,28 +478,43 @@ const PPPOECustomer = () => {
 
   //custom table header component
   const customComponent = (
-    <div className="text-center" style={{ fontSize: "18px", display: "flex" }}>
+    <div className="d-flex">
       {bulkCustomers?.length ? (
         <>
-          {t("selected")}&nbsp;{" "}
+          <div
+            style={{
+              marginLeft: "-25px",
+              marginRight: "7px",
+            }}
+          >
+            /
+          </div>
           <span
-            style={{ backgroundColor: "#2C7CCC" }}
-            className=" px-1 py-0 rounded-pill text-small"
+            style={{
+              backgroundColor: "#2C7CCC",
+              padding: "0px 13px",
+              fontSize: "16px",
+            }}
+            className=" rounded-pill me-1"
           >
             {bulkCustomers?.length}
           </span>
-          &nbsp; &nbsp;
         </>
       ) : (
         ""
       )}
-      {t("monthlyFee")}&nbsp; {FormatNumber(dueMonthlyFee.totalMonthlyFee)}
-      &nbsp;
-      {t("tk")} &nbsp;&nbsp; {t("due")}&nbsp;
-      {FormatNumber(dueMonthlyFee.totalSumDue)} &nbsp;{t("tk")} &nbsp;
-      {/* {t("collection")}&nbsp;{" "} */}
-      {/* {FormatNumber(Number(sumMonthlyFee()) - Number(dueMonthlyFee()))} &nbsp;
+      <div
+        className="text-center"
+        style={{ fontSize: "18px", display: "flex" }}
+      >
+        {t("monthlyFee")}&nbsp; {FormatNumber(dueMonthlyFee.totalMonthlyFee)}
+        &nbsp;
+        {t("tk")} &nbsp;&nbsp; {t("due")}&nbsp;
+        {FormatNumber(dueMonthlyFee.totalSumDue)} &nbsp;{t("tk")} &nbsp;
+        {/* {t("collection")}&nbsp;{" "} */}
+        {/* {FormatNumber(Number(sumMonthlyFee()) - Number(dueMonthlyFee()))} &nbsp;
       {t("tk")} */}
+      </div>
     </div>
   );
 

@@ -430,7 +430,8 @@ export default function RstaticCustomer() {
                   </div>
                 </li>
 
-                {(role === "reseller" || permission.customerEdit) && (
+                {(permission?.customerEdit ||
+                  collectorPermission?.customerEdit) && (
                   <li
                     data-bs-toggle="modal"
                     data-bs-target="#resellerCustomerEdit"
