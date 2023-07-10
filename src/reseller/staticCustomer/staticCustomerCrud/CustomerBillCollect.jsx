@@ -410,7 +410,7 @@ export default function CustomerBillCollect({ single, customerData }) {
                           (role === "collector" &&
                             collectorPermission?.instantRechargeBillPrint &&
                             collectorResellerInfo?.permission
-                              .instantRechargeBillPrint)) && (
+                              ?.instantRechargeBillPrint)) && (
                           <div className="d-none">
                             <RechargePrintInvoice
                               ref={resellerRechargePrint}

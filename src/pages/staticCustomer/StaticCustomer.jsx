@@ -654,7 +654,7 @@ export default function Customer() {
       },
       {
         width: "9%",
-        Header: t("mountly"),
+        Header: t("monthly"),
         accessor: "monthlyFee",
       },
       {
@@ -913,11 +913,40 @@ export default function Customer() {
 
   //custom table header component
   const customComponent = (
-    <div className="text-center" style={{ fontSize: "18px", display: "flex" }}>
-      {t("monthlyFee")}&nbsp; {FormatNumber(dueMonthlyFee().totalMonthlyFee)}
-      &nbsp;
-      {t("tk")} &nbsp;&nbsp; {t("due")}&nbsp;
-      {FormatNumber(dueMonthlyFee().totalSumDue)} &nbsp;{t("tk")} &nbsp;
+    <div className="d-flex">
+      {bulkCustomer?.length ? (
+        <>
+          <div
+            style={{
+              marginLeft: "-25px",
+              marginRight: "7px",
+            }}
+          >
+            /
+          </div>
+          <span
+            style={{
+              backgroundColor: "#2C7CCC",
+              padding: "0px 13px",
+              fontSize: "16px",
+            }}
+            className=" rounded-pill me-1"
+          >
+            {bulkCustomer?.length}
+          </span>
+        </>
+      ) : (
+        ""
+      )}
+      <div
+        className="text-center"
+        style={{ fontSize: "18px", display: "flex" }}
+      >
+        {t("monthlyFee")}&nbsp; {FormatNumber(dueMonthlyFee().totalMonthlyFee)}
+        &nbsp;
+        {t("tk")} &nbsp;&nbsp; {t("due")}&nbsp;
+        {FormatNumber(dueMonthlyFee().totalSumDue)} &nbsp;{t("tk")} &nbsp;
+      </div>
     </div>
   );
   return (
