@@ -2177,13 +2177,15 @@ export const createCustomerInvoice = async (
   dispatch,
   billData,
   setLoading,
-  resetForm = null
+  resetForm = null,
+  setShow
 ) => {
   setLoading(true);
   try {
     const res = await apiLink.post("/bill/customer/invoice", billData);
     // dispatch(updateBalance(res.data));
     document.querySelector("#createInvoiceModal").click();
+    setShow(false);
     langMessage(
       "success",
       `${res.data.billType} ইনভয়েস তৈরি সফল হয়েছে।`,
@@ -2191,7 +2193,6 @@ export const createCustomerInvoice = async (
     );
     resetForm();
   } catch (error) {
-    document.querySelector("#createInvoiceModal").click();
     toast.error(error.response?.data.message);
   }
   setLoading(false);

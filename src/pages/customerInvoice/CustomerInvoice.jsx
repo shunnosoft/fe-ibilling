@@ -70,6 +70,7 @@ const CustomerInvoice = () => {
 
   // customer state
   const [customerInvoice, setCustomerInvoice] = useState([]);
+  console.log(customerInvoice);
 
   // customer id state
   const [invoiceId, setInvoiceId] = useState("");
@@ -340,7 +341,14 @@ const CustomerInvoice = () => {
       {
         width: "11%",
         Header: t("PPPoEName"),
-        accessor: "customer.pppoe.name",
+        accessor: (item) =>
+          item.customer?.userType === "pppoe"
+            ? item.customer.pppoe?.name
+            : item.customer?.userType === "firewall-queue"
+            ? item.customer.queue?.address
+            : item.customer?.userType === "core-queue"
+            ? item.customer.queue?.srcAddress
+            : item.customer.queue?.target,
       },
       {
         width: "9%",

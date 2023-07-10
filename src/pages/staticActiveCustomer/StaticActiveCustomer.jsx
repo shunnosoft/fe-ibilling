@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import useDash from "../../assets/css/dash.module.css";
 import { FourGround, FontColor } from "../../assets/js/theme";
@@ -12,9 +12,16 @@ import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
 // get specific customer
 
-import { ArrowClockwise, Wifi, WifiOff } from "react-bootstrap-icons";
+import {
+  ArrowClockwise,
+  FileExcelFill,
+  Wifi,
+  WifiOff,
+} from "react-bootstrap-icons";
 import Loader from "../../components/common/Loader";
 import Footer from "../../components/admin/footer/Footer";
+import { CSVLink } from "react-csv";
+import moment from "moment";
 
 const StaticActiveCustomer = () => {
   const { t } = useTranslation();
@@ -33,10 +40,16 @@ const StaticActiveCustomer = () => {
   let staticActiveCustomer = useSelector(
     (state) => state?.customer?.staticActiveCustomer
   );
+  console.log(staticActiveCustomer);
 
   // get isp owner id
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
+  );
+
+  // get ispOwner data
+  const ispOwnerData = useSelector(
+    (state) => state.persistedReducer.auth?.userData
   );
 
   // select mikrotik handler
@@ -66,7 +79,33 @@ const StaticActiveCustomer = () => {
     setMikrotikId(mikrotik[0]?.id);
   }, [mikrotik]);
 
-  const columns = React.useMemo(
+  // csv table header
+  const activeCustomerForCsvInfoHeader = [
+    { label: "name_of_client", key: "name" },
+    { label: "address", key: "address" },
+    { label: "macAddress", key: "macAddress" },
+    { label: "client_phone", key: "mobile" },
+    { label: "payment_status", key: "paymentStatus" },
+    { label: "billing_cycle", key: "billingCycle" },
+  ];
+
+  //export customer data
+  let activeCustomerCsvInfo = useMemo(
+    () =>
+      staticActiveCustomer.map((customer) => {
+        return {
+          name: customer.name,
+          address: customer.address,
+          macAddress: customer.macAddress,
+          mobile: customer?.mobile.slice(1) || "",
+          paymentStatus: customer.paymentStatus,
+          billingCycle: moment(customer.billingCycle).format("MMM-DD-YYYY"),
+        };
+      }),
+    [staticActiveCustomer]
+  );
+
+  const columns = useMemo(
     () => [
       {
         width: "10%",
@@ -132,6 +171,17 @@ const StaticActiveCustomer = () => {
                         ></ArrowClockwise>
                       )}
                     </div>
+                  </div>
+
+                  <div className="addAndSettingIcon">
+                    <CSVLink
+                      data={activeCustomerCsvInfo}
+                      filename={ispOwnerData.company}
+                      headers={activeCustomerForCsvInfoHeader}
+                      title="Active Customer BTRC Report"
+                    >
+                      <FileExcelFill className="addcutmButton" />
+                    </CSVLink>
                   </div>
                 </div>
               </FourGround>

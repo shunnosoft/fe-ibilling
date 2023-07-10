@@ -17,6 +17,7 @@ import {
   PrinterFill,
   Server,
   ThreeDots,
+  ThreeDotsVertical,
 } from "react-bootstrap-icons";
 import Table from "../../components/table/Table";
 
@@ -63,7 +64,7 @@ import {
 import apiLink from "../../api/apiLink";
 import DatePicker from "react-datepicker";
 import PrintCustomer from "./customerPDF";
-import { Button, Modal } from "react-bootstrap";
+import { Accordion, Button, Modal } from "react-bootstrap";
 import FormatNumber from "../../components/common/NumberFormat";
 import BulkPromiseDateEdit from "./customerCRUD/bulkOpration/BulkPromiseDateEdit";
 import Footer from "../../components/admin/footer/Footer";
@@ -139,6 +140,9 @@ const PPPOECustomer = () => {
 
   //component states
   const [loading, setLoading] = useState(false);
+
+  // filter Accordion handle state
+  const [activeKeys, setActiveKeys] = useState("");
 
   // customer loading state
   const [customerLoading, setCustomerLoading] = useState(false);
@@ -1208,6 +1212,28 @@ const PPPOECustomer = () => {
                         <ArrowClockwise onClick={reloadHandler} />
                       )}
                     </div>
+
+                    <div
+                      onClick={() => {
+                        if (!activeKeys) {
+                          setActiveKeys("filter");
+                        } else {
+                          setActiveKeys("");
+                        }
+                      }}
+                      style={{ cursor: "pointer" }}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="35"
+                        height="35"
+                        fill="currentColor"
+                        className="bi bi-filter"
+                        viewBox="0 0 16 16"
+                      >
+                        <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z" />
+                      </svg>
+                    </div>
                   </div>
                   {/* customer page header area  */}
 
@@ -1292,92 +1318,98 @@ const PPPOECustomer = () => {
               </FourGround>
               <FourGround>
                 {(permission?.viewCustomerList || role !== "collector") && (
-                  <div className="collectorWrapper mt-2 py-2">
-                    <div className="addCollector">
-                      <div
-                        id="custom-form-select"
-                        className="displayGrid6"
-                        style={{ columnGap: "5px" }}
-                      >
-                        {filterInputs.map(
-                          (item) =>
-                            item.isVisible && (
-                              <select
-                                className="form-select shadow-none"
-                                onChange={item.onChange}
-                                value={item.value}
+                  <div className="mt-2">
+                    <Accordion alwaysOpen activeKey={activeKeys}>
+                      <Accordion.Item eventKey="filter">
+                        <Accordion.Body>
+                          <div
+                            className="displayGrid6"
+                            style={{ columnGap: "5px" }}
+                          >
+                            {filterInputs.map(
+                              (item) =>
+                                item.isVisible && (
+                                  <select
+                                    className="form-select shadow-none"
+                                    onChange={item.onChange}
+                                    value={item.value}
+                                  >
+                                    <option value="">
+                                      {item.firstOptions}
+                                    </option>
+                                    {item.options?.map((opt) => (
+                                      <option value={opt[item.valueAccessor]}>
+                                        {opt[item.textAccessor]}
+                                      </option>
+                                    ))}
+                                  </select>
+                                )
+                            )}
+
+                            {/* date picker for filter billing cycle */}
+                            <div>
+                              <DatePicker
+                                className="form-control mt-3"
+                                selected={filterOptions.filterDate}
+                                onChange={(date) =>
+                                  setFilterOption({
+                                    ...filterOptions,
+                                    filterDate: date,
+                                  })
+                                }
+                                dateFormat="dd/MM/yyyy"
+                                placeholderText={t("selectDate")}
+                              />
+                            </div>
+
+                            <select
+                              className="form-select shadow-none"
+                              onChange={(e) =>
+                                setFilterOption({
+                                  ...filterOptions,
+                                  changedPromiseDate: e.target.value,
+                                })
+                              }
+                            >
+                              <option value="">{t("promiseDateChange")}</option>
+                              <option value="changedPromiseDate">
+                                {t("changedCustomer")}
+                              </option>
+                            </select>
+
+                            <div className="gridButton">
+                              <button
+                                className="btn btn-outline-primary w-6rem mt-3"
+                                type="button"
+                                onClick={handleActiveFilter}
+                                id="filterBtn"
                               >
-                                <option value="">{item.firstOptions}</option>
-                                {item.options?.map((opt) => (
-                                  <option value={opt[item.valueAccessor]}>
-                                    {opt[item.textAccessor]}
-                                  </option>
-                                ))}
-                              </select>
-                            )
-                        )}
-
-                        {/* date picker for filter billing cycle */}
-                        <div>
-                          <DatePicker
-                            className="form-control mt-3"
-                            selected={filterOptions.filterDate}
-                            onChange={(date) =>
-                              setFilterOption({
-                                ...filterOptions,
-                                filterDate: date,
-                              })
-                            }
-                            dateFormat="dd/MM/yyyy"
-                            placeholderText={t("selectDate")}
-                          />
-                        </div>
-
-                        <select
-                          className="form-select shadow-none"
-                          onChange={(e) =>
-                            setFilterOption({
-                              ...filterOptions,
-                              changedPromiseDate: e.target.value,
-                            })
-                          }
-                        >
-                          <option value="">{t("promiseDateChange")}</option>
-                          <option value="changedPromiseDate">
-                            {t("changedCustomer")}
-                          </option>
-                        </select>
-
-                        <div>
-                          <button
-                            className="btn btn-outline-primary w-6rem mt-3"
-                            type="button"
-                            onClick={handleActiveFilter}
-                            id="filterBtn"
-                          >
-                            {t("filter")}
-                          </button>
-                          <button
-                            className="btn btn-outline-secondary ms-1 w-6rem mt-3"
-                            type="button"
-                            onClick={handleFilterReset}
-                          >
-                            {t("reset")}
-                          </button>
-                        </div>
+                                {t("filter")}
+                              </button>
+                              <button
+                                className="btn btn-outline-secondary ms-1 w-6rem mt-3"
+                                type="button"
+                                onClick={handleFilterReset}
+                              >
+                                {t("reset")}
+                              </button>
+                            </div>
+                          </div>
+                        </Accordion.Body>
+                      </Accordion.Item>
+                    </Accordion>
+                    <div className="collectorWrapper pb-2">
+                      <div className="table-section">
+                        <Table
+                          customComponent={customComponent}
+                          isLoading={customerLoading}
+                          columns={columns}
+                          data={tableData}
+                          bulkState={{
+                            setBulkCustomer,
+                          }}
+                        ></Table>
                       </div>
-                    </div>
-
-                    <div className="table-section">
-                      <Table
-                        customComponent={customComponent}
-                        isLoading={customerLoading}
-                        columns={columns}
-                        data={tableData}
-                        bulkState={{
-                          setBulkCustomer,
-                        }}
-                      ></Table>
                     </div>
                   </div>
                 )}

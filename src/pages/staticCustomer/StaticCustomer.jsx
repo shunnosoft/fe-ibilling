@@ -77,6 +77,8 @@ import BulkMikrotikEdit from "../Customer/customerCRUD/bulkOpration/bulkMikrotik
 import BulkBalanceEdit from "../Customer/customerCRUD/bulkOpration/BulkBalanceEdit";
 import BulkPackageEdit from "../Customer/customerCRUD/bulkOpration/bulkPackageEdit";
 import BulkRecharge from "../Customer/customerCRUD/bulkOpration/BulkRecharge";
+import StaticCreateInvoice from "./StaticCreateInvoice";
+import { Accordion } from "react-bootstrap";
 
 export default function Customer() {
   //call hooks
@@ -118,6 +120,11 @@ export default function Customer() {
   //declare local state
   const [isLoading, setIsloading] = useState(false);
   const [customerLoading, setCustomerLoading] = useState(false);
+  const [show, setShow] = useState(false);
+
+  // filter Accordion handle state
+  const [activeKeys, setActiveKeys] = useState("");
+
   const [cusSearch, setCusSearch] = useState("");
 
   const [mikrotikPac, setMikrotikPac] = useState([]);
@@ -148,6 +155,7 @@ export default function Customer() {
   // get specific customer
   const [singleCustomer, setSingleCustomer] = useState("");
   const [singleData, setSingleData] = useState();
+  const [customerData, setCustomerData] = useState({});
 
   const [allArea, setAreas] = useState([]);
 
@@ -847,6 +855,28 @@ export default function Customer() {
                     </div>
                   </li>
                 )}
+
+                {((role === "ispOwner" && bpSettings?.customerInvoice) ||
+                  (role === "manager" && permission?.customerInvoice)) &&
+                (!(original?.monthlyFee <= original?.balance) ||
+                  original?.paymentStatus !== "paid") ? (
+                  <li
+                    onClick={() => {
+                      setShow(true);
+                      getSpecificCustomer(original.id);
+                      setCustomerData(original);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <CurrencyDollar />
+                        <p className="actionP">{t("invoice")}</p>
+                      </div>
+                    </div>
+                  </li>
+                ) : (
+                  ""
+                )}
               </ul>
             </div>
           </div>
@@ -941,6 +971,28 @@ export default function Customer() {
                         ></ArrowClockwise>
                       )}
                     </div>
+
+                    <div
+                      onClick={() => {
+                        if (!activeKeys) {
+                          setActiveKeys("filter");
+                        } else {
+                          setActiveKeys("");
+                        }
+                      }}
+                      style={{ cursor: "pointer" }}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="35"
+                        height="35"
+                        fill="currentColor"
+                        className="bi bi-filter"
+                        viewBox="0 0 16 16"
+                      >
+                        <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z" />
+                      </svg>
+                    </div>
                   </div>
                   <div
                     className="d-flex"
@@ -970,27 +1022,30 @@ export default function Customer() {
                         </div>
                       )}
                       {role === "ispOwner" &&
-                        (bpSettings?.queueType === "simple-queue" ||
-                          bpSettings?.queueType === "core-queue") && (
-                          <div
-                            className="addAndSettingIcon"
-                            title={t("fireWallFilterIpDrop")}
+                      (bpSettings?.queueType === "simple-queue" ||
+                        bpSettings?.queueType === "core-queue") &&
+                      bpSettings?.hasMikrotik ? (
+                        <div
+                          className="addAndSettingIcon"
+                          title={t("fireWallFilterIpDrop")}
+                        >
+                          <svg
+                            data-bs-toggle="modal"
+                            data-bs-target="#fireWallFilterIpDropControl"
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="20"
+                            height="20"
+                            fill="currentColor"
+                            className="bi bi-receipt-cutoff addcutmButton"
+                            viewBox="0 0 16 16"
                           >
-                            <svg
-                              data-bs-toggle="modal"
-                              data-bs-target="#fireWallFilterIpDropControl"
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="20"
-                              height="20"
-                              fill="currentColor"
-                              className="bi bi-receipt-cutoff addcutmButton"
-                              viewBox="0 0 16 16"
-                            >
-                              <path d="M3 4.5a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5zM11.5 4a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1z" />
-                              <path d="M2.354.646a.5.5 0 0 0-.801.13l-.5 1A.5.5 0 0 0 1 2v13H.5a.5.5 0 0 0 0 1h15a.5.5 0 0 0 0-1H15V2a.5.5 0 0 0-.053-.224l-.5-1a.5.5 0 0 0-.8-.13L13 1.293l-.646-.647a.5.5 0 0 0-.708 0L11 1.293l-.646-.647a.5.5 0 0 0-.708 0L9 1.293 8.354.646a.5.5 0 0 0-.708 0L7 1.293 6.354.646a.5.5 0 0 0-.708 0L5 1.293 4.354.646a.5.5 0 0 0-.708 0L3 1.293 2.354.646zm-.217 1.198.51.51a.5.5 0 0 0 .707 0L4 1.707l.646.647a.5.5 0 0 0 .708 0L6 1.707l.646.647a.5.5 0 0 0 .708 0L8 1.707l.646.647a.5.5 0 0 0 .708 0L10 1.707l.646.647a.5.5 0 0 0 .708 0L12 1.707l.646.647a.5.5 0 0 0 .708 0l.509-.51.137.274V15H2V2.118l.137-.274z" />
-                            </svg>
-                          </div>
-                        )}
+                            <path d="M3 4.5a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5zM11.5 4a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1z" />
+                            <path d="M2.354.646a.5.5 0 0 0-.801.13l-.5 1A.5.5 0 0 0 1 2v13H.5a.5.5 0 0 0 0 1h15a.5.5 0 0 0 0-1H15V2a.5.5 0 0 0-.053-.224l-.5-1a.5.5 0 0 0-.8-.13L13 1.293l-.646-.647a.5.5 0 0 0-.708 0L11 1.293l-.646-.647a.5.5 0 0 0-.708 0L9 1.293 8.354.646a.5.5 0 0 0-.708 0L7 1.293 6.354.646a.5.5 0 0 0-.708 0L5 1.293 4.354.646a.5.5 0 0 0-.708 0L3 1.293 2.354.646zm-.217 1.198.51.51a.5.5 0 0 0 .707 0L4 1.707l.646.647a.5.5 0 0 0 .708 0L6 1.707l.646.647a.5.5 0 0 0 .708 0L8 1.707l.646.647a.5.5 0 0 0 .708 0L10 1.707l.646.647a.5.5 0 0 0 .708 0L12 1.707l.646.647a.5.5 0 0 0 .708 0l.509-.51.137.274V15H2V2.118l.137-.274z" />
+                          </svg>
+                        </div>
+                      ) : (
+                        ""
+                      )}
 
                       {((role === "manager" && permission?.customerEdit) ||
                         role === "ispOwner") && (
@@ -1104,6 +1159,14 @@ export default function Customer() {
               <PasswordReset resetCustomerId={userId} />
               {/* bulk Modal */}
 
+              {/* static customer create invoice */}
+              <StaticCreateInvoice
+                show={show}
+                setShow={setShow}
+                single={singleCustomer}
+                customerData={customerData}
+              />
+
               <BulkSubAreaEdit
                 bulkCustomer={bulkCustomer}
                 modalId="customerBulkEdit"
@@ -1180,345 +1243,363 @@ export default function Customer() {
 
               <FourGround>
                 {permission?.viewCustomerList || role !== "collector" ? (
-                  <div className="collectorWrapper mt-2 py-2">
-                    <div className="addCollector">
-                      <div className="displayGrid6">
-                        <select
-                          className="form-select shadow-none "
-                          onChange={(e) => {
-                            onChangeArea(e.target.value);
-                            setFilterOption({
-                              ...filterOptions,
-                              area: JSON.parse(e.target.value).id,
-                            });
-                          }}
-                        >
-                          <option
-                            value={JSON.stringify({
-                              id: "",
-                              name: "",
-                              subAreas: [],
-                            })}
-                            defaultValue
-                            selected={filterOptions.area === ""}
-                          >
-                            {t("allArea")}
-                          </option>
-                          {Customers2.some((c) => c.area === "noArea") && (
-                            <option
-                              value={JSON.stringify({
-                                id: "noArea",
-                                name: "",
-                                subAreas: [],
-                              })}
-                              selected={filterOptions.area === "noArea"}
+                  <div className="mt-2">
+                    <Accordion alwaysOpen activeKey={activeKeys}>
+                      <Accordion.Item eventKey="filter">
+                        <Accordion.Body>
+                          <div className="displayGrid6">
+                            <select
+                              className="form-select shadow-none "
+                              onChange={(e) => {
+                                onChangeArea(e.target.value);
+                                setFilterOption({
+                                  ...filterOptions,
+                                  area: JSON.parse(e.target.value).id,
+                                });
+                              }}
                             >
-                              {t("customerWithoutArea")}
-                            </option>
-                          )}
-                          {(role === "collector" ? allArea : allareas)?.map(
-                            (area, key) => {
-                              return (
-                                <option
-                                  selected={filterOptions.area === area.id}
-                                  key={key}
-                                  value={JSON.stringify(area)}
-                                >
-                                  {area.name}
-                                </option>
-                              );
-                            }
-                          )}
-                        </select>
-
-                        {/* //Todo */}
-                        <select
-                          className="form-select shadow-none"
-                          onChange={(e) => {
-                            onChangeSubArea(e.target.value);
-                            setFilterOption({
-                              ...filterOptions,
-                              subArea: e.target.value,
-                            });
-                          }}
-                        >
-                          <option
-                            selected={filterOptions.subArea === ""}
-                            value=""
-                            defaultValue
-                          >
-                            {t("subArea")}
-                          </option>
-                          {subAreas?.map((sub, key) => (
-                            <option
-                              selected={filterOptions.subArea === sub.id}
-                              key={key}
-                              value={sub.id}
-                            >
-                              {sub.name}
-                            </option>
-                          ))}
-                        </select>
-                        <select
-                          className="form-select shadow-none"
-                          onChange={(e) => {
-                            setFilterOption({
-                              ...filterOptions,
-                              status: e.target.value,
-                            });
-                          }}
-                        >
-                          <option
-                            selected={filterOptions.status === ""}
-                            value=""
-                            defaultValue
-                          >
-                            {t("status")}
-                          </option>
-                          <option
-                            selected={filterOptions.status === "active"}
-                            value="active"
-                          >
-                            {t("active")}
-                          </option>
-                          <option
-                            selected={filterOptions.status === "inactive"}
-                            value="inactive"
-                          >
-                            {t("in active")}
-                          </option>
-                          <option
-                            selected={filterOptions.status === "expired"}
-                            value="expired"
-                          >
-                            {t("expired")}
-                          </option>
-                        </select>
-
-                        <select
-                          className="form-select shadow-none"
-                          onChange={(e) => {
-                            setFilterOption({
-                              ...filterOptions,
-                              paymentStatus: e.target.value,
-                            });
-                          }}
-                        >
-                          <option
-                            selected={filterOptions.paymentStatus === ""}
-                            value=""
-                            defaultValue
-                          >
-                            {t("paymentStatus")}
-                          </option>
-                          <option
-                            selected={filterOptions.paymentStatus === "free"}
-                            value="free"
-                          >
-                            {t("free")}
-                          </option>
-                          <option
-                            selected={filterOptions.paymentStatus === "paid"}
-                            value="paid"
-                          >
-                            {t("payPaid")}
-                          </option>
-                          <option
-                            selected={filterOptions.paymentStatus === "unpaid"}
-                            value="unpaid"
-                          >
-                            {t("unpaid")}
-                          </option>
-                          <option
-                            selected={filterOptions.paymentStatus === "partial"}
-                            value="partial"
-                          >
-                            {t("partial")}
-                          </option>
-                          <option
-                            selected={filterOptions.paymentStatus === "advance"}
-                            value="advance"
-                          >
-                            {t("advance")}
-                          </option>
-                          <option
-                            selected={filterOptions.paymentStatus === "overdue"}
-                            value="overdue"
-                          >
-                            {t("overDue")}
-                          </option>
-                        </select>
-                        {bpSettings?.hasMikrotik && (
-                          <select
-                            className="form-select shadow-none"
-                            onChange={(e) => {
-                              mikrotikHandler(e.target.value);
-                            }}
-                          >
-                            <option
-                              selected={filterOptions.mikrotik === ""}
-                              value=""
-                              defaultValue
-                            >
-                              {t("mikrotik")}
-                            </option>
-
-                            {mikrotiks.map((m, i) => {
-                              return (
-                                <option
-                                  key={i}
-                                  selected={
-                                    filterOptions.mikrotik === `${m.id}`
-                                  }
-                                  value={m.id}
-                                >
-                                  {m.name}
-                                </option>
-                              );
-                            })}
-                          </select>
-                        )}
-
-                        <select
-                          className="form-select shadow-none "
-                          onChange={(e) => {
-                            setFilterOption({
-                              ...filterOptions,
-                              package: e.target.value,
-                            });
-                          }}
-                        >
-                          <option
-                            selected={filterOptions.mikrotik === ""}
-                            value=""
-                            defaultValue
-                          >
-                            {t("package")}
-                          </option>
-
-                          {mikrotikPac?.map((m, i) => {
-                            return (
                               <option
-                                key={i}
-                                selected={filterOptions.package === `${m.name}`}
-                                value={m.id}
+                                value={JSON.stringify({
+                                  id: "",
+                                  name: "",
+                                  subAreas: [],
+                                })}
+                                defaultValue
+                                selected={filterOptions.area === ""}
                               >
-                                {m.name}
+                                {t("allArea")}
                               </option>
-                            );
-                          })}
-                        </select>
+                              {Customers2.some((c) => c.area === "noArea") && (
+                                <option
+                                  value={JSON.stringify({
+                                    id: "noArea",
+                                    name: "",
+                                    subAreas: [],
+                                  })}
+                                  selected={filterOptions.area === "noArea"}
+                                >
+                                  {t("customerWithoutArea")}
+                                </option>
+                              )}
+                              {(role === "collector" ? allArea : allareas)?.map(
+                                (area, key) => {
+                                  return (
+                                    <option
+                                      selected={filterOptions.area === area.id}
+                                      key={key}
+                                      value={JSON.stringify(area)}
+                                    >
+                                      {area.name}
+                                    </option>
+                                  );
+                                }
+                              )}
+                            </select>
 
-                        <select
-                          onChange={(e) =>
-                            setFilterOption({
-                              ...filterOptions,
-                              freeUser: e.target.value,
-                            })
-                          }
-                          className="form-select shadow-none"
-                        >
-                          <option
-                            selected={filterOptions.freeUser === "allUser"}
-                            value="allUser"
-                          >
-                            {t("sokolCustomer")}
-                          </option>
-                          <option
-                            selected={filterOptions.freeUser === "freeUser"}
-                            value="freeUser"
-                          >
-                            {t("freeCustomer")}
-                          </option>
-                          <option
-                            selected={filterOptions.freeUser === "nonFreeUser"}
-                            value="nonFreeUser"
-                          >
-                            {t("nonFreeCustomer")}
-                          </option>
-                        </select>
-                        <input
-                          className="form-select shadow-none"
-                          type="date"
-                          onChange={(e) =>
-                            setFilterOption({
-                              ...filterOptions,
-                              filterDate: e.target.value,
-                            })
-                          }
+                            {/* //Todo */}
+                            <select
+                              className="form-select shadow-none"
+                              onChange={(e) => {
+                                onChangeSubArea(e.target.value);
+                                setFilterOption({
+                                  ...filterOptions,
+                                  subArea: e.target.value,
+                                });
+                              }}
+                            >
+                              <option
+                                selected={filterOptions.subArea === ""}
+                                value=""
+                                defaultValue
+                              >
+                                {t("subArea")}
+                              </option>
+                              {subAreas?.map((sub, key) => (
+                                <option
+                                  selected={filterOptions.subArea === sub.id}
+                                  key={key}
+                                  value={sub.id}
+                                >
+                                  {sub.name}
+                                </option>
+                              ))}
+                            </select>
+                            <select
+                              className="form-select shadow-none"
+                              onChange={(e) => {
+                                setFilterOption({
+                                  ...filterOptions,
+                                  status: e.target.value,
+                                });
+                              }}
+                            >
+                              <option
+                                selected={filterOptions.status === ""}
+                                value=""
+                                defaultValue
+                              >
+                                {t("status")}
+                              </option>
+                              <option
+                                selected={filterOptions.status === "active"}
+                                value="active"
+                              >
+                                {t("active")}
+                              </option>
+                              <option
+                                selected={filterOptions.status === "inactive"}
+                                value="inactive"
+                              >
+                                {t("in active")}
+                              </option>
+                              <option
+                                selected={filterOptions.status === "expired"}
+                                value="expired"
+                              >
+                                {t("expired")}
+                              </option>
+                            </select>
+
+                            <select
+                              className="form-select shadow-none"
+                              onChange={(e) => {
+                                setFilterOption({
+                                  ...filterOptions,
+                                  paymentStatus: e.target.value,
+                                });
+                              }}
+                            >
+                              <option
+                                selected={filterOptions.paymentStatus === ""}
+                                value=""
+                                defaultValue
+                              >
+                                {t("paymentStatus")}
+                              </option>
+                              <option
+                                selected={
+                                  filterOptions.paymentStatus === "free"
+                                }
+                                value="free"
+                              >
+                                {t("free")}
+                              </option>
+                              <option
+                                selected={
+                                  filterOptions.paymentStatus === "paid"
+                                }
+                                value="paid"
+                              >
+                                {t("payPaid")}
+                              </option>
+                              <option
+                                selected={
+                                  filterOptions.paymentStatus === "unpaid"
+                                }
+                                value="unpaid"
+                              >
+                                {t("unpaid")}
+                              </option>
+                              <option
+                                selected={
+                                  filterOptions.paymentStatus === "partial"
+                                }
+                                value="partial"
+                              >
+                                {t("partial")}
+                              </option>
+                              <option
+                                selected={
+                                  filterOptions.paymentStatus === "advance"
+                                }
+                                value="advance"
+                              >
+                                {t("advance")}
+                              </option>
+                              <option
+                                selected={
+                                  filterOptions.paymentStatus === "overdue"
+                                }
+                                value="overdue"
+                              >
+                                {t("overDue")}
+                              </option>
+                            </select>
+                            {bpSettings?.hasMikrotik && (
+                              <select
+                                className="form-select shadow-none"
+                                onChange={(e) => {
+                                  mikrotikHandler(e.target.value);
+                                }}
+                              >
+                                <option
+                                  selected={filterOptions.mikrotik === ""}
+                                  value=""
+                                  defaultValue
+                                >
+                                  {t("mikrotik")}
+                                </option>
+
+                                {mikrotiks.map((m, i) => {
+                                  return (
+                                    <option
+                                      key={i}
+                                      selected={
+                                        filterOptions.mikrotik === `${m.id}`
+                                      }
+                                      value={m.id}
+                                    >
+                                      {m.name}
+                                    </option>
+                                  );
+                                })}
+                              </select>
+                            )}
+
+                            <select
+                              className="form-select shadow-none "
+                              onChange={(e) => {
+                                setFilterOption({
+                                  ...filterOptions,
+                                  package: e.target.value,
+                                });
+                              }}
+                            >
+                              <option
+                                selected={filterOptions.mikrotik === ""}
+                                value=""
+                                defaultValue
+                              >
+                                {t("package")}
+                              </option>
+
+                              {mikrotikPac?.map((m, i) => {
+                                return (
+                                  <option
+                                    key={i}
+                                    selected={
+                                      filterOptions.package === `${m.name}`
+                                    }
+                                    value={m.id}
+                                  >
+                                    {m.name}
+                                  </option>
+                                );
+                              })}
+                            </select>
+
+                            <select
+                              onChange={(e) =>
+                                setFilterOption({
+                                  ...filterOptions,
+                                  freeUser: e.target.value,
+                                })
+                              }
+                              className="form-select shadow-none"
+                            >
+                              <option
+                                selected={filterOptions.freeUser === "allUser"}
+                                value="allUser"
+                              >
+                                {t("sokolCustomer")}
+                              </option>
+                              <option
+                                selected={filterOptions.freeUser === "freeUser"}
+                                value="freeUser"
+                              >
+                                {t("freeCustomer")}
+                              </option>
+                              <option
+                                selected={
+                                  filterOptions.freeUser === "nonFreeUser"
+                                }
+                                value="nonFreeUser"
+                              >
+                                {t("nonFreeCustomer")}
+                              </option>
+                            </select>
+                            <input
+                              className="form-select shadow-none"
+                              type="date"
+                              onChange={(e) =>
+                                setFilterOption({
+                                  ...filterOptions,
+                                  filterDate: e.target.value,
+                                })
+                              }
+                            />
+                            <select
+                              className="form-select shadow-none"
+                              onChange={(e) =>
+                                setFilterOption({
+                                  ...filterOptions,
+                                  dayFilter: e.target.value,
+                                })
+                              }
+                            >
+                              <option value="">{t("filterBillDate")}</option>
+                              <option value="1">{t("oneDayLeft")}</option>
+                              <option value="2">{t("twoDayLeft")}</option>
+                              <option value="3">{t("threeDayLeft")}</option>
+                              <option value="4">{t("fourDayLeft")}</option>
+                            </select>
+
+                            <select
+                              className="form-select shadow-none"
+                              onChange={(e) =>
+                                setFilterOption({
+                                  ...filterOptions,
+                                  changedPromiseDate: e.target.value,
+                                })
+                              }
+                            >
+                              <option value="">{t("promiseDateChange")}</option>
+                              <option value="changedPromiseDate">
+                                {t("changedCustomer")}
+                              </option>
+                            </select>
+
+                            <div className="gridButton">
+                              <button
+                                className="btn btn-outline-primary w-6rem mt-2"
+                                type="button"
+                                onClick={handleActiveFilter}
+                              >
+                                {t("filter")}
+                              </button>
+                              <button
+                                className="btn btn-outline-secondary w-6rem ms-2 mt-2"
+                                type="button"
+                                onClick={handleFilterReset}
+                              >
+                                {t("reset")}
+                              </button>
+                            </div>
+                          </div>
+                        </Accordion.Body>
+                      </Accordion.Item>
+                    </Accordion>
+
+                    <div className="collectorWrapper">
+                      <div style={{ display: "none" }}>
+                        <PrintCustomer
+                          filterData={filterData}
+                          currentCustomers={Customers}
+                          ref={componentRef}
                         />
-                        <select
-                          className="form-select shadow-none"
-                          onChange={(e) =>
-                            setFilterOption({
-                              ...filterOptions,
-                              dayFilter: e.target.value,
-                            })
-                          }
-                        >
-                          <option value="">{t("filterBillDate")}</option>
-                          <option value="1">{t("oneDayLeft")}</option>
-                          <option value="2">{t("twoDayLeft")}</option>
-                          <option value="3">{t("threeDayLeft")}</option>
-                          <option value="4">{t("fourDayLeft")}</option>
-                        </select>
-
-                        <select
-                          className="form-select shadow-none"
-                          onChange={(e) =>
-                            setFilterOption({
-                              ...filterOptions,
-                              changedPromiseDate: e.target.value,
-                            })
-                          }
-                        >
-                          <option value="">{t("promiseDateChange")}</option>
-                          <option value="changedPromiseDate">
-                            {t("changedCustomer")}
-                          </option>
-                        </select>
-
-                        <div>
-                          <button
-                            className="btn btn-outline-primary w-6rem mt-2"
-                            type="button"
-                            onClick={handleActiveFilter}
-                          >
-                            {t("filter")}
-                          </button>
-                          <button
-                            className="btn btn-outline-secondary w-6rem ms-2 mt-2"
-                            type="button"
-                            onClick={handleFilterReset}
-                          >
-                            {t("reset")}
-                          </button>
-                        </div>
                       </div>
-                    </div>
-                    {/* print report */}
-                    <div style={{ display: "none" }}>
-                      <PrintCustomer
-                        filterData={filterData}
-                        currentCustomers={Customers}
-                        ref={componentRef}
-                      />
-                    </div>
-                    <div className="filterresetbtn d-flex justify-content-between">
-                      {/* <button onClick={handleActiveFilter}>filter</button> */}
-                      <div></div>
-                      {/* <button onClick={handleFilterReset}>reset</button> */}
-                    </div>
-                    <div className="table-section">
-                      <Table
-                        isLoading={customerLoading}
-                        customComponent={customComponent}
-                        columns={columns}
-                        data={Customers1}
-                        bulkState={{
-                          setBulkCustomer,
-                        }}
-                      ></Table>
+
+                      <div className="table-section">
+                        <Table
+                          isLoading={customerLoading}
+                          customComponent={customComponent}
+                          columns={columns}
+                          data={Customers1}
+                          bulkState={{
+                            setBulkCustomer,
+                          }}
+                        ></Table>
+                      </div>
                     </div>
                   </div>
                 ) : (
