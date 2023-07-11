@@ -15,6 +15,7 @@ import { useTranslation } from "react-i18next";
 import {
   ArrowClockwise,
   FileExcelFill,
+  FilterCircle,
   Wifi,
   WifiOff,
 } from "react-bootstrap-icons";
@@ -22,6 +23,7 @@ import Loader from "../../components/common/Loader";
 import Footer from "../../components/admin/footer/Footer";
 import { CSVLink } from "react-csv";
 import moment from "moment";
+import { Accordion } from "react-bootstrap";
 
 const StaticActiveCustomer = () => {
   const { t } = useTranslation();
@@ -29,6 +31,9 @@ const StaticActiveCustomer = () => {
   const [isLoading, setIsloading] = useState(false);
   const [mtkLoading, setMtkLoading] = useState(false);
   const [filterStatus, setFilterStatus] = useState();
+
+  // filter Accordion handle state
+  const [activeKeys, setActiveKeys] = useState("");
 
   // get all mikrotik from redux
   const mikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
@@ -159,9 +164,25 @@ const StaticActiveCustomer = () => {
               <FourGround>
                 {/* <h2 className="collectorTitle">{t("activeStaticCustomer")}</h2> */}
 
-                <div className="collectorTitle d-flex justify-content-between px-5">
+                <div className="collectorTitle d-flex justify-content-between px-4">
                   <div className="d-flex">
                     <div>{t("activeStaticCustomer")}</div>
+                  </div>
+
+                  <div className="d-flex justify-content-center align-items-center">
+                    <div
+                      onClick={() => {
+                        if (!activeKeys) {
+                          setActiveKeys("filter");
+                        } else {
+                          setActiveKeys("");
+                        }
+                      }}
+                      title={t("filter")}
+                    >
+                      <FilterCircle className="addcutmButton" />
+                    </div>
+
                     <div className="reloadBtn">
                       {isLoading ? (
                         <Loader></Loader>
@@ -171,9 +192,7 @@ const StaticActiveCustomer = () => {
                         ></ArrowClockwise>
                       )}
                     </div>
-                  </div>
 
-                  <div className="addAndSettingIcon">
                     <CSVLink
                       data={activeCustomerCsvInfo}
                       filename={ispOwnerData.company}
@@ -186,41 +205,47 @@ const StaticActiveCustomer = () => {
                 </div>
               </FourGround>
               <FourGround>
-                <div className="collectorWrapper mt-2 pt-4">
-                  <div className="d-flex justify-content-center">
-                    <div className="mikrotik-filter">
-                      <h6 className="mb-0"> {t("selectMikrotik")} </h6>
-                      <select
-                        id="selectMikrotikOption"
-                        onChange={mikrotiSelectionHandler}
-                        className="form-select mt-0"
-                      >
-                        {mikrotik.map((item) => (
-                          <option value={item.id}>{item.name}</option>
-                        ))}
-                      </select>
+                <div className="mt-2">
+                  <Accordion alwaysOpen activeKey={activeKeys}>
+                    <Accordion.Item eventKey="filter">
+                      <Accordion.Body>
+                        <div className="d-flex justify-content-center">
+                          <div className="mikrotik-filter">
+                            <select
+                              id="selectMikrotikOption"
+                              onChange={mikrotiSelectionHandler}
+                              className="form-select mt-0"
+                            >
+                              {mikrotik.map((item) => (
+                                <option value={item.id}>{item.name}</option>
+                              ))}
+                            </select>
+                          </div>
+                          <div className="customer-filter ms-4">
+                            <select
+                              className="form-select mt-0"
+                              aria-label="Default select example"
+                              onChange={(event) =>
+                                setFilterStatus(event.target.value)
+                              }
+                            >
+                              <option selected> {t("sokolCustomer")} </option>
+                              <option value={true}> {t("active")} </option>
+                              <option value={false}> {t("in active")} </option>
+                            </select>
+                          </div>
+                        </div>
+                      </Accordion.Body>
+                    </Accordion.Item>
+                  </Accordion>
+                  <div className="collectorWrapper">
+                    <div className="table-section">
+                      <Table
+                        isLoading={isLoading}
+                        columns={columns}
+                        data={staticActiveCustomer}
+                      />
                     </div>
-                    <div className="customer-filter ms-4">
-                      <h6 className="mb-0"> {t("selectCustomer")} </h6>
-                      <select
-                        className="form-select mt-0"
-                        aria-label="Default select example"
-                        onChange={(event) =>
-                          setFilterStatus(event.target.value)
-                        }
-                      >
-                        <option selected> {t("sokolCustomer")} </option>
-                        <option value={true}> {t("active")} </option>
-                        <option value={false}> {t("in active")} </option>
-                      </select>
-                    </div>
-                  </div>
-                  <div className="table-section">
-                    <Table
-                      isLoading={isLoading}
-                      columns={columns}
-                      data={staticActiveCustomer}
-                    />
                   </div>
                 </div>
               </FourGround>

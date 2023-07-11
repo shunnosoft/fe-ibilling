@@ -847,7 +847,9 @@ export default function IspOwnerDashboard() {
                         <ThreeDotsVertical className="ThreeDots" />
                         <div className="cardIcon">৳</div>
                         <div className="chartSection">
-                          <p style={{ fontSize: "16px" }}>{t("balance")}</p>
+                          <p style={{ fontSize: "16px" }}>
+                            {t("businessBalance")}
+                          </p>
                           <h2>
                             ৳ {FormatNumber(customerStat?.ispOwner?.balance)}
                           </h2>

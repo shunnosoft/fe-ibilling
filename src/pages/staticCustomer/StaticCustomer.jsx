@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import "../collector/collector.css";
 import moment from "moment";
 import { CSVLink } from "react-csv";
@@ -25,6 +25,8 @@ import {
   ArrowRightSquareFill,
   ReceiptCutoff,
   GearFill,
+  Boxes,
+  FilterCircle,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -890,7 +892,7 @@ export default function Customer() {
   const [bulkCustomer, setBulkCustomer] = useState([]);
 
   //total monthly fee and due calculation
-  const dueMonthlyFee = useCallback(() => {
+  const dueMonthlyFee = useMemo(() => {
     let dueAmount = 0;
     let totalSumDue = 0;
     let totalMonthlyFee = 0;
@@ -913,40 +915,18 @@ export default function Customer() {
 
   //custom table header component
   const customComponent = (
-    <div className="d-flex">
-      {bulkCustomer?.length ? (
-        <>
-          <div
-            style={{
-              marginLeft: "-25px",
-              marginRight: "7px",
-            }}
-          >
-            /
-          </div>
-          <span
-            style={{
-              backgroundColor: "#2C7CCC",
-              padding: "0px 13px",
-              fontSize: "16px",
-            }}
-            className=" rounded-pill me-1"
-          >
-            {bulkCustomer?.length}
-          </span>
-        </>
-      ) : (
-        ""
+    <div>
+      {dueMonthlyFee?.totalMonthlyFee > 0 < dueMonthlyFee?.totalSumDue && (
+        <div
+          className="text-center"
+          style={{ fontSize: "18px", fontWeight: "500", display: "flex" }}
+        >
+          {dueMonthlyFee?.totalMonthlyFee > 0 && t("monthlyFee")}:-৳
+          {FormatNumber(dueMonthlyFee.totalMonthlyFee)}
+          &nbsp;&nbsp; {dueMonthlyFee.totalSumDue > 0 && t("due")}:-৳
+          {FormatNumber(dueMonthlyFee.totalSumDue)}
+        </div>
       )}
-      <div
-        className="text-center"
-        style={{ fontSize: "18px", display: "flex" }}
-      >
-        {t("monthlyFee")}&nbsp; {FormatNumber(dueMonthlyFee().totalMonthlyFee)}
-        &nbsp;
-        {t("tk")} &nbsp;&nbsp; {t("due")}&nbsp;
-        {FormatNumber(dueMonthlyFee().totalSumDue)} &nbsp;{t("tk")} &nbsp;
-      </div>
     </div>
   );
   return (
@@ -959,40 +939,9 @@ export default function Customer() {
           <div className="container">
             <FontColor>
               <FourGround>
-                <div className="collectorTitle d-flex justify-content-between px-5">
+                <div className="collectorTitle d-flex justify-content-between px-4">
                   <div className="d-flex">
                     <h2> {t("staticCustomer")}</h2>
-                    <div className="reloadBtn">
-                      {isLoading ? (
-                        <Loader></Loader>
-                      ) : (
-                        <ArrowClockwise
-                          onClick={() => reloadHandler()}
-                        ></ArrowClockwise>
-                      )}
-                    </div>
-
-                    <div
-                      onClick={() => {
-                        if (!activeKeys) {
-                          setActiveKeys("filter");
-                        } else {
-                          setActiveKeys("");
-                        }
-                      }}
-                      style={{ cursor: "pointer" }}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="35"
-                        height="35"
-                        fill="currentColor"
-                        className="bi bi-filter"
-                        viewBox="0 0 16 16"
-                      >
-                        <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z" />
-                      </svg>
-                    </div>
                   </div>
                   <div
                     className="d-flex"
@@ -1003,21 +952,36 @@ export default function Customer() {
                     }}
                   >
                     <>
+                      <div
+                        onClick={() => {
+                          if (!activeKeys) {
+                            setActiveKeys("filter");
+                          } else {
+                            setActiveKeys("");
+                          }
+                        }}
+                        title={t("filter")}
+                      >
+                        <FilterCircle className="addcutmButton" />
+                      </div>
+
+                      <div className="reloadBtn">
+                        {isLoading ? (
+                          <Loader></Loader>
+                        ) : (
+                          <ArrowClockwise
+                            onClick={() => reloadHandler()}
+                          ></ArrowClockwise>
+                        )}
+                      </div>
+
                       {role === "ispOwner" && bpSettings?.hasMikrotik && (
-                        <div className="settingbtn me-2">
-                          <Link
-                            to={`/packageSetting`}
-                            className="mikrotikConfigureButtom"
-                            style={{
-                              height: "40px",
-                              fontSize: "20px",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                            }}
-                          >
-                            {t("packagingSetting")}
-                            <ArrowRightShort style={{ fontSize: "19px" }} />
+                        <div className="settingbtn">
+                          <Link to={`/packageSetting`}>
+                            <Boxes
+                              className="addcutmButton"
+                              title={t("packageSetting")}
+                            />
                           </Link>
                         </div>
                       )}
@@ -1559,16 +1523,16 @@ export default function Customer() {
                               </option>
                             </select>
 
-                            <div className="gridButton">
+                            <div className="d-flex justify-content-end align-items-end">
                               <button
-                                className="btn btn-outline-primary w-6rem mt-2"
+                                className="btn btn-outline-primary w-6rem h-76"
                                 type="button"
                                 onClick={handleActiveFilter}
                               >
                                 {t("filter")}
                               </button>
                               <button
-                                className="btn btn-outline-secondary w-6rem ms-2 mt-2"
+                                className="btn btn-outline-secondary w-6rem h-76 ms-2"
                                 type="button"
                                 onClick={handleFilterReset}
                               >
@@ -1593,6 +1557,7 @@ export default function Customer() {
                         <Table
                           isLoading={customerLoading}
                           customComponent={customComponent}
+                          bulkLength={bulkCustomer?.length}
                           columns={columns}
                           data={Customers1}
                           bulkState={{

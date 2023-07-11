@@ -10,6 +10,7 @@ import {
   Server,
   Envelope,
   FileExcelFill,
+  FilterCircle,
 } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -37,6 +38,7 @@ import BulkCustomerDelete from "../Customer/customerCRUD/bulkOpration/Bulkdelete
 import BulkCustomerMessage from "../Customer/customerCRUD/bulkOpration/BulkCustomerMessage";
 import { CSVLink } from "react-csv";
 import { getSubAreasApi } from "../../features/actions/customerApiCall";
+import { Accordion } from "react-bootstrap";
 
 export default function ConfigMikrotik() {
   const { t } = useTranslation();
@@ -80,6 +82,9 @@ export default function ConfigMikrotik() {
 
   // customer loading state
   const [mtkLoading, setMtkLoading] = useState(false);
+
+  // filter Accordion handle state
+  const [activeKeys, setActiveKeys] = useState("");
 
   // set initialy mikrotik id
   const [mikrotikId, setMikrotikId] = useState(mikrotik[0]?.id);
@@ -485,11 +490,25 @@ export default function ConfigMikrotik() {
         <div className="container-fluied collector">
           <div className="container">
             <FontColor>
-              {/* modals */}
               <FourGround>
-                <div className="collectorTitle d-flex justify-content-between px-5">
+                <div className="collectorTitle d-flex justify-content-between px-4">
                   <div className="d-flex">
                     <div>{t("activeCustomer")}</div>
+                  </div>
+                  <div className="d-flex align-items-center justify-content-center">
+                    <div
+                      onClick={() => {
+                        if (!activeKeys) {
+                          setActiveKeys("filter");
+                        } else {
+                          setActiveKeys("");
+                        }
+                      }}
+                      title={t("filter")}
+                    >
+                      <FilterCircle className="addcutmButton" />
+                    </div>
+
                     <div className="reloadBtn">
                       {mtkLoading ? (
                         <Loader></Loader>
@@ -499,8 +518,7 @@ export default function ConfigMikrotik() {
                         ></ArrowClockwise>
                       )}
                     </div>
-                  </div>
-                  <div className="addAndSettingIcon">
+
                     <CSVLink
                       data={customerForCsVTableInfo}
                       filename={ispOwnerData.company}
@@ -514,99 +532,101 @@ export default function ConfigMikrotik() {
               </FourGround>
 
               <FourGround>
-                <div className="collectorWrapper mt-2 pt-4 py-2">
-                  <div className="d-flex justify-content-center">
-                    <div className="mikrotik-filter">
-                      <h6 className="mb-0"> {t("selectMikrotik")} </h6>
-                      <select
-                        id="selectMikrotikOption"
-                        onChange={mikrotiSelectionHandler}
-                        className="form-select mt-0"
-                      >
-                        {mikrotik.map((item) => (
-                          <option value={item.id}>{item.name}</option>
-                        ))}
-                      </select>
+                <div className="mt-2">
+                  <Accordion alwaysOpen activeKey={activeKeys}>
+                    <Accordion.Item eventKey="filter">
+                      <Accordion.Body>
+                        <div className="d-flex justify-content-center">
+                          <div className="mikrotik-filter">
+                            <select
+                              id="selectMikrotikOption"
+                              onChange={mikrotiSelectionHandler}
+                              className="form-select mt-0"
+                            >
+                              {mikrotik.map((item) => (
+                                <option value={item.id}>{item.name}</option>
+                              ))}
+                            </select>
+                          </div>
+
+                          <div className="mikrotik-filter ms-4">
+                            <select
+                              id="selectMikrotikOption"
+                              className="form-select mt-0"
+                              onChange={areaSubareaHandler}
+                            >
+                              <option value="">{t("allArea")}</option>
+                              {areas.map((item) => (
+                                <option value={item.id}>{item.name}</option>
+                              ))}
+                            </select>
+                          </div>
+
+                          <div className="mikrotik-filter ms-4">
+                            <select
+                              id="selectMikrotikOption"
+                              className="form-select mt-0"
+                              onChange={subAreasHandler}
+                            >
+                              <option value="">{t("subArea")}</option>
+                              {subareaIds.map((item) => (
+                                <option value={item.id}>{item.name}</option>
+                              ))}
+                            </select>
+                          </div>
+
+                          <div className="mikrotik-filter ms-4">
+                            <select
+                              id="selectMikrotikOption"
+                              onChange={filterIt}
+                              className="form-select mt-0"
+                            >
+                              <option value="allCustomer">
+                                {t("sokolCustomer")}
+                              </option>
+                              <option value="online">{t("online")}</option>
+                              <option value="offline">{t("ofline")}</option>
+                            </select>
+                          </div>
+
+                          {customerIt && customerIt === "offline" ? (
+                            <div className="mikrotik-filter ms-4">
+                              <select
+                                id="selectMikrotikOption"
+                                className="form-select mt-0"
+                                onChange={customerItFilter}
+                              >
+                                <option value="All">{t("status")}</option>
+                                <option value="activeOffline">
+                                  {t("activeOffline")}
+                                </option>
+                                <option value="inactiveOffline">
+                                  {t("inactiveOffline")}
+                                </option>
+                                <option value="expiredOffline">
+                                  {t("expiredOffline")}
+                                </option>
+                              </select>
+                            </div>
+                          ) : (
+                            ""
+                          )}
+                        </div>
+                      </Accordion.Body>
+                    </Accordion.Item>
+                  </Accordion>
+                  <div className="collectorWrapper pb-2">
+                    <div className="table-section">
+                      <Table
+                        isLoading={mtkLoading}
+                        bulkLength={bulkCustomers?.length}
+                        columns={columns}
+                        data={allUsers}
+                        bulkState={{
+                          setBulkCustomer,
+                        }}
+                      ></Table>
                     </div>
-
-                    <div className="mikrotik-filter ms-4">
-                      <h6 className="mb-0"> {t("selectArea")} </h6>
-                      <select
-                        id="selectMikrotikOption"
-                        className="form-select mt-0"
-                        onChange={areaSubareaHandler}
-                      >
-                        <option value="">{t("allArea")}</option>
-                        {areas.map((item) => (
-                          <option value={item.id}>{item.name}</option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div className="mikrotik-filter ms-4">
-                      <h6 className="mb-0"> {t("selectSubArea")} </h6>
-                      <select
-                        id="selectMikrotikOption"
-                        className="form-select mt-0"
-                        onChange={subAreasHandler}
-                      >
-                        <option value="">{t("subArea")}</option>
-                        {subareaIds.map((item) => (
-                          <option value={item.id}>{item.name}</option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div className="mikrotik-filter ms-4">
-                      <h6 className="mb-0"> {t("selectCustomer")} </h6>
-                      <select
-                        id="selectMikrotikOption"
-                        onChange={filterIt}
-                        className="form-select mt-0"
-                      >
-                        <option value="allCustomer">
-                          {t("sokolCustomer")}
-                        </option>
-                        <option value="online">{t("online")}</option>
-                        <option value="offline">{t("ofline")}</option>
-                      </select>
-                    </div>
-
-                    {customerIt && customerIt === "offline" ? (
-                      <div className="mikrotik-filter ms-4">
-                        <h6 className="mb-0"> {t("selectStatus")} </h6>
-                        <select
-                          id="selectMikrotikOption"
-                          className="form-select mt-0"
-                          onChange={customerItFilter}
-                        >
-                          <option value="All">{t("status")}</option>
-                          <option value="activeOffline">
-                            {t("activeOffline")}
-                          </option>
-                          <option value="inactiveOffline">
-                            {t("inactiveOffline")}
-                          </option>
-                          <option value="expiredOffline">
-                            {t("expiredOffline")}
-                          </option>
-                        </select>
-                      </div>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-
-                  {/* Active PPPoE users */}
-                  <div className="table-section">
-                    <Table
-                      isLoading={mtkLoading}
-                      columns={columns}
-                      data={allUsers}
-                      bulkState={{
-                        setBulkCustomer,
-                      }}
-                    ></Table>
                   </div>
                 </div>
               </FourGround>
