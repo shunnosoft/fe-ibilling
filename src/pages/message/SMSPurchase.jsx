@@ -15,7 +15,11 @@ const SMSPurchase = ({ show, smsPurchase }) => {
   const handleClose = () => setShowIf(false);
 
   const userRole = useSelector((state) => state.persistedReducer.auth.role);
-  const userData = useSelector((state) => state.persistedReducer.auth.userData);
+  const userData = useSelector((state) =>
+    userRole === "manager"
+      ? state.persistedReducer.auth.ispOwnerData
+      : state.persistedReducer.auth.userData
+  );
   const [isLoading, setIsloading] = useState(false);
 
   const [amount, setAmount] = useState(100);

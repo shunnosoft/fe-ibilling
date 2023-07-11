@@ -71,7 +71,6 @@ export const getIspOwnersStaffs = async (
   setIsLoading(true);
   try {
     const res = await apiLink.get(`/admin/ispOwner-details/${ispOwnerId}`);
-    console.log(res.data);
 
     setIsLoading(false);
     dispatch(getIspOwnerStaffsSuccess(res.data));
@@ -106,7 +105,7 @@ export const updateOwner = async (
   data,
   setIsLoading,
   dispatch,
-  setIsPermission
+  setIsPermission = null
 ) => {
   setIsLoading(true);
   try {
