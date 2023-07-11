@@ -11,6 +11,10 @@
   position: relative;
 }
 
+.toggle-setting {
+  position: relative;
+}
+
 .toggle-column-modal {
   width: 15vw;
   padding: 1rem;
@@ -25,8 +29,40 @@
 .toggle-column-modal.active {
   transform: scale(1);
 }
+.toggle-pagination {
+  position: relative;
+}
+
+.toggle-column-modal-pagination {
+  width: 15vw;
+  padding: 1rem;
+  position: absolute;
+  transform: scale(0);
+  border: 1px solid blueviolet;
+  transition: transform 0.2s;
+  transform-origin: top left;
+  transition-duration: calc(5);
+  background-color: ghostwhite;
+}
+
+.toggle-column-modal-pagination.active {
+  transform: scale(1);
+}
 
 .pagination {
   margin-top: 1rem !important;
   --bs-pagination-padding-x: 1.01rem !important;
+}
+
+.childCollector {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 7px 7px 7px;
+  margin: 20px 0px !important;
+  box-shadow: 3px 3px 3px #46464629;
+  background: var(--primaryColor);
+  border-radius: 7px;
+  color: white;
 }

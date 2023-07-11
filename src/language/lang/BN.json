@@ -550,7 +550,7 @@
   "staffDelete": "স্টাফ ডিলিট",
   "count": "কাউন্ট",
   "basic": "বেসিক",
-  "monthlyFee": "মাসিক বিল ",
+  "monthlyFee": "মাসিক বিল",
   "bandwidth": "ব্যান্ডউইথ",
   "totalMonthlyBillCollect": "কালেক্ট বিল",
   "billCollected": "কালেক্ট বিল",
@@ -822,5 +822,7 @@
   "totalAmount": "মোট টাকা",
   "deleteCustomerInvoice": "গ্রাহক বিল ইনভয়েস মুছতে চান?",
   "promiseDateChange": "প্রমিজ তারিখ পরিবর্তন",
-  "changedCustomer": "পরিবর্তিত গ্রাহক"
+  "changedCustomer": "পরিবর্তিত গ্রাহক",
+  "businessBalance": "ব্যবসায় ব্যালান্স",
+  "packageSetting": "প্যাকেজ সেটিং"
 }

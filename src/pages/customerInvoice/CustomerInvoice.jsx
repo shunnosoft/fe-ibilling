@@ -36,12 +36,14 @@ import CustomerBillCollectInvoice from "./invoiceCollect/CustomerBillCollectInvo
 import CustomerInvoicePrint from "./customerInvoicePrint/CustomerInvoicePrint";
 import { badge } from "../../components/common/Utils";
 import { ToastContainer } from "react-toastify";
+import InvoicePrint from "./customerInvoicePrint/InvoicePrint";
 
 const CustomerInvoice = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const componentRef = useRef();
   const cusOffice = useRef();
+  const invoice = useRef();
 
   var today = new Date();
   var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
@@ -70,7 +72,6 @@ const CustomerInvoice = () => {
 
   // customer state
   const [customerInvoice, setCustomerInvoice] = useState([]);
-  console.log(customerInvoice);
 
   // customer id state
   const [invoiceId, setInvoiceId] = useState("");
@@ -458,20 +459,7 @@ const CustomerInvoice = () => {
                     </div>
                   </div>
                 </li>
-                {/* <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#reportEditModal"
-                  onClick={() => {
-                    getReportId(original?.id);
-                  }}
-                >
-                  <div className="dropdown-item">
-                    <div className="customerAction">
-                      <PenFill />
-                      <p className="actionP">{t("edit")}</p>
-                    </div>
-                  </div>
-                </li> */}
+
                 <li onClick={() => invoiceDeleteHandler(original.id)}>
                   <div className="dropdown-item">
                     <div className="customerAction">
@@ -532,7 +520,7 @@ const CustomerInvoice = () => {
                             className="addcutmButton"
                           />
                         )}
-                        content={() => cusOffice.current}
+                        content={() => invoice.current}
                       />
                     </div>
                   </div>
@@ -622,7 +610,7 @@ const CustomerInvoice = () => {
                     <div style={{ display: "none" }}>
                       <PrintReport
                         filterData={filterData}
-                        currentCustomers={customerInvoice}
+                        currentCustomers={tableData}
                         ref={componentRef}
                         status="invoice"
                       />
@@ -652,6 +640,14 @@ const CustomerInvoice = () => {
                           billingCycle: singleInvoice?.customer?.billingCycle,
                           status: status,
                         }}
+                        ispOwnerData={ispOwnerData}
+                      />
+                    </div>
+
+                    <div style={{ display: "none" }}>
+                      <InvoicePrint
+                        ref={invoice}
+                        currentCustomers={tableData}
                         ispOwnerData={ispOwnerData}
                       />
                     </div>

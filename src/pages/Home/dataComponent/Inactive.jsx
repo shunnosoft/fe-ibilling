@@ -38,21 +38,25 @@ const Inactive = ({ ispOwnerId, year, month, status }) => {
   const column = useMemo(
     () => [
       {
-        width: "8%",
+        width: "7%",
         Header: t("id"),
         accessor: "customerId",
       },
       {
-        width: "9%",
+        width: "8%",
         Header: t("name"),
         accessor: "name",
       },
       {
-        width: "9%",
+        width: "8%",
         Header: t("PPPoE"),
         accessor: "pppoe.name",
       },
-
+      {
+        width: "8%",
+        Header: t("mobile"),
+        accessor: "mobile",
+      },
       {
         width: "8%",
         Header: t("status"),
@@ -62,7 +66,7 @@ const Inactive = ({ ispOwnerId, year, month, status }) => {
         },
       },
       {
-        width: "9%",
+        width: "8%",
         Header: t("paymentStatus"),
         accessor: "paymentStatus",
         Cell: ({ cell: { value } }) => {
@@ -70,7 +74,7 @@ const Inactive = ({ ispOwnerId, year, month, status }) => {
         },
       },
       {
-        width: "9%",
+        width: "8%",
         Header: t("package"),
         accessor: "pppoe.profile",
       },
@@ -80,12 +84,12 @@ const Inactive = ({ ispOwnerId, year, month, status }) => {
         accessor: "monthlyFee",
       },
       {
-        width: "9%",
+        width: "8%",
         Header: t("balance"),
         accessor: "balance",
       },
       {
-        width: "11%",
+        width: "10%",
         Header: t("bill"),
         accessor: "billingCycle",
         Cell: ({ cell: { value } }) => {

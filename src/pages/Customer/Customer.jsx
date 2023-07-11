@@ -8,6 +8,7 @@ import {
   ChatText,
   CurrencyDollar,
   FileExcelFill,
+  FilterCircle,
   GearFill,
   KeyFill,
   Newspaper,
@@ -482,43 +483,18 @@ const PPPOECustomer = () => {
 
   //custom table header component
   const customComponent = (
-    <div className="d-flex">
-      {bulkCustomers?.length ? (
-        <>
-          <div
-            style={{
-              marginLeft: "-25px",
-              marginRight: "7px",
-            }}
-          >
-            /
-          </div>
-          <span
-            style={{
-              backgroundColor: "#2C7CCC",
-              padding: "0px 13px",
-              fontSize: "16px",
-            }}
-            className=" rounded-pill me-1"
-          >
-            {bulkCustomers?.length}
-          </span>
-        </>
-      ) : (
-        ""
+    <div>
+      {dueMonthlyFee?.totalMonthlyFee > 0 < dueMonthlyFee?.totalSumDue && (
+        <div
+          className="text-center"
+          style={{ fontSize: "18px", fontWeight: "500", display: "flex" }}
+        >
+          {dueMonthlyFee?.totalMonthlyFee > 0 && t("monthlyFee")}:-৳
+          {FormatNumber(dueMonthlyFee.totalMonthlyFee)}
+          &nbsp;&nbsp; {dueMonthlyFee.totalSumDue > 0 && t("due")}:-৳
+          {FormatNumber(dueMonthlyFee.totalSumDue)}
+        </div>
       )}
-      <div
-        className="text-center"
-        style={{ fontSize: "18px", display: "flex" }}
-      >
-        {t("monthlyFee")}&nbsp; {FormatNumber(dueMonthlyFee.totalMonthlyFee)}
-        &nbsp;
-        {t("tk")} &nbsp;&nbsp; {t("due")}&nbsp;
-        {FormatNumber(dueMonthlyFee.totalSumDue)} &nbsp;{t("tk")} &nbsp;
-        {/* {t("collection")}&nbsp;{" "} */}
-        {/* {FormatNumber(Number(sumMonthlyFee()) - Number(dueMonthlyFee()))} &nbsp;
-      {t("tk")} */}
-      </div>
     </div>
   );
 
@@ -575,12 +551,12 @@ const PPPOECustomer = () => {
         accessor: "name",
       },
       {
-        width: "9%",
+        width: "8%",
         Header: t("PPPoE"),
         accessor: "pppoe.name",
       },
       {
-        width: "12%",
+        width: "10%",
         Header: t("mobile"),
         accessor: "mobile",
       },
@@ -594,7 +570,7 @@ const PPPOECustomer = () => {
         },
       },
       {
-        width: "9%",
+        width: "10%",
         Header: t("paymentStatus"),
         accessor: "paymentStatus",
         Cell: ({ cell: { value } }) => {
@@ -602,7 +578,7 @@ const PPPOECustomer = () => {
         },
       },
       {
-        width: "9%",
+        width: "10%",
         Header: t("package"),
         accessor: "pppoe.profile",
       },
@@ -772,7 +748,7 @@ const PPPOECustomer = () => {
                       </div>
                     </li>
                   )}
-                {(role === "ispOwner" || role === "manager") &&
+                {/* {(role === "ispOwner" || role === "manager") &&
                   ispOwnerData.bpSettings?.hasMikrotik && (
                     <li onClick={() => bandwidthModalController(original.id)}>
                       <div className="dropdown-item">
@@ -782,7 +758,7 @@ const PPPOECustomer = () => {
                         </div>
                       </div>
                     </li>
-                  )}
+                  )} */}
 
                 <li
                   data-bs-toggle="modal"
@@ -1202,17 +1178,14 @@ const PPPOECustomer = () => {
           <div className="container">
             <FontColor>
               <FourGround>
-                <div className="collectorTitle d-flex justify-content-between px-5">
-                  <div className="d-flex">
+                <div className="collectorTitle d-flex justify-content-between px-4">
+                  <div className="d-flex align-items-center justify-content-center">
                     <h2>{t("customer")}</h2>
-                    <div className="reloadBtn">
-                      {customerLoading ? (
-                        <Loader />
-                      ) : (
-                        <ArrowClockwise onClick={reloadHandler} />
-                      )}
-                    </div>
+                  </div>
 
+                  {/* customer page header area  */}
+
+                  <div className="d-flex align-items-center justify-content-center">
                     <div
                       onClick={() => {
                         if (!activeKeys) {
@@ -1221,23 +1194,21 @@ const PPPOECustomer = () => {
                           setActiveKeys("");
                         }
                       }}
-                      style={{ cursor: "pointer" }}
+                      title={t("filter")}
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="35"
-                        height="35"
-                        fill="currentColor"
-                        className="bi bi-filter"
-                        viewBox="0 0 16 16"
-                      >
-                        <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z" />
-                      </svg>
+                      <FilterCircle className="addcutmButton" />
                     </div>
-                  </div>
-                  {/* customer page header area  */}
 
-                  <div className="d-flex align-items-center justify-content-center">
+                    <div className="reloadBtn">
+                      {customerLoading ? (
+                        <Loader />
+                      ) : (
+                        <ArrowClockwise
+                          onClick={reloadHandler}
+                          title={t("refresh")}
+                        />
+                      )}
+                    </div>
                     {((role === "manager" && permission?.customerEdit) ||
                       role === "ispOwner") && (
                       <div
@@ -1322,10 +1293,7 @@ const PPPOECustomer = () => {
                     <Accordion alwaysOpen activeKey={activeKeys}>
                       <Accordion.Item eventKey="filter">
                         <Accordion.Body>
-                          <div
-                            className="displayGrid6"
-                            style={{ columnGap: "5px" }}
-                          >
+                          <div className="displayGrid6">
                             {filterInputs.map(
                               (item) =>
                                 item.isVisible && (
@@ -1347,9 +1315,9 @@ const PPPOECustomer = () => {
                             )}
 
                             {/* date picker for filter billing cycle */}
-                            <div>
+                            <div className="d-flex justify-content-end align-items-end h-76">
                               <DatePicker
-                                className="form-control mt-3"
+                                className="form-control"
                                 selected={filterOptions.filterDate}
                                 onChange={(date) =>
                                   setFilterOption({
@@ -1377,9 +1345,9 @@ const PPPOECustomer = () => {
                               </option>
                             </select>
 
-                            <div className="gridButton">
+                            <div className="d-flex justify-content-end align-items-end">
                               <button
-                                className="btn btn-outline-primary w-6rem mt-3"
+                                className="btn btn-outline-primary w-6rem h-76"
                                 type="button"
                                 onClick={handleActiveFilter}
                                 id="filterBtn"
@@ -1387,7 +1355,7 @@ const PPPOECustomer = () => {
                                 {t("filter")}
                               </button>
                               <button
-                                className="btn btn-outline-secondary ms-1 w-6rem mt-3"
+                                className="btn btn-outline-secondary w-6rem h-76 ms-1"
                                 type="button"
                                 onClick={handleFilterReset}
                               >
@@ -1402,6 +1370,7 @@ const PPPOECustomer = () => {
                       <div className="table-section">
                         <Table
                           customComponent={customComponent}
+                          bulkLength={bulkCustomers?.length}
                           isLoading={customerLoading}
                           columns={columns}
                           data={tableData}

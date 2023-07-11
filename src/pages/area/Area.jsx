@@ -46,6 +46,9 @@ export default function Area() {
   const cus = useSelector((state) => state?.customer?.customer);
   const storeSubArea = useSelector((state) => state.area?.subArea);
 
+  //get all pole Box
+  const poleBox = useSelector((state) => state.area?.poleBox);
+
   // get bp settings
   const bpSettings = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
@@ -114,6 +117,28 @@ export default function Area() {
     setIsOpen(true);
   };
 
+  // area subarea count function
+  const areaSubareaCount = (areaId) => {
+    const filterItem = storeSubArea.filter((item) =>
+      item.area.includes(areaId)
+    );
+    return filterItem?.length;
+  };
+
+  // subarea polBox count function
+  const subareaPolBoxCount = (subId) => {
+    const subPoleBox = storeSubArea.filter((sub) => sub.area === subId);
+    let temp = [];
+    subPoleBox?.map((val) =>
+      poleBox.map((pole) => {
+        if (pole.subArea === val.id) {
+          temp.push(pole);
+        }
+      })
+    );
+    return temp?.length;
+  };
+
   //create column of table
   const columns = React.useMemo(
     () => [
@@ -140,12 +165,16 @@ export default function Area() {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              width: "6rem",
+              width: "7rem",
               cursor: "pointer",
             }}
             onClick={() => getAreaSubarea(original.id)}
           >
             {t("subArea")}
+            <b className="text-warning ms-1">
+              {area && areaSubareaCount(original.id)}
+            </b>
+            <ArrowRightShort style={{ fontSize: "19px" }} />
           </div>
         ),
       },
@@ -162,7 +191,7 @@ export default function Area() {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  width: "6rem",
+                  width: "7rem",
                   cursor: "pointer",
                 }}
                 onClick={() => {
@@ -171,6 +200,10 @@ export default function Area() {
                 }}
               >
                 {t("poleBox")}
+                <b className="text-warning ms-1">
+                  {area && subareaPolBoxCount(original.id)}
+                </b>
+                <ArrowRightShort style={{ fontSize: "19px" }} />
               </div>
             )
           );
@@ -189,7 +222,7 @@ export default function Area() {
         ),
       },
     ],
-    [t]
+    [t, area]
   );
 
   return (
@@ -202,9 +235,12 @@ export default function Area() {
           <div className="container">
             <FontColor>
               <FourGround>
-                <div className="collectorTitle d-flex justify-content-between px-5">
+                <div className="collectorTitle d-flex justify-content-between px-4">
                   <div className="d-flex">
                     <h2>{t("area")} </h2>
+                  </div>
+
+                  <div className="d-flex align-items-center justify-content-center">
                     <div className="reloadBtn">
                       {isLoading ? (
                         <Loader />
@@ -214,14 +250,14 @@ export default function Area() {
                         ></ArrowClockwise>
                       )}
                     </div>
-                  </div>
-                  <div
-                    title={t("addArea")}
-                    className="header_icon"
-                    data-bs-toggle="modal"
-                    data-bs-target="#areaModal"
-                  >
-                    <GeoAlt />
+                    <div
+                      title={t("addArea")}
+                      className="header_icon"
+                      data-bs-toggle="modal"
+                      data-bs-target="#areaModal"
+                    >
+                      <GeoAlt />
+                    </div>
                   </div>
                 </div>
               </FourGround>

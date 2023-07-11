@@ -548,7 +548,7 @@
   "staffDelete": "Delete Staff",
   "count": "Count",
   "basic": "Basic",
-  "monthlyFee": "Monthly Fee ",
+  "monthlyFee": "Monthly Fee",
   "bandwidth": "BandWidth",
   "totalMonthlyBillCollect": "Collect Bill",
   "billCollected": "Bill Collected",
@@ -816,5 +816,7 @@
   "totalAmount": "Total Amount",
   "deleteCustomerInvoice": "Want to delete customer bill invoice?",
   "promiseDateChange": "Promise Date Change",
-  "changedCustomer": "Changed Customer"
+  "changedCustomer": "Changed Customer",
+  "businessBalance": "Business Balance",
+  "packageSetting": "Package Setting"
 }

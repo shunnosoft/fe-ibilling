@@ -45,16 +45,20 @@ const Paid = ({ ispOwnerId, month, year, status }) => {
         accessor: "customerId",
       },
       {
-        width: "9%",
+        width: "8%",
         Header: t("name"),
         accessor: "name",
       },
       {
-        width: "9%",
+        width: "8%",
         Header: t("PPPoE"),
         accessor: "pppoe.name",
       },
-
+      {
+        width: "8%",
+        Header: t("mobile"),
+        accessor: "mobile",
+      },
       {
         width: "8%",
         Header: t("status"),
@@ -64,7 +68,7 @@ const Paid = ({ ispOwnerId, month, year, status }) => {
         },
       },
       {
-        width: "9%",
+        width: "8%",
         Header: t("paymentStatus"),
         accessor: "paymentStatus",
         Cell: ({ cell: { value } }) => {
@@ -72,7 +76,7 @@ const Paid = ({ ispOwnerId, month, year, status }) => {
         },
       },
       {
-        width: "9%",
+        width: "8%",
         Header: t("package"),
         accessor: "pppoe.profile",
       },
@@ -82,12 +86,12 @@ const Paid = ({ ispOwnerId, month, year, status }) => {
         accessor: "monthlyFee",
       },
       {
-        width: "9%",
+        width: "8%",
         Header: t("balance"),
         accessor: "balance",
       },
       {
-        width: "11%",
+        width: "10%",
         Header: t("bill"),
         accessor: "billingCycle",
         Cell: ({ cell: { value } }) => {
