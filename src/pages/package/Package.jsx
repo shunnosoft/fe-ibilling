@@ -146,9 +146,12 @@ export default function Package() {
         <div className="container-fluied collector">
           <div className="container">
             <FontColor>
-              <div className="collectorTitle d-flex justify-content-between px-5">
+              <div className="collectorTitle d-flex justify-content-between px-4">
                 <div className="d-flex">
                   <div>{t("package")}</div>
+                </div>
+
+                <div className="d-flex justify-content-center align-items-centers">
                   <div className="reloadBtn">
                     {isLoading ? (
                       <Loader></Loader>
@@ -158,18 +161,18 @@ export default function Package() {
                       ></ArrowClockwise>
                     )}
                   </div>
-                </div>
 
-                {role === "ispOwner" && (
-                  <div
-                    title={t("addPackage")}
-                    className="header_icon"
-                    data-bs-toggle="modal"
-                    data-bs-target="#createPackage"
-                  >
-                    <Plus />
-                  </div>
-                )}
+                  {role === "ispOwner" && (
+                    <div
+                      title={t("addPackage")}
+                      className="header_icon"
+                      data-bs-toggle="modal"
+                      data-bs-target="#createPackage"
+                    >
+                      <Plus />
+                    </div>
+                  )}
+                </div>
               </div>
 
               <FourGround>

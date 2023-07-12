@@ -30,7 +30,10 @@ import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { badge } from "../../components/common/Utils";
 import ReactToPrint from "react-to-print";
 import IndeterminateCheckbox from "../../components/table/bulkCheckbox";
-import { getSubAreasApi } from "../../features/actions/customerApiCall";
+import {
+  getPoleBoxApi,
+  getSubAreasApi,
+} from "../../features/actions/customerApiCall";
 import {
   fetchMikrotik,
   getArea,
@@ -139,6 +142,9 @@ const PPPOECustomer = () => {
     (state) => state.package.packages
   );
 
+  //get all pole Box
+  const poleBox = useSelector((state) => state.area?.poleBox);
+
   //component states
   const [loading, setLoading] = useState(false);
 
@@ -184,6 +190,9 @@ const PPPOECustomer = () => {
   // Single area state
   const [areaId, setAreaId] = useState("");
 
+  // single subArea state
+  const [subAreaId, setSubAreaId] = useState("");
+
   // mikrotik package state
   const [mikrotikPackages, setMikrotikPackages] = useState([]);
 
@@ -203,6 +212,7 @@ const PPPOECustomer = () => {
     partialPayment: "",
     area: "",
     subArea: "",
+    poleBox: "",
     package: "",
     mikrotik: "",
     freeUser: "",
@@ -216,6 +226,9 @@ const PPPOECustomer = () => {
 
   //bulk menu show and hide
   const [isMenuOpen, setMenuOpen] = useState(false);
+
+  // pole box filter loding
+  const [isLoadingPole, setIsLoadingPole] = useState(false);
 
   //initial api calls
   useEffect(() => {
@@ -241,6 +254,9 @@ const PPPOECustomer = () => {
         getCollector(dispatch, ispOwner, setCollectorLoading);
       role === "ispOwner" && getManger(dispatch, ispOwner);
     }
+
+    if (poleBox.length === 0)
+      getPoleBoxApi(dispatch, ispOwner, setIsLoadingPole);
 
     // set initial state for print oprions
     const lang = localStorage.getItem("netFee:lang");
@@ -310,6 +326,7 @@ const PPPOECustomer = () => {
       const {
         area,
         subArea,
+        poleBox,
         status,
         mikrotik,
         paymentStatus,
@@ -356,6 +373,7 @@ const PPPOECustomer = () => {
       const conditions = {
         area: area ? allSub.some((item) => item.id === c.subArea) : true,
         subArea: subArea ? c.subArea === subArea : true,
+        poleBox: poleBox ? c.poleBox === poleBox : true,
         status: status ? c.status === status : true,
         paid: paymentStatus ? c.paymentStatus === "paid" : true,
         unpaid: paymentStatus
@@ -400,6 +418,9 @@ const PPPOECustomer = () => {
       isPass = conditions["area"];
       if (!isPass) return acc;
       isPass = conditions["subArea"];
+      if (!isPass) return acc;
+
+      isPass = conditions["poleBox"];
       if (!isPass) return acc;
 
       isPass = conditions["status"];
@@ -1005,6 +1026,7 @@ const PPPOECustomer = () => {
       isVisible: true,
       disabled: false,
       onChange: (e) => {
+        setSubAreaId(e.target.value);
         setFilterOption({
           ...filterOptions,
           subArea: e.target.value,
@@ -1012,6 +1034,24 @@ const PPPOECustomer = () => {
       },
       options: subAreas.filter((item) => item?.area === areaId),
       firstOptions: t("subArea"),
+      textAccessor: "name",
+      valueAccessor: "id",
+    },
+    {
+      name: "poleBox",
+      type: "select",
+      id: "poleBox",
+      value: filterOptions.poleBox,
+      isVisible: bpSettings?.poleBox,
+      disabled: false,
+      onChange: (e) => {
+        setFilterOption({
+          ...filterOptions,
+          poleBox: e.target.value,
+        });
+      },
+      options: poleBox.filter((item) => item?.subArea === subAreaId),
+      firstOptions: t("poleBox"),
       textAccessor: "name",
       valueAccessor: "id",
     },

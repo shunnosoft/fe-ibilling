@@ -28,11 +28,11 @@
 }
 
 .header_icon {
-  width: 46px;
-  height: 35px;
-  background-color: #fcf2f2 !important;
-  color: #04a753 !important;
-  border-radius: 9px;
+  width: 50px;
+  height: 38px;
+  color: var(--primaryColor);
+  background: white;
+  border-radius: 7px;
   cursor: pointer;
   display: flex;
   align-items: center;

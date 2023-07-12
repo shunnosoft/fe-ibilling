@@ -1,4 +1,10 @@
-import React, { useEffect, useState, useRef, useCallback, useMemo } from "react";
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useCallback,
+  useMemo,
+} from "react";
 import "../collector/collector.css";
 import moment from "moment";
 import { CSVLink } from "react-csv";
@@ -119,6 +125,9 @@ export default function Customer() {
   // get all subAreas
   const storeSubArea = useSelector((state) => state.area?.subArea);
 
+  //get all pole Box
+  const poleBox = useSelector((state) => state.area?.poleBox);
+
   //declare local state
   const [isLoading, setIsloading] = useState(false);
   const [customerLoading, setCustomerLoading] = useState(false);
@@ -144,6 +153,7 @@ export default function Customer() {
     paymentStatus: "",
     area: "",
     subArea: "",
+    poleBox: "",
     package: "",
     mikrotik: "",
     freeUser: "",
@@ -163,6 +173,12 @@ export default function Customer() {
 
   // customers number update or delete modal show state
   const [numberModalShow, setNumberModalShow] = useState(false);
+
+  // pole box filter loding
+  const [isLoadingPole, setIsLoadingPole] = useState(false);
+
+  // subArea current poleBox state
+  const [currentPoleBox, setCurrentPoleBox] = useState([]);
 
   useEffect(() => {
     if (role === "collector") {
@@ -392,7 +408,8 @@ export default function Customer() {
     if (allArea.length === 0) getArea(dispatch, ispOwner, setIsloading);
     // get sub area api
     getSubAreasApi(dispatch, ispOwner);
-    getPoleBoxApi(dispatch, ispOwner, setIsloading);
+    if (poleBox.length === 0)
+      getPoleBoxApi(dispatch, ispOwner, setIsLoadingPole);
 
     if (role !== "collector") {
       if (collectors.length === 0)
@@ -407,6 +424,7 @@ export default function Customer() {
       const {
         area,
         subArea,
+        poleBox,
         status,
         mikrotik,
         paymentStatus,
@@ -449,6 +467,7 @@ export default function Customer() {
       const conditions = {
         area: area ? getArea.subAreas.some((item) => item === c.subArea) : true,
         subArea: subArea ? c.subArea === subArea : true,
+        poleBox: poleBox ? c.poleBox === poleBox : true,
         status: status ? c.status === status : true,
         paid: paymentStatus ? c.paymentStatus === "paid" : true,
         unpaid: paymentStatus
@@ -493,6 +512,9 @@ export default function Customer() {
       isPass = conditions["area"];
       if (!isPass) return acc;
       isPass = conditions["subArea"];
+      if (!isPass) return acc;
+
+      isPass = conditions["poleBox"];
       if (!isPass) return acc;
 
       isPass = conditions["status"];
@@ -544,6 +566,8 @@ export default function Customer() {
     setCustomers1(cus);
   };
   const onChangeSubArea = (id) => {
+    const subAreaPoleBox = poleBox?.filter((val) => val.subArea === id);
+    setCurrentPoleBox(subAreaPoleBox);
     setCusSearch(id);
   };
 
@@ -1288,6 +1312,34 @@ export default function Customer() {
                                 </option>
                               ))}
                             </select>
+
+                            <select
+                              className="form-select shadow-none"
+                              onChange={(e) => {
+                                setFilterOption({
+                                  ...filterOptions,
+                                  poleBox: e.target.value,
+                                });
+                              }}
+                            >
+                              <option
+                                selected={filterOptions.poleBox === ""}
+                                value=""
+                                defaultValue
+                              >
+                                {t("poleBox")}
+                              </option>
+                              {currentPoleBox?.map((pol, key) => (
+                                <option
+                                  selected={filterOptions.poleBox === pol.id}
+                                  key={key}
+                                  value={pol.id}
+                                >
+                                  {pol.name}
+                                </option>
+                              ))}
+                            </select>
+
                             <select
                               className="form-select shadow-none"
                               onChange={(e) => {
@@ -1544,7 +1596,7 @@ export default function Customer() {
                       </Accordion.Item>
                     </Accordion>
 
-                    <div className="collectorWrapper">
+                    <div className="collectorWrapper pb-2">
                       <div style={{ display: "none" }}>
                         <PrintCustomer
                           filterData={filterData}
