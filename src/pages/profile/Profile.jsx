@@ -387,6 +387,7 @@ export default function Profile() {
                       <div className="collectorWrapper overflow-hidden">
                         <div className="profileWrapper">
                           <QrCode
+                            size={290}
                             ispInfo={{
                               company: currentUser?.company,
                               mobile: currentUser?.mobile,

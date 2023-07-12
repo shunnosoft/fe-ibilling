@@ -3,7 +3,7 @@ import QRCode from "qrcode.react";
 import { useTranslation } from "react-i18next";
 import { ToastContainer } from "react-toastify";
 
-const QrCode = ({ ispInfo }) => {
+const QrCode = ({ ispInfo, size }) => {
   const { t } = useTranslation();
 
   const downloadQRCode = () => {
@@ -21,21 +21,20 @@ const QrCode = ({ ispInfo }) => {
   };
 
   return (
-    <div>
+    <div className="d-flex flex-column align-items-center">
       <QRCode
         id="qr-gen"
         value={`https://netfeebd.com/isp/${ispInfo.netFeeId}`}
-        size={290}
+        size={size}
         level={"H"}
         includeMargin={true}
       />
 
-      <button
-        class="btn btn-primary d-block mb-3 ms-4"
-        onClick={downloadQRCode}
-      >
-        {t("downloadQRCode")}
-      </button>
+      <div>
+        <button class="btn btn-primary m-3" onClick={downloadQRCode}>
+          {t("downloadQRCode")}
+        </button>
+      </div>
     </div>
   );
 };
