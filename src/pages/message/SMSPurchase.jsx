@@ -11,33 +11,55 @@ const SMSPurchase = ({ show, setShow }) => {
   // modal close handler
   const handleClose = () => setShow(false);
 
+  //user role
   const userRole = useSelector((state) => state.persistedReducer.auth.role);
+
+  //user Data
   const userData = useSelector((state) =>
     userRole === "manager"
       ? state.persistedReducer.auth.ispOwnerData
       : state.persistedReducer.auth.userData
   );
+
+  //states
   const [isLoading, setIsloading] = useState(false);
 
   const [amount, setAmount] = useState(100);
 
   const [count, setCount] = useState(Number(amount) / userData.smsRate);
+
   const [messageType, setMessageType] = useState(
     "nonMasking" || "masking" || "fixedNumber"
   );
 
+  //SMS count function
   const changeHandler = (numOfSms) => {
     if (messageType === "nonMasking") {
-      setAmount(userData.smsRate * numOfSms);
+      setAmount(Math.ceil(userData.smsRate * numOfSms));
     } else if (messageType === "masking") {
-      setAmount(userData.maskingSmsRate * numOfSms);
+      setAmount(Math.ceil(userData.maskingSmsRate * numOfSms));
     } else if (messageType === "fixedNumber") {
-      setAmount(userData.fixedNumberSmsRate * numOfSms);
+      setAmount(Math.ceil(userData.fixedNumberSmsRate * numOfSms));
     }
 
     setCount(numOfSms);
   };
 
+  //Money count function
+  const tkHandler = (money) => {
+    money = Math.ceil(money);
+    if (messageType === "nonMasking") {
+      setCount(money / userData.smsRate);
+    } else if (messageType === "masking") {
+      setCount(money / userData.maskingSmsRate);
+    } else if (messageType === "fixedNumber") {
+      setCount(money / userData.fixedNumberSmsRate);
+    }
+
+    setAmount(money);
+  };
+
+  //form submit handler
   const submitHandler = (e) => {
     if (count * userData.smsRate < 100) {
       alert(t("unsuccessSMSalertPurchageModal"));
@@ -58,11 +80,11 @@ const SMSPurchase = ({ show, setShow }) => {
   useEffect(() => {
     // message purchase
     if (messageType === "nonMasking") {
-      setAmount(userData.smsRate * count);
+      setAmount(Math.ceil(userData.smsRate * count));
     } else if (messageType === "masking") {
-      setAmount(userData.maskingSmsRate * count);
+      setAmount(Math.ceil(userData.maskingSmsRate * count));
     } else if (messageType === "fixedNumber") {
-      setAmount(userData.fixedNumberSmsRate * count);
+      setAmount(Math.ceil(userData.fixedNumberSmsRate * count));
     }
   }, [messageType]);
 
@@ -146,6 +168,17 @@ const SMSPurchase = ({ show, setShow }) => {
                 type="number"
                 value={count}
                 min={250}
+              />
+            </div>
+
+            <div className="form-group mt-3">
+              <label> {t("tk")} </label>
+              <input
+                onChange={(e) => tkHandler(e.target.value)}
+                className="form-control"
+                type="number"
+                value={amount ? amount : ""}
+                min={63}
               />
             </div>
           </form>
