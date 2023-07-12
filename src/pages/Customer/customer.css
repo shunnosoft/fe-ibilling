@@ -220,6 +220,8 @@
 
 .prin_td {
   font-size: 10px !important;
+  color: black;
+  font-weight: 500;
 }
 
 .bulk_operation_button {

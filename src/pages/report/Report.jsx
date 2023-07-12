@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   ArrowClockwise,
   FileExcelFill,
+  FilterCircle,
   PenFill,
   PrinterFill,
   ThreeDots,
@@ -37,6 +38,7 @@ import FormatNumber from "../../components/common/NumberFormat";
 import DatePicker from "react-datepicker";
 import { getSubAreasApi } from "../../features/actions/customerApiCall";
 import { managerFetchSuccess } from "../../features/managerSlice";
+import { Accordion } from "react-bootstrap";
 export default function Report() {
   const { t } = useTranslation();
   const componentRef = useRef();
@@ -105,6 +107,9 @@ export default function Report() {
   const [collectedBy, setCollectedBy] = useState();
   const [billType, setBillType] = useState("");
   const [medium, setMedium] = useState("");
+
+  // filter Accordion handle state
+  const [activeKeys, setActiveKeys] = useState("");
 
   //reload handler
   const reloadHandler = () => {
@@ -290,7 +295,7 @@ export default function Report() {
     // setMainData2(arr);
   };
 
-  const addAllBills = useCallback(() => {
+  const addAllBills = useMemo(() => {
     var count = 0;
     let discount = 0;
     mainData.forEach((item) => {
@@ -363,11 +368,11 @@ export default function Report() {
       },
       {
         width: "10%",
-        Header: t("PPPoEName"),
+        Header: t("pppoe"),
         accessor: "customer.pppoe.name",
       },
       {
-        width: "8%",
+        width: "9%",
         Header: t("package"),
         accessor: "package",
       },
@@ -392,12 +397,12 @@ export default function Report() {
         accessor: "medium",
       },
       {
-        width: "8%",
+        width: "9%",
         Header: t("collector"),
         accessor: "name",
       },
       {
-        width: "10%",
+        width: "8%",
         Header: t("note"),
         accessor: (data) => {
           return {
@@ -496,14 +501,25 @@ export default function Report() {
   );
 
   const customComponent = (
-    <div style={{ fontSize: "18px", display: "flex" }}>
-      {(userRole === "ispOwner" || permissions?.dashboardCollectionData) && (
+    <div
+      className="text-center"
+      style={{ fontSize: "18px", fontWeight: "500", display: "flex" }}
+    >
+      {(userRole === "ispOwner" || permissions?.dashboardCollectionData) &&
+        addAllBills.count > 0 && (
+          <div>
+            {t("totalBill")}
+            :-৳
+            {FormatNumber(addAllBills.count)}
+          </div>
+        )}
+      &nbsp;&nbsp;
+      {addAllBills.discount > 0 && (
         <div>
-          {t("totalBill")} {FormatNumber(addAllBills().count)} {t("tk")}{" "}
-          &nbsp;&nbsp;
+          {t("discount")}:-৳
+          {FormatNumber(addAllBills.discount)}
         </div>
       )}
-      {t("discount")}: {FormatNumber(addAllBills().discount)} {t("tk")}
     </div>
   );
 
@@ -517,9 +533,24 @@ export default function Report() {
           <div className="container">
             <FontColor>
               <FourGround>
-                <div className="collectorTitle d-flex justify-content-between px-5">
+                <div className="collectorTitle d-flex justify-content-between px-4">
                   <div className="d-flex">
                     <div>{t("billReport")}</div>
+                  </div>
+                  <div className="d-flex justify-content-center">
+                    <div
+                      onClick={() => {
+                        if (!activeKeys) {
+                          setActiveKeys("filter");
+                        } else {
+                          setActiveKeys("");
+                        }
+                      }}
+                      title={t("filter")}
+                    >
+                      <FilterCircle className="addcutmButton" />
+                    </div>
+
                     <div className="reloadBtn">
                       {isLoading ? (
                         <Loader />
@@ -529,8 +560,7 @@ export default function Report() {
                         ></ArrowClockwise>
                       )}
                     </div>
-                  </div>
-                  <div className="report_bill d-flex">
+
                     <div className="addAndSettingIcon">
                       <CSVLink
                         data={reportForCsVTableInfo}
@@ -559,139 +589,144 @@ export default function Report() {
               </FourGround>
 
               <FourGround>
-                <div className="collectorWrapper mt-2 py-2">
-                  <div className="addCollector">
-                    {/* filter selector */}
-                    <div className="selectFilteringg">
-                      <select
-                        className="form-select"
-                        onChange={(e) => onChangeArea(e.target.value)}
-                      >
-                        <option value={JSON.stringify({})} defaultValue>
-                          {t("allArea")}
-                        </option>
-                        {allArea.map((area, key) => (
-                          <option key={key} value={JSON.stringify(area)}>
-                            {area.name}
-                          </option>
-                        ))}
-                      </select>
-                      <select
-                        className="form-select mx-2"
-                        onChange={(e) => onChangeSubArea(e.target.value)}
-                      >
-                        <option value="" defaultValue>
-                          {t("subArea")}
-                        </option>
-                        {subareas?.map((sub, key) => (
-                          <option key={key} value={sub.id}>
-                            {sub.name}
-                          </option>
-                        ))}
-                      </select>
-
-                      {userRole !== "collector" && (
-                        <select
-                          className="form-select"
-                          onChange={(e) => setCollectedBy(e.target.value)}
-                        >
-                          <option value="" defaultValue>
-                            {t("all collector")}
-                          </option>
-                          {collectors?.map((c, key) => (
-                            <option key={key} value={c.id}>
-                              {c.name}
+                <div className="mt-2">
+                  <Accordion alwaysOpen activeKey={activeKeys}>
+                    <Accordion.Item eventKey="filter">
+                      <Accordion.Body>
+                        <div className="selectFilteringg">
+                          <select
+                            className="form-select"
+                            onChange={(e) => onChangeArea(e.target.value)}
+                          >
+                            <option value={JSON.stringify({})} defaultValue>
+                              {t("allArea")}
                             </option>
-                          ))}
-                          <option value="other">Other</option>
-                        </select>
-                      )}
+                            {allArea.map((area, key) => (
+                              <option key={key} value={JSON.stringify(area)}>
+                                {area.name}
+                              </option>
+                            ))}
+                          </select>
+                          <select
+                            className="form-select mx-2"
+                            onChange={(e) => onChangeSubArea(e.target.value)}
+                          >
+                            <option value="" defaultValue>
+                              {t("subArea")}
+                            </option>
+                            {subareas?.map((sub, key) => (
+                              <option key={key} value={sub.id}>
+                                {sub.name}
+                              </option>
+                            ))}
+                          </select>
 
-                      <select
-                        className="form-select mx-2"
-                        onChange={(e) => setBillType(e.target.value)}
-                      >
-                        <option value="" defaultValue>
-                          {t("billType")}
-                        </option>
+                          {userRole !== "collector" && (
+                            <select
+                              className="form-select"
+                              onChange={(e) => setCollectedBy(e.target.value)}
+                            >
+                              <option value="" defaultValue>
+                                {t("all collector")}
+                              </option>
+                              {collectors?.map((c, key) => (
+                                <option key={key} value={c.id}>
+                                  {c.name}
+                                </option>
+                              ))}
+                              <option value="other">Other</option>
+                            </select>
+                          )}
 
-                        <option value="connectionFee">
-                          {t("connectionFee")}
-                        </option>
-                        <option value="bill"> {t("monthBill")} </option>
-                      </select>
-                      <select
-                        className="form-select"
-                        onChange={(e) => setMedium(e.target.value)}
-                      >
-                        <option value="" selected>
-                          {t("medium")}
-                        </option>
+                          <select
+                            className="form-select mx-2"
+                            onChange={(e) => setBillType(e.target.value)}
+                          >
+                            <option value="" defaultValue>
+                              {t("billType")}
+                            </option>
 
-                        <option value="cash">{t("handCash")}</option>
-                        <option value="onlinePayment">
-                          {t("onlinePayment")}
-                        </option>
-                        <option value="bKash"> {t("bKash")} </option>
-                        <option value="rocket"> {t("rocket")} </option>
-                        <option value="nagad"> {t("nagad")} </option>
-                        <option value="others"> {t("others")} </option>
-                      </select>
+                            <option value="connectionFee">
+                              {t("connectionFee")}
+                            </option>
+                            <option value="bill"> {t("monthBill")} </option>
+                          </select>
+                          <select
+                            className="form-select"
+                            onChange={(e) => setMedium(e.target.value)}
+                          >
+                            <option value="" selected>
+                              {t("medium")}
+                            </option>
 
-                      {(userRole === "ispOwner" ||
-                        permissions?.dashboardCollectionData) && (
-                        <>
-                          <div className="ms-2">
-                            <DatePicker
-                              className="form-control w-140 mt-2"
-                              selected={dateStart}
-                              onChange={(date) => setStartDate(date)}
-                              dateFormat="MMM dd yyyy"
-                              placeholderText={t("selectBillDate")}
-                            />
+                            <option value="cash">{t("handCash")}</option>
+                            <option value="onlinePayment">
+                              {t("onlinePayment")}
+                            </option>
+                            <option value="bKash"> {t("bKash")} </option>
+                            <option value="rocket"> {t("rocket")} </option>
+                            <option value="nagad"> {t("nagad")} </option>
+                            <option value="others"> {t("others")} </option>
+                          </select>
+
+                          {(userRole === "ispOwner" ||
+                            permissions?.dashboardCollectionData) && (
+                            <>
+                              <div className="ms-2">
+                                <DatePicker
+                                  className="form-control w-140 mt-2"
+                                  selected={dateStart}
+                                  onChange={(date) => setStartDate(date)}
+                                  dateFormat="MMM dd yyyy"
+                                  placeholderText={t("selectBillDate")}
+                                />
+                              </div>
+
+                              <div className="mx-2">
+                                <DatePicker
+                                  className="form-control w-140 mt-2"
+                                  selected={dateEnd}
+                                  onChange={(date) => setEndDate(date)}
+                                  dateFormat="MMM dd yyyy"
+                                  placeholderText={t("selectBillDate")}
+                                />
+                              </div>
+                            </>
+                          )}
+
+                          <div>
+                            <button
+                              className="btn btn-outline-primary w-110 mt-2"
+                              type="button"
+                              onClick={onClickFilter}
+                            >
+                              {t("filter")}
+                            </button>
                           </div>
-
-                          <div className="mx-2">
-                            <DatePicker
-                              className="form-control w-140 mt-2"
-                              selected={dateEnd}
-                              onChange={(date) => setEndDate(date)}
-                              dateFormat="MMM dd yyyy"
-                              placeholderText={t("selectBillDate")}
-                            />
-                          </div>
-                        </>
-                      )}
-
-                      <div>
-                        <button
-                          className="btn btn-outline-primary w-110 mt-2"
-                          type="button"
-                          onClick={onClickFilter}
-                        >
-                          {t("filter")}
-                        </button>
+                        </div>
+                      </Accordion.Body>
+                    </Accordion.Item>
+                  </Accordion>
+                  <div className="collectorWrapper pb-2">
+                    <div className="addCollector">
+                      <div style={{ display: "none" }}>
+                        <PrintReport
+                          filterData={filterData}
+                          currentCustomers={mainData}
+                          ref={componentRef}
+                          status="report"
+                        />
                       </div>
                     </div>
-                    {/* print report */}
-                    <div style={{ display: "none" }}>
-                      <PrintReport
-                        filterData={filterData}
-                        currentCustomers={mainData}
-                        ref={componentRef}
-                        status="report"
-                      />
+
+                    <div className="table-section">
+                      <Table
+                        isLoading={isLoading}
+                        customComponent={customComponent}
+                        columns={columns}
+                        data={mainData}
+                      ></Table>
                     </div>
-                    {/* print report end*/}
-                  </div>
-                  {/* table */}
-                  <div className="table-section">
-                    <Table
-                      isLoading={isLoading}
-                      customComponent={customComponent}
-                      columns={columns}
-                      data={mainData}
-                    ></Table>
                   </div>
                 </div>
               </FourGround>

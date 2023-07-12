@@ -8,6 +8,7 @@ import {
 } from "react-bootstrap-icons";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 export default function ActionButton({
   getSpecificArea,
@@ -23,6 +24,10 @@ export default function ActionButton({
       <div className="dropdown">
         <ThreeDots
           className="dropdown-toggle ActionDots"
+          onClick={() =>
+            allMikrotiks.find((val) => val.name.includes(data?.name)) &&
+            toast.warn(t("doNotAreaDeleteAndUpdate"))
+          }
           id="areaDropdown"
           type="button"
           data-bs-toggle="dropdown"

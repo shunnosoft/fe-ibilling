@@ -135,7 +135,7 @@ export default function PoleBox({ areaId, poleShow, setPoleShow }) {
         <ModalBody>
           <div className="container-fluied collector">
             <div className="container">
-              <div className="collectorTitle d-flex justify-content-between align-items-center px-5">
+              <div className="collectorTitle d-flex justify-content-between align-items-center px-4">
                 <div>{t("poleBox")}</div>
                 <div
                   title={t("addPoleBox")}

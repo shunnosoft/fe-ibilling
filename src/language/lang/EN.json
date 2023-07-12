@@ -818,5 +818,7 @@
   "promiseDateChange": "Promise Date Change",
   "changedCustomer": "Changed Customer",
   "businessBalance": "Business Balance",
-  "packageSetting": "Package Setting"
+  "packageSetting": "Package Setting",
+  "doNotAreaDeleteAndUpdate": "Cannot delete microtic area and subArea",
+  "notFoundMobileNumber": "Customer mobile number not found"
 }

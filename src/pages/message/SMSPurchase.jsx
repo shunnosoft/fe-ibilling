@@ -5,14 +5,11 @@ import { useSelector } from "react-redux";
 import Loader from "../../components/common/Loader";
 import { purchaseSms } from "../../features/apiCalls";
 
-const SMSPurchase = ({ show, smsPurchase }) => {
+const SMSPurchase = ({ show, setShow }) => {
   const { t } = useTranslation();
 
-  // modal onHide true or false state
-  const [showIf, setShowIf] = useState(false);
-
   // modal close handler
-  const handleClose = () => setShowIf(false);
+  const handleClose = () => setShow(false);
 
   const userRole = useSelector((state) => state.persistedReducer.auth.role);
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
@@ -55,14 +52,6 @@ const SMSPurchase = ({ show, smsPurchase }) => {
   };
 
   useEffect(() => {
-    //modal onHide
-    if (show) {
-      setShowIf(show);
-    }
-    if (smsPurchase) {
-      setShowIf(smsPurchase);
-    }
-
     // message purchase
     if (messageType === "nonMasking") {
       setAmount(userData.smsRate * count);
@@ -71,15 +60,10 @@ const SMSPurchase = ({ show, smsPurchase }) => {
     } else if (messageType === "fixedNumber") {
       setAmount(userData.fixedNumberSmsRate * count);
     }
-  }, [show, smsPurchase, messageType]);
+  }, [messageType]);
 
   return (
-    <Modal
-      show={showIf}
-      onHide={handleClose}
-      backdrop="static"
-      keyboard={false}
-    >
+    <Modal show={show} onHide={handleClose} backdrop="static" keyboard={false}>
       <Modal.Header closeButton>
         <Modal.Title> {t("smsPurchageBoard")}</Modal.Title>
       </Modal.Header>

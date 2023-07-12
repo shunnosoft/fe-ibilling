@@ -8,6 +8,7 @@ import {
   ChatText,
   CurrencyDollar,
   FileExcelFill,
+  FiletypeCsv,
   FilterCircle,
   GearFill,
   KeyFill,
@@ -504,15 +505,20 @@ const PPPOECustomer = () => {
 
   //custom table header component
   const customComponent = (
-    <div>
-      {dueMonthlyFee?.totalMonthlyFee > 0 < dueMonthlyFee?.totalSumDue && (
-        <div
-          className="text-center"
-          style={{ fontSize: "18px", fontWeight: "500", display: "flex" }}
-        >
-          {dueMonthlyFee?.totalMonthlyFee > 0 && t("monthlyFee")}:-৳
+    <div
+      className="text-center"
+      style={{ fontSize: "18px", fontWeight: "500", display: "flex" }}
+    >
+      {dueMonthlyFee?.totalMonthlyFee > 0 && (
+        <div>
+          {t("monthlyFee")}:-৳
           {FormatNumber(dueMonthlyFee.totalMonthlyFee)}
-          &nbsp;&nbsp; {dueMonthlyFee.totalSumDue > 0 && t("due")}:-৳
+        </div>
+      )}
+      &nbsp;&nbsp;
+      {dueMonthlyFee.totalSumDue > 0 && (
+        <div>
+          {t("due")}:-৳
           {FormatNumber(dueMonthlyFee.totalSumDue)}
         </div>
       )}
@@ -618,7 +624,7 @@ const PPPOECustomer = () => {
         Header: t("bill"),
         accessor: "billingCycle",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("MMM DD YYYY hh:mm A");
+          return moment(value).format("YYYY/MM/DD hh:mm A");
         },
       },
 
@@ -733,25 +739,24 @@ const PPPOECustomer = () => {
                   </li>
                 )}
 
-                {original.mobile &&
-                  (permission?.sendSMS || role !== "collector" ? (
-                    <li
-                      data-bs-toggle="modal"
-                      data-bs-target="#customerMessageModal"
-                      onClick={() => {
-                        getSpecificCustomer(original.id);
-                      }}
-                    >
-                      <div className="dropdown-item">
-                        <div className="customerAction">
-                          <ChatText />
-                          <p className="actionP">{t("message")}</p>
-                        </div>
+                {permission?.sendSMS || role !== "collector" ? (
+                  <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#customerMessageModal"
+                    onClick={() => {
+                      getSpecificCustomer(original.id);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <ChatText />
+                        <p className="actionP">{t("message")}</p>
                       </div>
-                    </li>
-                  ) : (
-                    ""
-                  ))}
+                    </div>
+                  </li>
+                ) : (
+                  ""
+                )}
                 {role === "ispOwner" &&
                   ispOwnerData?.bpSettings?.hasReseller && (
                     <li
@@ -1289,7 +1294,7 @@ const PPPOECustomer = () => {
                               headers={customerForCsVTableInfoHeader}
                               title="Customer Report"
                             >
-                              <FileExcelFill className="addcutmButton" />
+                              <FiletypeCsv className="addcutmButton" />
                             </CSVLink>
                           </div>
                           <div className="addAndSettingIcon">

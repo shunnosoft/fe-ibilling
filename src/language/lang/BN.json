@@ -824,5 +824,7 @@
   "promiseDateChange": "প্রমিজ তারিখ পরিবর্তন",
   "changedCustomer": "পরিবর্তিত গ্রাহক",
   "businessBalance": "ব্যবসায় ব্যালান্স",
-  "packageSetting": "প্যাকেজ সেটিং"
+  "packageSetting": "প্যাকেজ সেটিং",
+  "doNotAreaDeleteAndUpdate": "মাইক্রোটিক এরিয়া এবং সাব-এরিয়া মুছে ফেলা যাবে না!",
+  "notFoundMobileNumber": "গ্রাহকের মোবাইল নম্বর পাওয়া যায়নি"
 }
