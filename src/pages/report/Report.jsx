@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   ArrowClockwise,
   FileExcelFill,
+  FiletypeCsv,
   FilterCircle,
   PenFill,
   PrinterFill,
@@ -422,8 +423,8 @@ export default function Report() {
               </p>
               {value?.start && value?.end && (
                 <span className="badge bg-secondary">
-                  {moment(value.start).format("DD/MM/YY")}--
-                  {moment(value.end).format("DD/MM/YY")}
+                  {moment(value.start).format("YYYY/MM/DD")}
+                  {moment(value.end).format("YYYY/MM/DD")}
                 </span>
               )}
               <p>
@@ -452,7 +453,7 @@ export default function Report() {
         Header: t("date"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("MMM DD YYYY hh:mm a");
+          return moment(value).format("YYYY/MM/DD hh:mm a");
         },
       },
       {
@@ -568,7 +569,7 @@ export default function Report() {
                         headers={reportForCsVTableInfoHeader}
                         title="Bill Report"
                       >
-                        <FileExcelFill className="addcutmButton" />
+                        <FiletypeCsv className="addcutmButton" />
                       </CSVLink>
                     </div>
 
@@ -717,15 +718,15 @@ export default function Report() {
                           status="report"
                         />
                       </div>
-                    </div>
 
-                    <div className="table-section">
-                      <Table
-                        isLoading={isLoading}
-                        customComponent={customComponent}
-                        columns={columns}
-                        data={mainData}
-                      ></Table>
+                      <div className="table-section">
+                        <Table
+                          isLoading={isLoading}
+                          customComponent={customComponent}
+                          columns={columns}
+                          data={mainData}
+                        ></Table>
+                      </div>
                     </div>
                   </div>
                 </div>

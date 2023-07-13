@@ -66,6 +66,20 @@ const PrintReport = React.forwardRef((props, ref) => {
           </ul>
         )}
 
+        {status === "collection" && (
+          <ul className="d-flex justify-content-around filter_list">
+            <li>
+              {t("reseller")} : {filterData.reseller}
+            </li>
+            <li>
+              {t("medium")} : {filterData.medium}
+            </li>
+            <li>
+              {t("date")} : {startDate} - {endDate}
+            </li>
+          </ul>
+        )}
+
         <ul className="d-flex justify-content-center filter_list">
           <li>
             {t("totalData")} {currentCustomers.length}

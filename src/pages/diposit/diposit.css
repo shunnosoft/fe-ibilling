@@ -104,3 +104,10 @@
     margin-top: 10px;
   }
 }
+
+.accordionBorder {
+  border: none !important;
+}
+.accordionPadding {
+  padding: 0% !important;
+}
