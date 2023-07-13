@@ -567,19 +567,20 @@ export default function Diposit() {
   // send sum deposit of table header
   const depositReportSum = (
     <div style={{ fontSize: "18px", display: "flex", alignItems: "center" }}>
-      {(userRole === "ispOwner" || userRole === "manager") && (
-        <div style={{ marginRight: "10px" }}>
-          {t("totalDiposit")} {getTotalDeposit()} {t("tk")}
-        </div>
-      )}
+      {(userRole === "ispOwner" || userRole === "manager") &&
+        getTotalDeposit() > 0 && (
+          <div style={{ marginRight: "10px" }}>
+            {t("totalDiposit")}:-৳{getTotalDeposit()}
+          </div>
+        )}
     </div>
   );
 
   const ownDepositSum = (
     <div style={{ fontSize: "18px", display: "flex", alignItems: "center" }}>
-      {userRole !== "ispOwner" && (
+      {userRole !== "ispOwner" && getTotalOwnDeposit() > 0 && (
         <div>
-          {t("newDiposit")} {getTotalOwnDeposit()} {t("tk")}
+          {t("newDiposit")}:-৳{getTotalOwnDeposit()}
         </div>
       )}
     </div>

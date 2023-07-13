@@ -8,10 +8,16 @@ import { useTranslation } from "react-i18next";
 const PrintCustomer = React.forwardRef((props, ref) => {
   const { t } = useTranslation();
   const { currentCustomers, filterData, printOptions } = props;
-  const ispOwnerData = useSelector(
-    (state) => state.persistedReducer.auth?.userData
-  );
 
+  //user role
+  const userRole = useSelector((state) => state.persistedReducer.auth.role);
+
+  //user Data
+  const userData = useSelector((state) =>
+    userRole === "manager"
+      ? state.persistedReducer.auth.ispOwnerData
+      : state.persistedReducer.auth.userData
+  );
   //total monthly fee and due calculation
   const monthlyFee = useMemo(() => {
     let totalMonthlyFee = 0;
@@ -36,11 +42,11 @@ const PrintCustomer = React.forwardRef((props, ref) => {
         </div> */}
         <div className="details_side">
           <p>
-            {t("companyName")} {ispOwnerData.company}
+            {t("companyName")} {userData.company}
           </p>
-          {ispOwnerData.address && (
+          {userData?.address && (
             <p>
-              {t("address")} {ispOwnerData?.address}
+              {t("address")} {userData?.address}
             </p>
           )}
         </div>

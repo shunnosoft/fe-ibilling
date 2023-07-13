@@ -348,17 +348,25 @@ const ResellerCollection = () => {
     totalBill: currentData.reduce((prev, current) => prev + current.amount, 0),
   };
 
-  const addAllBills = useCallback(() => {
+  const addAllBills = useMemo(() => {
     var count = 0;
     currentData.forEach((item) => {
       count = count + item.amount;
     });
-    return FormatNumber(count);
+    return { count };
   }, [currentData]);
 
   const customComponent = (
-    <div style={{ fontSize: "18px" }}>
-      {t("totalBill")} {addAllBills()} {t("tk")}
+    <div
+      className="text-center"
+      style={{ fontSize: "18px", fontWeight: "500", display: "flex" }}
+    >
+      {addAllBills?.count > 0 && (
+        <div>
+          {t("totalBill")}:-৳
+          {FormatNumber(addAllBills.count)}
+        </div>
+      )}
     </div>
   );
 
