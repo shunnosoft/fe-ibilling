@@ -49,11 +49,11 @@ const SMSPurchase = ({ show, setShow }) => {
   const tkHandler = (money) => {
     money = Math.ceil(money);
     if (messageType === "nonMasking") {
-      setCount(money / userData.smsRate);
+      setCount(Math.ceil(money / userData.smsRate));
     } else if (messageType === "masking") {
-      setCount(money / userData.maskingSmsRate);
+      setCount(Math.ceil(money / userData.maskingSmsRate));
     } else if (messageType === "fixedNumber") {
-      setCount(money / userData.fixedNumberSmsRate);
+      setCount(Math.ceil(money / userData.fixedNumberSmsRate));
     }
 
     setAmount(money);
@@ -72,8 +72,9 @@ const SMSPurchase = ({ show, setShow }) => {
         type: "smsPurchase",
         smsPurchaseType: messageType,
       };
+      console.log(data);
 
-      purchaseSms(data, setIsloading);
+      //purchaseSms(data, setIsloading);
     }
   };
 
