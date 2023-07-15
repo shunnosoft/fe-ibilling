@@ -9,8 +9,8 @@ import { FtextField } from "../../../components/common/FtextField";
 import Loader from "../../../components/common/Loader";
 import { addSalaryApi, getStaffs } from "../../../features/apiCallStaff";
 import { useTranslation } from "react-i18next";
-import { toast } from "react-toastify";
 import { useEffect } from "react";
+import moment from "moment";
 
 export default function StaffSalaryPostModal({ staffId }) {
   const { t } = useTranslation();
@@ -20,6 +20,9 @@ export default function StaffSalaryPostModal({ staffId }) {
   );
 
   const [isLoading, setIsLoading] = useState(false);
+  const [newDate, setNewDate] = useState(
+    moment(new Date()).format("YYYY-MM-DD")
+  );
 
   const currentUser = useSelector(
     (state) => state.persistedReducer.auth.currentUser
@@ -37,15 +40,15 @@ export default function StaffSalaryPostModal({ staffId }) {
   // validator
   const salaryValidaiton = Yup.object({
     amount: Yup.string().required(t("enterAmount")),
-    date: Yup.string().required(t("date")),
     remarks: Yup.string(),
   });
 
   const staffSalaryHandler = (data, resetForm) => {
     const { remarks, amount } = data;
-    const date = data.date.split("-");
+    const date = newDate.split("-");
     const year = date[0];
     const month = date[1];
+
     const sendingData = {
       amount,
       remarks,
@@ -85,7 +88,6 @@ export default function StaffSalaryPostModal({ staffId }) {
               <Formik
                 initialValues={{
                   amount: "",
-                  date: "",
                   remarks: "",
                 }}
                 validationSchema={salaryValidaiton}
@@ -111,11 +113,17 @@ export default function StaffSalaryPostModal({ staffId }) {
                         name="amount"
                       />
 
-                      <FtextField
+                      <label className="form-control-label changeLabelFontColor">
+                        {t("selectMonthAndYear")}
+                      </label>
+
+                      <input
+                        className="form-control mb-3"
                         type="date"
-                        label={t("selectMonthAndYear")}
-                        name="date"
+                        value={newDate}
+                        onChange={(e) => setNewDate(e.target.value)}
                       />
+
                       <FtextField
                         type="text"
                         label={t("comment")}

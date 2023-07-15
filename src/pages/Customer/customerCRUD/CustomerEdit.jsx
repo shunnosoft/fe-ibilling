@@ -113,9 +113,18 @@ export default function CustomerEdit(props) {
     thana: "",
   });
 
-  // fix max promise date
-  let mxDate = new Date(data?.billingCycle);
-  mxDate.setDate(mxDate.getDate() + parseInt(20));
+  //last day of month calculation
+  let day = new Date(data?.billingCycle);
+  let lastDayOfMonth = new Date(day.getFullYear(), day.getMonth() + 1, 0);
+
+  let initialTime = new Date(data?.billingCycle);
+  initialTime.setHours("00");
+  initialTime.setMinutes("00");
+
+  //hour and minutes calculation
+  let lastTime = new Date(data?.billingCycle);
+  lastTime.setHours("18");
+  lastTime.setMinutes("00");
 
   useEffect(() => {
     if (data) setBillDate(new Date(data?.billingCycle));
@@ -328,7 +337,6 @@ export default function CustomerEdit(props) {
     if (!poleBoxIds) {
       delete mainData.poleBox;
     }
-
     editCustomer(dispatch, mainData, setIsloading);
   };
   const selectedSubArea = (e) => {
@@ -692,8 +700,11 @@ export default function CustomerEdit(props) {
                               onChange={(date) => setPromiseDate(date)}
                               dateFormat="MMM dd yyyy hh:mm a"
                               placeholderText={t("selectDate")}
+                              timeIntervals={60}
                               minDate={new Date(data?.billingCycle)}
-                              maxDate={mxDate}
+                              maxDate={lastDayOfMonth}
+                              minTime={initialTime}
+                              maxTime={lastTime}
                               showTimeSelect
                             />
                           </div>

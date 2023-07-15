@@ -850,6 +850,7 @@ export default function Message() {
                                   className="form-control"
                                   type="text"
                                   placeholder={t("title")}
+                                  maxlength="40"
                                 />
                               </div>
                               <div className="radioselect">

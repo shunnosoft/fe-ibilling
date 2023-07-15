@@ -14,8 +14,18 @@ const BulkPromiseDateEdit = ({ bulkCustomer, modalId }) => {
 
   const dispatch = useDispatch();
 
-  let mxDate = new Date();
-  mxDate.setDate(mxDate.getDate() + parseInt(20));
+  //last day of present month calculation
+  let day = new Date();
+  let lastDayOfMonth = new Date(day.getFullYear(), day.getMonth() + 1, 0);
+
+  //hour and minutes calculation
+  let initialTime = new Date();
+  initialTime.setHours("00");
+  initialTime.setMinutes("00");
+
+  let lastTime = new Date();
+  lastTime.setHours("18");
+  lastTime.setMinutes("00");
 
   const promiseDateHandler = (e) => {
     e.preventDefault();
@@ -39,10 +49,12 @@ const BulkPromiseDateEdit = ({ bulkCustomer, modalId }) => {
             onChange={(date) => setBillDate(date)}
             dateFormat="dd/MM/yyyy h:mm a"
             showTimeSelect
-            timeIntervals={1}
+            timeIntervals={60}
             placeholderText={t("selectDate")}
             minDate={new Date()}
-            maxDate={mxDate}
+            maxDate={lastDayOfMonth}
+            minTime={initialTime}
+            maxTime={lastTime}
           />
         </div>
 
