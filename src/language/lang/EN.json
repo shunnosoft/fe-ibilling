@@ -820,5 +820,6 @@
   "businessBalance": "Business Balance",
   "packageSetting": "Package Setting",
   "doNotAreaDeleteAndUpdate": "Cannot delete microtic area and subArea",
-  "notFoundMobileNumber": "Customer mobile number not found"
+  "notFoundMobileNumber": "Customer mobile number not found",
+  "rechargeYourCustomer": "Recharge your customer's monthly bill!"
 }

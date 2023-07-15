@@ -69,6 +69,7 @@ const PPPoE = () => {
 
   // user state
   let [allUsers, setAllUsers] = useState(allMikrotikUsers);
+  console.log(allUsers);
 
   // section show state
   const [showSection, setShowSection] = useState("PPPoEPackage");
@@ -261,7 +262,7 @@ const PPPoE = () => {
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        width: "11%",
+        width: "12%",
         Header: t("status"),
         accessor: "running",
         Cell: ({ row: { original } }) => (
@@ -275,17 +276,17 @@ const PPPoE = () => {
         ),
       },
       {
-        width: "20%",
+        width: "10%",
         Header: t("name"),
         accessor: "name",
       },
       {
-        width: "12%",
+        width: "20%",
         Header: t("package"),
         accessor: "profile",
       },
       {
-        width: "12%",
+        width: "10%",
         Header: "RX",
         accessor: "rxByte",
         Cell: ({ row: { original } }) => (
@@ -301,7 +302,7 @@ const PPPoE = () => {
         ),
       },
       {
-        width: "12%",
+        width: "10%",
         Header: "TX",
         accessor: "txByte",
         Cell: ({ row: { original } }) => (
@@ -317,9 +318,14 @@ const PPPoE = () => {
         ),
       },
       {
-        width: "25%",
+        width: "15%",
         Header: "Last Link Up Time",
         accessor: "lastLinkUpTime",
+      },
+      {
+        width: "15%",
+        Header: "Last Logged Out",
+        accessor: "lastLoggedOut",
       },
     ],
     [t]

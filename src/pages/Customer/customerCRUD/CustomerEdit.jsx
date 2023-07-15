@@ -27,6 +27,7 @@ import getName from "../../../utils/getLocationName";
 import useISPowner from "../../../hooks/useISPOwner";
 import SelectField from "../../../components/common/SelectField";
 import { getPoleBoxApi } from "../../../features/actions/customerApiCall";
+import { toast } from "react-toastify";
 
 const divisions = divisionsJSON.divisions;
 const districts = districtsJSON.districts;
@@ -43,6 +44,7 @@ export default function CustomerEdit(props) {
 
   // find editable data
   const data = customer.find((item) => item.id === props.single);
+  console.log(data);
 
   // get isp owner id
   // const ispOwnerId = useSelector(
@@ -271,8 +273,16 @@ export default function CustomerEdit(props) {
       return alert(t("selectBillDate"));
     }
 
-    const { customerId, Pname, Ppassword, Pprofile, Pcomment, ...rest } =
-      formValue;
+    const {
+      customerId,
+      Pname,
+      Ppassword,
+      Pprofile,
+      Pcomment,
+      customerBillingType,
+      ...rest
+    } = formValue;
+    console.log(customerBillingType);
 
     if (!bpSettings.genCustomerId) {
       if (customerId === "") {
@@ -287,6 +297,14 @@ export default function CustomerEdit(props) {
         return alert(t("writeMobileNumber"));
       }
     }
+
+    if (data?.paymentStatus === "unpaid") {
+      if (status === "active" && customerBillingType === "postpaid") {
+        setIsloading(false);
+        return toast.warn(t("rechargeYourCustomer"));
+      }
+    }
+
     const mainData = {
       singleCustomerID: data?.id,
       area: areaID,
@@ -298,6 +316,7 @@ export default function CustomerEdit(props) {
       connectionDate,
       billingCycle: billDate.toISOString(),
       promiseDate: promiseDate.toISOString(),
+      customerBillingType: customerBillingType,
       pppoe: {
         name: Pname,
         password: Ppassword,

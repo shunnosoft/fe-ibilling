@@ -826,5 +826,6 @@
   "businessBalance": "ব্যবসায় ব্যালান্স",
   "packageSetting": "প্যাকেজ সেটিং",
   "doNotAreaDeleteAndUpdate": "মাইক্রোটিক এরিয়া এবং সাব-এরিয়া মুছে ফেলা যাবে না!",
-  "notFoundMobileNumber": "গ্রাহকের মোবাইল নম্বর পাওয়া যায়নি"
+  "notFoundMobileNumber": "গ্রাহকের মোবাইল নম্বর পাওয়া যায়নি",
+  "rechargeYourCustomer": "আপনার গ্রাহকের মাসিক বিল রিচার্জ করুন!"
 }
