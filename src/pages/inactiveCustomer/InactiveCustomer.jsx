@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import {
   ArrowClockwise,
   FileExcelFill,
+  FilterCircle,
   PrinterFill,
 } from "react-bootstrap-icons";
 import { useTranslation } from "react-i18next";
@@ -18,6 +19,7 @@ import ReactToPrint from "react-to-print";
 import CustomerPdf from "../Home/homePdf/CustomerPdf";
 import { CSVLink } from "react-csv";
 import Footer from "../../components/admin/footer/Footer";
+import { Accordion } from "react-bootstrap";
 
 const InactiveCustomer = () => {
   const { t } = useTranslation();
@@ -26,6 +28,9 @@ const InactiveCustomer = () => {
 
   //Loading state
   const [isLoading, setIsLoading] = useState(false);
+
+  // filter Accordion handle state
+  const [activeKeys, setActiveKeys] = useState("");
 
   //get current date
   const date = new Date();
@@ -165,7 +170,7 @@ const InactiveCustomer = () => {
         Header: t("date"),
         accessor: "billingCycle",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("MMM DD YYYY hh:mm A");
+          return moment(value).format("YYYY/MM/DD hh:mm A");
         },
       },
     ],
@@ -184,9 +189,31 @@ const InactiveCustomer = () => {
           <div className="container">
             <FontColor>
               <FourGround>
-                <div className="collectorTitle d-flex justify-content-between px-5">
+                <div className="collectorTitle d-flex justify-content-between px-4">
                   <div className="d-flex">
                     <h2>{t("inactiveCustomer")}</h2>
+                  </div>
+
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <div
+                      onClick={() => {
+                        if (!activeKeys) {
+                          setActiveKeys("filter");
+                        } else {
+                          setActiveKeys("");
+                        }
+                      }}
+                      title={t("filter")}
+                    >
+                      <FilterCircle className="addcutmButton" />
+                    </div>
+
                     <div className="reloadBtn">
                       {isLoading ? (
                         <Loader></Loader>
@@ -196,14 +223,7 @@ const InactiveCustomer = () => {
                         ></ArrowClockwise>
                       )}
                     </div>
-                  </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
+
                     <div className="addAndSettingIcon">
                       <CSVLink
                         data={customerForCsVTableInfo}
@@ -234,41 +254,46 @@ const InactiveCustomer = () => {
                 </div>
               </FourGround>
               <FourGround>
-                <div className="collectorWrapper mt-2 py-2">
-                  <div className="addCollector my-3">
-                    <div className="row g-3">
-                      <div className="col-md-2 form-group px-2 d-flex">
-                        <select
-                          className="form-select mw-100 mt-0"
-                          aria-label="Default select example"
-                          onChange={(event) =>
-                            setCustomerType(event.target.value)
-                          }
-                        >
-                          <option selected value="all">
-                            {t("userType")}
-                          </option>
-                          {ispOwnerData?.bpSettings?.customerType.map(
-                            (cType) => (
-                              <option value={cType}>{t(`${cType}`)}</option>
-                            )
-                          )}
-                        </select>
-                      </div>
+                <div className="mt-2">
+                  <Accordion alwaysOpen activeKey={activeKeys}>
+                    <Accordion.Item eventKey="filter">
+                      <Accordion.Body>
+                        <div className="col-md-2 form-group px-2 d-flex">
+                          <select
+                            className="form-select mw-100 mt-0"
+                            onChange={(event) =>
+                              setCustomerType(event.target.value)
+                            }
+                          >
+                            <option selected value="all">
+                              {t("userType")}
+                            </option>
+                            {ispOwnerData?.bpSettings?.customerType.map(
+                              (cType) => (
+                                <option value={cType}>{t(`${cType}`)}</option>
+                              )
+                            )}
+                          </select>
+                        </div>
+                      </Accordion.Body>
+                    </Accordion.Item>
+                  </Accordion>
+                  <div className="collectorWrapper pb-2">
+                    <div className="d-none">
+                      <CustomerPdf
+                        customerData={inactiveCustomer}
+                        ref={componentRef}
+                      />
+                    </div>
+
+                    <div className="table-section">
+                      <Table
+                        isLoading={isLoading}
+                        columns={inactive}
+                        data={inactiveCustomer}
+                      ></Table>
                     </div>
                   </div>
-                  <Table
-                    isLoading={isLoading}
-                    columns={inactive}
-                    data={inactiveCustomer}
-                  ></Table>
-                </div>
-
-                <div className="d-none">
-                  <CustomerPdf
-                    customerData={inactiveCustomer}
-                    ref={componentRef}
-                  />
                 </div>
               </FourGround>
               <Footer />

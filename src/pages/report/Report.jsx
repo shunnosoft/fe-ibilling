@@ -596,7 +596,7 @@ export default function Report() {
                       <Accordion.Body>
                         <div className="selectFilteringg">
                           <select
-                            className="form-select"
+                            className="form-select mt-0"
                             onChange={(e) => onChangeArea(e.target.value)}
                           >
                             <option value={JSON.stringify({})} defaultValue>
@@ -609,7 +609,7 @@ export default function Report() {
                             ))}
                           </select>
                           <select
-                            className="form-select mx-2"
+                            className="form-select mx-2 mt-0"
                             onChange={(e) => onChangeSubArea(e.target.value)}
                           >
                             <option value="" defaultValue>
@@ -624,7 +624,7 @@ export default function Report() {
 
                           {userRole !== "collector" && (
                             <select
-                              className="form-select"
+                              className="form-select mt-0"
                               onChange={(e) => setCollectedBy(e.target.value)}
                             >
                               <option value="" defaultValue>
@@ -640,7 +640,7 @@ export default function Report() {
                           )}
 
                           <select
-                            className="form-select mx-2"
+                            className="form-select mx-2 mt-0"
                             onChange={(e) => setBillType(e.target.value)}
                           >
                             <option value="" defaultValue>
@@ -653,7 +653,7 @@ export default function Report() {
                             <option value="bill"> {t("monthBill")} </option>
                           </select>
                           <select
-                            className="form-select"
+                            className="form-select mt-0"
                             onChange={(e) => setMedium(e.target.value)}
                           >
                             <option value="" selected>
@@ -675,7 +675,7 @@ export default function Report() {
                             <>
                               <div className="ms-2">
                                 <DatePicker
-                                  className="form-control w-140 mt-2"
+                                  className="form-control w-140"
                                   selected={dateStart}
                                   onChange={(date) => setStartDate(date)}
                                   dateFormat="MMM dd yyyy"
@@ -685,7 +685,7 @@ export default function Report() {
 
                               <div className="mx-2">
                                 <DatePicker
-                                  className="form-control w-140 mt-2"
+                                  className="form-control w-140"
                                   selected={dateEnd}
                                   onChange={(date) => setEndDate(date)}
                                   dateFormat="MMM dd yyyy"
@@ -697,7 +697,7 @@ export default function Report() {
 
                           <div>
                             <button
-                              className="btn btn-outline-primary w-110 mt-2"
+                              className="btn btn-outline-primary w-110"
                               type="button"
                               onClick={onClickFilter}
                             >

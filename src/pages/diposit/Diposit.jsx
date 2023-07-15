@@ -647,7 +647,6 @@ export default function Diposit() {
                         userRole !== "collector" ? "profile" : "contact"
                       }
                       id="uncontrolled-tab-example"
-                      className="mb-3"
                     >
                       {(userRole === "manager" || userRole === "collector") && (
                         <Tab eventKey="home" title={t("diposit")}>

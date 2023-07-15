@@ -17,6 +17,8 @@ import {
   ThreeDots,
   CurrencyDollar,
   ArchiveFill,
+  FiletypeCsv,
+  FilterCircle,
 } from "react-bootstrap-icons";
 import {
   deleteIspOwnerCustomerInvoice,
@@ -37,6 +39,7 @@ import CustomerInvoicePrint from "./customerInvoicePrint/CustomerInvoicePrint";
 import { badge } from "../../components/common/Utils";
 import { ToastContainer } from "react-toastify";
 import InvoicePrint from "./customerInvoicePrint/InvoicePrint";
+import { Accordion } from "react-bootstrap";
 
 const CustomerInvoice = () => {
   const { t } = useTranslation();
@@ -75,6 +78,9 @@ const CustomerInvoice = () => {
 
   // customer id state
   const [invoiceId, setInvoiceId] = useState("");
+
+  // filter Accordion handle state
+  const [activeKeys, setActiveKeys] = useState("");
 
   // single customer invoice state
   const [singleInvoice, setSingleInvoice] = useState({});
@@ -274,7 +280,7 @@ const CustomerInvoice = () => {
           due: data.due,
           medium: data.medium,
           collector: data.name,
-          createdAt: moment(data.createdAt).format("MM/DD/YYYY"),
+          createdAt: moment(data.createdAt).format("YYYY-MM-DD"),
         };
       }),
     [customerInvoice]
@@ -394,7 +400,7 @@ const CustomerInvoice = () => {
         Header: t("createdAt"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("MMM DD YYYY hh:mm a");
+          return moment(value).format("YYYY/MM/DD hh:mm a");
         },
       },
       {
@@ -486,9 +492,24 @@ const CustomerInvoice = () => {
           <div className="container">
             <FontColor>
               <FourGround>
-                <div className="collectorTitle d-flex justify-content-between px-5">
+                <div className="collectorTitle d-flex justify-content-between px-4">
                   <div className="d-flex">
                     <h2>{t("invoice")}</h2>
+                  </div>
+                  <div className="d-flex justify-content-center align-items-center">
+                    <div
+                      onClick={() => {
+                        if (!activeKeys) {
+                          setActiveKeys("filter");
+                        } else {
+                          setActiveKeys("");
+                        }
+                      }}
+                      title={t("filter")}
+                    >
+                      <FilterCircle className="addcutmButton" />
+                    </div>
+
                     <div className="reloadBtn">
                       {isLoading ? (
                         <Loader />
@@ -498,8 +519,7 @@ const CustomerInvoice = () => {
                         ></ArrowClockwise>
                       )}
                     </div>
-                  </div>
-                  <div className="report_bill d-flex">
+
                     <div className="addAndSettingIcon">
                       <CSVLink
                         data={customerInvoiceForCsV}
@@ -507,7 +527,7 @@ const CustomerInvoice = () => {
                         headers={customerInvoiceForCsVHeader}
                         title={t("customerInvoice")}
                       >
-                        <FileExcelFill className="addcutmButton" />
+                        <FiletypeCsv className="addcutmButton" />
                       </CSVLink>
                     </div>
 
@@ -527,138 +547,147 @@ const CustomerInvoice = () => {
                 </div>
               </FourGround>
               <FourGround>
-                <div className="collectorWrapper mt-2 py-2">
-                  <div className="addCollector">
-                    <div
-                      id="custom-form-select"
-                      className="displayGrid6"
-                      style={{
-                        columnGap: "5px",
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      {filterInputs.map(
-                        (item) =>
-                          item.isVisible && (
-                            <select
-                              className="form-select shadow-none"
-                              onChange={item.onChange}
-                              value={item.value}
-                            >
-                              <option value="">{item.firstOptions}</option>
-                              {item.options?.map((opt) => (
-                                <option value={opt[item.valueAccessor]}>
-                                  {opt[item.textAccessor]}
-                                </option>
-                              ))}
-                            </select>
-                          )
-                      )}
+                <div className="mt-2">
+                  <Accordion alwaysOpen activeKey={activeKeys}>
+                    <Accordion.Item eventKey="filter">
+                      <Accordion.Body>
+                        <div>
+                          <div
+                            className="displayGrid6"
+                            style={{
+                              columnGap: "5px",
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                            }}
+                          >
+                            {filterInputs.map(
+                              (item) =>
+                                item.isVisible && (
+                                  <select
+                                    className="form-select mt-0"
+                                    onChange={item.onChange}
+                                    value={item.value}
+                                  >
+                                    <option value="">
+                                      {item.firstOptions}
+                                    </option>
+                                    {item.options?.map((opt) => (
+                                      <option value={opt[item.valueAccessor]}>
+                                        {opt[item.textAccessor]}
+                                      </option>
+                                    ))}
+                                  </select>
+                                )
+                            )}
 
-                      {/* date picker for filter createAt and updateAt */}
-                      <div>
-                        <DatePicker
-                          className="form-control mt-3"
-                          selected={filterOptions.startDate}
-                          onChange={(date) =>
-                            setFilterOption({
-                              ...filterOptions,
-                              startDate: date,
-                            })
-                          }
-                          dateFormat="MMM dd yyyy"
+                            {/* date picker for filter createAt and updateAt */}
+                            <div>
+                              <DatePicker
+                                className="form-control"
+                                selected={filterOptions.startDate}
+                                onChange={(date) =>
+                                  setFilterOption({
+                                    ...filterOptions,
+                                    startDate: date,
+                                  })
+                                }
+                                dateFormat="MMM dd yyyy"
+                              />
+                            </div>
+
+                            <div>
+                              <DatePicker
+                                className="form-control"
+                                selected={filterOptions.endDate}
+                                onChange={(date) =>
+                                  setFilterOption({
+                                    ...filterOptions,
+                                    endDate: date,
+                                  })
+                                }
+                                dateFormat="MMM dd yyyy"
+                              />
+                            </div>
+
+                            {/* filter and reset control button */}
+                            <div className="gridButton">
+                              <button
+                                className="btn btn-outline-primary w-6rem"
+                                type="button"
+                                onClick={handleActiveFilter}
+                                id="filterBtn"
+                              >
+                                {t("filter")}
+                              </button>
+                              <button
+                                className="btn btn-outline-secondary ms-1 w-6rem"
+                                type="button"
+                                onClick={handleFilterReset}
+                              >
+                                {t("reset")}
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* all customer invoice print */}
+                          <div style={{ display: "none" }}>
+                            <PrintReport
+                              filterData={filterData}
+                              currentCustomers={tableData}
+                              ref={componentRef}
+                              status="invoice"
+                            />
+                          </div>
+                        </div>
+                      </Accordion.Body>
+                    </Accordion.Item>
+                  </Accordion>
+                  <div className="collectorWrapper pb-2">
+                    <>
+                      <div style={{ display: "none" }}>
+                        <ReactToPrint
+                          documentTitle={t("billInvoice")}
+                          trigger={() => (
+                            <div type="button" id="invoicePrint"></div>
+                          )}
+                          content={() => cusOffice.current}
+                        />
+                        <CustomerInvoicePrint
+                          ref={cusOffice}
+                          invoiceData={{
+                            name: singleInvoice?.customer?.name,
+                            mobile: singleInvoice?.customer?.mobile,
+                            address: singleInvoice?.customer?.address,
+                            package: singleInvoice.package,
+                            amount: singleInvoice.amount,
+                            due: singleInvoice.due,
+                            discount: singleInvoice.discount,
+                            billType: singleInvoice.billType,
+                            medium: singleInvoice.medium,
+                            billingCycle: singleInvoice?.customer?.billingCycle,
+                            status: status,
+                          }}
+                          ispOwnerData={ispOwnerData}
                         />
                       </div>
 
-                      <div>
-                        <DatePicker
-                          className="form-control mt-3"
-                          selected={filterOptions.endDate}
-                          onChange={(date) =>
-                            setFilterOption({
-                              ...filterOptions,
-                              endDate: date,
-                            })
-                          }
-                          dateFormat="MMM dd yyyy"
+                      <div style={{ display: "none" }}>
+                        <InvoicePrint
+                          ref={invoice}
+                          currentCustomers={tableData}
+                          ispOwnerData={ispOwnerData}
                         />
                       </div>
-
-                      {/* filter and reset control button */}
-                      <div className="gridButton">
-                        <button
-                          className="btn btn-outline-primary w-6rem mt-3"
-                          type="button"
-                          onClick={handleActiveFilter}
-                          id="filterBtn"
-                        >
-                          {t("filter")}
-                        </button>
-                        <button
-                          className="btn btn-outline-secondary ms-1 w-6rem mt-3"
-                          type="button"
-                          onClick={handleFilterReset}
-                        >
-                          {t("reset")}
-                        </button>
-                      </div>
+                    </>
+                    <div className="table-section">
+                      <Table
+                        isLoading={isLoading}
+                        customComponent={customComponent}
+                        columns={columns}
+                        data={tableData}
+                      ></Table>
                     </div>
-
-                    {/* all customer invoice print */}
-                    <div style={{ display: "none" }}>
-                      <PrintReport
-                        filterData={filterData}
-                        currentCustomers={tableData}
-                        ref={componentRef}
-                        status="invoice"
-                      />
-                    </div>
-                  </div>
-                  <>
-                    <div style={{ display: "none" }}>
-                      <ReactToPrint
-                        documentTitle={t("billInvoice")}
-                        trigger={() => (
-                          <div type="button" id="invoicePrint"></div>
-                        )}
-                        content={() => cusOffice.current}
-                      />
-                      <CustomerInvoicePrint
-                        ref={cusOffice}
-                        invoiceData={{
-                          name: singleInvoice?.customer?.name,
-                          mobile: singleInvoice?.customer?.mobile,
-                          address: singleInvoice?.customer?.address,
-                          package: singleInvoice.package,
-                          amount: singleInvoice.amount,
-                          due: singleInvoice.due,
-                          discount: singleInvoice.discount,
-                          billType: singleInvoice.billType,
-                          medium: singleInvoice.medium,
-                          billingCycle: singleInvoice?.customer?.billingCycle,
-                          status: status,
-                        }}
-                        ispOwnerData={ispOwnerData}
-                      />
-                    </div>
-
-                    <div style={{ display: "none" }}>
-                      <InvoicePrint
-                        ref={invoice}
-                        currentCustomers={tableData}
-                        ispOwnerData={ispOwnerData}
-                      />
-                    </div>
-                  </>
-                  <div className="table-section">
-                    <Table
-                      isLoading={isLoading}
-                      customComponent={customComponent}
-                      columns={columns}
-                      data={tableData}
-                    ></Table>
                   </div>
                 </div>
               </FourGround>
