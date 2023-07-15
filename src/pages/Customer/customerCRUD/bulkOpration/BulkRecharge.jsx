@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../../../../components/common/Loader";
@@ -50,6 +50,39 @@ const BulkRecharge = ({ bulkCustomer, modalId }) => {
   const [mikrotikPackageRate, setMikrotikPackageRate] = useState("");
   const [mikrotikId, setMikrotikId] = useState("");
   const [medium, setMedium] = useState("cash");
+
+  useEffect(() => {
+    let mik = true;
+    let pac = true;
+
+    for (let i = 0; i < bulkCustomer?.length - 1; i++) {
+      if (
+        bulkCustomer[i]?.original?.mikrotik !==
+        bulkCustomer[i + 1]?.original?.mikrotik
+      )
+        mik = false;
+
+      if (
+        bulkCustomer[i]?.original?.mikrotikPackage !==
+        bulkCustomer[i + 1]?.original?.mikrotikPackage
+      )
+        pac = false;
+    }
+
+    if (mik) {
+      const IDs = {
+        ispOwner: ispOwnerId,
+        mikrotikId: bulkCustomer[0]?.original.mikrotik,
+      };
+      fetchPackagefromDatabase(dispatch, IDs, setIsLoading);
+      setSingleMikrotik(bulkCustomer[0]?.original.mikrotik);
+    }
+
+    if (pac) {
+      setMikrotikPackage(bulkCustomer[0]?.original.mikrotikPackage);
+      setMikrotikPackageRate(bulkCustomer[0]?.original.monthlyFee);
+    }
+  }, [bulkCustomer, ispOwnerId]);
 
   // select Getmikrotik
   const selectMikrotik = (e) => {
@@ -187,8 +220,12 @@ const BulkRecharge = ({ bulkCustomer, modalId }) => {
                 {Getmikrotik.length === undefined
                   ? ""
                   : Getmikrotik.map((val, key) => (
-                      <option key={key} value={val.id}>
-                        {val.name}
+                      <option
+                        key={key}
+                        selected={singleMikrotik === val.id}
+                        value={val.id}
+                      >
+                        {val?.name}
                       </option>
                     ))}
               </select>
@@ -210,7 +247,11 @@ const BulkRecharge = ({ bulkCustomer, modalId }) => {
               <option value={"0"}>...</option>
               {ppPackage &&
                 ppPackage?.map((val, key) => (
-                  <option key={key} value={val.id}>
+                  <option
+                    key={key}
+                    selected={mikrotikPackage === val.id}
+                    value={val.id}
+                  >
                     {val.name}
                   </option>
                 ))}

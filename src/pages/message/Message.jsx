@@ -467,7 +467,7 @@ export default function Message() {
                 <div className="collectorWrapper">
                   <div className="profileWrapper uiChange">
                     <div className="smsbal">
-                      <div className="refreshDiv">
+                      <div className="refreshDiv ">
                         <div className="balancetext px-2">
                           <div className="mx-content">
                             {t("nonMasking")}&nbsp;
@@ -487,10 +487,7 @@ export default function Message() {
                           </div>
                           {sms.fixedNumberSmsBalance}
                         </div>
-                        {/* <div className="balancetext mx-1">
-                          {t("SMSbalance")}
-                          <strong className="mainsmsbalance">{sms}</strong>
-                        </div> */}
+
                         <div title={t("refresh")} className="refreshIcon px-2">
                           {isRefrsh ? (
                             <Loader />
@@ -502,49 +499,50 @@ export default function Message() {
                         </div>
                       </div>
 
-                      {/* {userRole === "ispOwner" && (
-                        <button
-                          data-bs-toggle="modal"
-                          data-bs-target="#smsparchase"
-                          className="buysms"
-                        >
-                          {t("buySMS")}
-                        </button>
-                      )} */}
-
                       <div
-                        className="message-sending-type"
+                        className="message-sending-type text-center"
                         style={{ fontWeight: "normal" }}
                       >
                         <h4> {t("sendingMessageType")} </h4>
-                        <input
-                          name="messageSendingType"
-                          type="radio"
-                          checked={sendingType === "nonMasking"}
-                          value={"nonMasking"}
-                          onChange={(event) =>
-                            setSendingType(event.target.value)
-                          }
-                        />{" "}
-                        {t("nonMasking")}&nbsp; &nbsp;
-                        <input
-                          name="messageSendingType"
-                          type="radio"
-                          value={"masking"}
-                          onChange={(event) =>
-                            setSendingType(event.target.value)
-                          }
-                        />{" "}
-                        {t("masking")}&nbsp; &nbsp;
-                        <input
-                          name="messageSendingType"
-                          type="radio"
-                          value={"fixedNumber"}
-                          onChange={(event) =>
-                            setSendingType(event.target.value)
-                          }
-                        />{" "}
-                        {t("fixedNumber")}
+                        <div className="row justify-content-center align-items-center">
+                          <div className="col-6">
+                            <input
+                              name="messageSendingType"
+                              type="radio"
+                              checked={sendingType === "nonMasking"}
+                              value={"nonMasking"}
+                              onChange={(event) =>
+                                setSendingType(event.target.value)
+                              }
+                            />
+                            &nbsp;
+                            {t("nonMasking")}
+                          </div>
+                          <div className="col-6">
+                            <input
+                              name="messageSendingType"
+                              type="radio"
+                              value={"masking"}
+                              onChange={(event) =>
+                                setSendingType(event.target.value)
+                              }
+                            />
+                            &nbsp;
+                            {t("masking")}
+                          </div>
+                          <div className="col">
+                            <input
+                              name="messageSendingType"
+                              type="radio"
+                              value={"fixedNumber"}
+                              onChange={(event) =>
+                                setSendingType(event.target.value)
+                              }
+                            />
+                            &nbsp;
+                            {t("fixedNumber")}
+                          </div>
+                        </div>
                       </div>
                     </div>
 

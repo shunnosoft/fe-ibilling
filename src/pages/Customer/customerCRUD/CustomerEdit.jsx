@@ -27,6 +27,7 @@ import getName from "../../../utils/getLocationName";
 import useISPowner from "../../../hooks/useISPOwner";
 import SelectField from "../../../components/common/SelectField";
 import { getPoleBoxApi } from "../../../features/actions/customerApiCall";
+import moment from "moment";
 
 const divisions = divisionsJSON.divisions;
 const districts = districtsJSON.districts;
@@ -114,15 +115,15 @@ export default function CustomerEdit(props) {
   });
 
   //last day of month calculation
-  let day = new Date(data?.billingCycle);
+  let day = new Date(data?.promiseDate);
   let lastDayOfMonth = new Date(day.getFullYear(), day.getMonth() + 1, 0);
 
-  let initialTime = new Date(data?.billingCycle);
+  let initialTime = new Date();
   initialTime.setHours("00");
   initialTime.setMinutes("00");
 
   //hour and minutes calculation
-  let lastTime = new Date(data?.billingCycle);
+  let lastTime = new Date();
   lastTime.setHours("18");
   lastTime.setMinutes("00");
 
@@ -287,6 +288,19 @@ export default function CustomerEdit(props) {
         return alert(t("writeMobileNumber"));
       }
     }
+
+    const tempBill = new Date(moment(billDate).format("YYYY-MM-DD")).getTime();
+
+    const tempPromise = new Date(
+      moment(promiseDate).format("YYYY-MM-DD")
+    ).getTime();
+
+    let sendPromise = promiseDate;
+
+    if (tempBill > tempPromise) {
+      sendPromise = billDate;
+    }
+
     const mainData = {
       singleCustomerID: data?.id,
       area: areaID,
@@ -297,7 +311,7 @@ export default function CustomerEdit(props) {
       autoDisable: autoDisable,
       connectionDate,
       billingCycle: billDate.toISOString(),
-      promiseDate: promiseDate.toISOString(),
+      promiseDate: sendPromise.toISOString(),
       pppoe: {
         name: Pname,
         password: Ppassword,
@@ -680,8 +694,11 @@ export default function CustomerEdit(props) {
                           <DatePicker
                             className="form-control mw-100"
                             selected={billDate}
+                            timeIntervals={60}
                             onChange={(date) => setBillDate(date)}
                             dateFormat="MMM dd yyyy hh:mm a"
+                            maxTime={lastTime}
+                            minTime={initialTime}
                             showTimeSelect
                           />
                         </div>
