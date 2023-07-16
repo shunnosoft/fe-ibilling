@@ -36,6 +36,7 @@ export default function ResellerPost() {
   const mikrotikpakages = useSelector(
     (state) => state.reseller.allMikrotikPakages
   );
+
   const [areaIds, setAreaIds] = useState([]);
   const [mikrotikIds, setMikrotikIds] = useState([]);
   const [mikroTikPackagesId, setmikroTikPackagesId] = useState([]);
@@ -43,6 +44,9 @@ export default function ResellerPost() {
   const [packageRateType, setPackageRateType] = useState("");
   const [permissions, setPermissions] = useState([]);
   const [packageCommisson, setPackageCommission] = useState([]);
+
+  // commission share in isp & reseller state
+  const [ispCommission, setIspCommission] = useState("");
 
   const bpSettings = useSelector(
     (state) => state.persistedReducer.auth?.userData?.bpSettings
@@ -68,6 +72,11 @@ export default function ResellerPost() {
 
     status: Yup.string().required(t("selectStatus")),
     commissionRate: Yup.number()
+      .integer()
+      .min(0, t("minimumShare"))
+      .max(100, t("maximumShare"))
+      .required(t("enterResellerShare")),
+    isp: Yup.number()
       .integer()
       .min(0, t("minimumShare"))
       .max(100, t("maximumShare"))
@@ -200,6 +209,13 @@ export default function ResellerPost() {
     setPackageCommission(packageCommissionState);
   };
 
+  // handle form onChange
+  const handleOnchange = (e) => {
+    if (e.target.name === "commissionRate") {
+      setIspCommission(100 - e.target.value);
+    }
+  };
+
   return (
     <div>
       <div
@@ -234,6 +250,7 @@ export default function ResellerPost() {
                   address: "",
                   status: "active",
                   commissionRate: 0,
+                  isp: 0,
                 }}
                 validationSchema={resellerValidator}
                 onSubmit={(values, { resetForm }) => {
@@ -242,7 +259,7 @@ export default function ResellerPost() {
                 enableReinitialize
               >
                 {(formik) => (
-                  <Form>
+                  <Form onChange={handleOnchange}>
                     <Tabs
                       defaultActiveKey={"basic"}
                       id="uncontrolled-tab-example"
@@ -261,41 +278,46 @@ export default function ResellerPost() {
                                 validation={true}
                               />
                             ))}
+
+                            <div>
+                              <p className="radioTitle">{t("status")}</p>
+                              <div className="d-flex">
+                                {RADIO.map((val, key) => (
+                                  <div key={key} className="form-check">
+                                    <FtextField
+                                      label={val.label}
+                                      className="form-check-input"
+                                      type="radio"
+                                      name="status"
+                                      value={val.value}
+                                    />
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </Tab>
-                      <Tab eventKey="permission" title={t("changePermission")}>
-                        <div className="displayGrid3 secondSection text-start">
-                          <div>
-                            <input
-                              className="form-check-input"
-                              id="souceCheck"
-                              type="checkbox"
-                              onChange={permissionHandler}
-                              name="allChecked"
-                            />
-                            <label
-                              className="form-check-label"
-                              htmlFor="souceCheck"
-                            >
-                              <p className="radioTitle">{t("allPermission")}</p>
-                            </label>
-                          </div>
-
-                          {permissions.map((item, i) => (
-                            <div key={i} className="displayFlex">
-                              <input
-                                id={i + "" + item}
-                                key={i}
-                                type="checkbox"
-                                className="form-check-input"
-                                checked={item.isChecked}
-                                onChange={permissionHandler}
-                                name={item.value}
-                              />
-                              <label htmlFor={i + "" + item}>
-                                {item.label}
-                              </label>
+                      <Tab eventKey="area" title={t("area")}>
+                        <b className="mt-2"> {t("selectArea")} </b>
+                        <div className="AllAreaClass">
+                          {area?.map((val, key) => (
+                            <div key={key}>
+                              <h6 className="areaParent">{val.name}</h6>
+                              {storeSubArea?.map(
+                                (v, k) =>
+                                  v.area === val.id && (
+                                    <div key={k} className="displayFlex">
+                                      <input
+                                        type="checkbox"
+                                        className="getValueUsingClass"
+                                        value={v.id}
+                                        onChange={setAreaHandler}
+                                      />
+                                      <label>{v.name}</label>
+                                    </div>
+                                  )
+                              )}
                             </div>
                           ))}
                         </div>
@@ -303,27 +325,11 @@ export default function ResellerPost() {
                       <Tab eventKey="package" title={t("package")}>
                         <div className="d-flex mt-5 justify-content-evenly">
                           <div className="form-check ">
-                            <p className="radioTitle">{t("status")}</p>
-                            <div className="d-flex">
-                              {RADIO.map((val, key) => (
-                                <div key={key} className="form-check">
-                                  <FtextField
-                                    label={val.label}
-                                    className="form-check-input"
-                                    type="radio"
-                                    name="status"
-                                    value={val.value}
-                                  />
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                          <div className="form-check ">
-                            <p className="radioTitle">কমিশন এর ধরণ</p>
+                            <p className="radioTitle">{t("commissionType")}</p>
                             <div className="d-flex">
                               <div className="form-check">
                                 <FtextField
-                                  label="Global Commission"
+                                  label={t("globalCommission")}
                                   className="form-check-input"
                                   type="radio"
                                   name="commissionType"
@@ -336,7 +342,7 @@ export default function ResellerPost() {
                               </div>
                               <div className="form-check">
                                 <FtextField
-                                  label="Package Based"
+                                  label={t("packageBased")}
                                   className="form-check-input"
                                   type="radio"
                                   name="commissionType"
@@ -350,34 +356,57 @@ export default function ResellerPost() {
                             </div>
                           </div>
                         </div>
-                        <div className="w-50 mb-4 mx-auto">
+                        <div className="d-flex justify-content-center">
                           {commissionType === "global" && (
-                            <div className="form-check ">
-                              <p className="radioTitle"> {t("share")} </p>
+                            <div className="d-flex w-50">
+                              <div className="form-check">
+                                <p className="radioTitle"> {t("share")} </p>
+                                <FtextField
+                                  style={{ marginTop: "-25px" }}
+                                  key="commissionRate"
+                                  type="number"
+                                  name="commissionRate"
+                                  min={0}
+                                />
+                              </div>
 
-                              <FtextField
-                                key="commissionRate"
-                                type="number"
-                                name="commissionRate"
-                                min={0}
-                              />
+                              <div className="form-check">
+                                <p className="radioTitle">
+                                  {t("ispOwner")} (%)
+                                </p>
+                                <FtextField
+                                  style={{ marginTop: "-25px" }}
+                                  key="isp"
+                                  type="number"
+                                  name="isp"
+                                  value={ispCommission}
+                                  min={0}
+                                  disabled={true}
+                                />
+                              </div>
                             </div>
                           )}
                           {commissionType === "packageBased" && (
-                            <div className="form-check">
-                              <p className="radioTitle"> {t("share")} </p>
+                            <div className="form-check w-50">
+                              <label className="text-secondary">
+                                {t("ispOwnerShare")}
+                              </label>
 
                               <select
-                                type="number"
+                                type="text"
                                 className="form-select mw-100 mt-0"
                                 onChange={(e) =>
                                   setPackageRateType(e.target.value)
                                 }
                               >
-                                <option value="">Select</option>
+                                <option value="">{t("selectType")}</option>
 
-                                <option value="percentage">Percentage</option>
-                                <option value="fixedRate">Fixed Rate</option>
+                                <option value="percentage">
+                                  {t("Percentage")}
+                                </option>
+                                <option value="fixedRate">
+                                  {t("fixedRate")}
+                                </option>
                               </select>
                             </div>
                           )}
@@ -393,12 +422,12 @@ export default function ResellerPost() {
                                       <input
                                         id={item.id}
                                         type="checkbox"
-                                        className="getValueUsingClasses form-check-input"
+                                        className="getValueUsingClasses form-check-input me-1"
                                         value={item.id}
                                         onChange={(e) =>
                                           setMikrotikHandler(e.target.value)
                                         }
-                                      />{" "}
+                                      />
                                       <label htmlFor={item.id}>
                                         <b className="h5">{item.name}</b>
                                       </label>
@@ -429,6 +458,10 @@ export default function ResellerPost() {
                                               >
                                                 {p.name}
                                               </label>
+
+                                              <span className="text-secondary">
+                                                &#2547;{p.rate}
+                                              </span>
                                               {commissionType ===
                                                 "packageBased" && (
                                                 <>
@@ -473,10 +506,13 @@ export default function ResellerPost() {
                                                     {packageRateType ===
                                                     "percentage" ? (
                                                       <p className="mx-1">%</p>
-                                                    ) : (
+                                                    ) : packageRateType ===
+                                                      "fixedRate" ? (
                                                       <p className="mx-1">
                                                         &#2547;
                                                       </p>
+                                                    ) : (
+                                                      ""
                                                     )}
                                                   </div>
                                                 </>
@@ -577,27 +613,38 @@ export default function ResellerPost() {
                           </>
                         )}
                       </Tab>
-                      <Tab eventKey="area" title={t("area")}>
-                        {" "}
-                        <b className="mt-2"> {t("selectArea")} </b>
-                        <div className="AllAreaClass">
-                          {area?.map((val, key) => (
-                            <div key={key}>
-                              <h6 className="areaParent">{val.name}</h6>
-                              {storeSubArea?.map(
-                                (v, k) =>
-                                  v.area === val.id && (
-                                    <div key={k} className="displayFlex">
-                                      <input
-                                        type="checkbox"
-                                        className="getValueUsingClass"
-                                        value={v.id}
-                                        onChange={setAreaHandler}
-                                      />
-                                      <label>{v.name}</label>
-                                    </div>
-                                  )
-                              )}
+                      <Tab eventKey="permission" title={t("changePermission")}>
+                        <div className="displayGrid3 secondSection text-start">
+                          <div>
+                            <input
+                              className="form-check-input"
+                              id="souceCheck"
+                              type="checkbox"
+                              onChange={permissionHandler}
+                              name="allChecked"
+                            />
+                            <label
+                              className="form-check-label"
+                              htmlFor="souceCheck"
+                            >
+                              <p className="radioTitle">{t("allPermission")}</p>
+                            </label>
+                          </div>
+
+                          {permissions.map((item, i) => (
+                            <div key={i} className="displayFlex">
+                              <input
+                                id={i + "" + item}
+                                key={i}
+                                type="checkbox"
+                                className="form-check-input"
+                                checked={item.isChecked}
+                                onChange={permissionHandler}
+                                name={item.value}
+                              />
+                              <label htmlFor={i + "" + item}>
+                                {item.label}
+                              </label>
                             </div>
                           ))}
                         </div>

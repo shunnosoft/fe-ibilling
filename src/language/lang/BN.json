@@ -827,5 +827,11 @@
   "packageSetting": "প্যাকেজ সেটিং",
   "doNotAreaDeleteAndUpdate": "মাইক্রোটিক এরিয়া এবং সাব-এরিয়া মুছে ফেলা যাবে না!",
   "notFoundMobileNumber": "গ্রাহকের মোবাইল নম্বর পাওয়া যায়নি",
-  "rechargeYourCustomer": "আপনার গ্রাহকের মাসিক বিল রিচার্জ করুন!"
+  "rechargeYourCustomer": "আপনার গ্রাহকের মাসিক বিল রিচার্জ করুন!",
+  "commissionType": "কমিশন এর ধরণ",
+  "globalCommission": "গ্লোবাল কমিশন",
+  "packageBased": "প্যাকেজ ভিত্তিক",
+  "ispOwnerShare": "মালিকের শেয়ার",
+  "selectType": "টাইপ নির্বাচন করুন",
+  "fixedRate": "একদর"
 }

@@ -821,5 +821,11 @@
   "packageSetting": "Package Setting",
   "doNotAreaDeleteAndUpdate": "Cannot delete microtic area and subArea",
   "notFoundMobileNumber": "Customer mobile number not found",
-  "rechargeYourCustomer": "Recharge your customer's monthly bill!"
+  "rechargeYourCustomer": "Recharge your customer's monthly bill!",
+  "commissionType": "Commission Type",
+  "globalCommission": "Global Commission",
+  "packageBased": "Package Based",
+  "ispOwnerShare": "IspOwner Share",
+  "selectType": "Select Type",
+  "fixedRate": "Fixed Rate"
 }

@@ -377,47 +377,34 @@ export default function Reseller() {
           <div className="container">
             <FontColor>
               <FourGround>
-                <div className="collectorTitle d-flex justify-content-between px-5">
+                <div className="collectorTitle d-flex justify-content-between px-4">
                   <div className="d-flex">
                     <div>{t("reseller")}</div>
-                    <div className="reloadBtn">
-                      {dataLoader ? (
-                        <Loader></Loader>
-                      ) : (
-                        <ArrowClockwise
-                          onClick={() => reloadHandler()}
-                        ></ArrowClockwise>
-                      )}
-                    </div>
                   </div>
                   {role === "ispOwner" && (
-                    <div className="d-flex">
-                      <div
-                        className="settingbtn me-2"
-                        style={{ marginTop: "-8px" }}
-                      >
-                        <Link
-                          to={`/reseller/customer`}
-                          className="mikrotikConfigureButtom"
-                          style={{
-                            height: "40px",
-                            fontSize: "20px",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                          }}
-                        >
-                          {t("allResellerCustomer")}
-                          <ArrowRightShort style={{ fontSize: "19px" }} />
+                    <div className="d-flex justify-content-center align-items-center">
+                      <div className="reloadBtn">
+                        {dataLoader ? (
+                          <Loader></Loader>
+                        ) : (
+                          <ArrowClockwise
+                            onClick={() => reloadHandler()}
+                          ></ArrowClockwise>
+                        )}
+                      </div>
+
+                      <div title={t("allResellerCustomer")}>
+                        <Link to={`/reseller/customer`}>
+                          <PeopleFill className="addcutmButton" />
                         </Link>
                       </div>
+
                       <div
                         title={t("addReseller")}
-                        className="header_icon"
                         data-bs-toggle="modal"
                         data-bs-target="#resellerModal"
                       >
-                        <PersonPlusFill />
+                        <PersonPlusFill className="addcutmButton" />
                       </div>
                     </div>
                   )}

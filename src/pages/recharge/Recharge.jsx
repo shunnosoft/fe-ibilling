@@ -14,9 +14,10 @@ import DatePicker from "react-datepicker";
 import { rechargeHistoryfuncR } from "../../features/apiCallReseller";
 import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
-import { PenFill, ThreeDots } from "react-bootstrap-icons";
+import { FilterCircle, PenFill, ThreeDots } from "react-bootstrap-icons";
 import CommentEdit from "./modal/CommentEdit";
 import FormatNumber from "../../components/common/NumberFormat";
+import { Accordion } from "react-bootstrap";
 
 const Recharge = () => {
   const { t } = useTranslation();
@@ -67,6 +68,9 @@ const Recharge = () => {
 
   // recharge id state
   const [rechargeId, setRechargeId] = useState();
+
+  // filter Accordion handle state
+  const [activeKeys, setActiveKeys] = useState("");
 
   // data filter
   const onClickFilter = () => {
@@ -232,64 +236,87 @@ const Recharge = () => {
           <div className="container">
             <FontColor>
               <FourGround>
-                <h2 className="collectorTitle"> {t("rechargeHistory")} </h2>
+                <div className="collectorTitle d-flex justify-content-between px-4">
+                  <div className="d-flex">
+                    <h2> {t("rechargeHistory")} </h2>
+                  </div>
+
+                  <div
+                    onClick={() => {
+                      if (!activeKeys) {
+                        setActiveKeys("filter");
+                      } else {
+                        setActiveKeys("");
+                      }
+                    }}
+                    title={t("filter")}
+                  >
+                    <FilterCircle className="addcutmButton" />
+                  </div>
+                </div>
               </FourGround>
 
               {userRole !== "collector" && (
                 <FourGround>
-                  <div className="collectorWrapper py-2">
-                    <div className="selectFilteringg">
-                      {userRole === "ispOwner" && (
-                        <select
-                          className="form-select"
-                          onChange={(e) => setResellerId(e.target.value)}
-                        >
-                          <option value="" defaultValue>
-                            {t("allReseller")}
-                          </option>
-                          {resellers?.map((item, key) => (
-                            <option key={key} value={item.id}>
-                              {item.name}
-                            </option>
-                          ))}
-                        </select>
-                      )}
+                  <div className="mt-2">
+                    <Accordion alwaysOpen activeKey={activeKeys}>
+                      <Accordion.Item eventKey="filter">
+                        <Accordion.Body>
+                          <div className="selectFilteringg">
+                            {userRole === "ispOwner" && (
+                              <select
+                                className="form-select mt-0"
+                                onChange={(e) => setResellerId(e.target.value)}
+                              >
+                                <option value="" defaultValue>
+                                  {t("allReseller")}
+                                </option>
+                                {resellers?.map((item, key) => (
+                                  <option key={key} value={item.id}>
+                                    {item.name}
+                                  </option>
+                                ))}
+                              </select>
+                            )}
 
-                      <div className="ms-2">
-                        <DatePicker
-                          className="form-control mt-2"
-                          selected={dateStart}
-                          onChange={(date) => setStartDate(date)}
-                          dateFormat="MMM dd yyyy"
-                          placeholderText={t("selectBillDate")}
-                        />
+                            <div className="ms-2">
+                              <DatePicker
+                                className="form-control"
+                                selected={dateStart}
+                                onChange={(date) => setStartDate(date)}
+                                dateFormat="MMM dd yyyy"
+                                placeholderText={t("selectBillDate")}
+                              />
+                            </div>
+                            <div className="mx-2">
+                              <DatePicker
+                                className="form-control"
+                                selected={dateEnd}
+                                onChange={(date) => setEndDate(date)}
+                                dateFormat="MMM dd yyyy"
+                                placeholderText={t("selectBillDate")}
+                              />
+                            </div>
+                            <button
+                              className="btn btn-outline-primary w-140"
+                              type="button"
+                              onClick={onClickFilter}
+                            >
+                              {t("filter")}
+                            </button>
+                          </div>
+                        </Accordion.Body>
+                      </Accordion.Item>
+                    </Accordion>
+                    <div className="collectorWrapper py-2">
+                      <div className="table-section">
+                        <Table
+                          customComponent={customComponent}
+                          data={rechargeData}
+                          columns={columns}
+                          isLoading={resellerLoading}
+                        ></Table>
                       </div>
-                      <div className="mx-2">
-                        <DatePicker
-                          className="form-control mt-2"
-                          selected={dateEnd}
-                          onChange={(date) => setEndDate(date)}
-                          dateFormat="MMM dd yyyy"
-                          placeholderText={t("selectBillDate")}
-                        />
-                      </div>
-                      <button
-                        className="btn btn-outline-primary w-140 mt-2"
-                        type="button"
-                        onClick={onClickFilter}
-                      >
-                        {t("filter")}
-                      </button>
-                    </div>
-
-                    {/* table */}
-                    <div className="table-section">
-                      <Table
-                        customComponent={customComponent}
-                        data={rechargeData}
-                        columns={columns}
-                        isLoading={resellerLoading}
-                      ></Table>
                     </div>
                   </div>
                 </FourGround>

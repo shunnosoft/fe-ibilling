@@ -10,42 +10,45 @@ const GlobalPackageEdit = ({
 }) => {
   return (
     <>
-      {mikrotikpakages?.mikrotiks?.map((item) => (
-        <div key={item.id}>
-          <div className="form-check">
-            <input
-              checked={allowedMikrotik?.includes(item.id)}
-              disabled={resellerMikrotik?.includes(item.id)}
-              type="checkbox"
-              className="getValueUsingClassesforMikrotik form-check-input"
-              value={item.id}
-              id={item.id + "008"}
-              onChange={(e) => mikroHandler(e.target.value)}
-            />
-            <label className="form-check-label" htmlFor={item.id + "008"}>
-              <b className="h5">{item.name}</b>
-            </label>
-          </div>
+      <div className="row">
+        {mikrotikpakages?.mikrotiks?.map((item) => (
+          <div className="col-md-3" key={item.id}>
+            <div className="form-check">
+              <input
+                checked={allowedMikrotik?.includes(item.id)}
+                disabled={resellerMikrotik?.includes(item.id)}
+                type="checkbox"
+                className="getValueUsingClassesforMikrotik form-check-input"
+                value={item.id}
+                id={item.id + "008"}
+                onChange={(e) => mikroHandler(e.target.value)}
+              />
+              <label className="form-check-label" htmlFor={item.id + "008"}>
+                <b className="h5">{item.name}</b>
+              </label>
+            </div>
 
-          {mikrotikpakages.packages.map(
-            (p) =>
-              p.mikrotik === item.id && (
-                <div key={p.id} className="displayFlex">
-                  <PackageSelect
-                    id={p.id + "input009"}
-                    onChangeHandler={handelMikrotikPakages}
-                    isDisabled={!allowedMikrotik.includes(p.mikrotik)}
-                    isChecked={mikroTikPackagesId.includes(p.id)}
-                    packageInfo={{
-                      name: p.name,
-                      id: p.id,
-                    }}
-                  />
-                </div>
-              )
-          )}
-        </div>
-      ))}
+            {mikrotikpakages.packages.map(
+              (p) =>
+                p.mikrotik === item.id && (
+                  <div key={p.id} className="displayFlex">
+                    <PackageSelect
+                      id={p.id + "input009"}
+                      onChangeHandler={handelMikrotikPakages}
+                      isDisabled={!allowedMikrotik.includes(p.mikrotik)}
+                      isChecked={mikroTikPackagesId.includes(p.id)}
+                      packageInfo={{
+                        name: p.name,
+                        id: p.id,
+                        rate: p.rate,
+                      }}
+                    />
+                  </div>
+                )
+            )}
+          </div>
+        ))}
+      </div>
     </>
   );
 };
@@ -101,6 +104,7 @@ export const PackageBasedEdit = ({
                       packageInfo={{
                         name: p.name,
                         id: p.id,
+                        rate: p.rate,
                       }}
                     />
                     {commissionType === "packageBased" && (
@@ -126,8 +130,10 @@ export const PackageBasedEdit = ({
                         />
                         {packageRateType === "percentage" ? (
                           <p className="mx-1">%</p>
-                        ) : (
+                        ) : packageRateType === "fixedRate" ? (
                           <p className="mx-1">&#2547;</p>
+                        ) : (
+                          ""
                         )}
                       </div>
                     )}

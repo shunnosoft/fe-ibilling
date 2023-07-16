@@ -110,7 +110,7 @@ const ResellerSmsRequest = () => {
         Header: t("date"),
         accessor: "createdAt",
         Cell: ({ row: { original } }) =>
-          moment(original.createdAt).format("MMM DD YYYY hh:mm a"),
+          moment(original.createdAt).format("YYYY/MM/DD hh:mm a"),
       },
       {
         width: "21%",
@@ -164,18 +164,18 @@ const ResellerSmsRequest = () => {
           <div className="container">
             <FontColor>
               <FourGround>
-                <div className="collectorTitle d-flex justify-content-between px-5">
+                <div className="collectorTitle d-flex justify-content-between px-4">
                   <div className="d-flex">
                     <div>{t("resellerSmsRequest")}</div>
-                    <div className="reloadBtn">
-                      {isLoading ? (
-                        <Loader></Loader>
-                      ) : (
-                        <ArrowClockwise
-                          onClick={() => reloadHandler()}
-                        ></ArrowClockwise>
-                      )}
-                    </div>
+                  </div>
+                  <div className="reloadBtn">
+                    {isLoading ? (
+                      <Loader></Loader>
+                    ) : (
+                      <ArrowClockwise
+                        onClick={() => reloadHandler()}
+                      ></ArrowClockwise>
+                    )}
                   </div>
                 </div>
               </FourGround>

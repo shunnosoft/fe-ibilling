@@ -49,18 +49,19 @@ const MessageLog = () => {
           <div className="container">
             <FontColor>
               <FourGround>
-                <div className="collectorTitle d-flex justify-content-between px-5">
+                <div className="collectorTitle d-flex justify-content-between px-4">
                   <div className="d-flex">
                     <h2>{t("messageLog")}</h2>
-                    <div className="reloadBtn">
-                      {nonMasking || fixedNumber || masking ? (
-                        <Loader />
-                      ) : (
-                        <ArrowClockwise
-                          onClick={() => reloadHandler()}
-                        ></ArrowClockwise>
-                      )}
-                    </div>
+                  </div>
+
+                  <div className="reloadBtn">
+                    {nonMasking || fixedNumber || masking ? (
+                      <Loader />
+                    ) : (
+                      <ArrowClockwise
+                        onClick={() => reloadHandler()}
+                      ></ArrowClockwise>
+                    )}
                   </div>
                 </div>
               </FourGround>
