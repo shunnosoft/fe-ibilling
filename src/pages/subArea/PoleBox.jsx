@@ -16,7 +16,7 @@ import PoleBoxPost from "./poleBoxModals/PoleBoxPost";
 import PoleBoxEdit from "./poleBoxModals/PoleBoxEdit";
 import { Modal, ModalBody, ModalHeader } from "react-bootstrap";
 
-export default function PoleBox({ areaId, poleShow, setPoleShow }) {
+export default function PoleBox({ areaName, areaId, poleShow, setPoleShow }) {
   const { t } = useTranslation();
 
   //get all sub Area
@@ -159,6 +159,7 @@ export default function PoleBox({ areaId, poleShow, setPoleShow }) {
       </Modal>
 
       <PoleBoxPost
+        areaName={areaName}
         areaId={areaId}
         postShow={postShow}
         setPostShow={setPostShow}

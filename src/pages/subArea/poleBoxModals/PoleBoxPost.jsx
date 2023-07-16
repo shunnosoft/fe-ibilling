@@ -17,7 +17,12 @@ import {
   ModalTitle,
 } from "react-bootstrap";
 
-export default function PoleBoxPost({ areaId, postShow, setPostShow }) {
+export default function PoleBoxPost({
+  areaName,
+  areaId,
+  postShow,
+  setPostShow,
+}) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
@@ -76,7 +81,9 @@ export default function PoleBoxPost({ areaId, postShow, setPostShow }) {
         centered
       >
         <ModalHeader closeButton>
-          <ModalTitle>{t("addPoleBox")}</ModalTitle>
+          <ModalTitle>
+            {areaName}- {t("addPoleBox")}
+          </ModalTitle>
         </ModalHeader>
         <ModalBody>
           <Formik

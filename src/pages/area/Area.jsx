@@ -62,6 +62,7 @@ export default function Area() {
 
   const [areaID, setAreaID] = useState("");
   const [areaId, setAreaId] = useState("");
+  const [areaName, setAreaName] = useState("");
 
   //modal handler state
   const [isOpen, setIsOpen] = useState(false);
@@ -197,6 +198,7 @@ export default function Area() {
                 onClick={() => {
                   setAreaId(original?.id);
                   setPoleShow(true);
+                  setAreaName(original?.name);
                 }}
               >
                 {t("poleBox")}
@@ -284,7 +286,12 @@ export default function Area() {
       {/* subAreas modal */}
       {/* <SubAreaModal areaId={areaID} /> */}
       <SubArea areaId={areaID} isOpen={isOpen} setIsOpen={setIsOpen} />
-      <PoleBox areaId={areaId} poleShow={poleShow} setPoleShow={setPoleShow} />
+      <PoleBox
+        areaName={areaName}
+        areaId={areaId}
+        poleShow={poleShow}
+        setPoleShow={setPoleShow}
+      />
     </>
   );
 }

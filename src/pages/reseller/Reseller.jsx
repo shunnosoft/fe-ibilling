@@ -198,18 +198,20 @@ export default function Reseller() {
                 aria-expanded="false"
               />
               <ul className="dropdown-menu" aria-labelledby="resellerDropdown">
-                <Link to={`/reseller/customer/${original.id}`}>
-                  <li>
-                    <div className="dropdown-item">
-                      <div className="customerAction">
-                        <PeopleFill />
-
-                        <p className="actionP">{t("customer")}</p>
-                      </div>
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#resellerDetailsModal"
+                  onClick={() => {
+                    getSpecificReseller(original.id);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <PersonFill />
+                      <p className="actionP">{t("profile")}</p>
                     </div>
-                  </li>
-                </Link>
-
+                  </div>
+                </li>
                 <li
                   data-bs-toggle="modal"
                   href="#resellerRechargeModal"
@@ -222,62 +224,6 @@ export default function Reseller() {
                     <div className="customerAction">
                       <CurrencyDollar />
                       <p className="actionP">{t("useMemoRecharge")}</p>
-                    </div>
-                  </div>
-                </li>
-
-                <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#rechargeReport"
-                  onClick={() => {
-                    getSpecificReseller(original.id);
-                  }}
-                >
-                  <div className="dropdown-item">
-                    <div className="customerAction">
-                      <CashStack />
-                      <p className="actionP">{t("report")}</p>
-                    </div>
-                  </div>
-                </li>
-
-                <Link to={`/reseller/summary/${original.id}`}>
-                  <li>
-                    <div className="dropdown-item">
-                      <div className="customerAction">
-                        <Book />
-
-                        <p className="actionP">{t("summary")}</p>
-                      </div>
-                    </div>
-                  </li>
-                </Link>
-
-                <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#monthlyReport"
-                  onClick={() => {
-                    getSpecificReseller(original.id);
-                  }}
-                >
-                  <div className="dropdown-item">
-                    <div className="customerAction">
-                      <CashStack />
-                      <p className="actionP">{t("prevMonthReport")}</p>
-                    </div>
-                  </div>
-                </li>
-                <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#resellerDetailsModal"
-                  onClick={() => {
-                    getSpecificReseller(original.id);
-                  }}
-                >
-                  <div className="dropdown-item">
-                    <div className="customerAction">
-                      <PersonFill />
-                      <p className="actionP">{t("profile")}</p>
                     </div>
                   </div>
                 </li>
@@ -295,6 +241,77 @@ export default function Reseller() {
                     </div>
                   </div>
                 </li>
+                <Link to={`/reseller/customer/${original.id}`}>
+                  <li>
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <PeopleFill />
+
+                        <p className="actionP">{t("customer")}</p>
+                      </div>
+                    </div>
+                  </li>
+                </Link>
+
+                <Link to={`/reseller/summary/${original.id}`}>
+                  <li>
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <Book />
+
+                        <p className="actionP">{t("summary")}</p>
+                      </div>
+                    </div>
+                  </li>
+                </Link>
+
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#rechargeReport"
+                  onClick={() => {
+                    getSpecificReseller(original.id);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <CashStack />
+                      <p className="actionP">{t("report")}</p>
+                    </div>
+                  </div>
+                </li>
+
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#monthlyReport"
+                  onClick={() => {
+                    getSpecificReseller(original.id);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <CashStack />
+                      <p className="actionP">{t("prevMonthReport")}</p>
+                    </div>
+                  </div>
+                </li>
+
+                {original.mobile && (
+                  <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#customerMessageModal"
+                    onClick={() => {
+                      handleSingleMessage(original.id);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <ChatText />
+                        <p className="actionP">{t("message")}</p>
+                      </div>
+                    </div>
+                  </li>
+                )}
+
                 {role === "ispOwner" && (
                   <>
                     <li
@@ -342,23 +359,6 @@ export default function Reseller() {
                     </div>
                   </div>
                 </li>
-
-                {original.mobile && (
-                  <li
-                    data-bs-toggle="modal"
-                    data-bs-target="#customerMessageModal"
-                    onClick={() => {
-                      handleSingleMessage(original.id);
-                    }}
-                  >
-                    <div className="dropdown-item">
-                      <div className="customerAction">
-                        <ChatText />
-                        <p className="actionP">{t("message")}</p>
-                      </div>
-                    </div>
-                  </li>
-                )}
               </ul>
             </div>
           </div>
