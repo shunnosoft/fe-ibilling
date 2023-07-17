@@ -160,6 +160,17 @@ p {
   color: #035c27 !important;
 }
 
+.dashboardCollection {
+  font-size: 15px;
+  padding-top: 0;
+  color: #ffffff !important;
+  transition: ease-in-out 0.3s;
+  cursor: pointer;
+}
+.dashboardCollection:hover {
+  color: #331bd3 !important;
+}
+
 .dashboardActive {
   color: #ffffff !important;
   transition: ease-in-out 0.3s;

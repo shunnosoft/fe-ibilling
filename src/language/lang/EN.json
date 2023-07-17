@@ -819,7 +819,7 @@
   "changedCustomer": "Changed Customer",
   "businessBalance": "Business Balance",
   "packageSetting": "Package Setting",
-  "doNotAreaDeleteAndUpdate": "Cannot delete microtic area and subArea",
+  "doNotAreaDeleteAndUpdate": "Cannot delete mikrotik area and subArea",
   "notFoundMobileNumber": "Customer mobile number not found",
   "rechargeYourCustomer": "Recharge your customer's monthly bill!",
   "commissionType": "Commission Type",
@@ -827,5 +827,6 @@
   "packageBased": "Package Based",
   "ispOwnerShare": "IspOwner Share",
   "selectType": "Select Type",
-  "fixedRate": "Fixed Rate"
+  "fixedRate": "Fixed Rate",
+  "discountCustomer": "Discount Customer"
 }

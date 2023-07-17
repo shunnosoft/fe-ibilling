@@ -611,7 +611,7 @@ const CustomerInvoice = () => {
                             </div>
 
                             {/* filter and reset control button */}
-                            <div className="gridButton">
+                            <div className="d-flex justify-content-end align-items-end">
                               <button
                                 className="btn btn-outline-primary w-6rem"
                                 type="button"

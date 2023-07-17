@@ -141,6 +141,7 @@ import {
 } from "./netFeeSupportSlice";
 import {
   getActiveCustomerSuccess,
+  getDiscountCustomerSuccess,
   getExpiredCustomerSuccess,
   getFreeCustomerSuccess,
   getInactiveCustomerSuccess,
@@ -3403,4 +3404,24 @@ export const deleteIspOwnerCustomerInvoice = async (dispatch, invoiceId) => {
   } catch (error) {
     toast.error(error.response?.data.message);
   }
+};
+
+// dicount customer api call
+export const getDiscountCustomer = async (
+  dispatch,
+  ispOwnerId,
+  year,
+  month,
+  setIsLoading
+) => {
+  setIsLoading(true);
+  const res = await apiLink.get(
+    `ispOwner/discount/customer/${ispOwnerId}?month=${month}&year=${year}`
+  );
+  dispatch(getDiscountCustomerSuccess(res.data));
+  try {
+  } catch (error) {
+    console.log(error.response.data.message);
+  }
+  setIsLoading(false);
 };

@@ -19,15 +19,18 @@ export default function ActionButton({
 
   const allMikrotiks = useSelector((state) => state.mikrotik.mikrotik);
 
+  const mikrotikConditionHandle = () => {
+    if (allMikrotiks.find((val) => val.name.includes(data?.name))) {
+      return toast.warn(t("doNotAreaDeleteAndUpdate"));
+    }
+  };
+
   return (
     <>
       <div className="dropdown">
         <ThreeDots
           className="dropdown-toggle ActionDots"
-          onClick={() =>
-            allMikrotiks.find((val) => val.name.includes(data?.name)) &&
-            toast.warn(t("doNotAreaDeleteAndUpdate"))
-          }
+          onClick={mikrotikConditionHandle}
           id="areaDropdown"
           type="button"
           data-bs-toggle="dropdown"

@@ -127,7 +127,6 @@ export default function Customer() {
 
   // get all packages
   const allPackages = useSelector((state) => state.package.allPackages);
-  console.log(allPackages);
 
   // get all subAreas
   const storeSubArea = useSelector((state) => state.area?.subArea);
@@ -147,7 +146,6 @@ export default function Customer() {
 
   const [mikrotikPac, setMikrotikPac] = useState();
   const [Customers1, setCustomers1] = useState([]);
-  console.log(Customers1);
 
   const [Customers2, setCustomers2] = useState([]);
 
