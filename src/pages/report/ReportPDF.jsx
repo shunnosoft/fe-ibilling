@@ -8,8 +8,15 @@ import { useTranslation } from "react-i18next";
 const PrintReport = React.forwardRef((props, ref) => {
   const { t } = useTranslation();
   const { currentCustomers, filterData, status } = props;
-  const ispOwnerData = useSelector(
-    (state) => state.persistedReducer.auth.userData
+
+  //user role
+  const userRole = useSelector((state) => state.persistedReducer.auth.role);
+
+  //user Data
+  const userData = useSelector((state) =>
+    userRole === "manager"
+      ? state.persistedReducer.auth.ispOwnerData
+      : state.persistedReducer.auth.userData
   );
   const startDate = moment(filterData.startDate).format("DD/MM/YYYY");
   const endDate = moment(filterData.endDate).format("DD/MM/YYYY");
@@ -21,15 +28,15 @@ const PrintReport = React.forwardRef((props, ref) => {
             <div className="company_logo">
               <img src="/assets/img/logo.png" alt="" />
             </div>
-            <div className="company_name">{ispOwnerData.company}</div>
+            <div className="company_name">{userData.company}</div>
           </div>
           <div className="details_side">
             <p>
-              {t("companyName")} {ispOwnerData.company}
+              {t("companyName")} {userData.company}
             </p>
-            {ispOwnerData.address && (
+            {userData.address && (
               <p>
-                {t("address")} : {ispOwnerData?.address}
+                {t("address")} : {userData?.address}
               </p>
             )}
           </div>
@@ -56,6 +63,20 @@ const PrintReport = React.forwardRef((props, ref) => {
           <ul className="d-flex justify-content-around filter_list">
             <li>
               {t("billType")} : {filterData.billType}
+            </li>
+            <li>
+              {t("medium")} : {filterData.medium}
+            </li>
+            <li>
+              {t("date")} : {startDate} - {endDate}
+            </li>
+          </ul>
+        )}
+
+        {status === "collection" && (
+          <ul className="d-flex justify-content-around filter_list">
+            <li>
+              {t("reseller")} : {filterData.reseller}
             </li>
             <li>
               {t("medium")} : {filterData.medium}

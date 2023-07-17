@@ -145,10 +145,13 @@ const Staff = () => {
         <div className="container">
           <FontColor>
             <FourGround>
-              <div className="collectorTitle d-flex justify-content-between px-5">
+              <div className="collectorTitle d-flex justify-content-between px-4">
                 {/* <div> {t("staff")} </div> */}
                 <div className="d-flex">
-                  <div>{t("staff")}</div>
+                  <h2>{t("staff")}</h2>
+                </div>
+
+                <div className="d-flex justify-content-center align-items-center">
                   <div className="reloadBtn">
                     {tableLoading ? (
                       <Loader></Loader>
@@ -158,15 +161,14 @@ const Staff = () => {
                       ></ArrowClockwise>
                     )}
                   </div>
-                </div>
-                <div className="d-flex justify-content-between align-items-center">
-                  <div className="header_icon me-1">
+
+                  <div>
                     <ReactToPrint
                       documentTitle="Staff Report"
                       trigger={() => (
                         <PrinterFill
-                        // title={t("print")}
-                        // className="addcutmButton"
+                          title={t("print")}
+                          className="addcutmButton"
                         />
                       )}
                       content={() => componentRef.current}
@@ -176,11 +178,10 @@ const Staff = () => {
                     {(role === "ispOwner" || role === "reseller") && (
                       <div
                         title={t("addStaff")}
-                        className="header_icon"
                         data-bs-toggle="modal"
                         data-bs-target="#staffModal"
                       >
-                        <PersonPlusFill />
+                        <PersonPlusFill className="addcutmButton" />
                       </div>
                     )}
                   </div>

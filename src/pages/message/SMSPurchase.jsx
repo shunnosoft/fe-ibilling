@@ -5,42 +5,61 @@ import { useSelector } from "react-redux";
 import Loader from "../../components/common/Loader";
 import { purchaseSms } from "../../features/apiCalls";
 
-const SMSPurchase = ({ show, smsPurchase }) => {
+const SMSPurchase = ({ show, setShow }) => {
   const { t } = useTranslation();
 
-  // modal onHide true or false state
-  const [showIf, setShowIf] = useState(false);
-
   // modal close handler
-  const handleClose = () => setShowIf(false);
+  const handleClose = () => setShow(false);
 
+  //user role
   const userRole = useSelector((state) => state.persistedReducer.auth.role);
+
+  //user Data
   const userData = useSelector((state) =>
     userRole === "manager"
       ? state.persistedReducer.auth.ispOwnerData
       : state.persistedReducer.auth.userData
   );
+
+  //states
   const [isLoading, setIsloading] = useState(false);
 
   const [amount, setAmount] = useState(100);
 
   const [count, setCount] = useState(Number(amount) / userData.smsRate);
+
   const [messageType, setMessageType] = useState(
     "nonMasking" || "masking" || "fixedNumber"
   );
 
+  //SMS count function
   const changeHandler = (numOfSms) => {
     if (messageType === "nonMasking") {
-      setAmount(userData.smsRate * numOfSms);
+      setAmount(Math.ceil(userData.smsRate * numOfSms));
     } else if (messageType === "masking") {
-      setAmount(userData.maskingSmsRate * numOfSms);
+      setAmount(Math.ceil(userData.maskingSmsRate * numOfSms));
     } else if (messageType === "fixedNumber") {
-      setAmount(userData.fixedNumberSmsRate * numOfSms);
+      setAmount(Math.ceil(userData.fixedNumberSmsRate * numOfSms));
     }
 
     setCount(numOfSms);
   };
 
+  //Money count function
+  const tkHandler = (money) => {
+    money = Math.ceil(money);
+    if (messageType === "nonMasking") {
+      setCount(Math.ceil(money / userData.smsRate));
+    } else if (messageType === "masking") {
+      setCount(Math.ceil(money / userData.maskingSmsRate));
+    } else if (messageType === "fixedNumber") {
+      setCount(Math.ceil(money / userData.fixedNumberSmsRate));
+    }
+
+    setAmount(money);
+  };
+
+  //form submit handler
   const submitHandler = (e) => {
     if (count * userData.smsRate < 100) {
       alert(t("unsuccessSMSalertPurchageModal"));
@@ -53,37 +72,25 @@ const SMSPurchase = ({ show, smsPurchase }) => {
         type: "smsPurchase",
         smsPurchaseType: messageType,
       };
+      console.log(data);
 
-      purchaseSms(data, setIsloading);
+      //purchaseSms(data, setIsloading);
     }
   };
 
   useEffect(() => {
-    //modal onHide
-    if (show) {
-      setShowIf(show);
-    }
-    if (smsPurchase) {
-      setShowIf(smsPurchase);
-    }
-
     // message purchase
     if (messageType === "nonMasking") {
-      setAmount(userData.smsRate * count);
+      setAmount(Math.ceil(userData.smsRate * count));
     } else if (messageType === "masking") {
-      setAmount(userData.maskingSmsRate * count);
+      setAmount(Math.ceil(userData.maskingSmsRate * count));
     } else if (messageType === "fixedNumber") {
-      setAmount(userData.fixedNumberSmsRate * count);
+      setAmount(Math.ceil(userData.fixedNumberSmsRate * count));
     }
-  }, [show, smsPurchase, messageType]);
+  }, [messageType]);
 
   return (
-    <Modal
-      show={showIf}
-      onHide={handleClose}
-      backdrop="static"
-      keyboard={false}
-    >
+    <Modal show={show} onHide={handleClose} backdrop="static" keyboard={false}>
       <Modal.Header closeButton>
         <Modal.Title> {t("smsPurchageBoard")}</Modal.Title>
       </Modal.Header>
@@ -162,6 +169,17 @@ const SMSPurchase = ({ show, smsPurchase }) => {
                 type="number"
                 value={count}
                 min={250}
+              />
+            </div>
+
+            <div className="form-group mt-3">
+              <label> {t("tk")} </label>
+              <input
+                onChange={(e) => tkHandler(e.target.value)}
+                className="form-control"
+                type="number"
+                value={amount ? amount : ""}
+                min={63}
               />
             </div>
           </form>

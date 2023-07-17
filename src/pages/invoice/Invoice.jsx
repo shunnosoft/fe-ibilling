@@ -22,11 +22,13 @@ import ReactToPrint from "react-to-print";
 import {
   ArrowClockwise,
   CurrencyDollar,
+  FilterCircle,
   PrinterFill,
   ThreeDots,
 } from "react-bootstrap-icons";
 import PrintInvoice from "./invoicePDF";
 import Loader from "../../components/common/Loader";
+import { Accordion } from "react-bootstrap";
 
 function Invoice() {
   const { t } = useTranslation();
@@ -43,6 +45,9 @@ function Invoice() {
   const [type, setType] = useState("");
 
   const [status, setStatus] = useState("");
+
+  // filter Accordion handle state
+  const [activeKeys, setActiveKeys] = useState("");
 
   //date filter section
   var today = new Date();
@@ -133,7 +138,7 @@ function Invoice() {
         Header: t("invoiceDate"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("MMM DD YYYY hh:mm a");
+          return moment(value).format("YYYY/MM/DD hh:mm a");
         },
       },
       {
@@ -141,9 +146,7 @@ function Invoice() {
         Header: () => t("dueDate"),
         accessor: "dueDate",
         Cell: ({ cell: { value } }) => (
-          <span>
-            {value ? moment(value).format("MMM DD YYYY hh:mm a") : ""}
-          </span>
+          <span>{value ? moment(value).format("YYYY/MM/DD hh:mm a") : ""}</span>
         ),
       },
       {
@@ -151,7 +154,7 @@ function Invoice() {
         Header: () => t("paidAt"),
         accessor: "paidAt",
         Cell: ({ cell: { value } }) => (
-          <span>{value && moment(value).format("MMM DD YYYY hh:mm a")}</span>
+          <span>{value && moment(value).format("YYYY/MM/DD hh:mm a")}</span>
         ),
       },
       {
@@ -247,9 +250,25 @@ function Invoice() {
           <div className="container">
             <FontColor>
               <FourGround>
-                <div className="collectorTitle d-flex justify-content-between px-5">
+                <div className="collectorTitle d-flex justify-content-between px-4">
                   <div className="d-flex">
                     <div>{t("invoice")}</div>
+                  </div>
+
+                  <div className="d-flex justify-content-center align-items-center">
+                    <div
+                      onClick={() => {
+                        if (!activeKeys) {
+                          setActiveKeys("filter");
+                        } else {
+                          setActiveKeys("");
+                        }
+                      }}
+                      title={t("filter")}
+                    >
+                      <FilterCircle className="addcutmButton" />
+                    </div>
+
                     <div className="reloadBtn">
                       {isLoading ? (
                         <Loader></Loader>
@@ -259,9 +278,7 @@ function Invoice() {
                         ></ArrowClockwise>
                       )}
                     </div>
-                  </div>
 
-                  <div className="addAndSettingIcon">
                     <ReactToPrint
                       documentTitle="গ্রাহক লিস্ট"
                       trigger={() => (
@@ -278,64 +295,75 @@ function Invoice() {
 
               <FourGround>
                 {/* filter div */}
-                <div className="selectFilteringg pt-2">
-                  <select
-                    className="form-select mx-2"
-                    onChange={(e) => setType(e.target.value)}
-                  >
-                    <option value="" defaultValue>
-                      {t("type")}
-                    </option>
+                <div className="mt-2">
+                  <Accordion alwaysOpen activeKey={activeKeys}>
+                    <Accordion.Item eventKey="filter">
+                      <Accordion.Body>
+                        <div className="selectFilteringg">
+                          <select
+                            className="form-select me-2 mt-0"
+                            onChange={(e) => setType(e.target.value)}
+                          >
+                            <option value="" defaultValue>
+                              {t("type")}
+                            </option>
 
-                    <option value="registration"> {t("registration")}</option>
-                    <option value="migration"> {t("migration")} </option>
-                    <option value="smsPurchase"> {t("smsPurchase")} </option>
-                    <option value="monthlyServiceCharge">
-                      {" "}
-                      {t("monthlyServiceCharge")}{" "}
-                    </option>
-                  </select>
+                            <option value="registration">
+                              {t("registration")}
+                            </option>
+                            <option value="migration">{t("migration")}</option>
+                            <option value="smsPurchase">
+                              {t("smsPurchase")}
+                            </option>
+                            <option value="monthlyServiceCharge">
+                              {t("monthlyServiceCharge")}
+                            </option>
+                          </select>
 
-                  <select
-                    className="form-select mx-2"
-                    onChange={(e) => setStatus(e.target.value)}
-                  >
-                    <option value="" defaultValue>
-                      {t("status")}
-                    </option>
+                          <select
+                            className="form-select me-2 mt-0"
+                            onChange={(e) => setStatus(e.target.value)}
+                          >
+                            <option value="" defaultValue>
+                              {t("status")}
+                            </option>
 
-                    <option value="paid"> {t("paid")}</option>
-                    <option value="unpaid"> {t("unpaid")} </option>
-                  </select>
+                            <option value="paid"> {t("paid")}</option>
+                            <option value="unpaid"> {t("unpaid")} </option>
+                          </select>
 
-                  <div className="ms-2">
-                    <DatePicker
-                      className="form-control w-140 mt-2"
-                      selected={dateStart}
-                      onChange={(date) => setStartDate(date)}
-                      dateFormat="MMM dd yyyy"
-                      placeholderText={t("selectBillDate")}
-                    />
-                  </div>
-                  <div className="mx-2">
-                    <DatePicker
-                      className="form-control w-140 mt-2"
-                      selected={dateEnd}
-                      onChange={(date) => setEndDate(date)}
-                      dateFormat="MMM dd yyyy"
-                      placeholderText={t("selectBillDate")}
-                    />
-                  </div>
+                          <div className="ms-2">
+                            <DatePicker
+                              className="form-control w-140"
+                              selected={dateStart}
+                              onChange={(date) => setStartDate(date)}
+                              dateFormat="MMM dd yyyy"
+                              placeholderText={t("selectBillDate")}
+                            />
+                          </div>
+                          <div className="mx-2">
+                            <DatePicker
+                              className="form-control w-140"
+                              selected={dateEnd}
+                              onChange={(date) => setEndDate(date)}
+                              dateFormat="MMM dd yyyy"
+                              placeholderText={t("selectBillDate")}
+                            />
+                          </div>
 
-                  <div>
-                    <button
-                      className="btn btn-outline-primary w-110 mt-2"
-                      type="button"
-                      onClick={onClickFilter}
-                    >
-                      {t("filter")}
-                    </button>
-                  </div>
+                          <div>
+                            <button
+                              className="btn btn-outline-primary w-110"
+                              type="button"
+                              onClick={onClickFilter}
+                            >
+                              {t("filter")}
+                            </button>
+                          </div>
+                        </div>
+                      </Accordion.Body>
+                    </Accordion.Item>
+                  </Accordion>
                 </div>
 
                 <div style={{ display: "none" }}>

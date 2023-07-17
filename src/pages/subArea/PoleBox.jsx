@@ -16,7 +16,7 @@ import PoleBoxPost from "./poleBoxModals/PoleBoxPost";
 import PoleBoxEdit from "./poleBoxModals/PoleBoxEdit";
 import { Modal, ModalBody, ModalHeader } from "react-bootstrap";
 
-export default function PoleBox({ areaId, poleShow, setPoleShow }) {
+export default function PoleBox({ areaName, areaId, poleShow, setPoleShow }) {
   const { t } = useTranslation();
 
   //get all sub Area
@@ -135,7 +135,7 @@ export default function PoleBox({ areaId, poleShow, setPoleShow }) {
         <ModalBody>
           <div className="container-fluied collector">
             <div className="container">
-              <div className="collectorTitle d-flex justify-content-between align-items-center px-5">
+              <div className="collectorTitle d-flex justify-content-between align-items-center px-4">
                 <div>{t("poleBox")}</div>
                 <div
                   title={t("addPoleBox")}
@@ -159,6 +159,7 @@ export default function PoleBox({ areaId, poleShow, setPoleShow }) {
       </Modal>
 
       <PoleBoxPost
+        areaName={areaName}
         areaId={areaId}
         postShow={postShow}
         setPostShow={setPostShow}

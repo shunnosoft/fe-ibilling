@@ -60,6 +60,9 @@ export default function ResellerEdit({ resellerId }) {
   const [packageCommisson, setPackageCommission] = useState([]);
   const [clonePackageCommission, setClonePackageCommission] = useState([]);
 
+  // commission share in isp & reseller state
+  const [ispCommission, setIspCommission] = useState("");
+
   const [permissions, setPermissions] = useState([]);
 
   //get all valid permissions from resellerPermissions
@@ -82,6 +85,7 @@ export default function ResellerEdit({ resellerId }) {
       setPackageRateType(reseller.commissionStyle);
       setPackageCommission(reseller.resellerPackageRates);
       setClonePackageCommission(reseller.resellerPackageRates);
+      setIspCommission(reseller?.commissionRate?.isp);
 
       const perms = resellerPermissions(reseller.permission, bpSettings);
       const filterdPermission = perms.filter((p) => p.disabled === false);
@@ -324,6 +328,13 @@ export default function ResellerEdit({ resellerId }) {
     }
   };
 
+  // handle form onChange
+  const handleOnchange = (e) => {
+    if (e.target.name === "commissionRate") {
+      setIspCommission(100 - e.target.value);
+    }
+  };
+
   return (
     <div>
       <div
@@ -367,7 +378,7 @@ export default function ResellerEdit({ resellerId }) {
                 enableReinitialize
               >
                 {(formik) => (
-                  <Form>
+                  <Form onChange={handleOnchange}>
                     <Tabs
                       defaultActiveKey={"basic"}
                       id="uncontrolled-tab-example"
@@ -409,58 +420,74 @@ export default function ResellerEdit({ resellerId }) {
                       </Tab>
                       {/* end basic part */}
 
-                      <Tab eventKey="permission" title={t("changePermission")}>
-                        <div className="displayGrid3 secondSection text-start">
-                          <div className="permission-section">
-                            <input
-                              id="permissionEdit"
-                              type="checkbox"
-                              className="form-check-input"
-                              onChange={handleChange}
-                              name="allChecked"
-                              checked={permissions.every(
-                                (item) => item.isChecked
-                              )}
-                            />
-                            <label
-                              htmlFor="permissionEdit"
-                              className="form-check-label"
-                            >
-                              <p className="radioTitle ms-1">
-                                {t("allPermission")}
-                              </p>
-                            </label>
-                          </div>
-                          {permissions.map((val, key) => {
-                            return (
-                              <div key={val + "" + key} className="displayFlex">
+                      {/* area part */}
+                      <Tab eventKey="area" title={t("area")}>
+                        <b className="mt-2"> {t("selectArea")} </b>
+                        <div className="AllAreaClass">
+                          {area?.map((val, key) => (
+                            <div key={key}>
+                              <div
+                                style={{
+                                  cursor: "pointer",
+                                }}
+                                className="areaParent"
+                              >
                                 <input
-                                  id={key + "reseller" + val}
-                                  key={val + "" + key}
                                   type="checkbox"
-                                  className="form-check-input"
-                                  checked={val.isChecked}
-                                  onChange={handleChange}
-                                  name={val.value}
+                                  className="getValueUsingClasses form-check-input"
+                                  name="area"
+                                  id={val.id}
+                                  onChange={resellerAreaSubAreaHandle}
+                                  isChecked
                                 />
-                                <label htmlFor={key + "reseller" + val}>
-                                  {val.label}
+                                <label
+                                  htmlFor={val.id}
+                                  className="ms-2"
+                                  style={{
+                                    fontSize: "20px",
+                                  }}
+                                >
+                                  {val.name}
                                 </label>
                               </div>
-                            );
-                          })}
+
+                              {storeSubArea?.map(
+                                (v, k) =>
+                                  v.area === val.id && (
+                                    <div key={k} className=" my-1">
+                                      <input
+                                        type="checkbox"
+                                        id={v.area}
+                                        className="getValueUsingClass_Edit me-2"
+                                        name="subArea"
+                                        value={v.id}
+                                        checked={allowedAreas?.includes(v.id)}
+                                        onChange={setAreaHandler}
+                                      />
+                                      <label
+                                        className="form-check-label"
+                                        htmlFor={v.id}
+                                      >
+                                        {v.name}
+                                      </label>
+                                    </div>
+                                  )
+                              )}
+                            </div>
+                          ))}
                         </div>
                       </Tab>
+                      {/* end area part */}
 
                       {/* package part */}
                       <Tab eventKey="package" title={t("package")}>
                         <div className="d-flex mt-3 justify-content-evenly">
                           <div className="form-check ">
-                            <p className="radioTitle">কমিশন এর ধরণ</p>
+                            <p className="radioTitle">{t("commissionType")}</p>
                             <div className="d-flex">
                               <div className="form-check">
                                 <FtextField
-                                  label="Global Commission"
+                                  label={t("globalCommission")}
                                   className="form-check-input"
                                   type="radio"
                                   name="commissionType"
@@ -474,7 +501,7 @@ export default function ResellerEdit({ resellerId }) {
                               </div>
                               <div className="form-check">
                                 <FtextField
-                                  label="Package Based"
+                                  label={t("packageBased")}
                                   className="form-check-input"
                                   type="radio"
                                   name="commissionType"
@@ -487,9 +514,11 @@ export default function ResellerEdit({ resellerId }) {
                               </div>
                             </div>
                           </div>
-                          <div className="w-50 mb-3 mx-auto">
-                            {commissionType === "global" && (
-                              <div className="form-check ">
+                        </div>
+                        <div className="d-flex justify-content-center">
+                          {commissionType === "global" && (
+                            <div className="d-flex w-50">
+                              <div className="form-check">
                                 <p className="radioTitle"> {t("share")} </p>
 
                                 <FtextField
@@ -500,38 +529,50 @@ export default function ResellerEdit({ resellerId }) {
                                   min={0}
                                 />
                               </div>
-                            )}
-                            {commissionType === "packageBased" && (
+
                               <div className="form-check">
                                 <p className="radioTitle"> {t("share")} </p>
 
-                                <select
+                                <FtextField
+                                  style={{ marginTop: "-25px" }}
+                                  key="isp"
                                   type="number"
-                                  className="form-select mw-100 mt-0"
-                                  onChange={(e) =>
-                                    setPackageRateType(e.target.value)
-                                  }
-                                >
-                                  <option selected value="">
-                                    Select
-                                  </option>
-
-                                  <option
-                                    selected={packageRateType === "percentage"}
-                                    value="percentage"
-                                  >
-                                    Percentage
-                                  </option>
-                                  <option
-                                    selected={packageRateType === "fixedRate"}
-                                    value="fixedRate"
-                                  >
-                                    Fixed Rate
-                                  </option>
-                                </select>
+                                  name="isp"
+                                  value={ispCommission}
+                                  min={0}
+                                  disabled={true}
+                                />
                               </div>
-                            )}
-                          </div>
+                            </div>
+                          )}
+                          {commissionType === "packageBased" && (
+                            <div className="form-check w-50">
+                              <p className="radioTitle">{t("ispOwnerShare")}</p>
+                              <select
+                                type="number"
+                                className="form-select mw-100 mt-0"
+                                onChange={(e) =>
+                                  setPackageRateType(e.target.value)
+                                }
+                              >
+                                <option selected value="">
+                                  {t("selectType")}
+                                </option>
+                                <option
+                                  selected={packageRateType === "percentage"}
+                                  value="percentage"
+                                >
+                                  {t("percentage")}
+                                </option>
+                                <option
+                                  selected={packageRateType === "fixedRate"}
+                                  value="fixedRate"
+                                >
+                                  {t("fixedRate")}
+                                </option>
+                              </select>
+                            </div>
+                          )}
                         </div>
 
                         {bpSettings.hasMikrotik ? (
@@ -601,64 +642,48 @@ export default function ResellerEdit({ resellerId }) {
                       </Tab>
                       {/* end package part */}
 
-                      {/* area part */}
-                      <Tab eventKey="area" title={t("area")}>
-                        <b className="mt-2"> {t("selectArea")} </b>
-                        <div className="AllAreaClass">
-                          {area?.map((val, key) => (
-                            <div key={key}>
-                              <div
-                                style={{
-                                  cursor: "pointer",
-                                }}
-                                className="areaParent"
-                              >
+                      <Tab eventKey="permission" title={t("changePermission")}>
+                        <div className="displayGrid3 secondSection text-start">
+                          <div className="permission-section">
+                            <input
+                              id="permissionEdit"
+                              type="checkbox"
+                              className="form-check-input"
+                              onChange={handleChange}
+                              name="allChecked"
+                              checked={permissions.every(
+                                (item) => item.isChecked
+                              )}
+                            />
+                            <label
+                              htmlFor="permissionEdit"
+                              className="form-check-label"
+                            >
+                              <p className="radioTitle ms-1">
+                                {t("allPermission")}
+                              </p>
+                            </label>
+                          </div>
+                          {permissions.map((val, key) => {
+                            return (
+                              <div key={val + "" + key} className="displayFlex">
                                 <input
+                                  id={key + "reseller" + val}
+                                  key={val + "" + key}
                                   type="checkbox"
-                                  className="getValueUsingClasses form-check-input"
-                                  name="area"
-                                  id={val.id}
-                                  onChange={resellerAreaSubAreaHandle}
-                                  isChecked
+                                  className="form-check-input"
+                                  checked={val.isChecked}
+                                  onChange={handleChange}
+                                  name={val.value}
                                 />
-                                <label
-                                  htmlFor={val.id}
-                                  className="ms-2"
-                                  style={{
-                                    fontSize: "20px",
-                                  }}
-                                >
-                                  {val.name}
+                                <label htmlFor={key + "reseller" + val}>
+                                  {val.label}
                                 </label>
                               </div>
-
-                              {storeSubArea?.map(
-                                (v, k) =>
-                                  v.area === val.id && (
-                                    <div key={k} className=" my-1">
-                                      <input
-                                        type="checkbox"
-                                        id={v.area}
-                                        className="getValueUsingClass_Edit me-2"
-                                        name="subArea"
-                                        value={v.id}
-                                        checked={allowedAreas?.includes(v.id)}
-                                        onChange={setAreaHandler}
-                                      />
-                                      <label
-                                        className="form-check-label"
-                                        htmlFor={v.id}
-                                      >
-                                        {v.name}
-                                      </label>
-                                    </div>
-                                  )
-                              )}
-                            </div>
-                          ))}
+                            );
+                          })}
                         </div>
                       </Tab>
-                      {/* end area part */}
                     </Tabs>
 
                     <div className="modal-footer">

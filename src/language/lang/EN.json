@@ -800,8 +800,8 @@
   "requestedPackage": "Requested Package",
   "mikrotikName": "Mikrotik Name",
   "mikrotikUserName": "Mikrotik User Name",
-  "mikrotikPort": "Mikrotik Port",
-  "mikrotikPassword": "Mikrotik Password",
+  "mikrotikApiPort": "Mikrotik Api Port",
+  "mikrotikUserPassword": "Mikrotik User Password",
   "resellerDelete": "Do you want to delete the reseller?",
   "allPermission": "All Permission",
   "whatsAppLive": "What's App Live",
@@ -818,5 +818,14 @@
   "promiseDateChange": "Promise Date Change",
   "changedCustomer": "Changed Customer",
   "businessBalance": "Business Balance",
-  "packageSetting": "Package Setting"
+  "packageSetting": "Package Setting",
+  "doNotAreaDeleteAndUpdate": "Cannot delete microtic area and subArea",
+  "notFoundMobileNumber": "Customer mobile number not found",
+  "rechargeYourCustomer": "Recharge your customer's monthly bill!",
+  "commissionType": "Commission Type",
+  "globalCommission": "Global Commission",
+  "packageBased": "Package Based",
+  "ispOwnerShare": "IspOwner Share",
+  "selectType": "Select Type",
+  "fixedRate": "Fixed Rate"
 }

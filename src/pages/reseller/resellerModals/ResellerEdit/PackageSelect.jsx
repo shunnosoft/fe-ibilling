@@ -19,6 +19,8 @@ const PackageSelect = ({
       <label className="form-check-label" htmlFor={id}>
         {packageInfo.name}
       </label>
+
+      <span className="text-secondary">&#2547;{packageInfo.rate}</span>
     </div>
   );
 };

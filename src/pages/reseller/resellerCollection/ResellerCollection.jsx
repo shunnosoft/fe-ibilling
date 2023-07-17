@@ -1,10 +1,23 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import Sidebar from "../../../components/admin/sidebar/Sidebar";
-import { ToastContainer } from "react-bootstrap";
+import { Accordion, ToastContainer } from "react-bootstrap";
 import useDash from "../../../assets/css/dash.module.css";
 import { FontColor, FourGround } from "../../../assets/js/theme";
 import Loader from "../../../components/common/Loader";
-import { ArrowClockwise, PenFill, ThreeDots } from "react-bootstrap-icons";
+import {
+  ArrowClockwise,
+  FiletypeCsv,
+  FilterCircle,
+  PenFill,
+  PrinterFill,
+  ThreeDots,
+} from "react-bootstrap-icons";
 import Table from "../../../components/table/Table";
 import Footer from "../../../components/admin/footer/Footer";
 import { useTranslation } from "react-i18next";
@@ -18,10 +31,14 @@ import ReportView from "../../report/modal/ReportView";
 import EditReport from "../../report/modal/EditReport";
 import DatePicker from "react-datepicker";
 import FormatNumber from "../../../components/common/NumberFormat";
+import { CSVLink } from "react-csv";
+import PrintReport from "../../report/ReportPDF";
+import ReactToPrint from "react-to-print";
 
 const ResellerCollection = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const componentRef = useRef();
 
   // current date set
   let lastDate = new Date();
@@ -32,6 +49,11 @@ const ResellerCollection = () => {
   // get isp owner id
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
+  );
+
+  // get isp owner data
+  const ispOwnerData = useSelector(
+    (state) => state.persistedReducer.auth?.userData
   );
 
   // get reseller
@@ -48,6 +70,9 @@ const ResellerCollection = () => {
 
   //reseller id state
   const [resellerId, setResellerId] = useState("");
+
+  // filter Accordion handle state
+  const [activeKeys, setActiveKeys] = useState("");
 
   // reseller customer collection main data state
   const [currentData, setCurrentData] = useState(collectionReport);
@@ -128,12 +153,12 @@ const ResellerCollection = () => {
         accessor: "package",
       },
       {
-        width: "7%",
+        width: "8%",
         Header: t("bill"),
         accessor: "amount",
       },
       {
-        width: "9%",
+        width: "10%",
         Header: t("discount"),
         accessor: "discount",
       },
@@ -168,8 +193,8 @@ const ResellerCollection = () => {
               </p>
               {value?.start && value?.end && (
                 <span className="badge bg-secondary">
-                  {moment(value.start).format("DD/MM/YY")}--
-                  {moment(value.end).format("DD/MM/YY")}
+                  {moment(value.start).format("YYYY/MM/DD")}--
+                  {moment(value.end).format("YYYY/MM/DD")}
                 </span>
               )}
               <p>
@@ -194,11 +219,11 @@ const ResellerCollection = () => {
       },
 
       {
-        width: "12%",
+        width: "10%",
         Header: t("date"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("MMM DD YYYY hh:mm a");
+          return moment(value).format("YYYY/MM/DD hh:mm a");
         },
       },
       {
@@ -284,17 +309,64 @@ const ResellerCollection = () => {
     );
   }, [collectionReport]);
 
-  const addAllBills = useCallback(() => {
+  // set csv header
+  const resellerCollectionCsVTableInfoHeader = [
+    { label: "Name", key: "name" },
+    { label: "Package", key: "package" },
+    { label: "Bill_Amount", key: "amount" },
+    { label: "Bill_Discount", key: "discount" },
+    { label: "Bill_Medium", key: "medium" },
+    { label: "Collector_Name", key: "collector" },
+    { label: "Comment", key: "comment" },
+    { label: "Bill_Collect_Date", key: "createdAt" },
+  ];
+
+  // get data from current data for csv
+  let resellerCollectionCsVTableInfo = currentData.map((data) => {
+    const note = data?.note ? data?.note : "";
+    let start = data?.start ? moment(data?.start).format("YYYY/MM/DD") : "";
+    let end = data?.end ? moment(data?.end).format("YYYY/MM/DD") : "";
+    return {
+      name: data?.customer?.name,
+      package: data.package,
+      amount: data.amount,
+      discount: data.discount,
+      medium: data.medium,
+      collector: data.name,
+      comment: note + " - " + start + " - " + end,
+      createdAt: moment(data.createdAt).format("YYYY/MM/DD"),
+    };
+  });
+
+  const resellerName = reseller.find((item) => item.id === resellerId);
+
+  const filterData = {
+    reseller: resellerName?.name ? resellerName.name : t("all"),
+    medium: paymentType ? paymentType : t("all"),
+    startDate: startDate,
+    endDate: endDate,
+    totalBill: currentData.reduce((prev, current) => prev + current.amount, 0),
+  };
+
+  const addAllBills = useMemo(() => {
     var count = 0;
     currentData.forEach((item) => {
       count = count + item.amount;
     });
-    return FormatNumber(count);
+    return { count };
   }, [currentData]);
 
   const customComponent = (
-    <div style={{ fontSize: "18px" }}>
-      {t("totalBill")} {addAllBills()} {t("tk")}
+    <div
+      className="text-center"
+      style={{ fontSize: "18px", fontWeight: "500", display: "flex" }}
+    >
+      {addAllBills?.count > 0 && (
+        <div>
+          {t("totalBill")}:-৳
+          {FormatNumber(addAllBills.count)}
+        </div>
+      )}
     </div>
   );
 
@@ -307,9 +379,24 @@ const ResellerCollection = () => {
           <div className="container">
             <FontColor>
               <FourGround>
-                <div className="collectorTitle d-flex justify-content-between px-5">
+                <div className="collectorTitle d-flex justify-content-between px-4">
                   <div className="d-flex">
                     <div>{t("activeCustomer")}</div>
+                  </div>
+                  <div className="d-flex justify-content-center align-items-center">
+                    <div
+                      onClick={() => {
+                        if (!activeKeys) {
+                          setActiveKeys("filter");
+                        } else {
+                          setActiveKeys("");
+                        }
+                      }}
+                      title={t("filter")}
+                    >
+                      <FilterCircle className="addcutmButton" />
+                    </div>
+
                     <div className="reloadBtn">
                       {isLoading ? (
                         <Loader></Loader>
@@ -319,85 +406,119 @@ const ResellerCollection = () => {
                         ></ArrowClockwise>
                       )}
                     </div>
+
+                    <div className="addAndSettingIcon">
+                      <CSVLink
+                        data={resellerCollectionCsVTableInfo}
+                        filename={ispOwnerData.company}
+                        headers={resellerCollectionCsVTableInfoHeader}
+                        title={t("resellerCollection")}
+                      >
+                        <FiletypeCsv className="addcutmButton" />
+                      </CSVLink>
+                    </div>
+
+                    <div className="addAndSettingIcon">
+                      <ReactToPrint
+                        documentTitle={t("billReport")}
+                        trigger={() => (
+                          <PrinterFill
+                            title={t("print")}
+                            className="addcutmButton"
+                          />
+                        )}
+                        content={() => componentRef.current}
+                      />
+                    </div>
                   </div>
                 </div>
               </FourGround>
 
               <FourGround>
-                <div className="collectorWrapper p-4">
-                  <div className="d-flex justify-content-center">
-                    <div className="col-md-2 form-group mx-2">
-                      <h6 className="mb-0">{t("reseller")}</h6>
-                      <select
-                        className="form-select mt-0 mw-100"
-                        id="resellerCollection"
-                        onChange={resellerCollectionReport}
-                      >
-                        {reseller?.map((item) => (
-                          <option value={item.id}>{item.name}</option>
-                        ))}
-                      </select>
-                    </div>
-                    <div className="col-md-2 form-group">
-                      <h6 className="mb-0">{t("paymentType")}</h6>
-                      <select
-                        className="form-select mt-0 mw-100"
-                        onChange={(e) => setPaymentType(e.target.value)}
-                      >
-                        <option value="" selected>
-                          {t("medium")}
-                        </option>
+                <div className="mt-2">
+                  <Accordion alwaysOpen activeKey={activeKeys}>
+                    <Accordion.Item eventKey="filter">
+                      <Accordion.Body>
+                        <div className="d-flex justify-content-center">
+                          <div className="col-md-2 form-group mx-2">
+                            <select
+                              className="form-select mt-0 mw-100"
+                              id="resellerCollection"
+                              onChange={resellerCollectionReport}
+                            >
+                              {reseller?.map((item) => (
+                                <option value={item.id}>{item.name}</option>
+                              ))}
+                            </select>
+                          </div>
+                          <div className="col-md-2 form-group">
+                            <select
+                              className="form-select mt-0 mw-100"
+                              onChange={(e) => setPaymentType(e.target.value)}
+                            >
+                              <option value="" selected>
+                                {t("medium")}
+                              </option>
 
-                        <option value="cash">{t("handCash")}</option>
-                        <option value="onlinePayment">
-                          {t("onlinePayment")}
-                        </option>
-                        <option value="bKash"> {t("bKash")} </option>
-                        <option value="rocket"> {t("rocket")} </option>
-                        <option value="nagad"> {t("nagad")} </option>
-                        <option value="others"> {t("others")} </option>
-                      </select>
-                    </div>
+                              <option value="cash">{t("handCash")}</option>
+                              <option value="onlinePayment">
+                                {t("onlinePayment")}
+                              </option>
+                              <option value="bKash"> {t("bKash")} </option>
+                              <option value="rocket"> {t("rocket")} </option>
+                              <option value="nagad"> {t("nagad")} </option>
+                              <option value="others"> {t("others")} </option>
+                            </select>
+                          </div>
 
-                    <div className="ms-2 ">
-                      <h6 className="mb-0">{t("startDate")}</h6>
-                      <DatePicker
-                        className="form-control w-140 mt-0"
-                        selected={startDate}
-                        onChange={(date) => setStartDate(date)}
-                        dateFormat="MMM dd yyyy"
-                        placeholderText={t("selectBillDate")}
+                          <div className="ms-2 ">
+                            <DatePicker
+                              className="form-control w-140 mt-0"
+                              selected={startDate}
+                              onChange={(date) => setStartDate(date)}
+                              dateFormat="MMM dd yyyy"
+                              placeholderText={t("selectBillDate")}
+                            />
+                          </div>
+                          <div className="mx-2 ">
+                            <DatePicker
+                              className="form-control w-140 mt-0"
+                              selected={endDate}
+                              onChange={(date) => setEndDate(date)}
+                              dateFormat="MMM dd yyyy"
+                              placeholderText={t("selectBillDate")}
+                            />
+                          </div>
+
+                          <button
+                            className="btn btn-outline-primary w-110"
+                            type="button"
+                            onClick={filterHandler}
+                          >
+                            {t("filter")}
+                          </button>
+                        </div>
+                      </Accordion.Body>
+                    </Accordion.Item>
+                  </Accordion>
+                  <div className="collectorWrapper pb-2">
+                    <div style={{ display: "none" }}>
+                      <PrintReport
+                        filterData={filterData}
+                        currentCustomers={currentData}
+                        ref={componentRef}
+                        status="collection"
                       />
                     </div>
-                    <div className="mx-2 ">
-                      <h6 className="mb-0">{t("endDate")}</h6>
-                      <DatePicker
-                        className="form-control w-140 mt-0"
-                        selected={endDate}
-                        onChange={(date) => setEndDate(date)}
-                        dateFormat="MMM dd yyyy"
-                        placeholderText={t("selectBillDate")}
-                      />
-                    </div>
 
-                    <div className="d-flex align-items-end">
-                      <button
-                        className="btn btn-outline-primary w-110 mt-2"
-                        type="button"
-                        onClick={filterHandler}
-                      >
-                        {t("filter")}
-                      </button>
+                    <div className="table-section">
+                      <Table
+                        isLoading={isLoading || dataLoader}
+                        customComponent={customComponent}
+                        columns={columns}
+                        data={currentData}
+                      ></Table>
                     </div>
-                  </div>
-
-                  <div className="table-section">
-                    <Table
-                      isLoading={isLoading || dataLoader}
-                      customComponent={customComponent}
-                      columns={columns}
-                      data={currentData}
-                    ></Table>
                   </div>
                 </div>
               </FourGround>

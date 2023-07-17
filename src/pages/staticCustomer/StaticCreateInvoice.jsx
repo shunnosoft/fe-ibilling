@@ -75,14 +75,12 @@ const StaticCreateInvoice = ({ show, setShow, single, customerData }) => {
       ? state?.mikrotik?.packagefromDatabase
       : state?.package?.packages
   );
-  console.log(ppPackage);
 
   // get all customer in state
   const customer = useSelector((state) => state?.customer?.staticCustomer);
 
   // find single data
   const data = customer.find((item) => item.id === single);
-  console.log(data);
 
   // handleChange data state
   const [billAmount, setBillAmount] = useState();

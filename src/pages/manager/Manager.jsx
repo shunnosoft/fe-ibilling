@@ -227,7 +227,7 @@ export default function Manager() {
             <ReadModals managerDetails={manager} />
             <FontColor>
               <FourGround>
-                <div className="d-flex justify-content-between collectorTitle px-5">
+                <div className="d-flex justify-content-between collectorTitle px-4">
                   <h2 className="">{t("manager")}</h2>
                   {bpSettings?.multipleManager ? (
                     <div

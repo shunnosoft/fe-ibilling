@@ -192,7 +192,7 @@ export default function SubArea({ isOpen, setIsOpen, areaId }) {
           <div className="container-fluied collector">
             <div className="container">
               {/* Edit MOdal */}
-              <div className="collectorTitle d-flex justify-content-between align-items-center px-5">
+              <div className="collectorTitle d-flex justify-content-between align-items-center px-4">
                 <div>
                   {name || ""} {t("ofSubArea")}
                 </div>

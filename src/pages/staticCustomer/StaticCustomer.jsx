@@ -1,10 +1,4 @@
-import React, {
-  useEffect,
-  useState,
-  useRef,
-  useCallback,
-  useMemo,
-} from "react";
+import React, { useEffect, useState, useRef, useMemo } from "react";
 import "../collector/collector.css";
 import moment from "moment";
 import { CSVLink } from "react-csv";
@@ -17,7 +11,6 @@ import {
   ArchiveFill,
   PenFill,
   PersonFill,
-  ArrowRightShort,
   CashStack,
   ChatText,
   PersonPlusFill,
@@ -29,10 +22,10 @@ import {
   CardChecklist,
   Newspaper,
   ArrowRightSquareFill,
-  ReceiptCutoff,
   GearFill,
   FilterCircle,
   BoxSeam,
+  FiletypeCsv,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -51,6 +44,8 @@ import {
   getArea,
   getCollector,
   getManger,
+  fetchPackagefromDatabase,
+  getAllPackages,
 } from "../../features/apiCalls";
 import CustomerReport from "./customerCRUD/showCustomerReport";
 import { badge } from "../../components/common/Utils";
@@ -122,8 +117,14 @@ export default function Customer() {
       : []
   );
 
+  // get all packages
+  const allPackages = useSelector((state) => state.package.allPackages);
+
   // get all subAreas
   const storeSubArea = useSelector((state) => state.area?.subArea);
+
+  //get all pole Box
+  const poleBox = useSelector((state) => state.area?.poleBox);
 
   //declare local state
   const [isLoading, setIsloading] = useState(false);
@@ -135,8 +136,9 @@ export default function Customer() {
 
   const [cusSearch, setCusSearch] = useState("");
 
-  const [mikrotikPac, setMikrotikPac] = useState([]);
+  const [mikrotikPac, setMikrotikPac] = useState();
   const [Customers1, setCustomers1] = useState([]);
+
   const [Customers2, setCustomers2] = useState([]);
 
   // set customer id in state for note
@@ -150,6 +152,7 @@ export default function Customer() {
     paymentStatus: "",
     area: "",
     subArea: "",
+    poleBox: "",
     package: "",
     mikrotik: "",
     freeUser: "",
@@ -169,6 +172,12 @@ export default function Customer() {
 
   // customers number update or delete modal show state
   const [numberModalShow, setNumberModalShow] = useState(false);
+
+  // pole box filter loding
+  const [isLoadingPole, setIsLoadingPole] = useState(false);
+
+  // subArea current poleBox state
+  const [currentPoleBox, setCurrentPoleBox] = useState([]);
 
   useEffect(() => {
     if (role === "collector") {
@@ -233,7 +242,7 @@ export default function Customer() {
       customerAddress: customer.address,
       connectionType: "Wired",
       connectivity: "Dedicated",
-      createdAt: moment(customer.createdAt).format("MM/DD/YYYY"),
+      createdAt: moment(customer.createdAt).format("YYYY/MM/DD"),
       package: customer?.pppoe?.profile,
       ip: "",
       road: ispOwnerData.address,
@@ -277,7 +286,7 @@ export default function Customer() {
           ? customer.queue.address
           : customer.queue.target,
       customerAddress: customer.address,
-      createdAt: moment(customer.createdAt).format("MM/DD/YYYY"),
+      createdAt: moment(customer.createdAt).format("YYYY/MM/DD"),
       package: customer?.pppoe?.profile,
       mobile: customer?.mobile || "",
       status: customer.status,
@@ -285,7 +294,7 @@ export default function Customer() {
       email: customer.email || "",
       monthlyFee: customer.monthlyFee,
       balance: customer.balance,
-      billingCycle: moment(customer.billingCycle).format("MMM-DD-YYYY"),
+      billingCycle: moment(customer.billingCycle).format("YYYY/MM/DD"),
     };
   });
 
@@ -322,6 +331,8 @@ export default function Customer() {
       (role === "manager" || role === "ispOwner")
     ) {
       getPackagewithoutmikrotik(ispOwner, dispatch, setIsloading);
+    } else {
+      getAllPackages(dispatch, ispOwner, setIsloading);
     }
 
     if (cus.length === 0)
@@ -398,7 +409,8 @@ export default function Customer() {
     if (allArea.length === 0) getArea(dispatch, ispOwner, setIsloading);
     // get sub area api
     getSubAreasApi(dispatch, ispOwner);
-    getPoleBoxApi(dispatch, ispOwner, setIsloading);
+    if (poleBox.length === 0)
+      getPoleBoxApi(dispatch, ispOwner, setIsLoadingPole);
 
     if (role !== "collector") {
       if (collectors.length === 0)
@@ -413,6 +425,7 @@ export default function Customer() {
       const {
         area,
         subArea,
+        poleBox,
         status,
         mikrotik,
         paymentStatus,
@@ -423,11 +436,11 @@ export default function Customer() {
       } = filterOptions;
 
       const billingCycle = new Date(
-        moment(c.billingCycle).format("YYYY-MM-DD")
+        moment(c.billingCycle).format("YYYY/MM/DD")
       ).getTime();
 
       const promiseDate = new Date(
-        moment(c.promiseDate).format("YYYY-MM-DD")
+        moment(c.promiseDate).format("YYYY/MM/DD")
       ).getTime();
 
       let today = new Date();
@@ -438,11 +451,11 @@ export default function Customer() {
       ).getTime();
 
       const todayDate = new Date(
-        moment(new Date()).format("YYYY-MM-DD")
+        moment(new Date()).format("YYYY/MM/DD")
       ).getTime();
 
       const filterDateData = new Date(
-        moment(filterOptions.filterDate).format("YYYY-MM-DD")
+        moment(filterOptions.filterDate).format("YYYY/MM/DD")
       ).getTime();
 
       let getArea = [];
@@ -455,6 +468,7 @@ export default function Customer() {
       const conditions = {
         area: area ? getArea.subAreas.some((item) => item === c.subArea) : true,
         subArea: subArea ? c.subArea === subArea : true,
+        poleBox: poleBox ? c.poleBox === poleBox : true,
         status: status ? c.status === status : true,
         paid: paymentStatus ? c.paymentStatus === "paid" : true,
         unpaid: paymentStatus
@@ -499,6 +513,9 @@ export default function Customer() {
       isPass = conditions["area"];
       if (!isPass) return acc;
       isPass = conditions["subArea"];
+      if (!isPass) return acc;
+
+      isPass = conditions["poleBox"];
       if (!isPass) return acc;
 
       isPass = conditions["status"];
@@ -550,6 +567,8 @@ export default function Customer() {
     setCustomers1(cus);
   };
   const onChangeSubArea = (id) => {
+    const subAreaPoleBox = poleBox?.filter((val) => val.subArea === id);
+    setCurrentPoleBox(subAreaPoleBox);
     setCusSearch(id);
   };
 
@@ -600,6 +619,12 @@ export default function Customer() {
     }
   };
 
+  // customer current package find
+  const customerPackageFind = (pack) => {
+    const findPack = allPackages.find((item) => item.id.includes(pack));
+    return findPack;
+  };
+
   const columns = React.useMemo(
     () => [
       {
@@ -618,7 +643,7 @@ export default function Customer() {
         ),
       },
       {
-        width: "8%",
+        width: "7%",
         Header: t("id"),
         accessor: "customerId",
       },
@@ -628,7 +653,7 @@ export default function Customer() {
         accessor: "name",
       },
       {
-        width: "12%",
+        width: "10%",
         Header: t("ip"),
         accessor: (field) =>
           field.userType === "firewall-queue"
@@ -645,13 +670,14 @@ export default function Customer() {
       },
 
       {
-        width: "9%",
+        width: "8%",
         Header: t("status"),
         accessor: "status",
         Cell: ({ cell: { value } }) => {
           return badge(value);
         },
       },
+
       {
         width: "9%",
         Header: t("paymentStatus"),
@@ -662,25 +688,33 @@ export default function Customer() {
       },
       {
         width: "9%",
+        Header: t("package"),
+        accessor: "mikrotikPackage",
+        Cell: ({ cell: { value } }) => (
+          <div>{cus && customerPackageFind(value)?.name}</div>
+        ),
+      },
+      {
+        width: "9%",
         Header: t("monthly"),
         accessor: "monthlyFee",
       },
       {
-        width: "10%",
+        width: "9%",
         Header: t("balance"),
         accessor: "balance",
       },
       {
-        width: "12%",
+        width: "10%",
         Header: t("bill"),
         accessor: "billingCycle",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("MMM DD YYYY hh:mm A");
+          return moment(value).format("YYYY/MM/DD hh:mm A");
         },
       },
 
       {
-        width: "7%",
+        width: "6%",
         Header: () => <div className="text-center">{t("action")}</div>,
         id: "option",
 
@@ -797,23 +831,22 @@ export default function Customer() {
                   </li>
                 )}
 
-                {original.mobile &&
-                  (role === "ispOwner" || permission.sendSMS) && (
-                    <li
-                      data-bs-toggle="modal"
-                      data-bs-target="#customerMessageModal"
-                      onClick={() => {
-                        getSpecificCustomer(original.id);
-                      }}
-                    >
-                      <div className="dropdown-item">
-                        <div className="customerAction">
-                          <ChatText />
-                          <p className="actionP">{t("message")}</p>
-                        </div>
+                {(role === "ispOwner" || permission.sendSMS) && (
+                  <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#customerMessageModal"
+                    onClick={() => {
+                      getSpecificCustomer(original.id);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <ChatText />
+                        <p className="actionP">{t("message")}</p>
                       </div>
-                    </li>
-                  )}
+                    </div>
+                  </li>
+                )}
 
                 {role === "ispOwner" &&
                   ispOwnerData?.bpSettings?.hasReseller && (
@@ -891,7 +924,7 @@ export default function Customer() {
         ),
       },
     ],
-    [t]
+    [t, cus, allPackages]
   );
 
   //bulk operations
@@ -921,15 +954,20 @@ export default function Customer() {
 
   //custom table header component
   const customComponent = (
-    <div>
-      {dueMonthlyFee?.totalMonthlyFee > 0 < dueMonthlyFee?.totalSumDue && (
-        <div
-          className="text-center"
-          style={{ fontSize: "18px", fontWeight: "500", display: "flex" }}
-        >
-          {dueMonthlyFee?.totalMonthlyFee > 0 && t("monthlyFee")}:-৳
+    <div
+      className="text-center"
+      style={{ fontSize: "18px", fontWeight: "500", display: "flex" }}
+    >
+      {dueMonthlyFee?.totalMonthlyFee > 0 && (
+        <div>
+          {t("monthlyFee")}:-৳
           {FormatNumber(dueMonthlyFee.totalMonthlyFee)}
-          &nbsp;&nbsp; {dueMonthlyFee.totalSumDue > 0 && t("due")}:-৳
+        </div>
+      )}
+      &nbsp;&nbsp;
+      {dueMonthlyFee.totalSumDue > 0 && (
+        <div>
+          {t("due")}:-৳
           {FormatNumber(dueMonthlyFee.totalSumDue)}
         </div>
       )}
@@ -1052,7 +1090,7 @@ export default function Customer() {
                               headers={customerForCsVTableInfoHeader}
                               title="Customer Report"
                             >
-                              <FileExcelFill className="addcutmButton" />
+                              <FiletypeCsv className="addcutmButton" />
                             </CSVLink>
                           </div>
                           <div className="addAndSettingIcon">
@@ -1291,6 +1329,34 @@ export default function Customer() {
                                 </option>
                               ))}
                             </select>
+
+                            <select
+                              className="form-select shadow-none"
+                              onChange={(e) => {
+                                setFilterOption({
+                                  ...filterOptions,
+                                  poleBox: e.target.value,
+                                });
+                              }}
+                            >
+                              <option
+                                selected={filterOptions.poleBox === ""}
+                                value=""
+                                defaultValue
+                              >
+                                {t("poleBox")}
+                              </option>
+                              {currentPoleBox?.map((pol, key) => (
+                                <option
+                                  selected={filterOptions.poleBox === pol.id}
+                                  key={key}
+                                  value={pol.id}
+                                >
+                                  {pol.name}
+                                </option>
+                              ))}
+                            </select>
+
                             <select
                               className="form-select shadow-none"
                               onChange={(e) => {
@@ -1547,7 +1613,7 @@ export default function Customer() {
                       </Accordion.Item>
                     </Accordion>
 
-                    <div className="collectorWrapper">
+                    <div className="collectorWrapper pb-2">
                       <div style={{ display: "none" }}>
                         <PrintCustomer
                           filterData={filterData}

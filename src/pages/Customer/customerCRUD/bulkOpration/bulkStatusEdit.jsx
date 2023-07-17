@@ -60,6 +60,20 @@ const BulkStatusEdit = ({ bulkCustomer, modalId }) => {
           </label>
         </div>
 
+        {/* <div className="form-check form-check-inline">
+          <input
+            className="form-check-input"
+            type="radio"
+            name="status"
+            id="expired"
+            value={"expired"}
+            onChange={(e) => setStatus(e.target.value)}
+          />
+          <label className="form-check-label" htmlFor="expired">
+            {t("expired")}
+          </label>
+        </div> */}
+
         <div className="modal-footer" style={{ border: "none" }}>
           <button
             type="button"

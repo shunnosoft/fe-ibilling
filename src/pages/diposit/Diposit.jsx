@@ -27,10 +27,14 @@ import moment from "moment";
 import Loader from "../../components/common/Loader";
 import FormatNumber from "../../components/common/NumberFormat";
 import Table from "../../components/table/Table";
-import { Tab, Tabs } from "react-bootstrap";
+import { Accordion, Tab, Tabs } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { getOwnerUsers } from "../../features/getIspOwnerUsersApi";
-import { ArrowClockwise, PrinterFill } from "react-bootstrap-icons";
+import {
+  ArrowClockwise,
+  FilterCircle,
+  PrinterFill,
+} from "react-bootstrap-icons";
 import ReactToPrint from "react-to-print";
 import PrintCustomer from "./customerPDF";
 import AllCollector from "../Home/dataComponent/AllCollector";
@@ -102,6 +106,9 @@ export default function Diposit() {
   const [acceptLoading, setAccLoading] = useState(false);
   const [selectedCollector, setSelectedCustomer] = useState("");
 
+  // filter Accordion handle state
+  const [activeKeys, setActiveKeys] = useState("");
+
   //multiple manager data state
   const [multipleManager, setMultipleManager] = useState([]);
   const [selectManager, setSelectManager] = useState("");
@@ -138,7 +145,6 @@ export default function Diposit() {
           manager: selectManager,
           note: data.note,
         };
-        console.log(sendingData);
         addDeposit(dispatch, sendingData, setLoading);
         data.amount = "";
       }
@@ -448,7 +454,7 @@ export default function Diposit() {
         Header: t("date"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("MMM DD YYYY hh:mm a");
+          return moment(value).format("YYYY/MM/DD hh:mm a");
         },
       },
     ],
@@ -525,7 +531,7 @@ export default function Diposit() {
         Header: t("date"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("MMM DD YYYY hh:mm a");
+          return moment(value).format("YYYY/MM/DD hh:mm a");
         },
       },
     ],
@@ -561,19 +567,20 @@ export default function Diposit() {
   // send sum deposit of table header
   const depositReportSum = (
     <div style={{ fontSize: "18px", display: "flex", alignItems: "center" }}>
-      {(userRole === "ispOwner" || userRole === "manager") && (
-        <div style={{ marginRight: "10px" }}>
-          {t("totalDiposit")} {getTotalDeposit()} {t("tk")}
-        </div>
-      )}
+      {(userRole === "ispOwner" || userRole === "manager") &&
+        getTotalDeposit() > 0 && (
+          <div style={{ marginRight: "10px" }}>
+            {t("totalDiposit")}:-৳{getTotalDeposit()}
+          </div>
+        )}
     </div>
   );
 
   const ownDepositSum = (
     <div style={{ fontSize: "18px", display: "flex", alignItems: "center" }}>
-      {userRole !== "ispOwner" && (
+      {userRole !== "ispOwner" && getTotalOwnDeposit() > 0 && (
         <div>
-          {t("newDiposit")} {getTotalOwnDeposit()} {t("tk")}
+          {t("newDiposit")}:-৳{getTotalOwnDeposit()}
         </div>
       )}
     </div>
@@ -589,9 +596,25 @@ export default function Diposit() {
           <div className="container">
             <FontColor>
               <FourGround>
-                <div className="collectorTitle d-flex justify-content-between px-5">
+                <div className="collectorTitle d-flex justify-content-between px-4">
                   <div className="d-flex">
                     <div>{t("diposit")}</div>
+                  </div>
+
+                  <div className="d-flex justify-content-center align-items-center">
+                    <div
+                      onClick={() => {
+                        if (!activeKeys) {
+                          setActiveKeys("filter");
+                        } else {
+                          setActiveKeys("");
+                        }
+                      }}
+                      title={t("filter")}
+                    >
+                      <FilterCircle className="addcutmButton" />
+                    </div>
+
                     <div className="reloadBtn">
                       {isLoading ? (
                         <Loader />
@@ -601,9 +624,7 @@ export default function Diposit() {
                         ></ArrowClockwise>
                       )}
                     </div>
-                  </div>
 
-                  <div className="addAndSettingIcon">
                     <ReactToPrint
                       documentTitle="গ্রাহক লিস্ট"
                       trigger={() => (
@@ -626,7 +647,6 @@ export default function Diposit() {
                         userRole !== "collector" ? "profile" : "contact"
                       }
                       id="uncontrolled-tab-example"
-                      className="mb-3"
                     >
                       {(userRole === "manager" || userRole === "collector") && (
                         <Tab eventKey="home" title={t("diposit")}>
@@ -740,31 +760,36 @@ export default function Diposit() {
 
                       {userRole !== "collector" && (
                         <Tab eventKey="profile" title={t("depositReport")}>
-                          <div>
-                            <div className="selectFilteringg">
-                              <select
-                                className="form-select me-2"
-                                onChange={(e) =>
-                                  setCollectorIds(e.target.value)
-                                }
-                              >
-                                <option value="all" defaultValue>
-                                  {t("all collector")}
-                                </option>
-                                {allCollector?.map((c, key) => (
-                                  <option key={key} value={c.user}>
-                                    {c.name}
-                                  </option>
-                                ))}
-                                {userRole === "ispOwner" &&
-                                  manager.map((val) => (
-                                    <option value={val?.user}>
-                                      {val?.name} Manager
+                          <Accordion alwaysOpen activeKey={activeKeys}>
+                            <Accordion.Item
+                              eventKey="filter"
+                              className="accordionBorder"
+                            >
+                              <Accordion.Body className="accordionPadding">
+                                <div className="selectFilteringg">
+                                  <select
+                                    className="form-select me-2"
+                                    onChange={(e) =>
+                                      setCollectorIds(e.target.value)
+                                    }
+                                  >
+                                    <option value="all" defaultValue>
+                                      {t("all collector")}
                                     </option>
-                                  ))}
-                              </select>
+                                    {allCollector?.map((c, key) => (
+                                      <option key={key} value={c.user}>
+                                        {c.name}
+                                      </option>
+                                    ))}
+                                    {userRole === "ispOwner" &&
+                                      manager.map((val) => (
+                                        <option value={val?.user}>
+                                          {val?.name} Manager
+                                        </option>
+                                      ))}
+                                  </select>
 
-                              {/* {userRole === "manager" && (
+                                  {/* {userRole === "manager" && (
                                 <div className="mx-2">
                                   <select
                                     className="form-select"
@@ -782,48 +807,56 @@ export default function Diposit() {
                                   </select>
                                 </div>
                               )} */}
-                              <div className="">
-                                <input
-                                  className="form-select"
-                                  type="date"
-                                  id="start"
-                                  name="trip-start"
-                                  value={moment(dateStart).format("YYYY-MM-DD")}
-                                  onChange={(e) => {
-                                    setStartDate(e.target.value);
-                                  }}
-                                />
-                              </div>
-                              <div className="mx-2">
-                                <input
-                                  className="form-select"
-                                  type="date"
-                                  id="end"
-                                  name="trip-start"
-                                  value={moment(dateEnd).format("YYYY-MM-DD")}
-                                  onChange={(e) => {
-                                    setEndDate(e.target.value);
-                                  }}
-                                />
-                              </div>
-                              <div className="">
-                                <button
-                                  className="btn btn-outline-primary w-140 mt-2"
-                                  type="button"
-                                  onClick={onClickFilter}
-                                >
-                                  {t("filter")}
-                                </button>
-                              </div>
-                              <div style={{ display: "none" }}>
-                                <PrintCustomer
-                                  filterData={filterData}
-                                  currentCustomers={mainData}
-                                  ref={componentRef}
-                                />
-                              </div>
-                            </div>
+                                  <div className="">
+                                    <input
+                                      className="form-select"
+                                      type="date"
+                                      id="start"
+                                      name="trip-start"
+                                      value={moment(dateStart).format(
+                                        "YYYY-MM-DD"
+                                      )}
+                                      onChange={(e) => {
+                                        setStartDate(e.target.value);
+                                      }}
+                                    />
+                                  </div>
+                                  <div className="mx-2">
+                                    <input
+                                      className="form-select"
+                                      type="date"
+                                      id="end"
+                                      name="trip-start"
+                                      value={moment(dateEnd).format(
+                                        "YYYY-MM-DD"
+                                      )}
+                                      onChange={(e) => {
+                                        setEndDate(e.target.value);
+                                      }}
+                                    />
+                                  </div>
+                                  <div className="">
+                                    <button
+                                      className="btn btn-outline-primary w-140 mt-2"
+                                      type="button"
+                                      onClick={onClickFilter}
+                                    >
+                                      {t("filter")}
+                                    </button>
+                                  </div>
+                                </div>
+                              </Accordion.Body>
+                            </Accordion.Item>
+                          </Accordion>
+
+                          <div style={{ display: "none" }}>
+                            <PrintCustomer
+                              filterData={filterData}
+                              currentCustomers={mainData}
+                              ref={componentRef}
+                            />
                           </div>
+
                           <div className="table-section">
                             <Table
                               customComponent={depositReportSum}
@@ -837,45 +870,55 @@ export default function Diposit() {
 
                       {(userRole === "manager" || userRole === "collector") && (
                         <Tab eventKey="contact" title={t("ownDeposit")}>
-                          <div className="selectFilteringg">
-                            <div className="dateDiv  ">
-                              <input
-                                className="form-select"
-                                type="date"
-                                id="start"
-                                name="trip-start"
-                                value={moment(ownDepositStart).format(
-                                  "YYYY-MM-DD"
-                                )}
-                                onChange={(e) => {
-                                  setOwnDepositStart(e.target.value);
-                                }}
-                              />
-                            </div>
-                            <div className="dateDiv">
-                              <input
-                                className="form-select"
-                                type="date"
-                                id="end"
-                                name="trip-start"
-                                value={moment(ownDepositEnd).format(
-                                  "YYYY-MM-DD"
-                                )}
-                                onChange={(e) => {
-                                  setOwnDepositEnd(e.target.value);
-                                }}
-                              />
-                            </div>
-                            <div className="submitDiv">
-                              <button
-                                className="btn btn-outline-primary w-140 mt-2"
-                                type="button"
-                                onClick={ownDepositDateFilter}
-                              >
-                                {t("filter")}
-                              </button>
-                            </div>
-                          </div>
+                          <Accordion alwaysOpen activeKey={activeKeys}>
+                            <Accordion.Item
+                              eventKey="filter"
+                              className="accordionBorder"
+                            >
+                              <Accordion.Body className="accordionPadding">
+                                <div className="selectFilteringg">
+                                  <div className="dateDiv  ">
+                                    <input
+                                      className="form-select"
+                                      type="date"
+                                      id="start"
+                                      name="trip-start"
+                                      value={moment(ownDepositStart).format(
+                                        "YYYY-MM-DD"
+                                      )}
+                                      onChange={(e) => {
+                                        setOwnDepositStart(e.target.value);
+                                      }}
+                                    />
+                                  </div>
+                                  <div className="dateDiv">
+                                    <input
+                                      className="form-select"
+                                      type="date"
+                                      id="end"
+                                      name="trip-start"
+                                      value={moment(ownDepositEnd).format(
+                                        "YYYY-MM-DD"
+                                      )}
+                                      onChange={(e) => {
+                                        setOwnDepositEnd(e.target.value);
+                                      }}
+                                    />
+                                  </div>
+                                  <div className="submitDiv">
+                                    <button
+                                      className="btn btn-outline-primary w-140 mt-2"
+                                      type="button"
+                                      onClick={ownDepositDateFilter}
+                                    >
+                                      {t("filter")}
+                                    </button>
+                                  </div>
+                                </div>
+                              </Accordion.Body>
+                            </Accordion.Item>
+                          </Accordion>
+
                           <div className="table-section">
                             <Table
                               customComponent={ownDepositSum}

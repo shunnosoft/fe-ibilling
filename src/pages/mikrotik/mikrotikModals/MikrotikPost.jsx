@@ -94,12 +94,12 @@ export default function MikrotikPost() {
                     />
                     <FtextField
                       type="text"
-                      label={t("mikrotikPort")}
+                      label={t("mikrotikApiPort")}
                       name="port"
                     />
                     <FtextField
                       type="password"
-                      label={t("mikrotikPassword")}
+                      label={t("mikrotikUserPassword")}
                       name="password"
                     />
 

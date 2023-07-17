@@ -15,6 +15,8 @@ import {
   ArrowLeft,
   CashStack,
   FileExcelFill,
+  FiletypeCsv,
+  FilterCircle,
   GearFill,
   PenFill,
   PersonFill,
@@ -42,6 +44,7 @@ import BulkSubAreaEdit from "../../Customer/customerCRUD/bulkOpration/bulkSubAre
 import BulkPaymentStatusEdit from "../../Customer/customerCRUD/bulkOpration/BulkPaymentStatusEdit";
 import BulkAutoConnectionEdit from "../../Customer/customerCRUD/bulkOpration/bulkAutoConnectionEdit";
 import { getSubAreasApi } from "../../../features/actions/customerApiCall";
+import { Accordion } from "react-bootstrap";
 
 // get specific customer
 
@@ -115,6 +118,9 @@ const ResellerCustomer = () => {
 
   //bulk-operations
   const [bulkCustomer, setBulkCustomer] = useState([]);
+
+  // filter Accordion handle state
+  const [activeKeys, setActiveKeys] = useState("");
 
   const resellerInfo = reseller.find((res) => res.id === resellerId);
 
@@ -493,7 +499,7 @@ const ResellerCustomer = () => {
           <div className="container">
             <FontColor>
               <FourGround>
-                <div className="collectorTitle d-flex justify-content-between px-5">
+                <div className="collectorTitle d-flex justify-content-between px-4">
                   <div className="d-flex">
                     <div
                       className="pe-2 text-black"
@@ -503,6 +509,24 @@ const ResellerCustomer = () => {
                       <ArrowLeft className="arrowLeftSize" />
                     </div>
                     <h2>{t("customer")}</h2>
+                  </div>
+
+                  <h3 className="fs-2">{resellerInfo?.name}</h3>
+
+                  <div className="d-flex justify-content-center align-items-center">
+                    <div
+                      onClick={() => {
+                        if (!activeKeys) {
+                          setActiveKeys("filter");
+                        } else {
+                          setActiveKeys("");
+                        }
+                      }}
+                      title={t("filter")}
+                    >
+                      <FilterCircle className="addcutmButton" />
+                    </div>
+
                     <div className="reloadBtn">
                       {isLoading ? (
                         <Loader></Loader>
@@ -512,11 +536,7 @@ const ResellerCustomer = () => {
                         ></ArrowClockwise>
                       )}
                     </div>
-                  </div>
 
-                  <h3 className="fs-2">{resellerInfo?.name}</h3>
-
-                  <div className="d-flex">
                     <div className="addAndSettingIcon">
                       <CSVLink
                         data={customerForCsVTableInfo}
@@ -524,7 +544,7 @@ const ResellerCustomer = () => {
                         headers={customerForCsVTableInfoHeader}
                         title="Customer Report"
                       >
-                        <FileExcelFill className="addcutmButton" />
+                        <FiletypeCsv className="addcutmButton" />
                       </CSVLink>
                     </div>
                     <div className="addAndSettingIcon">
@@ -554,85 +574,94 @@ const ResellerCustomer = () => {
                 </div>
               </FourGround>
               <FourGround>
-                <div className="collectorWrapper mt-2 py-2">
-                  <div className="addCollector">
-                    <div className="d-flex flex-row justify-content-center">
-                      {/* userType filter */}
-                      <select
-                        className="form-select me-2 mt-3"
-                        aria-label="Default select example"
-                        onChange={(event) =>
-                          setFilterUserType(event.target.value)
-                        }
-                      >
-                        <option selected value="all">
-                          {t("userType")}
-                        </option>
-                        <option value="pppoe"> {t("pppoe")} </option>
-                        <option value="static"> {t("static")} </option>
-                      </select>
-                      {/* end userType filter */}
-                      {/* status filter */}
-                      <select
-                        className="form-select mt-3"
-                        aria-label="Default select example"
-                        onChange={(event) =>
-                          setFilterStatus(event.target.value)
-                        }
-                      >
-                        <option selected value="all">
-                          {" "}
-                          {t("status")}{" "}
-                        </option>
-                        <option value="active"> {t("active")} </option>
-                        <option value="inactive"> {t("in active")} </option>
-                        <option value="expired"> {t("expired")} </option>
-                      </select>
-                      {/* end status filter */}
+                <div className="mt-2">
+                  <Accordion alwaysOpen activeKey={activeKeys}>
+                    <Accordion.Item eventKey="filter">
+                      <Accordion.Body>
+                        <div className="d-flex flex-row justify-content-center">
+                          {/* userType filter */}
+                          <select
+                            className="form-select me-2 mt-0"
+                            aria-label="Default select example"
+                            onChange={(event) =>
+                              setFilterUserType(event.target.value)
+                            }
+                          >
+                            <option selected value="all">
+                              {t("userType")}
+                            </option>
+                            <option value="pppoe"> {t("pppoe")} </option>
+                            <option value="static"> {t("static")} </option>
+                          </select>
+                          {/* end userType filter */}
+                          {/* status filter */}
+                          <select
+                            className="form-select mt-0"
+                            aria-label="Default select example"
+                            onChange={(event) =>
+                              setFilterStatus(event.target.value)
+                            }
+                          >
+                            <option selected value="all">
+                              {t("status")}
+                            </option>
+                            <option value="active"> {t("active")} </option>
+                            <option value="inactive"> {t("in active")} </option>
+                            <option value="expired"> {t("expired")} </option>
+                          </select>
+                          {/* end status filter */}
 
-                      {/* payment status filter */}
-                      <select
-                        className="form-select ms-2 mt-3"
-                        aria-label="Default select example"
-                        onChange={(event) =>
-                          setFilterPayment(event.target.value)
-                        }
-                      >
-                        <option selected value="all">
-                          {t("paymentStatus")}{" "}
-                        </option>
-                        <option value="paid"> {t("paid")} </option>
-                        <option value="unpaid"> {t("unpaid")} </option>
-                      </select>
-                      {/* end payment status filter */}
-                      <button
-                        className="btn btn-outline-primary w-140 mt-3 chartFilteritem ms-2"
-                        onClick={filterClick}
-                      >
-                        {t("filter")}
-                      </button>
+                          {/* payment status filter */}
+                          <select
+                            className="form-select ms-2 mt-0"
+                            aria-label="Default select example"
+                            onChange={(event) =>
+                              setFilterPayment(event.target.value)
+                            }
+                          >
+                            <option selected value="all">
+                              {t("paymentStatus")}
+                            </option>
+                            <option value="paid"> {t("paid")} </option>
+                            <option value="unpaid"> {t("unpaid")} </option>
+                          </select>
+                          {/* end payment status filter */}
+
+                          <div>
+                            <button
+                              className="btn btn-outline-primary w-140 chartFilteritem ms-2"
+                              onClick={filterClick}
+                            >
+                              {t("filter")}
+                            </button>
+                          </div>
+                        </div>
+                      </Accordion.Body>
+                    </Accordion.Item>
+                  </Accordion>
+                  <div className="collectorWrapper pb-2">
+                    <div className="addCollector">
+                      <div style={{ display: "none" }}>
+                        <PrintCustomer
+                          filterData={filterData}
+                          currentCustomers={customer}
+                          ref={componentRef}
+                        />
+                      </div>
+
+                      {/* call table component */}
+                      <div className="table-section">
+                        <Table
+                          isLoading={isLoading}
+                          customComponent={customComponent}
+                          columns={columns}
+                          data={customer}
+                          bulkState={{
+                            setBulkCustomer,
+                          }}
+                        />
+                      </div>
                     </div>
-                  </div>
-
-                  <div style={{ display: "none" }}>
-                    <PrintCustomer
-                      filterData={filterData}
-                      currentCustomers={customer}
-                      ref={componentRef}
-                    />
-                  </div>
-
-                  {/* call table component */}
-                  <div className="table-section">
-                    <Table
-                      isLoading={isLoading}
-                      customComponent={customComponent}
-                      columns={columns}
-                      data={customer}
-                      bulkState={{
-                        setBulkCustomer,
-                      }}
-                    />
                   </div>
                 </div>
               </FourGround>

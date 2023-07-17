@@ -69,6 +69,7 @@ const PPPoE = () => {
 
   // user state
   let [allUsers, setAllUsers] = useState(allMikrotikUsers);
+  console.log(allUsers);
 
   // section show state
   const [showSection, setShowSection] = useState("PPPoEPackage");
@@ -254,14 +255,14 @@ const PPPoE = () => {
   const customerColumn = React.useMemo(
     () => [
       {
-        width: "8%",
+        width: "5%",
         Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        width: "11%",
+        width: "8%",
         Header: t("status"),
         accessor: "running",
         Cell: ({ row: { original } }) => (
@@ -275,17 +276,17 @@ const PPPoE = () => {
         ),
       },
       {
-        width: "20%",
+        width: "10%",
         Header: t("name"),
         accessor: "name",
       },
       {
-        width: "12%",
+        width: "17%",
         Header: t("package"),
         accessor: "profile",
       },
       {
-        width: "12%",
+        width: "10%",
         Header: "RX",
         accessor: "rxByte",
         Cell: ({ row: { original } }) => (
@@ -301,7 +302,7 @@ const PPPoE = () => {
         ),
       },
       {
-        width: "12%",
+        width: "10%",
         Header: "TX",
         accessor: "txByte",
         Cell: ({ row: { original } }) => (
@@ -317,9 +318,14 @@ const PPPoE = () => {
         ),
       },
       {
-        width: "25%",
+        width: "18%",
         Header: "Last Link Up Time",
         accessor: "lastLinkUpTime",
+      },
+      {
+        width: "18%",
+        Header: "Last Logged Out",
+        accessor: "lastLoggedOut",
       },
     ],
     [t]
@@ -435,11 +441,13 @@ const PPPoE = () => {
             ></Table>
           )}
           {showSection === "PPPoECustomer" && (
-            <Table
-              isLoading={customerLoading}
-              columns={customerColumn}
-              data={allUsers}
-            ></Table>
+            <div className="table_section">
+              <Table
+                isLoading={customerLoading}
+                columns={customerColumn}
+                data={allUsers}
+              ></Table>
+            </div>
           )}
         </div>
       </div>

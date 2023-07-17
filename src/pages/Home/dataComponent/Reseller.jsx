@@ -55,12 +55,22 @@ const Reseller = ({ ispOwnerId, month, year, status }) => {
       {
         width: "23%",
         Header: t("billCollected"),
-        accessor: "totalBillCollected",
+        Cell: ({ row: { original } }) => (
+          <div>
+            {original?.totalBillCollected}&nbsp;
+            <span className="text-primary">({original?.billCount})</span>
+          </div>
+        ),
       },
       {
         width: "23%",
         Header: t("billDue"),
-        accessor: "totalDueAmount",
+        Cell: ({ row: { original } }) => (
+          <div>
+            {original?.totalDueAmount}&nbsp;
+            <span className="text-primary">({original?.totalDueCount})</span>
+          </div>
+        ),
       },
     ],
     [t]
@@ -87,13 +97,23 @@ const Reseller = ({ ispOwnerId, month, year, status }) => {
 
   //custom table header component
   const customComponent = (
-    <div className="text-center" style={{ fontSize: "18px", display: "flex" }}>
-      {t("totalBalance")}&nbsp; {FormatNumber(summaryCalculation?.totalBalance)}
-      &nbsp;
-      {t("tk")} &nbsp;&nbsp;
-      {t("totalCollection")}&nbsp;
-      {FormatNumber(summaryCalculation?.totalCollection)} &nbsp;
-      {t("tk")} &nbsp;
+    <div
+      className="text-center"
+      style={{ fontSize: "18px", fontWeight: "500", display: "flex" }}
+    >
+      {summaryCalculation?.totalBalance > 0 && (
+        <div>
+          {t("totalBalance")}:-৳
+          {FormatNumber(summaryCalculation?.totalBalance)}
+        </div>
+      )}
+      &nbsp;&nbsp;
+      {summaryCalculation?.totalCollection > 0 && (
+        <div>
+          {t("totalCollection")}:-৳
+          {FormatNumber(summaryCalculation?.totalCollection)}
+        </div>
+      )}
     </div>
   );
 

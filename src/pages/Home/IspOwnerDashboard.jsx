@@ -484,22 +484,16 @@ export default function IspOwnerDashboard() {
                   </div>
                   <div className="chartSection">
                     <p
-                      className="dashboardActive"
+                      className="dashboardActive pb-0"
                       data-bs-toggle="modal"
                       data-bs-target="#activeCustomer"
                       style={{ fontSize: "16px" }}
                       onClick={() => setStatus("active")}
                     >
                       {t("active")}
+                      <h4>{FormatNumber(customerStat.active)}</h4>
                     </p>
-                    <h2
-                      className="dashboardActive"
-                      data-bs-toggle="modal"
-                      data-bs-target="#activeCustomer"
-                      onClick={() => setStatus("active")}
-                    >
-                      {FormatNumber(customerStat.active)}
-                    </h2>
+
                     {(role === "ispOwner" ||
                       permissions?.dashboardCollectionData) && (
                       <p
@@ -560,27 +554,21 @@ export default function IspOwnerDashboard() {
                   </div>
                   <div className="chartSection">
                     <p
-                      className="dashboardUnpaid pb-1"
+                      className="dashboardUnpaid pb-0"
                       data-bs-toggle="modal"
                       data-bs-target="#paid"
                       style={{ fontSize: "16px" }}
                       onClick={() => setStatus("paid")}
                     >
                       {t("paid")}
+                      <h4>{FormatNumber(customerStat.paid)}</h4>
                     </p>
-                    <h2
-                      className="dashboardUnpaid"
-                      data-bs-toggle="modal"
-                      data-bs-target="#paid"
-                      onClick={() => setStatus("paid")}
-                    >
-                      {FormatNumber(customerStat.paid)}
-                    </h2>
+
                     <p
                       className="dashboardUnpaid pb-1"
                       data-bs-toggle="modal"
                       data-bs-target="#unPaid"
-                      style={{ fontSize: "15px", paddingTop: "10px" }}
+                      style={{ fontSize: "15px" }}
                       onClick={() => setStatus("unpaid")}
                     >
                       {t("unpaid")}: {FormatNumber(customerStat.unpaid)}
@@ -903,11 +891,12 @@ export default function IspOwnerDashboard() {
                         <ThreeDotsVertical className="ThreeDots" />
                         <div className="cardIcon">৳</div>
                         <div className="chartSection">
-                          <p style={{ fontSize: "16px" }}>
-                            {t("customerCollection")}
-                          </p>
+                          <p style={{ fontSize: "16px" }}>{t("manager")}</p>
                           <h2>
-                            ৳{" "}
+                            {FormatNumber(customerStat?.manager?.managerLength)}
+                          </h2>
+                          <h2 style={{ fontSize: "15px" }}>
+                            {t("collection")}: ৳
                             {FormatNumber(
                               customerStat?.manager?.billCollection
                             )}

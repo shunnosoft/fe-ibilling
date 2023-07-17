@@ -23,7 +23,7 @@ const MessageAlert = ({ ispOwner }) => {
   };
   const smsPurchaseHandler = () => {
     setShow(false);
-    setSmsPurchase({ ...setSmsPurchase, [false]: true });
+    setSmsPurchase(true);
   };
 
   useEffect(() => {
@@ -94,7 +94,7 @@ const MessageAlert = ({ ispOwner }) => {
           </Button>
         </Modal.Footer>
       </Modal>
-      <SMSPurchase smsPurchase={smsPurchase} />
+      <SMSPurchase show={smsPurchase} setShow={setSmsPurchase} />
     </>
   );
 };

@@ -158,9 +158,12 @@ export default function Mikrotik() {
             <FontColor>
               {/* modals */}
               <FourGround>
-                <div className="collectorTitle d-flex justify-content-between px-5">
+                <div className="collectorTitle d-flex justify-content-between px-4">
                   <div className="d-flex">
                     <div> {t("mikrotik")} </div>
+                  </div>
+
+                  <div className="d-flex justify-content-center align-items-center">
                     <div className="reloadBtn">
                       {isLoading ? (
                         <Loader></Loader>
@@ -170,14 +173,15 @@ export default function Mikrotik() {
                         ></ArrowClockwise>
                       )}
                     </div>
-                  </div>
-                  <div
-                    title={t("addMikrotik")}
-                    className="header_icon"
-                    data-bs-toggle="modal"
-                    data-bs-target="#MikrotikModal"
-                  >
-                    <Plus />
+
+                    <div
+                      title={t("addMikrotik")}
+                      className="header_icon"
+                      data-bs-toggle="modal"
+                      data-bs-target="#MikrotikModal"
+                    >
+                      <Plus />
+                    </div>
                   </div>
                 </div>
               </FourGround>

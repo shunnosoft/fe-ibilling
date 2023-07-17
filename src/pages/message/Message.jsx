@@ -443,26 +443,23 @@ export default function Message() {
           <div className="container">
             <FontColor>
               <FourGround>
-                <div className="collectorTitle d-flex justify-content-between px-5">
+                <div className="collectorTitle d-flex justify-content-between px-4">
                   <div className="d-flex">
                     <div>{t("SMSboard")}</div>
                   </div>
-                  <Button
-                    className="header_icon"
-                    onClick={() => setShow({ ...show, [false]: true })}
-                  >
+                  <div onClick={() => setShow(true)}>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="16"
                       height="16"
                       fill="currentColor"
-                      class="bi bi-envelope-plus"
+                      className="bi bi-envelope-plus addcutmButton"
                       viewBox="0 0 16 16"
                     >
                       <path d="M2 2a2 2 0 0 0-2 2v8.01A2 2 0 0 0 2 14h5.5a.5.5 0 0 0 0-1H2a1 1 0 0 1-.966-.741l5.64-3.471L8 9.583l7-4.2V8.5a.5.5 0 0 0 1 0V4a2 2 0 0 0-2-2H2Zm3.708 6.208L1 11.105V5.383l4.708 2.825ZM1 4.217V4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v.217l-7 4.2-7-4.2Z" />
                       <path d="M16 12.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Zm-3.5-2a.5.5 0 0 0-.5.5v1h-1a.5.5 0 0 0 0 1h1v1a.5.5 0 0 0 1 0v-1h1a.5.5 0 0 0 0-1h-1v-1a.5.5 0 0 0-.5-.5Z" />
                     </svg>
-                  </Button>
+                  </div>
                 </div>
               </FourGround>
 
@@ -470,7 +467,7 @@ export default function Message() {
                 <div className="collectorWrapper">
                   <div className="profileWrapper uiChange">
                     <div className="smsbal">
-                      <div className="refreshDiv">
+                      <div className="refreshDiv ">
                         <div className="balancetext px-2">
                           <div className="mx-content">
                             {t("nonMasking")}&nbsp;
@@ -490,10 +487,7 @@ export default function Message() {
                           </div>
                           {sms.fixedNumberSmsBalance}
                         </div>
-                        {/* <div className="balancetext mx-1">
-                          {t("SMSbalance")}
-                          <strong className="mainsmsbalance">{sms}</strong>
-                        </div> */}
+
                         <div title={t("refresh")} className="refreshIcon px-2">
                           {isRefrsh ? (
                             <Loader />
@@ -505,49 +499,50 @@ export default function Message() {
                         </div>
                       </div>
 
-                      {/* {userRole === "ispOwner" && (
-                        <button
-                          data-bs-toggle="modal"
-                          data-bs-target="#smsparchase"
-                          className="buysms"
-                        >
-                          {t("buySMS")}
-                        </button>
-                      )} */}
-
                       <div
                         className="message-sending-type"
                         style={{ fontWeight: "normal" }}
                       >
                         <h4> {t("sendingMessageType")} </h4>
-                        <input
-                          name="messageSendingType"
-                          type="radio"
-                          checked={sendingType === "nonMasking"}
-                          value={"nonMasking"}
-                          onChange={(event) =>
-                            setSendingType(event.target.value)
-                          }
-                        />{" "}
-                        {t("nonMasking")}&nbsp; &nbsp;
-                        <input
-                          name="messageSendingType"
-                          type="radio"
-                          value={"masking"}
-                          onChange={(event) =>
-                            setSendingType(event.target.value)
-                          }
-                        />{" "}
-                        {t("masking")}&nbsp; &nbsp;
-                        <input
-                          name="messageSendingType"
-                          type="radio"
-                          value={"fixedNumber"}
-                          onChange={(event) =>
-                            setSendingType(event.target.value)
-                          }
-                        />{" "}
-                        {t("fixedNumber")}
+                        <div className="d-flex justify-content-center align-items-center">
+                          <div className="me-2">
+                            <input
+                              name="messageSendingType"
+                              type="radio"
+                              checked={sendingType === "nonMasking"}
+                              value={"nonMasking"}
+                              onChange={(event) =>
+                                setSendingType(event.target.value)
+                              }
+                            />
+                            &nbsp;
+                            {t("nonMasking")}
+                          </div>
+                          <div className="me-2">
+                            <input
+                              name="messageSendingType"
+                              type="radio"
+                              value={"masking"}
+                              onChange={(event) =>
+                                setSendingType(event.target.value)
+                              }
+                            />
+                            &nbsp;
+                            {t("masking")}
+                          </div>
+                          <div>
+                            <input
+                              name="messageSendingType"
+                              type="radio"
+                              value={"fixedNumber"}
+                              onChange={(event) =>
+                                setSendingType(event.target.value)
+                              }
+                            />
+                            &nbsp;
+                            {t("fixedNumber")}
+                          </div>
+                        </div>
                       </div>
                     </div>
 
@@ -853,6 +848,7 @@ export default function Message() {
                                   className="form-control"
                                   type="text"
                                   placeholder={t("title")}
+                                  maxlength="40"
                                 />
                               </div>
                               <div className="radioselect">
@@ -1026,7 +1022,7 @@ export default function Message() {
         </div>
       </div>
       <MessageAlert ispOwner={sms} />
-      <SMSPurchase show={show} />
+      <SMSPurchase show={show} setShow={setShow} />
     </>
   );
 }

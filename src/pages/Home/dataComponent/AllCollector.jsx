@@ -54,12 +54,27 @@ const AllCollector = ({ ispOwnerId, month, year, status }) => {
       {
         width: "14%",
         Header: t("todayCollection"),
-        accessor: "todayBillCollection",
+
+        Cell: ({ row: { original } }) => (
+          <div>
+            {original?.todayBillCollection}&nbsp;
+            <span className="text-primary">
+              ({original?.todayBillCollectionCount})
+            </span>
+          </div>
+        ),
       },
       {
         width: "10%",
         Header: t("collection"),
-        accessor: "totalBillCollected",
+        Cell: ({ row: { original } }) => (
+          <div>
+            {original?.totalBillCollected}&nbsp;
+            <span className="text-primary">
+              ({original?.totalBillCollectionByCollectorCount})
+            </span>
+          </div>
+        ),
       },
       {
         width: "14%",
@@ -112,17 +127,24 @@ const AllCollector = ({ ispOwnerId, month, year, status }) => {
 
   //custom table header component
   const customComponent = (
-    <div className="text-center" style={{ fontSize: "18px", display: "flex" }}>
-      {t("todayCollection")}&nbsp;{" "}
-      {FormatNumber(summaryCalculation?.totalTodayCollection)}
-      &nbsp;
-      {(role === "ispOwner" || permissions?.dashboardCollectionData) && (
-        <>
-          {t("tk")} &nbsp;&nbsp; {t("totalCollection")}&nbsp;
-          {FormatNumber(summaryCalculation?.totalCollection)} &nbsp;
-          {t("tk")} &nbsp;
-        </>
+    <div
+      className="text-center"
+      style={{ fontSize: "18px", fontWeight: "500", display: "flex" }}
+    >
+      {summaryCalculation?.totalTodayCollection > 0 && (
+        <div>
+          {t("todayCollection")}:-৳
+          {FormatNumber(summaryCalculation?.totalTodayCollection)}
+        </div>
       )}
+      &nbsp;&nbsp;
+      {(role === "ispOwner" || permissions?.dashboardCollectionData) &&
+        summaryCalculation?.totalCollection > 0 && (
+          <div>
+            {t("totalCollection")}:-৳
+            {FormatNumber(summaryCalculation?.totalCollection)}
+          </div>
+        )}
     </div>
   );
 

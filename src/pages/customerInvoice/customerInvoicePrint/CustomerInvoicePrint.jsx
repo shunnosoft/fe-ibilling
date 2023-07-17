@@ -2,6 +2,8 @@ import React from "react";
 import moment from "moment";
 import Table from "react-bootstrap/Table";
 import { useTranslation } from "react-i18next";
+import { App } from "react-bootstrap-icons";
+
 const CustomerInvoicePrint = React.forwardRef((props, ref) => {
   const { t } = useTranslation();
   const { invoiceData, ispOwnerData } = props;
@@ -18,7 +20,7 @@ const CustomerInvoicePrint = React.forwardRef((props, ref) => {
                 className="text-center text-white fw-bold p-1"
                 style={{ borderRadius: "10px", backgroundColor: "#328eea" }}
               >
-                <h2 className="mt-3">{ispOwnerData?.company}</h2>
+                <h2 className="mt-1">{ispOwnerData?.company}</h2>
                 {ispOwnerData?.address && (
                   <p>
                     {t("address")} : {ispOwnerData?.address}
@@ -72,7 +74,7 @@ const CustomerInvoicePrint = React.forwardRef((props, ref) => {
               <Table
                 bordered
                 className="text-center align-center"
-                style={{ lineHeight: "7px" }}
+                style={{ lineHeight: "6px" }}
               >
                 <tbody>
                   <tr>
@@ -103,6 +105,20 @@ const CustomerInvoicePrint = React.forwardRef((props, ref) => {
                     <th>{t("billingCycle")}</th>
                     <td>
                       {moment(invoiceData?.billingCycle).format("MMM DD YYYY")}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>{t("status")}</th>
+                    <td>
+                      {<App className="me-1" style={{ marginTop: "-5px" }} />}
+                      {t("paid")}{" "}
+                      {
+                        <App
+                          className="ms-2 me-1"
+                          style={{ marginTop: "-5px" }}
+                        />
+                      }
+                      {t("unpaid")}
                     </td>
                   </tr>
                 </tbody>
@@ -138,7 +154,7 @@ const CustomerInvoicePrint = React.forwardRef((props, ref) => {
               className="text-center text-white fw-bold p-1 "
               style={{ borderRadius: "10px", backgroundColor: "#328eea" }}
             >
-              <h2 className="mt-3">{ispOwnerData?.company}</h2>
+              <h2 className="mt-1">{ispOwnerData?.company}</h2>
               {ispOwnerData?.address && (
                 <p>
                   {t("address")} : {ispOwnerData?.address}
@@ -193,7 +209,7 @@ const CustomerInvoicePrint = React.forwardRef((props, ref) => {
             <Table
               bordered
               className="text-center align-align"
-              style={{ lineHeight: "8px" }}
+              style={{ lineHeight: "6px" }}
             >
               <tbody>
                 <tr>
@@ -224,6 +240,20 @@ const CustomerInvoicePrint = React.forwardRef((props, ref) => {
                   <th>{t("billingCycle")}</th>
                   <td>
                     {moment(invoiceData?.billingCycle).format("MMM DD YYYY")}
+                  </td>
+                </tr>
+                <tr>
+                  <th>{t("status")}</th>
+                  <td>
+                    {<App className="me-1" style={{ marginTop: "-5px" }} />}
+                    {t("paid")}{" "}
+                    {
+                      <App
+                        className="ms-2 me-1"
+                        style={{ marginTop: "-5px" }}
+                      />
+                    }
+                    {t("unpaid")}
                   </td>
                 </tr>
               </tbody>

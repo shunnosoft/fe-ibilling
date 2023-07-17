@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Tab, Tabs } from "react-bootstrap";
-import { ArrowClockwise } from "react-bootstrap-icons";
+import { ArrowClockwise, FilterCircle } from "react-bootstrap-icons";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import useDash from "../../assets/css/dash.module.css";
@@ -33,6 +33,9 @@ const MessageLog = () => {
   const [masking, setMasking] = useState(false);
   const [fixedNumber, setFixedNumber] = useState(false);
 
+  // filter Accordion handle state
+  const [activeKeys, setActiveKeys] = useState("");
+
   // reload handler
   const reloadHandler = () => {
     getMessageLog(dispatch, setNonMasking, ispOwner);
@@ -49,9 +52,25 @@ const MessageLog = () => {
           <div className="container">
             <FontColor>
               <FourGround>
-                <div className="collectorTitle d-flex justify-content-between px-5">
+                <div className="collectorTitle d-flex justify-content-between px-4">
                   <div className="d-flex">
                     <h2>{t("messageLog")}</h2>
+                  </div>
+
+                  <div className="d-flex justify-content-center align-items-center">
+                    <div
+                      onClick={() => {
+                        if (!activeKeys) {
+                          setActiveKeys("filter");
+                        } else {
+                          setActiveKeys("");
+                        }
+                      }}
+                      title={t("filter")}
+                    >
+                      <FilterCircle className="addcutmButton" />
+                    </div>
+
                     <div className="reloadBtn">
                       {nonMasking || fixedNumber || masking ? (
                         <Loader />
@@ -68,24 +87,26 @@ const MessageLog = () => {
                 <Tabs
                   defaultActiveKey={"nonMasking"}
                   id="uncontrolled-tab-example"
-                  className="mb-3"
                 >
                   <Tab eventKey="nonMasking" title={t("nonMasking")}>
                     <NonMasking
                       nonMaskingLoading={nonMasking}
                       setNonMaskingLoading={setNonMasking}
+                      activeKeys={activeKeys}
                     />
                   </Tab>
                   <Tab eventKey="masking" title={t("masking")}>
                     <Masking
                       maskingLoading={masking}
                       setMaskingLoading={setMasking}
+                      activeKeys={activeKeys}
                     />
                   </Tab>
                   <Tab eventKey="fixedNumber" title={t("fixedNumber")}>
                     <FixedNumber
                       fixedNumberLoading={fixedNumber}
                       setFixedNumberLoading={setFixedNumber}
+                      activeKeys={activeKeys}
                     />
                   </Tab>
                 </Tabs>

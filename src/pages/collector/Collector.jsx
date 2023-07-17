@@ -253,9 +253,12 @@ export default function Collector() {
           <div className="container">
             <FontColor>
               <FourGround>
-                <div className="collectorTitle d-flex justify-content-between px-5">
+                <div className="collectorTitle d-flex justify-content-between px-4">
                   <div className="d-flex">
-                    <div>{t("collector")}</div>
+                    <h2>{t("collector")}</h2>
+                  </div>
+
+                  <div className="d-flex justify-content-center align-items-center">
                     <div className="reloadBtn">
                       {isLoading ? (
                         <Loader></Loader>
@@ -265,18 +268,17 @@ export default function Collector() {
                         ></ArrowClockwise>
                       )}
                     </div>
+                    {(permission?.collectorAdd || role === "ispOwner") && (
+                      <div
+                        title="কালেক্টর এড করুন"
+                        className="header_icon"
+                        data-bs-toggle="modal"
+                        data-bs-target="#collectorModal"
+                      >
+                        <PersonPlusFill />
+                      </div>
+                    )}
                   </div>
-
-                  {(permission?.collectorAdd || role === "ispOwner") && (
-                    <div
-                      title="কালেক্টর এড করুন"
-                      className="header_icon"
-                      data-bs-toggle="modal"
-                      data-bs-target="#collectorModal"
-                    >
-                      <PersonPlusFill />
-                    </div>
-                  )}
                 </div>
               </FourGround>
 

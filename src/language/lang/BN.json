@@ -806,8 +806,8 @@
   "requestedPackage": "অনুরোধকৃত প্যাকেজ",
   "mikrotikName": "মাইক্রোটিকের নাম",
   "mikrotikUserName": "মাইক্রোটিকের ইউজারনেম",
-  "mikrotikPort": "মাইক্রোটিক পোর্ট",
-  "mikrotikPassword": "মাইক্রোটিক পাসওয়ার্ড",
+  "mikrotikApiPort": "মাইক্রোটিক এপিআই পোর্ট",
+  "mikrotikUserPassword": "মাইক্রোটিক ইউজার পাসওয়ার্ড",
   "resellerDelete": "আপনি কি রিসেলার মুছতে চান?",
   "allPermission": "সকল পারমিশান",
   "whatsAppLive": "হটস অ্যাপ লাইভ",
@@ -824,5 +824,14 @@
   "promiseDateChange": "প্রমিজ তারিখ পরিবর্তন",
   "changedCustomer": "পরিবর্তিত গ্রাহক",
   "businessBalance": "ব্যবসায় ব্যালান্স",
-  "packageSetting": "প্যাকেজ সেটিং"
+  "packageSetting": "প্যাকেজ সেটিং",
+  "doNotAreaDeleteAndUpdate": "মাইক্রোটিক এরিয়া এবং সাব-এরিয়া মুছে ফেলা যাবে না!",
+  "notFoundMobileNumber": "গ্রাহকের মোবাইল নম্বর পাওয়া যায়নি",
+  "rechargeYourCustomer": "আপনার গ্রাহকের মাসিক বিল রিচার্জ করুন!",
+  "commissionType": "কমিশন এর ধরণ",
+  "globalCommission": "গ্লোবাল কমিশন",
+  "packageBased": "প্যাকেজ ভিত্তিক",
+  "ispOwnerShare": "মালিকের শেয়ার",
+  "selectType": "টাইপ নির্বাচন করুন",
+  "fixedRate": "একদর"
 }

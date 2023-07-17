@@ -11,6 +11,8 @@ import {
   ArrowLeft,
   CashStack,
   FileExcelFill,
+  FiletypeCsv,
+  FilterCircle,
   PenFill,
   PersonFill,
   PrinterFill,
@@ -42,6 +44,7 @@ import { useNavigate } from "react-router-dom";
 import BulkPromiseDateEdit from "../../Customer/customerCRUD/bulkOpration/BulkPromiseDateEdit";
 import BulkBillingCycleEdit from "../../Customer/customerCRUD/bulkOpration/bulkBillingCycleEdit";
 import BulkStatusEdit from "../../Customer/customerCRUD/bulkOpration/bulkStatusEdit";
+import { Accordion } from "react-bootstrap";
 
 const AllResellerCustomer = () => {
   const { t } = useTranslation();
@@ -80,6 +83,9 @@ const AllResellerCustomer = () => {
 
   // get single customer state
   const [singleCustomer, setSingleCustomer] = useState("");
+
+  // filter Accordion handle state
+  const [activeKeys, setActiveKeys] = useState("");
 
   // get specific customer Report
   const [customerReportId, setcustomerReportId] = useState([]);
@@ -185,7 +191,7 @@ const AllResellerCustomer = () => {
   };
 
   //total monthly fee and due calculation
-  const dueMonthlyFee = useCallback(() => {
+  const dueMonthlyFee = useMemo(() => {
     let dueAmount = 0;
     let totalSumDue = 0;
     let totalMonthlyFee = 0;
@@ -208,11 +214,23 @@ const AllResellerCustomer = () => {
 
   //custom table header component
   const customComponent = (
-    <div className="text-center" style={{ fontSize: "18px", display: "flex" }}>
-      {t("monthlyFee")}&nbsp; {FormatNumber(dueMonthlyFee().totalMonthlyFee)}
-      &nbsp;
-      {t("tk")} &nbsp;&nbsp; {t("due")}&nbsp;
-      {FormatNumber(dueMonthlyFee().totalSumDue)} &nbsp;{t("tk")} &nbsp;
+    <div
+      className="text-center"
+      style={{ fontSize: "18px", fontWeight: "500", display: "flex" }}
+    >
+      {dueMonthlyFee?.totalMonthlyFee > 0 && (
+        <div>
+          {t("monthlyFee")}:-৳
+          {FormatNumber(dueMonthlyFee.totalMonthlyFee)}
+        </div>
+      )}
+      &nbsp;&nbsp;
+      {dueMonthlyFee.totalSumDue > 0 && (
+        <div>
+          {t("due")}:-৳
+          {FormatNumber(dueMonthlyFee.totalSumDue)}
+        </div>
+      )}
     </div>
   );
 
@@ -391,7 +409,7 @@ const AllResellerCustomer = () => {
         Header: t("date"),
         accessor: "billingCycle",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("MMM DD YYYY hh:mm a");
+          return moment(value).format("YYYY/MM/DD hh:mm a");
         },
       },
 
@@ -494,7 +512,7 @@ const AllResellerCustomer = () => {
           <div className="container">
             <FontColor>
               <FourGround>
-                <div className="collectorTitle d-flex justify-content-between px-5">
+                <div className="collectorTitle d-flex justify-content-between px-4">
                   <div className="d-flex">
                     <div
                       className="pe-2 text-black"
@@ -504,6 +522,22 @@ const AllResellerCustomer = () => {
                       <ArrowLeft className="arrowLeftSize" />
                     </div>
                     <h2>{t("customer")}</h2>
+                  </div>
+
+                  <div className="d-flex justify-content-center align-items-center">
+                    <div
+                      onClick={() => {
+                        if (!activeKeys) {
+                          setActiveKeys("filter");
+                        } else {
+                          setActiveKeys("");
+                        }
+                      }}
+                      title={t("filter")}
+                    >
+                      <FilterCircle className="addcutmButton" />
+                    </div>
+
                     <div className="reloadBtn">
                       {isLoading ? (
                         <Loader></Loader>
@@ -513,9 +547,7 @@ const AllResellerCustomer = () => {
                         ></ArrowClockwise>
                       )}
                     </div>
-                  </div>
 
-                  <div className="d-flex">
                     <div className="addAndSettingIcon">
                       <CSVLink
                         data={customerForCsVTableInfo}
@@ -523,7 +555,7 @@ const AllResellerCustomer = () => {
                         headers={customerForCsVTableInfoHeader}
                         title="Customer Report"
                       >
-                        <FileExcelFill className="addcutmButton" />
+                        <FiletypeCsv className="addcutmButton" />
                       </CSVLink>
                     </div>
                     <div className="addAndSettingIcon">
@@ -553,96 +585,109 @@ const AllResellerCustomer = () => {
                 </div>
               </FourGround>
               <FourGround>
-                <div className="collectorWrapper mt-2 py-2">
-                  <div className="addCollector">
-                    <div className="d-flex flex-row justify-content-center">
-                      {/* status filter */}
-                      <select
-                        className="form-select mt-3"
-                        aria-label="Default select example"
-                        onChange={(event) => setResellerId(event.target.value)}
-                      >
-                        <option selected value="all">
-                          {t("allReseller")}
-                        </option>
-                        {resellers.map((reseller, key) => (
-                          <option key={key} value={reseller.id}>
-                            {reseller.name}
-                          </option>
-                        ))}
-                      </select>
-                      {/* userType filter */}
-                      <select
-                        className="form-select ms-2 mt-3"
-                        aria-label="Default select example"
-                        onChange={(event) =>
-                          setFilterUserType(event.target.value)
-                        }
-                      >
-                        <option selected value="all">
-                          {t("userType")}
-                        </option>
-                        <option value="pppoe"> {t("pppoe")} </option>
-                        <option value="static"> {t("static")} </option>
-                      </select>
-                      {/* end userType filter */}
-                      <select
-                        className="form-select mt-3 mx-2"
-                        aria-label="Default select example"
-                        onChange={(event) =>
-                          setFilterStatus(event.target.value)
-                        }
-                      >
-                        <option selected value="all">
-                          {t("status")}
-                        </option>
-                        <option value="active"> {t("active")} </option>
-                        <option value="inactive"> {t("in active")} </option>
-                        <option value="expired"> {t("expired")} </option>
-                      </select>
-                      {/* end status filter */}
+                <div className="mt-2">
+                  <Accordion alwaysOpen activeKey={activeKeys}>
+                    <Accordion.Item eventKey="filter">
+                      <Accordion.Body>
+                        <div className="d-flex flex-row justify-content-center">
+                          {/* status filter */}
+                          <select
+                            className="form-select mt-0"
+                            aria-label="Default select example"
+                            onChange={(event) =>
+                              setResellerId(event.target.value)
+                            }
+                          >
+                            <option selected value="all">
+                              {t("allReseller")}
+                            </option>
+                            {resellers.map((reseller, key) => (
+                              <option key={key} value={reseller.id}>
+                                {reseller.name}
+                              </option>
+                            ))}
+                          </select>
+                          {/* userType filter */}
+                          <select
+                            className="form-select ms-2 mt-0"
+                            aria-label="Default select example"
+                            onChange={(event) =>
+                              setFilterUserType(event.target.value)
+                            }
+                          >
+                            <option selected value="all">
+                              {t("userType")}
+                            </option>
+                            <option value="pppoe"> {t("pppoe")} </option>
+                            <option value="static"> {t("static")} </option>
+                          </select>
+                          {/* end userType filter */}
+                          <select
+                            className="form-select mx-2 mt-0"
+                            aria-label="Default select example"
+                            onChange={(event) =>
+                              setFilterStatus(event.target.value)
+                            }
+                          >
+                            <option selected value="all">
+                              {t("status")}
+                            </option>
+                            <option value="active"> {t("active")} </option>
+                            <option value="inactive"> {t("in active")} </option>
+                            <option value="expired"> {t("expired")} </option>
+                          </select>
+                          {/* end status filter */}
 
-                      {/* payment status filter */}
-                      <select
-                        className="form-select mt-3 me-2"
-                        aria-label="Default select example"
-                        onChange={(event) =>
-                          setFilterPayment(event.target.value)
-                        }
-                      >
-                        <option selected value="all">
-                          {t("paymentStatus")}
-                        </option>
-                        <option value="paid"> {t("paid")} </option>
-                        <option value="unpaid"> {t("unpaid")} </option>
-                      </select>
-                      {/* end payment status filter */}
-                      <button
-                        className="btn btn-outline-primary w-140 mt-3 chartFilteritem"
-                        onClick={filterClick}
-                      >
-                        {t("filter")}
-                      </button>
+                          {/* payment status filter */}
+                          <select
+                            className="form-select me-2 mt-0"
+                            aria-label="Default select example"
+                            onChange={(event) =>
+                              setFilterPayment(event.target.value)
+                            }
+                          >
+                            <option selected value="all">
+                              {t("paymentStatus")}
+                            </option>
+                            <option value="paid"> {t("paid")} </option>
+                            <option value="unpaid"> {t("unpaid")} </option>
+                          </select>
+                          {/* end payment status filter */}
+                          <div>
+                            <button
+                              className="btn btn-outline-primary w-140"
+                              onClick={filterClick}
+                            >
+                              {t("filter")}
+                            </button>
+                          </div>
+                        </div>
+                      </Accordion.Body>
+                    </Accordion.Item>
+                  </Accordion>
+                </div>
+                <div className="collectorWrapper pb-2">
+                  <div className="addCollector">
+                    <div style={{ display: "none" }}>
+                      <PrintCustomer
+                        filterData={filterData}
+                        currentCustomers={customer}
+                        ref={componentRef}
+                      />
                     </div>
-                  </div>
-                  <div style={{ display: "none" }}>
-                    <PrintCustomer
-                      filterData={filterData}
-                      currentCustomers={customer}
-                      ref={componentRef}
-                    />
-                  </div>
-                  {/* call table component */}
-                  <div className="table-section">
-                    <Table
-                      isLoading={isLoading}
-                      columns={columns}
-                      customComponent={customComponent}
-                      data={customer}
-                      bulkState={{
-                        setBulkCustomer,
-                      }}
-                    />
+                    {/* call table component */}
+                    <div className="table-section">
+                      <Table
+                        isLoading={isLoading}
+                        columns={columns}
+                        customComponent={customComponent}
+                        bulkLength={bulkCustomer?.length}
+                        data={customer}
+                        bulkState={{
+                          setBulkCustomer,
+                        }}
+                      />
+                    </div>
                   </div>
                 </div>
               </FourGround>

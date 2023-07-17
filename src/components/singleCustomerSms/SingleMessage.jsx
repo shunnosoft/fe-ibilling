@@ -5,6 +5,7 @@ import { smsCount } from "../common/UtilityMethods";
 import apiLink from "../../api/apiLink";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
+import { ExclamationOctagonFill } from "react-bootstrap-icons";
 
 const SingleMessage = ({ single, sendCustomer }) => {
   const { t } = useTranslation();
@@ -206,6 +207,17 @@ const SingleMessage = ({ single, sendCustomer }) => {
             {/* model body here */}
             <form onSubmit={handleSubmit}>
               <div className="mb-3">
+                {!data?.mobile && (
+                  <div className="d-flex justify-content-center align-items-center">
+                    <h5 className="text-center text-danger">
+                      {t("notFoundMobileNumber")}
+                    </h5>
+                    <ExclamationOctagonFill
+                      className="text-warning fs-5 ms-1"
+                      style={{ marginBottom: "10px" }}
+                    />
+                  </div>
+                )}
                 <div className="d-flex justify-content-between">
                   <label
                     htmlFor="exampleFormControlTextarea1"
@@ -231,7 +243,6 @@ const SingleMessage = ({ single, sendCustomer }) => {
                 <div id="emailHelp" className="form-text text-danger">
                   {errMsg}
                 </div>
-
                 <div
                   className="message-sending-type mt-3"
                   style={{ fontWeight: "normal" }}
@@ -273,7 +284,7 @@ const SingleMessage = ({ single, sendCustomer }) => {
                 <button
                   type="submit"
                   className="btn btn-success"
-                  disabled={isLoading}
+                  disabled={isLoading || !data?.mobile}
                 >
                   {isLoading ? <Loader /> : t("sendMessage")}
                 </button>

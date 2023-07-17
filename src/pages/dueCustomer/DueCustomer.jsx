@@ -12,15 +12,18 @@ import useDash from "../../assets/css/dash.module.css";
 import {
   ArrowClockwise,
   FileExcelFill,
+  FiletypeCsv,
+  FilterCircle,
   PrinterFill,
 } from "react-bootstrap-icons";
 import { FontColor, FourGround } from "../../assets/js/theme";
-import { Tab, Tabs } from "react-bootstrap";
+import { Accordion, Tab, Tabs } from "react-bootstrap";
 import { CSVLink } from "react-csv";
 import ReactToPrint from "react-to-print";
 import PrintReport from "./print/ReportPDF";
 import StaticPrintReport from "./print/StaticReportPDF";
 import Footer from "../../components/admin/footer/Footer";
+import DatePicker from "react-datepicker";
 
 const DueCustomer = () => {
   const dispatch = useDispatch();
@@ -28,22 +31,24 @@ const DueCustomer = () => {
   const componentRef = useRef();
   const staticRef = useRef();
 
+  // get current date
+  const date = new Date();
+
+  var firstDate = new Date(date.getFullYear(), date.getMonth() - 1);
+  var lastDate = new Date(date.getFullYear(), date.getMonth(), 0);
+
   // loading state
   const [isLoading, setIsLoading] = useState(false);
 
   // static Customr loading
   const [staticLoading, setStaticLoading] = useState(false);
 
-  // get current date
-  const date = new Date();
+  // filter Accordion handle state
+  const [activeKeys, setActiveKeys] = useState("");
 
-  let month = date.getMonth();
-  let year = date.getFullYear();
-
-  if (month === 0) {
-    month = 12;
-    year -= 1;
-  }
+  //filter state
+  const [filterDate, setFilterDate] = useState(firstDate);
+  const [staticDate, setStaticDate] = useState(firstDate);
 
   // get isp owner id
   const ispOwner = useSelector(
@@ -73,26 +78,69 @@ const DueCustomer = () => {
     ? bpSettings.customerType
     : [];
 
-  // reload handler
+  // // reload handler
   const reloadHandler = () => {
-    getDueCustomer(dispatch, ispOwner, month, year, setIsLoading, "pppoe");
-    getDueCustomer(dispatch, ispOwner, month, year, setIsLoading, "static");
+    getDueCustomer(
+      dispatch,
+      ispOwner,
+      filterDate.getMonth() + 1,
+      filterDate.getFullYear(),
+      setIsLoading,
+      "pppoe"
+    );
+    getDueCustomer(
+      dispatch,
+      ispOwner,
+      filterDate.getMonth() + 1,
+      filterDate.getFullYear(),
+      setIsLoading,
+      "static"
+    );
   };
 
   // get customer api call
   useEffect(() => {
     if (hasCustomerType.includes("pppoe"))
-      getDueCustomer(dispatch, ispOwner, month, year, setIsLoading, "pppoe");
+      getDueCustomer(
+        dispatch,
+        ispOwner,
+        filterDate.getMonth() + 1,
+        filterDate.getFullYear(),
+        setIsLoading,
+        "pppoe"
+      );
     if (hasCustomerType.includes("static"))
       getDueCustomer(
         dispatch,
         ispOwner,
-        month,
-        year,
+        filterDate.getMonth() + 1,
+        filterDate.getFullYear(),
         setStaticLoading,
         "static"
       );
   }, []);
+
+  const dueCustomerFilterHandler = () => {
+    getDueCustomer(
+      dispatch,
+      ispOwner,
+      filterDate.getMonth() + 1,
+      filterDate.getFullYear(),
+      setIsLoading,
+      "pppoe"
+    );
+  };
+
+  const staticCustomerFilterHandler = () => {
+    getDueCustomer(
+      dispatch,
+      ispOwner,
+      staticDate.getMonth() + 1,
+      staticDate.getFullYear(),
+      setIsLoading,
+      "static"
+    );
+  };
 
   //pppoe customer export customer data
   let customerForCsVTableInfo = dueCustomer.map((customer) => {
@@ -105,7 +153,7 @@ const DueCustomer = () => {
       paymentStatus: customer.paymentStatus,
       monthlyFee: customer.monthlyFee,
       balance: customer.balance,
-      billingCycle: moment(customer.billingCycle).format("MMM-DD-YYYY"),
+      billingCycle: moment(customer.billingCycle).format("YYYY/MM/DD"),
     };
   });
 
@@ -131,7 +179,7 @@ const DueCustomer = () => {
           ? customer.queue.address
           : customer.queue.target,
       customerAddress: customer.address,
-      createdAt: moment(customer.createdAt).format("MM/DD/YYYY"),
+      createdAt: moment(customer.createdAt).format("YYYY/MM/DD"),
       package: customer?.queue?.package,
       mobile: customer?.mobile || "",
       status: customer.status,
@@ -139,7 +187,7 @@ const DueCustomer = () => {
       email: customer.email || "",
       monthlyFee: customer.monthlyFee,
       balance: customer.balance,
-      billingCycle: moment(customer.billingCycle).format("MMM-DD-YYYY"),
+      billingCycle: moment(customer.billingCycle).format("YYYY/MM/DD"),
     };
   });
 
@@ -228,7 +276,7 @@ const DueCustomer = () => {
         Header: t("date"),
         accessor: "billingCycle",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("MMM DD YYYY hh:mm A");
+          return moment(value).format("YYYY/MM/DD hh:mm A");
         },
       },
     ],
@@ -309,18 +357,9 @@ const DueCustomer = () => {
           <div className="container">
             <FontColor>
               <FourGround>
-                <div className="collectorTitle d-flex justify-content-between px-5">
+                <div className="collectorTitle d-flex justify-content-between px-4">
                   <div className="d-flex">
                     <h2>{t("dueCustomer")}</h2>
-                    <div className="reloadBtn">
-                      {isLoading ? (
-                        <Loader></Loader>
-                      ) : (
-                        <ArrowClockwise
-                          onClick={() => reloadHandler()}
-                        ></ArrowClockwise>
-                      )}
-                    </div>
                   </div>
 
                   <div
@@ -331,6 +370,29 @@ const DueCustomer = () => {
                     }}
                   >
                     <>
+                      <div
+                        onClick={() => {
+                          if (!activeKeys) {
+                            setActiveKeys("filter");
+                          } else {
+                            setActiveKeys("");
+                          }
+                        }}
+                        title={t("filter")}
+                      >
+                        <FilterCircle className="addcutmButton" />
+                      </div>
+
+                      <div className="reloadBtn">
+                        {isLoading ? (
+                          <Loader></Loader>
+                        ) : (
+                          <ArrowClockwise
+                            onClick={() => reloadHandler()}
+                          ></ArrowClockwise>
+                        )}
+                      </div>
+
                       {/* for pppoe customer */}
                       {hasCustomerType.includes("pppoe") && (
                         <>
@@ -341,7 +403,7 @@ const DueCustomer = () => {
                               headers={customerForCsVTableInfoHeader}
                               title="PPPoE Customer CSV"
                             >
-                              <FileExcelFill className="addcutmButton" />
+                              <FiletypeCsv className="addcutmButton" />
                             </CSVLink>
                           </div>
 
@@ -374,7 +436,7 @@ const DueCustomer = () => {
                               headers={staticCustomerForCsVTableInfoHeader}
                               title="Static Customer CSV"
                             >
-                              <FileExcelFill className="addcutmButton" />
+                              <FiletypeCsv className="addcutmButton" />
                             </CSVLink>
                           </div>
 
@@ -416,11 +478,58 @@ const DueCustomer = () => {
               <FourGround>
                 <div className="collectorWrapper mt-2 py-2">
                   <div className="addCollector">
-                    <Tabs id="uncontrolled-tab-example" className="mb-3">
+                    <Tabs id="uncontrolled-tab-example">
                       {bpSettings?.customerType?.map(
                         (type) =>
                           (type === "pppoe" && (
                             <Tab eventKey="pppoe" title={t("PPPoE")}>
+                              <Accordion alwaysOpen activeKey={activeKeys}>
+                                <Accordion.Item
+                                  eventKey="filter"
+                                  className="accordionBorder"
+                                >
+                                  <Accordion.Body className="accordionPadding pt-2">
+                                    <div
+                                      className="displayGrid6"
+                                      style={{
+                                        columnGap: "5px",
+                                        display: "flex",
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                      }}
+                                    >
+                                      <div>
+                                        <DatePicker
+                                          selected={filterDate}
+                                          className="form-control"
+                                          onChange={(date) =>
+                                            setFilterDate(date)
+                                          }
+                                          dateFormat="MMM/yyyy"
+                                          showMonthYearPicker
+                                          showFullMonthYearPicker
+                                          endDate={"2014/04/08"}
+                                          maxDate={lastDate}
+                                          minDate={
+                                            new Date(ispOwnerData?.createdAt)
+                                          }
+                                        />
+                                      </div>
+
+                                      <div className="gridButton">
+                                        <button
+                                          className="btn btn-outline-primary w-6rem"
+                                          type="button"
+                                          onClick={dueCustomerFilterHandler}
+                                          id="filterBtn"
+                                        >
+                                          {t("filter")}
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </Accordion.Body>
+                                </Accordion.Item>
+                              </Accordion>
                               {hasCustomerType.includes("pppoe") ? (
                                 <>
                                   <div className="table-section">
@@ -440,6 +549,53 @@ const DueCustomer = () => {
                           )) ||
                           (type === "static" && (
                             <Tab eventKey="static" title={t("static")}>
+                              <Accordion alwaysOpen activeKey={activeKeys}>
+                                <Accordion.Item
+                                  eventKey="filter"
+                                  className="accordionBorder"
+                                >
+                                  <Accordion.Body className="accordionPadding pt-2">
+                                    <div
+                                      className="displayGrid6"
+                                      style={{
+                                        columnGap: "5px",
+                                        display: "flex",
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                      }}
+                                    >
+                                      <div>
+                                        <DatePicker
+                                          selected={staticDate}
+                                          className="form-control"
+                                          onChange={(date) =>
+                                            setStaticDate(date)
+                                          }
+                                          dateFormat="MMM/yyyy"
+                                          showMonthYearPicker
+                                          showFullMonthYearPicker
+                                          endDate={"2014/04/08"}
+                                          maxDate={lastDate}
+                                          minDate={
+                                            new Date(ispOwnerData?.createdAt)
+                                          }
+                                        />
+                                      </div>
+
+                                      <div className="gridButton">
+                                        <button
+                                          className="btn btn-outline-primary w-6rem"
+                                          type="button"
+                                          onClick={staticCustomerFilterHandler}
+                                          id="filterBtn"
+                                        >
+                                          {t("filter")}
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </Accordion.Body>
+                                </Accordion.Item>
+                              </Accordion>
                               {hasCustomerType.includes("static") ? (
                                 <>
                                   <div className="table-section">

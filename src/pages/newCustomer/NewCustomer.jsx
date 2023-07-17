@@ -14,10 +14,11 @@ import DatePicker from "react-datepicker";
 import Loader from "../../components/common/Loader";
 import {
   ArrowClockwise,
-  FileExcelFill,
+  FiletypeCsv,
+  FilterCircle,
   PrinterFill,
 } from "react-bootstrap-icons";
-import { Tab, Tabs } from "react-bootstrap";
+import { Accordion, Tab, Tabs } from "react-bootstrap";
 import ReactToPrint from "react-to-print";
 import PPPoECustomerPrint from "./customerPrint/PPPoECustomerPrint";
 import StaticCustomerPrint from "./customerPrint/StaticCustomerPrint";
@@ -52,6 +53,9 @@ const NewCustomer = () => {
 
   // end date state
   const [endDate, setEndDate] = useState(today);
+
+  // filter Accordion handle state
+  const [activeKeys, setActiveKeys] = useState("");
 
   // get isp owner id
   const ispOwner = useSelector(
@@ -214,7 +218,7 @@ const NewCustomer = () => {
         Header: t("bill"),
         accessor: "billingCycle",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("MMM DD YYYY hh:mm A");
+          return moment(value).format("YYYY/MM/DD hh:mm A");
         },
       },
       {
@@ -222,7 +226,7 @@ const NewCustomer = () => {
         Header: t("createdAt"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("MMM DD YYYY hh:mm A");
+          return moment(value).format("YYYY/MM/DD hh:mm A");
         },
       },
     ],
@@ -288,7 +292,7 @@ const NewCustomer = () => {
         Header: t("bill"),
         accessor: "billingCycle",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("MMM DD YYYY hh:mm A");
+          return moment(value).format("YYYY/MM/DD hh:mm A");
         },
       },
       {
@@ -296,7 +300,7 @@ const NewCustomer = () => {
         Header: t("createdAt"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("MMM DD YYYY hh:mm A");
+          return moment(value).format("YYYY/MM/DD hh:mm A");
         },
       },
     ],
@@ -323,10 +327,16 @@ const NewCustomer = () => {
   //custom table header component
   const customComponent = (
     <div className="text-center" style={{ fontSize: "18px", display: "flex" }}>
-      {t("monthlyFee")}&nbsp; {FormatNumber(customerBalance.totalMonthlyFee)}
-      &nbsp;
-      {t("tk")} &nbsp;&nbsp; {t("totalCollection")}&nbsp;
-      {FormatNumber(customerBalance.totalBalance)} &nbsp;{t("tk")} &nbsp;
+      {customerBalance.totalMonthlyFee > 0 && (
+        <div style={{ marginRight: "10px" }}>
+          {t("monthlyFee")}:-৳{customerBalance.totalMonthlyFee}
+        </div>
+      )}
+      {customerBalance.totalBalance > 0 && (
+        <div style={{ marginRight: "10px" }}>
+          {t("totalCollection")}:-৳{customerBalance.totalBalance}
+        </div>
+      )}
     </div>
   );
 
@@ -349,12 +359,17 @@ const NewCustomer = () => {
 
   //custom table header component
   const customComponentStatic = (
-    <div className="text-center" style={{ fontSize: "18px", display: "flex" }}>
-      {t("monthlyFee")}&nbsp;{" "}
-      {FormatNumber(staticCustomerBalance.totalMonthlyFee)}
-      &nbsp;
-      {t("tk")} &nbsp;&nbsp; {t("totalCollection")}&nbsp;
-      {FormatNumber(staticCustomerBalance.totalBalance)} &nbsp;{t("tk")} &nbsp;
+    <div style={{ fontSize: "18px", display: "flex", alignItems: "center" }}>
+      {staticCustomerBalance?.totalMonthlyFee > 0 && (
+        <div style={{ marginRight: "10px" }}>
+          {t("monthlyFee")}:-৳{staticCustomerBalance.totalMonthlyFee}
+        </div>
+      )}
+      {staticCustomerBalance?.totalBalance > 0 && (
+        <div style={{ marginRight: "10px" }}>
+          {t("totalCollection")}:-৳{staticCustomerBalance.totalBalance}
+        </div>
+      )}
     </div>
   );
 
@@ -380,7 +395,7 @@ const NewCustomer = () => {
       name: customer.name,
       pppoeName: customer.pppoe.name,
       customerAddress: customer.address,
-      createdAt: moment(customer.createdAt).format("MM/DD/YYYY"),
+      createdAt: moment(customer.createdAt).format("YYYY-MM-DD"),
       package: customer?.pppoe?.profile,
       mobile: customer?.mobile || "",
       status: customer.status,
@@ -388,7 +403,7 @@ const NewCustomer = () => {
       email: customer.email || "",
       monthlyFee: customer.monthlyFee,
       balance: customer.balance,
-      billingCycle: moment(customer.billingCycle).format("MMM-DD-YYYY"),
+      billingCycle: moment(customer.billingCycle).format("YYYY-MM-DD"),
     };
   });
 
@@ -415,14 +430,14 @@ const NewCustomer = () => {
           ? customer.queue.address
           : customer.queue.target,
       customerAddress: customer.address,
-      createdAt: moment(customer.createdAt).format("MM/DD/YYYY"),
+      createdAt: moment(customer.createdAt).format("YYYY-MM-DD"),
       mobile: customer?.mobile || "",
       status: customer.status,
       paymentStatus: customer.paymentStatus,
       email: customer.email || "",
       monthlyFee: customer.monthlyFee,
       balance: customer.balance,
-      billingCycle: moment(customer.billingCycle).format("MMM-DD-YYYY"),
+      billingCycle: moment(customer.billingCycle).format("YYYY-MM-DD"),
     };
   });
 
@@ -440,9 +455,24 @@ const NewCustomer = () => {
           <div className="container">
             <FontColor>
               <FourGround>
-                <div className="collectorTitle d-flex justify-content-between px-5">
+                <div className="collectorTitle d-flex justify-content-between px-4">
                   <div className="d-flex">
                     <h2>{t("customer")}</h2>
+                  </div>
+                  <div className="d-flex align-items-center justify-content-center">
+                    <div
+                      onClick={() => {
+                        if (!activeKeys) {
+                          setActiveKeys("filter");
+                        } else {
+                          setActiveKeys("");
+                        }
+                      }}
+                      title={t("filter")}
+                    >
+                      <FilterCircle className="addcutmButton" />
+                    </div>
+
                     <div className="reloadBtn">
                       {pppoeLoading && staticLoading ? (
                         <Loader></Loader>
@@ -452,29 +482,7 @@ const NewCustomer = () => {
                         ></ArrowClockwise>
                       )}
                     </div>
-                  </div>
-                  <div className="d-flex align-items-center justify-content-end">
-                    <div className="pppoe_customer">
-                      <div className="addAndSettingIcon">
-                        <ReactToPrint
-                          documentTitle={t("PPPoE Customer")}
-                          trigger={() => (
-                            <PrinterFill
-                              title={t("PPPoECustomerPrint")}
-                              className="addcutmButton"
-                            />
-                          )}
-                          content={() => PPPoEComponentRef.current}
-                        />
-                      </div>
-                      <div style={{ display: "none" }}>
-                        <PPPoECustomerPrint
-                          filterData={filterData}
-                          currentCustomers={mainData}
-                          ref={PPPoEComponentRef}
-                        />
-                      </div>
-                    </div>
+
                     <div className="addAndSettingIcon">
                       <CSVLink
                         data={PPPoECustomerForCsVTableInfo}
@@ -482,30 +490,30 @@ const NewCustomer = () => {
                         headers={PPPoECustomerForCsVTableInfoHeader}
                         title={t("PPPoECustomerReport")}
                       >
-                        <FileExcelFill className="addcutmButton" />
+                        <FiletypeCsv className="addcutmButton" />
                       </CSVLink>
                     </div>
-                    <div className="static_customer">
-                      <div className="addAndSettingIcon">
-                        <ReactToPrint
-                          documentTitle={t("Static Customer")}
-                          trigger={() => (
-                            <PrinterFill
-                              title={t("StaticCustomerPrint")}
-                              className="addcutmButton"
-                            />
-                          )}
-                          content={() => staticComponentRef.current}
-                        />
-                      </div>
-                      <div style={{ display: "none" }}>
-                        <StaticCustomerPrint
-                          filterData={filterData}
-                          currentCustomers={staticData}
-                          ref={staticComponentRef}
-                        />
-                      </div>
+
+                    <div className="addAndSettingIcon">
+                      <ReactToPrint
+                        documentTitle={t("PPPoE Customer")}
+                        trigger={() => (
+                          <PrinterFill
+                            title={t("PPPoECustomerPrint")}
+                            className="addcutmButton"
+                          />
+                        )}
+                        content={() => PPPoEComponentRef.current}
+                      />
                     </div>
+                    <div style={{ display: "none" }}>
+                      <PPPoECustomerPrint
+                        filterData={filterData}
+                        currentCustomers={mainData}
+                        ref={PPPoEComponentRef}
+                      />
+                    </div>
+
                     <div className="addAndSettingIcon">
                       <CSVLink
                         data={staticCustomerForCsVTableInfo}
@@ -513,8 +521,28 @@ const NewCustomer = () => {
                         headers={staticCustomerForCsVTableInfoHeader}
                         title={t("staticCustomerReport")}
                       >
-                        <FileExcelFill className="addcutmButton" />
+                        <FiletypeCsv className="addcutmButton" />
                       </CSVLink>
+                    </div>
+
+                    <div className="addAndSettingIcon">
+                      <ReactToPrint
+                        documentTitle={t("Static Customer")}
+                        trigger={() => (
+                          <PrinterFill
+                            title={t("StaticCustomerPrint")}
+                            className="addcutmButton"
+                          />
+                        )}
+                        content={() => staticComponentRef.current}
+                      />
+                    </div>
+                    <div style={{ display: "none" }}>
+                      <StaticCustomerPrint
+                        filterData={filterData}
+                        currentCustomers={staticData}
+                        ref={staticComponentRef}
+                      />
                     </div>
                   </div>
                 </div>
@@ -522,41 +550,52 @@ const NewCustomer = () => {
               <FourGround>
                 <div className="collectorWrapper mt-2 py-2">
                   <div className="addCollector">
-                    <Tabs id="uncontrolled-tab-example" className="mb-3">
+                    <Tabs id="uncontrolled-tab-example">
                       {ispOwnerData?.bpSettings.customerType.map(
                         (type) =>
                           (type === "pppoe" && (
                             <Tab eventKey="pppoe" title={t("PPPoE")}>
                               {/* filter selector */}
-                              <div className="selectFilteringg">
-                                <div>
-                                  <DatePicker
-                                    className="form-control mw-100"
-                                    selected={startDate}
-                                    onChange={(date) => setStartDate(date)}
-                                    dateFormat="MMM dd yyyy"
-                                    placeholderText={t("selectBillDate")}
-                                  />
-                                </div>
-                                <div className="mx-2">
-                                  <DatePicker
-                                    className="form-control mw-100"
-                                    selected={endDate}
-                                    onChange={(date) => setEndDate(date)}
-                                    dateFormat="MMM dd yyyy"
-                                    placeholderText={t("selectBillDate")}
-                                  />
-                                </div>
-                                <div className="">
-                                  <button
-                                    className="btn btn-outline-primary w-140 "
-                                    type="button"
-                                    onClick={() => onClickFilter("pppoe")}
-                                  >
-                                    {t("filter")}
-                                  </button>
-                                </div>
-                              </div>
+                              <Accordion alwaysOpen activeKey={activeKeys}>
+                                <Accordion.Item
+                                  eventKey="filter"
+                                  className="accordionBorder"
+                                >
+                                  <Accordion.Body className="accordionPadding pt-2">
+                                    <div className="selectFilteringg">
+                                      <div>
+                                        <DatePicker
+                                          className="form-control mw-100"
+                                          selected={startDate}
+                                          onChange={(date) =>
+                                            setStartDate(date)
+                                          }
+                                          dateFormat="MMM dd yyyy"
+                                          placeholderText={t("selectBillDate")}
+                                        />
+                                      </div>
+                                      <div className="mx-2">
+                                        <DatePicker
+                                          className="form-control mw-100"
+                                          selected={endDate}
+                                          onChange={(date) => setEndDate(date)}
+                                          dateFormat="MMM dd yyyy"
+                                          placeholderText={t("selectBillDate")}
+                                        />
+                                      </div>
+                                      <div>
+                                        <button
+                                          className="btn btn-outline-primary w-140 "
+                                          type="button"
+                                          onClick={() => onClickFilter("pppoe")}
+                                        >
+                                          {t("filter")}
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </Accordion.Body>
+                                </Accordion.Item>
+                              </Accordion>
 
                               <div className="table-section">
                                 <Table
@@ -571,35 +610,48 @@ const NewCustomer = () => {
                           (type === "static" && (
                             <Tab eventKey="static" title={t("static")}>
                               {/* filter selector */}
-                              <div className="selectFilteringg">
-                                <div>
-                                  <DatePicker
-                                    className="form-control mw-100"
-                                    selected={startDate}
-                                    onChange={(date) => setStartDate(date)}
-                                    dateFormat="MMM dd yyyy"
-                                    placeholderText={t("selectBillDate")}
-                                  />
-                                </div>
-                                <div className="mx-2">
-                                  <DatePicker
-                                    className="form-control mw-100"
-                                    selected={endDate}
-                                    onChange={(date) => setEndDate(date)}
-                                    dateFormat="MMM dd yyyy"
-                                    placeholderText={t("selectBillDate")}
-                                  />
-                                </div>
-                                <div className="">
-                                  <button
-                                    className="btn btn-outline-primary w-140 "
-                                    type="button"
-                                    onClick={() => onClickFilter("static")}
-                                  >
-                                    {t("filter")}
-                                  </button>
-                                </div>
-                              </div>
+                              <Accordion alwaysOpen activeKey={activeKeys}>
+                                <Accordion.Item
+                                  eventKey="filter"
+                                  className="accordionBorder"
+                                >
+                                  <Accordion.Body className="accordionPadding pt-2">
+                                    <div className="selectFilteringg">
+                                      <div>
+                                        <DatePicker
+                                          className="form-control mw-100"
+                                          selected={startDate}
+                                          onChange={(date) =>
+                                            setStartDate(date)
+                                          }
+                                          dateFormat="MMM dd yyyy"
+                                          placeholderText={t("selectBillDate")}
+                                        />
+                                      </div>
+                                      <div className="mx-2">
+                                        <DatePicker
+                                          className="form-control mw-100"
+                                          selected={endDate}
+                                          onChange={(date) => setEndDate(date)}
+                                          dateFormat="MMM dd yyyy"
+                                          placeholderText={t("selectBillDate")}
+                                        />
+                                      </div>
+                                      <div>
+                                        <button
+                                          className="btn btn-outline-primary w-140 "
+                                          type="button"
+                                          onClick={() =>
+                                            onClickFilter("static")
+                                          }
+                                        >
+                                          {t("filter")}
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </Accordion.Body>
+                                </Accordion.Item>
+                              </Accordion>
 
                               <div className="table-section">
                                 <Table
