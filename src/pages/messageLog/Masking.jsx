@@ -7,8 +7,9 @@ import { badge } from "../../components/common/Utils";
 import Table from "../../components/table/Table";
 import { getMaskingMessageLog } from "../../features/messageLogApi";
 import MessageDetails from "./messageModal/MessageDetails";
+import { Accordion } from "react-bootstrap";
 
-const Masking = ({ maskingLoading, setMaskingLoading }) => {
+const Masking = ({ maskingLoading, setMaskingLoading, activeKeys }) => {
   const { t } = useTranslation();
   // import dispatch
   const dispatch = useDispatch();
@@ -158,71 +159,76 @@ const Masking = ({ maskingLoading, setMaskingLoading }) => {
   );
   return (
     <>
-      <div className="collectorWrapper mt-2 py-2">
+      <Accordion alwaysOpen activeKey={activeKeys}>
+        <Accordion.Item eventKey="filter" className="accordionBorder">
+          <Accordion.Body className="accordionPadding">
+            <div className="selectFilteringg">
+              <div className="typeFilter">
+                <select
+                  className="form-select w-200"
+                  onChange={(event) => setType(event.target.value)}
+                >
+                  <option value="" selected>
+                    {t("type")}
+                  </option>
+
+                  <option value="bill">{t("bill")}</option>
+                  <option value="bulk">{t("bulk")}</option>
+                  <option value="other">{t("other")}</option>
+                </select>
+              </div>
+              <div className="mx-2">
+                <select
+                  className="form-select w-200"
+                  onChange={(event) => setStatus(event.target.value)}
+                >
+                  <option value="" selected>
+                    {t("selectStatus")}
+                  </option>
+
+                  <option value="sent">{t("send")}</option>
+                  <option value="Pending">{t("selectPending")}</option>
+                </select>
+              </div>
+              <div>
+                <ReactDatePicker
+                  className="form-control w-200 mt-2"
+                  selected={startDate}
+                  onChange={(date) => setStartDate(date)}
+                  dateFormat="MMM dd yyyy"
+                  placeholderText={t("selectBillDate")}
+                />
+              </div>
+              <div className="mx-2">
+                <ReactDatePicker
+                  className="form-control w-200 mt-2"
+                  selected={endDate}
+                  onChange={(date) => setEndDate(date)}
+                  dateFormat="MMM dd yyyy"
+                  placeholderText={t("selectBillDate")}
+                />
+              </div>
+              <div className="">
+                <button
+                  className="btn btn-outline-primary w-140 mt-2"
+                  type="button"
+                  onClick={onClickFilter}
+                >
+                  {t("filter")}
+                </button>
+              </div>
+            </div>
+          </Accordion.Body>
+        </Accordion.Item>
+      </Accordion>
+      <div className="collectorWrapper pb-2">
         <div className="addCollector">
-          <div className="selectFilteringg">
-            <div className="typeFilter">
-              <select
-                className="form-select w-200"
-                onChange={(event) => setType(event.target.value)}
-              >
-                <option value="" selected>
-                  {t("type")}
-                </option>
-
-                <option value="bill">{t("bill")}</option>
-                <option value="bulk">{t("bulk")}</option>
-                <option value="other">{t("other")}</option>
-              </select>
-            </div>
-            <div className="mx-2">
-              <select
-                className="form-select w-200"
-                onChange={(event) => setStatus(event.target.value)}
-              >
-                <option value="" selected>
-                  {t("selectStatus")}
-                </option>
-
-                <option value="sent">{t("send")}</option>
-                <option value="Pending">{t("selectPending")}</option>
-              </select>
-            </div>
-            <div>
-              <ReactDatePicker
-                className="form-control w-200 mt-2"
-                selected={startDate}
-                onChange={(date) => setStartDate(date)}
-                dateFormat="MMM dd yyyy"
-                placeholderText={t("selectBillDate")}
-              />
-            </div>
-            <div className="mx-2">
-              <ReactDatePicker
-                className="form-control w-200 mt-2"
-                selected={endDate}
-                onChange={(date) => setEndDate(date)}
-                dateFormat="MMM dd yyyy"
-                placeholderText={t("selectBillDate")}
-              />
-            </div>
-            <div className="">
-              <button
-                className="btn btn-outline-primary w-140 mt-2"
-                type="button"
-                onClick={onClickFilter}
-              >
-                {t("filter")}
-              </button>
-            </div>
-          </div>
+          <Table
+            isLoading={maskingLoading}
+            columns={columns}
+            data={masking}
+          ></Table>
         </div>
-
-        <Table
-          isLoading={maskingLoading}
-          columns={columns}
-          data={masking}
-        ></Table>
       </div>
       <MessageDetails
         messageId={maskingId}

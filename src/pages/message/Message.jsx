@@ -500,12 +500,12 @@ export default function Message() {
                       </div>
 
                       <div
-                        className="message-sending-type text-center"
+                        className="message-sending-type"
                         style={{ fontWeight: "normal" }}
                       >
                         <h4> {t("sendingMessageType")} </h4>
-                        <div className="row justify-content-center align-items-center">
-                          <div className="col-6">
+                        <div className="d-flex justify-content-center align-items-center">
+                          <div className="me-2">
                             <input
                               name="messageSendingType"
                               type="radio"
@@ -518,7 +518,7 @@ export default function Message() {
                             &nbsp;
                             {t("nonMasking")}
                           </div>
-                          <div className="col-6">
+                          <div className="me-2">
                             <input
                               name="messageSendingType"
                               type="radio"
@@ -530,7 +530,7 @@ export default function Message() {
                             &nbsp;
                             {t("masking")}
                           </div>
-                          <div className="col">
+                          <div>
                             <input
                               name="messageSendingType"
                               type="radio"

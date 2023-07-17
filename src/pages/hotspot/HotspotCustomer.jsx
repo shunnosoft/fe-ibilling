@@ -138,7 +138,7 @@ const HotspotCustomer = () => {
         Header: t("date"),
         accessor: "billingCycle",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("MMM DD YYYY hh:mm A");
+          return moment(value).format("YYYY/MM/DD hh:mm A");
         },
       },
       {
@@ -146,7 +146,7 @@ const HotspotCustomer = () => {
         Header: t("createdAt"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("MMM DD YYYY hh:mm A");
+          return moment(value).format("YYYY/MM/DD hh:mm A");
         },
       },
 
@@ -253,7 +253,7 @@ const HotspotCustomer = () => {
           <div className="container">
             <FontColor>
               <FourGround>
-                <div className="collectorTitle d-flex justify-content-between px-5">
+                <div className="collectorTitle d-flex justify-content-between px-4">
                   <div className="d-flex">
                     <h2>{t("customer")}</h2>
                     {/* <div className="reloadBtn">
