@@ -1,4 +1,10 @@
-import React, { useEffect, useState, useRef, useCallback, useMemo } from "react";
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useCallback,
+  useMemo,
+} from "react";
 import "../collector/collector.css";
 import moment from "moment";
 import { CSVLink } from "react-csv";
@@ -25,8 +31,8 @@ import {
   ArrowRightSquareFill,
   ReceiptCutoff,
   GearFill,
-  Boxes,
   FilterCircle,
+  BoxSeam,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -976,12 +982,9 @@ export default function Customer() {
                       </div>
 
                       {role === "ispOwner" && bpSettings?.hasMikrotik && (
-                        <div className="settingbtn">
+                        <div className="settingbtn" title={t("packageSetting")}>
                           <Link to={`/packageSetting`}>
-                            <Boxes
-                              className="addcutmButton"
-                              title={t("packageSetting")}
-                            />
+                            <BoxSeam className="addcutmButton" />
                           </Link>
                         </div>
                       )}

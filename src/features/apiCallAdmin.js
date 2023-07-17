@@ -100,19 +100,12 @@ export const uploadCsvFile = async (data, setIsLoading, mikrotikStatus) => {
 };
 
 // update owner
-export const updateOwner = async (
-  ispOwnerId,
-  data,
-  setIsLoading,
-  dispatch,
-  setIsPermission = null
-) => {
+export const updateOwner = async (ispOwnerId, data, setIsLoading, dispatch) => {
   setIsLoading(true);
   try {
     const res = await apiLink.patch("/ispOwner/" + ispOwnerId, data);
     dispatch(editOwner(res.data));
     document.querySelector("#clientEditModal").click();
-    setIsPermission(false);
     toast.success(`${data.company} IspOwner update success`);
   } catch (err) {
     console.log(err);
