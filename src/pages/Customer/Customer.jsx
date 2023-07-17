@@ -472,6 +472,7 @@ const PPPOECustomer = () => {
       package: "",
       isFree: "",
       filterDate: null,
+      poleBox: "",
     });
     setPPPoeCustomers(customers);
   };

@@ -18,6 +18,7 @@ import "./home.css";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import {
   fetchReseller,
+  getAllPackages,
   getCollector,
   getIspOwnerData,
   getManger,
@@ -46,6 +47,7 @@ import Unpaid from "./dataComponent/Unpaid";
 import Active from "./dataComponent/Active";
 import AllCollector from "./dataComponent/AllCollector";
 import Reseller from "./dataComponent/Reseller";
+import Discount from "./dataComponent/Discount";
 
 export default function IspOwnerDashboard() {
   const { t } = useTranslation();
@@ -96,6 +98,8 @@ export default function IspOwnerDashboard() {
   const [isLoading, setIsloading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loadingDashboardData, setLoadingDashboardData] = useState(false);
+  const [packageLoading, setPackageLoading] = useState(false);
+
   const [showGraphData, setShowGraphData] = useState("amount");
   const [label, setLabel] = useState([]);
   const [collectors, setCollectors] = useState([]);
@@ -110,6 +114,9 @@ export default function IspOwnerDashboard() {
   const [Year, setYear] = useState(date.getFullYear());
   const [Month, setMonth] = useState(date.getMonth());
   const [filterDate, setFilterDate] = useState(date);
+
+  // discount modal state
+  const [discountShow, setDiscountShow] = useState(false);
 
   // collectors and managers for graph filter
   useEffect(() => {
@@ -146,6 +153,8 @@ export default function IspOwnerDashboard() {
 
     //get card data
     getIspOwnerDashboardCardData(dispatch, setLoadingDashboardData, ispOwnerId);
+
+    getAllPackages(dispatch, ispOwnerId, setPackageLoading);
   }, []);
 
   //graph data calculation
@@ -599,16 +608,16 @@ export default function IspOwnerDashboard() {
                     {(role === "ispOwner" ||
                       permissions?.dashboardCollectionData) && (
                       <>
-                        <p style={{ fontSize: "16px" }}>
+                        <p style={{ fontSize: "16px", paddingTop: "10px" }}>
                           {t("total collection")}
+                          <h4>
+                            ৳
+                            {FormatNumber(
+                              customerStat.totalBillCollection -
+                                customerStat.totalMonthlyDiscount
+                            )}
+                          </h4>
                         </p>
-                        <h2>
-                          ৳{" "}
-                          {FormatNumber(
-                            customerStat.totalBillCollection -
-                              customerStat.totalMonthlyDiscount
-                          )}
-                        </h2>
                       </>
                     )}
                     {role !== "collector" && (
@@ -617,31 +626,34 @@ export default function IspOwnerDashboard() {
                           permissions?.dashboardCollectionData) && (
                           <>
                             <p
-                              style={{ fontSize: "15px", marginBottom: "0px" }}
+                              className="dashboardCollection pb-0"
+                              style={{ fontSize: "15px" }}
+                              onClick={() => {
+                                setDiscountShow(true);
+                                setStatus("discount");
+                              }}
                             >
-                              {t("discount")}:{" "}
+                              {t("discount")}:&nbsp;
                               {FormatNumber(customerStat.totalMonthlyDiscount)}
                             </p>
 
-                            <p
-                              style={{ fontSize: "13px", marginBottom: "0px" }}
-                            >
-                              {t("withoutDiscount")}:{" "}
+                            <p className="pb-0" style={{ fontSize: "13px" }}>
+                              {t("withoutDiscount")}:
                               {FormatNumber(customerStat.totalBillCollection)}
+                            </p>
+
+                            <p
+                              className={
+                                !permissions?.dashboardCollectionData
+                                  ? "fs-6"
+                                  : "fs-13"
+                              }
+                            >
+                              {t("today collection")}{" "}
+                              {FormatNumber(customerStat.todayBillCollection)}
                             </p>
                           </>
                         )}
-
-                        <p
-                          className={
-                            !permissions?.dashboardCollectionData
-                              ? "fs-6"
-                              : "fs-13"
-                          }
-                        >
-                          {t("today collection")}{" "}
-                          {FormatNumber(customerStat.todayBillCollection)}
-                        </p>
                       </>
                     )}
                   </div>
@@ -1236,6 +1248,15 @@ export default function IspOwnerDashboard() {
         ispOwnerId={ispOwnerId}
         year={filterDate.getFullYear()}
         month={filterDate.getMonth() + 1}
+      />
+
+      <Discount
+        show={discountShow}
+        setShow={setDiscountShow}
+        ispOwnerId={ispOwnerId}
+        year={filterDate.getFullYear()}
+        month={filterDate.getMonth() + 1}
+        status={status}
       />
     </>
   );
