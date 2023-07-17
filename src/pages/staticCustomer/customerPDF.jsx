@@ -8,8 +8,15 @@ import { useTranslation } from "react-i18next";
 const PrintCustomer = React.forwardRef((props, ref) => {
   const { t } = useTranslation();
   const { currentCustomers, filterData } = props;
-  const ispOwnerData = useSelector(
-    (state) => state.persistedReducer.auth.userData
+
+  //user role
+  const userRole = useSelector((state) => state.persistedReducer.auth.role);
+
+  //user Data
+  const userData = useSelector((state) =>
+    userRole === "manager"
+      ? state.persistedReducer.auth.ispOwnerData
+      : state.persistedReducer.auth.userData
   );
   const userType = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings.queueType
@@ -22,15 +29,15 @@ const PrintCustomer = React.forwardRef((props, ref) => {
           <div className="company_logo">
             <img src="/assets/img/logo.png" alt="Company Logo" />
           </div>
-          <div className="company_name">{ispOwnerData.company}</div>
+          <div className="company_name">{userData.company}</div>
         </div>
         <div className="details_side">
           <p>
-            {t("companyName")} {ispOwnerData.company}
+            {t("companyName")} {userData.company}
           </p>
-          {ispOwnerData.address && (
+          {userData.address && (
             <p>
-              {t("address")} : {ispOwnerData?.address}
+              {t("address")} : {userData?.address}
             </p>
           )}
         </div>

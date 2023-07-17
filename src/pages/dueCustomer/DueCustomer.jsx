@@ -93,7 +93,7 @@ const DueCustomer = () => {
       ispOwner,
       filterDate.getMonth() + 1,
       filterDate.getFullYear(),
-      setIsLoading,
+      setStaticLoading,
       "static"
     );
   };
@@ -137,7 +137,7 @@ const DueCustomer = () => {
       ispOwner,
       staticDate.getMonth() + 1,
       staticDate.getFullYear(),
-      setIsLoading,
+      setStaticLoading,
       "static"
     );
   };
