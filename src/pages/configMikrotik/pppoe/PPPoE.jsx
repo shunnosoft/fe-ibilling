@@ -255,14 +255,14 @@ const PPPoE = () => {
   const customerColumn = React.useMemo(
     () => [
       {
-        width: "8%",
+        width: "5%",
         Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        width: "12%",
+        width: "8%",
         Header: t("status"),
         accessor: "running",
         Cell: ({ row: { original } }) => (
@@ -281,7 +281,7 @@ const PPPoE = () => {
         accessor: "name",
       },
       {
-        width: "20%",
+        width: "17%",
         Header: t("package"),
         accessor: "profile",
       },
@@ -318,12 +318,12 @@ const PPPoE = () => {
         ),
       },
       {
-        width: "15%",
+        width: "18%",
         Header: "Last Link Up Time",
         accessor: "lastLinkUpTime",
       },
       {
-        width: "15%",
+        width: "18%",
         Header: "Last Logged Out",
         accessor: "lastLoggedOut",
       },
@@ -441,11 +441,13 @@ const PPPoE = () => {
             ></Table>
           )}
           {showSection === "PPPoECustomer" && (
-            <Table
-              isLoading={customerLoading}
-              columns={customerColumn}
-              data={allUsers}
-            ></Table>
+            <div className="table_section">
+              <Table
+                isLoading={customerLoading}
+                columns={customerColumn}
+                data={allUsers}
+              ></Table>
+            </div>
           )}
         </div>
       </div>

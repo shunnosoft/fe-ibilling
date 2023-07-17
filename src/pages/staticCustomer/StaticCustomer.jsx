@@ -1,10 +1,4 @@
-import React, {
-  useEffect,
-  useState,
-  useRef,
-  useCallback,
-  useMemo,
-} from "react";
+import React, { useEffect, useState, useRef, useMemo } from "react";
 import "../collector/collector.css";
 import moment from "moment";
 import { CSVLink } from "react-csv";
@@ -17,7 +11,6 @@ import {
   ArchiveFill,
   PenFill,
   PersonFill,
-  ArrowRightShort,
   CashStack,
   ChatText,
   PersonPlusFill,
@@ -29,10 +22,9 @@ import {
   CardChecklist,
   Newspaper,
   ArrowRightSquareFill,
-  ReceiptCutoff,
   GearFill,
   FilterCircle,
-  Boxes,
+  BoxSeam,
   FiletypeCsv,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
@@ -685,14 +677,7 @@ export default function Customer() {
           return badge(value);
         },
       },
-      {
-        width: "9%",
-        Header: t("package"),
-        accessor: "mikrotikPackage",
-        Cell: ({ cell: { value } }) => (
-          <div>{cus && customerPackageFind(value)?.name}</div>
-        ),
-      },
+
       {
         width: "9%",
         Header: t("paymentStatus"),
@@ -700,6 +685,14 @@ export default function Customer() {
         Cell: ({ cell: { value } }) => {
           return badge(value);
         },
+      },
+      {
+        width: "9%",
+        Header: t("package"),
+        accessor: "mikrotikPackage",
+        Cell: ({ cell: { value } }) => (
+          <div>{cus && customerPackageFind(value)?.name}</div>
+        ),
       },
       {
         width: "9%",
@@ -1027,12 +1020,9 @@ export default function Customer() {
                       </div>
 
                       {role === "ispOwner" && bpSettings?.hasMikrotik && (
-                        <div className="settingbtn">
+                        <div className="settingbtn" title={t("packageSetting")}>
                           <Link to={`/packageSetting`}>
-                            <Boxes
-                              className="addcutmButton"
-                              title={t("packageSetting")}
-                            />
+                            <BoxSeam className="addcutmButton" />
                           </Link>
                         </div>
                       )}

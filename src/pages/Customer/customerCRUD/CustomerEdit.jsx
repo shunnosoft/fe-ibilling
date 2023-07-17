@@ -28,7 +28,6 @@ import useISPowner from "../../../hooks/useISPOwner";
 import SelectField from "../../../components/common/SelectField";
 import { getPoleBoxApi } from "../../../features/actions/customerApiCall";
 import { toast } from "react-toastify";
-import moment from "moment";
 
 const divisions = divisionsJSON.divisions;
 const districts = districtsJSON.districts;
@@ -117,15 +116,15 @@ export default function CustomerEdit(props) {
   });
 
   //last day of month calculation
-  let day = new Date(data?.promiseDate);
+  let day = new Date(data?.billingCycle);
   let lastDayOfMonth = new Date(day.getFullYear(), day.getMonth() + 1, 0);
 
-  let initialTime = new Date();
+  let initialTime = new Date(data?.billingCycle);
   initialTime.setHours("00");
   initialTime.setMinutes("00");
 
   //hour and minutes calculation
-  let lastTime = new Date();
+  let lastTime = new Date(data?.billingCycle);
   lastTime.setHours("18");
   lastTime.setMinutes("00");
 
@@ -304,74 +303,60 @@ export default function CustomerEdit(props) {
         setIsloading(false);
         return toast.warn(t("rechargeYourCustomer"));
       }
-      const tempBill = new Date(
-        moment(billDate).format("YYYY-MM-DD")
-      ).getTime();
-
-      const tempPromise = new Date(
-        moment(promiseDate).format("YYYY-MM-DD")
-      ).getTime();
-
-      let sendPromise = promiseDate;
-
-      if (tempBill > tempPromise) {
-        sendPromise = billDate;
-      }
-
-      const mainData = {
-        singleCustomerID: data?.id,
-        area: areaID,
-        subArea: subArea2,
-        poleBox: poleBoxIds,
-        ispOwner: ispOwnerId,
-        mikrotikPackage: packageId,
-        autoDisable: autoDisable,
-        connectionDate,
-        billingCycle: billDate.toISOString(),
-        promiseDate: promiseDate.toISOString(),
-        customerBillingType: customerBillingType,
-        promiseDate: sendPromise.toISOString(),
-        pppoe: {
-          name: Pname,
-          password: Ppassword,
-          service: "pppoe",
-          comment: Pcomment,
-          profile: Pprofile,
-          disabled: activeStatus,
-        },
-        ...rest,
-        status,
-      };
-      if (
-        mainData.balance === "" ||
-        mainData.balance === undefined ||
-        mainData === null
-      ) {
-        delete mainData.balance;
-      }
-      if (!bpSettings.genCustomerId) {
-        mainData.customerId = customerId;
-      }
-
-      if (
-        divisionalArea.district ||
-        divisionalArea.division ||
-        divisionalArea.thana
-      ) {
-        const divisionName = getName(divisions, divisionalArea.division)?.name;
-        const districtName = getName(districts, divisionalArea.district)?.name;
-        const thanaName = getName(thana, divisionalArea.thana)?.name;
-        //if  exist add the data
-        if (divisionName) mainData.division = divisionName;
-        if (districtName) mainData.district = districtName;
-        if (thanaName) mainData.thana = thanaName;
-      }
-
-      if (!poleBoxIds) {
-        delete mainData.poleBox;
-      }
-      editCustomer(dispatch, mainData, setIsloading);
     }
+
+    const mainData = {
+      singleCustomerID: data?.id,
+      area: areaID,
+      subArea: subArea2,
+      poleBox: poleBoxIds,
+      ispOwner: ispOwnerId,
+      mikrotikPackage: packageId,
+      autoDisable: autoDisable,
+      connectionDate,
+      billingCycle: billDate.toISOString(),
+      promiseDate: promiseDate.toISOString(),
+      customerBillingType: customerBillingType,
+      pppoe: {
+        name: Pname,
+        password: Ppassword,
+        service: "pppoe",
+        comment: Pcomment,
+        profile: Pprofile,
+        disabled: activeStatus,
+      },
+      ...rest,
+      status,
+    };
+    if (
+      mainData.balance === "" ||
+      mainData.balance === undefined ||
+      mainData === null
+    ) {
+      delete mainData.balance;
+    }
+    if (!bpSettings.genCustomerId) {
+      mainData.customerId = customerId;
+    }
+
+    if (
+      divisionalArea.district ||
+      divisionalArea.division ||
+      divisionalArea.thana
+    ) {
+      const divisionName = getName(divisions, divisionalArea.division)?.name;
+      const districtName = getName(districts, divisionalArea.district)?.name;
+      const thanaName = getName(thana, divisionalArea.thana)?.name;
+      //if  exist add the data
+      if (divisionName) mainData.division = divisionName;
+      if (districtName) mainData.district = districtName;
+      if (thanaName) mainData.thana = thanaName;
+    }
+
+    if (!poleBoxIds) {
+      delete mainData.poleBox;
+    }
+    editCustomer(dispatch, mainData, setIsloading);
   };
   const selectedSubArea = (e) => {
     var subArea = e.target.value;
@@ -714,11 +699,8 @@ export default function CustomerEdit(props) {
                           <DatePicker
                             className="form-control mw-100"
                             selected={billDate}
-                            timeIntervals={60}
                             onChange={(date) => setBillDate(date)}
                             dateFormat="MMM dd yyyy hh:mm a"
-                            maxTime={lastTime}
-                            minTime={initialTime}
                             showTimeSelect
                           />
                         </div>
