@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  AlignBottom,
-  ArchiveFill,
-  GeoAlt,
-  PenFill,
-  ThreeDots,
-} from "react-bootstrap-icons";
+import { ArchiveFill, PenFill, ThreeDots } from "react-bootstrap-icons";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -37,39 +31,39 @@ export default function ActionButton({
           aria-expanded="false"
         />
         <>
-          {!allMikrotiks.find((val) => val.name.includes(data?.name)) ? (
-            <ul className="dropdown-menu" aria-labelledby="areaDropdown">
-              <li
-                data-bs-toggle="modal"
-                data-bs-target="#areaEditModal"
-                onClick={() => {
-                  getSpecificArea(data.id);
-                }}
-              >
-                <div className="dropdown-item">
-                  <div className="customerAction">
-                    <PenFill />
-                    <p className="actionP"> {t("edit")}</p>
+          <ul className="dropdown-menu" aria-labelledby="areaDropdown">
+            {!allMikrotiks.find((val) => val.name == data?.name) && (
+              <>
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#areaEditModal"
+                  onClick={() => {
+                    getSpecificArea(data.id);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <PenFill />
+                      <p className="actionP"> {t("edit")}</p>
+                    </div>
                   </div>
-                </div>
-              </li>
+                </li>
 
-              <li
-                onClick={() => {
-                  deleteSingleArea(data.id, data.ispOwner);
-                }}
-              >
-                <div className="dropdown-item actionManager">
-                  <div className="customerAction">
-                    <ArchiveFill />
-                    <p className="actionP"> {t("delete")} </p>
+                <li
+                  onClick={() => {
+                    deleteSingleArea(data.id, data.ispOwner);
+                  }}
+                >
+                  <div className="dropdown-item actionManager">
+                    <div className="customerAction">
+                      <ArchiveFill />
+                      <p className="actionP"> {t("delete")} </p>
+                    </div>
                   </div>
-                </div>
-              </li>
-            </ul>
-          ) : (
-            ""
-          )}
+                </li>
+              </>
+            )}
+          </ul>
         </>
       </div>
     </>

@@ -133,7 +133,7 @@ export default function SubArea({ isOpen, setIsOpen, areaId }) {
                 aria-expanded="false"
               />
               <ul className="dropdown-menu" aria-labelledby="areaDropdown">
-                {checkMikrotikName?.name !== name ? (
+                {checkMikrotikName?.name !== name && (
                   <>
                     <li
                       data-bs-toggle="modal"
@@ -166,8 +166,6 @@ export default function SubArea({ isOpen, setIsOpen, areaId }) {
                       </div>
                     </li>
                   </>
-                ) : (
-                  ""
                 )}
               </ul>
             </>
@@ -175,7 +173,7 @@ export default function SubArea({ isOpen, setIsOpen, areaId }) {
         ),
       },
     ],
-    [t]
+    [t, checkMikrotikName]
   );
 
   return (

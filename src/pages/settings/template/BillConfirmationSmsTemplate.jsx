@@ -208,6 +208,7 @@ function BillConfirmationSmsTemplate() {
                   class="form-control"
                   type="text"
                   placeholder="Title"
+                  maxLength={40}
                 />
               </div>
             </div>

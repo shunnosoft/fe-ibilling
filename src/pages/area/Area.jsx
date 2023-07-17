@@ -2,15 +2,7 @@ import "./area.css";
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
-import {
-  GeoAlt,
-  ArrowRightShort,
-  PlusLg,
-  ArrowClockwise,
-  AlignBottom,
-  PlugFill,
-} from "react-bootstrap-icons";
+import { GeoAlt, ArrowRightShort, ArrowClockwise } from "react-bootstrap-icons";
 import Loader from "../../components/common/Loader";
 
 // internal imports
