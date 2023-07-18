@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../../../components/common/Loader";
 import { transferToResellerApi } from "../../../features/actions/customerApiCall";
+import { toast } from "react-toastify";
 
 const TransferToReseller = ({ customerId }) => {
   //call dispatch
@@ -36,6 +37,16 @@ const TransferToReseller = ({ customerId }) => {
       return alert("Please select a reseller and sub area");
     }
     const selectedCustomer = customer.find((item) => item.id === customerId);
+
+    if (
+      !selectedReseller?.mikrotiks.some(
+        (val) => val === selectedCustomer.mikrotik
+      )
+    ) {
+      setIsLoading(false);
+      return toast.warn(t("resellerMikrotik"));
+    }
+
     const data = {
       ...selectedCustomer,
       reseller: selectedReseller.id,

@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { bulkCustomerTransfer } from "../../../../features/actions/bulkOperationApi";
 import { useEffect } from "react";
 import { fetchReseller } from "../../../../features/apiCalls";
+import { toast } from "react-toastify";
 
 const BulkCustomerTransfer = ({ bulkCustomer, modalId }) => {
   const dispatch = useDispatch();
@@ -41,14 +42,21 @@ const BulkCustomerTransfer = ({ bulkCustomer, modalId }) => {
     const enBn = localStorage.getItem("netFee:lang");
     if (!resellerId) return alert("Please select a reseler");
     if (!subAreaId) return alert("Please select a Sub Area");
+    let temp = [];
 
     const data = {
-      customerIds: bulkCustomer.map((item) => {
-        return item.original.id;
-      }),
+      customerIds: [],
       resellerId: resellerId,
       subAreaId,
     };
+
+    bulkCustomer?.map((item) => {
+      if (selectedReseller?.mikrotiks.includes(item.original.mikrotik)) {
+        data.customerIds.push(item.original.id);
+      } else {
+        temp.push(item.original);
+      }
+    });
 
     let confirm;
     if (enBn === "bn") {
@@ -57,9 +65,27 @@ const BulkCustomerTransfer = ({ bulkCustomer, modalId }) => {
           data.customerIds.length +
           " customer to reseller"
       );
+    } else if (data?.customerIds.length > 0 && temp.length > 0) {
+      confirm = window.confirm(
+        data.customerIds.length +
+          " টি গ্রাহক রিসেলার কে দিতে পারেন" +
+          " বাকি " +
+          temp.length +
+          " টি গ্রাহক অন্য একটি মাইক্রোটিকের"
+      );
     } else {
       confirm = window.confirm(
         data.customerIds.length + " টি গ্রাহক রিসেলার কে দিতে চান?"
+      );
+    }
+
+    if (temp.length > 0) {
+      temp.map((val) =>
+        toast.error(
+          `Id : ${val.customerId}, Name : ${val.pppoe.name}` +
+            " " +
+            t("bulkCustomerError")
+        )
       );
     }
 
@@ -116,7 +142,7 @@ const BulkCustomerTransfer = ({ bulkCustomer, modalId }) => {
           className="btn btn-success"
           disabled={isLoading}
         >
-          {isLoading ? <Loader /> : t("save")}
+          {isLoading ? <Loader /> : t("submit")}
         </button>
       </div>
     </RootBulkModal>

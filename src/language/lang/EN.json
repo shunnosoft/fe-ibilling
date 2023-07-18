@@ -828,5 +828,7 @@
   "ispOwnerShare": "IspOwner Share",
   "selectType": "Select Type",
   "fixedRate": "Fixed Rate",
-  "discountCustomer": "Discount Customer"
+  "discountCustomer": "Discount Customer",
+  "resellerMikrotik": "Reseller mikrotik was not found!",
+  "bulkCustomerError": "Customer Mikrotik is not under Reseller!"
 }

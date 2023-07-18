@@ -26,6 +26,7 @@ import {
   FilterCircle,
   BoxSeam,
   FiletypeCsv,
+  Boxes,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -1022,7 +1023,7 @@ export default function Customer() {
                       {role === "ispOwner" && bpSettings?.hasMikrotik && (
                         <div className="settingbtn" title={t("packageSetting")}>
                           <Link to={`/packageSetting`}>
-                            <BoxSeam className="addcutmButton" />
+                            <Boxes className="addcutmButton" />
                           </Link>
                         </div>
                       )}

@@ -469,6 +469,7 @@ const PPPOECustomer = () => {
       partialPayment: "",
       area: "",
       subArea: "",
+      mikrotik: "",
       package: "",
       isFree: "",
       filterDate: null,

@@ -834,5 +834,7 @@
   "ispOwnerShare": "মালিকের শেয়ার",
   "selectType": "টাইপ নির্বাচন করুন",
   "fixedRate": "একদর",
-  "discountCustomer": "ডিসকাউন্ট গ্রহণ"
+  "discountCustomer": "ডিসকাউন্ট গ্রহণ",
+  "resellerMikrotik": "রিসেলার মাইক্রোটিক পাওয়া যায়নি!",
+  "bulkCustomerError": "কাস্টমার মাইক্রোটিকটি রিসেলার অধীনে নেই!"
 }

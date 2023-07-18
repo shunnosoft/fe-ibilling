@@ -653,6 +653,7 @@ const ResellerCustomer = () => {
                       <div className="table-section">
                         <Table
                           isLoading={isLoading}
+                          bulkLength={bulkCustomer?.length}
                           customComponent={customComponent}
                           columns={columns}
                           data={customer}
