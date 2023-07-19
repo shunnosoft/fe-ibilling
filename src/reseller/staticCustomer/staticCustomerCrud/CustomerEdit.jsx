@@ -18,6 +18,7 @@ import districtsJSON from "../../../bdAddress/bd-districts.json";
 import thanaJSON from "../../../bdAddress/bd-upazilas.json";
 import SelectField from "../../../components/common/SelectField";
 import { updateResellerStaticCustomer } from "../../../features/apiCallReseller";
+import moment from "moment";
 
 const divisions = divisionsJSON.divisions;
 const districts = districtsJSON.districts;
@@ -91,9 +92,18 @@ export default function CustomerEdit({ single }) {
     thana: "",
   });
 
-  // fix promise date
-  let mxDate = new Date(customer?.billingCycle);
-  mxDate.setDate(mxDate.getDate() + parseInt(20));
+  //last day of month calculation
+  let day = new Date(customer?.promiseDate);
+  let lastDayOfMonth = new Date(day.getFullYear(), day.getMonth() + 1, 0);
+
+  let initialTime = new Date();
+  initialTime.setHours("00");
+  initialTime.setMinutes("00");
+
+  //hour and minutes calculation
+  let lastTime = new Date();
+  lastTime.setHours("18");
+  lastTime.setMinutes("00");
 
   // customer validator
   useEffect(() => {
@@ -288,13 +298,24 @@ export default function CustomerEdit({ single }) {
       setIsloading(false);
       return alert(t("selectDownloadPackage"));
     }
+
+    const tempBill = new Date(moment(billDate)).getTime();
+
+    const tempPromise = new Date(moment(promiseDate)).getTime();
+
+    let sendPromise = promiseDate;
+
+    if (tempBill > tempPromise) {
+      sendPromise = billDate;
+    }
+
     const mainData = {
       ispOwner: ispOwnerId,
       mikrotik: singleMikrotik,
       mikrotikPackage: mikrotikPackage,
       autoDisable: autoDisable,
       billingCycle: billDate,
-      promiseDate: promiseDate,
+      promiseDate: sendPromise,
       connectionDate: connectionDate,
       ...rest,
       monthlyFee: monthlyFee,
@@ -709,6 +730,7 @@ export default function CustomerEdit({ single }) {
                           onChange={(date) => setBillDate(date)}
                           dateFormat="MMM dd yyyy hh:mm a"
                           showTimeSelect
+                          timeIntervals={60}
                           disabled={permission?.billingCycleEdit === false}
                         />
                       </div>
@@ -739,9 +761,12 @@ export default function CustomerEdit({ single }) {
                             onChange={(date) => setPromiseDate(date)}
                             dateFormat="MMM dd yyyy hh:mm a"
                             placeholderText={t("selectDate")}
-                            minDate={new Date(customer?.billingCycle)}
-                            maxDate={mxDate}
                             showTimeSelect
+                            minDate={new Date(customer?.billingCycle)}
+                            maxDate={lastDayOfMonth}
+                            timeIntervals={60}
+                            minTime={initialTime}
+                            maxTime={lastTime}
                           />
                         </div>
                       )}

@@ -33,8 +33,8 @@ const BulkBillingCycleEdit = ({ bulkCustomer, modalId }) => {
             selected={billDate}
             onChange={(date) => setBillDate(date)}
             dateFormat="dd/MM/yyyy h:mm a"
+            timeIntervals={60}
             showTimeSelect
-            timeIntervals={1}
             placeholderText={t("selectDate")}
           />
         </div>

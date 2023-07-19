@@ -433,6 +433,7 @@ function AlertSmsTemplate() {
                   class="form-control"
                   type="text"
                   placeholder={t("title")}
+                  maxLength={40}
                 />
               </div>
             </div>

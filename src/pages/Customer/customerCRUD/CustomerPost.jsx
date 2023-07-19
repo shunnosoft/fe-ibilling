@@ -599,6 +599,7 @@ export default function CustomerModal() {
                           onChange={(date) => setBillDate(date)}
                           dateFormat="MMM dd yyyy hh:mm"
                           showTimeSelect
+                          timeIntervals={60}
                           placeholderText={t("selectBillDate")}
                           disabled={
                             !(mikrotikPackage && userRole === "ispOwner")

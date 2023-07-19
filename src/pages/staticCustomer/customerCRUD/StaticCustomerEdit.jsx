@@ -20,6 +20,7 @@ import divisionsJSON from "../../../bdAddress/bd-divisions.json";
 import districtsJSON from "../../../bdAddress/bd-districts.json";
 import thanaJSON from "../../../bdAddress/bd-upazilas.json";
 import SelectField from "../../../components/common/SelectField";
+import moment from "moment";
 
 const divisions = divisionsJSON.divisions;
 const districts = districtsJSON.districts;
@@ -95,6 +96,19 @@ export default function StaticCustomerEdit({ single }) {
     district: "",
     thana: "",
   });
+
+  //last day of month calculation
+  let day = new Date(customer?.promiseDate);
+  let lastDayOfMonth = new Date(day.getFullYear(), day.getMonth() + 1, 0);
+
+  let initialTime = new Date();
+  initialTime.setHours("00");
+  initialTime.setMinutes("00");
+
+  //hour and minutes calculation
+  let lastTime = new Date();
+  lastTime.setHours("18");
+  lastTime.setMinutes("00");
 
   // fix promise date
   let mxDate = new Date(customer?.billingCycle);
@@ -342,6 +356,17 @@ export default function StaticCustomerEdit({ single }) {
       setIsloading(false);
       return alert(t("selectSubArea"));
     }
+
+    const tempBill = new Date(moment(billDate)).getTime();
+
+    const tempPromise = new Date(moment(promiseDate)).getTime();
+
+    let sendPromise = promiseDate;
+
+    if (tempBill > tempPromise) {
+      sendPromise = billDate;
+    }
+
     const mainData = {
       area: areaID,
       subArea: subArea2,
@@ -351,7 +376,7 @@ export default function StaticCustomerEdit({ single }) {
       mikrotikPackage: mikrotikPackage,
       autoDisable: autoDisable,
       billingCycle: billDate.toISOString(),
-      promiseDate: promiseDate.toISOString(),
+      promiseDate: sendPromise.toISOString(),
       ...rest,
       monthlyFee: monthlyFee,
     };
@@ -870,6 +895,7 @@ export default function StaticCustomerEdit({ single }) {
                           onChange={(date) => setBillDate(date)}
                           dateFormat="MMM dd yyyy hh:mm a"
                           showTimeSelect
+                          timeIntervals={60}
                         />
                       </div>
                       <div className="static_edit_item">
@@ -901,8 +927,11 @@ export default function StaticCustomerEdit({ single }) {
                               dateFormat="MMM dd yyyy hh:mm a"
                               placeholderText={t("selectDate")}
                               minDate={new Date(customer?.billingCycle)}
-                              maxDate={mxDate}
+                              maxDate={lastDayOfMonth}
                               showTimeSelect
+                              timeIntervals={60}
+                              minTime={initialTime}
+                              maxTime={lastTime}
                             />
                           </div>
                         )}

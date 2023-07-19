@@ -553,6 +553,7 @@ export default function AddStaticCustomer() {
                               selected={billDate}
                               onChange={(data) => setBillDate(data)}
                               showTimeSelect
+                              timeIntervals={60}
                               dateFormat="dd/MM/yyyy:hh:mm"
                               minDate={billDate}
                               disabled={permission?.billingCycleEdit === false}
