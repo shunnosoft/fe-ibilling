@@ -5,7 +5,7 @@ import { bulkDeleteCustomer } from "../../../../features/actions/bulkOperationAp
 import RootBulkModal from "./bulkModal";
 import { useTranslation } from "react-i18next";
 
-const BulkCustomerDelete = ({ bulkCustomer, modalId }) => {
+const BulkCustomerDelete = ({ bulkCustomer, show, setShow }) => {
   const { t } = useTranslation();
 
   // get bp settings
@@ -38,13 +38,20 @@ const BulkCustomerDelete = ({ bulkCustomer, modalId }) => {
         data.customerIds.length + "টি গ্রাহক ডিলিট করতে চান?"
       );
       if (confirm)
-        bulkDeleteCustomer(dispatch, data, mikrotikCheck, setIsloading);
+        bulkDeleteCustomer(
+          dispatch,
+          data,
+          mikrotikCheck,
+          setIsloading,
+          setShow
+        );
     }
   };
 
   return (
     <RootBulkModal
-      modalId={modalId}
+      show={show}
+      setShow={setShow}
       header={`${bulkCustomer.length} টি গ্রাহক ডিলিট করুন`}
     >
       {bpSettings.hasMikrotik && (
@@ -66,8 +73,8 @@ const BulkCustomerDelete = ({ bulkCustomer, modalId }) => {
         <button
           type="button"
           className="btn btn-secondary"
-          data-bs-dismiss="modal"
           disabled={isLoading}
+          onClick={() => setShow(false)}
         >
           {t("cancel")}
         </button>

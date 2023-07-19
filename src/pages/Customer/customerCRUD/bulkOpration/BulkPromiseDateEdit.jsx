@@ -7,7 +7,7 @@ import { bulkPromiseDateEdit } from "../../../../features/actions/bulkOperationA
 import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 
-const BulkPromiseDateEdit = ({ bulkCustomer, modalId }) => {
+const BulkPromiseDateEdit = ({ bulkCustomer, show, setShow }) => {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState();
   const [billDate, setBillDate] = useState(false);
@@ -34,12 +34,12 @@ const BulkPromiseDateEdit = ({ bulkCustomer, modalId }) => {
         customerIds: bulkCustomer.map((item) => item.original.id),
         promiseDate: billDate.toISOString(),
       };
-      bulkPromiseDateEdit(dispatch, data, setIsLoading);
+      bulkPromiseDateEdit(dispatch, data, setIsLoading, setShow);
     }
   };
 
   return (
-    <RootBulkModal modalId={modalId} header={t("editPromiseDate")}>
+    <RootBulkModal show={show} setShow={setShow} header={t("editPromiseDate")}>
       <form onSubmit={promiseDateHandler}>
         <p className="customerFieldsTitle">{t("selectDate")}</p>
         <div className="mb-3">
@@ -62,8 +62,8 @@ const BulkPromiseDateEdit = ({ bulkCustomer, modalId }) => {
           <button
             type="button"
             className="btn btn-secondary"
-            data-bs-dismiss="modal"
             disabled={isLoading}
+            onClick={() => setShow(false)}
           >
             {t("cancel")}
           </button>
@@ -72,7 +72,7 @@ const BulkPromiseDateEdit = ({ bulkCustomer, modalId }) => {
             className="btn btn-success"
             disabled={isLoading}
           >
-            {isLoading ? <Loader /> : t("save")}
+            {isLoading ? <Loader /> : t("submit")}
           </button>
         </div>
       </form>

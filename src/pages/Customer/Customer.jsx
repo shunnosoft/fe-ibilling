@@ -231,6 +231,11 @@ const PPPOECustomer = () => {
   // pole box filter loding
   const [isLoadingPole, setIsLoadingPole] = useState(false);
 
+  // bulk modal handle state
+  const [bulkStatus, setBulkStatus] = useState("");
+  const [show, setShow] = useState(false);
+  console.log(bulkStatus);
+
   //initial api calls
   useEffect(() => {
     // get mikrotik api without mikrotik / has mikrotik
@@ -1475,57 +1480,110 @@ const PPPOECustomer = () => {
       <PasswordReset resetCustomerId={userId} />
       {/* create temp invoice */}
       <CreateInvoice single={customerId} customerData={customerData} />
+
       {/* bulk Modal */}
       {((role === "ispOwner" && bpSettings?.bulkAreaEdit) ||
-        permission?.bulkAreaEdit) && (
-        <BulkSubAreaEdit
+        permission?.bulkAreaEdit) &&
+        bulkStatus === "customerBulkEdit" && (
+          <BulkSubAreaEdit
+            bulkCustomer={bulkCustomers}
+            show={show}
+            setShow={setShow}
+          />
+        )}
+
+      {bulkStatus === "customerBalanceEdit" && (
+        <BulkBalanceEdit
           bulkCustomer={bulkCustomers}
-          modalId="customerBulkEdit"
+          show={show}
+          setShow={setShow}
         />
       )}
-      <BulkBalanceEdit
-        bulkCustomer={bulkCustomers}
-        modalId="customerBalanceEdit"
-      />
-      <BulkBillingCycleEdit
-        bulkCustomer={bulkCustomers}
-        modalId="customerBillingCycle"
-      />
-      <BulkPromiseDateEdit
-        bulkCustomer={bulkCustomers}
-        modalId="bulkPromiseDateEdit"
-      />
-      <BulkPaymentStatusEdit
-        bulkCustomer={bulkCustomers}
-        modalId="bulkPaymentStatusEdit"
-      />
+
+      {bulkStatus === "customerBillingCycle" && (
+        <BulkBillingCycleEdit
+          bulkCustomer={bulkCustomers}
+          show={show}
+          setShow={setShow}
+        />
+      )}
+
+      {bulkStatus === "bulkPromiseDateEdit" && (
+        <BulkPromiseDateEdit
+          bulkCustomer={bulkCustomers}
+          show={show}
+          setShow={setShow}
+        />
+      )}
+
+      {bulkStatus === "bulkPaymentStatusEdit" && (
+        <BulkPaymentStatusEdit
+          bulkCustomer={bulkCustomers}
+          show={show}
+          setShow={setShow}
+        />
+      )}
 
       {bpSettings.hasMikrotik && (
         <>
-          <BulkStatusEdit
-            bulkCustomer={bulkCustomers}
-            modalId="bulkStatusEdit"
-          />
-          <BulkMikrotikEdit
-            bulkCustomer={bulkCustomers}
-            modalId="bulkMikrotikEdit"
-          />
+          {bulkStatus === "bulkStatusEdit" && (
+            <BulkStatusEdit
+              bulkCustomer={bulkCustomers}
+              show={show}
+              setShow={setShow}
+            />
+          )}
+
+          {bulkStatus === "bulkMikrotikEdit" && (
+            <BulkMikrotikEdit
+              bulkCustomer={bulkCustomers}
+              show={show}
+              setShow={setShow}
+            />
+          )}
         </>
       )}
-      <BulkCustomerDelete
-        bulkCustomer={bulkCustomers}
-        modalId="bulkDeleteCustomer"
-      />
-      <BulkAutoConnectionEdit
-        bulkCustomer={bulkCustomers}
-        modalId="autoDisableEditModal"
-      />
-      <BulkPackageEdit bulkCustomer={bulkCustomers} modalId="bulkPackageEdit" />
-      <BulkRecharge bulkCustomer={bulkCustomers} modalId="bulkRecharge" />
-      <BulkCustomerTransfer
-        bulkCustomer={bulkCustomers}
-        modalId="bulkTransferToReseller"
-      />
+
+      {bulkStatus === "bulkDeleteCustomer" && (
+        <BulkCustomerDelete
+          bulkCustomer={bulkCustomers}
+          show={show}
+          setShow={setShow}
+        />
+      )}
+
+      {bulkStatus === "autoDisableEditModal" && (
+        <BulkAutoConnectionEdit
+          bulkCustomer={bulkCustomers}
+          show={show}
+          setShow={setShow}
+        />
+      )}
+
+      {bulkStatus === "bulkPackageEdit" && (
+        <BulkPackageEdit
+          bulkCustomer={bulkCustomers}
+          show={show}
+          setShow={setShow}
+        />
+      )}
+
+      {bulkStatus === "bulkRecharge" && (
+        <BulkRecharge
+          bulkCustomer={bulkCustomers}
+          show={show}
+          setShow={setShow}
+        />
+      )}
+
+      {bulkStatus === "bulkTransferToReseller" && (
+        <BulkCustomerTransfer
+          bulkCustomer={bulkCustomers}
+          show={show}
+          setShow={setShow}
+        />
+      )}
+
       <BandwidthModal
         setModalShow={setBandWidthModal}
         modalShow={bandWidthModal}
@@ -1555,10 +1613,12 @@ const PPPOECustomer = () => {
                   permission?.bulkAreaEdit &&
                   role !== "collector")) && (
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#customerBulkEdit"
                   type="button"
                   className="p-1"
+                  onClick={() => {
+                    setBulkStatus("customerBulkEdit");
+                    setShow(true);
+                  }}
                 >
                   <div className="menu_icon2">
                     <button
@@ -1579,10 +1639,12 @@ const PPPOECustomer = () => {
                   permission?.updateCustomerBalance &&
                   role === "manager")) && (
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#customerBalanceEdit"
                   type="button"
                   className="p-1"
+                  onClick={() => {
+                    setBulkStatus("customerBalanceEdit");
+                    setShow(true);
+                  }}
                 >
                   <div className="menu_icon2">
                     <button
@@ -1606,10 +1668,12 @@ const PPPOECustomer = () => {
                   bpSettings.bulkStatusEdit &&
                   permission.bulkStatusEdit)) && (
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#bulkStatusEdit"
                   type="button"
                   className="p-1"
+                  onClick={() => {
+                    setBulkStatus("bulkStatusEdit");
+                    setShow(true);
+                  }}
                 >
                   <div className="menu_icon2">
                     <button
@@ -1633,10 +1697,12 @@ const PPPOECustomer = () => {
                   bpSettings.bulkPaymentStatusEdit &&
                   permission.bulkPaymentStatusEdit)) && (
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#bulkPaymentStatusEdit"
                   type="button"
                   className="p-1"
+                  onClick={() => {
+                    setBulkStatus("bulkPaymentStatusEdit");
+                    setShow(true);
+                  }}
                 >
                   <div className="menu_icon2">
                     <button
@@ -1660,10 +1726,12 @@ const PPPOECustomer = () => {
                   permission?.bulkBillingCycleEdit &&
                   role === "manager")) && (
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#customerBillingCycle"
                   type="button"
                   className="p-1"
+                  onClick={() => {
+                    setBulkStatus("customerBillingCycle");
+                    setShow(true);
+                  }}
                 >
                   <div className="menu_icon2">
                     <button
@@ -1687,10 +1755,12 @@ const PPPOECustomer = () => {
                   permission?.bulkPromiseDateEdit &&
                   role === "manager")) && (
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#bulkPromiseDateEdit"
                   type="button"
                   className="p-1"
+                  onClick={() => {
+                    setBulkStatus("bulkPromiseDateEdit");
+                    setShow(true);
+                  }}
                 >
                   <div className="menu_icon2">
                     <button
@@ -1714,10 +1784,12 @@ const PPPOECustomer = () => {
                   permission?.bulkAutoDisableEdit &&
                   role === "manager")) && (
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#autoDisableEditModal"
                   type="button"
                   className="p-1"
+                  onClick={() => {
+                    setBulkStatus("autoDisableEditModal");
+                    setShow(true);
+                  }}
                 >
                   <div className="menu_icon2">
                     <button
@@ -1745,10 +1817,12 @@ const PPPOECustomer = () => {
                     permission?.bulkCustomerMikrotikUpdate &&
                     role === "manager")) && (
                   <li
-                    data-bs-toggle="modal"
-                    data-bs-target="#bulkMikrotikEdit"
                     type="button"
                     className="p-1"
+                    onClick={() => {
+                      setBulkStatus("bulkMikrotikEdit");
+                      setShow(true);
+                    }}
                   >
                     <div className="menu_icon2">
                       <button
@@ -1772,10 +1846,12 @@ const PPPOECustomer = () => {
                     permission?.bulkPackageEdit &&
                     role === "manager")) && (
                   <li
-                    data-bs-toggle="modal"
-                    data-bs-target="#bulkPackageEdit"
                     type="button"
                     className="p-1"
+                    onClick={() => {
+                      setBulkStatus("bulkPackageEdit");
+                      setShow(true);
+                    }}
                   >
                     <div className="menu_icon2">
                       <button
@@ -1799,10 +1875,12 @@ const PPPOECustomer = () => {
                     permission?.bulkCustomerRecharge &&
                     role === "manager")) && (
                   <li
-                    data-bs-toggle="modal"
-                    data-bs-target="#bulkRecharge"
                     type="button"
                     className="p-1"
+                    onClick={() => {
+                      setBulkStatus("bulkRecharge");
+                      setShow(true);
+                    }}
                   >
                     <div className="menu_icon2">
                       <button
@@ -1825,10 +1903,12 @@ const PPPOECustomer = () => {
                   permission?.bulkTransferToReseller &&
                   role === "manager")) && (
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#bulkTransferToReseller"
                   type="button"
                   className="p-1"
+                  onClick={() => {
+                    setBulkStatus("bulkTransferToReseller");
+                    setShow(true);
+                  }}
                 >
                   <div className="menu_icon2">
                     <button
@@ -1853,10 +1933,12 @@ const PPPOECustomer = () => {
                   permission?.bulkCustomerDelete &&
                   role === "manager")) && (
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#bulkDeleteCustomer"
                   type="button"
                   className="p-1"
+                  onClick={() => {
+                    setBulkStatus("bulkDeleteCustomer");
+                    setShow(true);
+                  }}
                 >
                   <div className="menu_icon2">
                     <button

@@ -6,7 +6,7 @@ import { bulkPaymentStatusEdit } from "../../../../features/actions/bulkOperatio
 import RootBulkModal from "./bulkModal";
 import { useTranslation } from "react-i18next";
 
-const BulkPaymentStatusEdit = ({ bulkCustomer, modalId }) => {
+const BulkPaymentStatusEdit = ({ bulkCustomer, show, setShow }) => {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [status, setStatus] = useState("");
@@ -27,13 +27,17 @@ const BulkPaymentStatusEdit = ({ bulkCustomer, modalId }) => {
       );
 
       if (confirm) {
-        bulkPaymentStatusEdit(dispatch, data, setIsLoading);
+        bulkPaymentStatusEdit(dispatch, data, setIsLoading, setShow);
       }
     }
   };
 
   return (
-    <RootBulkModal modalId={modalId} header={t("editPaymentStatus")}>
+    <RootBulkModal
+      show={show}
+      setShow={setShow}
+      header={t("editPaymentStatus")}
+    >
       <form onSubmit={changeStatus}>
         <div className="form-check form-check-inline">
           <input
@@ -65,8 +69,8 @@ const BulkPaymentStatusEdit = ({ bulkCustomer, modalId }) => {
           <button
             type="button"
             className="btn btn-secondary"
-            data-bs-dismiss="modal"
             disabled={isLoading}
+            onClick={() => setShow(false)}
           >
             {t("cancel")}
           </button>
@@ -75,7 +79,7 @@ const BulkPaymentStatusEdit = ({ bulkCustomer, modalId }) => {
             className="btn btn-success"
             disabled={isLoading}
           >
-            {isLoading ? <Loader /> : t("save")}
+            {isLoading ? <Loader /> : t("submit")}
           </button>
         </div>
       </form>

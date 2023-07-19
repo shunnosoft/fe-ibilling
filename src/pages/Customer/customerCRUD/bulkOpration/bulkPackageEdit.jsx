@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 import { fetchPackagefromDatabase } from "../../../../features/apiCalls";
 import { toast } from "react-toastify";
 
-const BulkPackageEdit = ({ bulkCustomer, modalId }) => {
+const BulkPackageEdit = ({ bulkCustomer, show, setShow }) => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
@@ -96,7 +96,7 @@ const BulkPackageEdit = ({ bulkCustomer, modalId }) => {
           t("otherMtkUsers")
       );
       if (confirm) {
-        bulkPackageEdit(dispatch, data, setIsLoading);
+        bulkPackageEdit(dispatch, data, setIsLoading, setShow);
       }
     } else {
       alert(t("selectPackage"));
@@ -104,7 +104,7 @@ const BulkPackageEdit = ({ bulkCustomer, modalId }) => {
   };
 
   return (
-    <RootBulkModal modalId={modalId} header={t("updatePackage")}>
+    <RootBulkModal show={show} setShow={setShow} header={t("updatePackage")}>
       <form onSubmit={changePackage}>
         <div className="mikrotikSection">
           {bpSettings?.hasMikrotik ? (
@@ -156,8 +156,8 @@ const BulkPackageEdit = ({ bulkCustomer, modalId }) => {
           <button
             type="button"
             className="btn btn-secondary"
-            data-bs-dismiss="modal"
             disabled={isLoading}
+            onClick={() => setShow(false)}
           >
             {t("cancel")}
           </button>
@@ -166,7 +166,7 @@ const BulkPackageEdit = ({ bulkCustomer, modalId }) => {
             className="btn btn-success"
             disabled={isLoading}
           >
-            {isLoading ? <Loader /> : t("save")}
+            {isLoading ? <Loader /> : t("submit")}
           </button>
         </div>
       </form>

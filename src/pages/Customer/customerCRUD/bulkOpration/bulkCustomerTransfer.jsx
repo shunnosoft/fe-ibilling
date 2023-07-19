@@ -8,7 +8,7 @@ import { useEffect } from "react";
 import { fetchReseller } from "../../../../features/apiCalls";
 import { toast } from "react-toastify";
 
-const BulkCustomerTransfer = ({ bulkCustomer, modalId }) => {
+const BulkCustomerTransfer = ({ bulkCustomer, show, setShow }) => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
@@ -89,7 +89,7 @@ const BulkCustomerTransfer = ({ bulkCustomer, modalId }) => {
       );
     }
 
-    if (confirm) bulkCustomerTransfer(dispatch, data, setIsLoading);
+    if (confirm) bulkCustomerTransfer(dispatch, data, setIsLoading, setShow);
   };
 
   useEffect(() => {
@@ -97,7 +97,7 @@ const BulkCustomerTransfer = ({ bulkCustomer, modalId }) => {
   }, []);
 
   return (
-    <RootBulkModal modalId={modalId} header={t("transferReseller")}>
+    <RootBulkModal show={show} setShow={setShow} header={t("transferReseller")}>
       <div className="reseller-section pb-2">
         <label htmlFor="selectReseller">{t("reseller")}</label>
         <select
@@ -131,8 +131,8 @@ const BulkCustomerTransfer = ({ bulkCustomer, modalId }) => {
         <button
           type="button"
           className="btn btn-secondary"
-          data-bs-dismiss="modal"
           disabled={isLoading}
+          onClick={() => setShow(false)}
         >
           {t("cancel")}
         </button>

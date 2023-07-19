@@ -5,7 +5,7 @@ import { bulksubAreaEdit } from "../../../../features/actions/bulkOperationApi";
 import RootBulkModal from "./bulkModal";
 import { useTranslation } from "react-i18next";
 
-const BulkSubAreaEdit = ({ bulkCustomer, modalId }) => {
+const BulkSubAreaEdit = ({ bulkCustomer, show, setShow }) => {
   const { t } = useTranslation();
 
   // get bp settings
@@ -107,7 +107,7 @@ const BulkSubAreaEdit = ({ bulkCustomer, modalId }) => {
           t("updateCustomerSubArea")
       );
       if (confirm) {
-        bulksubAreaEdit(dispatch, data, setIsLoading);
+        bulksubAreaEdit(dispatch, data, setIsLoading, setShow);
       }
       setSelectedValue({
         area: "",
@@ -152,7 +152,7 @@ const BulkSubAreaEdit = ({ bulkCustomer, modalId }) => {
   };
 
   return (
-    <RootBulkModal modalId={modalId} header={t("updateArea")}>
+    <RootBulkModal show={show} setShow={setShow} header={t("updateArea")}>
       <form onSubmit={submitHandler}>
         <div>
           <p>{t("selectArea")}</p>
@@ -223,8 +223,8 @@ const BulkSubAreaEdit = ({ bulkCustomer, modalId }) => {
           <button
             type="button"
             className="btn btn-secondary"
-            data-bs-dismiss="modal"
             disabled={isLoading}
+            onClick={() => setShow(false)}
           >
             {t("cancel")}
           </button>
@@ -233,7 +233,7 @@ const BulkSubAreaEdit = ({ bulkCustomer, modalId }) => {
             className="btn btn-success"
             disabled={isLoading}
           >
-            {isLoading ? <Loader /> : t("save")}
+            {isLoading ? <Loader /> : t("submit")}
           </button>
         </div>
       </form>

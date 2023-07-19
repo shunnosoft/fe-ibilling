@@ -476,9 +476,19 @@ export default function IspOwnerDashboard() {
                     <h2>{FormatNumber(customerStat.customers)}</h2>
 
                     <Link to={"/new/customer"}>
-                      <p className="dashboardData">
-                        {t("new customer")}{" "}
+                      <p
+                        className="dashboardData"
+                        style={{ fontSize: "15px", marginBottom: "0px" }}
+                      >
+                        {t("new customer")}:
                         {FormatNumber(customerStat.newCustomer)}
+                        &nbsp;
+                        {(role === "ispOwner" ||
+                          permissions?.dashboardCollectionData) && (
+                          <span className="text-info">
+                            ৳ {FormatNumber(customerStat.newCustomerBillCount)}
+                          </span>
+                        )}
                       </p>
                     </Link>
                   </div>

@@ -6,7 +6,7 @@ import { bulkMikrotikUpdate } from "../../../../features/actions/bulkOperationAp
 import RootBulkModal from "./bulkModal";
 import { useTranslation } from "react-i18next";
 
-const BulkMikrotikEdit = ({ bulkCustomer, modalId }) => {
+const BulkMikrotikEdit = ({ bulkCustomer, show, setShow }) => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
@@ -38,7 +38,7 @@ const BulkMikrotikEdit = ({ bulkCustomer, modalId }) => {
           t("updateStatusSubArea")
       );
       if (confirm) {
-        bulkMikrotikUpdate(dispatch, data, setIsLoading);
+        bulkMikrotikUpdate(dispatch, data, setIsLoading, setShow);
         setMikrotikId("");
       }
     } else {
@@ -47,7 +47,7 @@ const BulkMikrotikEdit = ({ bulkCustomer, modalId }) => {
   };
 
   return (
-    <RootBulkModal modalId={modalId} header={t("changeMikrotik")}>
+    <RootBulkModal show={show} setShow={setShow} header={t("changeMikrotik")}>
       <form onSubmit={changeMikrotik}>
         <div className="mikrotikSection">
           {bpSettings?.hasMikrotik && (
@@ -76,8 +76,8 @@ const BulkMikrotikEdit = ({ bulkCustomer, modalId }) => {
           <button
             type="button"
             className="btn btn-secondary"
-            data-bs-dismiss="modal"
             disabled={isLoading}
+            onClick={() => setShow(false)}
           >
             {t("cancel")}
           </button>
@@ -86,7 +86,7 @@ const BulkMikrotikEdit = ({ bulkCustomer, modalId }) => {
             className="btn btn-success"
             disabled={isLoading}
           >
-            {isLoading ? <Loader /> : t("save")}
+            {isLoading ? <Loader /> : t("submit")}
           </button>
         </div>
       </form>

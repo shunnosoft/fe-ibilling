@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 import { fetchPackagefromDatabase } from "../../../../features/apiCalls";
 import { toast } from "react-toastify";
 
-const BulkRecharge = ({ bulkCustomer, modalId }) => {
+const BulkRecharge = ({ bulkCustomer, show, setShow }) => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
   // get isp owner id
@@ -195,7 +195,7 @@ const BulkRecharge = ({ bulkCustomer, modalId }) => {
           t("otherPackageUsers")
       );
       if (confirm) {
-        bulkCustomerRecharge(dispatch, data, setIsLoading);
+        bulkCustomerRecharge(dispatch, data, setIsLoading, setShow);
         form.reset(); //form reset
         setMikrotikPackageRate("");
       }
@@ -203,7 +203,7 @@ const BulkRecharge = ({ bulkCustomer, modalId }) => {
   };
 
   return (
-    <RootBulkModal modalId={modalId} header={t("bulkRecharge")}>
+    <RootBulkModal show={show} setShow={setShow} header={t("bulkRecharge")}>
       <form onSubmit={changePackage}>
         <div className="mikrotikSection">
           {bpSettings?.hasMikrotik ? (
@@ -298,8 +298,8 @@ const BulkRecharge = ({ bulkCustomer, modalId }) => {
           <button
             type="button"
             className="btn btn-secondary"
-            data-bs-dismiss="modal"
             disabled={isLoading}
+            onClick={() => setShow(false)}
           >
             {t("cancel")}
           </button>

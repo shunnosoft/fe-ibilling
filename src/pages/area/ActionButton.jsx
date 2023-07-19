@@ -14,7 +14,7 @@ export default function ActionButton({
   const allMikrotiks = useSelector((state) => state.mikrotik.mikrotik);
 
   const mikrotikConditionHandle = () => {
-    if (allMikrotiks.find((val) => val.name.includes(data?.name))) {
+    if (allMikrotiks.find((val) => val.name == data?.name)) {
       return toast.warn(t("doNotAreaDeleteAndUpdate"));
     }
   };

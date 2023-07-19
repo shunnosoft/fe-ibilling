@@ -5,7 +5,7 @@ import { bulkBalanceEdit } from "../../../../features/actions/bulkOperationApi";
 import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 
-const BulkBalanceEdit = ({ bulkCustomer, modalId }) => {
+const BulkBalanceEdit = ({ bulkCustomer, show, setShow }) => {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState();
   const [balance, setBalance] = useState();
@@ -18,14 +18,14 @@ const BulkBalanceEdit = ({ bulkCustomer, modalId }) => {
         customerIds: bulkCustomer.map((item) => item.original.id),
         balance,
       };
-      bulkBalanceEdit(dispatch, data, setIsLoading);
+      bulkBalanceEdit(dispatch, data, setIsLoading, setShow);
     } else {
       alert(t("balanceRequired"));
     }
   };
 
   return (
-    <RootBulkModal modalId={modalId} header={t("updateBalance")}>
+    <RootBulkModal show={show} setShow={setShow} header={t("updateBalance")}>
       <form onSubmit={BalanceEditHandler}>
         <div class="mb-3">
           <label for="balance" class="form-label">
@@ -43,8 +43,8 @@ const BulkBalanceEdit = ({ bulkCustomer, modalId }) => {
           <button
             type="button"
             className="btn btn-secondary"
-            data-bs-dismiss="modal"
             disabled={isLoading}
+            onClick={() => setShow(false)}
           >
             {t("cancel")}
           </button>
@@ -53,7 +53,7 @@ const BulkBalanceEdit = ({ bulkCustomer, modalId }) => {
             className="btn btn-success"
             disabled={isLoading}
           >
-            {isLoading ? <Loader /> : t("save")}
+            {isLoading ? <Loader /> : t("submit")}
           </button>
         </div>
       </form>

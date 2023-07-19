@@ -6,7 +6,7 @@ import { bulkStatusEdit } from "../../../../features/actions/bulkOperationApi";
 import RootBulkModal from "./bulkModal";
 import { useTranslation } from "react-i18next";
 
-const BulkStatusEdit = ({ bulkCustomer, modalId }) => {
+const BulkStatusEdit = ({ bulkCustomer, show, setShow }) => {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [status, setStatus] = useState("");
@@ -25,13 +25,13 @@ const BulkStatusEdit = ({ bulkCustomer, modalId }) => {
           t("updateStatusSubArea")
       );
       if (confirm) {
-        bulkStatusEdit(dispatch, data, setIsLoading);
+        bulkStatusEdit(dispatch, data, setIsLoading, setShow);
       }
     }
   };
 
   return (
-    <RootBulkModal modalId={modalId} header={t("updateStatus")}>
+    <RootBulkModal show={show} setShow={setShow} header={t("updateStatus")}>
       <form onSubmit={changeStatus}>
         <div className="form-check form-check-inline">
           <input
@@ -78,8 +78,8 @@ const BulkStatusEdit = ({ bulkCustomer, modalId }) => {
           <button
             type="button"
             className="btn btn-secondary"
-            data-bs-dismiss="modal"
             disabled={isLoading}
+            onClick={() => setShow(false)}
           >
             {t("cancel")}
           </button>
@@ -88,7 +88,7 @@ const BulkStatusEdit = ({ bulkCustomer, modalId }) => {
             className="btn btn-success"
             disabled={isLoading}
           >
-            {isLoading ? <Loader /> : t("save")}
+            {isLoading ? <Loader /> : t("submit")}
           </button>
         </div>
       </form>
