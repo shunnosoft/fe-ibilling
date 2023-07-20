@@ -6,7 +6,7 @@ import * as Yup from "yup";
 import { FtextField } from "../../../components/common/FtextField";
 import "../../Customer/customer.css";
 import { useDispatch } from "react-redux";
-import { billCollect, createCustomerInvoice } from "../../../features/apiCalls";
+import { createCustomerInvoice } from "../../../features/apiCalls";
 import Loader from "../../../components/common/Loader";
 import DatePicker from "react-datepicker";
 import Select from "react-select";

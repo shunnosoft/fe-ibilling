@@ -841,10 +841,8 @@ const PPPOECustomer = () => {
                     </div>
                   </li>
                 )}
-                {((role === "ispOwner" && bpSettings?.customerInvoice) ||
-                  (role === "manager" && permission?.customerInvoice)) &&
-                (!(original?.monthlyFee <= original?.balance) ||
-                  original?.paymentStatus !== "paid") ? (
+                {(role === "ispOwner" && bpSettings?.customerInvoice) ||
+                (role === "manager" && permission?.customerInvoice) ? (
                   <li
                     data-bs-toggle="modal"
                     data-bs-target="#createInvoiceModal"
