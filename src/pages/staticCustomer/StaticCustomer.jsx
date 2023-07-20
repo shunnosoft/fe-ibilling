@@ -1004,7 +1004,7 @@ export default function Customer() {
                         onClick={() => setOpen(!open)}
                         aria-controls="example-collapse-text"
                         aria-expanded={open}
-                        className="me-3"
+                        className="me-4"
                       />
                     )}
 
@@ -1186,7 +1186,7 @@ export default function Customer() {
                       </Collapse>
                     </div>
                     <div
-                      style={{ marginLeft: "-11px", zIndex: 9999 }}
+                      style={{ marginLeft: "-14px", zIndex: 9 }}
                       onClick={() => {
                         if (!activeKeys) {
                           setActiveKeys("filter");

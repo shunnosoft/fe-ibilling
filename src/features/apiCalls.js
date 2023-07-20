@@ -2187,12 +2187,15 @@ export const createCustomerInvoice = async (
     const res = await apiLink.post("/bill/customer/invoice", billData);
     // dispatch(updateBalance(res.data));
     document.querySelector("#createInvoiceModal").click();
-    setShow(false);
+
     langMessage(
       "success",
       `${res.data.billType} ইনভয়েস তৈরি সফল হয়েছে।`,
       `${res.data.billType} Invoice Create Successful.`
     );
+
+    setShow(false);
+
     resetForm();
   } catch (error) {
     toast.error(error.response?.data.message);
