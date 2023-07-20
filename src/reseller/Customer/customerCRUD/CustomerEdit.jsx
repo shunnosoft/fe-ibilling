@@ -623,6 +623,7 @@ export default function CustomerEdit({ single }) {
                                   className="form-control mw-100"
                                   selected={billDate}
                                   onChange={(data) => setBillDate(data)}
+                                  timeIntervals={60}
                                   showTimeSelect
                                   dateFormat="dd/MM/yyyy:hh:mm"
                                   minDate={new Date()}

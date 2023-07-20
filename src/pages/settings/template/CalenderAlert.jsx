@@ -568,6 +568,7 @@ function CalenderAlert() {
                   className="form-control"
                   type="text"
                   placeholder={t("title")}
+                  maxLength={40}
                 />
               </div>
             </div>

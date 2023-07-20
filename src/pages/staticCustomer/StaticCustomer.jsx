@@ -27,6 +27,8 @@ import {
   BoxSeam,
   FiletypeCsv,
   Boxes,
+  ArrowLeftCircle,
+  ArrowRightCircle,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -82,7 +84,7 @@ import BulkBalanceEdit from "../Customer/customerCRUD/bulkOpration/BulkBalanceEd
 import BulkPackageEdit from "../Customer/customerCRUD/bulkOpration/bulkPackageEdit";
 import BulkRecharge from "../Customer/customerCRUD/bulkOpration/BulkRecharge";
 import StaticCreateInvoice from "./StaticCreateInvoice";
-import { Accordion } from "react-bootstrap";
+import { Accordion, Card, Collapse } from "react-bootstrap";
 
 export default function Customer() {
   //call hooks
@@ -226,6 +228,8 @@ export default function Customer() {
 
   //bulk menu show and hide
   const [isMenuOpen, setMenuOpen] = useState(false);
+
+  const [open, setOpen] = useState(false);
 
   // cutomer delete
   const customerDelete = (customerId) => {
@@ -988,148 +992,231 @@ export default function Customer() {
                   <div className="d-flex">
                     <h2> {t("staticCustomer")}</h2>
                   </div>
+
                   <div
-                    className="d-flex"
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "end",
-                    }}
+                    style={{ fontSize: "25px", height: "50px" }}
+                    className="d-flex justify-content-center align-items-center"
                   >
-                    <>
-                      <div
-                        onClick={() => {
-                          if (!activeKeys) {
-                            setActiveKeys("filter");
-                          } else {
-                            setActiveKeys("");
-                          }
+                    {!open && (
+                      <ArrowLeftCircle
+                        size={34}
+                        style={{ cursor: "pointer" }}
+                        onClick={() => setOpen(!open)}
+                        aria-controls="example-collapse-text"
+                        aria-expanded={open}
+                        className="me-3"
+                      />
+                    )}
+
+                    {open && (
+                      <ArrowRightCircle
+                        size={34}
+                        style={{ cursor: "pointer" }}
+                        onClick={() => setOpen(!open)}
+                        aria-controls="example-collapse-text"
+                        aria-expanded={open}
+                      />
+                    )}
+
+                    <div>
+                      <Collapse in={open} dimension="width">
+                        <div id="example-collapse-text">
+                          <Card
+                            body
+                            className="border-0 "
+                            style={{
+                              width: "355px",
+                              backgroundColor: "#2E87DF",
+                            }}
+                          >
+                            <div
+                              className="d-flex"
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                              }}
+                            >
+                              <>
+                                {role === "ispOwner" &&
+                                  bpSettings?.hasMikrotik && (
+                                    <div
+                                      className="settingbtn"
+                                      title={t("packageSetting")}
+                                    >
+                                      <Link to={`/packageSetting`}>
+                                        <BoxSeam
+                                          style={{
+                                            height: "34px",
+                                            width: "34px",
+                                          }}
+                                          className="addcutmButton"
+                                        />
+                                      </Link>
+                                    </div>
+                                  )}
+                                {role === "ispOwner" &&
+                                (bpSettings?.queueType === "simple-queue" ||
+                                  bpSettings?.queueType === "core-queue") &&
+                                bpSettings?.hasMikrotik ? (
+                                  <div
+                                    className="addAndSettingIcon"
+                                    title={t("fireWallFilterIpDrop")}
+                                  >
+                                    <svg
+                                      data-bs-toggle="modal"
+                                      data-bs-target="#fireWallFilterIpDropControl"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width="20"
+                                      height="20"
+                                      style={{ height: "34px", width: "34px" }}
+                                      fill="currentColor"
+                                      className="bi bi-receipt-cutoff addcutmButton"
+                                      viewBox="0 0 16 16"
+                                    >
+                                      <path d="M3 4.5a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5zM11.5 4a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1z" />
+                                      <path d="M2.354.646a.5.5 0 0 0-.801.13l-.5 1A.5.5 0 0 0 1 2v13H.5a.5.5 0 0 0 0 1h15a.5.5 0 0 0 0-1H15V2a.5.5 0 0 0-.053-.224l-.5-1a.5.5 0 0 0-.8-.13L13 1.293l-.646-.647a.5.5 0 0 0-.708 0L11 1.293l-.646-.647a.5.5 0 0 0-.708 0L9 1.293 8.354.646a.5.5 0 0 0-.708 0L7 1.293 6.354.646a.5.5 0 0 0-.708 0L5 1.293 4.354.646a.5.5 0 0 0-.708 0L3 1.293 2.354.646zm-.217 1.198.51.51a.5.5 0 0 0 .707 0L4 1.707l.646.647a.5.5 0 0 0 .708 0L6 1.707l.646.647a.5.5 0 0 0 .708 0L8 1.707l.646.647a.5.5 0 0 0 .708 0L10 1.707l.646.647a.5.5 0 0 0 .708 0L12 1.707l.646.647a.5.5 0 0 0 .708 0l.509-.51.137.274V15H2V2.118l.137-.274z" />
+                                    </svg>
+                                  </div>
+                                ) : (
+                                  ""
+                                )}
+
+                                {((role === "manager" &&
+                                  permission?.customerEdit) ||
+                                  role === "ispOwner") && (
+                                  <div
+                                    className="addAndSettingIcon"
+                                    title={t("customerNumberUpdateOrDelete")}
+                                  >
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width="20"
+                                      height="20"
+                                      style={{ height: "34px", width: "34px" }}
+                                      fill="currentColor"
+                                      className="bi bi-pencil-square addcutmButton"
+                                      viewBox="0 0 16 16"
+                                      onClick={() =>
+                                        setNumberModalShow({
+                                          ...numberModalShow,
+                                          [false]: true,
+                                        })
+                                      }
+                                    >
+                                      <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                      <path
+                                        fill-rule="evenodd"
+                                        d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"
+                                      />
+                                    </svg>
+                                  </div>
+                                )}
+
+                                {permission?.viewCustomerList ||
+                                role !== "collector" ? (
+                                  <>
+                                    <div className="addAndSettingIcon">
+                                      <CSVLink
+                                        data={customerForCsVTableInfo}
+                                        filename={ispOwnerData.company}
+                                        headers={customerForCsVTableInfoHeader}
+                                        title="Customer Report"
+                                      >
+                                        <FiletypeCsv
+                                          style={{
+                                            height: "34px",
+                                            width: "34px",
+                                          }}
+                                          className="addcutmButton"
+                                        />
+                                      </CSVLink>
+                                    </div>
+                                    <div className="addAndSettingIcon">
+                                      <CSVLink
+                                        data={customerForCsV}
+                                        filename={ispOwnerData.company}
+                                        headers={headers}
+                                        title={t("downloadBTRCreport")}
+                                      >
+                                        <FileExcelFill
+                                          style={{
+                                            height: "34px",
+                                            width: "34px",
+                                          }}
+                                          className="addcutmButton"
+                                        />
+                                      </CSVLink>
+                                    </div>
+                                    <div className="addAndSettingIcon">
+                                      <ReactToPrint
+                                        documentTitle={t("CustomerList")}
+                                        trigger={() => (
+                                          <PrinterFill
+                                            style={{
+                                              height: "34px",
+                                              width: "34px",
+                                            }}
+                                            title={t("print")}
+                                            className="addcutmButton"
+                                          />
+                                        )}
+                                        content={() => componentRef.current}
+                                      />
+                                    </div>
+                                  </>
+                                ) : (
+                                  ""
+                                )}
+
+                                {(role === "ispOwner" ||
+                                  permission.customerAdd) && (
+                                  <PersonPlusFill
+                                    style={{ height: "34px", width: "34px" }}
+                                    title={t("addStaticCustomer")}
+                                    className="addcutmButton"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#addStaticCustomerModal"
+                                  />
+                                )}
+                              </>
+                            </div>
+                          </Card>
+                        </div>
+                      </Collapse>
+                    </div>
+                    <div
+                      style={{ marginLeft: "-11px", zIndex: 9999 }}
+                      onClick={() => {
+                        if (!activeKeys) {
+                          setActiveKeys("filter");
+                        } else {
+                          setActiveKeys("");
+                        }
+                      }}
+                      title={t("filter")}
+                    >
+                      <FilterCircle
+                        style={{
+                          height: "34px",
+                          width: "34px",
                         }}
-                        title={t("filter")}
-                      >
-                        <FilterCircle className="addcutmButton" />
-                      </div>
+                        className="addcutmButton"
+                      />
+                    </div>
 
-                      <div className="reloadBtn">
-                        {isLoading ? (
-                          <Loader></Loader>
-                        ) : (
-                          <ArrowClockwise
-                            onClick={() => reloadHandler()}
-                          ></ArrowClockwise>
-                        )}
-                      </div>
-
-                      {role === "ispOwner" && bpSettings?.hasMikrotik && (
-                        <div className="settingbtn" title={t("packageSetting")}>
-                          <Link to={`/packageSetting`}>
-                            <Boxes className="addcutmButton" />
-                          </Link>
-                        </div>
-                      )}
-                      {role === "ispOwner" &&
-                      (bpSettings?.queueType === "simple-queue" ||
-                        bpSettings?.queueType === "core-queue") &&
-                      bpSettings?.hasMikrotik ? (
-                        <div
-                          className="addAndSettingIcon"
-                          title={t("fireWallFilterIpDrop")}
-                        >
-                          <svg
-                            data-bs-toggle="modal"
-                            data-bs-target="#fireWallFilterIpDropControl"
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="20"
-                            height="20"
-                            fill="currentColor"
-                            className="bi bi-receipt-cutoff addcutmButton"
-                            viewBox="0 0 16 16"
-                          >
-                            <path d="M3 4.5a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5zM11.5 4a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1z" />
-                            <path d="M2.354.646a.5.5 0 0 0-.801.13l-.5 1A.5.5 0 0 0 1 2v13H.5a.5.5 0 0 0 0 1h15a.5.5 0 0 0 0-1H15V2a.5.5 0 0 0-.053-.224l-.5-1a.5.5 0 0 0-.8-.13L13 1.293l-.646-.647a.5.5 0 0 0-.708 0L11 1.293l-.646-.647a.5.5 0 0 0-.708 0L9 1.293 8.354.646a.5.5 0 0 0-.708 0L7 1.293 6.354.646a.5.5 0 0 0-.708 0L5 1.293 4.354.646a.5.5 0 0 0-.708 0L3 1.293 2.354.646zm-.217 1.198.51.51a.5.5 0 0 0 .707 0L4 1.707l.646.647a.5.5 0 0 0 .708 0L6 1.707l.646.647a.5.5 0 0 0 .708 0L8 1.707l.646.647a.5.5 0 0 0 .708 0L10 1.707l.646.647a.5.5 0 0 0 .708 0L12 1.707l.646.647a.5.5 0 0 0 .708 0l.509-.51.137.274V15H2V2.118l.137-.274z" />
-                          </svg>
-                        </div>
+                    <div
+                      style={{ height: "34px", width: "34px" }}
+                      className="reloadBtn"
+                    >
+                      {isLoading ? (
+                        <Loader></Loader>
                       ) : (
-                        ""
+                        <ArrowClockwise
+                          onClick={() => reloadHandler()}
+                        ></ArrowClockwise>
                       )}
-
-                      {((role === "manager" && permission?.customerEdit) ||
-                        role === "ispOwner") && (
-                        <div
-                          className="addAndSettingIcon"
-                          title={t("customerNumberUpdateOrDelete")}
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="20"
-                            height="20"
-                            fill="currentColor"
-                            className="bi bi-pencil-square addcutmButton"
-                            viewBox="0 0 16 16"
-                            onClick={() =>
-                              setNumberModalShow({
-                                ...numberModalShow,
-                                [false]: true,
-                              })
-                            }
-                          >
-                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                            <path
-                              fill-rule="evenodd"
-                              d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"
-                            />
-                          </svg>
-                        </div>
-                      )}
-
-                      {permission?.viewCustomerList || role !== "collector" ? (
-                        <>
-                          <div className="addAndSettingIcon">
-                            <CSVLink
-                              data={customerForCsVTableInfo}
-                              filename={ispOwnerData.company}
-                              headers={customerForCsVTableInfoHeader}
-                              title="Customer Report"
-                            >
-                              <FiletypeCsv className="addcutmButton" />
-                            </CSVLink>
-                          </div>
-                          <div className="addAndSettingIcon">
-                            <CSVLink
-                              data={customerForCsV}
-                              filename={ispOwnerData.company}
-                              headers={headers}
-                              title={t("downloadBTRCreport")}
-                            >
-                              <FileExcelFill className="addcutmButton" />
-                            </CSVLink>
-                          </div>
-                          <div className="addAndSettingIcon">
-                            <ReactToPrint
-                              documentTitle={t("CustomerList")}
-                              trigger={() => (
-                                <PrinterFill
-                                  title={t("print")}
-                                  className="addcutmButton"
-                                />
-                              )}
-                              content={() => componentRef.current}
-                            />
-                          </div>
-                        </>
-                      ) : (
-                        ""
-                      )}
-
-                      {(role === "ispOwner" || permission.customerAdd) && (
-                        <PersonPlusFill
-                          title={t("addStaticCustomer")}
-                          className="addcutmButton"
-                          data-bs-toggle="modal"
-                          data-bs-target="#addStaticCustomerModal"
-                        />
-                      )}
-                    </>
+                    </div>
                   </div>
                 </div>
               </FourGround>

@@ -555,6 +555,7 @@ export default function CustomerModal() {
                             onChange={(date) => setBillDate(date)}
                             dateFormat="dd/MM/yyyy:hh:mm"
                             showTimeSelect
+                            timeIntervals={60}
                             maxDate={billDate}
                             placeholderText={t("selectBillDate")}
                             disabled
@@ -571,6 +572,7 @@ export default function CustomerModal() {
                             selected={billDate}
                             onChange={(date) => setBillDate(date)}
                             dateFormat="dd/MM/yyyy:hh:mm"
+                            timeIntervals={60}
                             showTimeSelect
                             maxDate={billDate}
                             placeholderText={t("selectBillDate")}

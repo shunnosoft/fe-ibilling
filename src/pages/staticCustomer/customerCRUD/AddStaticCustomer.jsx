@@ -715,6 +715,7 @@ export default function AddStaticCustomer() {
                             selected={billDate}
                             onChange={(date) => setBillDate(date)}
                             dateFormat="MMM dd yyyy hh:mm"
+                            timeIntervals={60}
                             showTimeSelect
                             placeholderText={t("selectBillDate")}
                           />
