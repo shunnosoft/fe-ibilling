@@ -5,7 +5,7 @@ import Loader from "../../../components/common/Loader";
 import { bulkCustomerReturnApi } from "../../../features/actions/bulkOperationApi";
 import RootBulkModal from "../../Customer/customerCRUD/bulkOpration/bulkModal";
 
-const BulkCustomerReturn = ({ modalId, bulkCustomer, isAllCustomer }) => {
+const BulkCustomerReturn = ({ show, setShow, bulkCustomer, isAllCustomer }) => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const { t } = useTranslation();
@@ -23,7 +23,7 @@ const BulkCustomerReturn = ({ modalId, bulkCustomer, isAllCustomer }) => {
   };
 
   return (
-    <RootBulkModal modalId={modalId}>
+    <RootBulkModal show={show} setShow={setShow}>
       <p>{t("returnCustomerConfirmation")}</p>
 
       <div className="modal-footer" style={{ border: "none" }}>

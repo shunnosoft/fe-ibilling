@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import Loader from "../../../components/common/Loader";
 import { bulkBillingCycleEdit } from "../../../features/resellerCustomerAdminApi";
 
-const BulkBillingCycleEdit = ({ bulkCustomer, modalId }) => {
+const BulkBillingCycleEdit = ({ show, setShow, bulkCustomer }) => {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState();
   const [billDate, setBillDate] = useState(false);
@@ -19,12 +19,16 @@ const BulkBillingCycleEdit = ({ bulkCustomer, modalId }) => {
         customerIds: bulkCustomer.map((item) => item.original.id),
         billingCycle: billDate.toISOString(),
       };
-      bulkBillingCycleEdit(dispatch, data, setIsLoading);
+      bulkBillingCycleEdit(dispatch, data, setIsLoading, setShow);
     }
   };
 
   return (
-    <RootBulkModal modalId={modalId} header={t("updateBillingCycle")}>
+    <RootBulkModal
+      show={show}
+      setShow={setShow}
+      header={t("updateBillingCycle")}
+    >
       <form onSubmit={billingCycleHandler}>
         <p className="customerFieldsTitle">{t("selectDate")}</p>
         <div className="mb-3">
@@ -43,8 +47,8 @@ const BulkBillingCycleEdit = ({ bulkCustomer, modalId }) => {
           <button
             type="button"
             className="btn btn-secondary"
-            data-bs-dismiss="modal"
             disabled={isLoading}
+            onClick={() => setShow(false)}
           >
             {t("cancel")}
           </button>
@@ -53,7 +57,7 @@ const BulkBillingCycleEdit = ({ bulkCustomer, modalId }) => {
             className="btn btn-success"
             disabled={isLoading}
           >
-            {isLoading ? <Loader /> : t("save")}
+            {isLoading ? <Loader /> : t("submit")}
           </button>
         </div>
       </form>

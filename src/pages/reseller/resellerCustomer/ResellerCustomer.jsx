@@ -122,6 +122,10 @@ const ResellerCustomer = () => {
   // filter Accordion handle state
   const [activeKeys, setActiveKeys] = useState("");
 
+  // bulk modal handle state
+  const [bulkStatus, setBulkStatus] = useState("");
+  const [show, setShow] = useState(false);
+
   const resellerInfo = reseller.find((res) => res.id === resellerId);
 
   // reload handler method
@@ -681,36 +685,71 @@ const ResellerCustomer = () => {
         mikrotikCheck={mikrotikCheck}
         setMikrotikCheck={setMikrotikCheck}
       />
-      <BulkCustomerReturn
-        modalId="returnCustomer"
-        bulkCustomer={bulkCustomer}
-        isAllCustomer={false}
-      />
-      <BulkBillingCycleEdit
-        bulkCustomer={bulkCustomer}
-        modalId="customerBillingCycle"
-      />
-      <BulkStatusEdit bulkCustomer={bulkCustomer} modalId="bulkStatusEdit" />
-      <BulkPromiseDateEdit
-        bulkCustomer={bulkCustomer}
-        modalId="bulkPromiseDateEdit"
-      />
-      <BulkCustomerTransfer
-        bulkCustomer={bulkCustomer}
-        modalId="bulkTransferToReseller"
-      />
 
-      <BulkSubAreaEdit bulkCustomer={bulkCustomer} modalId="customerBulkEdit" />
+      {bulkStatus === "returnCustomer" && (
+        <BulkCustomerReturn
+          show={show}
+          setShow={setShow}
+          bulkCustomer={bulkCustomer}
+          isAllCustomer={false}
+        />
+      )}
 
-      <BulkPaymentStatusEdit
-        bulkCustomer={bulkCustomer}
-        modalId="bulkPaymentStatusEdit"
-      />
+      {bulkStatus === "customerBillingCycle" && (
+        <BulkBillingCycleEdit
+          show={show}
+          setShow={setShow}
+          bulkCustomer={bulkCustomer}
+        />
+      )}
 
-      <BulkAutoConnectionEdit
-        bulkCustomer={bulkCustomer}
-        modalId="autoDisableEditModal"
-      />
+      {bulkStatus === "bulkStatusEdit" && (
+        <BulkStatusEdit
+          show={show}
+          setShow={setShow}
+          bulkCustomer={bulkCustomer}
+        />
+      )}
+
+      {bulkStatus === "bulkPromiseDateEdit" && (
+        <BulkPromiseDateEdit
+          show={show}
+          setShow={setShow}
+          bulkCustomer={bulkCustomer}
+        />
+      )}
+
+      {bulkStatus === "bulkTransferToReseller" && (
+        <BulkCustomerTransfer
+          show={show}
+          setShow={setShow}
+          bulkCustomer={bulkCustomer}
+        />
+      )}
+
+      {bulkStatus === "customerBulkEdit" && (
+        <BulkSubAreaEdit
+          show={show}
+          setShow={setShow}
+          bulkCustomer={bulkCustomer}
+        />
+      )}
+
+      {bulkStatus === "bulkPaymentStatusEdit" && (
+        <BulkPaymentStatusEdit
+          show={show}
+          setShow={setShow}
+          bulkCustomer={bulkCustomer}
+        />
+      )}
+
+      {bulkStatus === "autoDisableEditModal" && (
+        <BulkAutoConnectionEdit
+          show={show}
+          setShow={setShow}
+          bulkCustomer={bulkCustomer}
+        />
+      )}
 
       {bulkCustomer.length > 0 && (
         <div className="client_wraper2">
@@ -721,10 +760,12 @@ const ResellerCustomer = () => {
           >
             <ul className="client_service_list2 ps-0">
               <li
-                data-bs-toggle="modal"
-                data-bs-target="#returnCustomer"
                 type="button"
                 className="p-1"
+                onClick={() => {
+                  setBulkStatus("returnCustomer");
+                  setShow(true);
+                }}
               >
                 <div className="menu_icon2">
                   <button
@@ -742,10 +783,12 @@ const ResellerCustomer = () => {
 
               {bpSettings.resellerCustomerBulkBillingCycleEdit && (
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#customerBillingCycle"
                   type="button"
                   className="p-1"
+                  onClick={() => {
+                    setBulkStatus("customerBillingCycle");
+                    setShow(true);
+                  }}
                 >
                   <div className="menu_icon2">
                     <button
@@ -766,10 +809,12 @@ const ResellerCustomer = () => {
 
               {bpSettings.resellerCustomerBulkStatusEdit && (
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#bulkStatusEdit"
                   type="button"
                   className="p-1"
+                  onClick={() => {
+                    setBulkStatus("bulkStatusEdit");
+                    setShow(true);
+                  }}
                 >
                   <div className="menu_icon2">
                     <button
@@ -788,10 +833,12 @@ const ResellerCustomer = () => {
 
               {bpSettings.resellerCustomerBulkPromiseDateEdit && (
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#bulkPromiseDateEdit"
                   type="button"
                   className="p-1"
+                  onClick={() => {
+                    setBulkStatus("bulkPromiseDateEdit");
+                    setShow(true);
+                  }}
                 >
                   <div className="menu_icon2">
                     <button
@@ -811,10 +858,12 @@ const ResellerCustomer = () => {
               <hr className="mt-0 mb-0" />
 
               <li
-                data-bs-toggle="modal"
-                data-bs-target="#bulkTransferToReseller"
                 type="button"
                 className="p-1"
+                onClick={() => {
+                  setBulkStatus("bulkTransferToReseller");
+                  setShow(true);
+                }}
               >
                 <div className="menu_icon2">
                   <button
@@ -836,10 +885,12 @@ const ResellerCustomer = () => {
 
               {bpSettings.resellerCustomerBulkAreaEdit && (
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#customerBulkEdit"
                   type="button"
                   className="p-1"
+                  onClick={() => {
+                    setBulkStatus("customerBulkEdit");
+                    setShow(true);
+                  }}
                 >
                   <div className="menu_icon2">
                     <button
@@ -858,10 +909,12 @@ const ResellerCustomer = () => {
 
               {bpSettings.resellerCustomerBulkPaymentStatusEdit && (
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#bulkPaymentStatusEdit"
                   type="button"
                   className="p-1"
+                  onClick={() => {
+                    setBulkStatus("bulkPaymentStatusEdit");
+                    setShow(true);
+                  }}
                 >
                   <div className="menu_icon2">
                     <button
@@ -882,10 +935,12 @@ const ResellerCustomer = () => {
 
               {bpSettings.resellerCustomerBulkAutoConnectionEdit && (
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#autoDisableEditModal"
                   type="button"
                   className="p-1"
+                  onClick={() => {
+                    setBulkStatus("autoDisableEditModal");
+                    setShow(true);
+                  }}
                 >
                   <div className="menu_icon2">
                     <button

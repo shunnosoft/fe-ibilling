@@ -220,6 +220,7 @@ const PPPOECustomer = () => {
     filterDate: null,
     dayFilter: "",
     changedPromiseDate: "",
+    connection: "",
   });
 
   // customers number update or delete modal show state
@@ -234,7 +235,6 @@ const PPPOECustomer = () => {
   // bulk modal handle state
   const [bulkStatus, setBulkStatus] = useState("");
   const [show, setShow] = useState(false);
-  console.log(bulkStatus);
 
   //initial api calls
   useEffect(() => {
@@ -340,6 +340,7 @@ const PPPOECustomer = () => {
         filterDate,
         dayFilter,
         changedPromiseDate,
+        connection,
       } = filterOptions;
 
       const billingCycle = new Date(
@@ -416,6 +417,18 @@ const PPPOECustomer = () => {
             promiseDate < lastDayOfMonth
           : true,
       };
+
+      // automaticConnection filter
+      let connectionStatus;
+      if (connection === "true") {
+        connectionStatus = true;
+      } else if (connection === "false") {
+        connectionStatus = false;
+      }
+
+      if (c.autoDisable !== connectionStatus) {
+        return acc;
+      }
 
       //check if condition pass got for next step or is fail stop operation
       //if specific filter option value not exist it will return true
@@ -1010,6 +1023,21 @@ const PPPOECustomer = () => {
     };
   }
 
+  //
+  const changePromiseConnection = (e) => {
+    if (e.target.value !== "changedPromiseDate") {
+      setFilterOption({
+        ...filterOptions,
+        connection: e.target.value,
+      });
+    } else {
+      setFilterOption({
+        ...filterOptions,
+        changedPromiseDate: e.target.value,
+      });
+    }
+  };
+
   const filterInputs = [
     {
       name: "area",
@@ -1384,16 +1412,15 @@ const PPPOECustomer = () => {
 
                             <select
                               className="form-select shadow-none"
-                              onChange={(e) =>
-                                setFilterOption({
-                                  ...filterOptions,
-                                  changedPromiseDate: e.target.value,
-                                })
-                              }
+                              onChange={changePromiseConnection}
                             >
                               <option value="">{t("promiseDateChange")}</option>
                               <option value="changedPromiseDate">
                                 {t("changedCustomer")}
+                              </option>
+                              <option value="true">{t("connectionOn")}</option>
+                              <option value="false">
+                                {t("connectionOff")}
                               </option>
                             </select>
 

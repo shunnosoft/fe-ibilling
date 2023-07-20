@@ -8,7 +8,7 @@ import { bulkCustomerTransfer } from "../../../features/actions/bulkOperationApi
 import { fetchReseller } from "../../../features/apiCalls";
 import { getSubAreasApi } from "../../../features/actions/customerApiCall";
 
-const BulkCustomerTransfer = ({ bulkCustomer, modalId }) => {
+const BulkCustomerTransfer = ({ show, setShow, bulkCustomer }) => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
@@ -62,7 +62,13 @@ const BulkCustomerTransfer = ({ bulkCustomer, modalId }) => {
     }
 
     if (confirm)
-      bulkCustomerTransfer(dispatch, data, setIsLoading, "resellerCustomer");
+      bulkCustomerTransfer(
+        dispatch,
+        data,
+        setIsLoading,
+        setShow,
+        "resellerCustomer"
+      );
   };
 
   useEffect(() => {
@@ -72,7 +78,7 @@ const BulkCustomerTransfer = ({ bulkCustomer, modalId }) => {
   }, []);
 
   return (
-    <RootBulkModal modalId={modalId} header={t("transferReseller")}>
+    <RootBulkModal show={show} setShow={setShow} header={t("transferReseller")}>
       <div className="reseller-section pb-2">
         <label htmlFor="selectReseller">{t("reseller")}</label>
         <select
@@ -106,8 +112,8 @@ const BulkCustomerTransfer = ({ bulkCustomer, modalId }) => {
         <button
           type="button"
           className="btn btn-secondary"
-          data-bs-dismiss="modal"
           disabled={isLoading}
+          onClick={() => setShow(false)}
         >
           {t("cancel")}
         </button>
@@ -117,7 +123,7 @@ const BulkCustomerTransfer = ({ bulkCustomer, modalId }) => {
           className="btn btn-success"
           disabled={isLoading}
         >
-          {isLoading ? <Loader /> : t("save")}
+          {isLoading ? <Loader /> : t("submit")}
         </button>
       </div>
     </RootBulkModal>

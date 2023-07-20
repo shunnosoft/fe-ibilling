@@ -836,5 +836,6 @@
   "fixedRate": "একদর",
   "discountCustomer": "ডিসকাউন্ট গ্রহণ",
   "resellerMikrotik": "রিসেলার মাইক্রোটিক পাওয়া যায়নি!",
-  "bulkCustomerError": "কাস্টমার মাইক্রোটিকটি রিসেলার অধীনে নেই!"
+  "bulkCustomerError": "কাস্টমার মাইক্রোটিকটি রিসেলার অধীনে নেই!",
+  "automaticConnectionOn": "অটোমেটিক সংযোগ চালু"
 }

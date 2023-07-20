@@ -108,18 +108,21 @@ const Paid = ({ ispOwnerId, month, year, status }) => {
   }, [month, status, year]);
 
   // all monthlyFee count
-  const allBill = useCallback(() => {
+  const allBill = useMemo(() => {
     let count = 0;
+    let balanceSum = 0;
     customer.forEach((item) => {
       count = count + item.monthlyFee;
+      balanceSum += item.balance;
     });
-    return FormatNumber(count);
+    return { count, balanceSum };
   }, [customer]);
 
   // custom component monthlyFee tk show
   const customComponent = (
     <div style={{ fontSize: "18px" }}>
-      {t("totalBill")} {allBill()} {t("tk")}
+      {t("totalBill")} {FormatNumber(allBill.count)} {t("tk")} &nbsp;&nbsp;
+      {t("totalBalance")}: {FormatNumber(allBill.balanceSum)} {t("tk")}
     </div>
   );
 

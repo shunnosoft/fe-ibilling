@@ -830,5 +830,7 @@
   "fixedRate": "Fixed Rate",
   "discountCustomer": "Discount Customer",
   "resellerMikrotik": "Reseller mikrotik was not found!",
-  "bulkCustomerError": "Customer Mikrotik is not under Reseller!"
+  "bulkCustomerError": "Customer Mikrotik is not under Reseller!",
+  "automaticConnectionOn": "Automatic Connection On",
+  "managerNotFound": "Your manager was not found! Add your manager."
 }

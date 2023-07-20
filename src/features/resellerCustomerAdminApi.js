@@ -111,18 +111,22 @@ export const editResellerCustomer = async (
   }
 };
 
-export const bulkBillingCycleEdit = async (dispatch, data, setIsLoading) => {
+export const bulkBillingCycleEdit = async (
+  dispatch,
+  data,
+  setIsLoading,
+  setShow
+) => {
   try {
     setIsLoading(true);
     const res = await apiLink.patch("/customer/bulk-billing-cycle", data);
     dispatch(bulkUpdate(res.data.data));
-    document.querySelector("#customerBillingCycle").click();
+    setShow(false);
     setIsLoading(false);
     toast.success("কাস্টমার বিলিং সাইকেল আপডেট হয়েছে!");
   } catch (err) {
     if (err.response) {
       setIsLoading(false);
-      document.querySelector("#customerBillingCycle").click();
       toast.error(err.response.data.message);
     }
   }

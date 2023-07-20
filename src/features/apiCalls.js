@@ -186,6 +186,7 @@ export const getManger = async (dispatch, ispWonerId) => {
     dispatch(managerFetchSuccess(res.data));
   } catch (error) {
     dispatch(managerFetchFailure());
+    toast.error(error.response?.data?.message);
   }
 };
 
