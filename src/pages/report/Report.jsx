@@ -375,7 +375,7 @@ export default function Report() {
       {
         width: "9%",
         Header: t("package"),
-        accessor: "package",
+        accessor: "customer.mikrotikPackage.name",
       },
       {
         width: "8%",
@@ -538,7 +538,7 @@ export default function Report() {
                   <div className="d-flex">
                     <div>{t("billReport")}</div>
                   </div>
-                  <div className="d-flex justify-content-center">
+                  <div className="d-flex justify-content-center align-items-center">
                     <div
                       onClick={() => {
                         if (!activeKeys) {

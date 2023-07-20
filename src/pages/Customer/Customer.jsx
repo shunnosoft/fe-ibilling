@@ -1860,33 +1860,34 @@ const PPPOECustomer = () => {
               )}
 
               <hr className="mt-0 mb-0" />
-              {((role === "ispOwner" && bpSettings?.bulkStatusEdit) ||
-                (bpSettings?.bulkStatusEdit &&
-                  permission?.bulkStatusEdit &&
-                  role === "manager") ||
-                (role === "collector" &&
-                  bpSettings.bulkStatusEdit &&
-                  permission.bulkStatusEdit)) && (
-                <li
-                  type="button"
-                  className="p-1"
-                  onClick={() => {
-                    setBulkStatus("bulkStatusEdit");
-                    setShow(true);
-                  }}
-                >
-                  <div className="menu_icon2">
-                    <button
-                      className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-info"
-                      title={t("editStatus")}
-                    >
-                      <i className="fas fa-edit fa-xs  "></i>
-                      <span className="button_title"> {t("editStatus")}</span>
-                    </button>
-                  </div>
-                  <div className="menu_label2">{t("editStatus")}</div>
-                </li>
-              )}
+              {bpSettings.hasMikrotik &&
+                ((role === "ispOwner" && bpSettings?.bulkStatusEdit) ||
+                  (bpSettings?.bulkStatusEdit &&
+                    permission?.bulkStatusEdit &&
+                    role === "manager") ||
+                  (role === "collector" &&
+                    bpSettings.bulkStatusEdit &&
+                    permission.bulkStatusEdit)) && (
+                  <li
+                    type="button"
+                    className="p-1"
+                    onClick={() => {
+                      setBulkStatus("bulkStatusEdit");
+                      setShow(true);
+                    }}
+                  >
+                    <div className="menu_icon2">
+                      <button
+                        className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-info"
+                        title={t("editStatus")}
+                      >
+                        <i className="fas fa-edit fa-xs  "></i>
+                        <span className="button_title"> {t("editStatus")}</span>
+                      </button>
+                    </div>
+                    <div className="menu_label2">{t("editStatus")}</div>
+                  </li>
+                )}
 
               <hr className="mt-0 mb-0" />
               {((role === "ispOwner" && bpSettings?.bulkPaymentStatusEdit) ||

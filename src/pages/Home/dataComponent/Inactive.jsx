@@ -29,36 +29,45 @@ const Inactive = ({ ispOwnerId, year, month, status }) => {
     (state) => state.persistedReducer.auth.userData.permissions
   );
 
+  // get all packages
+  const allPackages = useSelector((state) => state.package.allPackages);
+
   // get inactive customer
   const customer = useSelector(
     (state) => state.dashboardInformation?.inactiveCustomer
   );
 
+  // customer current package find
+  const getCustomerPackage = (pack) => {
+    const findPack = allPackages.find((item) => item.id.includes(pack));
+    return findPack;
+  };
+
   //column for table
   const column = useMemo(
     () => [
       {
-        width: "7%",
+        width: "10%",
         Header: t("id"),
         accessor: "customerId",
       },
       {
-        width: "8%",
+        width: "10%",
         Header: t("name"),
         accessor: "name",
       },
       {
-        width: "8%",
+        width: "10%",
         Header: t("PPPoE"),
         accessor: "pppoe.name",
       },
       {
-        width: "8%",
+        width: "10%",
         Header: t("mobile"),
         accessor: "mobile",
       },
       {
-        width: "8%",
+        width: "10%",
         Header: t("status"),
         accessor: "status",
         Cell: ({ cell: { value } }) => {
@@ -66,7 +75,7 @@ const Inactive = ({ ispOwnerId, year, month, status }) => {
         },
       },
       {
-        width: "8%",
+        width: "10%",
         Header: t("paymentStatus"),
         accessor: "paymentStatus",
         Cell: ({ cell: { value } }) => {
@@ -74,17 +83,20 @@ const Inactive = ({ ispOwnerId, year, month, status }) => {
         },
       },
       {
-        width: "8%",
+        width: "10%",
         Header: t("package"),
-        accessor: "pppoe.profile",
+        accessor: "mikrotikPackage",
+        Cell: ({ cell: { value } }) => (
+          <div>{customer && getCustomerPackage(value)?.name}</div>
+        ),
       },
       {
-        width: "8%",
+        width: "10%",
         Header: t("mountly"),
         accessor: "monthlyFee",
       },
       {
-        width: "8%",
+        width: "10%",
         Header: t("balance"),
         accessor: "balance",
       },
@@ -93,11 +105,11 @@ const Inactive = ({ ispOwnerId, year, month, status }) => {
         Header: t("bill"),
         accessor: "billingCycle",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("MMM DD YYYY hh:mm A");
+          return moment(value).format("YYYY/MM/DD h:mm A");
         },
       },
     ],
-    [t]
+    [t, allPackages]
   );
 
   useEffect(() => {
@@ -106,18 +118,35 @@ const Inactive = ({ ispOwnerId, year, month, status }) => {
   }, [month, status, year]);
 
   // all monthlyFee count
-  const allBill = useCallback(() => {
+  const allBill = useMemo(() => {
     let count = 0;
+    let balance = 0;
     customer.forEach((item) => {
       count = count + item.monthlyFee;
+      balance += item.balance;
     });
-    return FormatNumber(count);
+    return { count, balance };
   }, [customer]);
 
   // custom component monthlyFee tk show
   const customComponent = (
-    <div style={{ fontSize: "18px" }}>
-      {t("totalBill")} {allBill()} {t("tk")}
+    <div
+      className="text-center"
+      style={{ fontSize: "18px", fontWeight: "500", display: "flex" }}
+    >
+      {allBill.count > 0 && (
+        <div>
+          {t("totalBill")}-৳
+          {FormatNumber(allBill.count)}
+        </div>
+      )}
+      &nbsp;&nbsp;
+      {allBill.balance > 0 && (
+        <div>
+          {t("totalBalance")}-৳
+          {FormatNumber(allBill.balance)}
+        </div>
+      )}
     </div>
   );
 
