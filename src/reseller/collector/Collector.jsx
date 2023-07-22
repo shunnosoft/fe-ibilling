@@ -217,9 +217,12 @@ export default function Collector() {
         <div className="container-fluied collector">
           <div className="container">
             <FontColor>
-              <div className="collectorTitle d-flex justify-content-between px-5">
+              <div className="collectorTitle d-flex justify-content-between px-4">
                 <div className="d-flex">
-                  <div>{t("collector")}</div>
+                  <h2>{t("collector")}</h2>
+                </div>
+
+                <div className="d-flex justify-content-center align-items-center">
                   <div className="reloadBtn">
                     {isLoading ? (
                       <Loader></Loader>
@@ -229,19 +232,18 @@ export default function Collector() {
                       ></ArrowClockwise>
                     )}
                   </div>
+                  {userData.permission?.customerAdd || role === "ispOwner" ? (
+                    <div
+                      className="header_icon"
+                      data-bs-toggle="modal"
+                      data-bs-target="#collectorModal"
+                    >
+                      <PersonPlusFill />
+                    </div>
+                  ) : (
+                    ""
+                  )}
                 </div>
-
-                {userData.permission?.customerAdd || role === "ispOwner" ? (
-                  <div
-                    className="header_icon"
-                    data-bs-toggle="modal"
-                    data-bs-target="#collectorModal"
-                  >
-                    <PersonPlusFill />
-                  </div>
-                ) : (
-                  ""
-                )}
               </div>
 
               {/* modals */}

@@ -11,7 +11,11 @@ import useDash from "../../assets/css/dash.module.css";
 import { FontColor, FourGround } from "../../assets/js/theme";
 import { useTranslation } from "react-i18next";
 import Loader from "../../components/common/Loader";
-import { ArrowClockwise, PrinterFill } from "react-bootstrap-icons";
+import {
+  ArrowClockwise,
+  FilterCircle,
+  PrinterFill,
+} from "react-bootstrap-icons";
 import Footer from "../../components/admin/footer/Footer";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -25,6 +29,7 @@ import FormatNumber from "../../components/common/NumberFormat";
 import ReactToPrint from "react-to-print";
 import PrintReport from "./ReportPDF";
 import DatePicker from "react-datepicker";
+import { Accordion } from "react-bootstrap";
 
 const Report = () => {
   const { t } = useTranslation();
@@ -57,6 +62,9 @@ const Report = () => {
 
   // select collector id state
   const [collectorIds, setCollectorIds] = useState("");
+
+  // filter Accordion handle state
+  const [activeKeys, setActiveKeys] = useState("");
 
   // date & time find
   var today = new Date();
@@ -181,7 +189,7 @@ const Report = () => {
         Header: t("date"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("MMM DD YYYY hh:mm a");
+          return moment(value).format("YYYY/MM/DD hh:mm a");
         },
       },
     ],
@@ -196,9 +204,25 @@ const Report = () => {
         <div className="container-fluied collector">
           <div className="container">
             <FontColor>
-              <div className="collectorTitle d-flex justify-content-between px-5">
+              <div className="collectorTitle d-flex justify-content-between px-4">
                 <div className="d-flex">
                   <div>{t("billReport")}</div>
+                </div>
+
+                <div className="d-flex justify-content-center align-items-center">
+                  <div
+                    onClick={() => {
+                      if (!activeKeys) {
+                        setActiveKeys("filter");
+                      } else {
+                        setActiveKeys("");
+                      }
+                    }}
+                    title={t("filter")}
+                  >
+                    <FilterCircle className="addcutmButton" />
+                  </div>
+
                   <div className="reloadBtn">
                     {isLoading ? (
                       <Loader />
@@ -208,101 +232,110 @@ const Report = () => {
                       ></ArrowClockwise>
                     )}
                   </div>
-                </div>
 
-                <ReactToPrint
-                  documentTitle={t("billReport")}
-                  trigger={() => (
-                    <button
-                      className="header_icon border-0"
-                      type="button"
-                      title={t("downloadPdf")}
-                    >
-                      <PrinterFill />
-                    </button>
-                  )}
-                  content={() => componentRef.current}
-                />
+                  <ReactToPrint
+                    documentTitle={t("billReport")}
+                    trigger={() => (
+                      <button
+                        className="header_icon border-0"
+                        type="button"
+                        title={t("downloadPdf")}
+                      >
+                        <PrinterFill />
+                      </button>
+                    )}
+                    content={() => componentRef.current}
+                  />
+                </div>
               </div>
 
               <FourGround>
-                <div className="collectorWrapper mt-2 py-2">
-                  <div className="addCollector">
-                    <div className="selectFilteringg">
-                      <select
-                        className="form-select"
-                        onChange={(e) => setAreaIds(e.target.value)}
-                      >
-                        <option value="" defaultValue>
-                          {t("allArea")}
-                        </option>
-                        {subAreas?.map((sub, key) => (
-                          <option key={key} value={sub.id}>
-                            {sub.name}
-                          </option>
-                        ))}
-                      </select>
-
-                      {userRole !== "collector" && (
-                        <select
-                          className="form-select mx-3"
-                          onChange={(e) => setCollectorIds(e.target.value)}
-                        >
-                          <option value="" defaultValue>
-                            {t("all collector")}{" "}
-                          </option>
-                          {allCollector?.map((coll, key) => (
-                            <option key={key} value={coll.user}>
-                              {coll.name}
+                <div className="mt-2">
+                  <Accordion alwaysOpen activeKey={activeKeys}>
+                    <Accordion.Item eventKey="filter">
+                      <Accordion.Body>
+                        <div className="selectFilteringg">
+                          <select
+                            className="form-select me-2 mt-0"
+                            onChange={(e) => setAreaIds(e.target.value)}
+                          >
+                            <option value="" defaultValue>
+                              {t("allArea")}
                             </option>
-                          ))}
-                        </select>
-                      )}
+                            {subAreas?.map((sub, key) => (
+                              <option key={key} value={sub.id}>
+                                {sub.name}
+                              </option>
+                            ))}
+                          </select>
 
-                      <div>
-                        <DatePicker
-                          className="form-control mw-100 mt-2"
-                          selected={dateStart}
-                          onChange={(date) => setStartDate(date)}
-                          dateFormat="MMM dd yyyy"
-                          placeholderText={t("selectBillDate")}
+                          {userRole !== "collector" && (
+                            <select
+                              className="form-select me-2 mt-0"
+                              onChange={(e) => setCollectorIds(e.target.value)}
+                            >
+                              <option value="" defaultValue>
+                                {t("all collector")}{" "}
+                              </option>
+                              {allCollector?.map((coll, key) => (
+                                <option key={key} value={coll.user}>
+                                  {coll.name}
+                                </option>
+                              ))}
+                            </select>
+                          )}
+
+                          <div>
+                            <DatePicker
+                              className="form-control mw-100 mt-0"
+                              selected={dateStart}
+                              onChange={(date) => setStartDate(date)}
+                              dateFormat="MMM dd yyyy"
+                              placeholderText={t("selectBillDate")}
+                            />
+                          </div>
+                          <div className="mx-2">
+                            <DatePicker
+                              className="form-control mw-100 mt-0"
+                              selected={dateEnd}
+                              onChange={(date) => setEndDate(date)}
+                              dateFormat="MMM dd yyyy"
+                              placeholderText={t("selectBillDate")}
+                            />
+                          </div>
+
+                          <button
+                            className="btn btn-outline-primary w-140 mt-0 chartFilteritem"
+                            type="button"
+                            onClick={collectionReportFilter}
+                          >
+                            {t("filter")}
+                          </button>
+                        </div>
+                      </Accordion.Body>
+                    </Accordion.Item>
+                  </Accordion>
+
+                  <div className="collectorWrapper pb-2">
+                    <div className="addCollector">
+                      {/* print report */}
+                      <div style={{ display: "none" }}>
+                        <PrintReport
+                          filterData={filterData}
+                          currentCustomers={mainData}
+                          ref={componentRef}
                         />
                       </div>
-                      <div className="mx-2">
-                        <DatePicker
-                          className="form-control mw-100 mt-2"
-                          selected={dateEnd}
-                          onChange={(date) => setEndDate(date)}
-                          dateFormat="MMM dd yyyy"
-                          placeholderText={t("selectBillDate")}
-                        />
-                      </div>
+                      {/* print report end*/}
 
-                      <button
-                        className="btn btn-outline-primary w-140 mt-2 chartFilteritem"
-                        type="button"
-                        onClick={collectionReportFilter}
-                      >
-                        {t("filter")}
-                      </button>
+                      <Table
+                        customComponent={customComponent}
+                        isLoading={isLoading}
+                        columns={columns}
+                        data={mainData}
+                      ></Table>
                     </div>
-
-                    {/* print report */}
-                    <div style={{ display: "none" }}>
-                      <PrintReport
-                        filterData={filterData}
-                        currentCustomers={mainData}
-                        ref={componentRef}
-                      />
-                    </div>
-                    {/* print report end*/}
                   </div>
-                  <Table
-                    customComponent={customComponent}
-                    isLoading={isLoading}
-                    columns={columns}
-                    data={mainData}
-                  ></Table>
                 </div>
               </FourGround>
               <Footer />

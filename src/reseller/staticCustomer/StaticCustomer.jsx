@@ -12,6 +12,7 @@ import {
   ChatText,
   PersonPlusFill,
   PenFill,
+  FilterCircle,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -40,6 +41,7 @@ import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
 import FormatNumber from "../../components/common/NumberFormat";
 import CustomerEdit from "./staticCustomerCrud/CustomerEdit";
 import { fetchPackagefromDatabase } from "../../features/apiCalls";
+import { Accordion } from "react-bootstrap";
 
 export default function RstaticCustomer() {
   const { t } = useTranslation();
@@ -98,6 +100,9 @@ export default function RstaticCustomer() {
   const [singleMikrotik, setSingleMikrotik] = useState("");
   const [mikrotikPackage, setMikrotikPackage] = useState("");
   const [maxDownLimit, setDownMaxLimit] = useState("");
+
+  // filter Accordion handle state
+  const [activeKeys, setActiveKeys] = useState("");
 
   const selectMikrotik = (e) => {
     const id = e.target.value;
@@ -389,7 +394,7 @@ export default function RstaticCustomer() {
         Header: t("bill"),
         accessor: "billingCycle",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("MMM DD YYYY hh:mm A");
+          return moment(value).format("YYYY/MM/DD hh:mm A");
         },
       },
 
@@ -500,9 +505,25 @@ export default function RstaticCustomer() {
           <div className="container">
             <FontColor>
               <FourGround>
-                <div className="collectorTitle d-flex justify-content-between px-5">
+                <div className="collectorTitle d-flex justify-content-between px-4">
                   <div className="d-flex">
                     <h2>{t("staticCustomer")}</h2>
+                  </div>
+
+                  <div className="d-flex justify-content-center align-items-center">
+                    <div
+                      onClick={() => {
+                        if (!activeKeys) {
+                          setActiveKeys("filter");
+                        } else {
+                          setActiveKeys("");
+                        }
+                      }}
+                      title={t("filter")}
+                    >
+                      <FilterCircle className="addcutmButton" />
+                    </div>
+
                     <div className="reloadBtn">
                       {isLoading ? (
                         <Loader></Loader>
@@ -512,9 +533,7 @@ export default function RstaticCustomer() {
                         ></ArrowClockwise>
                       )}
                     </div>
-                  </div>
 
-                  <div className="addAndSettingIcon">
                     <ReactToPrint
                       documentTitle="গ্রাহক লিস্ট"
                       trigger={() => (
@@ -553,121 +572,133 @@ export default function RstaticCustomer() {
               {/* Model finish */}
 
               <FourGround>
-                <div className="collectorWrapper mt-2 py-2">
-                  <div className="addCollector">
-                    <div className="displexFlexSys d-flex justify-content-center">
-                      {/* filter selector */}
-                      <div className="selectFiltering allFilter ">
-                        {/* //Todo */}
+                <div className="mt-2">
+                  <Accordion alwaysOpen activeKey={activeKeys}>
+                    <Accordion.Item eventKey="filter">
+                      <Accordion.Body>
+                        <div className="displexFlexSys d-flex justify-content-center">
+                          {/* filter selector */}
+                          <div className="selectFiltering allFilter ">
+                            {/* //Todo */}
 
-                        <select
-                          className="form-select"
-                          onChange={selectMikrotik}
-                        >
-                          <option value="" defaultValue>
-                            {t("mikrotik")}
-                          </option>
+                            <select
+                              className="form-select mt-0"
+                              onChange={selectMikrotik}
+                            >
+                              <option value="" defaultValue>
+                                {t("mikrotik")}
+                              </option>
 
-                          {Getmikrotik?.length === undefined
-                            ? ""
-                            : Getmikrotik?.map((val, key) =>
-                                reseller.mikrotiks?.map(
-                                  (item) =>
-                                    val.id === item && (
+                              {Getmikrotik?.length === undefined
+                                ? ""
+                                : Getmikrotik?.map((val, key) =>
+                                    reseller.mikrotiks?.map(
+                                      (item) =>
+                                        val.id === item && (
+                                          <option key={key} value={val.id}>
+                                            {val.name}
+                                          </option>
+                                        )
+                                    )
+                                  )}
+                            </select>
+
+                            <select
+                              name="downPackage"
+                              className="form-select mt-0"
+                              onChange={selectMikrotikPackage}
+                            >
+                              <option value="" defaultValue>
+                                {t("package")}
+                              </option>
+                              {ppPackage &&
+                                ppPackage?.map(
+                                  (val, key) =>
+                                    val.packageType === "queue" && (
                                       <option key={key} value={val.id}>
                                         {val.name}
                                       </option>
                                     )
-                                )
-                              )}
-                        </select>
+                                )}
+                            </select>
 
-                        <select
-                          name="downPackage"
-                          className="form-select"
-                          onChange={selectMikrotikPackage}
-                        >
-                          <option value="" defaultValue>
-                            {t("package")}
-                          </option>
-                          {ppPackage &&
-                            ppPackage?.map(
-                              (val, key) =>
-                                val.packageType === "queue" && (
-                                  <option key={key} value={val.id}>
-                                    {val.name}
-                                  </option>
-                                )
-                            )}
-                        </select>
+                            <select
+                              className="form-select mt-0"
+                              onChange={(e) =>
+                                handleSubAreaChange(e.target.value)
+                              }
+                            >
+                              <option value="" defaultValue>
+                                {t("area")}
+                              </option>
+                              {subAreas?.map((sub, key) => (
+                                <option key={key} value={sub.id}>
+                                  {sub.name}
+                                </option>
+                              ))}
+                            </select>
 
-                        <select
-                          className="form-select"
-                          onChange={(e) => handleSubAreaChange(e.target.value)}
-                        >
-                          <option value="" defaultValue>
-                            {t("area")}
-                          </option>
-                          {subAreas?.map((sub, key) => (
-                            <option key={key} value={sub.id}>
-                              {sub.name}
-                            </option>
-                          ))}
-                        </select>
+                            <select
+                              className="form-select mt-0"
+                              onChange={handleStatusChange}
+                            >
+                              <option value="" defaultValue>
+                                {t("status")}
+                              </option>
+                              <option value="active"> {t("active")} </option>
+                              <option value="inactive">{t("in active")}</option>
+                              <option value="expired"> {t("expired")} </option>
+                            </select>
 
-                        <select
-                          className="form-select"
-                          onChange={handleStatusChange}
-                        >
-                          <option value="" defaultValue>
-                            {t("status")}
-                          </option>
-                          <option value="active"> {t("active")} </option>
-                          <option value="inactive"> {t("in active")} </option>
-                          <option value="expired"> {t("expired")} </option>
-                        </select>
-                        <select
-                          className="form-select"
-                          onChange={handlePaymentChange}
-                        >
-                          <option value="" defaultValue>
-                            {t("payment")}
-                          </option>
-                          <option value="free"> {t("free")} </option>
-                          <option value="paid"> {t("paid")} </option>
-                          <option value="unpaid"> {t("unpaid")} </option>
-                          <option value="partial"> {t("partial")} </option>
-                          <option value="advance"> {t("advance")} </option>
-                          <option value="overdue"> {t("overDue")} </option>
-                        </select>
-                      </div>
+                            <select
+                              className="form-select mt-0"
+                              onChange={handlePaymentChange}
+                            >
+                              <option value="" defaultValue>
+                                {t("payment")}
+                              </option>
+                              <option value="free"> {t("free")} </option>
+                              <option value="paid"> {t("paid")} </option>
+                              <option value="unpaid"> {t("unpaid")} </option>
+                              <option value="partial"> {t("partial")} </option>
+                              <option value="advance"> {t("advance")} </option>
+                              <option value="overdue"> {t("overDue")} </option>
+                            </select>
+                          </div>
 
-                      <div style={{ display: "none" }}>
-                        <PrintCustomer
-                          filterData={filterData}
-                          currentCustomers={Customers}
-                          ref={componentRef}
-                        />
-                      </div>
+                          <div style={{ display: "none" }}>
+                            <PrintCustomer
+                              filterData={filterData}
+                              currentCustomers={Customers}
+                              ref={componentRef}
+                            />
+                          </div>
 
-                      <div className="addNewCollector"></div>
+                          <div className="addNewCollector"></div>
+                        </div>
+                      </Accordion.Body>
+                    </Accordion.Item>
+                  </Accordion>
+
+                  <div className="collectorWrapper pb-2">
+                    <div className="addCollector">
+                      {isDeleting ? (
+                        <div className="deletingAction">
+                          <Loader /> <b>Deleting...</b>
+                        </div>
+                      ) : (
+                        ""
+                      )}
                     </div>
 
-                    {isDeleting ? (
-                      <div className="deletingAction">
-                        <Loader /> <b>Deleting...</b>
-                      </div>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-                  <div className="table-section">
-                    <Table
-                      customComponent={customComponent}
-                      isLoading={isLoading}
-                      columns={columns}
-                      data={Customers}
-                    ></Table>
+                    <div className="table-section">
+                      <Table
+                        customComponent={customComponent}
+                        isLoading={isLoading}
+                        columns={columns}
+                        data={Customers}
+                      ></Table>
+                    </div>
                   </div>
                 </div>
               </FourGround>

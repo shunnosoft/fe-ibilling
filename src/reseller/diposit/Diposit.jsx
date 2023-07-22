@@ -29,10 +29,15 @@ import FormatNumber from "../../components/common/NumberFormat";
 import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
 import ReactToPrint from "react-to-print";
-import { ArrowClockwise, PrinterFill } from "react-bootstrap-icons";
+import {
+  ArrowClockwise,
+  FilterCircle,
+  PrinterFill,
+} from "react-bootstrap-icons";
 import PrintCustomer from "./customerPDF";
 import DatePicker from "react-datepicker";
 import { badge } from "../../components/common/Utils";
+import { Accordion } from "react-bootstrap";
 
 export default function Diposit() {
   const { t } = useTranslation();
@@ -101,6 +106,9 @@ export default function Diposit() {
 
   // collector id state -- Reseller
   const [collectorIds, setCollectorIds] = useState("all");
+
+  // filter Accordion handle state
+  const [activeKeys, setActiveKeys] = useState("");
 
   // diposit accept & reject handler -- Reseller
   const depositAcceptRejectHandler = (status, id) => {
@@ -358,7 +366,7 @@ export default function Diposit() {
       Header: t("date"),
       accessor: "createdAt",
       Cell: ({ cell: { value } }) => {
-        return moment(value).format("MMM DD YYYY hh:mm a");
+        return moment(value).format("YYYY/MM/DD hh:mm a");
       },
     },
   ]);
@@ -391,7 +399,7 @@ export default function Diposit() {
       Header: t("date"),
       accessor: "createdAt",
       Cell: ({ cell: { value } }) => {
-        return moment(value).format("MMM DD YYYY hh:mm a");
+        return moment(value).format("YYYY/MM/DD hh:mm a");
       },
     },
   ]);
@@ -405,9 +413,25 @@ export default function Diposit() {
           <div className="container">
             <FontColor>
               <FourGround>
-                <div className="collectorTitle d-flex justify-content-between px-5">
+                <div className="collectorTitle d-flex justify-content-between px-4">
                   <div className="d-flex">
                     <div>{t("diposit")}</div>
+                  </div>
+
+                  <div className="d-flex justify-content-center align-items-center">
+                    <div
+                      onClick={() => {
+                        if (!activeKeys) {
+                          setActiveKeys("filter");
+                        } else {
+                          setActiveKeys("");
+                        }
+                      }}
+                      title={t("filter")}
+                    >
+                      <FilterCircle className="addcutmButton" />
+                    </div>
+
                     <div className="reloadBtn">
                       {resellerPageLoader ? (
                         <Loader></Loader>
@@ -417,86 +441,92 @@ export default function Diposit() {
                         ></ArrowClockwise>
                       )}
                     </div>
+                    {userRole === "reseller" && (
+                      <>
+                        <div className="addAndSettingIcon">
+                          <ReactToPrint
+                            documentTitle="গ্রাহক লিস্ট"
+                            trigger={() => (
+                              <PrinterFill
+                                title={t("print")}
+                                className="addcutmButton"
+                              />
+                            )}
+                            content={() => componentRef.current}
+                          />
+                        </div>
+                        <div style={{ display: "none" }}>
+                          <PrintCustomer
+                            filterData={filterData_pdf}
+                            currentCustomers={resellerData}
+                            ref={componentRef}
+                          />
+                        </div>
+                      </>
+                    )}
                   </div>
-                  {userRole === "reseller" && (
-                    <>
-                      <div className="addAndSettingIcon">
-                        <ReactToPrint
-                          documentTitle="গ্রাহক লিস্ট"
-                          trigger={() => (
-                            <PrinterFill
-                              title={t("print")}
-                              className="addcutmButton"
-                            />
-                          )}
-                          content={() => componentRef.current}
-                        />
-                      </div>
-
-                      <div style={{ display: "none" }}>
-                        <PrintCustomer
-                          filterData={filterData_pdf}
-                          currentCustomers={resellerData}
-                          ref={componentRef}
-                        />
-                      </div>
-                    </>
-                  )}
                 </div>
               </FourGround>
 
               {userRole === "reseller" && (
                 <FourGround>
-                  <div className="collectorWrapper mt-2 py-2">
-                    <div className="selectFilteringg">
-                      <select
-                        className="form-select me-2"
-                        onChange={(e) => setCollectorIds(e.target.value)}
-                      >
-                        <option value="all" defaultValue>
-                          {t("all collector")}
-                        </option>
-                        {collectors?.map((c, key) => (
-                          <option key={key} value={c.user}>
-                            {c.name}
-                          </option>
-                        ))}
-                      </select>
-                      <div>
-                        <DatePicker
-                          className="form-control mw-100 mt-2"
-                          selected={startDate}
-                          onChange={(date) => setStartDate(date)}
-                          dateFormat="MMM dd yyyy"
-                          placeholderText={t("selectBillDate")}
-                        />
-                      </div>
-                      <div className="mx-2">
-                        <DatePicker
-                          className="form-control mw-100 mt-2"
-                          selected={endDate}
-                          onChange={(date) => setEndDate(date)}
-                          dateFormat="MMM dd yyyy"
-                          placeholderText={t("selectBillDate")}
-                        />
-                      </div>
-                      <button
-                        className="btn btn-outline-primary w-140 mt-2 chartFilteritem"
-                        type="button"
-                        onClick={onClickFilter}
-                      >
-                        {t("filter")}
-                      </button>
-                    </div>
+                  <div className="mt-2">
+                    <Accordion alwaysOpen activeKey={activeKeys}>
+                      <Accordion.Item eventKey="filter">
+                        <Accordion.Body>
+                          <div className="selectFilteringg">
+                            <select
+                              className="form-select me-2 mt-0"
+                              onChange={(e) => setCollectorIds(e.target.value)}
+                            >
+                              <option value="all" defaultValue>
+                                {t("all collector")}
+                              </option>
+                              {collectors?.map((c, key) => (
+                                <option key={key} value={c.user}>
+                                  {c.name}
+                                </option>
+                              ))}
+                            </select>
+                            <div>
+                              <DatePicker
+                                className="form-control mw-100 mt-0"
+                                selected={startDate}
+                                onChange={(date) => setStartDate(date)}
+                                dateFormat="MMM dd yyyy"
+                                placeholderText={t("selectBillDate")}
+                              />
+                            </div>
+                            <div className="mx-2">
+                              <DatePicker
+                                className="form-control mw-100 mt-0"
+                                selected={endDate}
+                                onChange={(date) => setEndDate(date)}
+                                dateFormat="MMM dd yyyy"
+                                placeholderText={t("selectBillDate")}
+                              />
+                            </div>
+                            <button
+                              className="btn btn-outline-primary w-140 mt-0 chartFilteritem"
+                              type="button"
+                              onClick={onClickFilter}
+                            >
+                              {t("filter")}
+                            </button>
+                          </div>
+                        </Accordion.Body>
+                      </Accordion.Item>
+                    </Accordion>
 
-                    {/* table */}
-                    <div className="tableSection">
-                      <Table
-                        isLoading={resellerPageLoader}
-                        customComponent={customComponent}
-                        data={resellerData}
-                        columns={resellerColumn}
-                      ></Table>
+                    <div className="collectorWrapper pb-2">
+                      <div className="tableSection">
+                        <Table
+                          isLoading={resellerPageLoader}
+                          customComponent={customComponent}
+                          data={resellerData}
+                          columns={resellerColumn}
+                        ></Table>
+                      </div>
                     </div>
                   </div>
                 </FourGround>
@@ -543,33 +573,42 @@ export default function Diposit() {
                       </Formik>
                     </div>
 
-                    <div className="selectFilteringg">
-                      <div>
-                        <DatePicker
-                          className="form-control mw-100 mt-2"
-                          selected={startDate}
-                          onChange={(date) => setStartDate(date)}
-                          dateFormat="MMM dd yyyy"
-                          placeholderText={t("selectBillDate")}
-                        />
-                      </div>
-                      <div className="mx-2">
-                        <DatePicker
-                          className="form-control mw-100 mt-2"
-                          selected={endDate}
-                          onChange={(date) => setEndDate(date)}
-                          dateFormat="MMM dd yyyy"
-                          placeholderText={t("selectBillDate")}
-                        />
-                      </div>
-                      <button
-                        className="btn btn-outline-primary w-140 mt-2 chartFilteritem"
-                        type="button"
-                        onClick={onClickFilter}
+                    <Accordion alwaysOpen activeKey={activeKeys}>
+                      <Accordion.Item
+                        eventKey="filter"
+                        className="accordionBorder"
                       >
-                        {t("filter")}
-                      </button>
-                    </div>
+                        <Accordion.Body className="accordionPadding">
+                          <div className="selectFilteringg">
+                            <div>
+                              <DatePicker
+                                className="form-control mw-100 mt-0"
+                                selected={startDate}
+                                onChange={(date) => setStartDate(date)}
+                                dateFormat="MMM dd yyyy"
+                                placeholderText={t("selectBillDate")}
+                              />
+                            </div>
+                            <div className="mx-2">
+                              <DatePicker
+                                className="form-control mw-100 mt-0"
+                                selected={endDate}
+                                onChange={(date) => setEndDate(date)}
+                                dateFormat="MMM dd yyyy"
+                                placeholderText={t("selectBillDate")}
+                              />
+                            </div>
+                            <button
+                              className="btn btn-outline-primary w-140 mt-0 chartFilteritem"
+                              type="button"
+                              onClick={onClickFilter}
+                            >
+                              {t("filter")}
+                            </button>
+                          </div>
+                        </Accordion.Body>
+                      </Accordion.Item>
+                    </Accordion>
 
                     <div className="tableSection">
                       <Table

@@ -9,11 +9,17 @@ import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
 // get specific customer
 
-import { ArrowClockwise, Wifi, WifiOff } from "react-bootstrap-icons";
+import {
+  ArrowClockwise,
+  FilterCircle,
+  Wifi,
+  WifiOff,
+} from "react-bootstrap-icons";
 import Loader from "../../components/common/Loader";
 import { getMikrotik } from "../../features/apiCallReseller";
 import Footer from "../../components/admin/footer/Footer";
 import moment from "moment";
+import { Accordion } from "react-bootstrap";
 
 const ResellserActiveCustomer = () => {
   const { t } = useTranslation();
@@ -50,6 +56,9 @@ const ResellserActiveCustomer = () => {
 
   // offline state
   let [allOfflineUsers, setAllOfflineUsers] = useState("");
+
+  // filter Accordion handle state
+  const [activeKeys, setActiveKeys] = useState("");
 
   // select mikrotik handler
   const mikrotiSelectionHandler = (event) => {
@@ -188,7 +197,7 @@ const ResellserActiveCustomer = () => {
         Cell: ({ row: { original } }) => (
           <div>
             {original?.lastLinkUpTime &&
-              moment(original.lastLinkUpTime).format("MMM DD YYYY hh:mm A")}
+              moment(original.lastLinkUpTime).format("YYYY/MM/DD hh:mm A")}
           </div>
         ),
       },
@@ -199,7 +208,7 @@ const ResellserActiveCustomer = () => {
         Cell: ({ row: { original } }) => (
           <div>
             {original?.lastLogoutTime &&
-              moment(original.lastLogoutTime).format("MMM DD YYYY hh:mm A")}
+              moment(original.lastLogoutTime).format("YYYY/MM/DD hh:mm A")}
           </div>
         ),
       },
@@ -217,9 +226,25 @@ const ResellserActiveCustomer = () => {
             <FontColor>
               {/* modals */}
               <FourGround>
-                <div className="collectorTitle d-flex justify-content-between px-5">
+                <div className="collectorTitle d-flex justify-content-between px-4">
                   <div className="d-flex">
                     <div>{t("activeCustomer")}</div>
+                  </div>
+
+                  <div className="d-flex justify-content-center align-items-center">
+                    <div
+                      onClick={() => {
+                        if (!activeKeys) {
+                          setActiveKeys("filter");
+                        } else {
+                          setActiveKeys("");
+                        }
+                      }}
+                      title={t("filter")}
+                    >
+                      <FilterCircle className="addcutmButton" />
+                    </div>
+
                     <div className="reloadBtn">
                       {loading ? (
                         <Loader></Loader>
@@ -234,63 +259,68 @@ const ResellserActiveCustomer = () => {
               </FourGround>
 
               <FourGround>
-                <div className="collectorWrapper mt-2 pt-4 py-2">
-                  <div className="d-flex justify-content-center">
-                    <div className="mikrotik-filter">
-                      <h6 className="mb-0"> {t("selectMikrotik")} </h6>
-                      <select
-                        id="selectMikrotikOption"
-                        onChange={mikrotiSelectionHandler}
-                        className="form-select mt-0"
-                      >
-                        {mikrotik.map((item) => (
-                          <option value={item.id}>{item.name}</option>
-                        ))}
-                      </select>
+                <div className="mt-2">
+                  <Accordion alwaysOpen activeKey={activeKeys}>
+                    <Accordion.Item eventKey="filter">
+                      <Accordion.Body>
+                        <div className="d-flex justify-content-center">
+                          <div className="mikrotik-filter">
+                            <select
+                              id="selectMikrotikOption"
+                              onChange={mikrotiSelectionHandler}
+                              className="form-select mt-0"
+                            >
+                              {mikrotik.map((item) => (
+                                <option value={item.id}>{item.name}</option>
+                              ))}
+                            </select>
+                          </div>
+
+                          <div className="mikrotik-filter ms-4">
+                            <select
+                              id="selectMikrotikOption"
+                              onChange={filterIt}
+                              className="form-select mt-0"
+                            >
+                              <option value="allCustomer">
+                                {t("sokolCustomer")}
+                              </option>
+                              <option value="online">{t("online")}</option>
+                              <option value="offline">{t("ofline")}</option>
+                            </select>
+                          </div>
+
+                          {offline && (
+                            <div className="mikrotik-filter ms-4">
+                              <h6 className="mb-0"> {t("selectStatus")} </h6>
+                              <select
+                                id="selectOfflineOption"
+                                onChange={filterIt}
+                                className="form-select mt-0"
+                              >
+                                <option value="offline">{t("status")}</option>
+                                <option value="offlineActive">
+                                  {t("activeOffline")}
+                                </option>
+                                <option value="offlineInactive">
+                                  {t("inactiveOffline")}
+                                </option>
+                              </select>
+                            </div>
+                          )}
+                        </div>
+                      </Accordion.Body>
+                    </Accordion.Item>
+                  </Accordion>
+
+                  <div className="collectorWrapper pb-2">
+                    <div className="table-section">
+                      <Table
+                        isLoading={loading}
+                        columns={columns}
+                        data={allUsers}
+                      ></Table>
                     </div>
-
-                    <div className="mikrotik-filter ms-4">
-                      <h6 className="mb-0"> {t("selectCustomer")} </h6>
-                      <select
-                        id="selectMikrotikOption"
-                        onChange={filterIt}
-                        className="form-select mt-0"
-                      >
-                        <option value="allCustomer">
-                          {t("sokolCustomer")}
-                        </option>
-                        <option value="online">{t("online")}</option>
-                        <option value="offline">{t("ofline")}</option>
-                      </select>
-                    </div>
-
-                    {offline && (
-                      <div className="mikrotik-filter ms-4">
-                        <h6 className="mb-0"> {t("selectStatus")} </h6>
-                        <select
-                          id="selectOfflineOption"
-                          onChange={filterIt}
-                          className="form-select mt-0"
-                        >
-                          <option value="offline">{t("status")}</option>
-                          <option value="offlineActive">
-                            {t("activeOffline")}
-                          </option>
-                          <option value="offlineInactive">
-                            {t("inactiveOffline")}
-                          </option>
-                        </select>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Active PPPoE users */}
-                  <div className="table-section">
-                    <Table
-                      isLoading={loading}
-                      columns={columns}
-                      data={allUsers}
-                    ></Table>
                   </div>
                 </div>
               </FourGround>

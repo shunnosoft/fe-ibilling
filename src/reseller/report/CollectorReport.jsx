@@ -8,6 +8,7 @@ import {
   ArchiveFill,
   ArrowClockwise,
   ArrowDownUp,
+  FilterCircle,
   PenFill,
   PersonFill,
   PrinterFill,
@@ -30,6 +31,7 @@ import Loader from "../../components/common/Loader";
 import DatePicker from "react-datepicker";
 import PrintReport from "./CollectorReportPDF";
 import ReactToPrint from "react-to-print";
+import { Accordion } from "react-bootstrap";
 
 export default function CollectorReport() {
   const { t } = useTranslation();
@@ -57,6 +59,9 @@ export default function CollectorReport() {
   const [mainData2, setMainData2] = useState(allBills);
   const [isLoading, setIsLoading] = useState(false);
   const [isSorted, setSorted] = useState(false);
+
+  // filter Accordion handle state
+  const [activeKeys, setActiveKeys] = useState("");
 
   const dispatch = useDispatch();
 
@@ -241,9 +246,23 @@ export default function CollectorReport() {
           <div className="container">
             <FontColor>
               <FourGround>
-                <div className="collectorTitle d-flex justify-content-between px-5">
-                  <div className="d-flex">
-                    <h2>{t("billReport")}</h2>
+                <div className="collectorTitle d-flex justify-content-between px-4">
+                  <h2>{t("billReport")}</h2>
+
+                  <div className="d-flex justify-content-center align-items-center">
+                    <div
+                      onClick={() => {
+                        if (!activeKeys) {
+                          setActiveKeys("filter");
+                        } else {
+                          setActiveKeys("");
+                        }
+                      }}
+                      title={t("filter")}
+                    >
+                      <FilterCircle className="addcutmButton" />
+                    </div>
+
                     <div className="reloadBtn">
                       {isLoading ? (
                         <Loader></Loader>
@@ -253,30 +272,30 @@ export default function CollectorReport() {
                         ></ArrowClockwise>
                       )}
                     </div>
-                  </div>
 
-                  <ReactToPrint
-                    documentTitle={t("billReport")}
-                    trigger={() => (
-                      <button
-                        className="header_icon border-0"
-                        type="button"
-                        title={t("downloadPdf")}
-                      >
-                        <PrinterFill />
-                      </button>
-                    )}
-                    content={() => componentRef.current}
-                  />
-                  {/* print report */}
-                  <div style={{ display: "none" }}>
-                    <PrintReport
-                      // filterData={filterData}
-                      currentCustomers={mainData}
-                      ref={componentRef}
+                    <ReactToPrint
+                      documentTitle={t("billReport")}
+                      trigger={() => (
+                        <button
+                          className="header_icon border-0"
+                          type="button"
+                          title={t("downloadPdf")}
+                        >
+                          <PrinterFill />
+                        </button>
+                      )}
+                      content={() => componentRef.current}
                     />
+                    {/* print report */}
+                    <div style={{ display: "none" }}>
+                      <PrintReport
+                        // filterData={filterData}
+                        currentCustomers={mainData}
+                        ref={componentRef}
+                      />
+                    </div>
+                    {/* print report end*/}
                   </div>
-                  {/* print report end*/}
                 </div>
               </FourGround>
 
@@ -285,72 +304,79 @@ export default function CollectorReport() {
               {/* Model finish */}
 
               <FourGround>
-                <div className="collectorWrapper mt-2 py-2">
-                  <div className="addCollector">
-                    {/* filter selector */}
-                    <div className="selectFilteringg">
-                      <select
-                        className="form-select"
-                        onChange={(e) => onChangeArea(e.target.value)}
-                      >
-                        <option value={JSON.stringify({})} defaultValue>
-                          {t("allArea")}{" "}
-                        </option>
-                        {allArea.map((area, key) => (
-                          <option key={key} value={JSON.stringify(area)}>
-                            {area.name}
-                          </option>
-                        ))}
-                      </select>
-                      <select
-                        className="form-select mx-3"
-                        onChange={(e) => onChangeSubArea(e.target.value)}
-                      >
-                        <option value="" defaultValue>
-                          {t("allSubArea")}{" "}
-                        </option>
-                        {singleArea?.subAreas?.map((sub, key) => (
-                          <option key={key} value={sub.id}>
-                            {sub.name}
-                          </option>
-                        ))}
-                      </select>
+                <div className="mt-2">
+                  <Accordion alwaysOpen activeKey={activeKeys}>
+                    <Accordion.Item eventKey="filter">
+                      <Accordion.Body>
+                        <div className="selectFilteringg">
+                          <select
+                            className="form-select me-2 mt-0"
+                            onChange={(e) => onChangeArea(e.target.value)}
+                          >
+                            <option value={JSON.stringify({})} defaultValue>
+                              {t("allArea")}{" "}
+                            </option>
+                            {allArea.map((area, key) => (
+                              <option key={key} value={JSON.stringify(area)}>
+                                {area.name}
+                              </option>
+                            ))}
+                          </select>
+                          <select
+                            className="form-select me-2 mt-0"
+                            onChange={(e) => onChangeSubArea(e.target.value)}
+                          >
+                            <option value="" defaultValue>
+                              {t("allSubArea")}{" "}
+                            </option>
+                            {singleArea?.subAreas?.map((sub, key) => (
+                              <option key={key} value={sub.id}>
+                                {sub.name}
+                              </option>
+                            ))}
+                          </select>
 
-                      <div>
-                        <DatePicker
-                          className="form-control mw-100 mt-2"
-                          selected={dateStart}
-                          onChange={(date) => setStartDate(date)}
-                          dateFormat="MMM dd yyyy"
-                          placeholderText={t("selectBillDate")}
-                        />
+                          <div>
+                            <DatePicker
+                              className="form-control mw-100 mt-0"
+                              selected={dateStart}
+                              onChange={(date) => setStartDate(date)}
+                              dateFormat="MMM dd yyyy"
+                              placeholderText={t("selectBillDate")}
+                            />
+                          </div>
+                          <div className="mx-2">
+                            <DatePicker
+                              className="form-control mw-100 mt-0"
+                              selected={dateEnd}
+                              onChange={(date) => setEndDate(date)}
+                              dateFormat="MMM dd yyyy"
+                              placeholderText={t("selectBillDate")}
+                            />
+                          </div>
+                          <button
+                            className="btn btn-outline-primary w-140 mt-0"
+                            type="button"
+                            onClick={onClickFilter}
+                          >
+                            {t("filter")}
+                          </button>
+                        </div>
+                      </Accordion.Body>
+                    </Accordion.Item>
+                  </Accordion>
+
+                  <div className="collectorWrapper pb-2">
+                    <div className="addCollector">
+                      <div className="table-section">
+                        <Table
+                          customComponent={customComponent}
+                          isLoading={isLoading}
+                          data={mainData}
+                          columns={columns2}
+                        ></Table>
                       </div>
-                      <div className="mx-2">
-                        <DatePicker
-                          className="form-control mw-100 mt-2"
-                          selected={dateEnd}
-                          onChange={(date) => setEndDate(date)}
-                          dateFormat="MMM dd yyyy"
-                          placeholderText={t("selectBillDate")}
-                        />
-                      </div>
-                      <button
-                        className="btn btn-outline-primary w-140 mt-2"
-                        type="button"
-                        onClick={onClickFilter}
-                      >
-                        {t("filter")}
-                      </button>
                     </div>
-                  </div>
-                  {/* table */}
-                  <div className="table-section">
-                    <Table
-                      customComponent={customComponent}
-                      isLoading={isLoading}
-                      data={mainData}
-                      columns={columns2}
-                    ></Table>
                   </div>
                 </div>
               </FourGround>

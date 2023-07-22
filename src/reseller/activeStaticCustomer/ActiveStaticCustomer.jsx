@@ -1,8 +1,13 @@
 import React from "react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ToastContainer } from "react-bootstrap";
-import { ArrowClockwise, Wifi, WifiOff } from "react-bootstrap-icons";
+import { Accordion, ToastContainer } from "react-bootstrap";
+import {
+  ArrowClockwise,
+  FilterCircle,
+  Wifi,
+  WifiOff,
+} from "react-bootstrap-icons";
 import useDash from "../../assets/css/dash.module.css";
 import { FontColor, FourGround } from "../../assets/js/theme";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
@@ -50,6 +55,9 @@ const ActiveStaticCustomer = () => {
 
   // mikrotikId state
   const [mikrotikId, setMikrotikId] = useState(mikrotik[0]?.id);
+
+  // filter Accordion handle state
+  const [activeKeys, setActiveKeys] = useState("");
 
   // select mikrotik handler
   const mikrotiSelectionHandler = (event) => {
@@ -143,9 +151,25 @@ const ActiveStaticCustomer = () => {
           <div className="container">
             <FontColor>
               <FourGround>
-                <div className="collectorTitle d-flex justify-content-between px-5">
+                <div className="collectorTitle d-flex justify-content-between px-4">
                   <div className="d-flex">
                     <h2>{t("activeStaticCustomer")}</h2>
+                  </div>
+
+                  <div className="d-flex justify-content-center align-items-center">
+                    <div
+                      onClick={() => {
+                        if (!activeKeys) {
+                          setActiveKeys("filter");
+                        } else {
+                          setActiveKeys("");
+                        }
+                      }}
+                      title={t("filter")}
+                    >
+                      <FilterCircle className="addcutmButton" />
+                    </div>
+
                     <div className="reloadBtn">
                       {isLoading ? (
                         <Loader />
@@ -159,41 +183,48 @@ const ActiveStaticCustomer = () => {
                 </div>
               </FourGround>
               <FourGround>
-                <div className="collectorWrapper mt-2 pt-4">
-                  <div className="d-flex justify-content-center">
-                    <div className="mikrotik-filter">
-                      <h6 className="mb-0"> {t("selectMikrotik")} </h6>
-                      <select
-                        id="selectMikrotikOption"
-                        onChange={mikrotiSelectionHandler}
-                        className="form-select mt-0"
-                      >
-                        {mikrotik.map((item) => (
-                          <option value={item.id}>{item.name}</option>
-                        ))}
-                      </select>
+                <div className="mt-2">
+                  <Accordion alwaysOpen activeKey={activeKeys}>
+                    <Accordion.Item eventKey="filter">
+                      <Accordion.Body>
+                        <div className="d-flex justify-content-center">
+                          <div className="mikrotik-filter">
+                            <select
+                              id="selectMikrotikOption"
+                              onChange={mikrotiSelectionHandler}
+                              className="form-select mt-0"
+                            >
+                              {mikrotik.map((item) => (
+                                <option value={item.id}>{item.name}</option>
+                              ))}
+                            </select>
+                          </div>
+                          <div className="customer-filter ms-4">
+                            <select
+                              className="form-select mt-0"
+                              aria-label="Default select example"
+                              onChange={(event) =>
+                                setFilterStatus(event.target.value)
+                              }
+                            >
+                              <option selected> {t("sokolCustomer")} </option>
+                              <option value={true}> {t("active")} </option>
+                              <option value={false}> {t("in active")} </option>
+                            </select>
+                          </div>
+                        </div>
+                      </Accordion.Body>
+                    </Accordion.Item>
+                  </Accordion>
+
+                  <div className="collectorWrapper pb-2">
+                    <div className="table-section">
+                      <Table
+                        isLoading={isLoading}
+                        columns={columns}
+                        data={staticActiveCustomer}
+                      />
                     </div>
-                    <div className="customer-filter ms-4">
-                      <h6 className="mb-0"> {t("selectCustomer")} </h6>
-                      <select
-                        className="form-select mt-0"
-                        aria-label="Default select example"
-                        onChange={(event) =>
-                          setFilterStatus(event.target.value)
-                        }
-                      >
-                        <option selected> {t("sokolCustomer")} </option>
-                        <option value={true}> {t("active")} </option>
-                        <option value={false}> {t("in active")} </option>
-                      </select>
-                    </div>
-                  </div>
-                  <div className="table-section">
-                    <Table
-                      isLoading={isLoading}
-                      columns={columns}
-                      data={staticActiveCustomer}
-                    />
                   </div>
                 </div>
               </FourGround>
