@@ -20,7 +20,7 @@ import {
   CreditCard2Front,
   KeyFill,
   Award,
-  FileExcelFill,
+  FiletypeCsv,
   TrashFill,
 } from "react-bootstrap-icons";
 import {
@@ -97,8 +97,12 @@ export default function Home() {
   //district filter data state
   const [district, setDistrict] = useState("");
 
-  // customer type state
+  // ispOwner queue type state
   const [queueType, setQueueType] = useState("");
+
+  // customer type
+  const [customerType, setCustomerType] = useState("");
+  console.log(customerType);
 
   // Owner id
   const [ispOwnerId, setIspOwnerId] = useState("");
@@ -138,6 +142,13 @@ export default function Home() {
   if (queueType && queueType !== "All") {
     ispOwners = ispOwners.filter(
       (value) => value.bpSettings.queueType === queueType
+    );
+  }
+
+  // customer type filter
+  if (customerType && customerType !== "All") {
+    ispOwners = ispOwners.filter((value) =>
+      value.bpSettings?.customerType.includes(customerType)
     );
   }
 
@@ -615,7 +626,7 @@ export default function Home() {
           <div className="card-header">
             <div className="d-flex justify-content-between">
               <h2 className="dashboardTitle text-secondary">
-                {userRole === "admin" ? "Admin Dashborad" : "Super Admin"}
+                {userRole === "admin" ? "Admin Dashboard" : "Super Admin"}
               </h2>
 
               <div className="addAndSettingIcon d-flex justify-content-center align-items-center">
@@ -633,7 +644,7 @@ export default function Home() {
                   headers={ispOwnerForCsVTableInfoHeader}
                   title="IspOwner Customer CSV"
                 >
-                  <FileExcelFill className="addcutmButton" />
+                  <FiletypeCsv className="addcutmButton" />
                 </CSVLink>
               </div>
             </div>
@@ -689,6 +700,17 @@ export default function Home() {
                 <option value="simple-queue">Simple Queue</option>
                 <option value="firewall-queue">Firewall Queue</option>
                 <option value="core-queue">Core Queue</option>
+              </select>
+
+              <select
+                className="form-select mb-3 mt-0"
+                aria-label="Default select example"
+                onChange={(event) => setCustomerType(event.target.value)}
+              >
+                <option value="All">Customer Type</option>
+                <option value="pppoe">PPPoE</option>
+                <option value="static">Static</option>
+                <option value="hotspot">Hotspot</option>
               </select>
 
               <select
