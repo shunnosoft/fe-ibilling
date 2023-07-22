@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import Loader from "../../../components/common/Loader";
 import { bulksubAreaEdit } from "../../../features/actions/bulkOperationApi";
 
-const BulkSubAreaEdit = ({ bulkCustomer, modalId }) => {
+const BulkSubAreaEdit = ({ bulkCustomer, show, setShow }) => {
   const { t } = useTranslation();
   const areas = useSelector((state) => state?.area?.area);
   const [isLoading, setIsLoading] = useState(false);
@@ -63,7 +63,7 @@ const BulkSubAreaEdit = ({ bulkCustomer, modalId }) => {
           t("updateCustomerSubArea")
       );
       if (confirm) {
-        bulksubAreaEdit(dispatch, data, setIsLoading);
+        bulksubAreaEdit(dispatch, data, setIsLoading, setShow);
       }
     }
   };
@@ -81,7 +81,7 @@ const BulkSubAreaEdit = ({ bulkCustomer, modalId }) => {
   // };
 
   return (
-    <RootBulkModal modalId={modalId} header={t("updateArea")}>
+    <RootBulkModal show={show} setShow={setShow} header={t("updateArea")}>
       <form onSubmit={submitHandler}>
         <div>
           <p>{t("selectArea")}</p>
@@ -130,6 +130,7 @@ const BulkSubAreaEdit = ({ bulkCustomer, modalId }) => {
             className="btn btn-secondary"
             data-bs-dismiss="modal"
             disabled={isLoading}
+            onClick={() => setShow(false)}
           >
             {t("cancel")}
           </button>
@@ -138,7 +139,7 @@ const BulkSubAreaEdit = ({ bulkCustomer, modalId }) => {
             className="btn btn-success"
             disabled={isLoading}
           >
-            {isLoading ? <Loader /> : t("save")}
+            {isLoading ? <Loader /> : t("submit")}
           </button>
         </div>
       </form>

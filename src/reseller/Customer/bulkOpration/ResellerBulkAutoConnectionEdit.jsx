@@ -6,7 +6,7 @@ import { bulkAutoConnectionEdit } from "../../../features/actions/bulkOperationA
 import RootBulkModal from "./bulkModal";
 import Loader from "../../../components/common/Loader";
 
-const ResellerBulkAutoConnectionEdit = ({ bulkCustomer, modalId }) => {
+const ResellerBulkAutoConnectionEdit = ({ bulkCustomer, show, setShow }) => {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [autoDisable, setAutoDisable] = useState(false);
@@ -35,12 +35,12 @@ const ResellerBulkAutoConnectionEdit = ({ bulkCustomer, modalId }) => {
       );
     }
     if (confirm) {
-      bulkAutoConnectionEdit(dispatch, data, setIsLoading);
+      bulkAutoConnectionEdit(dispatch, data, setIsLoading, setShow);
     }
   };
 
   return (
-    <RootBulkModal modalId={modalId} header={t("updateStatus")}>
+    <RootBulkModal show={show} setShow={setShow} header={t("updateStatus")}>
       <form onSubmit={changeStatus}>
         <div className="autoDisable">
           <label htmlFor="autoDisable">{t("automaticConnectionOff")}</label>
@@ -58,6 +58,7 @@ const ResellerBulkAutoConnectionEdit = ({ bulkCustomer, modalId }) => {
             className="btn btn-secondary"
             data-bs-dismiss="modal"
             disabled={isLoading}
+            onClick={() => setShow(false)}
           >
             {t("cancel")}
           </button>
@@ -66,7 +67,7 @@ const ResellerBulkAutoConnectionEdit = ({ bulkCustomer, modalId }) => {
             className="btn btn-success"
             disabled={isLoading}
           >
-            {isLoading ? <Loader /> : t("save")}
+            {isLoading ? <Loader /> : t("submit")}
           </button>
         </div>
       </form>

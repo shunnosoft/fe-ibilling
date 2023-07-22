@@ -9,7 +9,7 @@ import { bulkPackageEdit } from "../../../features/actions/bulkOperationApi";
 import Loader from "../../../components/common/Loader";
 import apiLink from "../../../api/apiLink";
 
-const BulkPackageEdit = ({ bulkCustomer, modalId }) => {
+const BulkPackageEdit = ({ bulkCustomer, show, setShow }) => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
@@ -87,7 +87,6 @@ const BulkPackageEdit = ({ bulkCustomer, modalId }) => {
     } else {
       alert(t("selectMikrotik"));
     }
-    console.log(customers);
 
     if (singleMikrotik && mikrotikPackage) {
       const data = {
@@ -121,7 +120,7 @@ const BulkPackageEdit = ({ bulkCustomer, modalId }) => {
   };
 
   return (
-    <RootBulkModal modalId={modalId} header={t("updatePackage")}>
+    <RootBulkModal show={show} setShow={setShow} header={t("updatePackage")}>
       <form onSubmit={changePackage}>
         <div className="mikrotikSection">
           <div>

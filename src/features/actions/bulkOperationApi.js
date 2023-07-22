@@ -132,18 +132,22 @@ export const bulkPackageEdit = async (
   }
 };
 
-export const bulkResellerRecharge = async (dispatch, data, setIsLoading) => {
+export const bulkResellerRecharge = async (
+  dispatch,
+  data,
+  setIsLoading,
+  setShow
+) => {
   try {
     setIsLoading(true);
     const res = await apiLink.post("/customer/bulk-customer-recharge", data);
-    document.querySelector("#bulkResellerRecharge").click();
+    setShow(false);
     dispatch(bulkUpdate(res.data.data));
     toast.success("কাস্টমার বাল্ক রিচার্জ সফল হয়েছে!");
     setIsLoading(false);
   } catch (err) {
     if (err.response) {
       setIsLoading(false);
-      document.querySelector("#bulkStatusEdit").click();
       toast.error(err.response.data.message);
     }
   }

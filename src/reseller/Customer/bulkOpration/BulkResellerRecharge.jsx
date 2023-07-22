@@ -8,7 +8,7 @@ import RootBulkModal from "./bulkModal";
 import Loader from "../../../components/common/Loader";
 import { fetchpppoePackage } from "../../../features/apiCallReseller";
 
-const BulkResellerRecharge = ({ bulkCustomer, modalId }) => {
+const BulkResellerRecharge = ({ bulkCustomer, show, setShow }) => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
@@ -160,7 +160,7 @@ const BulkResellerRecharge = ({ bulkCustomer, modalId }) => {
           t("otherPackageUsers")
       );
       if (confirm) {
-        bulkResellerRecharge(dispatch, data, setIsLoading);
+        bulkResellerRecharge(dispatch, data, setIsLoading, setShow);
         form.reset(); //form reset
         setMikrotikPackageRate("");
       }
@@ -168,7 +168,11 @@ const BulkResellerRecharge = ({ bulkCustomer, modalId }) => {
   };
 
   return (
-    <RootBulkModal modalId={modalId} header={t("Bulk Reseller Recharge")}>
+    <RootBulkModal
+      show={show}
+      setShow={setShow}
+      header={t("Bulk Reseller Recharge")}
+    >
       <form onSubmit={changePackage}>
         <div className="mikrotikSection">
           <div>
@@ -250,8 +254,8 @@ const BulkResellerRecharge = ({ bulkCustomer, modalId }) => {
           <button
             type="button"
             className="btn btn-secondary"
-            data-bs-dismiss="modal"
             disabled={isLoading}
+            onClick={() => setShow(false)}
           >
             {t("cancel")}
           </button>

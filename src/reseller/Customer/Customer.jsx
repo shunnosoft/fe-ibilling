@@ -17,6 +17,7 @@ import {
   CurrencyDollar,
   Server,
   GearFill,
+  FilterCircle,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -57,6 +58,7 @@ import BulkResellerRecharge from "./bulkOpration/BulkResellerRecharge";
 import ResellerBulkAutoConnectionEdit from "./bulkOpration/ResellerBulkAutoConnectionEdit";
 import BulkPackageEdit from "./bulkOpration/bulkPackageEdit";
 import CustomersNumber from "../../pages/Customer/CustomersNumber";
+import { Accordion } from "react-bootstrap";
 // import CustomersNumber from "../../pages/Customer/CustomersNumber";
 
 export default function Customer() {
@@ -83,6 +85,9 @@ export default function Customer() {
 
   // customers number update or delete modal show state
   const [numberModalShow, setNumberModalShow] = useState(false);
+
+  // filter Accordion handle state
+  const [activeKeys, setActiveKeys] = useState("");
 
   const selectMikrotik = (e) => {
     const id = e.target.value;
@@ -143,6 +148,10 @@ export default function Customer() {
 
   //bulk menu show and hide
   const [isMenuOpen, setMenuOpen] = useState(false);
+
+  // bulk modal handle state
+  const [bulkStatus, setBulkStatus] = useState("");
+  const [show, setShow] = useState(false);
 
   //   filter
   const handleSubAreaChange = (id) => {
@@ -335,14 +344,23 @@ export default function Customer() {
 
   //custom table header component
   const customComponent = (
-    <div className="text-center" style={{ fontSize: "18px", display: "flex" }}>
-      {t("monthlyFee")}&nbsp; {FormatNumber(dueMonthlyFee.totalMonthlyFee)}
-      &nbsp;
-      {t("tk")} &nbsp;&nbsp; {t("due")}&nbsp;
-      {FormatNumber(dueMonthlyFee.totalSumDue)} &nbsp;{t("tk")} &nbsp;
-      {/* {t("collection")}&nbsp;{" "} */}
-      {/* {FormatNumber(Number(sumMonthlyFee()) - Number(dueMonthlyFee()))} &nbsp;
-        {t("tk")} */}
+    <div
+      className="text-center"
+      style={{ fontSize: "18px", fontWeight: "500", display: "flex" }}
+    >
+      {dueMonthlyFee?.totalMonthlyFee > 0 && (
+        <div>
+          {t("monthlyFee")}:-৳
+          {FormatNumber(dueMonthlyFee.totalMonthlyFee)}
+        </div>
+      )}
+      &nbsp;&nbsp;
+      {dueMonthlyFee.totalSumDue > 0 && (
+        <div>
+          {t("due")}:-৳
+          {FormatNumber(dueMonthlyFee.totalSumDue)}
+        </div>
+      )}
     </div>
   );
 
@@ -393,7 +411,7 @@ export default function Customer() {
         },
       },
       {
-        width: "9%",
+        width: "10%",
         Header: t("paymentStatus"),
         accessor: "paymentStatus",
         Cell: ({ cell: { value } }) => {
@@ -416,11 +434,11 @@ export default function Customer() {
         accessor: "balance",
       },
       {
-        width: "11%",
+        width: "10%",
         Header: t("date"),
         accessor: "billingCycle",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("MMM DD YYYY hh:mm A");
+          return moment(value).format("YYYY/MM/DD hh:mm A");
         },
       },
 
@@ -605,11 +623,23 @@ export default function Customer() {
           <div className="container">
             <FontColor>
               <FourGround>
-                <div className="collectorTitle d-flex justify-content-between px-5">
-                  {/* <h2> {t("customer")} </h2> */}
+                <div className="collectorTitle d-flex justify-content-between px-4">
+                  <h2> {t("customer")} </h2>
 
-                  <div className="d-flex">
-                    <h2>{t("customer")}</h2>
+                  <div className="d-flex justify-content-center align-items-center">
+                    <div
+                      onClick={() => {
+                        if (!activeKeys) {
+                          setActiveKeys("filter");
+                        } else {
+                          setActiveKeys("");
+                        }
+                      }}
+                      title={t("filter")}
+                    >
+                      <FilterCircle className="addcutmButton" />
+                    </div>
+
                     <div className="reloadBtn">
                       {isLoading ? (
                         <Loader></Loader>
@@ -619,9 +649,7 @@ export default function Customer() {
                         ></ArrowClockwise>
                       )}
                     </div>
-                  </div>
 
-                  <div className="addAndSettingIcon">
                     {permission && permission?.singleCustomerNumberEdit ? (
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -681,168 +709,126 @@ export default function Customer() {
                 </div>
               </FourGround>
 
-              {/* Model start */}
-              <CustomerPost />
-              <CustomerEdit single={singleCustomer} />
-              <CustomerBillCollect
-                single={singleCustomer}
-                customerData={customerReportData}
-              />
-              <CustomerDetails single={singleCustomer} />
-              <CustomerReport single={customerReportData} />
-              <SingleMessage single={singleCustomer} sendCustomer="customer" />
-
-              {/* bulk operation modal section */}
-              <BulkSubAreaEdit
-                bulkCustomer={bulkCustomer}
-                modalId="customerBulkEdit"
-              />
-              <BulkResellerRecharge
-                bulkCustomer={bulkCustomer}
-                modalId="bulkResellerRecharge"
-              />
-              <BulkBillingCycleEdit
-                bulkCustomer={bulkCustomer}
-                modalId="customerBillingCycle"
-              />
-
-              <BulkStatusEdit
-                bulkCustomer={bulkCustomer}
-                modalId="bulkStatusEdit"
-              />
-
-              <ResellerBulkAutoConnectionEdit
-                bulkCustomer={bulkCustomer}
-                modalId="autoDisableEditModal"
-              />
-
-              <BulkPackageEdit
-                bulkCustomer={bulkCustomer}
-                modalId="bulkPackageEdit"
-              />
-              {/*  bulk operation modal section */}
-
-              {/* customers number update or delete modal */}
-              <CustomersNumber showModal={numberModalShow} />
-
-              {/* Model finish */}
-
               {role === "reseller" || collectorPermission?.viewCustomerList ? (
                 <FourGround>
-                  <div className="collectorWrapper mt-e py-2">
-                    <div className="addCollector">
-                      <div className="displexFlexSys d-flex ">
-                        {/* filter selector */}
-
-                        <div className="selectFiltering allFilter mx-auto">
-                          {/* //Todo */}
-
-                          <select
-                            className="form-select"
-                            onChange={(e) =>
-                              handleSubAreaChange(e.target.value)
-                            }
-                          >
-                            <option value="" defaultValue>
-                              {t("area")}
-                            </option>
-                            {subAreas?.map((sub, key) => (
-                              <option key={key} value={sub.id}>
-                                {sub.name}
+                  <div className="mt-2">
+                    <Accordion alwaysOpen activeKey={activeKeys}>
+                      <Accordion.Item eventKey="filter">
+                        <Accordion.Body>
+                          {/* filter selector */}
+                          <div className="selectFiltering allFilter mx-auto">
+                            <select
+                              className="form-select mt-0"
+                              onChange={(e) =>
+                                handleSubAreaChange(e.target.value)
+                              }
+                            >
+                              <option value="" defaultValue>
+                                {t("area")}
                               </option>
-                            ))}
-                          </select>
-
-                          <select
-                            className="form-select"
-                            onChange={handleStatusChange}
-                          >
-                            <option value="" defaultValue>
-                              {t("status")}
-                            </option>
-                            <option value="active"> {t("active")} </option>
-                            <option value="inactive"> {t("in active")} </option>
-                            <option value="expired"> {t("expired")} </option>
-                          </select>
-
-                          <select
-                            className="form-select"
-                            onChange={selectMikrotik}
-                          >
-                            <option value="" defaultValue>
-                              {t("mikrotik")}
-                            </option>
-
-                            {Getmikrotik?.length &&
-                              Getmikrotik?.map((val, key) => (
-                                <option key={key} value={val.id}>
-                                  {val.name}
+                              {subAreas?.map((sub, key) => (
+                                <option key={key} value={sub.id}>
+                                  {sub.name}
                                 </option>
                               ))}
-                          </select>
+                            </select>
 
-                          <select
-                            className="form-select"
-                            onChange={selectMikrotikPackage}
-                          >
-                            <option value="" defaultValue>
-                              {t("PPPoEPackage")}
-                            </option>
+                            <select
+                              className="form-select mt-0"
+                              onChange={handleStatusChange}
+                            >
+                              <option value="" defaultValue>
+                                {t("status")}
+                              </option>
+                              <option value="active"> {t("active")} </option>
+                              <option value="inactive">
+                                {t("in active")}{" "}
+                              </option>
+                              <option value="expired">{t("expired")} </option>
+                            </select>
 
-                            {ppPackage.length === undefined
-                              ? ""
-                              : ppPackage?.map((val, key) => (
+                            <select
+                              className="form-select mt-0"
+                              onChange={selectMikrotik}
+                            >
+                              <option value="" defaultValue>
+                                {t("mikrotik")}
+                              </option>
+
+                              {Getmikrotik?.length &&
+                                Getmikrotik?.map((val, key) => (
                                   <option key={key} value={val.id}>
                                     {val.name}
                                   </option>
                                 ))}
-                          </select>
+                            </select>
 
-                          <select
-                            className="form-select"
-                            onChange={handlePaymentChange}
-                          >
-                            <option value="" defaultValue>
-                              {t("paymentStatus")}
-                            </option>
-                            <option value="free">{t("free")}</option>
-                            <option value="paid"> {t("paid")} </option>
-                            <option value="unpaid"> {t("unpaid")} </option>
-                            <option value="partial"> {t("partial")} </option>
-                            <option value="advance"> {t("advance")} </option>
-                            <option value="overdue"> {t("overDue")} </option>
-                          </select>
-                        </div>
+                            <select
+                              className="form-select mt-0"
+                              onChange={selectMikrotikPackage}
+                            >
+                              <option value="" defaultValue>
+                                {t("PPPoEPackage")}
+                              </option>
 
-                        <div style={{ display: "none" }}>
-                          <PrintCustomer
-                            filterData={filterData}
-                            currentCustomers={Customers}
-                            ref={componentRef}
-                          />
-                        </div>
+                              {ppPackage.length === undefined
+                                ? ""
+                                : ppPackage?.map((val, key) => (
+                                    <option key={key} value={val.id}>
+                                      {val.name}
+                                    </option>
+                                  ))}
+                            </select>
 
-                        <div className="addNewCollector"></div>
+                            <select
+                              className="form-select mt-0"
+                              onChange={handlePaymentChange}
+                            >
+                              <option value="" defaultValue>
+                                {t("paymentStatus")}
+                              </option>
+                              <option value="free">{t("free")}</option>
+                              <option value="paid"> {t("paid")} </option>
+                              <option value="unpaid"> {t("unpaid")} </option>
+                              <option value="partial">{t("partial")} </option>
+                              <option value="advance">{t("advance")} </option>
+                              <option value="overdue">{t("overDue")} </option>
+                            </select>
+                          </div>
+                          <div style={{ display: "none" }}>
+                            <PrintCustomer
+                              filterData={filterData}
+                              currentCustomers={Customers}
+                              ref={componentRef}
+                            />
+                          </div>
+                        </Accordion.Body>
+                      </Accordion.Item>
+                    </Accordion>
+
+                    <div className="collectorWrapper pb-2">
+                      <div className="addCollector">
+                        {isDeleting ? (
+                          <div className="deletingAction">
+                            <Loader /> <b>Deleting...</b>
+                          </div>
+                        ) : (
+                          ""
+                        )}
                       </div>
 
-                      {isDeleting ? (
-                        <div className="deletingAction">
-                          <Loader /> <b>Deleting...</b>
-                        </div>
-                      ) : (
-                        ""
-                      )}
-                    </div>
-                    <div className="table-section">
-                      <Table
-                        customComponent={customComponent}
-                        isLoading={isLoading}
-                        columns={columns}
-                        data={Customers}
-                        bulkState={{
-                          setBulkCustomer,
-                        }}
-                      ></Table>
+                      <div className="table-section">
+                        <Table
+                          customComponent={customComponent}
+                          bulkLength={bulkCustomer?.length}
+                          isLoading={isLoading}
+                          columns={columns}
+                          data={Customers}
+                          bulkState={{
+                            setBulkCustomer,
+                          }}
+                        ></Table>
+                      </div>
                     </div>
                   </div>
                 </FourGround>
@@ -855,6 +841,73 @@ export default function Customer() {
         </div>
       </div>
 
+      {/* Model start */}
+
+      <CustomerPost />
+      <CustomerEdit single={singleCustomer} />
+      <CustomerBillCollect
+        single={singleCustomer}
+        customerData={customerReportData}
+      />
+      <CustomerDetails single={singleCustomer} />
+      <CustomerReport single={customerReportData} />
+      <SingleMessage single={singleCustomer} sendCustomer="customer" />
+
+      {/* customers number update or delete modal */}
+      <CustomersNumber showModal={numberModalShow} />
+
+      {/* Model finish */}
+
+      {/* bulk operation modal section */}
+      {bulkStatus === "customerBulkEdit" && (
+        <BulkSubAreaEdit
+          bulkCustomer={bulkCustomer}
+          show={show}
+          setShow={setShow}
+        />
+      )}
+
+      {bulkStatus === "bulkResellerRecharge" && (
+        <BulkResellerRecharge
+          bulkCustomer={bulkCustomer}
+          show={show}
+          setShow={setShow}
+        />
+      )}
+
+      {bulkStatus === "customerBillingCycle" && (
+        <BulkBillingCycleEdit
+          bulkCustomer={bulkCustomer}
+          show={show}
+          setShow={setShow}
+        />
+      )}
+
+      {bulkStatus === "bulkStatusEdit" && (
+        <BulkStatusEdit
+          bulkCustomer={bulkCustomer}
+          show={show}
+          setShow={setShow}
+        />
+      )}
+
+      {bulkStatus === "autoDisableEditModal" && (
+        <ResellerBulkAutoConnectionEdit
+          bulkCustomer={bulkCustomer}
+          show={show}
+          setShow={setShow}
+        />
+      )}
+
+      {bulkStatus === "bulkPackageEdit" && (
+        <BulkPackageEdit
+          bulkCustomer={bulkCustomer}
+          show={show}
+          setShow={setShow}
+        />
+      )}
+      {/*  bulk operation modal section */}
+
       {bulkCustomer.length > 0 && (
         <div className="client_wraper2">
           <div
@@ -865,10 +918,12 @@ export default function Customer() {
             <ul className="client_service_list2 ps-0">
               {permission?.bulkAreaEdit && (
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#customerBulkEdit"
                   type="button"
                   className="p-1"
+                  onClick={() => {
+                    setBulkStatus("customerBulkEdit");
+                    setShow(true);
+                  }}
                 >
                   <div className="menu_icon2">
                     <button
@@ -887,10 +942,12 @@ export default function Customer() {
 
               {permission?.bulkCustomerRecharge && (
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#bulkResellerRecharge"
                   type="button"
                   className="p-1"
+                  onClick={() => {
+                    setBulkStatus("bulkResellerRecharge");
+                    setShow(true);
+                  }}
                 >
                   <div className="menu_icon2">
                     <button
@@ -909,10 +966,12 @@ export default function Customer() {
 
               {permission?.bulkCustomerStatusEdit && (
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#bulkStatusEdit"
                   type="button"
                   className="p-1"
+                  onClick={() => {
+                    setBulkStatus("bulkStatusEdit");
+                    setShow(true);
+                  }}
                 >
                   <div className="menu_icon2">
                     <button
@@ -930,10 +989,12 @@ export default function Customer() {
 
               {permission?.bulkCustomerBillingCycleEdit && (
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#customerBillingCycle"
                   type="button"
                   className="p-1"
+                  onClick={() => {
+                    setBulkStatus("customerBillingCycle");
+                    setShow(true);
+                  }}
                 >
                   <div className="menu_icon2">
                     <button
@@ -942,7 +1003,6 @@ export default function Customer() {
                     >
                       <i class="far fa-calendar-alt fa-xs"></i>
                       <span className="button_title">
-                        {" "}
                         {t("editBillingCycle")}{" "}
                       </span>
                     </button>
@@ -955,10 +1015,12 @@ export default function Customer() {
 
               {permission?.customerAutoDisableEdit && (
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#autoDisableEditModal"
                   type="button"
                   className="p-1"
+                  onClick={() => {
+                    setBulkStatus("autoDisableEditModal");
+                    setShow(true);
+                  }}
                 >
                   <div className="menu_icon2">
                     <button
@@ -972,7 +1034,6 @@ export default function Customer() {
                     </button>
                   </div>
                   <div className="menu_label2">
-                    {" "}
                     {t("automaticConnectionOff")}
                   </div>
                 </li>
@@ -982,10 +1043,12 @@ export default function Customer() {
 
               {permission?.customerMikrotikPackageEdit && (
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#bulkPackageEdit"
                   type="button"
                   className="p-1"
+                  onClick={() => {
+                    setBulkStatus("bulkPackageEdit");
+                    setShow(true);
+                  }}
                 >
                   <div className="menu_icon2">
                     <button
