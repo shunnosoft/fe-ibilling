@@ -28,6 +28,24 @@ export const getResellerData = async (
   setIsLoading(false);
 };
 
+export const onlinePaymentCustomer = async (
+  dispatch,
+  resellerId,
+  setIsLoading
+) => {
+  console.log(resellerId);
+  setIsLoading(true);
+  try {
+    const res = await apiLink.get(
+      `ispOwner/reseller-customer-online-payment/${resellerId}`
+    );
+    console.log(res.data);
+  } catch (error) {
+    console.log(error);
+  }
+  setIsLoading(false);
+};
+
 export const getPackageBasedCustomer = async (
   ispOwnerId,
   resellerId,

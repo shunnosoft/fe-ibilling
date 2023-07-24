@@ -295,6 +295,18 @@ export default function Reseller() {
                   </div>
                 </li>
 
+                <Link to={`/reseller/online-payment-customer/${original.id}`}>
+                  <li>
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <PeopleFill />
+
+                        <p className="actionP">{t("onlinePaymentCustomer")}</p>
+                      </div>
+                    </div>
+                  </li>
+                </Link>
+
                 {original.mobile && (
                   <li
                     data-bs-toggle="modal"
