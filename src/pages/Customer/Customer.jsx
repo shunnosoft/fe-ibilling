@@ -1550,7 +1550,7 @@ const PPPOECustomer = () => {
                               (item) =>
                                 item.isVisible && (
                                   <select
-                                    className="form-select shadow-none"
+                                    className="form-select shadow-none mt-0"
                                     onChange={item.onChange}
                                     value={item.value}
                                   >
@@ -1569,7 +1569,7 @@ const PPPOECustomer = () => {
                             {/* date picker for filter billing cycle */}
                             <div className="d-flex justify-content-end align-items-end h-76">
                               <DatePicker
-                                className="form-control"
+                                className="form-control mt-0"
                                 selected={filterOptions.filterDate}
                                 onChange={(date) =>
                                   setFilterOption({
@@ -1583,7 +1583,7 @@ const PPPOECustomer = () => {
                             </div>
 
                             <select
-                              className="form-select shadow-none"
+                              className="form-select shadow-none mt-0"
                               onChange={changePromiseConnection}
                             >
                               <option value="">{t("promiseDateChange")}</option>
@@ -1596,7 +1596,7 @@ const PPPOECustomer = () => {
                               </option>
                             </select>
 
-                            <div className="d-flex justify-content-end align-items-end">
+                            <div className="d-flex justify-content-end align-items-end mt-0">
                               <button
                                 className="btn btn-outline-primary w-6rem h-76"
                                 type="button"

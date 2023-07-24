@@ -114,6 +114,10 @@ const AllResellerCustomer = () => {
   //bulk-operations state
   const [bulkCustomer, setBulkCustomer] = useState([]);
 
+  // bulk modal handle state
+  const [bulkStatus, setBulkStatus] = useState("");
+  const [show, setShow] = useState(false);
+
   // reload handler method
   const reloadHandler = () => {
     getAllResellerCustomer(dispatch, ispOwner, setIsLoading);
@@ -706,30 +710,54 @@ const AllResellerCustomer = () => {
         mikrotikCheck={mikrotikCheck}
         setMikrotikCheck={setMikrotikCheck}
       />
-      <BulkCustomerReturn
-        modalId="returnCustomer"
-        bulkCustomer={bulkCustomer}
-        isAllCustomer={true}
-      />
-      <BulkPromiseDateEdit
-        bulkCustomer={bulkCustomer}
-        modalId="bulkPromiseDateEdit"
-      />
-      <BulkBillingCycleEdit
-        bulkCustomer={bulkCustomer}
-        modalId="customerBillingCycle"
-      />
-      <BulkStatusEdit bulkCustomer={bulkCustomer} modalId="bulkStatusEdit" />
+
+      {/* bulk modal start */}
+      {bulkStatus === "returnCustomer" && (
+        <BulkCustomerReturn
+          bulkCustomer={bulkCustomer}
+          isAllCustomer={true}
+          show={show}
+          setShow={setShow}
+        />
+      )}
+
+      {bulkStatus === "bulkPromiseDateEdit" && (
+        <BulkPromiseDateEdit
+          bulkCustomer={bulkCustomer}
+          show={show}
+          setShow={setShow}
+        />
+      )}
+
+      {bulkStatus === "customerBillingCycle" && (
+        <BulkBillingCycleEdit
+          bulkCustomer={bulkCustomer}
+          show={show}
+          setShow={setShow}
+        />
+      )}
+
+      {bulkStatus === "bulkStatusEdit" && (
+        <BulkStatusEdit
+          bulkCustomer={bulkCustomer}
+          show={show}
+          setShow={setShow}
+        />
+      )}
+
+      {/* bulk modal end */}
+
       {bulkCustomer.length > 0 && (
         <>
           <div className="bulkActionButton">
             <button
-              className="bulk_action_button"
+              className="bulk_action_button btn btn-dark btn-floating btn-sm"
               title={t("returnCustomer")}
-              data-bs-toggle="modal"
-              data-bs-target="#returnCustomer"
               type="button"
-              class="btn btn-dark btn-floating btn-sm"
+              onClick={() => {
+                setBulkStatus("returnCustomer");
+                setShow(true);
+              }}
             >
               <i class="fa-solid fa-right-left"></i>
               <span className="button_title"> {t("returnCustomer")} </span>
@@ -737,12 +765,13 @@ const AllResellerCustomer = () => {
 
             {bpSettings.resellerCustomerBulkPromiseDateEdit && (
               <button
-                className="bulk_action_button"
+                className="bulk_action_button btn btn-dark btn-floating btn-sm"
                 title={t("editPromiseDate")}
-                data-bs-toggle="modal"
-                data-bs-target="#bulkPromiseDateEdit"
                 type="button"
-                class="btn btn-dark btn-floating btn-sm"
+                onClick={() => {
+                  setBulkStatus("bulkPromiseDateEdit");
+                  setShow(true);
+                }}
               >
                 <i class="fas fa-calendar-week"></i>
                 <span className="button_title"> {t("editPromiseDate")} </span>
@@ -751,12 +780,13 @@ const AllResellerCustomer = () => {
 
             {bpSettings.resellerCustomerBulkBillingCycleEdit && (
               <button
-                className="bulk_action_button"
+                className="bulk_action_button btn btn-dark btn-floating btn-sm"
                 title={t("editBillingCycle")}
-                data-bs-toggle="modal"
-                data-bs-target="#customerBillingCycle"
                 type="button"
-                class="btn btn-warning btn-floating btn-sm"
+                onClick={() => {
+                  setBulkStatus("customerBillingCycle");
+                  setShow(true);
+                }}
               >
                 <i class="fas fa-edit"></i>
                 <span className="button_title"> {t("editBillingCycle")} </span>
@@ -767,9 +797,11 @@ const AllResellerCustomer = () => {
               <button
                 className="bulk_action_button btn btn-info btn-floating btn-sm"
                 title={t("editStatus")}
-                data-bs-toggle="modal"
-                data-bs-target="#bulkStatusEdit"
                 type="button"
+                onClick={() => {
+                  setBulkStatus("bulkStatusEdit");
+                  setShow(true);
+                }}
               >
                 <i className="fas fa-edit"></i>
                 <span className="button_title"> {t("editStatus")}</span>

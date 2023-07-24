@@ -288,7 +288,8 @@ export const bulkCustomerReturnApi = async (
   dispatch,
   data,
   isAllCustomer,
-  setIsLoading
+  setIsLoading,
+  setShow
 ) => {
   try {
     setIsLoading(true);
@@ -296,7 +297,7 @@ export const bulkCustomerReturnApi = async (
       `customer/bulk-customer-return-to-ispOwner`,
       data
     );
-    document.querySelector("#returnCustomer").click();
+    setShow(false);
     const responseData = {
       data: res.data.data,
       isAllCustomer,
