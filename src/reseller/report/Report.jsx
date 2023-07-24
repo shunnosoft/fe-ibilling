@@ -56,6 +56,7 @@ const Report = () => {
 
   // collection all bills state
   const [mainData, setMainData] = useState(allBills);
+  console.log(mainData);
 
   // select area id state
   const [areaIds, setAreaIds] = useState("");
@@ -68,6 +69,9 @@ const Report = () => {
 
   // bill report medium
   const [medium, setMedium] = useState("");
+
+  // customer bill type
+  const [billType, setBillType] = useState("");
 
   // date & time find
   var today = new Date();
@@ -102,6 +106,10 @@ const Report = () => {
       } else {
         arr = arr.filter((item) => item.medium === medium);
       }
+    }
+
+    if (billType) {
+      arr = arr.filter((val) => val.billType === billType);
     }
 
     arr = arr.filter(
@@ -181,19 +189,14 @@ const Report = () => {
   const columns = useMemo(
     () => [
       {
-        width: "16%",
+        width: "15%",
         Header: t("id"),
         accessor: "customer.customerId",
       },
       {
-        width: "17%",
+        width: "16%",
         Header: t("customer"),
         accessor: "customer.name",
-      },
-      {
-        width: "17%",
-        Header: t("PPPoEName"),
-        accessor: "customer.pppoe.name",
       },
       {
         width: "16%",
@@ -205,9 +208,13 @@ const Report = () => {
         Header: t("bill"),
         accessor: "amount",
       },
-
       {
-        width: "18%",
+        width: "16%",
+        Header: t("billType"),
+        accessor: "billType",
+      },
+      {
+        width: "16%",
         Header: t("date"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
@@ -322,6 +329,19 @@ const Report = () => {
                             <option value="rocket"> {t("rocket")} </option>
                             <option value="nagad"> {t("nagad")} </option>
                             <option value="others"> {t("others")} </option>
+                          </select>
+
+                          <select
+                            className="form-select mt-0"
+                            onChange={(e) => setBillType(e.target.value)}
+                          >
+                            <option value="" defaultValue>
+                              {t("billType")}
+                            </option>
+                            <option value="bill">{t("bill")}</option>
+                            <option value="connectionFee">
+                              {t("connectionFee")}
+                            </option>
                           </select>
 
                           <div>
