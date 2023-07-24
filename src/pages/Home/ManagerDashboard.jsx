@@ -19,6 +19,7 @@ import "./home.css";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import { monthsName } from "./homeData";
 import {
+  getAllPackages,
   getIspOwnerData,
   getManagerDashboardCardData,
   getManagerDashboardCharts,
@@ -42,6 +43,7 @@ import Paid from "./dataComponent/Paid";
 import Unpaid from "./dataComponent/Unpaid";
 import Active from "./dataComponent/Active";
 import AllCollector from "./dataComponent/AllCollector";
+import Discount from "./dataComponent/Discount";
 
 export default function ManagerDashboard() {
   const { t } = useTranslation();
@@ -93,6 +95,8 @@ export default function ManagerDashboard() {
   const [isLoading, setIsloading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loadingDashboardData, setLoadingDashboardData] = useState(false);
+  const [packageLoading, setPackageLoading] = useState(false);
+
   const [showGraphData, setShowGraphData] = useState("amount");
   const [label, setLabel] = useState([]);
   const [collection, setCollection] = useState([]);
@@ -106,6 +110,9 @@ export default function ManagerDashboard() {
   const [Year, setYear] = useState(date.getFullYear());
   const [Month, setMonth] = useState(date.getMonth());
   const [filterDate, setFilterDate] = useState(date);
+
+  // discount modal state
+  const [discountShow, setDiscountShow] = useState(false);
 
   //api calls
   useEffect(() => {
@@ -126,6 +133,8 @@ export default function ManagerDashboard() {
 
     //get card data
     getManagerDashboardCardData(dispatch, setLoadingDashboardData, managerId);
+
+    getAllPackages(dispatch, ispOwnerId, setPackageLoading);
   }, []);
 
   //graph data calculation
@@ -284,7 +293,7 @@ export default function ManagerDashboard() {
                         {FormatNumber(
                           customerStat?.totalProbableAmount -
                             customerStat?.totalInactiveAmount
-                        )}{" "}
+                        )}
                       </h2>
                     </div>
                     <div className="col-md-6">
@@ -433,7 +442,7 @@ export default function ManagerDashboard() {
 
                     <Link to={"/new/customer"}>
                       <p className="dashboardData">
-                        {t("new customer")}{" "}
+                        {t("new customer")}
                         {FormatNumber(customerStat?.newCustomer)}
                       </p>
                     </Link>
@@ -449,21 +458,15 @@ export default function ManagerDashboard() {
                   </div>
                   <div className="chartSection">
                     <p
-                      className="dashboardActive"
+                      className="dashboardActive pb-0"
                       data-bs-toggle="modal"
                       data-bs-target="#activeCustomer"
                       style={{ fontSize: "16px" }}
                       onClick={() => setStatus("active")}
                     >
                       {t("active")}
+                      <h4>{FormatNumber(customerStat.active)}</h4>
                     </p>
-                    <h2
-                      className="dashboardActive"
-                      data-bs-toggle="modal"
-                      data-bs-target="#activeCustomer"
-                    >
-                      {FormatNumber(customerStat?.active)}
-                    </h2>
 
                     {permissions?.dashboardCollectionData && (
                       <p
@@ -487,7 +490,7 @@ export default function ManagerDashboard() {
                       onClick={() => setStatus("inactive")}
                       style={{ fontSize: "15px", marginBottom: "0px" }}
                     >
-                      {t("in active")}: {FormatNumber(customerStat?.inactive)}{" "}
+                      {t("in active")}: {FormatNumber(customerStat?.inactive)}
                       &nbsp;
                       {permissions?.dashboardCollectionData && (
                         <span className="text-info">
@@ -502,7 +505,7 @@ export default function ManagerDashboard() {
                       onClick={() => setStatus("expired")}
                       style={{ fontSize: "15px", paddingTop: "0px" }}
                     >
-                      {t("expired")}: {FormatNumber(customerStat?.expired)}{" "}
+                      {t("expired")}: {FormatNumber(customerStat?.expired)}
                       &nbsp;
                       {permissions?.dashboardCollectionData && (
                         <span className="text-info">
@@ -522,22 +525,16 @@ export default function ManagerDashboard() {
                   </div>
                   <div className="chartSection">
                     <p
-                      className="dashboardUnpaid pb-1"
+                      className="dashboardUnpaid pb-0"
                       data-bs-toggle="modal"
                       onClick={() => setStatus("paid")}
                       data-bs-target="#paid"
                       style={{ fontSize: "16px" }}
                     >
                       {t("paid")}
+                      <h4>{FormatNumber(customerStat.paid)}</h4>
                     </p>
-                    <h2
-                      className="dashboardUnpaid"
-                      data-bs-toggle="modal"
-                      data-bs-target="#paid"
-                      onClick={() => setStatus("paid")}
-                    >
-                      {FormatNumber(customerStat?.paid)}
-                    </h2>
+
                     <p
                       className="dashboardUnpaid pb-1"
                       data-bs-toggle="modal"
@@ -572,28 +569,35 @@ export default function ManagerDashboard() {
                   <div className="chartSection">
                     {permissions?.dashboardCollectionData && (
                       <>
-                        <p style={{ fontSize: "16px" }}>
+                        <p style={{ fontSize: "16px", paddingTop: "10px" }}>
                           {t("total collection")}
+                          <h4>
+                            ৳
+                            {FormatNumber(
+                              customerStat?.totalMonthlyBillCollection -
+                                customerStat?.totalMonthlyBillDiscount
+                            )}
+                          </h4>
                         </p>
-                        <h2>
-                          ৳{" "}
-                          {FormatNumber(
-                            customerStat?.totalMonthlyBillCollection -
-                              customerStat?.totalMonthlyBillDiscount
-                          )}
-                        </h2>
                       </>
                     )}
 
                     {permissions?.dashboardCollectionData && (
                       <>
-                        <p style={{ fontSize: "15px", marginBottom: "0px" }}>
-                          {t("discount")}:{" "}
+                        <p
+                          className="dashboardCollection pb-0"
+                          style={{ fontSize: "15px" }}
+                          // onClick={() => {
+                          //   setDiscountShow(true);
+                          //   setStatus("discount");
+                          // }}
+                        >
+                          {t("discount")}:&nbsp;
                           {FormatNumber(customerStat?.totalMonthlyBillDiscount)}
                         </p>
 
-                        <p style={{ fontSize: "13px", marginBottom: "0px" }}>
-                          {t("withoutDiscount")}:{" "}
+                        <p style={{ fontSize: "13px", paddingBottom: "0px" }}>
+                          {t("withoutDiscount")}:
                           {FormatNumber(
                             customerStat?.totalMonthlyBillCollection
                           )}
@@ -606,7 +610,7 @@ export default function ManagerDashboard() {
                         !permissions?.dashboardCollectionData ? "fs-6" : "fs-13"
                       }
                     >
-                      {t("today collection")}{" "}
+                      {t("today collection")}
                       {FormatNumber(customerStat?.billCollectionToday)}
                     </p>
                   </div>
@@ -719,7 +723,7 @@ export default function ManagerDashboard() {
                             {t("totalMonthlyCollection")}
                           </p>
                           <h2>
-                            ৳{" "}
+                            ৳
                             {FormatNumber(
                               customerStat?.totalMonthlyBillCollection -
                                 customerStat?.totalMonthlyBillDiscount
@@ -729,7 +733,7 @@ export default function ManagerDashboard() {
                       )}
 
                       <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                        {t("todayTotalCollectionByManager")}:{" "}
+                        {t("todayTotalCollectionByManager")}:
                         {FormatNumber(customerStat?.billCollectionToday)}
                       </p>
                     </div>
@@ -749,7 +753,7 @@ export default function ManagerDashboard() {
                       </h2>
 
                       <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                        {t("todayTotalCollectionByManager")}:{" "}
+                        {t("todayTotalCollectionByManager")}:
                         {FormatNumber(customerStat?.totalOwnCollectionToday)}
                       </p>
                     </div>
@@ -771,7 +775,7 @@ export default function ManagerDashboard() {
                       </h2>
 
                       <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                        {t("todayTotalCollectionByManager")}:{" "}
+                        {t("todayTotalCollectionByManager")}:
                         {FormatNumber(customerStat?.todayManagerDeposit)}
                       </p>
                     </div>
@@ -847,7 +851,7 @@ export default function ManagerDashboard() {
 
                       {permissions?.dashboardCollectionData && (
                         <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                          {t("totalCollection")}:{" "}
+                          {t("totalCollection")}:
                           {FormatNumber(customerStat?.collectorsBillCollection)}
                         </p>
                       )}
@@ -904,6 +908,15 @@ export default function ManagerDashboard() {
         ispOwnerId={ispOwnerId}
         year={filterDate.getFullYear()}
         month={filterDate.getMonth() + 1}
+      />
+
+      <Discount
+        show={discountShow}
+        setShow={setDiscountShow}
+        ispOwnerId={ispOwnerId}
+        year={filterDate.getFullYear()}
+        month={filterDate.getMonth() + 1}
+        status={status}
       />
     </>
   );

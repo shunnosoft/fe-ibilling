@@ -24,6 +24,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchReseller,
+  getAllPackages,
   resellerCustomerReport,
 } from "../../../features/apiCalls";
 import moment from "moment";
@@ -56,6 +57,9 @@ const ResellerCollection = () => {
     (state) => state.persistedReducer.auth?.userData
   );
 
+  // get all packages
+  const allPackages = useSelector((state) => state.package.allPackages);
+
   // get reseller
   const reseller = useSelector((state) => state?.reseller?.reseller);
 
@@ -67,6 +71,7 @@ const ResellerCollection = () => {
   //loading state
   const [isLoading, setIsLoading] = useState(false);
   const [dataLoader, setDataLoader] = useState(false);
+  const [packageLoading, setPackageLoading] = useState(false);
 
   //reseller id state
   const [resellerId, setResellerId] = useState("");
@@ -130,10 +135,16 @@ const ResellerCollection = () => {
     setNote("");
   };
 
+  // customer current package find
+  const getCustomerPackage = (pack) => {
+    const findPack = allPackages.find((item) => item.id.includes(pack));
+    return findPack;
+  };
+
   const columns = useMemo(
     () => [
       {
-        width: "8%",
+        width: "10%",
         Header: t("id"),
         accessor: "customer.customerId",
       },
@@ -143,17 +154,15 @@ const ResellerCollection = () => {
         accessor: "customer.name",
       },
       {
-        width: "12%",
-        Header: t("PPPoEName"),
-        accessor: "customer.pppoe.name",
+        width: "10%",
+        Header: t("package"),
+        accessor: "customer.mikrotikPackage",
+        Cell: ({ cell: { value } }) => (
+          <div>{currentData && getCustomerPackage(value)?.name}</div>
+        ),
       },
       {
         width: "10%",
-        Header: t("package"),
-        accessor: "package",
-      },
-      {
-        width: "8%",
         Header: t("bill"),
         accessor: "amount",
       },
@@ -163,7 +172,7 @@ const ResellerCollection = () => {
         accessor: "discount",
       },
       {
-        width: "8%",
+        width: "10%",
         Header: t("agent"),
         accessor: "medium",
       },
@@ -173,7 +182,7 @@ const ResellerCollection = () => {
         accessor: "name",
       },
       {
-        width: "12%",
+        width: "10%",
         Header: t("note"),
         accessor: (data) => {
           return {
@@ -227,7 +236,7 @@ const ResellerCollection = () => {
         },
       },
       {
-        width: "6%",
+        width: "10%",
         Header: () => <div className="text-center">{t("action")}</div>,
         id: "option",
 
@@ -268,7 +277,7 @@ const ResellerCollection = () => {
         ),
       },
     ],
-    [t]
+    [t, allPackages]
   );
 
   //reload handler
@@ -282,6 +291,7 @@ const ResellerCollection = () => {
 
   useEffect(() => {
     fetchReseller(dispatch, ispOwnerId, setDataLoader);
+    getAllPackages(dispatch, ispOwnerId, setPackageLoading);
   }, []);
 
   useEffect(() => {
@@ -381,7 +391,7 @@ const ResellerCollection = () => {
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-4">
                   <div className="d-flex">
-                    <div>{t("activeCustomer")}</div>
+                    <div>{t("resellerCollection")}</div>
                   </div>
                   <div className="d-flex justify-content-center align-items-center">
                     <div

@@ -19,7 +19,7 @@ const BulkCustomerReturn = ({ show, setShow, bulkCustomer, isAllCustomer }) => {
         return item.original.id;
       }),
     };
-    bulkCustomerReturnApi(dispatch, data, isAllCustomer, setIsLoading);
+    bulkCustomerReturnApi(dispatch, data, isAllCustomer, setIsLoading, setShow);
   };
 
   return (
@@ -30,8 +30,8 @@ const BulkCustomerReturn = ({ show, setShow, bulkCustomer, isAllCustomer }) => {
         <button
           type="button"
           className="btn btn-secondary"
-          data-bs-dismiss="modal"
           disabled={isLoading}
+          onClick={() => setShow(false)}
         >
           {t("cancel")}
         </button>

@@ -488,10 +488,10 @@ export default function ResellerEdit({ resellerId }) {
                               <div className="form-check">
                                 <FtextField
                                   label={t("globalCommission")}
+                                  id="global"
                                   className="form-check-input"
                                   type="radio"
-                                  name="commissionType"
-                                  submit
+                                  name="global"
                                   value="global"
                                   checked={commissionType === "global"}
                                   onChange={(e) =>
@@ -502,9 +502,10 @@ export default function ResellerEdit({ resellerId }) {
                               <div className="form-check">
                                 <FtextField
                                   label={t("packageBased")}
+                                  id="packageBased"
                                   className="form-check-input"
                                   type="radio"
-                                  name="commissionType"
+                                  name="packageBased"
                                   value="packageBased"
                                   checked={commissionType === "packageBased"}
                                   onChange={(e) =>

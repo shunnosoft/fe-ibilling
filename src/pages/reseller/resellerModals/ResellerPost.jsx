@@ -286,6 +286,7 @@ export default function ResellerPost() {
                                   <div key={key} className="form-check">
                                     <FtextField
                                       label={val.label}
+                                      // id={val.value}
                                       className="form-check-input"
                                       type="radio"
                                       name="status"
@@ -330,9 +331,10 @@ export default function ResellerPost() {
                               <div className="form-check">
                                 <FtextField
                                   label={t("globalCommission")}
+                                  id="global"
                                   className="form-check-input"
                                   type="radio"
-                                  name="commissionType"
+                                  name="global"
                                   value="global"
                                   checked={commissionType === "global"}
                                   onChange={(e) =>
@@ -343,9 +345,10 @@ export default function ResellerPost() {
                               <div className="form-check">
                                 <FtextField
                                   label={t("packageBased")}
+                                  id="packageBased"
                                   className="form-check-input"
                                   type="radio"
-                                  name="commissionType"
+                                  name="packageBased"
                                   value="packageBased"
                                   checked={commissionType === "packageBased"}
                                   onChange={(e) =>

@@ -132,7 +132,7 @@ export default function Customer() {
   //declare local state
   const [isLoading, setIsloading] = useState(false);
   const [customerLoading, setCustomerLoading] = useState(false);
-  const [show, setShow] = useState(false);
+  const [isShow, setIsShow] = useState(false);
 
   // filter Accordion handle state
   const [activeKeys, setActiveKeys] = useState("");
@@ -181,6 +181,10 @@ export default function Customer() {
 
   // subArea current poleBox state
   const [currentPoleBox, setCurrentPoleBox] = useState([]);
+
+  // bulk modal handle state
+  const [bulkStatus, setBulkStatus] = useState("");
+  const [show, setShow] = useState(false);
 
   useEffect(() => {
     if (role === "collector") {
@@ -1221,119 +1225,6 @@ export default function Customer() {
                 </div>
               </FourGround>
 
-              {/* Model start */}
-              <AddStaticCustomer />
-              <StaticCustomerEdit single={singleCustomer} />
-              <CustomerBillCollect
-                single={singleCustomer}
-                customerData={customerReportData}
-              />
-              <CustomerDetails single={singleCustomer} />
-              <CustomerReport single={customerReportData} />
-              {/* customer note modal */}
-              <CustomerNote
-                customerId={customerNoteId}
-                customerName={customerName}
-              />
-              <CustomerDelete
-                single={singleData}
-                mikrotikCheck={mikrotikCheck}
-                setMikrotikCheck={setMikrotikCheck}
-              />
-              <SingleMessage
-                single={singleCustomer}
-                sendCustomer="staticCustomer"
-              />
-
-              {/* transferReseller modal */}
-              <TransferToReseller customerId={singleCustomer} />
-
-              {/* password reset modal */}
-              <PasswordReset resetCustomerId={userId} />
-              {/* bulk Modal */}
-
-              {/* static customer create invoice */}
-              <StaticCreateInvoice
-                show={show}
-                setShow={setShow}
-                single={singleCustomer}
-                customerData={customerData}
-              />
-
-              <BulkSubAreaEdit
-                bulkCustomer={bulkCustomer}
-                modalId="customerBulkEdit"
-              />
-
-              <BulkBillingCycleEdit
-                bulkCustomer={bulkCustomer}
-                modalId="customerBillingCycle"
-              />
-
-              <BulkPromiseDateEdit
-                bulkCustomer={bulkCustomer}
-                modalId="bulkPromiseDateEdit"
-              />
-
-              {bpSettings?.hasMikrotik && (
-                <>
-                  <BulkStatusEdit
-                    bulkCustomer={bulkCustomer}
-                    modalId="bulkStatusEdit"
-                  />
-
-                  <BulkMikrotikEdit
-                    bulkCustomer={bulkCustomer}
-                    modalId="bulkMikrotikEdit"
-                  />
-                </>
-              )}
-
-              <BulkPackageEdit
-                bulkCustomer={bulkCustomer}
-                modalId="bulkPackageEdit"
-              />
-
-              <BulkRecharge
-                bulkCustomer={bulkCustomer}
-                modalId="bulkRecharge"
-              />
-
-              <BulkBalanceEdit
-                bulkCustomer={bulkCustomer}
-                modalId="customerBalanceEdit"
-              />
-
-              <BulkCustomerDelete
-                bulkCustomer={bulkCustomer}
-                modalId="bulkDeleteCustomer"
-              />
-              <BulkAutoConnectionEdit
-                bulkCustomer={bulkCustomer}
-                modalId="autoDisableEditModal"
-              />
-
-              <BulkCustomerTransfer
-                bulkCustomer={bulkCustomer}
-                modalId="bulkTransferToReseller"
-              />
-
-              <CreateSupportTicket
-                collectors={collectors}
-                manager={manager}
-                customer={singleCustomer}
-                ispOwner={ispOwner}
-                reseller=""
-              />
-
-              <FireWallFilterIpDropControl />
-              {/* bulk Modal end */}
-
-              {/* customers number update or delete modal */}
-              <CustomersNumber showModal={numberModalShow} />
-
-              {/* Model finish */}
-
               <FourGround>
                 {permission?.viewCustomerList || role !== "collector" ? (
                   <div className="mt-2">
@@ -1342,7 +1233,7 @@ export default function Customer() {
                         <Accordion.Body>
                           <div className="displayGrid6">
                             <select
-                              className="form-select shadow-none "
+                              className="form-select shadow-none mt-0"
                               onChange={(e) => {
                                 onChangeArea(e.target.value);
                                 setFilterOption({
@@ -1391,7 +1282,7 @@ export default function Customer() {
 
                             {/* //Todo */}
                             <select
-                              className="form-select shadow-none"
+                              className="form-select shadow-none mt-0"
                               onChange={(e) => {
                                 onChangeSubArea(e.target.value);
                                 setFilterOption({
@@ -1419,7 +1310,7 @@ export default function Customer() {
                             </select>
 
                             <select
-                              className="form-select shadow-none"
+                              className="form-select shadow-none mt-0"
                               onChange={(e) => {
                                 setFilterOption({
                                   ...filterOptions,
@@ -1446,7 +1337,7 @@ export default function Customer() {
                             </select>
 
                             <select
-                              className="form-select shadow-none"
+                              className="form-select shadow-none mt-0"
                               onChange={(e) => {
                                 setFilterOption({
                                   ...filterOptions,
@@ -1482,7 +1373,7 @@ export default function Customer() {
                             </select>
 
                             <select
-                              className="form-select shadow-none"
+                              className="form-select shadow-none mt-0"
                               onChange={(e) => {
                                 setFilterOption({
                                   ...filterOptions,
@@ -1548,7 +1439,7 @@ export default function Customer() {
                             </select>
                             {bpSettings?.hasMikrotik && (
                               <select
-                                className="form-select shadow-none"
+                                className="form-select shadow-none mt-0"
                                 onChange={(e) => {
                                   mikrotikHandler(e.target.value);
                                 }}
@@ -1578,7 +1469,7 @@ export default function Customer() {
                             )}
 
                             <select
-                              className="form-select shadow-none "
+                              className="form-select shadow-none mt-0"
                               onChange={(e) => {
                                 setFilterOption({
                                   ...filterOptions,
@@ -1616,7 +1507,7 @@ export default function Customer() {
                                   freeUser: e.target.value,
                                 })
                               }
-                              className="form-select shadow-none"
+                              className="form-select shadow-none mt-0"
                             >
                               <option
                                 selected={filterOptions.freeUser === "allUser"}
@@ -1640,7 +1531,7 @@ export default function Customer() {
                               </option>
                             </select>
                             <input
-                              className="form-select shadow-none"
+                              className="form-select shadow-none mt-0"
                               type="date"
                               onChange={(e) =>
                                 setFilterOption({
@@ -1650,7 +1541,7 @@ export default function Customer() {
                               }
                             />
                             <select
-                              className="form-select shadow-none"
+                              className="form-select shadow-none mt-0"
                               onChange={(e) =>
                                 setFilterOption({
                                   ...filterOptions,
@@ -1666,7 +1557,7 @@ export default function Customer() {
                             </select>
 
                             <select
-                              className="form-select shadow-none"
+                              className="form-select shadow-none mt-0"
                               onChange={(e) =>
                                 setFilterOption({
                                   ...filterOptions,
@@ -1680,7 +1571,7 @@ export default function Customer() {
                               </option>
                             </select>
 
-                            <div className="d-flex justify-content-end align-items-end">
+                            <div className="d-flex justify-content-end align-items-end mt-0">
                               <button
                                 className="btn btn-outline-primary w-6rem h-76"
                                 type="button"
@@ -1728,6 +1619,156 @@ export default function Customer() {
                   ""
                 )}
               </FourGround>
+
+              {/* Model start */}
+              <AddStaticCustomer />
+              <StaticCustomerEdit single={singleCustomer} />
+              <CustomerBillCollect
+                single={singleCustomer}
+                customerData={customerReportData}
+              />
+              <CustomerDetails single={singleCustomer} />
+              <CustomerReport single={customerReportData} />
+              {/* customer note modal */}
+              <CustomerNote
+                customerId={customerNoteId}
+                customerName={customerName}
+              />
+              <CustomerDelete
+                single={singleData}
+                mikrotikCheck={mikrotikCheck}
+                setMikrotikCheck={setMikrotikCheck}
+              />
+              <SingleMessage
+                single={singleCustomer}
+                sendCustomer="staticCustomer"
+              />
+
+              {/* transferReseller modal */}
+              <TransferToReseller customerId={singleCustomer} />
+
+              {/* password reset modal */}
+              <PasswordReset resetCustomerId={userId} />
+              {/* bulk Modal */}
+
+              {/* static customer create invoice */}
+              <StaticCreateInvoice
+                show={show}
+                setShow={setShow}
+                single={singleCustomer}
+                customerData={customerData}
+              />
+
+              {/* bulk modal start */}
+              {bulkStatus === "customerBulkEdit" && (
+                <BulkSubAreaEdit
+                  bulkCustomer={bulkCustomer}
+                  show={isShow}
+                  setShow={setIsShow}
+                />
+              )}
+
+              {bulkStatus === "customerBillingCycle" && (
+                <BulkBillingCycleEdit
+                  bulkCustomer={bulkCustomer}
+                  show={isShow}
+                  setShow={setIsShow}
+                />
+              )}
+
+              {bulkStatus === "bulkPromiseDateEdit" && (
+                <BulkPromiseDateEdit
+                  bulkCustomer={bulkCustomer}
+                  show={isShow}
+                  setShow={setIsShow}
+                />
+              )}
+
+              {bpSettings?.hasMikrotik && (
+                <>
+                  {bulkStatus === "bulkStatusEdit" && (
+                    <BulkStatusEdit
+                      bulkCustomer={bulkCustomer}
+                      show={isShow}
+                      setShow={setIsShow}
+                    />
+                  )}
+
+                  {bulkStatus === "bulkMikrotikEdit" && (
+                    <BulkMikrotikEdit
+                      bulkCustomer={bulkCustomer}
+                      show={isShow}
+                      setShow={setIsShow}
+                    />
+                  )}
+                </>
+              )}
+
+              {bulkStatus === "bulkPackageEdit" && (
+                <BulkPackageEdit
+                  bulkCustomer={bulkCustomer}
+                  show={isShow}
+                  setShow={setIsShow}
+                />
+              )}
+
+              {bulkStatus === "bulkRecharge" && (
+                <BulkRecharge
+                  bulkCustomer={bulkCustomer}
+                  show={isShow}
+                  setShow={setIsShow}
+                />
+              )}
+
+              {bulkStatus === "customerBalanceEdit" && (
+                <BulkBalanceEdit
+                  bulkCustomer={bulkCustomer}
+                  show={isShow}
+                  setShow={setIsShow}
+                />
+              )}
+
+              {bulkStatus === "bulkDeleteCustomer" && (
+                <BulkCustomerDelete
+                  bulkCustomer={bulkCustomer}
+                  show={isShow}
+                  setShow={setIsShow}
+                />
+              )}
+
+              {bulkStatus === "autoDisableEditModal" && (
+                <BulkAutoConnectionEdit
+                  bulkCustomer={bulkCustomer}
+                  show={isShow}
+                  setShow={setIsShow}
+                />
+              )}
+
+              {bulkStatus === "bulkTransferToReseller" && (
+                <BulkCustomerTransfer
+                  bulkCustomer={bulkCustomer}
+                  show={isShow}
+                  setShow={setIsShow}
+                />
+              )}
+
+              {/* bulk Modal end */}
+
+              <CreateSupportTicket
+                collectors={collectors}
+                manager={manager}
+                customer={singleCustomer}
+                ispOwner={ispOwner}
+                reseller=""
+              />
+
+              <FireWallFilterIpDropControl />
+
+              {/* customers number update or delete modal */}
+              <CustomersNumber showModal={numberModalShow} />
+
+              {/* Model finish */}
+
               <Footer />
             </FontColor>
           </div>
@@ -1746,10 +1787,12 @@ export default function Customer() {
                   permission?.bulkAreaEdit &&
                   role !== "manager")) && (
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#customerBulkEdit"
                   type="button"
                   className="p-1"
+                  onClick={() => {
+                    setBulkStatus("customerBulkEdit");
+                    setIsShow(true);
+                  }}
                 >
                   <div className="menu_icon2">
                     <button
@@ -1766,28 +1809,31 @@ export default function Customer() {
 
               <hr className="mt-0 mb-0" />
 
-              {((role === "ispOwner" && bpSettings?.bulkStatusEdit) ||
-                (bpSettings?.bulkStatusEdit &&
-                  permission?.bulkStatusEdit &&
-                  role === "manager")) && (
-                <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#bulkStatusEdit"
-                  type="button"
-                  className="p-1"
-                >
-                  <div className="menu_icon2">
-                    <button
-                      className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-info"
-                      title={t("editStatus")}
-                    >
-                      <i className="fas fa-edit fa-xs  "></i>
-                      <span className="button_title"> {t("editStatus")}</span>
-                    </button>
-                  </div>
-                  <div className="menu_label2">{t("editStatus")}</div>
-                </li>
-              )}
+              {bpSettings?.hasMikrotik &&
+                ((role === "ispOwner" && bpSettings?.bulkStatusEdit) ||
+                  (bpSettings?.bulkStatusEdit &&
+                    permission?.bulkStatusEdit &&
+                    role === "manager")) && (
+                  <li
+                    type="button"
+                    className="p-1"
+                    onClick={() => {
+                      setBulkStatus("bulkStatusEdit");
+                      setIsShow(true);
+                    }}
+                  >
+                    <div className="menu_icon2">
+                      <button
+                        className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-info"
+                        title={t("editStatus")}
+                      >
+                        <i className="fas fa-edit fa-xs  "></i>
+                        <span className="button_title"> {t("editStatus")}</span>
+                      </button>
+                    </div>
+                    <div className="menu_label2">{t("editStatus")}</div>
+                  </li>
+                )}
               <hr className="mt-0 mb-0" />
 
               {((role === "ispOwner" && bpSettings?.bulkBillingCycleEdit) ||
@@ -1795,10 +1841,12 @@ export default function Customer() {
                   permission?.bulkBillingCycleEdit &&
                   role === "manager")) && (
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#customerBillingCycle"
                   type="button"
                   className="p-1"
+                  onClick={() => {
+                    setBulkStatus("customerBillingCycle");
+                    setIsShow(true);
+                  }}
                 >
                   <div className="menu_icon2">
                     <button
@@ -1823,10 +1871,12 @@ export default function Customer() {
                   permission?.bulkPromiseDateEdit &&
                   role === "manager")) && (
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#bulkPromiseDateEdit"
                   type="button"
                   className="p-1"
+                  onClick={() => {
+                    setBulkStatus("bulkPromiseDateEdit");
+                    setIsShow(true);
+                  }}
                 >
                   <div className="menu_icon2">
                     <button
@@ -1850,10 +1900,12 @@ export default function Customer() {
                   permission?.updateCustomerBalance &&
                   role === "manager")) && (
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#customerBalanceEdit"
                   type="button"
                   className="p-1"
+                  onClick={() => {
+                    setBulkStatus("customerBalanceEdit");
+                    setIsShow(true);
+                  }}
                 >
                   <div className="menu_icon2">
                     <button
@@ -1876,10 +1928,12 @@ export default function Customer() {
                     permission?.bulkCustomerMikrotikUpdate &&
                     role === "manager")) && (
                   <li
-                    data-bs-toggle="modal"
-                    data-bs-target="#bulkMikrotikEdit"
                     type="button"
                     className="p-1"
+                    onClick={() => {
+                      setBulkStatus("bulkMikrotikEdit");
+                      setIsShow(true);
+                    }}
                   >
                     <div className="menu_icon2">
                       <button
@@ -1903,10 +1957,12 @@ export default function Customer() {
                     permission?.bulkPackageEdit &&
                     role === "manager")) && (
                   <li
-                    data-bs-toggle="modal"
-                    data-bs-target="#bulkPackageEdit"
                     type="button"
                     className="p-1"
+                    onClick={() => {
+                      setBulkStatus("bulkPackageEdit");
+                      setIsShow(true);
+                    }}
                   >
                     <div className="menu_icon2">
                       <button
@@ -1930,10 +1986,12 @@ export default function Customer() {
                     permission?.bulkCustomerRecharge &&
                     role === "manager")) && (
                   <li
-                    data-bs-toggle="modal"
-                    data-bs-target="#bulkRecharge"
                     type="button"
                     className="p-1"
+                    onClick={() => {
+                      setBulkStatus("bulkRecharge");
+                      setIsShow(true);
+                    }}
                   >
                     <div className="menu_icon2">
                       <button
@@ -1957,10 +2015,12 @@ export default function Customer() {
                   permission?.bulkAutoDisableEdit &&
                   role === "manager")) && (
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#autoDisableEditModal"
                   type="button"
                   className="p-1"
+                  onClick={() => {
+                    setBulkStatus("autoDisableEditModal");
+                    setIsShow(true);
+                  }}
                 >
                   <div className="menu_icon2">
                     <button
@@ -1987,10 +2047,12 @@ export default function Customer() {
                   permission?.bulkTransferToReseller &&
                   role === "collector")) && (
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#bulkTransferToReseller"
                   type="button"
                   className="p-1"
+                  onClick={() => {
+                    setBulkStatus("bulkTransferToReseller");
+                    setIsShow(true);
+                  }}
                 >
                   <div className="menu_icon2">
                     <button
@@ -2015,10 +2077,12 @@ export default function Customer() {
                   permission?.bulkCustomerDelete &&
                   role === "collector")) && (
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#bulkDeleteCustomer"
                   type="button"
                   className="p-1"
+                  onClick={() => {
+                    setBulkStatus("bulkDeleteCustomer");
+                    setIsShow(true);
+                  }}
                 >
                   <div className="menu_icon2">
                     <button
