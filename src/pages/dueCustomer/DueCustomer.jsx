@@ -342,7 +342,7 @@ const DueCustomer = () => {
         Header: t("bill"),
         accessor: "billingCycle",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("MMM DD YYYY hh:mm A");
+          return moment(value).format("YYYY/MM/DD hh:mm A");
         },
       },
     ],

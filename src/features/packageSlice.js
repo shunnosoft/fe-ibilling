@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   packages: [],
   allPackages: [],
+  hotspotPackage: [],
 };
 
 const packageSlice = createSlice({
@@ -29,6 +30,9 @@ const packageSlice = createSlice({
         (item) => item.id !== action.payload
       );
     },
+    getHotspotPackageSuccess: (state, action) => {
+      state.hotspotPackage = action.payload;
+    },
   },
 });
 
@@ -38,6 +42,7 @@ export const {
   editPackageSuccess,
   addPackageSuccess,
   deletePackageSuccess,
+  getHotspotPackageSuccess,
 } = packageSlice.actions;
 
 export default packageSlice.reducer;

@@ -302,9 +302,9 @@ const CustomerInvoice = () => {
     <div style={{ fontSize: "18px", display: "flex" }}>
       {
         <div>
-          {t("totalAmount")} ৳{FormatNumber(addAllBills().balance)}
+          {t("totalAmount")}:-৳{FormatNumber(addAllBills().balance)}
           &nbsp;&nbsp;&nbsp;
-          {t("due")} ৳{FormatNumber(addAllBills().due)}
+          {t("due")}:-৳{FormatNumber(addAllBills().due)}
         </div>
       }
     </div>

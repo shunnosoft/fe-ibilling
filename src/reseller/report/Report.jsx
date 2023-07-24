@@ -66,6 +66,9 @@ const Report = () => {
   // filter Accordion handle state
   const [activeKeys, setActiveKeys] = useState("");
 
+  // bill report medium
+  const [medium, setMedium] = useState("");
+
   // date & time find
   var today = new Date();
   var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
@@ -85,6 +88,20 @@ const Report = () => {
 
     if (collectorIds) {
       arr = arr.filter((bill) => bill?.user === collectorIds);
+    }
+
+    if (medium) {
+      if (medium === "onlinePayment") {
+        arr = arr.filter(
+          (paymentStatus) =>
+            paymentStatus.medium === "sslcommerz" ||
+            paymentStatus.medium === "uddoktapay" ||
+            paymentStatus.medium === "sslpay" ||
+            paymentStatus.medium === "bKashPG"
+        );
+      } else {
+        arr = arr.filter((item) => item.medium === medium);
+      }
     }
 
     arr = arr.filter(
@@ -164,28 +181,33 @@ const Report = () => {
   const columns = useMemo(
     () => [
       {
-        width: "15%",
+        width: "16%",
         Header: t("id"),
         accessor: "customer.customerId",
       },
       {
-        width: "25%",
+        width: "17%",
         Header: t("customer"),
         accessor: "customer.name",
       },
       {
-        width: "25%",
+        width: "17%",
         Header: t("PPPoEName"),
         accessor: "customer.pppoe.name",
       },
       {
-        width: "15%",
+        width: "16%",
+        Header: t("medium"),
+        accessor: "medium",
+      },
+      {
+        width: "16%",
         Header: t("bill"),
         accessor: "amount",
       },
 
       {
-        width: "20%",
+        width: "18%",
         Header: t("date"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
@@ -254,9 +276,9 @@ const Report = () => {
                   <Accordion alwaysOpen activeKey={activeKeys}>
                     <Accordion.Item eventKey="filter">
                       <Accordion.Body>
-                        <div className="selectFilteringg">
+                        <div className="displayGrid6">
                           <select
-                            className="form-select me-2 mt-0"
+                            className="form-select mt-0"
                             onChange={(e) => setAreaIds(e.target.value)}
                           >
                             <option value="" defaultValue>
@@ -271,7 +293,7 @@ const Report = () => {
 
                           {userRole !== "collector" && (
                             <select
-                              className="form-select me-2 mt-0"
+                              className="form-select mt-0"
                               onChange={(e) => setCollectorIds(e.target.value)}
                             >
                               <option value="" defaultValue>
@@ -285,6 +307,23 @@ const Report = () => {
                             </select>
                           )}
 
+                          <select
+                            className="form-select mt-0"
+                            onChange={(e) => setMedium(e.target.value)}
+                          >
+                            <option value="" defaultValue>
+                              {t("medium")}
+                            </option>
+                            <option value="cash">{t("handCash")}</option>
+                            <option value="onlinePayment">
+                              {t("onlinePayment")}
+                            </option>
+                            <option value="bKash"> {t("bKash")} </option>
+                            <option value="rocket"> {t("rocket")} </option>
+                            <option value="nagad"> {t("nagad")} </option>
+                            <option value="others"> {t("others")} </option>
+                          </select>
+
                           <div>
                             <DatePicker
                               className="form-control mw-100 mt-0"
@@ -294,7 +333,7 @@ const Report = () => {
                               placeholderText={t("selectBillDate")}
                             />
                           </div>
-                          <div className="mx-2">
+                          <div>
                             <DatePicker
                               className="form-control mw-100 mt-0"
                               selected={dateEnd}
@@ -305,7 +344,7 @@ const Report = () => {
                           </div>
 
                           <button
-                            className="btn btn-outline-primary w-140 mt-0 chartFilteritem"
+                            className="btn btn-outline-secondary w-6rem h-76"
                             type="button"
                             onClick={collectionReportFilter}
                           >

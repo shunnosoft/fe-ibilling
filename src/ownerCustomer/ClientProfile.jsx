@@ -2,7 +2,10 @@ import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import PaymentModal from "./paymentModal";
 import bkashImg from "../assets/img/bkash.jpg";
-import { getPackagesByIspOwer } from "../features/getIspOwnerUsersApi";
+import {
+  getPackagesByIspOwer,
+  hotspotCustomerPackage,
+} from "../features/getIspOwnerUsersApi";
 import { useDispatch } from "react-redux";
 import moment from "moment";
 
@@ -25,6 +28,10 @@ export default function ClientProfile() {
       : state?.package?.packages
   );
 
+  const hotspotpPackage = useSelector(
+    (state) => userData.userType === "hotspot" && state?.package?.hotspotPackage
+  );
+
   // ispOwner permission
   const permission = userData?.ispOwner.bpSettings;
 
@@ -45,9 +52,18 @@ export default function ClientProfile() {
     return temp;
   };
 
+  const hotspotPackageFind = (value) => {
+    const temp = hotspotpPackage.find((val) => val.id === value);
+    return temp;
+  };
+
   // get package api call
   useEffect(() => {
-    getPackagesByIspOwer(dispatch);
+    if (userData.userType === "hotspot") {
+      hotspotCustomerPackage(dispatch, userData?.ispOwner.id);
+    } else {
+      getPackagesByIspOwer(dispatch);
+    }
   }, []);
 
   return (
@@ -97,6 +113,11 @@ export default function ClientProfile() {
                   {userData.userType === "firewall-queue" && (
                     <td>
                       {staticMikrotikPackage(userData?.mikrotikPackage)?.name}
+                    </td>
+                  )}
+                  {userData.userType === "hotspot" && (
+                    <td>
+                      {hotspotPackageFind(userData?.hotspotPackage)?.name}
                     </td>
                   )}
                 </tr>
@@ -178,6 +199,13 @@ export default function ClientProfile() {
                       findAliasName(userData?.pppoe.profile)?.name}
                   </h3>
                 )}
+
+                {userData.userType === "hotspot" && (
+                  <h3>
+                    {hotspotPackageFind(userData?.hotspotPackage)?.name}
+                    {/* {parseInt(userData.queue.maxLimit.split("/")[0] / 1000000)} */}
+                  </h3>
+                )}
               </div>
               <div className="up_down download">
                 <p className="text-white">Downlaod</p>
@@ -194,6 +222,12 @@ export default function ClientProfile() {
                   <h3>
                     {parseInt(userData.queue.maxLimit.split("/")[1] / 1000000)}
                     MBps
+                  </h3>
+                )}
+                {userData.userType === "hotspot" && (
+                  <h3>
+                    {hotspotPackageFind(userData?.hotspotPackage)?.name}
+                    {/* {parseInt(userData.queue.maxLimit.split("/")[0] / 1000000)} */}
                   </h3>
                 )}
               </div>

@@ -23,9 +23,13 @@ export default function Packages() {
   // get all packages
   const packages = useSelector((state) => state.package.packages);
 
+  const hotspotPackage = useSelector(
+    (state) => userData.userType === "hotspot" && state?.package?.hotspotPackage
+  );
+
   // find alias name method
   const findAliasName = (ownPackage) => {
-    const findItem = packages.find((item) => item.name.includes(ownPackage));
+    const findItem = packages.find((item) => item.id.includes(ownPackage));
     return findItem;
   };
 
@@ -50,11 +54,14 @@ export default function Packages() {
           <p>Current package:</p>
           <div className="packages_info_wraper mw-75 ">
             <p>
-              Package:{" "}
+              Package:
               {!userData?.reseller && (
                 <span className="badge bg-secondary">
-                  {findAliasName(userData?.pppoe.profile)?.aliasName ||
-                    findAliasName(userData?.pppoe.profile)?.name}
+                  {userData.userType === "hotspot"
+                    ? userData?.hotspot.profile
+                    : findAliasName(userData?.mikrotikPackage)?.aliasName ||
+                      findAliasName(userData?.mikrotikPackage)?.name ||
+                      findAliasName(userData?.mikrotikPackage)?.name}
                 </span>
               )}
               {userData?.reseller && (
@@ -63,14 +70,13 @@ export default function Packages() {
                 </span>
               )}
             </p>
-            {permission?.showCustomerPanelPackage && (
-              <p>
-                Package rate:{" "}
-                <span className="badge bg-warning text-dark">
-                  {userData?.monthlyFee} TK
-                </span>{" "}
-              </p>
-            )}
+
+            <p>
+              Package rate:
+              <span className="badge bg-warning text-dark">
+                {userData?.monthlyFee} TK
+              </span>
+            </p>
 
             {userData.userType === "pppoe" && (
               <button
@@ -108,31 +114,69 @@ export default function Packages() {
           <h3 className="text-uppercase mt-3">Our packages</h3>
           <div className="packageList">
             <div className="row">
-              {packages.map((item) => (
-                <div key={item.id} className="col-md-4 package_list_card">
-                  <div
-                    className="card text-white mb-3"
-                    style={{ backgroundColor: "#1b2430", position: "static" }}
-                  >
-                    <div className="card-header">Package</div>
-                    <div className="card-body " style={{ color: "#3eff00" }}>
-                      {!userData?.reseller && (
-                        <h5 className="card-title">
-                          {item.aliasName || item.name}
-                        </h5>
-                      )}
-                      {userData?.reseller && (
-                        <h5 className="card-title">{item.name}</h5>
-                      )}
+              {userData.userType === "hotspot"
+                ? hotspotPackage.map((item) => (
+                    <div key={item.id} className="col-md-4 package_list_card">
+                      <div
+                        className="card text-white mb-3"
+                        style={{
+                          backgroundColor: "#1b2430",
+                          position: "static",
+                        }}
+                      >
+                        <div className="card-header">Package</div>
+                        <div
+                          className="card-body "
+                          style={{ color: "#3eff00" }}
+                        >
+                          {!userData?.reseller && (
+                            <h5 className="card-title">
+                              {item.aliasName || item.name}
+                            </h5>
+                          )}
+                          {userData?.reseller && (
+                            <h5 className="card-title">{item.name}</h5>
+                          )}
 
-                      <p className="card-text">
-                        {item.rate} TK /{" "}
-                        <span className="badge bg-secondary">Month</span>
-                      </p>
+                          <p className="card-text">
+                            {item.rate} TK /
+                            <span className="badge bg-secondary">Month</span>
+                          </p>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              ))}
+                  ))
+                : packages.map((item) => (
+                    <div key={item.id} className="col-md-4 package_list_card">
+                      <div
+                        className="card text-white mb-3"
+                        style={{
+                          backgroundColor: "#1b2430",
+                          position: "static",
+                        }}
+                      >
+                        <div className="card-header">Package</div>
+                        <div
+                          className="card-body "
+                          style={{ color: "#3eff00" }}
+                        >
+                          {!userData?.reseller && (
+                            <h5 className="card-title">
+                              {item.aliasName || item.name}
+                            </h5>
+                          )}
+                          {userData?.reseller && (
+                            <h5 className="card-title">{item.name}</h5>
+                          )}
+
+                          <p className="card-text">
+                            {item.rate} TK /
+                            <span className="badge bg-secondary">Month</span>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
             </div>
           </div>
         </>

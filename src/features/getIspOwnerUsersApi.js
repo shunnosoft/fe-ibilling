@@ -6,7 +6,7 @@ import {
   getAllSupportTicket,
 } from "./finalClientSlice";
 import { getOwnerUserSuccess } from "./getIspOwnerUsersSlice";
-import { getpackageSuccess } from "./packageSlice";
+import { getHotspotPackageSuccess, getpackageSuccess } from "./packageSlice";
 // get isp owner all user
 export const getOwnerUsers = async (dispatch, ispOwnerId) => {
   try {
@@ -129,6 +129,16 @@ export const customerPackage = async (customerId, setChangePackage) => {
   try {
     const res = await apiLink.get(`customer/get/changes/package/${customerId}`);
     setChangePackage(res.data);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+// hotspot customer package
+export const hotspotCustomerPackage = async (dispatch, ispOwnerId) => {
+  try {
+    const res = await apiLink.get(`hotspot/package/${ispOwnerId}`);
+    dispatch(getHotspotPackageSuccess(res.data?.hotspotPackages));
   } catch (error) {
     console.log(error);
   }
