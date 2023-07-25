@@ -6,12 +6,14 @@ import React, {
   useState,
 } from "react";
 import Sidebar from "../../../components/admin/sidebar/Sidebar";
-import { Accordion, ToastContainer } from "react-bootstrap";
+import { Accordion, Card, Collapse, ToastContainer } from "react-bootstrap";
 import useDash from "../../../assets/css/dash.module.css";
 import { FontColor, FourGround } from "../../../assets/js/theme";
 import Loader from "../../../components/common/Loader";
 import {
   ArrowClockwise,
+  ArrowLeftCircle,
+  ArrowRightCircle,
   FiletypeCsv,
   FilterCircle,
   PenFill,
@@ -95,6 +97,7 @@ const ResellerCollection = () => {
   // set date state
   const [startDate, setStartDate] = useState(firstDate);
   const [endDate, setEndDate] = useState(lastDate);
+  const [open, setOpen] = useState(false);
 
   //filter handler
   const filterHandler = () => {
@@ -144,17 +147,17 @@ const ResellerCollection = () => {
   const columns = useMemo(
     () => [
       {
-        width: "10%",
+        width: "5%",
         Header: t("id"),
         accessor: "customer.customerId",
       },
       {
-        width: "10%",
+        width: "7%",
         Header: t("name"),
         accessor: "customer.name",
       },
       {
-        width: "10%",
+        width: "8%",
         Header: t("package"),
         accessor: "customer.mikrotikPackage",
         Cell: ({ cell: { value } }) => (
@@ -162,27 +165,37 @@ const ResellerCollection = () => {
         ),
       },
       {
-        width: "10%",
+        width: "8%",
         Header: t("bill"),
         accessor: "amount",
       },
       {
-        width: "10%",
+        width: "8%",
         Header: t("discount"),
         accessor: "discount",
       },
       {
-        width: "10%",
+        width: "7%",
         Header: t("agent"),
         accessor: "medium",
       },
       {
-        width: "10%",
+        width: "8%",
         Header: t("collector"),
         accessor: "name",
       },
       {
         width: "10%",
+        Header: t("resellerCommission"),
+        accessor: "resellerCommission",
+      },
+      {
+        width: "10%",
+        Header: t("ispOwnerCommission"),
+        accessor: "ispOwnerCommission",
+      },
+      {
+        width: "6%",
         Header: t("note"),
         accessor: (data) => {
           return {
@@ -228,7 +241,7 @@ const ResellerCollection = () => {
       },
 
       {
-        width: "10%",
+        width: "7%",
         Header: t("date"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
@@ -236,7 +249,7 @@ const ResellerCollection = () => {
         },
       },
       {
-        width: "10%",
+        width: "6%",
         Header: () => <div className="text-center">{t("action")}</div>,
         id: "option",
 
@@ -358,25 +371,53 @@ const ResellerCollection = () => {
     totalBill: currentData.reduce((prev, current) => prev + current.amount, 0),
   };
 
-  const addAllBills = useMemo(() => {
-    var count = 0;
-    currentData.forEach((item) => {
-      count = count + item.amount;
-    });
-    return { count };
-  }, [currentData]);
+  //function to calculate total Commissions and other amount
+  const totalSum = () => {
+    const initialValue = {
+      amount: 0,
+      resellerCommission: 0,
+      ispOwnerCommission: 0,
+    };
+
+    const calculatedValue = currentData?.reduce((previous, current) => {
+      //total amount
+      previous.amount += current.amount;
+
+      // sum of all reseller commission
+      previous.resellerCommission += current.resellerCommission;
+
+      // sum of all ispOwner commission
+      previous.ispOwnerCommission += current.ispOwnerCommission;
+
+      return previous;
+    }, initialValue);
+    return calculatedValue;
+  };
 
   const customComponent = (
     <div
       className="text-center"
       style={{ fontSize: "18px", fontWeight: "500", display: "flex" }}
     >
-      {addAllBills?.count > 0 && (
-        <div>
-          {t("totalBill")}:-৳
-          {FormatNumber(addAllBills.count)}
+      {totalSum()?.amount > 0 && (
+        <div className="mx-3">
+          {t("totalBill")}{" "}
+          <span className="fw-bold">৳ {FormatNumber(totalSum().amount)}</span>
         </div>
       )}
+      <div className="me-3">
+        {t("resellerCommission")}:{" "}
+        <span className="fw-bold">
+          ৳ {FormatNumber(totalSum().resellerCommission)}
+        </span>
+      </div>
+      <div>
+        {t("ispOwnerCommission")}:
+        <span className="fw-bold">
+          {" "}
+          ৳ {FormatNumber(totalSum().ispOwnerCommission)}
+        </span>
+      </div>
     </div>
   );
 
@@ -393,7 +434,75 @@ const ResellerCollection = () => {
                   <div className="d-flex">
                     <div>{t("resellerCollection")}</div>
                   </div>
-                  <div className="d-flex justify-content-center align-items-center">
+                  <div
+                    style={{ fontSize: "25px", height: "45px" }}
+                    className="d-flex justify-content-center align-items-center"
+                  >
+                    {!open && (
+                      <ArrowLeftCircle
+                        size={34}
+                        style={{ cursor: "pointer" }}
+                        onClick={() => setOpen(!open)}
+                        aria-controls="example-collapse-text"
+                        aria-expanded={open}
+                        className="me-3"
+                      />
+                    )}
+
+                    {open && (
+                      <ArrowRightCircle
+                        size={34}
+                        style={{ cursor: "pointer" }}
+                        onClick={() => setOpen(!open)}
+                        aria-controls="example-collapse-text"
+                        aria-expanded={open}
+                        className="me-3"
+                      />
+                    )}
+
+                    <Collapse in={open} dimension="width">
+                      <div id="example-collapse-text">
+                        <Card
+                          body
+                          className="border-0"
+                          style={{
+                            width: "100px",
+                            backgroundColor: "#2E87DF",
+                          }}
+                        >
+                          <div className="d-flex align-items-center justify-content-center">
+                            <div className="addAndSettingIcon">
+                              <CSVLink
+                                data={resellerCollectionCsVTableInfo}
+                                filename={ispOwnerData.company}
+                                headers={resellerCollectionCsVTableInfoHeader}
+                                title={t("resellerCollection")}
+                              >
+                                <FiletypeCsv
+                                  style={{ height: "34px", width: "34px" }}
+                                  className="addcutmButton"
+                                />
+                              </CSVLink>
+                            </div>
+
+                            <div className="addAndSettingIcon">
+                              <ReactToPrint
+                                documentTitle={t("billReport")}
+                                trigger={() => (
+                                  <PrinterFill
+                                    style={{ height: "34px", width: "34px" }}
+                                    title={t("print")}
+                                    className="addcutmButton"
+                                  />
+                                )}
+                                content={() => componentRef.current}
+                              />
+                            </div>
+                          </div>
+                        </Card>
+                      </div>
+                    </Collapse>
+
                     <div
                       onClick={() => {
                         if (!activeKeys) {
@@ -404,41 +513,24 @@ const ResellerCollection = () => {
                       }}
                       title={t("filter")}
                     >
-                      <FilterCircle className="addcutmButton" />
+                      <FilterCircle
+                        style={{ height: "34px", width: "34px" }}
+                        className="addcutmButton"
+                      />
                     </div>
 
-                    <div className="reloadBtn">
+                    <div
+                      style={{ height: "34px", width: "34px" }}
+                      className="reloadBtn"
+                    >
                       {isLoading ? (
                         <Loader></Loader>
                       ) : (
                         <ArrowClockwise
+                          style={{ height: "20px", width: "20px" }}
                           onClick={() => reloadHandler()}
                         ></ArrowClockwise>
                       )}
-                    </div>
-
-                    <div className="addAndSettingIcon">
-                      <CSVLink
-                        data={resellerCollectionCsVTableInfo}
-                        filename={ispOwnerData.company}
-                        headers={resellerCollectionCsVTableInfoHeader}
-                        title={t("resellerCollection")}
-                      >
-                        <FiletypeCsv className="addcutmButton" />
-                      </CSVLink>
-                    </div>
-
-                    <div className="addAndSettingIcon">
-                      <ReactToPrint
-                        documentTitle={t("billReport")}
-                        trigger={() => (
-                          <PrinterFill
-                            title={t("print")}
-                            className="addcutmButton"
-                          />
-                        )}
-                        content={() => componentRef.current}
-                      />
                     </div>
                   </div>
                 </div>

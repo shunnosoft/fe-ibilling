@@ -6,6 +6,7 @@ import {
   packageBasedPaidCustomerSuccess,
   packageBasedUnpaidCustomerSuccess,
 } from "./resellerDataSlice";
+import { getOnlinePaymentCustomer } from "./resellerPaymentSlice";
 
 export const getResellerData = async (
   ispOwnerId,
@@ -39,6 +40,7 @@ export const onlinePaymentCustomer = async (
     const res = await apiLink.get(
       `ispOwner/reseller-customer-online-payment/${resellerId}`
     );
+    dispatch(getOnlinePaymentCustomer(res.data));
     console.log(res.data);
   } catch (error) {
     console.log(error);

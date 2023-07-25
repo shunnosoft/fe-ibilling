@@ -19,6 +19,8 @@ import {
   ArchiveFill,
   FiletypeCsv,
   FilterCircle,
+  ArrowLeftCircle,
+  ArrowRightCircle,
 } from "react-bootstrap-icons";
 import {
   deleteIspOwnerCustomerInvoice,
@@ -39,7 +41,7 @@ import CustomerInvoicePrint from "./customerInvoicePrint/CustomerInvoicePrint";
 import { badge } from "../../components/common/Utils";
 import { ToastContainer } from "react-toastify";
 import InvoicePrint from "./customerInvoicePrint/InvoicePrint";
-import { Accordion } from "react-bootstrap";
+import { Accordion, Card, Collapse } from "react-bootstrap";
 
 const CustomerInvoice = () => {
   const { t } = useTranslation();
@@ -87,6 +89,8 @@ const CustomerInvoice = () => {
 
   // status handle state
   const [status, setStatus] = useState("");
+
+  const [open, setOpen] = useState(false);
 
   //filter state
   const [filterOptions, setFilterOption] = useState({
@@ -496,7 +500,81 @@ const CustomerInvoice = () => {
                   <div className="d-flex">
                     <h2>{t("invoice")}</h2>
                   </div>
-                  <div className="d-flex justify-content-center align-items-center">
+                  <div
+                    style={{ fontSize: "25px", height: "45px" }}
+                    className="d-flex justify-content-center align-items-center"
+                  >
+                    {!open && (
+                      <ArrowLeftCircle
+                        size={34}
+                        style={{ cursor: "pointer" }}
+                        onClick={() => setOpen(!open)}
+                        aria-controls="example-collapse-text"
+                        aria-expanded={open}
+                        className="me-3"
+                      />
+                    )}
+
+                    {open && (
+                      <ArrowRightCircle
+                        size={34}
+                        style={{ cursor: "pointer" }}
+                        onClick={() => setOpen(!open)}
+                        aria-controls="example-collapse-text"
+                        aria-expanded={open}
+                        className="me-3"
+                      />
+                    )}
+
+                    <Collapse in={open} dimension="width">
+                      <div id="example-collapse-text">
+                        <Card
+                          body
+                          className="border-0"
+                          style={{
+                            width: "100px",
+                            backgroundColor: "#2E87DF",
+                          }}
+                        >
+                          <div className="d-flex align-items-center justify-content-center">
+                            <div className="addAndSettingIcon">
+                              <CSVLink
+                                data={customerInvoiceForCsV}
+                                filename={ispOwnerData.company}
+                                headers={customerInvoiceForCsVHeader}
+                                title={t("customerInvoice")}
+                              >
+                                <FiletypeCsv
+                                  style={{
+                                    height: "34px",
+                                    width: "34px",
+                                  }}
+                                  className="addcutmButton"
+                                />
+                              </CSVLink>
+                            </div>
+
+                            <div className="addAndSettingIcon">
+                              <ReactToPrint
+                                documentTitle={t("billInvoice")}
+                                trigger={() => (
+                                  <PrinterFill
+                                    style={{
+                                      height: "34px",
+                                      width: "34px",
+                                    }}
+                                    title={t("print")}
+                                    className="addcutmButton"
+                                  />
+                                )}
+                                content={() => invoice.current}
+                              />
+                            </div>
+                          </div>
+                        </Card>
+                      </div>
+                    </Collapse>
+
                     <div
                       onClick={() => {
                         if (!activeKeys) {
@@ -507,41 +585,30 @@ const CustomerInvoice = () => {
                       }}
                       title={t("filter")}
                     >
-                      <FilterCircle className="addcutmButton" />
+                      <FilterCircle
+                        style={{
+                          height: "34px",
+                          width: "34px",
+                        }}
+                        className="addcutmButton"
+                      />
                     </div>
 
-                    <div className="reloadBtn">
+                    <div
+                      style={{
+                        height: "34px",
+                        width: "34px",
+                      }}
+                      className="reloadBtn"
+                    >
                       {isLoading ? (
                         <Loader />
                       ) : (
                         <ArrowClockwise
+                          size={18}
                           onClick={() => reloadHandler()}
                         ></ArrowClockwise>
                       )}
-                    </div>
-
-                    <div className="addAndSettingIcon">
-                      <CSVLink
-                        data={customerInvoiceForCsV}
-                        filename={ispOwnerData.company}
-                        headers={customerInvoiceForCsVHeader}
-                        title={t("customerInvoice")}
-                      >
-                        <FiletypeCsv className="addcutmButton" />
-                      </CSVLink>
-                    </div>
-
-                    <div className="addAndSettingIcon">
-                      <ReactToPrint
-                        documentTitle={t("billInvoice")}
-                        trigger={() => (
-                          <PrinterFill
-                            title={t("print")}
-                            className="addcutmButton"
-                          />
-                        )}
-                        content={() => invoice.current}
-                      />
                     </div>
                   </div>
                 </div>

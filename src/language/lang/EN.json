@@ -832,5 +832,8 @@
   "resellerMikrotik": "Reseller mikrotik was not found!",
   "bulkCustomerError": "Customer Mikrotik is not under Reseller!",
   "automaticConnectionOn": "Automatic Connection On",
-  "managerNotFound": "Your manager was not found! Add your manager."
+  "managerNotFound": "Your manager was not found! Add your manager.",
+  "onlinePaymentCustomer": "Online Payment Customer",
+  "resellerCommission": "Reseller Commission",
+  "ispOwnerCommission": "ISP Commission"
 }
