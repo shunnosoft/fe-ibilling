@@ -1269,7 +1269,7 @@ const PPPOECustomer = () => {
                   </div>
 
                   <div
-                    style={{ fontSize: "25px", height: "50px" }}
+                    style={{ fontSize: "25px", height: "45px" }}
                     className="d-flex justify-content-center align-items-center"
                   >
                     {!open && (

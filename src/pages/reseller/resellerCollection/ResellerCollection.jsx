@@ -6,12 +6,14 @@ import React, {
   useState,
 } from "react";
 import Sidebar from "../../../components/admin/sidebar/Sidebar";
-import { Accordion, ToastContainer } from "react-bootstrap";
+import { Accordion, Card, Collapse, ToastContainer } from "react-bootstrap";
 import useDash from "../../../assets/css/dash.module.css";
 import { FontColor, FourGround } from "../../../assets/js/theme";
 import Loader from "../../../components/common/Loader";
 import {
   ArrowClockwise,
+  ArrowLeftCircle,
+  ArrowRightCircle,
   FiletypeCsv,
   FilterCircle,
   PenFill,
@@ -95,6 +97,7 @@ const ResellerCollection = () => {
   // set date state
   const [startDate, setStartDate] = useState(firstDate);
   const [endDate, setEndDate] = useState(lastDate);
+  const [open, setOpen] = useState(false);
 
   //filter handler
   const filterHandler = () => {
@@ -393,7 +396,75 @@ const ResellerCollection = () => {
                   <div className="d-flex">
                     <div>{t("resellerCollection")}</div>
                   </div>
-                  <div className="d-flex justify-content-center align-items-center">
+                  <div
+                    style={{ fontSize: "25px", height: "45px" }}
+                    className="d-flex justify-content-center align-items-center"
+                  >
+                    {!open && (
+                      <ArrowLeftCircle
+                        size={34}
+                        style={{ cursor: "pointer" }}
+                        onClick={() => setOpen(!open)}
+                        aria-controls="example-collapse-text"
+                        aria-expanded={open}
+                        className="me-3"
+                      />
+                    )}
+
+                    {open && (
+                      <ArrowRightCircle
+                        size={34}
+                        style={{ cursor: "pointer" }}
+                        onClick={() => setOpen(!open)}
+                        aria-controls="example-collapse-text"
+                        aria-expanded={open}
+                        className="me-3"
+                      />
+                    )}
+
+                    <Collapse in={open} dimension="width">
+                      <div id="example-collapse-text">
+                        <Card
+                          body
+                          className="border-0"
+                          style={{
+                            width: "100px",
+                            backgroundColor: "#2E87DF",
+                          }}
+                        >
+                          <div className="d-flex align-items-center justify-content-center">
+                            <div className="addAndSettingIcon">
+                              <CSVLink
+                                data={resellerCollectionCsVTableInfo}
+                                filename={ispOwnerData.company}
+                                headers={resellerCollectionCsVTableInfoHeader}
+                                title={t("resellerCollection")}
+                              >
+                                <FiletypeCsv
+                                  style={{ height: "34px", width: "34px" }}
+                                  className="addcutmButton"
+                                />
+                              </CSVLink>
+                            </div>
+
+                            <div className="addAndSettingIcon">
+                              <ReactToPrint
+                                documentTitle={t("billReport")}
+                                trigger={() => (
+                                  <PrinterFill
+                                    style={{ height: "34px", width: "34px" }}
+                                    title={t("print")}
+                                    className="addcutmButton"
+                                  />
+                                )}
+                                content={() => componentRef.current}
+                              />
+                            </div>
+                          </div>
+                        </Card>
+                      </div>
+                    </Collapse>
+
                     <div
                       onClick={() => {
                         if (!activeKeys) {
@@ -404,41 +475,24 @@ const ResellerCollection = () => {
                       }}
                       title={t("filter")}
                     >
-                      <FilterCircle className="addcutmButton" />
+                      <FilterCircle
+                        style={{ height: "34px", width: "34px" }}
+                        className="addcutmButton"
+                      />
                     </div>
 
-                    <div className="reloadBtn">
+                    <div
+                      style={{ height: "34px", width: "34px" }}
+                      className="reloadBtn"
+                    >
                       {isLoading ? (
                         <Loader></Loader>
                       ) : (
                         <ArrowClockwise
+                          style={{ height: "20px", width: "20px" }}
                           onClick={() => reloadHandler()}
                         ></ArrowClockwise>
                       )}
-                    </div>
-
-                    <div className="addAndSettingIcon">
-                      <CSVLink
-                        data={resellerCollectionCsVTableInfo}
-                        filename={ispOwnerData.company}
-                        headers={resellerCollectionCsVTableInfoHeader}
-                        title={t("resellerCollection")}
-                      >
-                        <FiletypeCsv className="addcutmButton" />
-                      </CSVLink>
-                    </div>
-
-                    <div className="addAndSettingIcon">
-                      <ReactToPrint
-                        documentTitle={t("billReport")}
-                        trigger={() => (
-                          <PrinterFill
-                            title={t("print")}
-                            className="addcutmButton"
-                          />
-                        )}
-                        content={() => componentRef.current}
-                      />
                     </div>
                   </div>
                 </div>

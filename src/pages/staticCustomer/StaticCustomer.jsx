@@ -1190,7 +1190,7 @@ export default function Customer() {
                       </Collapse>
                     </div>
                     <div
-                      style={{ marginLeft: "-14px", zIndex: 9 }}
+                      style={{ marginLeft: "-14px", zIndex: 2 }}
                       onClick={() => {
                         if (!activeKeys) {
                           setActiveKeys("filter");
