@@ -108,7 +108,7 @@ export default function Customer() {
     (state) => state.persistedReducer.auth?.userData
   );
   const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.bpSettings
+    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
   );
   const permission = useSelector(
     (state) => state.persistedReducer.auth?.userData.permissions
@@ -162,6 +162,7 @@ export default function Customer() {
     filterDate: null,
     dayFilter: "",
     changedPromiseDate: "",
+    connection: "",
   });
 
   const [Customers, setCustomers] = useState(cus);
@@ -442,6 +443,7 @@ export default function Customer() {
         filterDate,
         dayFilter,
         changedPromiseDate,
+        connection,
       } = filterOptions;
 
       const billingCycle = new Date(
@@ -470,6 +472,14 @@ export default function Customer() {
       let getArea = [];
       if (area) {
         getArea = allareas.find((item) => item.id === area);
+      }
+
+      // automaticConnection filter
+      let connectionStatus;
+      if (connection === "true") {
+        connectionStatus = false;
+      } else if (connection === "false") {
+        connectionStatus = true;
       }
 
       // make possible conditions objects if the filter value not selected thats return true
@@ -513,6 +523,8 @@ export default function Customer() {
             billingCycle < promiseDate &&
             promiseDate < lastDayOfMonth
           : true,
+
+        connection: connection ? c.autoDisable !== connectionStatus : true,
       };
 
       //check if condition pass got for next step or is fail stop operation
@@ -553,6 +565,9 @@ export default function Customer() {
       if (!isPass) return acc;
 
       isPass = conditions["changedPromiseDate"];
+      if (!isPass) return acc;
+
+      isPass = conditions["connection"];
       if (!isPass) return acc;
 
       if (isPass) acc.push(c);
@@ -632,6 +647,21 @@ export default function Customer() {
   const customerPackageFind = (pack) => {
     const findPack = allPackages.find((item) => item.id.includes(pack));
     return findPack;
+  };
+
+  // customer autoDisable connection check & promiseDate handler
+  const changePromiseConnection = (e) => {
+    if (e.target.value !== "changedPromiseDate") {
+      setFilterOption({
+        ...filterOptions,
+        connection: e.target.value,
+      });
+    } else {
+      setFilterOption({
+        ...filterOptions,
+        changedPromiseDate: e.target.value,
+      });
+    }
   };
 
   const columns = React.useMemo(
@@ -1558,16 +1588,15 @@ export default function Customer() {
 
                             <select
                               className="form-select shadow-none mt-0"
-                              onChange={(e) =>
-                                setFilterOption({
-                                  ...filterOptions,
-                                  changedPromiseDate: e.target.value,
-                                })
-                              }
+                              onChange={changePromiseConnection}
                             >
                               <option value="">{t("promiseDateChange")}</option>
                               <option value="changedPromiseDate">
                                 {t("changedCustomer")}
+                              </option>
+                              <option value="true">{t("connectionOn")}</option>
+                              <option value="false">
+                                {t("connectionOff")}
                               </option>
                             </select>
 
@@ -1921,7 +1950,7 @@ export default function Customer() {
               )}
 
               <hr className="mt-0 mb-0" />
-              {bpSettings.hasMikrotik &&
+              {bpSettings?.hasMikrotik &&
                 ((role === "ispOwner" &&
                   bpSettings?.bulkCustomerMikrotikUpdate) ||
                   (bpSettings?.bulkCustomerMikrotikUpdate &&

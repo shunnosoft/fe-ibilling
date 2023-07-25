@@ -1028,7 +1028,7 @@ const PPPOECustomer = () => {
     };
   }
 
-  //
+  // customer autoDisable connection check & promiseDate handler
   const changePromiseConnection = (e) => {
     if (e.target.value !== "changedPromiseDate") {
       setFilterOption({

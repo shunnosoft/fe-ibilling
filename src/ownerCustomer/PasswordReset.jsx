@@ -3,8 +3,15 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import apiLink from "../api/apiLink";
 import Loader from "../components/common/Loader";
+import { useSelector } from "react-redux";
 
 function PasswordReset() {
+  // get own data
+  const userData = useSelector(
+    (state) => state.persistedReducer.auth?.currentUser.customer
+  );
+  console.log(userData);
+
   const [loading, setLoading] = useState(false);
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -74,7 +81,11 @@ function PasswordReset() {
             />
           </div>
 
-          <button className="w-100 btn  btn-success" type="submit">
+          <button
+            className="w-100 btn  btn-success"
+            type="submit"
+            disabled={userData?.ispOwner.id === "624f41a4291af1f48c7d75c7"}
+          >
             {loading ? <Loader /> : "Reset Password"}
           </button>
         </form>
