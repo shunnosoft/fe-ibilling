@@ -93,6 +93,7 @@ import ActiveHotspotCustomer from "./pages/hotspot/activeHotspotCustomer/ActiveH
 import Summary from "./reseller/summary/Summary";
 import { getUserApi, userLogout } from "./features/actions/authAsyncAction";
 import ResellerSummary from "./pages/reseller/resellerSummary/ResellerSummary";
+import OnlinePaymentCustomer from "./pages/reseller/onlinePaymentCustomer/OnlinePayment";
 import ResellerCustomerSupportTicket from "./reseller/supportTicket/SupportTicket";
 import ResellerCollectorCustomerSupportTicket from "./reseller/supportTicket/CollectorSupportTicket";
 import ResellerNetFeeSupport from "./reseller/netFeeSupport/NetFeeSupport";
@@ -705,6 +706,16 @@ function App() {
                 element={
                   userRole === "ispOwner" ? (
                     <ResellerSummary />
+                  ) : (
+                    <Navigate to={"/home"}></Navigate>
+                  )
+                }
+              />
+              <Route
+                path="reseller/online-payment-customer/:resellerId"
+                element={
+                  userRole === "ispOwner" ? (
+                    <OnlinePaymentCustomer />
                   ) : (
                     <Navigate to={"/home"}></Navigate>
                   )

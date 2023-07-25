@@ -283,9 +283,9 @@ const Report = () => {
                   <Accordion alwaysOpen activeKey={activeKeys}>
                     <Accordion.Item eventKey="filter">
                       <Accordion.Body>
-                        <div className="displayGrid6">
+                        <div className="selectFilteringg">
                           <select
-                            className="form-select mt-0"
+                            className="form-select me-2 mt-0"
                             onChange={(e) => setAreaIds(e.target.value)}
                           >
                             <option value="" defaultValue>
@@ -300,7 +300,7 @@ const Report = () => {
 
                           {userRole !== "collector" && (
                             <select
-                              className="form-select mt-0"
+                              className="form-select me-2 mt-0"
                               onChange={(e) => setCollectorIds(e.target.value)}
                             >
                               <option value="" defaultValue>
@@ -353,7 +353,7 @@ const Report = () => {
                               placeholderText={t("selectBillDate")}
                             />
                           </div>
-                          <div>
+                          <div className="mx-2">
                             <DatePicker
                               className="form-control mw-100 mt-0"
                               selected={dateEnd}
@@ -364,7 +364,7 @@ const Report = () => {
                           </div>
 
                           <button
-                            className="btn btn-outline-secondary w-6rem h-76"
+                            className="btn btn-outline-primary w-140 mt-0 chartFilteritem"
                             type="button"
                             onClick={collectionReportFilter}
                           >
