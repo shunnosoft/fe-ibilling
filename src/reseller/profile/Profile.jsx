@@ -184,6 +184,10 @@ export default function Profile() {
                               <button
                                 type="submit"
                                 className="btn btn-success mt-2"
+                                disabled={
+                                  currentUser.ispOwner ===
+                                  "624f41a4291af1f48c7d75c7"
+                                }
                               >
                                 {isLoading ? <Loader /> : t("update")}
                               </button>
@@ -225,6 +229,10 @@ export default function Profile() {
                               <button
                                 type="submit"
                                 className="btn btn-success mt-2"
+                                disabled={
+                                  currentUser.ispOwner ===
+                                  "624f41a4291af1f48c7d75c7"
+                                }
                               >
                                 {isLoadingpass ? (
                                   <Loader />
