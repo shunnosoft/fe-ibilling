@@ -1411,7 +1411,7 @@ export default function Sidebar() {
                                 </li>
                               </FontColor>
                             </a>
-                            <NavLink
+                            {/* <NavLink
                               key={19}
                               to={"/reseller/support/ticket"}
                               className={(navInfo) =>
@@ -1428,7 +1428,7 @@ export default function Sidebar() {
                                   </span>
                                 </li>
                               </FontColor>
-                            </NavLink>
+                            </NavLink> */}
                             <a
                               className={(navInfo) =>
                                 navInfo.isActive ? activeClass.active : ""
