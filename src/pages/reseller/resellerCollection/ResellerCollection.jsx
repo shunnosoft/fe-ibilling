@@ -147,17 +147,17 @@ const ResellerCollection = () => {
   const columns = useMemo(
     () => [
       {
-        width: "10%",
+        width: "5%",
         Header: t("id"),
         accessor: "customer.customerId",
       },
       {
-        width: "10%",
+        width: "7%",
         Header: t("name"),
         accessor: "customer.name",
       },
       {
-        width: "10%",
+        width: "8%",
         Header: t("package"),
         accessor: "customer.mikrotikPackage",
         Cell: ({ cell: { value } }) => (
@@ -165,27 +165,37 @@ const ResellerCollection = () => {
         ),
       },
       {
-        width: "10%",
+        width: "8%",
         Header: t("bill"),
         accessor: "amount",
       },
       {
-        width: "10%",
+        width: "8%",
         Header: t("discount"),
         accessor: "discount",
       },
       {
-        width: "10%",
+        width: "7%",
         Header: t("agent"),
         accessor: "medium",
       },
       {
-        width: "10%",
+        width: "8%",
         Header: t("collector"),
         accessor: "name",
       },
       {
         width: "10%",
+        Header: t("resellerCommission"),
+        accessor: "resellerCommission",
+      },
+      {
+        width: "10%",
+        Header: t("ispOwnerCommission"),
+        accessor: "ispOwnerCommission",
+      },
+      {
+        width: "6%",
         Header: t("note"),
         accessor: (data) => {
           return {
@@ -231,7 +241,7 @@ const ResellerCollection = () => {
       },
 
       {
-        width: "10%",
+        width: "7%",
         Header: t("date"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
@@ -239,7 +249,7 @@ const ResellerCollection = () => {
         },
       },
       {
-        width: "10%",
+        width: "6%",
         Header: () => <div className="text-center">{t("action")}</div>,
         id: "option",
 
@@ -361,25 +371,53 @@ const ResellerCollection = () => {
     totalBill: currentData.reduce((prev, current) => prev + current.amount, 0),
   };
 
-  const addAllBills = useMemo(() => {
-    var count = 0;
-    currentData.forEach((item) => {
-      count = count + item.amount;
-    });
-    return { count };
-  }, [currentData]);
+  //function to calculate total Commissions and other amount
+  const totalSum = () => {
+    const initialValue = {
+      amount: 0,
+      resellerCommission: 0,
+      ispOwnerCommission: 0,
+    };
+
+    const calculatedValue = currentData?.reduce((previous, current) => {
+      //total amount
+      previous.amount += current.amount;
+
+      // sum of all reseller commission
+      previous.resellerCommission += current.resellerCommission;
+
+      // sum of all ispOwner commission
+      previous.ispOwnerCommission += current.ispOwnerCommission;
+
+      return previous;
+    }, initialValue);
+    return calculatedValue;
+  };
 
   const customComponent = (
     <div
       className="text-center"
       style={{ fontSize: "18px", fontWeight: "500", display: "flex" }}
     >
-      {addAllBills?.count > 0 && (
-        <div>
-          {t("totalBill")}:-৳
-          {FormatNumber(addAllBills.count)}
+      {totalSum()?.amount > 0 && (
+        <div className="mx-3">
+          {t("totalBill")}{" "}
+          <span className="fw-bold">৳ {FormatNumber(totalSum().amount)}</span>
         </div>
       )}
+      <div className="me-3">
+        {t("resellerCommission")}:{" "}
+        <span className="fw-bold">
+          ৳ {FormatNumber(totalSum().resellerCommission)}
+        </span>
+      </div>
+      <div>
+        {t("ispOwnerCommission")}:
+        <span className="fw-bold">
+          {" "}
+          ৳ {FormatNumber(totalSum().ispOwnerCommission)}
+        </span>
+      </div>
     </div>
   );
 

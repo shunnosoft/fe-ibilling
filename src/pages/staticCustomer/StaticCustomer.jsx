@@ -1217,6 +1217,7 @@ export default function Customer() {
                         <Loader></Loader>
                       ) : (
                         <ArrowClockwise
+                          size={20}
                           onClick={() => reloadHandler()}
                         ></ArrowClockwise>
                       )}

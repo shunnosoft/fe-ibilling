@@ -51,6 +51,7 @@ import PasswordReset from "../../components/modals/passwordReset/PasswordReset";
 import RechargeReport from "./resellerModals/RechargeReport";
 import MonthlyReport from "./resellerModals/MonthlyReport";
 import { getSubAreasApi } from "../../features/actions/customerApiCall";
+import FormatNumber from "../../components/common/NumberFormat";
 
 export default function Reseller() {
   const { t } = useTranslation();
@@ -295,7 +296,7 @@ export default function Reseller() {
                   </div>
                 </li>
 
-                <Link to={`/reseller/online-payment-customer/${original.id}`}>
+                {/* <Link to={`/reseller/online-payment-customer/${original.id}`}>
                   <li>
                     <div className="dropdown-item">
                       <div className="customerAction">
@@ -305,7 +306,7 @@ export default function Reseller() {
                       </div>
                     </div>
                   </li>
-                </Link>
+                </Link> */}
 
                 {original.mobile && (
                   <li
@@ -380,6 +381,41 @@ export default function Reseller() {
     [t]
   );
 
+  //function to calculate total customer and balance
+  const totalSum = () => {
+    const initialValue = {
+      customer: 0,
+      balance: 0,
+    };
+
+    const calculatedValue = reseller?.reduce((previous, current) => {
+      // total customer
+      previous.customer += current.customerCount;
+
+      // total balance
+      previous.balance += current.rechargeBalance;
+
+      return previous;
+    }, initialValue);
+    return calculatedValue;
+  };
+
+  const customComponent = (
+    <div
+      className="text-center"
+      style={{ fontSize: "18px", fontWeight: "500", display: "flex" }}
+    >
+      <div className="me-3">
+        {t("totalCustomer")}:{" "}
+        <span className="fw-bold">{FormatNumber(totalSum().customer)}</span>
+      </div>
+      <div>
+        {t("totalBalance")}:
+        <span className="fw-bold"> ৳ {FormatNumber(totalSum().balance)}</span>
+      </div>
+    </div>
+  );
+
   return (
     <>
       <Sidebar />
@@ -431,6 +467,7 @@ export default function Reseller() {
                         isLoading={dataLoader}
                         columns={columns}
                         data={reseller}
+                        customComponent={customComponent}
                       ></Table>
                     </div>
                   </div>
