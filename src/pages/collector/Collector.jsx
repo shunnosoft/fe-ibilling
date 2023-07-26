@@ -8,6 +8,8 @@ import {
   ArrowClockwise,
   KeyFill,
   ArchiveFill,
+  PeopleFill,
+  CashStack,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
@@ -33,6 +35,7 @@ import { useTranslation } from "react-i18next";
 import Loader from "../../components/common/Loader";
 import PasswordReset from "../../components/modals/passwordReset/PasswordReset";
 import { getSubAreasApi } from "../../features/actions/customerApiCall";
+import { Link } from "react-router-dom";
 
 export default function Collector() {
   const { t } = useTranslation();
@@ -188,6 +191,18 @@ export default function Collector() {
                 ) : (
                   ""
                 )}
+
+                <Link to={`/collector/billReport/${original.id}`}>
+                  <li>
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <CashStack />
+
+                        <p className="actionP">{t("billReport")}</p>
+                      </div>
+                    </div>
+                  </li>
+                </Link>
                 {original.mobile && (
                   <li
                     data-bs-toggle="modal"

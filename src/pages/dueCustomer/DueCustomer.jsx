@@ -11,13 +11,15 @@ import Loader from "../../components/common/Loader";
 import useDash from "../../assets/css/dash.module.css";
 import {
   ArrowClockwise,
+  ArrowLeftCircle,
+  ArrowRightCircle,
   FileExcelFill,
   FiletypeCsv,
   FilterCircle,
   PrinterFill,
 } from "react-bootstrap-icons";
 import { FontColor, FourGround } from "../../assets/js/theme";
-import { Accordion, Tab, Tabs } from "react-bootstrap";
+import { Accordion, Card, Collapse, Tab, Tabs } from "react-bootstrap";
 import { CSVLink } from "react-csv";
 import ReactToPrint from "react-to-print";
 import PrintReport from "./print/ReportPDF";
@@ -49,6 +51,8 @@ const DueCustomer = () => {
   //filter state
   const [filterDate, setFilterDate] = useState(firstDate);
   const [staticDate, setStaticDate] = useState(firstDate);
+
+  const [open, setOpen] = useState(false);
 
   // get isp owner id
   const ispOwner = useSelector(
@@ -363,102 +367,129 @@ const DueCustomer = () => {
                   </div>
 
                   <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
+                    style={{ fontSize: "25px", height: "45px" }}
+                    className="d-flex justify-content-center align-items-center"
                   >
+                    {!open && (
+                      <ArrowLeftCircle
+                        size={34}
+                        style={{ cursor: "pointer" }}
+                        onClick={() => setOpen(!open)}
+                        aria-controls="example-collapse-text"
+                        aria-expanded={open}
+                        className="me-3"
+                      />
+                    )}
+
+                    {open && (
+                      <ArrowRightCircle
+                        size={34}
+                        style={{ cursor: "pointer" }}
+                        onClick={() => setOpen(!open)}
+                        aria-controls="example-collapse-text"
+                        aria-expanded={open}
+                        className="me-3"
+                      />
+                    )}
+
+                    <Collapse in={open} dimension="width">
+                      <div id="example-collapse-text">
+                        <Card
+                          body
+                          className="border-0"
+                          style={{
+                            width: "180px",
+                            backgroundColor: "#2E87DF",
+                          }}
+                        >
+                          <div className="d-flex align-items-center justify-content-center">
+                            {/* for pppoe customer begin*/}
+                            {hasCustomerType.includes("pppoe") && (
+                              <>
+                                <div className="addAndSettingIcon">
+                                  <CSVLink
+                                    data={customerForCsVTableInfo}
+                                    filename={ispOwnerData.company}
+                                    headers={customerForCsVTableInfoHeader}
+                                    title="PPPoE Customer CSV"
+                                  >
+                                    <FiletypeCsv
+                                      style={{ height: "34px", width: "34px" }}
+                                      className="addcutmButton"
+                                    />
+                                  </CSVLink>
+                                </div>
+
+                                <div
+                                  className="addAndSettingIcon"
+                                  title={t("PPPoE Customer Print")}
+                                >
+                                  <ReactToPrint
+                                    documentTitle={t("dueCustomer")}
+                                    trigger={() => (
+                                      <PrinterFill
+                                        style={{
+                                          height: "34px",
+                                          width: "34px",
+                                        }}
+                                        title={t("print")}
+                                        className="addcutmButton"
+                                      />
+                                    )}
+                                    content={() => componentRef.current}
+                                  />
+                                </div>
+                              </>
+                            )}
+                            {/* for pppoe customer end*/}
+
+                            {/* for static customer begin*/}
+                            {hasCustomerType.includes("static") && (
+                              <>
+                                <div className="addAndSettingIcon">
+                                  <CSVLink
+                                    data={staticCustomerForCsVTableInfo}
+                                    filename={ispOwnerData.company}
+                                    headers={
+                                      staticCustomerForCsVTableInfoHeader
+                                    }
+                                    title="Static Customer CSV"
+                                  >
+                                    <FiletypeCsv
+                                      style={{ height: "34px", width: "34px" }}
+                                      className="addcutmButton"
+                                    />
+                                  </CSVLink>
+                                </div>
+
+                                <div
+                                  className="addAndSettingIcon"
+                                  title={t("Static Customer Print")}
+                                >
+                                  <ReactToPrint
+                                    documentTitle={t("dueCustomer")}
+                                    trigger={() => (
+                                      <PrinterFill
+                                        style={{
+                                          height: "34px",
+                                          width: "34px",
+                                        }}
+                                        title={t("print")}
+                                        className="addcutmButton"
+                                      />
+                                    )}
+                                    content={() => staticRef.current}
+                                  />
+                                </div>
+                              </>
+                            )}
+                            {/* end for static customer */}
+                          </div>
+                        </Card>
+                      </div>
+                    </Collapse>
+
                     <>
-                      <div
-                        onClick={() => {
-                          if (!activeKeys) {
-                            setActiveKeys("filter");
-                          } else {
-                            setActiveKeys("");
-                          }
-                        }}
-                        title={t("filter")}
-                      >
-                        <FilterCircle className="addcutmButton" />
-                      </div>
-
-                      <div className="reloadBtn">
-                        {isLoading ? (
-                          <Loader></Loader>
-                        ) : (
-                          <ArrowClockwise
-                            onClick={() => reloadHandler()}
-                          ></ArrowClockwise>
-                        )}
-                      </div>
-
-                      {/* for pppoe customer */}
-                      {hasCustomerType.includes("pppoe") && (
-                        <>
-                          <div className="addAndSettingIcon">
-                            <CSVLink
-                              data={customerForCsVTableInfo}
-                              filename={ispOwnerData.company}
-                              headers={customerForCsVTableInfoHeader}
-                              title="PPPoE Customer CSV"
-                            >
-                              <FiletypeCsv className="addcutmButton" />
-                            </CSVLink>
-                          </div>
-
-                          <div
-                            className="addAndSettingIcon"
-                            title={t("PPPoE Customer Print")}
-                          >
-                            <ReactToPrint
-                              documentTitle={t("dueCustomer")}
-                              trigger={() => (
-                                <PrinterFill
-                                  title={t("print")}
-                                  className="addcutmButton"
-                                />
-                              )}
-                              content={() => componentRef.current}
-                            />
-                          </div>
-                        </>
-                      )}
-                      {/* end for pppoe customer */}
-
-                      {/* for static customer */}
-                      {hasCustomerType.includes("static") && (
-                        <>
-                          <div className="addAndSettingIcon">
-                            <CSVLink
-                              data={staticCustomerForCsVTableInfo}
-                              filename={ispOwnerData.company}
-                              headers={staticCustomerForCsVTableInfoHeader}
-                              title="Static Customer CSV"
-                            >
-                              <FiletypeCsv className="addcutmButton" />
-                            </CSVLink>
-                          </div>
-
-                          <div
-                            className="addAndSettingIcon"
-                            title={t("Static Customer Print")}
-                          >
-                            <ReactToPrint
-                              documentTitle={t("dueCustomer")}
-                              trigger={() => (
-                                <PrinterFill
-                                  title={t("print")}
-                                  className="addcutmButton"
-                                />
-                              )}
-                              content={() => staticRef.current}
-                            />
-                          </div>
-                        </>
-                      )}
-                      {/* end for static customer */}
-
                       {/* print report */}
                       <div style={{ display: "none" }}>
                         <PrintReport
@@ -472,6 +503,36 @@ const DueCustomer = () => {
                       </div>
                       {/* print report end*/}
                     </>
+
+                    <div
+                      onClick={() => {
+                        if (!activeKeys) {
+                          setActiveKeys("filter");
+                        } else {
+                          setActiveKeys("");
+                        }
+                      }}
+                      title={t("filter")}
+                    >
+                      <FilterCircle
+                        style={{ height: "34px", width: "34px" }}
+                        className="addcutmButton"
+                      />
+                    </div>
+
+                    <div
+                      style={{ height: "34px", width: "34px" }}
+                      className="reloadBtn"
+                    >
+                      {isLoading ? (
+                        <Loader></Loader>
+                      ) : (
+                        <ArrowClockwise
+                          size={18}
+                          onClick={() => reloadHandler()}
+                        ></ArrowClockwise>
+                      )}
+                    </div>
                   </div>
                 </div>
               </FourGround>

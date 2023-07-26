@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
   ArrowClockwise,
+  ArrowLeftCircle,
+  ArrowRightCircle,
   FileExcelFill,
   FilterCircle,
   PrinterFill,
@@ -19,7 +21,7 @@ import ReactToPrint from "react-to-print";
 import CustomerPdf from "../Home/homePdf/CustomerPdf";
 import { CSVLink } from "react-csv";
 import Footer from "../../components/admin/footer/Footer";
-import { Accordion } from "react-bootstrap";
+import { Accordion, Card, Collapse } from "react-bootstrap";
 
 const InactiveCustomer = () => {
   const { t } = useTranslation();
@@ -31,6 +33,8 @@ const InactiveCustomer = () => {
 
   // filter Accordion handle state
   const [activeKeys, setActiveKeys] = useState("");
+
+  const [open, setOpen] = useState(false);
 
   //get current date
   const date = new Date();
@@ -195,12 +199,77 @@ const InactiveCustomer = () => {
                   </div>
 
                   <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
+                    style={{ fontSize: "25px", height: "45px" }}
+                    className="d-flex justify-content-center align-items-center"
                   >
+                    {!open && (
+                      <ArrowLeftCircle
+                        size={34}
+                        style={{ cursor: "pointer" }}
+                        onClick={() => setOpen(!open)}
+                        aria-controls="example-collapse-text"
+                        aria-expanded={open}
+                        className="me-3"
+                      />
+                    )}
+
+                    {open && (
+                      <ArrowRightCircle
+                        size={34}
+                        style={{ cursor: "pointer" }}
+                        onClick={() => setOpen(!open)}
+                        aria-controls="example-collapse-text"
+                        aria-expanded={open}
+                        className="me-3"
+                      />
+                    )}
+
+                    <Collapse in={open} dimension="width">
+                      <div id="example-collapse-text">
+                        <Card
+                          body
+                          className="border-0"
+                          style={{
+                            width: "90px",
+                            backgroundColor: "#2E87DF",
+                          }}
+                        >
+                          <div className="d-flex align-items-center justify-content-center">
+                            <div className="addAndSettingIcon">
+                              <CSVLink
+                                data={customerForCsVTableInfo}
+                                filename={ispOwnerData.company}
+                                headers={customerForCsVTableInfoHeader}
+                                title="inactive Customer CSV"
+                              >
+                                <FileExcelFill
+                                  style={{ height: "34px", width: "34px" }}
+                                  className="addcutmButton"
+                                />
+                              </CSVLink>
+                            </div>
+
+                            <div
+                              className="addAndSettingIcon"
+                              title={t("inactiveCustomer")}
+                            >
+                              <ReactToPrint
+                                documentTitle={t("inactiveCustomer")}
+                                trigger={() => (
+                                  <PrinterFill
+                                    style={{ height: "34px", width: "34px" }}
+                                    title={t("print")}
+                                    className="addcutmButton"
+                                  />
+                                )}
+                                content={() => componentRef.current}
+                              />
+                            </div>
+                          </div>
+                        </Card>
+                      </div>
+                    </Collapse>
+
                     <div
                       onClick={() => {
                         if (!activeKeys) {
@@ -211,44 +280,24 @@ const InactiveCustomer = () => {
                       }}
                       title={t("filter")}
                     >
-                      <FilterCircle className="addcutmButton" />
+                      <FilterCircle
+                        style={{ height: "34px", width: "34px" }}
+                        className="addcutmButton"
+                      />
                     </div>
 
-                    <div className="reloadBtn">
+                    <div
+                      style={{ height: "34px", width: "34px" }}
+                      className="reloadBtn"
+                    >
                       {isLoading ? (
                         <Loader></Loader>
                       ) : (
                         <ArrowClockwise
+                          size={18}
                           onClick={() => reloadHandler()}
                         ></ArrowClockwise>
                       )}
-                    </div>
-
-                    <div className="addAndSettingIcon">
-                      <CSVLink
-                        data={customerForCsVTableInfo}
-                        filename={ispOwnerData.company}
-                        headers={customerForCsVTableInfoHeader}
-                        title="inactive Customer CSV"
-                      >
-                        <FileExcelFill className="addcutmButton" />
-                      </CSVLink>
-                    </div>
-
-                    <div
-                      className="addAndSettingIcon"
-                      title={t("inactiveCustomer")}
-                    >
-                      <ReactToPrint
-                        documentTitle={t("inactiveCustomer")}
-                        trigger={() => (
-                          <PrinterFill
-                            title={t("print")}
-                            className="addcutmButton"
-                          />
-                        )}
-                        content={() => componentRef.current}
-                      />
                     </div>
                   </div>
                 </div>

@@ -27,6 +27,7 @@ import {
   deleteCollectorSuccess,
   editCollectorSuccess,
   getCollectorBills,
+  getCollectorReportSuccess,
   getCollectorSuccess,
 } from "./collectorSlice";
 import {
@@ -938,6 +939,25 @@ export const deleteCollector = async (
       toast.error(err.response.data.message);
     }
   }
+};
+
+export const getCollectorBillReport = async (
+  collectorId,
+  year,
+  month,
+  dispatch,
+  setIsLoading
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.get(
+      `ispOwner/collector-bill-report/${collectorId}?year=${year}&month=${month}`
+    );
+    dispatch(getCollectorReportSuccess(res.data));
+  } catch (error) {
+    toast.error(error.response?.data.message);
+  }
+  setIsLoading(false);
 };
 
 //Customers

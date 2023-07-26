@@ -85,6 +85,7 @@ import BulkPackageEdit from "../Customer/customerCRUD/bulkOpration/bulkPackageEd
 import BulkRecharge from "../Customer/customerCRUD/bulkOpration/BulkRecharge";
 import StaticCreateInvoice from "./StaticCreateInvoice";
 import { Accordion, Card, Collapse } from "react-bootstrap";
+import BulkPaymentStatusEdit from "../Customer/customerCRUD/bulkOpration/BulkPaymentStatusEdit";
 
 export default function Customer() {
   //call hooks
@@ -1782,6 +1783,14 @@ export default function Customer() {
                 />
               )}
 
+              {bulkStatus === "bulkPaymentStatusEdit" && (
+                <BulkPaymentStatusEdit
+                  bulkCustomer={bulkCustomer}
+                  show={show}
+                  setShow={setShow}
+                />
+              )}
+
               {/* bulk Modal end */}
 
               <CreateSupportTicket
@@ -1864,6 +1873,37 @@ export default function Customer() {
                     <div className="menu_label2">{t("editStatus")}</div>
                   </li>
                 )}
+
+              <hr className="mt-0 mb-0" />
+
+              {bpSettings?.hasMikrotik &&
+                ((role === "ispOwner" && bpSettings?.bulkPaymentStatusEdit) ||
+                  (bpSettings?.bulkPaymentStatusEdit &&
+                    permission?.bulkPaymentStatusEdit &&
+                    role === "manager")) && (
+                  <li
+                    type="button"
+                    className="p-1"
+                    onClick={() => {
+                      setBulkStatus("bulkPaymentStatusEdit");
+                      setShow(true);
+                    }}
+                  >
+                    <div className="menu_icon2">
+                      <button
+                        className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-info"
+                        title={t("editPaymentStatus")}
+                      >
+                        <i className="fas fa-edit fa-xs  "></i>
+                        <span className="button_title">
+                          {t("editPaymentStatus")}
+                        </span>
+                      </button>
+                    </div>
+                    <div className="menu_label2">{t("editPaymentStatus")}</div>
+                  </li>
+                )}
+
               <hr className="mt-0 mb-0" />
 
               {((role === "ispOwner" && bpSettings?.bulkBillingCycleEdit) ||
