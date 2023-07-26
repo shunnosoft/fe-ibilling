@@ -27,6 +27,7 @@ const addClass = {
   registration: "danger",
   monthlyServiceCharge: "primary",
   smsPurchase: "info",
+  sms: "info",
 
   other: "info",
   bill: "success",

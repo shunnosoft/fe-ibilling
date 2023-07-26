@@ -648,7 +648,7 @@ export default function Report() {
                   <Accordion alwaysOpen activeKey={activeKeys}>
                     <Accordion.Item eventKey="filter">
                       <Accordion.Body>
-                        <div className="selectFilteringg">
+                        <div className="displayGrid6">
                           <select
                             className="form-select mt-0"
                             onChange={(e) => onChangeArea(e.target.value)}
@@ -663,7 +663,7 @@ export default function Report() {
                             ))}
                           </select>
                           <select
-                            className="form-select mx-2 mt-0"
+                            className="form-select mt-0"
                             onChange={(e) => onChangeSubArea(e.target.value)}
                           >
                             <option value="" defaultValue>
@@ -694,7 +694,7 @@ export default function Report() {
                           )}
 
                           <select
-                            className="form-select mx-2 mt-0"
+                            className="form-select mt-0"
                             onChange={(e) => setBillType(e.target.value)}
                           >
                             <option value="" defaultValue>
@@ -727,9 +727,9 @@ export default function Report() {
                           {(userRole === "ispOwner" ||
                             permissions?.dashboardCollectionData) && (
                             <>
-                              <div className="ms-2">
+                              <div>
                                 <DatePicker
-                                  className="form-control w-140"
+                                  className="form-control"
                                   selected={dateStart}
                                   onChange={(date) => setStartDate(date)}
                                   dateFormat="MMM dd yyyy"
@@ -737,9 +737,9 @@ export default function Report() {
                                 />
                               </div>
 
-                              <div className="mx-2">
+                              <div>
                                 <DatePicker
-                                  className="form-control w-140"
+                                  className="form-control"
                                   selected={dateEnd}
                                   onChange={(date) => setEndDate(date)}
                                   dateFormat="MMM dd yyyy"
@@ -751,7 +751,7 @@ export default function Report() {
 
                           <div>
                             <button
-                              className="btn btn-outline-primary w-110"
+                              className="btn btn-outline-primary w-140"
                               type="button"
                               onClick={onClickFilter}
                             >
