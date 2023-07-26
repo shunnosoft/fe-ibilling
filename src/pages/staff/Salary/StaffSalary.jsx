@@ -1,9 +1,14 @@
 import { useEffect, useState, useMemo } from "react";
-import { ThreeDots, ArchiveFill, ArrowLeftShort } from "react-bootstrap-icons";
+import {
+  ThreeDots,
+  ArchiveFill,
+  ArrowLeftShort,
+  ArrowLeft,
+} from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
 import { Button } from "react-bootstrap";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 // internal imports
@@ -24,6 +29,7 @@ export default function StaffSalary() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const { staffId } = useParams();
+  const navigate = useNavigate();
 
   const ispOwner = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
@@ -59,12 +65,12 @@ export default function StaffSalary() {
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        width: "12%",
+        width: "10%",
         Header: t("year"),
         accessor: "year",
       },
       {
-        width: "15%",
+        width: "12%",
         Header: t("month"),
         accessor: "month",
         Cell: ({ cell: { value } }) => {
@@ -93,7 +99,7 @@ export default function StaffSalary() {
         },
       },
       {
-        width: "20%",
+        width: "16%",
         Header: t("createdAt"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
@@ -101,7 +107,7 @@ export default function StaffSalary() {
         },
       },
       {
-        width: "12%",
+        width: "15%",
         Header: t("comment"),
         accessor: "remarks",
       },
@@ -158,38 +164,24 @@ export default function StaffSalary() {
             <FontColor>
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between align-item-center px-5 mb-2">
-                  <div>
-                    {/* <Link to="/staff">
-                      <div className="AllMikrotik mt-1">
-                        <ArrowLeftShort className="arrowLeftSize" />
-                        <span style={{ marginLeft: "3px" }}>Back</span>
-                      </div>
-                    </Link> */}
-                    <Link to="/staff">
-                      <button
-                        className="btn"
-                        style={{
-                          backgroundColor: "#0EB96A",
-                          color: "white",
-                          padding: "1,0,1,0",
-                        }}
-                      >
-                        <ArrowLeftShort className="arrowLeftSize" />
-                        Back
-                      </button>
-                    </Link>
-                    &nbsp; &nbsp;
+                  <div className="d-flex">
+                    <div
+                      className="pe-2 text-black"
+                      style={{ cursor: "pointer" }}
+                      onClick={() => navigate(-1)}
+                    >
+                      <ArrowLeft className="arrowLeftSize" />
+                    </div>
                     <span>{t("staffProfile")}</span>
                   </div>
-                  <Button
+                  <button
                     onClick={() => setSalaryId(staff.id)}
                     data-bs-toggle="modal"
                     data-bs-target="#addSalaryPostModal"
-                    variant="success"
-                    size="sm"
+                    className="btn btn-outline-light"
                   >
-                    {t("paySalary")}
-                  </Button>
+                    <span className="fw-bold">৳</span> {t("paySalary")}
+                  </button>
                 </div>
               </FourGround>
               {/* edit manager */}
