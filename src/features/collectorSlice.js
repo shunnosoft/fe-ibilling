@@ -5,6 +5,7 @@ const collectorSlice = createSlice({
   initialState: {
     collector: [],
     collectorBill: [],
+    collectorReport: [],
   },
   reducers: {
     getCollectorSuccess: (state, action) => {
@@ -31,6 +32,9 @@ const collectorSlice = createSlice({
       state.collector = [];
       state.collectorBill = [];
     },
+    getCollectorReportSuccess: (state, action) => {
+      state.collectorReport = action.payload;
+    },
   },
 });
 
@@ -41,6 +45,7 @@ export const {
   addCollectorSuccess,
   editCollectorSuccess,
   deleteCollectorSuccess,
+  getCollectorReportSuccess,
 } = collectorSlice.actions;
 
 export default collectorSlice.reducer;
