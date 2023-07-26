@@ -112,6 +112,7 @@ import MikrotikCustomer from "./pages/configMikrotik/mikrotikCustomer/Customers"
 import PackageChange from "./pages/netFeeSupport/PackageChange";
 import ChangePackage from "./reseller/customerPackageChange/ChangePackage";
 import CustomerInvoice from "./pages/customerInvoice/CustomerInvoice";
+import BillReport from "./pages/collector/BillReport";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
@@ -421,6 +422,18 @@ function App() {
                 (userRole === "manager" && user) ||
                 (userRole === "ispOwner" && user) ? (
                   <Collector />
+                ) : (
+                  <Navigate to={"/"} />
+                )
+              }
+            />
+
+            <Route
+              path="/collector/billReport/:id"
+              element={
+                (userRole === "manager" && user) ||
+                (userRole === "ispOwner" && user) ? (
+                  <BillReport />
                 ) : (
                   <Navigate to={"/"} />
                 )
