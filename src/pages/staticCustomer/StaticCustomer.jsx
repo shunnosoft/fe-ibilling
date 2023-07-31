@@ -1220,8 +1220,28 @@ export default function Customer() {
                         </div>
                       </Collapse>
                     </div>
+
                     <div
-                      style={{ marginLeft: "-14px", zIndex: 2 }}
+                      style={{
+                        marginLeft: "-14px",
+                        zIndex: 2,
+                        height: "34px",
+                        width: "34px",
+                      }}
+                      className="reloadBtn"
+                    >
+                      {isLoading ? (
+                        <Loader></Loader>
+                      ) : (
+                        <ArrowClockwise
+                          size={20}
+                          onClick={() => reloadHandler()}
+                        ></ArrowClockwise>
+                      )}
+                    </div>
+
+                    <div
+                      style={{ height: "34px", width: "34px" }}
                       onClick={() => {
                         if (!activeKeys) {
                           setActiveKeys("filter");
@@ -1236,22 +1256,8 @@ export default function Customer() {
                           height: "34px",
                           width: "34px",
                         }}
-                        className="addcutmButton"
+                        className="addcutmButton mb-1"
                       />
-                    </div>
-
-                    <div
-                      style={{ height: "34px", width: "34px" }}
-                      className="reloadBtn"
-                    >
-                      {isLoading ? (
-                        <Loader></Loader>
-                      ) : (
-                        <ArrowClockwise
-                          size={20}
-                          onClick={() => reloadHandler()}
-                        ></ArrowClockwise>
-                      )}
                     </div>
                   </div>
                 </div>

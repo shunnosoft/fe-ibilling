@@ -506,14 +506,22 @@ export default function ConfigMikrotik() {
                       }}
                       title={t("filter")}
                     >
-                      <FilterCircle className="addcutmButton" />
+                      <FilterCircle
+                        style={{ height: "34px", width: "34px" }}
+                        className="addcutmButton"
+                      />
                     </div>
 
-                    <div className="reloadBtn">
+                    <div
+                      style={{ height: "34px", width: "34px" }}
+                      className="reloadBtn"
+                    >
                       {mtkLoading ? (
-                        <Loader></Loader>
+                        <Loader />
                       ) : (
                         <ArrowClockwise
+                          size={19}
+                          className="mb-1"
                           onClick={() => reloadHandler()}
                         ></ArrowClockwise>
                       )}
@@ -525,7 +533,10 @@ export default function ConfigMikrotik() {
                       headers={customerForCsVTableInfoHeader}
                       title="Customer BTRC Report New"
                     >
-                      <FileExcelFill className="addcutmButton" />
+                      <FileExcelFill
+                        style={{ height: "34px", width: "34px" }}
+                        className="addcutmButton"
+                      />
                     </CSVLink>
                   </div>
                 </div>

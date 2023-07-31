@@ -56,6 +56,7 @@ const BillReport = () => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [packageLoading, setPackageLoading] = useState();
+  const [collectorLoading, setCollectorLoading] = useState();
   const [activeKeys, setActiveKeys] = useState("");
 
   //all dates states
@@ -78,13 +79,13 @@ const BillReport = () => {
       dispatch,
       setIsLoading
     );
-    getCollector(dispatch, ispOwnerId, setIsLoading);
+    getCollector(dispatch, ispOwnerId, setCollectorLoading);
   }, [collectorId]);
 
   const columns = useMemo(
     () => [
       {
-        width: "10%",
+        width: "8%",
         Header: t("id"),
         accessor: "customer.customerId",
       },
@@ -100,12 +101,12 @@ const BillReport = () => {
         accessor: "amount",
       },
       {
-        width: "10%",
+        width: "8%",
         Header: t("discount"),
         accessor: "discount",
       },
       {
-        width: "10%",
+        width: "8%",
         Header: t("due"),
         accessor: "due",
       },
@@ -115,7 +116,7 @@ const BillReport = () => {
         accessor: "medium",
       },
       {
-        width: "10%",
+        width: "14%",
         Header: t("package"),
         accessor: "customer.mikrotikPackage",
         Cell: ({ cell: { value } }) => (
