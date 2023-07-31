@@ -152,14 +152,7 @@ const SupportNumbers = () => {
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-5">
                   <div>{t("supportNumbers")}</div>
-                  <div
-                    className="d-flex"
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "end",
-                    }}
-                  >
+                  <div className="d-flex align-items-center justify-content-center">
                     <PersonPlusFill
                       className="addcutmButton"
                       title={t("addSupportTicket")}

@@ -192,17 +192,19 @@ export default function Collector() {
                   ""
                 )}
 
-                <Link to={`/collector/billReport/${original.id}`}>
-                  <li>
-                    <div className="dropdown-item">
-                      <div className="customerAction">
-                        <CashStack />
+                {role !== "collector" && (
+                  <Link to={`/collector/billReport/${original.id}`}>
+                    <li>
+                      <div className="dropdown-item">
+                        <div className="customerAction">
+                          <CashStack />
 
-                        <p className="actionP">{t("billReport")}</p>
+                          <p className="actionP">{t("billReport")}</p>
+                        </div>
                       </div>
-                    </div>
-                  </li>
-                </Link>
+                    </li>
+                  </Link>
+                )}
                 {original.mobile && (
                   <li
                     data-bs-toggle="modal"
