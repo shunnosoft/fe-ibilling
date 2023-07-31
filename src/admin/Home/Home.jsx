@@ -652,7 +652,7 @@ export default function Home() {
           <div className="card-body">
             <div className="displayGrid6">
               <select
-                className="form-select mb-3 mt-0"
+                className="form-select mt-0"
                 aria-label="Default select example"
                 onChange={(event) => setFilterStatus(event.target.value)}
               >
@@ -664,7 +664,7 @@ export default function Home() {
               </select>
 
               <select
-                className="form-select mb-3 mt-0"
+                className="form-select mt-0"
                 aria-label="Default select example"
                 onChange={(event) => setStatus(event.target.value)}
               >
@@ -680,7 +680,7 @@ export default function Home() {
               </select>
 
               <select
-                className="form-select mb-3 mt-0"
+                className="form-select mt-0"
                 aria-label="Default select example"
                 onChange={(event) => setExecuteBill(event.target.value)}
               >
@@ -692,7 +692,7 @@ export default function Home() {
               </select>
 
               <select
-                className="form-select mb-3 mt-0"
+                className="form-select mt-0"
                 aria-label="Default select example"
                 onChange={(event) => setQueueType(event.target.value)}
               >
@@ -703,7 +703,7 @@ export default function Home() {
               </select>
 
               <select
-                className="form-select mb-3 mt-0"
+                className="form-select mt-0"
                 aria-label="Default select example"
                 onChange={(event) => setCustomerType(event.target.value)}
               >
@@ -714,7 +714,7 @@ export default function Home() {
               </select>
 
               <select
-                className="form-select mb-3 mt-0"
+                className="form-select mt-0"
                 aria-label="Default select example"
                 onChange={(event) => setMikrotik(event.target.value)}
               >
@@ -726,7 +726,7 @@ export default function Home() {
               </select>
 
               <select
-                className="form-select mb-3 mt-0"
+                className="form-select mt-0"
                 aria-label="Default select example"
                 onChange={(event) => setDistrict(event.target.value)}
               >

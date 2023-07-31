@@ -146,12 +146,15 @@ const AllInvoices = () => {
 
     mainData.map((item) => {
       // sum of all monthly fee
-      totalAmount += item.amount;
+      if (item.amount) {
+        totalAmount += item.amount;
+      }
       totalSms += item.numberOfSms;
     });
 
     return { totalSms, totalAmount };
   }, [mainData]);
+  console.log(mainData);
 
   //custom table header component
   const customComponent =
@@ -200,15 +203,33 @@ const AllInvoices = () => {
         // width: "10%",
         Header: "ID",
         Cell: ({ row: { original } }) => (
-          <div>{company && company[original.ispOwner]?.netFeeId}</div>
+          <div>
+            {original.ispOwner
+              ? original.ispOwner?.netFeeId
+              : original.reseller.ispOwner?.netFeeId}
+          </div>
         ),
       },
       {
         // width: "10%",
         Header: "Company",
-        accessor: "ispOwner",
-        Cell: ({ cell: { value } }) => (
-          <div>{company && company[value]?.company}</div>
+        Cell: ({ row: { original } }) => (
+          <div>
+            {original.ispOwner
+              ? original.ispOwner?.company
+              : original.reseller.ispOwner?.company}
+          </div>
+        ),
+      },
+      {
+        // width: "10%",
+        Header: "Name",
+        Cell: ({ row: { original } }) => (
+          <div>
+            {original.ispOwner
+              ? `${original.ispOwner?.name} (ispOwner)`
+              : `${original.reseller.ispOwner?.name} (reseller)`}
+          </div>
         ),
       },
       {

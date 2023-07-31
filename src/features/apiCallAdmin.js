@@ -100,12 +100,19 @@ export const uploadCsvFile = async (data, setIsLoading, mikrotikStatus) => {
 };
 
 // update owner
-export const updateOwner = async (ispOwnerId, data, setIsLoading, dispatch) => {
+export const updateOwner = async (
+  ispOwnerId,
+  data,
+  setIsLoading,
+  dispatch,
+  setIsPermission
+) => {
   setIsLoading(true);
   try {
     const res = await apiLink.patch("/ispOwner/" + ispOwnerId, data);
     dispatch(editOwner(res.data));
     document.querySelector("#clientEditModal").click();
+    setIsPermission(false);
     toast.success(`${data.company} IspOwner update success`);
   } catch (err) {
     console.log(err);
@@ -236,7 +243,7 @@ export const getInvoices = async (dispatch, setIsLoading) => {
     const res = await apiLink.get(
       `admin/all-invoice?limit=${5000}&sortBy=${"createdAt:desc"}`
     );
-    dispatch(getInvoicesSuccess(res.data?.invoices.results));
+    dispatch(getInvoicesSuccess(res.data?.invoices));
   } catch (error) {
     console.log(error.response);
   }

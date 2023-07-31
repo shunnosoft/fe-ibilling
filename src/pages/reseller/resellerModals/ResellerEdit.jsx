@@ -532,7 +532,9 @@ export default function ResellerEdit({ resellerId }) {
                               </div>
 
                               <div className="form-check">
-                                <p className="radioTitle"> {t("share")} </p>
+                                <p className="radioTitle">
+                                  {t("ispOwner")} (%)
+                                </p>
 
                                 <FtextField
                                   style={{ marginTop: "-25px" }}

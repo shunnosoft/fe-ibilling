@@ -547,78 +547,68 @@ export default function ConfigMikrotik() {
                   <Accordion alwaysOpen activeKey={activeKeys}>
                     <Accordion.Item eventKey="filter">
                       <Accordion.Body>
-                        <div className="d-flex justify-content-center">
-                          <div className="mikrotik-filter">
-                            <select
-                              id="selectMikrotikOption"
-                              onChange={mikrotiSelectionHandler}
-                              className="form-select mt-0"
-                            >
-                              {mikrotik.map((item) => (
-                                <option value={item.id}>{item.name}</option>
-                              ))}
-                            </select>
-                          </div>
+                        <div className="d-flex justify-content-center displayGrid6">
+                          <select
+                            id="selectMikrotikOption"
+                            onChange={mikrotiSelectionHandler}
+                            className="form-select mt-0"
+                          >
+                            {mikrotik.map((item) => (
+                              <option value={item.id}>{item.name}</option>
+                            ))}
+                          </select>
 
-                          <div className="mikrotik-filter ms-4">
-                            <select
-                              id="selectMikrotikOption"
-                              className="form-select mt-0"
-                              onChange={areaSubareaHandler}
-                            >
-                              <option value="">{t("allArea")}</option>
-                              {areas.map((item) => (
-                                <option value={item.id}>{item.name}</option>
-                              ))}
-                            </select>
-                          </div>
+                          <select
+                            id="selectMikrotikOption"
+                            className="form-select mt-0"
+                            onChange={areaSubareaHandler}
+                          >
+                            <option value="">{t("allArea")}</option>
+                            {areas.map((item) => (
+                              <option value={item.id}>{item.name}</option>
+                            ))}
+                          </select>
 
-                          <div className="mikrotik-filter ms-4">
-                            <select
-                              id="selectMikrotikOption"
-                              className="form-select mt-0"
-                              onChange={subAreasHandler}
-                            >
-                              <option value="">{t("subArea")}</option>
-                              {subareaIds.map((item) => (
-                                <option value={item.id}>{item.name}</option>
-                              ))}
-                            </select>
-                          </div>
+                          <select
+                            id="selectMikrotikOption"
+                            className="form-select mt-0"
+                            onChange={subAreasHandler}
+                          >
+                            <option value="">{t("subArea")}</option>
+                            {subareaIds.map((item) => (
+                              <option value={item.id}>{item.name}</option>
+                            ))}
+                          </select>
 
-                          <div className="mikrotik-filter ms-4">
-                            <select
-                              id="selectMikrotikOption"
-                              onChange={filterIt}
-                              className="form-select mt-0"
-                            >
-                              <option value="allCustomer">
-                                {t("sokolCustomer")}
-                              </option>
-                              <option value="online">{t("online")}</option>
-                              <option value="offline">{t("ofline")}</option>
-                            </select>
-                          </div>
+                          <select
+                            id="selectMikrotikOption"
+                            onChange={filterIt}
+                            className="form-select mt-0"
+                          >
+                            <option value="allCustomer">
+                              {t("sokolCustomer")}
+                            </option>
+                            <option value="online">{t("online")}</option>
+                            <option value="offline">{t("ofline")}</option>
+                          </select>
 
                           {customerIt && customerIt === "offline" ? (
-                            <div className="mikrotik-filter ms-4">
-                              <select
-                                id="selectMikrotikOption"
-                                className="form-select mt-0"
-                                onChange={customerItFilter}
-                              >
-                                <option value="All">{t("status")}</option>
-                                <option value="activeOffline">
-                                  {t("activeOffline")}
-                                </option>
-                                <option value="inactiveOffline">
-                                  {t("inactiveOffline")}
-                                </option>
-                                <option value="expiredOffline">
-                                  {t("expiredOffline")}
-                                </option>
-                              </select>
-                            </div>
+                            <select
+                              id="selectMikrotikOption"
+                              className="form-select mt-0"
+                              onChange={customerItFilter}
+                            >
+                              <option value="All">{t("status")}</option>
+                              <option value="activeOffline">
+                                {t("activeOffline")}
+                              </option>
+                              <option value="inactiveOffline">
+                                {t("inactiveOffline")}
+                              </option>
+                              <option value="expiredOffline">
+                                {t("expiredOffline")}
+                              </option>
+                            </select>
                           ) : (
                             ""
                           )}

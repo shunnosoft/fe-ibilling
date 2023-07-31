@@ -186,7 +186,7 @@ export default function Customer() {
 
   // bulk modal handle state
   const [bulkStatus, setBulkStatus] = useState("");
-  const [show, setShow] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     if (role === "collector") {
@@ -943,7 +943,7 @@ export default function Customer() {
                   original?.paymentStatus !== "paid") ? (
                   <li
                     onClick={() => {
-                      setShow(true);
+                      setIsOpen(true);
                       getSpecificCustomer(original.id);
                       setCustomerData(original);
                     }}
@@ -1690,8 +1690,8 @@ export default function Customer() {
 
               {/* static customer create invoice */}
               <StaticCreateInvoice
-                show={show}
-                setShow={setShow}
+                show={isOpen}
+                setShow={setIsOpen}
                 single={singleCustomer}
                 customerData={customerData}
               />
@@ -1792,8 +1792,8 @@ export default function Customer() {
               {bulkStatus === "bulkPaymentStatusEdit" && (
                 <BulkPaymentStatusEdit
                   bulkCustomer={bulkCustomer}
-                  show={show}
-                  setShow={setShow}
+                  show={isShow}
+                  setShow={setIsShow}
                 />
               )}
 
@@ -1892,7 +1892,7 @@ export default function Customer() {
                     className="p-1"
                     onClick={() => {
                       setBulkStatus("bulkPaymentStatusEdit");
-                      setShow(true);
+                      setIsShow(true);
                     }}
                   >
                     <div className="menu_icon2">

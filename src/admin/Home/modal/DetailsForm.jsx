@@ -265,11 +265,17 @@ const DetailsForm = ({ ispOwner }) => {
           </div>
 
           <div className="displayGrid3">
-            <FtextField type="text" label="Package Rate" name="packageRate" />
+            <FtextField
+              type="text"
+              label="Package Rate"
+              name="packageRate"
+              disabled={role === "admin"}
+            />
             <FtextField
               type="text"
               label="Customer Limit"
               name="customerLimit"
+              disabled={role === "admin"}
             />
 
             {role === "superadmin" && (
@@ -307,6 +313,7 @@ const DetailsForm = ({ ispOwner }) => {
                 className="form-select mw-100 mt-0"
                 aria-label="Default select example"
                 name="pack"
+                disabled={role === "admin"}
               >
                 <option value="P1">P1</option>
                 <option value="P2">P2</option>
@@ -365,6 +372,7 @@ const DetailsForm = ({ ispOwner }) => {
                   onChange={(date) => setBillDate(date)}
                   type="date"
                   name="monthlyDueDate"
+                  disabled={role === "admin"}
                 />
               </div>
             </div>
