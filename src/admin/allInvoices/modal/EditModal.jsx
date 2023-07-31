@@ -20,10 +20,10 @@ const InvoiceEditModalSuper = ({ invoiceId }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   // get isp owner invoice list
-  const invoiceList = useSelector((state) => state.admin?.invoices);
+  const invoiceList = useSelector((state) => state.admin.invoices?.results);
 
   // get editable invoice
-  const ispOwnerInvoice = invoiceList.find((item) => item.id === invoiceId);
+  const ispOwnerInvoice = invoiceList?.find((item) => item.id === invoiceId);
 
   const role = useSelector((state) => state.persistedReducer.auth?.role);
 

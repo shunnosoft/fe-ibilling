@@ -26,7 +26,8 @@ const AllInvoices = () => {
   // get isp owner
   let ispOwners = useSelector((state) => state.admin?.ispOwners);
 
-  let invoices = useSelector((state) => state.companyName?.invoices);
+  let invoices = useSelector((state) => state.companyName.invoices?.results);
+
   // get Current date
   const today = new Date();
 
@@ -62,11 +63,11 @@ const AllInvoices = () => {
 
   // get note api call
   useEffect(() => {
-    if (!invoices.length) getInvoices(dispatch, setIsLoading);
-    if (invoices.length > 0) {
+    if (!invoices?.length) getInvoices(dispatch, setIsLoading);
+    if (invoices?.length > 0) {
       setMainData(invoices);
     }
-    if (!ispOwners.length) getIspOwners(dispatch, setIspOwnerLoading);
+    if (!ispOwners?.length) getIspOwners(dispatch, setIspOwnerLoading);
   }, [invoices]);
 
   // get all company name from redux
@@ -154,7 +155,6 @@ const AllInvoices = () => {
 
     return { totalSms, totalAmount };
   }, [mainData]);
-  console.log(mainData);
 
   //custom table header component
   const customComponent =
