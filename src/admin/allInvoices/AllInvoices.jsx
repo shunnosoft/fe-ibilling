@@ -26,7 +26,7 @@ const AllInvoices = () => {
   // get isp owner
   let ispOwners = useSelector((state) => state.admin?.ispOwners);
 
-  let invoices = useSelector((state) => state.companyName.invoices?.results);
+  let invoices = useSelector((state) => state.companyName.invoices);
 
   // get Current date
   const today = new Date();
