@@ -431,11 +431,16 @@ export default function Reseller() {
                   </div>
                   {role === "ispOwner" && (
                     <div className="d-flex justify-content-center align-items-center">
-                      <div className="reloadBtn">
+                      <div
+                        style={{ height: "34px", width: "34px" }}
+                        className="reloadBtn"
+                      >
                         {dataLoader ? (
-                          <Loader></Loader>
+                          <Loader />
                         ) : (
                           <ArrowClockwise
+                            className="mb-1"
+                            size={19}
                             onClick={() => reloadHandler()}
                           ></ArrowClockwise>
                         )}
@@ -443,7 +448,10 @@ export default function Reseller() {
 
                       <div title={t("allResellerCustomer")}>
                         <Link to={`/reseller/customer`}>
-                          <PeopleFill className="addcutmButton" />
+                          <PeopleFill
+                            style={{ height: "34px", width: "34px" }}
+                            className="addcutmButton"
+                          />
                         </Link>
                       </div>
 
@@ -452,7 +460,10 @@ export default function Reseller() {
                         data-bs-toggle="modal"
                         data-bs-target="#resellerModal"
                       >
-                        <PersonPlusFill className="addcutmButton" />
+                        <PersonPlusFill
+                          style={{ height: "34px", width: "34px" }}
+                          className="addcutmButton"
+                        />
                       </div>
                     </div>
                   )}

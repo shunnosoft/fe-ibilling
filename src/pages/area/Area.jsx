@@ -235,16 +235,22 @@ export default function Area() {
                   </div>
 
                   <div className="d-flex align-items-center justify-content-center">
-                    <div className="reloadBtn">
+                    <div
+                      style={{ height: "34px", width: "34px" }}
+                      className="reloadBtn"
+                    >
                       {isLoading ? (
                         <Loader />
                       ) : (
                         <ArrowClockwise
+                          className="mb-1"
+                          size={20}
                           onClick={() => reloadHandler()}
                         ></ArrowClockwise>
                       )}
                     </div>
                     <div
+                      style={{ height: "34px", width: "34px" }}
                       title={t("addArea")}
                       className="header_icon"
                       data-bs-toggle="modal"

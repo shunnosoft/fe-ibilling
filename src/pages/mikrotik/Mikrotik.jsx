@@ -164,17 +164,23 @@ export default function Mikrotik() {
                   </div>
 
                   <div className="d-flex justify-content-center align-items-center">
-                    <div className="reloadBtn">
+                    <div
+                      style={{ height: "34px", width: "34px" }}
+                      className="reloadBtn"
+                    >
                       {isLoading ? (
-                        <Loader></Loader>
+                        <Loader />
                       ) : (
                         <ArrowClockwise
+                          size={19}
+                          className="mb-1"
                           onClick={() => reloadHandler()}
                         ></ArrowClockwise>
                       )}
                     </div>
 
                     <div
+                      style={{ height: "34px", width: "34px" }}
                       title={t("addMikrotik")}
                       className="header_icon"
                       data-bs-toggle="modal"

@@ -2382,12 +2382,7 @@ export const getCollectorBill = async (dispatch, setIsLoading) => {
 
 //recharge
 //isp Owner end
-export const recharge = async (
-  data,
-  setIsLoading,
-  dispatch,
-  inputForm = null
-) => {
+export const recharge = async (data, setIsLoading, dispatch) => {
   setIsLoading(true);
   try {
     const res = await apiLink.post("/reseller/recharge", data);
@@ -2396,7 +2391,6 @@ export const recharge = async (
     setIsLoading(false);
     langMessage("success", "রিচার্জ সফল হয়েছে", "Recharge is Successful");
     document.getElementById("resellerRechargeModal").click();
-    inputForm.current.value = "";
   } catch (error) {
     setIsLoading(false);
     toast.error(error.response?.data.message);

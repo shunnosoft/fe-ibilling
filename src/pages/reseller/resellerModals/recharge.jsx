@@ -1,18 +1,18 @@
 import React, { useState } from "react";
-import { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../../../components/common/Loader";
 import { recharge } from "../../../features/apiCalls";
+import * as Yup from "yup";
 
 import "../../message/message.css";
 import { useTranslation } from "react-i18next";
+import { Field, Form, Formik } from "formik";
+import { FtextField } from "../../../components/common/FtextField";
 
 function Recharge({ resellerId }) {
   const { t } = useTranslation();
-  const rechargeRef = useRef(Number);
   const dispatch = useDispatch();
   const [isLoading, setIsloading] = useState(false);
-  const [comment, setComment] = useState("");
 
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.userData.id
@@ -23,14 +23,21 @@ function Recharge({ resellerId }) {
     return val.id === resellerId;
   });
 
-  const rechargeHandler = () => {
+  //recharge Validate with yup
+  const rechargeValidate = Yup.object({
+    amount: Yup.number().required(t("enterAmount")),
+    comment: Yup.string(),
+  });
+
+  //recharge Handler
+  const rechargeHandler = (val) => {
     const data = {
-      amount: parseInt(rechargeRef.current.value),
-      comment,
+      amount: val.amount,
+      comment: val.comment,
       ispOwner: ispOwnerId,
       reseller: reseller.id,
     };
-    recharge(data, setIsloading, dispatch, rechargeRef);
+    recharge(data, setIsloading, dispatch);
   };
   return (
     <>
@@ -55,43 +62,58 @@ function Recharge({ resellerId }) {
               ></button>
             </div>
             <div className="modal-body">
-              <div className="amount-section">
-                <input
-                  ref={rechargeRef}
-                  className="form-control"
-                  type="number"
-                  min={0}
-                  placeholder={t("enterAmount")}
-                />
-              </div>
-              <div class="form-floating mt-3">
-                <textarea
-                  cols={200}
-                  class="form-control shadow-none"
-                  placeholder={t("writeNote")}
-                  id="noteField"
-                  onChange={(e) => setComment(e.target.value)}
-                ></textarea>
-                <label for="noteField"> {t("addComment")} </label>
-              </div>
-            </div>
-
-            <div className="modal-footer">
-              <button
-                type="button"
-                className="btn btn-secondary"
-                data-bs-dismiss="modal"
+              <Formik
+                initialValues={{
+                  amount: "",
+                  comment: "",
+                }}
+                validationSchema={rechargeValidate}
+                onSubmit={(values) => {
+                  rechargeHandler(values);
+                }}
+                enableReinitialize
               >
-                {t("cancel")}
-              </button>
+                {(formik) => (
+                  <Form>
+                    <div>
+                      <FtextField
+                        type="number"
+                        label={t("enterAmount")}
+                        name="amount"
+                        min={0}
+                      />
+                      <label className="changeLabelFontColor" htmlFor="comment">
+                        {t("addComment")}
+                      </label>
 
-              <button
-                type="button"
-                className="btn btn-success"
-                onClick={rechargeHandler}
-              >
-                {isLoading ? <Loader></Loader> : t("recharge")}
-              </button>
+                      <Field
+                        className="form-control shadow-none"
+                        style={{
+                          height: "70px",
+                          width: "100%",
+                          padding: "10px",
+                        }}
+                        component="textarea"
+                        name="comment"
+                      />
+                    </div>
+
+                    <div className="modal-footer">
+                      <button
+                        type="button"
+                        className="btn btn-secondary"
+                        data-bs-dismiss="modal"
+                      >
+                        {t("cancel")}
+                      </button>
+
+                      <button type="submit" className="btn btn-success">
+                        {isLoading ? <Loader /> : t("recharge")}
+                      </button>
+                    </div>
+                  </Form>
+                )}
+              </Formik>
             </div>
           </div>
         </div>
