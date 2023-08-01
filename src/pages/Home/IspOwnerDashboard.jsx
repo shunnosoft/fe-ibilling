@@ -115,6 +115,14 @@ export default function IspOwnerDashboard() {
   const [Month, setMonth] = useState(date.getMonth());
   const [filterDate, setFilterDate] = useState(date);
 
+  //date logic fix
+  const monthValue = new Date(ispOwnerData?.createdAt).getMonth();
+  const dayValue = new Date(ispOwnerData?.createdAt).getDate();
+  const newCreated = new Date(ispOwnerData?.createdAt).setMonth(
+    monthValue - 1,
+    dayValue
+  );
+
   // discount modal state
   const [discountShow, setDiscountShow] = useState(false);
 
@@ -450,7 +458,8 @@ export default function IspOwnerDashboard() {
                         endDate={"2014/04/08"}
                         placeholderText={t("filterDashboard")}
                         maxDate={new Date()}
-                        minDate={new Date(ispOwnerData?.createdAt)}
+                        minDate={new Date(newCreated)}
+                        // minDate={new Date(ispOwnerData?.createdAt)}
                       />
                     </div>
                     <button
