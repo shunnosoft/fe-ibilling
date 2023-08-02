@@ -74,6 +74,8 @@ const MessageLog = () => {
                         <Loader />
                       ) : (
                         <ArrowClockwise
+                          className="arrowClock"
+                          title={t("refresh")}
                           onClick={() => reloadHandler()}
                         ></ArrowClockwise>
                       )}

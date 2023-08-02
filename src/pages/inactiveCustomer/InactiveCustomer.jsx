@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
+  ArrowBarLeft,
+  ArrowBarRight,
   ArrowClockwise,
-  ArrowLeftCircle,
-  ArrowRightCircle,
-  FileExcelFill,
+  FiletypeCsv,
   FilterCircle,
   PrinterFill,
 } from "react-bootstrap-icons";
@@ -194,47 +194,41 @@ const InactiveCustomer = () => {
             <FontColor>
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-4">
-                  <div className="d-flex">
-                    <h2>{t("inactiveCustomer")}</h2>
-                  </div>
+                  <h2>{t("inactiveCustomer")}</h2>
 
                   <div
-                    style={{ fontSize: "25px", height: "45px" }}
-                    className="d-flex justify-content-center align-items-center"
+                    style={{ height: "45px" }}
+                    className="d-flex align-items-center"
                   >
-                    {!open && (
-                      <ArrowLeftCircle
-                        size={34}
-                        style={{ cursor: "pointer" }}
-                        onClick={() => setOpen(!open)}
-                        aria-controls="example-collapse-text"
-                        aria-expanded={open}
-                        className="me-3"
-                      />
-                    )}
+                    <div
+                      onClick={() => {
+                        if (!activeKeys) {
+                          setActiveKeys("filter");
+                        } else {
+                          setActiveKeys("");
+                        }
+                      }}
+                      title={t("filter")}
+                    >
+                      <FilterCircle className="addcutmButton" />
+                    </div>
 
-                    {open && (
-                      <ArrowRightCircle
-                        size={34}
-                        style={{ cursor: "pointer" }}
-                        onClick={() => setOpen(!open)}
-                        aria-controls="example-collapse-text"
-                        aria-expanded={open}
-                        className="me-3"
-                      />
-                    )}
+                    <div className="reloadBtn">
+                      {isLoading ? (
+                        <Loader />
+                      ) : (
+                        <ArrowClockwise
+                          className="arrowClock"
+                          title={t("refresh")}
+                          onClick={() => reloadHandler()}
+                        />
+                      )}
+                    </div>
 
                     <Collapse in={open} dimension="width">
                       <div id="example-collapse-text">
-                        <Card
-                          body
-                          className="border-0"
-                          style={{
-                            width: "90px",
-                            backgroundColor: "#2E87DF",
-                          }}
-                        >
-                          <div className="d-flex align-items-center justify-content-center">
+                        <Card className="cardCollapse border-0">
+                          <div className="d-flex align-items-center">
                             <div className="addAndSettingIcon">
                               <CSVLink
                                 data={customerForCsVTableInfo}
@@ -242,10 +236,7 @@ const InactiveCustomer = () => {
                                 headers={customerForCsVTableInfoHeader}
                                 title="inactive Customer CSV"
                               >
-                                <FileExcelFill
-                                  style={{ height: "34px", width: "34px" }}
-                                  className="addcutmButton"
-                                />
+                                <FiletypeCsv className="addcutmButton" />
                               </CSVLink>
                             </div>
 
@@ -257,7 +248,6 @@ const InactiveCustomer = () => {
                                 documentTitle={t("inactiveCustomer")}
                                 trigger={() => (
                                   <PrinterFill
-                                    style={{ height: "34px", width: "34px" }}
                                     title={t("print")}
                                     className="addcutmButton"
                                   />
@@ -270,35 +260,27 @@ const InactiveCustomer = () => {
                       </div>
                     </Collapse>
 
-                    <div
-                      onClick={() => {
-                        if (!activeKeys) {
-                          setActiveKeys("filter");
-                        } else {
-                          setActiveKeys("");
-                        }
-                      }}
-                      title={t("filter")}
-                    >
-                      <FilterCircle
-                        style={{ height: "34px", width: "34px" }}
-                        className="addcutmButton"
+                    {!open && (
+                      <ArrowBarLeft
+                        className="ms-1"
+                        size={34}
+                        style={{ cursor: "pointer" }}
+                        onClick={() => setOpen(!open)}
+                        aria-controls="example-collapse-text"
+                        aria-expanded={open}
                       />
-                    </div>
+                    )}
 
-                    <div
-                      style={{ height: "34px", width: "34px" }}
-                      className="reloadBtn"
-                    >
-                      {isLoading ? (
-                        <Loader></Loader>
-                      ) : (
-                        <ArrowClockwise
-                          size={18}
-                          onClick={() => reloadHandler()}
-                        ></ArrowClockwise>
-                      )}
-                    </div>
+                    {open && (
+                      <ArrowBarRight
+                        className="ms-1"
+                        size={34}
+                        style={{ cursor: "pointer" }}
+                        onClick={() => setOpen(!open)}
+                        aria-controls="example-collapse-text"
+                        aria-expanded={open}
+                      />
+                    )}
                   </div>
                 </div>
               </FourGround>

@@ -14,6 +14,8 @@ import "./report.css";
 import { useDispatch, useSelector } from "react-redux";
 
 import {
+  ArrowBarLeft,
+  ArrowBarRight,
   ArrowClockwise,
   ArrowLeftCircle,
   ArrowRightCircle,
@@ -538,46 +540,41 @@ export default function Report() {
             <FontColor>
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-4">
-                  <div className="d-flex">
-                    <div>{t("billReport")}</div>
-                  </div>
-                  <div
-                    style={{ fontSize: "25px", height: "45px" }}
-                    className="d-flex justify-content-center align-items-center"
-                  >
-                    {!open && (
-                      <ArrowLeftCircle
-                        size={34}
-                        style={{ cursor: "pointer" }}
-                        onClick={() => setOpen(!open)}
-                        aria-controls="example-collapse-text"
-                        aria-expanded={open}
-                        className="me-3"
-                      />
-                    )}
+                  <h2>{t("billReport")}</h2>
 
-                    {open && (
-                      <ArrowRightCircle
-                        size={34}
-                        style={{ cursor: "pointer" }}
-                        onClick={() => setOpen(!open)}
-                        aria-controls="example-collapse-text"
-                        aria-expanded={open}
-                        className="me-3"
-                      />
-                    )}
+                  <div
+                    style={{ height: "45px" }}
+                    className="d-flex align-items-center"
+                  >
+                    <div
+                      onClick={() => {
+                        if (!activeKeys) {
+                          setActiveKeys("filter");
+                        } else {
+                          setActiveKeys("");
+                        }
+                      }}
+                      title={t("filter")}
+                    >
+                      <FilterCircle className="addcutmButton" />
+                    </div>
+
+                    <div className="reloadBtn">
+                      {isLoading ? (
+                        <Loader />
+                      ) : (
+                        <ArrowClockwise
+                          className="arrowClock"
+                          onClick={() => reloadHandler()}
+                          title={t("refresh")}
+                        />
+                      )}
+                    </div>
 
                     <Collapse in={open} dimension="width">
                       <div id="example-collapse-text">
-                        <Card
-                          body
-                          className="border-0"
-                          style={{
-                            width: "100px",
-                            backgroundColor: "#2E87DF",
-                          }}
-                        >
-                          <div className="d-flex align-items-center justify-content-center">
+                        <Card className="cardCollapse border-0">
+                          <div className="d-flex align-items-center">
                             <div className="addAndSettingIcon">
                               <CSVLink
                                 data={reportForCsVTableInfo}
@@ -585,10 +582,7 @@ export default function Report() {
                                 headers={reportForCsVTableInfoHeader}
                                 title="Bill Report"
                               >
-                                <FiletypeCsv
-                                  style={{ height: "34px", width: "34px" }}
-                                  className="addcutmButton"
-                                />
+                                <FiletypeCsv className="addcutmButton" />
                               </CSVLink>
                             </div>
 
@@ -597,7 +591,6 @@ export default function Report() {
                                 documentTitle={t("billReport")}
                                 trigger={() => (
                                   <PrinterFill
-                                    style={{ height: "34px", width: "34px" }}
                                     title={t("print")}
                                     className="addcutmButton"
                                   />
@@ -610,35 +603,27 @@ export default function Report() {
                       </div>
                     </Collapse>
 
-                    <div
-                      onClick={() => {
-                        if (!activeKeys) {
-                          setActiveKeys("filter");
-                        } else {
-                          setActiveKeys("");
-                        }
-                      }}
-                      title={t("filter")}
-                    >
-                      <FilterCircle
-                        style={{ height: "34px", width: "34px" }}
-                        className="addcutmButton"
+                    {!open && (
+                      <ArrowBarLeft
+                        className="ms-1"
+                        size={34}
+                        style={{ cursor: "pointer" }}
+                        onClick={() => setOpen(!open)}
+                        aria-controls="example-collapse-text"
+                        aria-expanded={open}
                       />
-                    </div>
+                    )}
 
-                    <div
-                      style={{ height: "34px", width: "34px" }}
-                      className="reloadBtn"
-                    >
-                      {isLoading ? (
-                        <Loader />
-                      ) : (
-                        <ArrowClockwise
-                          style={{ height: "20px", width: "20px" }}
-                          onClick={() => reloadHandler()}
-                        ></ArrowClockwise>
-                      )}
-                    </div>
+                    {open && (
+                      <ArrowBarRight
+                        className="ms-1"
+                        size={34}
+                        style={{ cursor: "pointer" }}
+                        onClick={() => setOpen(!open)}
+                        aria-controls="example-collapse-text"
+                        aria-expanded={open}
+                      />
+                    )}
                   </div>
                 </div>
               </FourGround>

@@ -434,9 +434,11 @@ export default function Diposit() {
 
                     <div className="reloadBtn">
                       {resellerPageLoader ? (
-                        <Loader></Loader>
+                        <Loader />
                       ) : (
                         <ArrowClockwise
+                          className="arrowClock"
+                          title={t("refresh")}
                           onClick={() => reloadHandler()}
                         ></ArrowClockwise>
                       )}

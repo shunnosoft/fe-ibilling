@@ -251,9 +251,7 @@ function Invoice() {
             <FontColor>
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-4">
-                  <div className="d-flex">
-                    <div>{t("invoice")}</div>
-                  </div>
+                  <h2>{t("invoice")}</h2>
 
                   <div className="d-flex justify-content-center align-items-center">
                     <div
@@ -274,6 +272,8 @@ function Invoice() {
                         <Loader></Loader>
                       ) : (
                         <ArrowClockwise
+                          className="arrowClock"
+                          title={t("refresh")}
                           onClick={() => reloadHandler()}
                         ></ArrowClockwise>
                       )}

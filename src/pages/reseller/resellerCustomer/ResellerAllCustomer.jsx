@@ -7,6 +7,8 @@ import React, {
 } from "react";
 import {
   ArchiveFill,
+  ArrowBarLeft,
+  ArrowBarRight,
   ArrowClockwise,
   ArrowLeft,
   CashStack,
@@ -44,7 +46,7 @@ import { useNavigate } from "react-router-dom";
 import BulkPromiseDateEdit from "../../Customer/customerCRUD/bulkOpration/BulkPromiseDateEdit";
 import BulkBillingCycleEdit from "../../Customer/customerCRUD/bulkOpration/bulkBillingCycleEdit";
 import BulkStatusEdit from "../../Customer/customerCRUD/bulkOpration/bulkStatusEdit";
-import { Accordion } from "react-bootstrap";
+import { Accordion, Card, Collapse } from "react-bootstrap";
 
 const AllResellerCustomer = () => {
   const { t } = useTranslation();
@@ -92,6 +94,7 @@ const AllResellerCustomer = () => {
 
   // loading local state
   const [isLoading, setIsLoading] = useState(false);
+  const [open, setOpen] = useState(false);
 
   // status local state
   const [filterStatus, setFilterStatus] = useState(null);
@@ -528,7 +531,10 @@ const AllResellerCustomer = () => {
                     <h2>{t("customer")}</h2>
                   </div>
 
-                  <div className="d-flex justify-content-center align-items-center">
+                  <div
+                    style={{ height: "45px" }}
+                    className="d-flex align-items-center"
+                  >
                     <div
                       onClick={() => {
                         if (!activeKeys) {
@@ -547,44 +553,76 @@ const AllResellerCustomer = () => {
                         <Loader></Loader>
                       ) : (
                         <ArrowClockwise
+                          className="arrowClock"
+                          title={t("refresh")}
                           onClick={() => reloadHandler()}
                         ></ArrowClockwise>
                       )}
                     </div>
 
-                    <div className="addAndSettingIcon">
-                      <CSVLink
-                        data={customerForCsVTableInfo}
-                        filename={ispOwnerData.company}
-                        headers={customerForCsVTableInfoHeader}
-                        title="Customer Report"
-                      >
-                        <FiletypeCsv className="addcutmButton" />
-                      </CSVLink>
-                    </div>
-                    <div className="addAndSettingIcon">
-                      <CSVLink
-                        data={customerForCsV}
-                        filename={ispOwnerData.company}
-                        headers={headers}
-                        title={t("downloadBTRCreport")}
-                      >
-                        <FileExcelFill className="addcutmButton" />
-                      </CSVLink>
-                    </div>
+                    <Collapse in={open} dimension="width">
+                      <div id="example-collapse-text">
+                        <Card className="cardCollapse border-0">
+                          <div className="d-flex align-items-center">
+                            <div className="addAndSettingIcon">
+                              <CSVLink
+                                data={customerForCsVTableInfo}
+                                filename={ispOwnerData.company}
+                                headers={customerForCsVTableInfoHeader}
+                                title="Customer Report"
+                              >
+                                <FiletypeCsv className="addcutmButton" />
+                              </CSVLink>
+                            </div>
+                            <div className="addAndSettingIcon">
+                              <CSVLink
+                                data={customerForCsV}
+                                filename={ispOwnerData.company}
+                                headers={headers}
+                                title={t("downloadBTRCreport")}
+                              >
+                                <FileExcelFill className="addcutmButton" />
+                              </CSVLink>
+                            </div>
 
-                    <div className="addAndSettingIcon">
-                      <ReactToPrint
-                        documentTitle="গ্রাহক লিস্ট"
-                        trigger={() => (
-                          <PrinterFill
-                            title={t("print")}
-                            className="addcutmButton"
-                          />
-                        )}
-                        content={() => componentRef.current}
+                            <div className="addAndSettingIcon">
+                              <ReactToPrint
+                                documentTitle="গ্রাহক লিস্ট"
+                                trigger={() => (
+                                  <PrinterFill
+                                    title={t("print")}
+                                    className="addcutmButton"
+                                  />
+                                )}
+                                content={() => componentRef.current}
+                              />
+                            </div>
+                          </div>
+                        </Card>
+                      </div>
+                    </Collapse>
+
+                    {!open && (
+                      <ArrowBarLeft
+                        className="ms-1"
+                        size={34}
+                        style={{ cursor: "pointer" }}
+                        onClick={() => setOpen(!open)}
+                        aria-controls="example-collapse-text"
+                        aria-expanded={open}
                       />
-                    </div>
+                    )}
+
+                    {open && (
+                      <ArrowBarRight
+                        className="ms-1"
+                        size={34}
+                        style={{ cursor: "pointer" }}
+                        onClick={() => setOpen(!open)}
+                        aria-controls="example-collapse-text"
+                        aria-expanded={open}
+                      />
+                    )}
                   </div>
                 </div>
               </FourGround>

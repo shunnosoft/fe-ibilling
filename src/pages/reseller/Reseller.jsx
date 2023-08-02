@@ -7,7 +7,6 @@ import {
   PersonFill,
   PeopleFill,
   ChatText,
-  ArrowRightShort,
   ArrowClockwise,
   CurrencyDollar,
   PencilSquare,
@@ -431,16 +430,13 @@ export default function Reseller() {
                   </div>
                   {role === "ispOwner" && (
                     <div className="d-flex justify-content-center align-items-center">
-                      <div
-                        style={{ height: "34px", width: "34px" }}
-                        className="reloadBtn"
-                      >
+                      <div className="reloadBtn">
                         {dataLoader ? (
                           <Loader />
                         ) : (
                           <ArrowClockwise
-                            className="mb-1"
-                            size={19}
+                            className="arrowClock"
+                            title={t("refresh")}
                             onClick={() => reloadHandler()}
                           ></ArrowClockwise>
                         )}
@@ -448,10 +444,7 @@ export default function Reseller() {
 
                       <div title={t("allResellerCustomer")}>
                         <Link to={`/reseller/customer`}>
-                          <PeopleFill
-                            style={{ height: "34px", width: "34px" }}
-                            className="addcutmButton"
-                          />
+                          <PeopleFill className="addcutmButton" />
                         </Link>
                       </div>
 
@@ -460,10 +453,7 @@ export default function Reseller() {
                         data-bs-toggle="modal"
                         data-bs-target="#resellerModal"
                       >
-                        <PersonPlusFill
-                          style={{ height: "34px", width: "34px" }}
-                          className="addcutmButton"
-                        />
+                        <PersonPlusFill className="addcutmButton" />
                       </div>
                     </div>
                   )}

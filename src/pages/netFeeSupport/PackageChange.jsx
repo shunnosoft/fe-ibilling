@@ -111,7 +111,7 @@ const PackageChange = () => {
         Header: t("createdAt"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("MMM DD YYYY hh:mm a");
+          return moment(value).format("YYYY/MM/DD hh:mm a");
         },
       },
 
@@ -182,13 +182,18 @@ const PackageChange = () => {
           <div className="container">
             <FontColor>
               <FourGround>
-                <div className="collectorTitle d-flex px-5">
-                  <div>{t("packageChange")}</div>
+                <div className="collectorTitle d-flex justify-content-between px-4">
+                  <h2>{t("packageChange")}</h2>
+
                   <div className="reloadBtn">
                     {isLoading ? (
                       <Loader />
                     ) : (
-                      <ArrowClockwise onClick={reloadHandler} />
+                      <ArrowClockwise
+                        className="arrowClock"
+                        title={t("refresh")}
+                        onClick={reloadHandler}
+                      />
                     )}
                   </div>
                 </div>

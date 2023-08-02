@@ -188,13 +188,17 @@ const ChangePackage = () => {
           <div className="container">
             <FontColor>
               <FourGround>
-                <div className="collectorTitle d-flex px-5">
+                <div className="collectorTitle d-flex justify-content-between px-4">
                   <div>{t("packageChange")}</div>
                   <div className="reloadBtn">
                     {isLoading ? (
                       <Loader />
                     ) : (
-                      <ArrowClockwise onClick={reloadHandler} />
+                      <ArrowClockwise
+                        className="arrowClock"
+                        title={t("refresh")}
+                        onClick={reloadHandler}
+                      />
                     )}
                   </div>
                 </div>

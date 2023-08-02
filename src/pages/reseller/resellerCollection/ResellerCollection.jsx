@@ -11,9 +11,9 @@ import useDash from "../../../assets/css/dash.module.css";
 import { FontColor, FourGround } from "../../../assets/js/theme";
 import Loader from "../../../components/common/Loader";
 import {
+  ArrowBarLeft,
+  ArrowBarRight,
   ArrowClockwise,
-  ArrowLeftCircle,
-  ArrowRightCircle,
   FiletypeCsv,
   FilterCircle,
   PenFill,
@@ -254,13 +254,7 @@ const ResellerCollection = () => {
         id: "option",
 
         Cell: ({ row: { original } }) => (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
+          <div className="d-flex justify-content-center align-items-center">
             <div className="dropdown">
               <ThreeDots
                 className="dropdown-toggle ActionDots"
@@ -431,46 +425,41 @@ const ResellerCollection = () => {
             <FontColor>
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-4">
-                  <div className="d-flex">
-                    <div>{t("resellerCollection")}</div>
-                  </div>
-                  <div
-                    style={{ fontSize: "25px", height: "45px" }}
-                    className="d-flex justify-content-center align-items-center"
-                  >
-                    {!open && (
-                      <ArrowLeftCircle
-                        size={34}
-                        style={{ cursor: "pointer" }}
-                        onClick={() => setOpen(!open)}
-                        aria-controls="example-collapse-text"
-                        aria-expanded={open}
-                        className="me-3"
-                      />
-                    )}
+                  <h2>{t("resellerCollection")}</h2>
 
-                    {open && (
-                      <ArrowRightCircle
-                        size={34}
-                        style={{ cursor: "pointer" }}
-                        onClick={() => setOpen(!open)}
-                        aria-controls="example-collapse-text"
-                        aria-expanded={open}
-                        className="me-3"
-                      />
-                    )}
+                  <div
+                    style={{ height: "45px" }}
+                    className="d-flex align-items-center"
+                  >
+                    <div
+                      onClick={() => {
+                        if (!activeKeys) {
+                          setActiveKeys("filter");
+                        } else {
+                          setActiveKeys("");
+                        }
+                      }}
+                      title={t("filter")}
+                    >
+                      <FilterCircle className="addcutmButton" />
+                    </div>
+
+                    <div className="reloadBtn">
+                      {isLoading ? (
+                        <Loader />
+                      ) : (
+                        <ArrowClockwise
+                          className="arrowClock"
+                          title={t("refresh")}
+                          onClick={() => reloadHandler()}
+                        />
+                      )}
+                    </div>
 
                     <Collapse in={open} dimension="width">
                       <div id="example-collapse-text">
-                        <Card
-                          body
-                          className="border-0"
-                          style={{
-                            width: "100px",
-                            backgroundColor: "#2E87DF",
-                          }}
-                        >
-                          <div className="d-flex align-items-center justify-content-center">
+                        <Card className="cardCollapse border-0">
+                          <div className="d-flex align-items-center">
                             <div className="addAndSettingIcon">
                               <CSVLink
                                 data={resellerCollectionCsVTableInfo}
@@ -478,10 +467,7 @@ const ResellerCollection = () => {
                                 headers={resellerCollectionCsVTableInfoHeader}
                                 title={t("resellerCollection")}
                               >
-                                <FiletypeCsv
-                                  style={{ height: "34px", width: "34px" }}
-                                  className="addcutmButton"
-                                />
+                                <FiletypeCsv className="addcutmButton" />
                               </CSVLink>
                             </div>
 
@@ -490,7 +476,6 @@ const ResellerCollection = () => {
                                 documentTitle={t("billReport")}
                                 trigger={() => (
                                   <PrinterFill
-                                    style={{ height: "34px", width: "34px" }}
                                     title={t("print")}
                                     className="addcutmButton"
                                   />
@@ -503,35 +488,27 @@ const ResellerCollection = () => {
                       </div>
                     </Collapse>
 
-                    <div
-                      onClick={() => {
-                        if (!activeKeys) {
-                          setActiveKeys("filter");
-                        } else {
-                          setActiveKeys("");
-                        }
-                      }}
-                      title={t("filter")}
-                    >
-                      <FilterCircle
-                        style={{ height: "34px", width: "34px" }}
-                        className="addcutmButton"
+                    {!open && (
+                      <ArrowBarLeft
+                        className="ms-1"
+                        size={34}
+                        style={{ cursor: "pointer" }}
+                        onClick={() => setOpen(!open)}
+                        aria-controls="example-collapse-text"
+                        aria-expanded={open}
                       />
-                    </div>
+                    )}
 
-                    <div
-                      style={{ height: "34px", width: "34px" }}
-                      className="reloadBtn"
-                    >
-                      {isLoading ? (
-                        <Loader></Loader>
-                      ) : (
-                        <ArrowClockwise
-                          style={{ height: "20px", width: "20px" }}
-                          onClick={() => reloadHandler()}
-                        ></ArrowClockwise>
-                      )}
-                    </div>
+                    {open && (
+                      <ArrowBarRight
+                        className="ms-1"
+                        size={34}
+                        style={{ cursor: "pointer" }}
+                        onClick={() => setOpen(!open)}
+                        aria-controls="example-collapse-text"
+                        aria-expanded={open}
+                      />
+                    )}
                   </div>
                 </div>
               </FourGround>

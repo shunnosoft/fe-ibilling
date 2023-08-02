@@ -180,26 +180,16 @@ const StaticActiveCustomer = () => {
                       }}
                       title={t("filter")}
                     >
-                      <FilterCircle
-                        style={{ height: "34px", width: "34px" }}
-                        className="addcutmButton"
-                      />
+                      <FilterCircle className="addcutmButton" />
                     </div>
 
-                    <div
-                      style={{
-                        height: "34px",
-                        width: "34px",
-                        marginTop: "3px",
-                      }}
-                      className="reloadBtn"
-                    >
+                    <div className="reloadBtn">
                       {isLoading ? (
                         <Loader />
                       ) : (
                         <ArrowClockwise
-                          size={20}
-                          className="mb-1"
+                          className="arrowClock"
+                          title={t("refresh")}
                           onClick={() => reloadHandler()}
                         ></ArrowClockwise>
                       )}
@@ -211,10 +201,7 @@ const StaticActiveCustomer = () => {
                       headers={activeCustomerForCsvInfoHeader}
                       title="Active Customer BTRC Report"
                     >
-                      <FileExcelFill
-                        style={{ height: "34px", width: "34px" }}
-                        className="addcutmButton"
-                      />
+                      <FileExcelFill className="addcutmButton" />
                     </CSVLink>
                   </div>
                 </div>

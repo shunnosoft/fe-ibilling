@@ -20,7 +20,7 @@ const InvoiceEditModalSuper = ({ invoiceId }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   // get isp owner invoice list
-  const invoiceList = useSelector((state) => state.admin.invoices?.results);
+  const invoiceList = useSelector((state) => state.admin?.invoices);
 
   // get editable invoice
   const ispOwnerInvoice = invoiceList?.find((item) => item.id === invoiceId);

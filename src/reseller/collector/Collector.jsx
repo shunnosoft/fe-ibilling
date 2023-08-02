@@ -228,17 +228,18 @@ export default function Collector() {
                       <Loader></Loader>
                     ) : (
                       <ArrowClockwise
+                        className="arrowClock"
+                        title={t("refresh")}
                         onClick={() => reloadHandler()}
                       ></ArrowClockwise>
                     )}
                   </div>
                   {userData.permission?.customerAdd || role === "ispOwner" ? (
                     <div
-                      className="header_icon"
                       data-bs-toggle="modal"
                       data-bs-target="#collectorModal"
                     >
-                      <PersonPlusFill />
+                      <PersonPlusFill className="addcutmButton" />
                     </div>
                   ) : (
                     ""

@@ -492,9 +492,8 @@ export default function ConfigMikrotik() {
             <FontColor>
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-4">
-                  <div className="d-flex">
-                    <div>{t("activeCustomer")}</div>
-                  </div>
+                  <h2>{t("activeCustomer")}</h2>
+
                   <div className="d-flex align-items-center justify-content-center">
                     <div
                       onClick={() => {
@@ -506,22 +505,16 @@ export default function ConfigMikrotik() {
                       }}
                       title={t("filter")}
                     >
-                      <FilterCircle
-                        style={{ height: "34px", width: "34px" }}
-                        className="addcutmButton"
-                      />
+                      <FilterCircle className="addcutmButton" />
                     </div>
 
-                    <div
-                      style={{ height: "34px", width: "34px" }}
-                      className="reloadBtn"
-                    >
+                    <div className="reloadBtn">
                       {mtkLoading ? (
                         <Loader />
                       ) : (
                         <ArrowClockwise
-                          size={19}
-                          className="mb-1"
+                          title={t("refresh")}
+                          className="arrowClock"
                           onClick={() => reloadHandler()}
                         ></ArrowClockwise>
                       )}
@@ -533,10 +526,7 @@ export default function ConfigMikrotik() {
                       headers={customerForCsVTableInfoHeader}
                       title="Customer BTRC Report New"
                     >
-                      <FileExcelFill
-                        style={{ height: "34px", width: "34px" }}
-                        className="addcutmButton"
-                      />
+                      <FileExcelFill className="addcutmButton" />
                     </CSVLink>
                   </div>
                 </div>
