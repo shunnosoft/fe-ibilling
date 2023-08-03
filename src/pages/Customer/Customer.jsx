@@ -88,6 +88,7 @@ import CustomersNumber from "./CustomersNumber";
 import "./client.css";
 import BulkPaymentStatusEdit from "./customerCRUD/bulkOpration/BulkPaymentStatusEdit";
 import CreateInvoice from "./customerCRUD/CreateInvoice";
+import WithValue from "../../components/modals/passwordReset/WithValue";
 
 const PPPOECustomer = () => {
   const dispatch = useDispatch();
@@ -1494,7 +1495,10 @@ const PPPOECustomer = () => {
                               </option>
                             </select>
 
-                            <div className="d-flex justify-content-end align-items-end mt-0">
+                            <div
+                              id="customer_filter_button"
+                              className="d-flex justify-content-end align-items-end mt-0 "
+                            >
                               <button
                                 className="btn btn-outline-primary w-6rem h-76"
                                 type="button"
@@ -1504,7 +1508,8 @@ const PPPOECustomer = () => {
                                 {t("filter")}
                               </button>
                               <button
-                                className="btn btn-outline-secondary w-6rem h-76 ms-1"
+                                id="filter_reset"
+                                className="btn btn-outline-secondary w-6rem h-76 ms-1 "
                                 type="button"
                                 onClick={handleFilterReset}
                               >
@@ -1574,7 +1579,9 @@ const PPPOECustomer = () => {
       {/* transferReseller modal */}
       <TransferToReseller customerId={customerId} />
       {/* password reset modal */}
-      <PasswordReset resetCustomerId={userId} />
+      {/* <PasswordReset resetCustomerId={userId} /> */}
+
+      <WithValue resetCustomerId={userId} />
       {/* create temp invoice */}
       <CreateInvoice single={customerId} customerData={customerData} />
 

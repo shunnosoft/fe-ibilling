@@ -152,7 +152,7 @@ export default function Header(props) {
               {userRole !== "admin" && userRole !== "superadmin" ? (
                 <div
                   style={{ cursor: "pointer", width: "190px" }}
-                  className="fw-bold text-primary me-1"
+                  className="fw-bold text-primary me-1 phone_view_none"
                   title={t("netFeeSupportTeam")}
                 >
                   <p onClick={() => setIsOpen({ ...isOpen, [false]: true })}>
@@ -164,7 +164,10 @@ export default function Header(props) {
               )}
 
               {currentUser && userRole === "ispOwner" ? (
-                <div style={{ marginRight: "20px" }} className="refreshDiv">
+                <div
+                  style={{ marginRight: "20px" }}
+                  className="refreshDiv phone_view_none"
+                >
                   <div
                     style={{ backgroundColor: "inherit" }}
                     className="balancetext"
@@ -320,7 +323,7 @@ export default function Header(props) {
                 ""
               )}
 
-              <div className="darkLight" onClick={changeTHeme}>
+              <div className="darkLight phone_view_none" onClick={changeTHeme}>
                 {icon}
               </div>
 

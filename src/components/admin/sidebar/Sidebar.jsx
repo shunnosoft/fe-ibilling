@@ -540,7 +540,7 @@ export default function Sidebar() {
                         </NavLink>
 
                         {userRole === "ispOwner" &&
-                        reseller.reseller?.length ? (
+                        reseller.reseller?.length > 0 ? (
                           <NavLink
                             key={125}
                             to={

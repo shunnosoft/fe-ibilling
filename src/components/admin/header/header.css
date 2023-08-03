@@ -163,3 +163,9 @@
     margin-right: 20px;
   }
 }
+
+@media only screen and (max-width: 915px) {
+  .phone_view_none {
+    display: none !important;
+  }
+}

@@ -20,7 +20,7 @@ const GlobalFilter = ({
             {data ? data.length : "0"} {bulkLength ? `/ ${bulkLength}` : ""}
           </span>
         </h6>
-        <div>{customComponent}</div>
+        <div className="customer_component">{customComponent}</div>
       </div>
 
       <div className="col-sm-4">

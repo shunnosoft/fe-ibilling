@@ -1,0 +1,14 @@
+@media only screen and (max-width: 767px) {
+  .d_calculation_section {
+    flex-direction: column !important;
+  }
+  #dashboard_active_inactive_calculation {
+    justify-content: center !important;
+  }
+  #dashboard_reload {
+    display: none !important;
+  }
+  #reload_search {
+    justify-content: center !important;
+  }
+}

@@ -196,3 +196,9 @@ p {
 .fs-13 {
   font-size: 13px !important;
 }
+
+@media only screen and (max-width: 992px) {
+  .customer_component {
+    display: none !important;
+  }
+}

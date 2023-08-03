@@ -169,6 +169,24 @@
   grid-gap: 20px;
 }
 
+@media only screen and (max-width: 767px) {
+  .displayGrid6 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media only screen and (max-width: 438px) {
+  #customer_filter_button {
+    display: inherit !important;
+    justify-content: center !important;
+  }
+  #filterBtn {
+    width: 11rem !important;
+  }
+  #filter_reset {
+    display: none !important;
+  }
+}
+
 @media only screen and (max-width: 980px) {
   .customerGrid {
     display: initial;

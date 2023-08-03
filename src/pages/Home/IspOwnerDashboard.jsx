@@ -381,8 +381,11 @@ export default function IspOwnerDashboard() {
                   </div>
                 )}
 
-                <div className="d-flex justify-content-between">
-                  <div className="d-flex justify-content-between align-items-center">
+                <div className="d-flex justify-content-between d_calculation_section">
+                  <div
+                    id="dashboard_active_inactive_calculation"
+                    className="d-flex justify-content-between align-items-center "
+                  >
                     <p
                       className="fw-700 me-3"
                       data-bs-toggle="modal"
@@ -410,8 +413,12 @@ export default function IspOwnerDashboard() {
                     </p>
                   </div>
 
-                  <div className="d-flex justify-content-end">
+                  <div
+                    id="reload_search"
+                    className="d-flex justify-content-end "
+                  >
                     <div
+                      id="dashboard_reload"
                       className="d-flex justify-content-center align-items-center me-2"
                       title={t("refresh")}
                       style={{
