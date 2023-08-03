@@ -11,6 +11,8 @@ import useDash from "../../../assets/css/dash.module.css";
 import Table from "../../../components/table/Table";
 import {
   ArchiveFill,
+  ArrowBarLeft,
+  ArrowBarRight,
   ArrowClockwise,
   ArrowLeft,
   CashStack,
@@ -44,7 +46,7 @@ import BulkSubAreaEdit from "../../Customer/customerCRUD/bulkOpration/bulkSubAre
 import BulkPaymentStatusEdit from "../../Customer/customerCRUD/bulkOpration/BulkPaymentStatusEdit";
 import BulkAutoConnectionEdit from "../../Customer/customerCRUD/bulkOpration/bulkAutoConnectionEdit";
 import { getSubAreasApi } from "../../../features/actions/customerApiCall";
-import { Accordion } from "react-bootstrap";
+import { Accordion, Card, Collapse } from "react-bootstrap";
 
 // get specific customer
 
@@ -95,7 +97,7 @@ const ResellerCustomer = () => {
 
   // loading local state
   const [isLoading, setIsLoading] = useState(false);
-
+  const [open, setOpen] = useState(false);
   const [areaLoading, setAreaLoading] = useState(false);
 
   // status local state
@@ -504,7 +506,7 @@ const ResellerCustomer = () => {
             <FontColor>
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-4">
-                  <div className="d-flex">
+                  <div className="d-flex col-md-4">
                     <div
                       className="pe-2 text-black"
                       style={{ cursor: "pointer" }}
@@ -515,9 +517,12 @@ const ResellerCustomer = () => {
                     <h2>{t("customer")}</h2>
                   </div>
 
-                  <h3 className="fs-2">{resellerInfo?.name}</h3>
+                  <h3 className="fs-2 col-md-4">{resellerInfo?.name}</h3>
 
-                  <div className="d-flex justify-content-center align-items-center">
+                  <div
+                    style={{ height: "45px" }}
+                    className="d-flex justify-content-end align-items-center col-md-4"
+                  >
                     <div
                       onClick={() => {
                         if (!activeKeys) {
@@ -536,44 +541,76 @@ const ResellerCustomer = () => {
                         <Loader></Loader>
                       ) : (
                         <ArrowClockwise
+                          className="arrowClock"
+                          title={t("refresh")}
                           onClick={() => reloadHandler()}
                         ></ArrowClockwise>
                       )}
                     </div>
 
-                    <div className="addAndSettingIcon">
-                      <CSVLink
-                        data={customerForCsVTableInfo}
-                        filename={ispOwnerData.company}
-                        headers={customerForCsVTableInfoHeader}
-                        title="Customer Report"
-                      >
-                        <FiletypeCsv className="addcutmButton" />
-                      </CSVLink>
-                    </div>
-                    <div className="addAndSettingIcon">
-                      <CSVLink
-                        data={customerForCsV}
-                        filename={ispOwnerData.company}
-                        headers={headers}
-                        title={t("downloadBTRCreport")}
-                      >
-                        <FileExcelFill className="addcutmButton" />
-                      </CSVLink>
-                    </div>
+                    <Collapse in={open} dimension="width">
+                      <div id="example-collapse-text">
+                        <Card className="cardCollapse border-0">
+                          <div className="d-flex align-items-center">
+                            <div className="addAndSettingIcon">
+                              <CSVLink
+                                data={customerForCsVTableInfo}
+                                filename={ispOwnerData.company}
+                                headers={customerForCsVTableInfoHeader}
+                                title="Customer Report"
+                              >
+                                <FiletypeCsv className="addcutmButton" />
+                              </CSVLink>
+                            </div>
+                            <div className="addAndSettingIcon">
+                              <CSVLink
+                                data={customerForCsV}
+                                filename={ispOwnerData.company}
+                                headers={headers}
+                                title={t("downloadBTRCreport")}
+                              >
+                                <FileExcelFill className="addcutmButton" />
+                              </CSVLink>
+                            </div>
 
-                    <div className="addAndSettingIcon">
-                      <ReactToPrint
-                        documentTitle="গ্রাহক লিস্ট"
-                        trigger={() => (
-                          <PrinterFill
-                            title={t("print")}
-                            className="addcutmButton"
-                          />
-                        )}
-                        content={() => componentRef.current}
+                            <div className="addAndSettingIcon">
+                              <ReactToPrint
+                                documentTitle="গ্রাহক লিস্ট"
+                                trigger={() => (
+                                  <PrinterFill
+                                    title={t("print")}
+                                    className="addcutmButton"
+                                  />
+                                )}
+                                content={() => componentRef.current}
+                              />
+                            </div>
+                          </div>
+                        </Card>
+                      </div>
+                    </Collapse>
+
+                    {!open && (
+                      <ArrowBarLeft
+                        className="ms-1"
+                        size={34}
+                        style={{ cursor: "pointer" }}
+                        onClick={() => setOpen(!open)}
+                        aria-controls="example-collapse-text"
+                        aria-expanded={open}
                       />
-                    </div>
+                    )}
+
+                    {open && (
+                      <ArrowBarRight
+                        className="ms-1"
+                        size={34}
+                        style={{ cursor: "pointer" }}
+                        onClick={() => setOpen(!open)}
+                        aria-controls="example-collapse-text"
+                        aria-expanded={open}
+                      />
+                    )}
                   </div>
                 </div>
               </FourGround>

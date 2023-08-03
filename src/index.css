@@ -127,9 +127,14 @@ p {
   background: #0ea158;
   color: white;
 }
-.arrowClock {
-  font-size: 20px;
+.loader_style {
+  width: 20px;
   margin-bottom: 6px;
+}
+
+.arrowClock {
+  font-size: 1.4rem;
+  margin-bottom: 0.3rem;
 }
 
 .cardCollapse {
@@ -211,3 +216,59 @@ p {
     display: none !important;
   }
 }
+
+/* @media only screen and (max-width: 438px) {
+  .component_name {
+    font-size: 1.2rem;
+  }
+
+  .addcutmButton {
+    width: 1.8rem !important;
+    height: 1.6rem !important;
+    padding: 0.4rem !important;
+    color: var(--primaryColor);
+    background: white;
+    border-radius: 0.3rem !important;
+    margin-left: 0.4rem !important;
+    transition: 0.3s;
+    cursor: pointer;
+  }
+
+  .reloadBtn {
+    width: 1.8rem !important;
+    height: 1.6rem !important;
+    padding: 0.4rem !important;
+    color: var(--primaryColor);
+    background: white;
+    border-radius: 0.3rem !important;
+    margin-left: 0.4rem !important;
+    transition: 0.3s;
+    cursor: pointer;
+  }
+
+  .loader_style {
+    width: 0.5rem !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+  }
+
+  .arrowClock {
+    font-size: 0.9rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+.addcutmButton {
+  width: 2.3rem;
+  height: 2.1rem;
+  padding: 0.5rem;
+  color: var(--primaryColor);
+  background: white;
+  border-radius: 0.4rem;
+  margin-left: 0.8rem;
+  transition: 0.3s;
+  cursor: pointer;
+} */

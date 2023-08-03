@@ -492,7 +492,7 @@ export default function ConfigMikrotik() {
             <FontColor>
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-4">
-                  <h2>{t("activeCustomer")}</h2>
+                  <h2 className="component_name">{t("activeCustomer")}</h2>
 
                   <div className="d-flex align-items-center justify-content-center">
                     <div
@@ -510,7 +510,7 @@ export default function ConfigMikrotik() {
 
                     <div className="reloadBtn">
                       {mtkLoading ? (
-                        <Loader />
+                        <Loader className="loader"></Loader>
                       ) : (
                         <ArrowClockwise
                           title={t("refresh")}
@@ -537,7 +537,7 @@ export default function ConfigMikrotik() {
                   <Accordion alwaysOpen activeKey={activeKeys}>
                     <Accordion.Item eventKey="filter">
                       <Accordion.Body>
-                        <div className="d-flex justify-content-center displayGrid6">
+                        <div className="active_filter displayGrid6">
                           <select
                             id="selectMikrotikOption"
                             onChange={mikrotiSelectionHandler}

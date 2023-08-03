@@ -1543,9 +1543,13 @@ export default function Customer() {
                               </option>
                             </select>
 
-                            <div className="d-flex justify-content-end align-items-end mt-0">
+                            <div
+                              id="customer_filter_button"
+                              className="d-flex justify-content-end align-items-end mt-0"
+                            >
                               <button
                                 className="btn btn-outline-primary w-6rem h-76"
+                                id="filterBtn"
                                 type="button"
                                 onClick={handleActiveFilter}
                               >
@@ -1553,6 +1557,7 @@ export default function Customer() {
                               </button>
                               <button
                                 className="btn btn-outline-secondary w-6rem h-76 ms-2"
+                                id="filter_reset"
                                 type="button"
                                 onClick={handleFilterReset}
                               >

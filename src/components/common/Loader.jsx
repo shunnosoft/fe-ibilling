@@ -4,7 +4,7 @@ export default function Loader() {
   return (
     <>
       <img
-        style={{ width: "22px" }}
+        className="loader_style"
         src={"https://c.tenor.com/I6kN-6X7nhAAAAAj/loading-buffering.gif"}
         alt=""
       />
