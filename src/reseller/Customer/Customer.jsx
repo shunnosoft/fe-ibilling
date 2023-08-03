@@ -659,6 +659,19 @@ export default function Customer() {
                       )}
                     </div>
 
+                    <div>
+                      {(permission?.customerAdd ||
+                        collectorPermission?.customerAdd) && (
+                        <>
+                          <PersonPlusFill
+                            className="addcutmButton"
+                            data-bs-toggle="modal"
+                            data-bs-target="#customerModal"
+                          />
+                        </>
+                      )}
+                    </div>
+
                     <Collapse in={open} dimension="width">
                       <div id="example-collapse-text">
                         <Card className="cardCollapse border-0">
@@ -700,16 +713,6 @@ export default function Customer() {
                               )}
                               content={() => componentRef.current}
                             />
-                            {(permission?.customerAdd ||
-                              collectorPermission?.customerAdd) && (
-                              <>
-                                <PersonPlusFill
-                                  className="addcutmButton"
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#customerModal"
-                                />
-                              </>
-                            )}
                           </div>
                         </Card>
                       </div>

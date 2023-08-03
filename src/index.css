@@ -118,6 +118,7 @@ p {
   width: 36px;
   height: 34px;
   margin-left: 12px;
+  margin-top: 2px !important;
   transition: 0.3s;
   cursor: pointer;
 }

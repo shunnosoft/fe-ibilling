@@ -1307,6 +1307,19 @@ const PPPOECustomer = () => {
                       )}
                     </div>
 
+                    <div>
+                      {(permission?.customerAdd || role === "ispOwner") && (
+                        <div className="addAndSettingIcon">
+                          <PersonPlusFill
+                            className="addcutmButton"
+                            data-bs-toggle="modal"
+                            data-bs-target="#customerModal"
+                            title={t("newCustomer")}
+                          />
+                        </div>
+                      )}
+                    </div>
+
                     <Collapse in={open} dimension="width">
                       <div id="example-collapse-text">
                         <Card className="cardCollapse border-0">
@@ -1363,18 +1376,6 @@ const PPPOECustomer = () => {
                                   />
                                 </div>
                               </>
-                            )}
-
-                            {(permission?.customerAdd ||
-                              role === "ispOwner") && (
-                              <div className="addAndSettingIcon">
-                                <PersonPlusFill
-                                  className="addcutmButton"
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#customerModal"
-                                  title={t("newCustomer")}
-                                />
-                              </div>
                             )}
                           </div>
                         </Card>

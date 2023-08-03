@@ -541,6 +541,17 @@ export default function RstaticCustomer() {
                       )}
                     </div>
 
+                    <div>
+                      {(permission?.customerAdd ||
+                        collectorPermission?.customerAdd) && (
+                        <PersonPlusFill
+                          className="addcutmButton"
+                          data-bs-toggle="modal"
+                          data-bs-target="#addStaticCustomerModal"
+                        />
+                      )}
+                    </div>
+
                     <Collapse in={open} dimension="width">
                       <div id="example-collapse-text">
                         <Card className="cardCollapse border-0">
@@ -555,15 +566,6 @@ export default function RstaticCustomer() {
                               )}
                               content={() => componentRef.current}
                             />
-
-                            {(permission?.customerAdd ||
-                              collectorPermission?.customerAdd) && (
-                              <PersonPlusFill
-                                className="addcutmButton"
-                                data-bs-toggle="modal"
-                                data-bs-target="#addStaticCustomerModal"
-                              />
-                            )}
                           </div>
                         </Card>
                       </div>

@@ -1565,6 +1565,27 @@ export default function Sidebar() {
                     </li>
                   </FontColor>
                 </NavLink>
+
+                <NavLink
+                  to={"/admin/netFee/numbers"}
+                  className={(navInfo) =>
+                    navInfo.isActive ? activeClass.active : ""
+                  }
+                >
+                  <FontColor>
+                    <li
+                      className="sidebarItems"
+                      id={
+                        window.location.pathname === "/admin/netFee/numbers"
+                          ? "active"
+                          : ""
+                      }
+                    >
+                      <div className="sidebarIcon">{<PhoneVibrate />}</div>
+                      <span className="sidebarLinksName">Support Number</span>
+                    </li>
+                  </FontColor>
+                </NavLink>
               </ul>
             </FourGround>
           )}

@@ -1071,6 +1071,17 @@ export default function Customer() {
                       )}
                     </div>
 
+                    <div>
+                      {(role === "ispOwner" || permission.customerAdd) && (
+                        <PersonPlusFill
+                          title={t("addStaticCustomer")}
+                          className="addcutmButton"
+                          data-bs-toggle="modal"
+                          data-bs-target="#addStaticCustomerModal"
+                        />
+                      )}
+                    </div>
+
                     <Collapse in={open} dimension="width">
                       <div id="example-collapse-text">
                         <Card className="cardCollapse border-0">
@@ -1156,16 +1167,6 @@ export default function Customer() {
                               </>
                             ) : (
                               ""
-                            )}
-
-                            {(role === "ispOwner" ||
-                              permission.customerAdd) && (
-                              <PersonPlusFill
-                                title={t("addStaticCustomer")}
-                                className="addcutmButton"
-                                data-bs-toggle="modal"
-                                data-bs-target="#addStaticCustomerModal"
-                              />
                             )}
                           </div>
                         </Card>
