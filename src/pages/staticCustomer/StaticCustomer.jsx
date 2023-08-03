@@ -689,20 +689,20 @@ export default function Customer() {
         Header: t("id"),
         accessor: "customerId",
       },
-      {
-        width: "8%",
-        Header: t("Auto/C"),
-        accessor: "autoDisable",
-        Cell: ({ row: { original } }) => (
-          <div>
-            {original?.autoDisable ? (
-              <Check2Circle className="text-success" />
-            ) : (
-              <Check2Circle className="text-danger" />
-            )}
-          </div>
-        ),
-      },
+      // {
+      //   width: "8%",
+      //   Header: t("Auto/C"),
+      //   accessor: "autoDisable",
+      //   Cell: ({ row: { original } }) => (
+      //     <div>
+      //       {original?.autoDisable ? (
+      //         <Check2Circle className="text-success" />
+      //       ) : (
+      //         <Check2Circle className="text-danger" />
+      //       )}
+      //     </div>
+      //   ),
+      // },
       {
         width: "5%",
         Header: t("name"),

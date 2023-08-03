@@ -42,6 +42,9 @@ const ResellserActiveCustomer = () => {
   // get all static customer
   let allMikrotikUsers = useSelector((state) => state?.mikrotik?.pppoeUser);
 
+  //get subAreas
+  const subAreas = useSelector((state) => state?.area?.area);
+
   // mikrotik loading state
   const [loading, setIsloading] = useState(false);
 
@@ -86,6 +89,17 @@ const ResellserActiveCustomer = () => {
     } else if (e.target.value === "offlineInactive") {
       temp = allOfflineUsers.filter((item) => item.status === "inactive");
       setAllUsers(temp);
+    }
+  };
+
+  const subAreaFilterHandler = (e) => {
+    if (e.target.value !== "") {
+      const subAreaUser = allMikrotikUsers.filter(
+        (item) => item.subArea === e.target.value
+      );
+      setAllUsers(subAreaUser);
+    } else {
+      setAllUsers(allMikrotikUsers);
     }
   };
 
@@ -279,6 +293,19 @@ const ResellserActiveCustomer = () => {
                           <div className="mikrotik-filter ms-4">
                             <select
                               id="selectMikrotikOption"
+                              onChange={subAreaFilterHandler}
+                              className="form-select mt-0"
+                            >
+                              <option value="">{t("allSubArea")}</option>
+                              {subAreas.map((item) => (
+                                <option value={item.id}>{item.name}</option>
+                              ))}
+                            </select>
+                          </div>
+
+                          <div className="mikrotik-filter ms-4">
+                            <select
+                              id="selectMikrotikOption"
                               onChange={filterIt}
                               className="form-select mt-0"
                             >
@@ -292,7 +319,6 @@ const ResellserActiveCustomer = () => {
 
                           {offline && (
                             <div className="mikrotik-filter ms-4">
-                              <h6 className="mb-0"> {t("selectStatus")} </h6>
                               <select
                                 id="selectOfflineOption"
                                 onChange={filterIt}
