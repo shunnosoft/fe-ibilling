@@ -13,6 +13,8 @@ import {
   PersonPlusFill,
   PenFill,
   FilterCircle,
+  ArrowBarLeft,
+  ArrowBarRight,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -41,7 +43,7 @@ import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
 import FormatNumber from "../../components/common/NumberFormat";
 import CustomerEdit from "./staticCustomerCrud/CustomerEdit";
 import { fetchPackagefromDatabase } from "../../features/apiCalls";
-import { Accordion } from "react-bootstrap";
+import { Accordion, Card, Collapse } from "react-bootstrap";
 
 export default function RstaticCustomer() {
   const { t } = useTranslation();
@@ -75,6 +77,8 @@ export default function RstaticCustomer() {
 
   const [isLoading, setIsloading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [open, setOpen] = useState(false);
+
   const permission = useSelector(
     (state) => state.persistedReducer.auth?.userData?.permission
   );
@@ -506,11 +510,12 @@ export default function RstaticCustomer() {
             <FontColor>
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-4">
-                  <div className="d-flex">
-                    <h2>{t("staticCustomer")}</h2>
-                  </div>
+                  <h2>{t("staticCustomer")}</h2>
 
-                  <div className="d-flex justify-content-center align-items-center">
+                  <div
+                    style={{ height: "45px" }}
+                    className="d-flex align-items-center"
+                  >
                     <div
                       onClick={() => {
                         if (!activeKeys) {
@@ -526,30 +531,65 @@ export default function RstaticCustomer() {
 
                     <div className="reloadBtn">
                       {isLoading ? (
-                        <Loader></Loader>
+                        <Loader />
                       ) : (
                         <ArrowClockwise
+                          className="arrowClock"
+                          title={t("refresh")}
                           onClick={() => reloadHandler()}
-                        ></ArrowClockwise>
+                        />
                       )}
                     </div>
 
-                    <ReactToPrint
-                      documentTitle="গ্রাহক লিস্ট"
-                      trigger={() => (
-                        <PrinterFill
-                          title={t("print")}
+                    <div>
+                      {(permission?.customerAdd ||
+                        collectorPermission?.customerAdd) && (
+                        <PersonPlusFill
                           className="addcutmButton"
+                          data-bs-toggle="modal"
+                          data-bs-target="#addStaticCustomerModal"
                         />
                       )}
-                      content={() => componentRef.current}
-                    />
-                    {(permission?.customerAdd ||
-                      collectorPermission?.customerAdd) && (
-                      <PersonPlusFill
-                        className="addcutmButton"
-                        data-bs-toggle="modal"
-                        data-bs-target="#addStaticCustomerModal"
+                    </div>
+
+                    <Collapse in={open} dimension="width">
+                      <div id="example-collapse-text">
+                        <Card className="cardCollapse border-0">
+                          <div className="d-flex align-items-center">
+                            <ReactToPrint
+                              documentTitle="গ্রাহক লিস্ট"
+                              trigger={() => (
+                                <PrinterFill
+                                  title={t("print")}
+                                  className="addcutmButton"
+                                />
+                              )}
+                              content={() => componentRef.current}
+                            />
+                          </div>
+                        </Card>
+                      </div>
+                    </Collapse>
+
+                    {!open && (
+                      <ArrowBarLeft
+                        className="ms-1"
+                        size={34}
+                        style={{ cursor: "pointer" }}
+                        onClick={() => setOpen(!open)}
+                        aria-controls="example-collapse-text"
+                        aria-expanded={open}
+                      />
+                    )}
+
+                    {open && (
+                      <ArrowBarRight
+                        className="ms-1"
+                        size={34}
+                        style={{ cursor: "pointer" }}
+                        onClick={() => setOpen(!open)}
+                        aria-controls="example-collapse-text"
+                        aria-expanded={open}
                       />
                     )}
                   </div>

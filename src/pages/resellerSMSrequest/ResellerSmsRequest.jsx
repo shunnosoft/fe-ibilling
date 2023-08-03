@@ -165,14 +165,15 @@ const ResellerSmsRequest = () => {
             <FontColor>
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-4">
-                  <div className="d-flex">
-                    <div>{t("resellerSmsRequest")}</div>
-                  </div>
+                  <h2>{t("resellerSmsRequest")}</h2>
+
                   <div className="reloadBtn">
                     {isLoading ? (
                       <Loader></Loader>
                     ) : (
                       <ArrowClockwise
+                        className="arrowClock"
+                        title={t("refresh")}
                         onClick={() => reloadHandler()}
                       ></ArrowClockwise>
                     )}

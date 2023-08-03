@@ -620,6 +620,8 @@ export default function Diposit() {
                         <Loader />
                       ) : (
                         <ArrowClockwise
+                          className="arrowClock"
+                          title={t("refresh")}
                           onClick={() => reloadHandler()}
                         ></ArrowClockwise>
                       )}

@@ -5,6 +5,7 @@ export const netFeeSupportSlice = createSlice({
   initialState: {
     netFeeSupport: [],
     ispOwnerSupport: [],
+    supportNumbers: [],
     packageChangeRequest: [],
     resellerChangeRequest: [],
   },
@@ -69,6 +70,15 @@ export const netFeeSupportSlice = createSlice({
       );
       state.resellerChangeRequest[changeRequest] = action.payload;
     },
+
+    // netFee support numbers
+    getSupportNumbers: (state, action) => {
+      state.supportNumbers = action.payload;
+    },
+
+    postSupportNumbers: (state, action) => {
+      state.supportNumbers.push(action.payload);
+    },
   },
 });
 
@@ -86,5 +96,7 @@ export const {
   updatePackageChangeRequest,
   getResellerChangePackageRequest,
   updateResellerChangePackageRequest,
+  getSupportNumbers,
+  postSupportNumbers,
 } = netFeeSupportSlice.actions;
 export default netFeeSupportSlice.reducer;

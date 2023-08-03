@@ -113,6 +113,7 @@ import PackageChange from "./pages/netFeeSupport/PackageChange";
 import ChangePackage from "./reseller/customerPackageChange/ChangePackage";
 import CustomerInvoice from "./pages/customerInvoice/CustomerInvoice";
 import BillReport from "./pages/collector/BillReport";
+import NetFeeSupportNumbers from "./admin/Home/supportNumber/NetFeeSupportNumbers";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
@@ -338,6 +339,14 @@ function App() {
               path="/netfee"
               element={!user ? <Landing /> : <Navigate to={"/admin/support"} />}
             />
+
+            <Route
+              path="/netfee"
+              element={
+                !user ? <Landing /> : <Navigate to={"/admin/netFee/numbers"} />
+              }
+            />
+
             <Route
               path="/netfee"
               element={
@@ -359,6 +368,10 @@ function App() {
               <Route path="admin/all-comments" element={<AllComments />} />
               <Route path="admin/invoices" element={<AllInvoices />} />
               <Route path="admin/support" element={<Supports />} />
+              <Route
+                path="admin/netFee/numbers"
+                element={<NetFeeSupportNumbers />}
+              />
               <Route
                 path="admin/netFee/support/:ispOwnerId"
                 element={<NetFeeIspOwnerSupport />}

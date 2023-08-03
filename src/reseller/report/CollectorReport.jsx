@@ -265,9 +265,11 @@ export default function CollectorReport() {
 
                     <div className="reloadBtn">
                       {isLoading ? (
-                        <Loader></Loader>
+                        <Loader />
                       ) : (
                         <ArrowClockwise
+                          className="arrowClock"
+                          title={t("refresh")}
                           onClick={() => reloadHandler()}
                         ></ArrowClockwise>
                       )}
@@ -276,13 +278,7 @@ export default function CollectorReport() {
                     <ReactToPrint
                       documentTitle={t("billReport")}
                       trigger={() => (
-                        <button
-                          className="header_icon border-0"
-                          type="button"
-                          title={t("downloadPdf")}
-                        >
-                          <PrinterFill />
-                        </button>
+                        <PrinterFill className="addcutmButton border-0" />
                       )}
                       content={() => componentRef.current}
                     />

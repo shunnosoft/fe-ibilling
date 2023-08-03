@@ -230,33 +230,26 @@ export default function Area() {
             <FontColor>
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-4">
-                  <div className="d-flex">
-                    <h2>{t("area")} </h2>
-                  </div>
+                  <h2>{t("area")} </h2>
 
                   <div className="d-flex align-items-center justify-content-center">
-                    <div
-                      style={{ height: "34px", width: "34px" }}
-                      className="reloadBtn"
-                    >
+                    <div className="reloadBtn">
                       {isLoading ? (
                         <Loader />
                       ) : (
                         <ArrowClockwise
-                          className="mb-1"
-                          size={20}
+                          className="arrowClock"
+                          title={t("refresh")}
                           onClick={() => reloadHandler()}
                         ></ArrowClockwise>
                       )}
                     </div>
                     <div
-                      style={{ height: "34px", width: "34px" }}
                       title={t("addArea")}
-                      className="header_icon"
                       data-bs-toggle="modal"
                       data-bs-target="#areaModal"
                     >
-                      <GeoAlt />
+                      <GeoAlt className="addcutmButton" />
                     </div>
                   </div>
                 </div>

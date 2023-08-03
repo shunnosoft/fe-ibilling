@@ -278,9 +278,11 @@ export default function Collector() {
                   <div className="d-flex justify-content-center align-items-center">
                     <div className="reloadBtn">
                       {isLoading ? (
-                        <Loader></Loader>
+                        <Loader />
                       ) : (
                         <ArrowClockwise
+                          className="arrowClock"
+                          title={t("refresh")}
                           onClick={() => reloadHandler()}
                         ></ArrowClockwise>
                       )}
@@ -288,11 +290,10 @@ export default function Collector() {
                     {(permission?.collectorAdd || role === "ispOwner") && (
                       <div
                         title="কালেক্টর এড করুন"
-                        className="header_icon"
                         data-bs-toggle="modal"
                         data-bs-target="#collectorModal"
                       >
-                        <PersonPlusFill />
+                        <PersonPlusFill className="addcutmButton" />
                       </div>
                     )}
                   </div>

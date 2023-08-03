@@ -135,7 +135,9 @@ import {
   getIspOwnerPackageChangeRequest,
   getIspOwnerSupports,
   getNetFeeSupport,
+  getSupportNumbers,
   postIspOwnerSupports,
+  postSupportNumbers,
   updateIspOwnerSupports,
   updateNetFeeSupport,
   updatePackageChangeRequest,
@@ -3440,6 +3442,42 @@ export const getDiscountCustomer = async (
   try {
   } catch (error) {
     console.log(error.response.data.message);
+  }
+  setIsLoading(false);
+};
+
+// ispOwner number support
+export const getNetFeeSupportNumbers = async (dispatch, setIsLoading) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.get(`admin/support/number`);
+    dispatch(getSupportNumbers(res.data));
+  } catch (error) {
+    toast.error(error.response?.data?.message);
+  }
+  setIsLoading(false);
+};
+
+// create ispOwner customr supporter
+export const postNetFeeSupportNumbers = async (
+  dispatch,
+  data,
+  setIsLoading,
+  setShow
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.post(`admin/support/number`, data);
+    console.log(res.data);
+    dispatch(postSupportNumbers(res.data));
+    setShow(false);
+    langMessage(
+      "success",
+      "সাপর্ট নম্বর অ্যাড সফল হয়েছে",
+      "Support Number Add successful"
+    );
+  } catch (error) {
+    toast.error(error.response?.data?.message);
   }
   setIsLoading(false);
 };

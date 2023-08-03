@@ -8,6 +8,8 @@ import {
   ArrowClockwise,
   ArchiveFill,
   FilterCircle,
+  ArrowBarLeft,
+  ArrowBarRight,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
@@ -33,7 +35,7 @@ import EditPourpose from "./EditPourpose";
 import PrintExpenditure from "./expenditurePDF";
 import ReactToPrint from "react-to-print";
 import Table from "../../components/table/Table";
-import { Accordion, Tab, Tabs } from "react-bootstrap";
+import { Accordion, Card, Collapse, Tab, Tabs } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { getOwnerUsers } from "../../features/getIspOwnerUsersApi";
 import Loader from "../../components/common/Loader";
@@ -96,6 +98,7 @@ export default function Expenditure() {
   // loading state
   const [isLoading, setIsloading] = useState(false);
   const [expenditureLoading, setExpenditureLoading] = useState(false);
+  const [open, setOpen] = useState(false);
 
   // start date state
   const [dateStart, setStartDate] = useState(firstDay);
@@ -417,12 +420,12 @@ export default function Expenditure() {
     <div style={{ fontSize: "18px", display: "flex", alignItems: "center" }}>
       {role === "ispOwner" ? (
         <div>
-          {t("totalExpenditure")} {FormatNumber(getTotalExpenditure())}{" "}
+          {t("totalExpenditure")} {FormatNumber(getTotalExpenditure())}
           {t("tk")}
         </div>
       ) : (
         <div style={{ marginRight: "10px" }}>
-          {t("totalExpenditure")} {FormatNumber(getTotalExpenditure())}{" "}
+          {t("totalExpenditure")} {FormatNumber(getTotalExpenditure())}
           {t("tk")}
         </div>
       )}
@@ -444,70 +447,95 @@ export default function Expenditure() {
           <div className="container">
             <FontColor>
               <div className="collectorTitle d-flex justify-content-between px-4">
-                <div className="d-flex">
-                  <div>{t("expense")}</div>
-                </div>
+                <h2>{t("expense")}</h2>
+
                 <div
-                  className="d-flex"
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "end",
-                  }}
+                  style={{ height: "45px" }}
+                  className="d-flex align-items-center"
                 >
-                  <>
-                    <div
-                      onClick={() => {
-                        if (!activeKeys) {
-                          setActiveKeys("filter");
-                        } else {
-                          setActiveKeys("");
-                        }
-                      }}
-                      title={t("filter")}
-                    >
-                      <FilterCircle className="addcutmButton" />
-                    </div>
+                  <div
+                    onClick={() => {
+                      if (!activeKeys) {
+                        setActiveKeys("filter");
+                      } else {
+                        setActiveKeys("");
+                      }
+                    }}
+                    title={t("filter")}
+                  >
+                    <FilterCircle className="addcutmButton" />
+                  </div>
 
-                    <div className="reloadBtn">
-                      {isLoading ? (
-                        <Loader />
-                      ) : (
-                        <ArrowClockwise
-                          onClick={() => reloadHandler()}
-                        ></ArrowClockwise>
-                      )}
-                    </div>
-
-                    <div title={t("addExpense")}>
-                      <PlusCircleDotted
-                        className="addcutmButton"
-                        data-bs-toggle="modal"
-                        data-bs-target="#createExpenditure"
-                      />
-                    </div>
-                    {role !== "collector" && (
-                      <div title={t("addExpenseSector")}>
-                        <PlusCircleFill
-                          className="addcutmButton"
-                          data-bs-toggle="modal"
-                          data-bs-target="#createPourpose"
-                        />
-                      </div>
+                  <div className="reloadBtn">
+                    {isLoading ? (
+                      <Loader />
+                    ) : (
+                      <ArrowClockwise
+                        className="arrowClock"
+                        title={t("refresh")}
+                        onClick={() => reloadHandler()}
+                      ></ArrowClockwise>
                     )}
-                    <div title={t("print")}>
-                      <ReactToPrint
-                        documentTitle={t("expenseReport")}
-                        trigger={() => (
-                          <PrinterFill
-                            title={t("print")}
-                            className="addcutmButton"
-                          />
-                        )}
-                        content={() => componentRef.current}
-                      />
+                  </div>
+
+                  <Collapse in={open} dimension="width">
+                    <div id="example-collapse-text">
+                      <Card className="cardCollapse border-0">
+                        <div className="d-flex align-items-center">
+                          <div title={t("addExpense")}>
+                            <PlusCircleDotted
+                              className="addcutmButton"
+                              data-bs-toggle="modal"
+                              data-bs-target="#createExpenditure"
+                            />
+                          </div>
+                          {role !== "collector" && (
+                            <div title={t("addExpenseSector")}>
+                              <PlusCircleFill
+                                className="addcutmButton"
+                                data-bs-toggle="modal"
+                                data-bs-target="#createPourpose"
+                              />
+                            </div>
+                          )}
+                          <div title={t("print")}>
+                            <ReactToPrint
+                              documentTitle={t("expenseReport")}
+                              trigger={() => (
+                                <PrinterFill
+                                  title={t("print")}
+                                  className="addcutmButton"
+                                />
+                              )}
+                              content={() => componentRef.current}
+                            />
+                          </div>
+                        </div>
+                      </Card>
                     </div>
-                  </>
+                  </Collapse>
+
+                  {!open && (
+                    <ArrowBarLeft
+                      className="ms-1"
+                      size={34}
+                      style={{ cursor: "pointer" }}
+                      onClick={() => setOpen(!open)}
+                      aria-controls="example-collapse-text"
+                      aria-expanded={open}
+                    />
+                  )}
+
+                  {open && (
+                    <ArrowBarRight
+                      className="ms-1"
+                      size={34}
+                      style={{ cursor: "pointer" }}
+                      onClick={() => setOpen(!open)}
+                      aria-controls="example-collapse-text"
+                      aria-expanded={open}
+                    />
+                  )}
                 </div>
               </div>
               <FourGround>

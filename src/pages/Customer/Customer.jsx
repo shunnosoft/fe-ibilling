@@ -17,13 +17,11 @@ import {
   PersonFill,
   PersonPlusFill,
   PrinterFill,
-  Server,
   ThreeDots,
-  ThreeDotsVertical,
   ArrowBarLeft,
   ArrowBarRight,
-  ArrowLeftCircle,
-  ArrowRightCircle,
+  Check2Circle,
+  PencilSquare,
 } from "react-bootstrap-icons";
 import Table from "../../components/table/Table";
 
@@ -596,9 +594,23 @@ const PPPOECustomer = () => {
         width: "2%",
       },
       {
-        width: "8%",
+        width: "6%",
         Header: t("id"),
         accessor: "customerId",
+      },
+      {
+        width: "8%",
+        Header: t("Auto/C"),
+        accessor: "autoDisable",
+        Cell: ({ row: { original } }) => (
+          <div>
+            {original?.autoDisable ? (
+              <Check2Circle className="text-success" />
+            ) : (
+              <Check2Circle className="text-danger" />
+            )}
+          </div>
+        ),
       },
       {
         width: "8%",
@@ -611,7 +623,7 @@ const PPPOECustomer = () => {
         accessor: "pppoe.name",
       },
       {
-        width: "10%",
+        width: "8%",
         Header: t("mobile"),
         accessor: "mobile",
       },
@@ -625,7 +637,7 @@ const PPPOECustomer = () => {
         },
       },
       {
-        width: "10%",
+        width: "9%",
         Header: t("paymentStatus"),
         accessor: "paymentStatus",
         Cell: ({ cell: { value } }) => {
@@ -648,7 +660,7 @@ const PPPOECustomer = () => {
         accessor: "balance",
       },
       {
-        width: "11%",
+        width: "8%",
         Header: t("bill"),
         accessor: "billingCycle",
         Cell: ({ cell: { value } }) => {
@@ -1265,160 +1277,12 @@ const PPPOECustomer = () => {
             <FontColor>
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-4">
-                  <div className="d-flex align-items-center justify-content-center gap-1">
-                    <h2>{t("customer")}</h2>
-                  </div>
+                  <h2>{t("customer")}</h2>
 
                   <div
-                    style={{ fontSize: "25px", height: "45px" }}
-                    className="d-flex justify-content-center align-items-center"
+                    style={{ height: "45px" }}
+                    className="d-flex align-items-center"
                   >
-                    {!open && (
-                      <ArrowLeftCircle
-                        size={34}
-                        style={{ cursor: "pointer" }}
-                        onClick={() => setOpen(!open)}
-                        aria-controls="example-collapse-text"
-                        aria-expanded={open}
-                        className="me-3"
-                      />
-                    )}
-
-                    {open && (
-                      <ArrowRightCircle
-                        size={34}
-                        style={{ cursor: "pointer" }}
-                        onClick={() => setOpen(!open)}
-                        aria-controls="example-collapse-text"
-                        aria-expanded={open}
-                        className="me-3"
-                      />
-                    )}
-
-                    <div>
-                      <Collapse in={open} dimension="width">
-                        <div id="example-collapse-text">
-                          <Card
-                            body
-                            className="border-0"
-                            style={{
-                              width: "231px",
-                              backgroundColor: "#2E87DF",
-                            }}
-                          >
-                            <div className="d-flex align-items-center justify-content-center">
-                              {((role === "manager" &&
-                                permission?.customerEdit) ||
-                                role === "ispOwner") && (
-                                <div
-                                  className="addAndSettingIcon"
-                                  title={t("customerNumberUpdateOrDelete")}
-                                >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="20"
-                                    height="20"
-                                    style={{ height: "34px", width: "34px" }}
-                                    fill="currentColor"
-                                    className="bi bi-pencil-square addcutmButton"
-                                    viewBox="0 0 16 16"
-                                    onClick={() =>
-                                      setNumberModalShow({
-                                        ...numberModalShow,
-                                        [false]: true,
-                                      })
-                                    }
-                                  >
-                                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                                    <path
-                                      fill-rule="evenodd"
-                                      d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"
-                                    />
-                                  </svg>
-                                </div>
-                              )}
-
-                              {((permission?.viewCustomerList &&
-                                role === "manager") ||
-                                role === "ispOwner") && (
-                                <>
-                                  <>
-                                    <div className="addAndSettingIcon">
-                                      <CSVLink
-                                        data={customerForCsVTableInfo}
-                                        filename={ispOwnerData.company}
-                                        headers={customerForCsVTableInfoHeader}
-                                        title="Customer Report"
-                                      >
-                                        <FiletypeCsv
-                                          style={{
-                                            height: "34px",
-                                            width: "34px",
-                                          }}
-                                          className="addcutmButton"
-                                        />
-                                      </CSVLink>
-                                    </div>
-                                    <div className="addAndSettingIcon">
-                                      <CSVLink
-                                        data={customerForCsV}
-                                        filename={ispOwnerData.company}
-                                        headers={headers}
-                                        title={t("downloadBTRCreport")}
-                                      >
-                                        <FileExcelFill
-                                          style={{
-                                            height: "34px",
-                                            width: "34px",
-                                          }}
-                                          className="addcutmButton"
-                                        />
-                                      </CSVLink>
-                                    </div>
-                                  </>
-
-                                  <div className="addAndSettingIcon">
-                                    <PrinterFill
-                                      style={{ height: "34px", width: "34px" }}
-                                      title={t("print")}
-                                      className="addcutmButton"
-                                      onClick={printModalController}
-                                    />
-                                  </div>
-                                </>
-                              )}
-
-                              {(permission?.customerAdd ||
-                                role === "ispOwner") && (
-                                <div className="addAndSettingIcon">
-                                  <PersonPlusFill
-                                    style={{ height: "34px", width: "34px" }}
-                                    className="addcutmButton"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#customerModal"
-                                    title={t("newCustomer")}
-                                  />
-                                </div>
-                              )}
-                            </div>
-                          </Card>
-                        </div>
-                      </Collapse>
-                    </div>
-                    <div
-                      style={{ height: "34px", width: "34px" }}
-                      className="reloadBtn"
-                    >
-                      {customerLoading ? (
-                        <Loader />
-                      ) : (
-                        <ArrowClockwise
-                          size={20}
-                          onClick={reloadHandler}
-                          title={t("refresh")}
-                        />
-                      )}
-                    </div>
                     <div
                       onClick={() => {
                         if (!activeKeys) {
@@ -1429,11 +1293,117 @@ const PPPOECustomer = () => {
                       }}
                       title={t("filter")}
                     >
-                      <FilterCircle
-                        style={{ height: "34px", width: "34px" }}
-                        className="addcutmButton"
-                      />
+                      <FilterCircle className="addcutmButton" />
                     </div>
+
+                    <div className="reloadBtn">
+                      {customerLoading ? (
+                        <Loader />
+                      ) : (
+                        <ArrowClockwise
+                          className="arrowClock"
+                          title={t("refresh")}
+                          onClick={reloadHandler}
+                        />
+                      )}
+                    </div>
+
+                    <div>
+                      {(permission?.customerAdd || role === "ispOwner") && (
+                        <div className="addAndSettingIcon">
+                          <PersonPlusFill
+                            className="addcutmButton"
+                            data-bs-toggle="modal"
+                            data-bs-target="#customerModal"
+                            title={t("newCustomer")}
+                          />
+                        </div>
+                      )}
+                    </div>
+
+                    <Collapse in={open} dimension="width">
+                      <div id="example-collapse-text">
+                        <Card className="cardCollapse border-0">
+                          <div className="d-flex align-items-center">
+                            {((role === "manager" &&
+                              permission?.customerEdit) ||
+                              role === "ispOwner") && (
+                              <div
+                                className="addAndSettingIcon"
+                                title={t("customerNumberUpdateOrDelete")}
+                                onClick={() =>
+                                  setNumberModalShow({
+                                    ...numberModalShow,
+                                    [false]: true,
+                                  })
+                                }
+                              >
+                                <PencilSquare className="addcutmButton" />
+                              </div>
+                            )}
+
+                            {((permission?.viewCustomerList &&
+                              role === "manager") ||
+                              role === "ispOwner") && (
+                              <>
+                                <>
+                                  <div className="addAndSettingIcon">
+                                    <CSVLink
+                                      data={customerForCsVTableInfo}
+                                      filename={ispOwnerData.company}
+                                      headers={customerForCsVTableInfoHeader}
+                                      title="Customer Report"
+                                    >
+                                      <FiletypeCsv className="addcutmButton" />
+                                    </CSVLink>
+                                  </div>
+                                  <div className="addAndSettingIcon">
+                                    <CSVLink
+                                      data={customerForCsV}
+                                      filename={ispOwnerData.company}
+                                      headers={headers}
+                                      title={t("downloadBTRCreport")}
+                                    >
+                                      <FileExcelFill className="addcutmButton" />
+                                    </CSVLink>
+                                  </div>
+                                </>
+
+                                <div className="addAndSettingIcon">
+                                  <PrinterFill
+                                    title={t("print")}
+                                    className="addcutmButton"
+                                    onClick={printModalController}
+                                  />
+                                </div>
+                              </>
+                            )}
+                          </div>
+                        </Card>
+                      </div>
+                    </Collapse>
+
+                    {!open && role !== "collector" && (
+                      <ArrowBarLeft
+                        className="ms-1"
+                        size={34}
+                        style={{ cursor: "pointer" }}
+                        onClick={() => setOpen(!open)}
+                        aria-controls="example-collapse-text"
+                        aria-expanded={open}
+                      />
+                    )}
+
+                    {open && role !== "collector" && (
+                      <ArrowBarRight
+                        className="ms-1"
+                        size={34}
+                        style={{ cursor: "pointer" }}
+                        onClick={() => setOpen(!open)}
+                        aria-controls="example-collapse-text"
+                        aria-expanded={open}
+                      />
+                    )}
                   </div>
                 </div>
               </FourGround>

@@ -29,15 +29,15 @@
   font-weight: 700;
 }
 .addcutmButton {
-  width: 50px;
-  height: 38px;
-  padding: 9px;
+  width: 36px;
+  height: 34px;
+  padding: 8px;
   color: var(--primaryColor);
   background: white;
   /* border: 1px solid #06bf79; */
   border-radius: 7px;
   /* box-shadow: 0px 3px 10px #1ab53d87; */
-  margin-right: 12px;
+  margin-left: 12px;
   transition: 0.3s;
   cursor: pointer;
 }

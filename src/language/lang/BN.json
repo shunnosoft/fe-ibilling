@@ -840,5 +840,7 @@
   "automaticConnectionOn": "অটোমেটিক সংযোগ চালু",
   "onlinePaymentCustomer": "অনলাইন পেমেন্ট গ্রাহক",
   "resellerCommission": "রিসেলার কমিশন",
-  "ispOwnerCommission": "আইএসপি কমিশন"
+  "ispOwnerCommission": "আইএসপি কমিশন",
+  "connectionOn": "সংযোগ চালু",
+  "connectionOff": "সংযোগ বন্ধ"
 }

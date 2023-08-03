@@ -6,7 +6,6 @@ import {
   PersonFill,
   KeyFill,
   ChatText,
-  ArchiveFill,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector } from "react-redux";
@@ -232,20 +231,18 @@ export default function Manager() {
                   {bpSettings?.multipleManager ? (
                     <div
                       title={t("addNewManager")}
-                      className="header_icon"
                       data-bs-toggle="modal"
                       data-bs-target="#managerAddModal"
                     >
-                      <PersonPlusFill />
+                      <PersonPlusFill className="addcutmButton" />
                     </div>
                   ) : manager.length === 0 ? (
                     <div
                       title={t("addNewManager")}
-                      className="header_icon"
                       data-bs-toggle="modal"
                       data-bs-target="#managerAddModal"
                     >
-                      <PersonPlusFill />
+                      <PersonPlusFill className="addcutmButton" />
                     </div>
                   ) : (
                     ""

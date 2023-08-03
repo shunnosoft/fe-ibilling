@@ -137,12 +137,8 @@ export default function PoleBox({ areaName, areaId, poleShow, setPoleShow }) {
             <div className="container">
               <div className="collectorTitle d-flex justify-content-between align-items-center px-4">
                 <div>{t("poleBox")}</div>
-                <div
-                  title={t("addPoleBox")}
-                  className="header_icon"
-                  onClick={() => setPostShow(true)}
-                >
-                  <PlusCircle />
+                <div title={t("addPoleBox")} onClick={() => setPostShow(true)}>
+                  <PlusCircle className="addcutmButton" />
                 </div>
               </div>
 

@@ -12,12 +12,15 @@ import {
   CashStack,
   PrinterFill,
   ArrowClockwise,
-  FileExcelFill,
   ChatText,
   CurrencyDollar,
   Server,
   GearFill,
   FilterCircle,
+  PencilSquare,
+  FiletypeCsv,
+  ArrowBarLeft,
+  ArrowBarRight,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -58,7 +61,7 @@ import BulkResellerRecharge from "./bulkOpration/BulkResellerRecharge";
 import ResellerBulkAutoConnectionEdit from "./bulkOpration/ResellerBulkAutoConnectionEdit";
 import BulkPackageEdit from "./bulkOpration/bulkPackageEdit";
 import CustomersNumber from "../../pages/Customer/CustomersNumber";
-import { Accordion } from "react-bootstrap";
+import { Accordion, Card, Collapse } from "react-bootstrap";
 // import CustomersNumber from "../../pages/Customer/CustomersNumber";
 
 export default function Customer() {
@@ -85,6 +88,7 @@ export default function Customer() {
 
   // customers number update or delete modal show state
   const [numberModalShow, setNumberModalShow] = useState(false);
+  const [open, setOpen] = useState(false);
 
   // filter Accordion handle state
   const [activeKeys, setActiveKeys] = useState("");
@@ -626,7 +630,10 @@ export default function Customer() {
                 <div className="collectorTitle d-flex justify-content-between px-4">
                   <h2> {t("customer")} </h2>
 
-                  <div className="d-flex justify-content-center align-items-center">
+                  <div
+                    style={{ height: "45px" }}
+                    className="d-flex align-items-center"
+                  >
                     <div
                       onClick={() => {
                         if (!activeKeys) {
@@ -642,68 +649,95 @@ export default function Customer() {
 
                     <div className="reloadBtn">
                       {isLoading ? (
-                        <Loader></Loader>
+                        <Loader />
                       ) : (
                         <ArrowClockwise
+                          className="arrowClock"
+                          title={t("refresh")}
                           onClick={() => reloadHandler()}
-                        ></ArrowClockwise>
+                        />
                       )}
                     </div>
 
-                    {permission && permission?.singleCustomerNumberEdit ? (
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="20"
-                        height="20"
-                        fill="currentColor"
-                        className="bi bi-pencil-square addcutmButton addAndSettingIcon"
-                        viewBox="0 0 16 16"
-                        onClick={() =>
-                          setNumberModalShow({
-                            ...numberModalShow,
-                            [false]: true,
-                          })
-                        }
-                        title={t("customerNumberUpdateOrDelete")}
-                      >
-                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                        <path
-                          fill-rule="evenodd"
-                          d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"
-                        />
-                      </svg>
-                    ) : (
-                      ""
+                    <div>
+                      {(permission?.customerAdd ||
+                        collectorPermission?.customerAdd) && (
+                        <>
+                          <PersonPlusFill
+                            className="addcutmButton"
+                            data-bs-toggle="modal"
+                            data-bs-target="#customerModal"
+                          />
+                        </>
+                      )}
+                    </div>
+
+                    <Collapse in={open} dimension="width">
+                      <div id="example-collapse-text">
+                        <Card className="cardCollapse border-0">
+                          <div className="d-flex align-items-center">
+                            {permission &&
+                            permission?.singleCustomerNumberEdit ? (
+                              <div
+                                className="addAndSettingIcon"
+                                onClick={() =>
+                                  setNumberModalShow({
+                                    ...numberModalShow,
+                                    [false]: true,
+                                  })
+                                }
+                                title={t("customerNumberUpdateOrDelete")}
+                              >
+                                <PencilSquare className="addcutmButton" />
+                              </div>
+                            ) : (
+                              ""
+                            )}
+
+                            <CSVLink
+                              data={customerForCsVTableInfo}
+                              filename={ispOwnerData.company}
+                              headers={customerForCsVTableInfoHeader}
+                              title="Customer Report"
+                            >
+                              <FiletypeCsv className="addcutmButton" />
+                            </CSVLink>
+
+                            <ReactToPrint
+                              documentTitle="গ্রাহক লিস্ট"
+                              trigger={() => (
+                                <PrinterFill
+                                  title={t("print")}
+                                  className="addcutmButton"
+                                />
+                              )}
+                              content={() => componentRef.current}
+                            />
+                          </div>
+                        </Card>
+                      </div>
+                    </Collapse>
+
+                    {!open && (
+                      <ArrowBarLeft
+                        className="ms-1"
+                        size={34}
+                        style={{ cursor: "pointer" }}
+                        onClick={() => setOpen(!open)}
+                        aria-controls="example-collapse-text"
+                        aria-expanded={open}
+                      />
                     )}
 
-                    <CSVLink
-                      data={customerForCsVTableInfo}
-                      filename={ispOwnerData.company}
-                      headers={customerForCsVTableInfoHeader}
-                      title="Customer Report"
-                    >
-                      <FileExcelFill className="addcutmButton" />
-                    </CSVLink>
-
-                    <ReactToPrint
-                      documentTitle="গ্রাহক লিস্ট"
-                      trigger={() => (
-                        <PrinterFill
-                          title={t("print")}
-                          className="addcutmButton"
-                        />
-                      )}
-                      content={() => componentRef.current}
-                    />
-                    {(permission?.customerAdd ||
-                      collectorPermission?.customerAdd) && (
-                      <>
-                        <PersonPlusFill
-                          className="addcutmButton"
-                          data-bs-toggle="modal"
-                          data-bs-target="#customerModal"
-                        />
-                      </>
+                    {open && (
+                      <ArrowBarRight
+                        className="ms-1"
+                        size={34}
+                        style={{ cursor: "pointer" }}
+                        onClick={() => setOpen(!open)}
+                        aria-controls="example-collapse-text"
+                        aria-expanded={open}
+                      />
                     )}
                   </div>
                 </div>

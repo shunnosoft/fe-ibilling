@@ -194,12 +194,8 @@ export default function SubArea({ isOpen, setIsOpen, areaId }) {
                 <div>
                   {name || ""} {t("ofSubArea")}
                 </div>
-                <div
-                  title={t("addSubArea")}
-                  className="header_icon"
-                  onClick={() => setPostShow(true)}
-                >
-                  <PlusCircle />
+                <div title={t("addSubArea")} onClick={() => setPostShow(true)}>
+                  <PlusCircle className="addcutmButton" />
                 </div>
               </div>
 

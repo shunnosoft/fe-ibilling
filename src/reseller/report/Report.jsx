@@ -257,21 +257,20 @@ const Report = () => {
                       <Loader />
                     ) : (
                       <ArrowClockwise
+                        className="arrowClock"
+                        title={t("refresh")}
                         onClick={() => reloadHandler()}
                       ></ArrowClockwise>
                     )}
                   </div>
 
                   <ReactToPrint
-                    documentTitle={t("billReport")}
+                    documentTitle={t("CustomerList")}
                     trigger={() => (
-                      <button
-                        className="header_icon border-0"
-                        type="button"
-                        title={t("downloadPdf")}
-                      >
-                        <PrinterFill />
-                      </button>
+                      <PrinterFill
+                        title={t("print")}
+                        className="addcutmButton"
+                      />
                     )}
                     content={() => componentRef.current}
                   />
