@@ -266,6 +266,17 @@ export default function CustomerEdit({ single }) {
 
       status,
     };
+    if (data?.monthlyFee < packageRate?.rate) {
+      const result = packageRate?.rate - data?.monthlyFee;
+      if (result < 0) {
+        mainData.balance = data?.balance - -result;
+      } else {
+        mainData.balance = data?.balance - result;
+      }
+      if (mainData.balance < data?.monthlyFee) {
+        mainData.paymentStatus = "unpaid";
+      }
+    }
 
     if (Getmikrotik.length > 0) {
       mainData.mikrotik = data?.mikrotik;
@@ -690,27 +701,29 @@ export default function CustomerEdit({ single }) {
                               {t("active")}
                             </label>
                           </div>
-                          <div className="form-check form-check-inline">
-                            <input
-                              className="form-check-input"
-                              type="radio"
-                              id="inlineRadio2"
-                              value={"inactive"}
-                              onChange={(e) => setStatus(e.target.value)}
-                              checked={status === "inactive"}
-                              disabled={
-                                permission?.customerStatusEdit
-                                  ? !permission?.customerStatusEdit
-                                  : !collectorPermission?.customerDeactivate
-                              }
-                            />
-                            <label
-                              className="form-check-label"
-                              htmlFor="inlineRadio2"
-                            >
-                              {t("in active")}
-                            </label>
-                          </div>
+                          {0 < data?.balance && (
+                            <div className="form-check form-check-inline">
+                              <input
+                                className="form-check-input"
+                                type="radio"
+                                id="inlineRadio2"
+                                value={"inactive"}
+                                onChange={(e) => setStatus(e.target.value)}
+                                checked={status === "inactive"}
+                                disabled={
+                                  permission?.customerStatusEdit
+                                    ? !permission?.customerStatusEdit
+                                    : !collectorPermission?.customerDeactivate
+                                }
+                              />
+                              <label
+                                className="form-check-label"
+                                htmlFor="inlineRadio2"
+                              >
+                                {t("in active")}
+                              </label>
+                            </div>
+                          )}
                           {data?.status === "expired" && (
                             <div className="form-check form-check-inline">
                               <input
