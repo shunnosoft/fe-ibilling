@@ -23,6 +23,7 @@ import { Button } from "react-bootstrap";
 import SMSPurchase from "./SMSPurchase";
 import MessageAlert from "./MessageAlert";
 import { getSubAreasApi } from "../../features/actions/customerApiCall";
+import DatePicker from "react-datepicker";
 
 const useForceUpdate = () => {
   const [value, setValue] = useState(0); // integer state
@@ -96,6 +97,7 @@ export default function Message() {
   const [days, setDays] = useState([]);
   const [smsReceiverType, setsmsReceiverType] = useState("");
   const [sendingType, setSendingType] = useState("nonMasking");
+  const [billDate, setBillDate] = useState(new Date());
 
   const [show, setShow] = useState(false);
 
@@ -299,6 +301,25 @@ export default function Message() {
             items.push(sms);
           }
         }
+
+        // send sms to customer billing cycle date
+        if (
+          smsReceiverType === "billDate" &&
+          customer.mobile &&
+          customer.monthlyFee > customer.balance &&
+          dueDate._d.getDate() === billDate.getDate()
+        ) {
+          let sms = makeMessageObj(
+            messageTemplate,
+            ispOwnerId,
+            customer,
+            subAreaIds
+          );
+          if (sms) {
+            totalSmsCount += sms.count;
+            items.push(sms);
+          }
+        }
       });
 
       if (items.length === 0) {
@@ -345,13 +366,11 @@ export default function Message() {
       } else {
         toast.error(t("unseccessAlertSMS"));
       }
-      // console.log(items);
     } catch (error) {
       console.log(error);
     }
   };
   const handleSMSreceiver = (e) => {
-    // console.log(e.target.value);
     setsmsReceiverType(e.target.value);
   };
   const itemSettingHandler = (item) => {
@@ -836,6 +855,33 @@ export default function Message() {
                                 >
                                   {t("expired")}
                                 </label>
+                              </div>
+
+                              <div>
+                                <input
+                                  id="billDate"
+                                  value="billDate"
+                                  name="platform"
+                                  type="radio"
+                                  className="form-check-input"
+                                  onChange={(e) => handleSMSreceiver(e)}
+                                />
+                                <label
+                                  className="form-check-lebel ms-2"
+                                  htmlFor="billDate"
+                                >
+                                  {t("billDate")}
+                                </label>
+
+                                {smsReceiverType === "billDate" && (
+                                  <DatePicker
+                                    className="form-control mt-1 mw-100"
+                                    selected={billDate}
+                                    onChange={(date) => setBillDate(date)}
+                                    dateFormat="dd/MM/yyyy"
+                                    minDate={billDate}
+                                  />
+                                )}
                               </div>
                             </div>
                             <div>

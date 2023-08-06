@@ -61,7 +61,8 @@ const SMSPurchase = ({ show, setShow }) => {
 
   //form submit handler
   const submitHandler = (e) => {
-    if (count * userData.smsRate < 100) {
+    e.preventDefault();
+    if (amount < 100) {
       alert(t("unsuccessSMSalertPurchageModal"));
     } else {
       let data = {
