@@ -61,8 +61,7 @@ const SMSPurchase = ({ show, setShow }) => {
 
   //form submit handler
   const submitHandler = (e) => {
-    e.preventDefault();
-    if (amount < 100) {
+    if (count < 400) {
       alert(t("unsuccessSMSalertPurchageModal"));
     } else {
       let data = {
@@ -179,7 +178,7 @@ const SMSPurchase = ({ show, setShow }) => {
                 className="form-control"
                 type="number"
                 value={amount ? amount : ""}
-                min={63}
+                min={100}
               />
             </div>
           </form>

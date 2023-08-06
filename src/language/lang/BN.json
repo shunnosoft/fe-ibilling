@@ -203,7 +203,7 @@
   "letter": "অক্ষরঃ",
   "messageLikhun": "মেসেজ লিখুন...",
   "sendMessage": "সেন্ড মেসেজ",
-  "unsuccessSMSalertPurchageModal": "দুঃখিত, ১০০ টাকার নিচে এসএমএস ক্রয় করা সম্ভব নয়।",
+  "unsuccessSMSalertPurchageModal": "দুঃখিত, আপনি সর্বনিম্ন ৪০০টি এসএমএস কিনতে পারেন।",
   "smsPurchageBoard": "এসএমএস পার্চেজ বোর্ড",
   "purchagePrice": "ক্রয়মূল্যঃ",
   "sms": "এসএমএস সংখ্যাঃ",
@@ -842,5 +842,6 @@
   "resellerCommission": "রিসেলার কমিশন",
   "ispOwnerCommission": "আইএসপি কমিশন",
   "connectionOn": "সংযোগ চালু",
-  "connectionOff": "সংযোগ বন্ধ"
+  "connectionOff": "সংযোগ বন্ধ",
+  "withOutPackageDelete": "আপনি কি প্যাকেজ ডিলিট করতে চান?"
 }

@@ -237,6 +237,10 @@ const PPPOECustomer = () => {
   // pole box filter loding
   const [isLoadingPole, setIsLoadingPole] = useState(false);
 
+  // optional modal state
+  const [modalStatus, setModalStatus] = useState("");
+  const [showModal, setShowModal] = useState(false);
+
   // bulk modal handle state
   const [bulkStatus, setBulkStatus] = useState("");
   const [show, setShow] = useState(false);
@@ -1313,8 +1317,10 @@ const PPPOECustomer = () => {
                         <div className="addAndSettingIcon">
                           <PersonPlusFill
                             className="addcutmButton"
-                            data-bs-toggle="modal"
-                            data-bs-target="#customerModal"
+                            onClick={() => {
+                              setModalStatus("customerPost");
+                              setShowModal(true);
+                            }}
                             title={t("newCustomer")}
                           />
                         </div>
@@ -1525,18 +1531,27 @@ const PPPOECustomer = () => {
         </div>
       </div>
       {/* all modal */}
-      {/* customer create modal  */}
-      <CustomerPost />
+
+      {/* custommodalStatuser create modal  */}
+      {modalStatus === "customerPost" && (
+        <CustomerPost show={showModal} setShow={setShowModal} />
+      )}
+
       {/* customer edit modal  */}
       <CustomerEdit single={customerId} />
+
       {/* bill collection modal  */}
       <CustomerBillCollect single={customerId} customerData={customerData} />
+
       {/* customer details modal  */}
       <CustomerDetails single={customerId} />
+
       {/* customer report modal  */}
       <CustomerReport single={customerData} />
+
       {/* customer note modal */}
       <CustomerNote customerId={customerNoteId} customerName={customerName} />
+
       {/* customer delete modal  */}
       <CustomerDelete
         single={customerId}
@@ -1546,14 +1561,32 @@ const PPPOECustomer = () => {
       />
       {/* single message send modal  */}
       <SingleMessage single={customerId} sendCustomer="customer" />
+
       {/* transferReseller modal */}
       <TransferToReseller customerId={customerId} />
       {/* password reset modal */}
-      {/* <PasswordReset resetCustomerId={userId} /> */}
 
+      {/* <PasswordReset resetCustomerId={userId} /> */}
       <WithValue resetCustomerId={userId} />
+
       {/* create temp invoice */}
       <CreateInvoice single={customerId} customerData={customerData} />
+
+      <BandwidthModal
+        setModalShow={setBandWidthModal}
+        modalShow={bandWidthModal}
+        customerId={customerId}
+      />
+      <CreateSupportTicket
+        collectors={collectors}
+        manager={manager}
+        customer={singleCustomer}
+        ispOwner={ispOwner}
+        reseller=""
+      />
+
+      {/* customers number update or delete modal */}
+      <CustomersNumber showModal={numberModalShow} />
 
       {/* bulk Modal */}
       {((role === "ispOwner" && bpSettings?.bulkAreaEdit) ||
@@ -1657,22 +1690,7 @@ const PPPOECustomer = () => {
           setShow={setShow}
         />
       )}
-
-      <BandwidthModal
-        setModalShow={setBandWidthModal}
-        modalShow={bandWidthModal}
-        customerId={customerId}
-      />
-      <CreateSupportTicket
-        collectors={collectors}
-        manager={manager}
-        customer={singleCustomer}
-        ispOwner={ispOwner}
-        reseller=""
-      />
-
-      {/* customers number update or delete modal */}
-      <CustomersNumber showModal={numberModalShow} />
+      {/* bulk modal end */}
 
       {bulkCustomers.length > 0 && (
         <div className="client_wraper2">

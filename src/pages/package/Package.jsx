@@ -15,7 +15,10 @@ import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
-import { getPackagewithoutmikrotik } from "../../features/apiCalls";
+import {
+  deleteWithOutMikrotikPackage,
+  getPackagewithoutmikrotik,
+} from "../../features/apiCalls";
 import CreatePackage from "./CreatePackageModal";
 import EditPackage from "./EditPackageModal";
 import Table from "../../components/table/Table";
@@ -49,7 +52,7 @@ export default function Package() {
   useEffect(() => {
     if (packages.length === 0)
       getPackagewithoutmikrotik(ispOwnerId, dispatch, setIsLoading);
-  }, [ispOwnerId, dispatch]);
+  }, []);
 
   const [singlePackage, setSinglePackage] = useState("");
 
@@ -61,9 +64,14 @@ export default function Package() {
   const searchHandler = (e) => {
     setCollSearch(e.toString().toLowerCase());
   };
-  const deletePackageHandler = (e) => {
-    // console.log(e);
+
+  const deletePackageHandler = (id) => {
+    const confirm = window.confirm(t("withOutPackageDelete"));
+    if (confirm) {
+      deleteWithOutMikrotikPackage(dispatch, id);
+    }
   };
+
   const columns1 = React.useMemo(
     () => [
       {
@@ -147,16 +155,16 @@ export default function Package() {
           <div className="container">
             <FontColor>
               <div className="collectorTitle d-flex justify-content-between px-4">
-                <div className="d-flex">
-                  <div>{t("package")}</div>
-                </div>
+                <h2>{t("package")}</h2>
 
-                <div className="d-flex justify-content-center align-items-centers">
+                <div className="d-flex align-items-center">
                   <div className="reloadBtn">
                     {isLoading ? (
-                      <Loader></Loader>
+                      <Loader />
                     ) : (
                       <ArrowClockwise
+                        className="arrowClock"
+                        title={t("refresh")}
                         onClick={() => reloadHandler()}
                       ></ArrowClockwise>
                     )}
@@ -165,11 +173,10 @@ export default function Package() {
                   {role === "ispOwner" && (
                     <div
                       title={t("addPackage")}
-                      className="header_icon"
                       data-bs-toggle="modal"
                       data-bs-target="#createPackage"
                     >
-                      <Plus />
+                      <Plus className="addcutmButton" />
                     </div>
                   )}
                 </div>

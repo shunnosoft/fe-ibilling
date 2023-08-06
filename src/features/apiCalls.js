@@ -1065,7 +1065,13 @@ export const getStaticActiveCustomer = async (
   setIsloading(false);
 };
 
-export const addCustomer = async (dispatch, data, setIsloading, resetForm) => {
+export const addCustomer = async (
+  dispatch,
+  data,
+  setIsloading,
+  resetForm,
+  setShow
+) => {
   setIsloading(true);
   try {
     const res = await apiLink.post("/ispOwner/customer", data);
@@ -1076,7 +1082,7 @@ export const addCustomer = async (dispatch, data, setIsloading, resetForm) => {
       "কাস্টমার সংযুক্ত সফল হয়েছে",
       "Customer Added Successfully"
     );
-    document.querySelector("#customerModal").click();
+    setShow(false);
     resetForm();
   } catch (err) {
     if (err.response) {
@@ -3468,7 +3474,6 @@ export const postNetFeeSupportNumbers = async (
   setIsLoading(true);
   try {
     const res = await apiLink.post(`admin/support/number`, data);
-    console.log(res.data);
     dispatch(postSupportNumbers(res.data));
     setShow(false);
     langMessage(
@@ -3480,4 +3485,19 @@ export const postNetFeeSupportNumbers = async (
     toast.error(error.response?.data?.message);
   }
   setIsLoading(false);
+};
+
+// with out mirotik package delete api call
+export const deleteWithOutMikrotikPackage = async (dispatch, packId) => {
+  try {
+    const res = await apiLink.delete(`mikrotik/package/${packId}`);
+    dispatch(deletePackageSuccess(packId));
+    langMessage(
+      "success",
+      "প্যাকেজ সফলভাবে মুছে ফেলা হয়েছে।",
+      "The Package was Successfully Deleted."
+    );
+  } catch (error) {
+    toast.error(error.response?.data?.message);
+  }
 };

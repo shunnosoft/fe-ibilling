@@ -249,7 +249,7 @@
   "letter": "Letter :",
   "messageLikhun": "Write Message ....",
   "sendMessage": " Send Message",
-  "unsuccessSMSalertPurchageModal": "Sorry, You can not purchase SMS below 100 TK",
+  "unsuccessSMSalertPurchageModal": "Sorry, you can buy a minimum of 400 SMS",
   "smsPurchageBoard": "SMS Purchage Board",
   "purchagePrice": "Purchage Price",
   "sms": "SMS",
@@ -837,5 +837,6 @@
   "resellerCommission": "Reseller Commission",
   "ispOwnerCommission": "ISP Commission",
   "connectionOn": "Connection On",
-  "connectionOff": "Connection Off"
+  "connectionOff": "Connection Off",
+  "withOutPackageDelete": "Do you want to delete the package?"
 }
