@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { ArchiveFill, PersonPlusFill, ThreeDots } from "react-bootstrap-icons";
 import BulletinPost from "./modal/BulletinPost";
 import Table from "../../../components/table/Table";
+import moment from "moment";
 
 const Bulletin = () => {
   const dispatch = useDispatch();
@@ -37,19 +38,66 @@ const Bulletin = () => {
   const columns = useMemo(
     () => [
       {
-        width: "5%",
+        width: "10%",
         Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        width: "9%",
+        width: "45%",
         accessor: "title",
         Header: "Title",
+        Cell: ({ row: { original } }) => {
+          return (
+            <div>
+              {original?.title && original?.title.slice(0, 70)}
+              <span
+              // className="text-primary see-more"
+              // data-bs-toggle="modal"
+              // data-bs-target="#dipositNoteDetailsModal"
+              // onClick={() => setMessage(original?.note)}
+              >
+                {original?.title.length > 70 ? "...see more" : ""}
+              </span>
+            </div>
+          );
+        },
       },
       {
-        width: "6%",
+        width: "10%",
+        accessor: "startDate",
+        Header: "Start Date",
+        Cell: ({ cell: { value } }) => {
+          return moment(value).format("YYYY/MM/DD");
+        },
+      },
+      {
+        width: "10%",
+        accessor: "endDate",
+        Header: "End Date",
+        Cell: ({ cell: { value } }) => {
+          return moment(value).format("YYYY/MM/DD");
+        },
+      },
+      {
+        width: "15%",
+        Header: "Status",
+        Cell: ({ row: { original } }) => {
+          return (
+            <div>
+              {original?.ispOwner && (
+                <span className="badge bg-secondary me-2">ispOwner</span>
+              )}
+              {original?.reseller && (
+                <span className="badge bg-secondary">reseller</span>
+              )}
+            </div>
+          );
+        },
+      },
+      {
+        width: "10%",
         Header: () => <div className="text-center">Action</div>,
         id: "option",
 

@@ -403,3 +403,13 @@ export const updateIspOwnerCustomerStatus = async (
   }
   setIsLoading(false);
 };
+
+// get ispOwner bulletin
+export const getIspOwnerBulletin = async (setIspBulletin) => {
+  try {
+    const res = await apiLink.get(`ispOwner/bulletin`);
+    setIspBulletin(res.data);
+  } catch (error) {
+    console.log(error.response);
+  }
+};

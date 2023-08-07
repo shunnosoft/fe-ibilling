@@ -3524,11 +3524,7 @@ export const postBulletin = async (dispatch, data, setIsLoading, setShow) => {
     const res = await apiLink.post(`admin/bulletin`, data);
     dispatch(postBulletinSuccess(res.data));
     setShow(false);
-    langMessage(
-      "success",
-      "বুলেটিন অ্যাড সফল হয়েছে",
-      "Bulletin Add successful"
-    );
+    toast.success("Bulletin Add successful");
   } catch (error) {
     toast.error(error.response?.data?.message);
   }

@@ -6,6 +6,10 @@ import Loader from "../../../../components/common/Loader";
 import { postBulletin } from "../../../../features/apiCalls";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
+import DatePicker from "react-datepicker";
+import { FtextField } from "../../../../components/common/FtextField";
+import DatePickerField from "../../../../components/common/DatePickerField";
+import moment from "moment";
 
 const BulletinPost = ({ show, setShow }) => {
   const dispatch = useDispatch();
@@ -13,6 +17,8 @@ const BulletinPost = ({ show, setShow }) => {
   // bulletin validation
   const netFeeBulletin = Yup.object({
     title: Yup.string(),
+    startDate: Yup.string().required("Select Bulletin Start Date"),
+    endDate: Yup.string().required("Select Bulletin End Date"),
     ispOwner: Yup.string(),
     reseller: Yup.string(),
   });
@@ -25,7 +31,7 @@ const BulletinPost = ({ show, setShow }) => {
 
   // bulletin submit handler
   const bulletinHandler = (values) => {
-    const { title, ispOwner, reseller } = values;
+    const { title, startDate, endDate, ispOwner, reseller } = values;
 
     if (!(ispOwner || reseller)) {
       toast.error("One status must be selected.");
@@ -34,6 +40,8 @@ const BulletinPost = ({ show, setShow }) => {
 
     const sendData = {
       title,
+      startDate: moment(startDate).format("YYYY/MM/DD"),
+      endDate: moment(endDate).format("YYYY/MM/DD"),
       ispOwner,
       reseller,
     };
@@ -57,6 +65,8 @@ const BulletinPost = ({ show, setShow }) => {
           <Formik
             initialValues={{
               title: "",
+              startDate: "",
+              endDate: "",
               ispOwner: false,
               reseller: false,
             }}
@@ -68,17 +78,29 @@ const BulletinPost = ({ show, setShow }) => {
           >
             {() => (
               <Form>
-                <div>
-                  <Field
+                <Field
+                  className="form-control"
+                  as="textarea"
+                  name="title"
+                  placeholder="Title..."
+                  rows="6"
+                />
+
+                <div className="displayGrid2">
+                  <DatePickerField
                     className="form-control"
-                    as="textarea"
-                    name="title"
-                    placeholder="Title..."
-                    rows="6"
+                    name="startDate"
+                    placeholderText="Start Date"
+                  />
+
+                  <DatePickerField
+                    className="form-control"
+                    name="endDate"
+                    placeholderText="End Date"
                   />
                 </div>
 
-                <div className="d-flex justify-content-center mt-3">
+                <div className="d-flex justify-content-center">
                   <div className="form-check me-4">
                     <Field
                       className="form-check-input"

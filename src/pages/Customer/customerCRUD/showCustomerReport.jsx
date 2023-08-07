@@ -274,6 +274,7 @@ export default function CustomerReport(props) {
                                       due: printVal.due,
                                       discount: printVal.discount,
                                       billType: printVal.billType,
+                                      collectedBy: printVal.collectedBy,
                                       paymentDate: printVal.createdAt,
                                       medium: printVal.medium,
                                       startDate: printVal.start,
@@ -365,6 +366,7 @@ export default function CustomerReport(props) {
                                       due: printVal.due,
                                       discount: printVal.discount,
                                       billType: printVal.billType,
+                                      collectedBy: printVal.collectedBy,
                                       paymentDate: printVal.createdAt,
                                       billingCycle:
                                         printVal?.prevState?.billingCycle,

@@ -297,8 +297,12 @@ export default function CustomerEdit(props) {
       }
     }
 
-    if (data?.paymentStatus === "unpaid") {
-      if (status === "active" && customerBillingType === "postpaid") {
+    if (
+      data?.paymentStatus === "unpaid" &&
+      data?.status === "active" &&
+      data?.customerBillingType === "prepaid"
+    ) {
+      if (customerBillingType === "postpaid") {
         setIsloading(false);
         return toast.warn(t("rechargeYourCustomer"));
       }

@@ -1,0 +1,14 @@
+.bulletin {
+  background-color: #ffff;
+  bottom: 0;
+  position: fixed;
+  margin-right: 12px;
+  padding: 16px 2%;
+  display: flex;
+  align-items: center;
+}
+
+.bulletin_title {
+  font-size: 18px;
+  color: #1d6fc2;
+}

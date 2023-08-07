@@ -87,6 +87,7 @@ import "./client.css";
 import BulkPaymentStatusEdit from "./customerCRUD/bulkOpration/BulkPaymentStatusEdit";
 import CreateInvoice from "./customerCRUD/CreateInvoice";
 import WithValue from "../../components/modals/passwordReset/WithValue";
+import NetFeeBulletin from "../../components/admin/header/NetFeeBulletin";
 
 const PPPOECustomer = () => {
   const dispatch = useDispatch();
@@ -1507,7 +1508,7 @@ const PPPOECustomer = () => {
                           bulkState={{
                             setBulkCustomer,
                           }}
-                        ></Table>
+                        />
                       </div>
                     </div>
                   </div>
@@ -1524,12 +1525,14 @@ const PPPOECustomer = () => {
                     />
                   </div>
                 )}
+                {/* <NetFeeBulletin /> */}
               </FourGround>
               <Footer />
             </FontColor>
           </div>
         </div>
       </div>
+
       {/* all modal */}
 
       {/* custommodalStatuser create modal  */}

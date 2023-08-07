@@ -28,7 +28,7 @@ const BillCollectInvoiceWithNote = React.forwardRef((props, ref) => {
                 <div>
                   <p>
                     {t("name")} :
-                    <strong style={{ marginLeft: "2.7rem" }}>
+                    <strong style={{ marginLeft: ".7rem" }}>
                       {customerData?.name}
                     </strong>
                   </p>
@@ -53,7 +53,7 @@ const BillCollectInvoiceWithNote = React.forwardRef((props, ref) => {
                 <div>
                   <p>
                     {t("package")}:
-                    <strong style={{ marginLeft: "4rem" }}>
+                    <strong style={{ marginLeft: ".7rem" }}>
                       {customerData?.userType === "simple-queue" ||
                       customerData?.userType === "firewall-queue"
                         ? customerData?.queue.package
@@ -65,6 +65,13 @@ const BillCollectInvoiceWithNote = React.forwardRef((props, ref) => {
                     <strong style={{ marginLeft: ".7rem" }}>
                       {moment(paymentDate).format("MMM DD YYYY")}
                     </strong>
+                  </p>
+                  <p>
+                    {billingData?.collectedBy && (
+                      <span>
+                        {t("billCollected")} : {billingData?.collectedBy}
+                      </span>
+                    )}
                   </p>
                 </div>
               </div>
@@ -169,10 +176,7 @@ const BillCollectInvoiceWithNote = React.forwardRef((props, ref) => {
             <div className="d-flex justify-content-between p-1 m-1">
               <div className="text-justify">
                 <p>
-                  {t("name")} :
-                  <strong style={{ marginLeft: "2.7rem" }}>
-                    {customerData?.name}
-                  </strong>
+                  {t("name")} :<strong>{customerData?.name}</strong>
                 </p>
                 <p>
                   {customerData?.mobile && (
@@ -195,7 +199,7 @@ const BillCollectInvoiceWithNote = React.forwardRef((props, ref) => {
               <div>
                 <p>
                   <span>{t("package")}:</span>
-                  <strong style={{ marginLeft: "4rem" }}>
+                  <strong style={{ marginLeft: ".7rem" }}>
                     {customerData?.userType === "simple-queue" ||
                     customerData?.userType === "firewall-queue"
                       ? customerData?.queue.package
@@ -207,6 +211,13 @@ const BillCollectInvoiceWithNote = React.forwardRef((props, ref) => {
                   <strong style={{ marginLeft: ".7rem" }}>
                     {moment(paymentDate).format("MMM DD YYYY")}
                   </strong>
+                </p>
+                <p>
+                  {billingData?.collectedBy && (
+                    <span>
+                      {t("billCollected")} : {billingData?.collectedBy}
+                    </span>
+                  )}
                 </p>
               </div>
             </div>
