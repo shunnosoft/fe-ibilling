@@ -1,69 +1,61 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { ToastContainer } from "react-bootstrap";
-import Sidebar from "../../../components/admin/sidebar/Sidebar";
 import { FontColor } from "../../../assets/js/theme";
+import Sidebar from "../../../components/admin/sidebar/Sidebar";
+import { ToastContainer } from "react-toastify";
 import useDash from "../../../assets/css/dash.module.css";
-import { PersonPlusFill, ThreeDots } from "react-bootstrap-icons";
-import { getNetFeeSupportNumbers } from "../../../features/apiCalls";
+import { deleteBulletin, getBulletin } from "../../../features/apiCalls";
 import { useDispatch, useSelector } from "react-redux";
-import CreateSupportNumber from "./modal/CreateSupportNumber";
+import { ArchiveFill, PersonPlusFill, ThreeDots } from "react-bootstrap-icons";
+import BulletinPost from "./modal/BulletinPost";
 import Table from "../../../components/table/Table";
 
-const NetFeeSupportNumbers = () => {
+const Bulletin = () => {
   const dispatch = useDispatch();
 
-  // netFee support Numbers
-  const supportNumbers = useSelector(
-    (state) => state.netFeeSupport?.supportNumbers
-  );
+  //  netFee Bulletin all data
+  const bulletinData = useSelector((state) => state.netFeeSupport?.bulletin);
 
   // Loading state
   const [isLoading, setIsLoading] = useState(false);
+
+  // bulletin modal state
   const [show, setShow] = useState(false);
+  const [modalStatus, setModalStatus] = useState(false);
 
   useEffect(() => {
-    supportNumbers.length === 0 &&
-      getNetFeeSupportNumbers(dispatch, setIsLoading);
+    bulletinData.length === 0 && getBulletin(dispatch, setIsLoading);
   }, []);
+
+  // single bulletin delete handle
+  const bulletinDeleteHandle = (id) => {
+    const confirm = window.confirm("Do you want to delete the bulletin?");
+    if (confirm) {
+      deleteBulletin(dispatch, id);
+    }
+  };
 
   const columns = useMemo(
     () => [
       {
-        width: "16%",
+        width: "5%",
         Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        Header: "Name",
-        width: "16%",
-        accessor: "name",
+        width: "9%",
+        accessor: "title",
+        Header: "Title",
       },
       {
-        Header: "Mobile",
-        width: "20%",
-        accessor: "mobile",
-      },
-      {
-        width: "16%",
-        Header: "Start Time",
-        accessor: "start",
-      },
-      {
-        width: "16%",
-        Header: "End Time",
-        accessor: "end",
-      },
-
-      {
-        width: "16%",
+        width: "6%",
         Header: () => <div className="text-center">Action</div>,
         id: "option",
 
         Cell: ({ row: { original } }) => (
-          <div className="d-flex align-items-center justify-content-center">
-            <div className="dropdown">
+          <div className="d-flex justify-content-center align-items-center">
+            <>
               <ThreeDots
                 className="dropdown-toggle ActionDots"
                 id="areaDropdown"
@@ -71,34 +63,44 @@ const NetFeeSupportNumbers = () => {
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               />
-              <ul className="dropdown-menu" aria-labelledby="customerDrop">
+              <ul className="dropdown-menu" aria-labelledby="areaDropdown">
                 {/* <li
                   data-bs-toggle="modal"
-                  data-bs-target="#supportEdit"
-                  onClick={() => numberEditHandler(original.id)}
+                  data-bs-target="#adminSupportDetails"
+                  onClick={() => {
+                    supportDetailsHandler(original.id);
+                  }}
                 >
                   <div className="dropdown-item">
                     <div className="customerAction">
-                      <PenFill />
-                      <p className="actionP">{t("edit")}</p>
+                      <PersonFill />
+                      <p className="actionP">Details</p>
                     </div>
                   </div>
                 </li>
 
                 <li
                   data-bs-toggle="modal"
-                  data-bs-target="#supportDelete"
-                  onClick={() => supportDeleteHandler(original.id)}
+                  data-bs-target="#adminSupportEditModal"
+                  onClick={() => supportEditId(original.id)}
                 >
                   <div className="dropdown-item">
                     <div className="customerAction">
-                      <ArchiveFill />
-                      <p className="actionP">{t("delete")}</p>
+                      <PenFill />
+                      <p className="actionP">Edit</p>
                     </div>
                   </div>
                 </li> */}
+                <li onClick={() => bulletinDeleteHandle(original.id)}>
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <ArchiveFill />
+                      <p className="actionP">Delete</p>
+                    </div>
+                  </div>
+                </li>
               </ul>
-            </div>
+            </>
           </div>
         ),
       },
@@ -116,23 +118,24 @@ const NetFeeSupportNumbers = () => {
             <div className="card">
               <div className="card-header">
                 <div className="d-flex justify-content-between">
-                  <h2 className="dashboardTitle text-center">
-                    Support Numbers
-                  </h2>
+                  <h2 className="dashboardTitle text-center">Bulletin</h2>
                   <div className="addAndSettingIcon d-flex justify-content-center align-items-center">
                     <PersonPlusFill
                       className="addcutmButton"
-                      title="Create Support Number"
-                      onClick={() => setShow(true)}
+                      title="Create Bulletin"
+                      onClick={() => {
+                        setModalStatus("bulletinPost");
+                        setShow(true);
+                      }}
                     />
                   </div>
                 </div>
               </div>
               <div className="card-body">
                 <Table
-                  columns={columns}
-                  data={supportNumbers}
                   isLoading={isLoading}
+                  columns={columns}
+                  data={bulletinData}
                 />
               </div>
             </div>
@@ -140,10 +143,14 @@ const NetFeeSupportNumbers = () => {
         </div>
       </FontColor>
 
-      {/* create support number */}
-      <CreateSupportNumber show={show} setShow={setShow} />
+      {/* bulletin all modal start */}
+      {modalStatus === "bulletinPost" && (
+        <BulletinPost show={show} setShow={setShow} />
+      )}
+
+      {/* bulletin all modal end */}
     </>
   );
 };
 
-export default NetFeeSupportNumbers;
+export default Bulletin;

@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 export const netFeeSupportSlice = createSlice({
   name: "netFeeSupport",
   initialState: {
+    bulletin: [],
     netFeeSupport: [],
     ispOwnerSupport: [],
     supportNumbers: [],
@@ -79,6 +80,19 @@ export const netFeeSupportSlice = createSlice({
     postSupportNumbers: (state, action) => {
       state.supportNumbers.push(action.payload);
     },
+
+    // netFee bulletin
+    getBulletinSuccess: (state, action) => {
+      state.bulletin = action.payload;
+    },
+    postBulletinSuccess: (state, action) => {
+      state.bulletin.push(action.payload);
+    },
+    deleteBulletinSuccess: (state, action) => {
+      state.bulletin = state.bulletin.filter(
+        (item) => item.id !== action.payload
+      );
+    },
   },
 });
 
@@ -98,5 +112,8 @@ export const {
   updateResellerChangePackageRequest,
   getSupportNumbers,
   postSupportNumbers,
+  getBulletinSuccess,
+  postBulletinSuccess,
+  deleteBulletinSuccess,
 } = netFeeSupportSlice.actions;
 export default netFeeSupportSlice.reducer;

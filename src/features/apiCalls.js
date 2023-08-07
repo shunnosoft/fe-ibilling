@@ -130,12 +130,15 @@ import { userLogout } from "./actions/authAsyncAction";
 import { createNote, getNotesSuccess } from "./customerNoteSlice";
 import {
   AddNetFeeSupport,
+  deleteBulletinSuccess,
   deleteIspOwnerSupports,
   deleteNetFeeSupport,
+  getBulletinSuccess,
   getIspOwnerPackageChangeRequest,
   getIspOwnerSupports,
   getNetFeeSupport,
   getSupportNumbers,
+  postBulletinSuccess,
   postIspOwnerSupports,
   postSupportNumbers,
   updateIspOwnerSupports,
@@ -3497,6 +3500,47 @@ export const deleteWithOutMikrotikPackage = async (dispatch, packId) => {
       "প্যাকেজ সফলভাবে মুছে ফেলা হয়েছে।",
       "The Package was Successfully Deleted."
     );
+  } catch (error) {
+    toast.error(error.response?.data?.message);
+  }
+};
+
+// get netFee bulletin api call
+export const getBulletin = async (dispatch, setIsLoading) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.get(`admin/bulletin`);
+    dispatch(getBulletinSuccess(res.data));
+  } catch (error) {
+    toast.error(error.response?.data?.message);
+  }
+  setIsLoading(false);
+};
+
+// post netFee bulletin api call
+export const postBulletin = async (dispatch, data, setIsLoading, setShow) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.post(`admin/bulletin`, data);
+    dispatch(postBulletinSuccess(res.data));
+    setShow(false);
+    langMessage(
+      "success",
+      "বুলেটিন অ্যাড সফল হয়েছে",
+      "Bulletin Add successful"
+    );
+  } catch (error) {
+    toast.error(error.response?.data?.message);
+  }
+  setIsLoading(false);
+};
+
+// delete netFee bulletin api call
+export const deleteBulletin = async (dispatch, bulletinId) => {
+  try {
+    const res = await apiLink.delete(`admin/bulletin/${bulletinId}`);
+    dispatch(deleteBulletinSuccess(bulletinId));
+    toast.success("Bulletin successful Delete");
   } catch (error) {
     toast.error(error.response?.data?.message);
   }
