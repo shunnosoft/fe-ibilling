@@ -62,6 +62,7 @@ import ResellerBulkAutoConnectionEdit from "./bulkOpration/ResellerBulkAutoConne
 import BulkPackageEdit from "./bulkOpration/bulkPackageEdit";
 import CustomersNumber from "../../pages/Customer/CustomersNumber";
 import { Accordion, Card, Collapse } from "react-bootstrap";
+import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 // import CustomersNumber from "../../pages/Customer/CustomersNumber";
 
 export default function Customer() {
@@ -628,7 +629,7 @@ export default function Customer() {
             <FontColor>
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-4">
-                  <h2> {t("customer")} </h2>
+                  <h2> {t("customer")}</h2>
 
                   <div
                     style={{ height: "45px" }}
@@ -865,6 +866,7 @@ export default function Customer() {
                       </div>
                     </div>
                   </div>
+                  <NetFeeBulletin />
                 </FourGround>
               ) : (
                 ""

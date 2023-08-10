@@ -69,7 +69,7 @@ const Bulletin = () => {
         accessor: "startDate",
         Header: "Start Date",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("YYYY/MM/DD");
+          return moment(value).format("YYYY/MM/DD hh:mm A");
         },
       },
       {
@@ -77,7 +77,7 @@ const Bulletin = () => {
         accessor: "endDate",
         Header: "End Date",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("YYYY/MM/DD");
+          return moment(value).format("YYYY/MM/DD hh:mm A");
         },
       },
       {

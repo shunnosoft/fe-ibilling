@@ -6,10 +6,7 @@ import Loader from "../../../../components/common/Loader";
 import { postBulletin } from "../../../../features/apiCalls";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
-import DatePicker from "react-datepicker";
-import { FtextField } from "../../../../components/common/FtextField";
 import DatePickerField from "../../../../components/common/DatePickerField";
-import moment from "moment";
 
 const BulletinPost = ({ show, setShow }) => {
   const dispatch = useDispatch();
@@ -31,19 +28,13 @@ const BulletinPost = ({ show, setShow }) => {
 
   // bulletin submit handler
   const bulletinHandler = (values) => {
-    const { title, startDate, endDate, ispOwner, reseller } = values;
-
-    if (!(ispOwner || reseller)) {
+    if (!(values.ispOwner || values.reseller)) {
       toast.error("One status must be selected.");
       return;
     }
 
     const sendData = {
-      title,
-      startDate: moment(startDate).format("YYYY/MM/DD"),
-      endDate: moment(endDate).format("YYYY/MM/DD"),
-      ispOwner,
-      reseller,
+      ...values,
     };
     postBulletin(dispatch, sendData, setIsLoading, setShow);
   };
@@ -90,12 +81,16 @@ const BulletinPost = ({ show, setShow }) => {
                   <DatePickerField
                     className="form-control"
                     name="startDate"
+                    showTimeSelect
+                    dateFormat="MMM dd yyyy hh:mm aa"
                     placeholderText="Start Date"
                   />
 
                   <DatePickerField
                     className="form-control"
                     name="endDate"
+                    showTimeSelect
+                    dateFormat="MMM dd yyyy hh:mm aa"
                     placeholderText="End Date"
                   />
                 </div>

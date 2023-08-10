@@ -95,7 +95,7 @@ const ResellerSummary = () => {
         ),
       },
       {
-        width: "12%",
+        width: "9%",
         Header: t("packageCommission"),
         Cell: ({ row: { original } }) => (
           <div className="package-based-customer">
@@ -124,10 +124,18 @@ const ResellerSummary = () => {
       },
 
       {
-        width: "10%",
+        width: "13%",
         Header: t("paid"),
         Cell: ({ row: { original } }) => (
           <div className="package-based-customer">
+            <p>
+              {t("onlinePayment")} &nbsp;
+              <b>{FormatNumber(original.onlinePaymentCustomer)}</b>
+            </p>
+            <p>
+              {t("offlinePayment")} &nbsp;
+              <b>{FormatNumber(original.offlinePaymentCustomer)}</b>
+            </p>
             <p>
               {t("customer")} <b>{FormatNumber(original.paidCustomer)}</b>
             </p>

@@ -44,6 +44,7 @@ import FormatNumber from "../../components/common/NumberFormat";
 import CustomerEdit from "./staticCustomerCrud/CustomerEdit";
 import { fetchPackagefromDatabase } from "../../features/apiCalls";
 import { Accordion, Card, Collapse } from "react-bootstrap";
+import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 
 export default function RstaticCustomer() {
   const { t } = useTranslation();
@@ -741,6 +742,7 @@ export default function RstaticCustomer() {
                     </div>
                   </div>
                 </div>
+                <NetFeeBulletin />
               </FourGround>
               <Footer />
             </FontColor>

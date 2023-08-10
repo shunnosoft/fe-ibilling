@@ -24,7 +24,7 @@ const SMSPurchase = ({ show, setShow }) => {
   //states
   const [isLoading, setIsloading] = useState(false);
 
-  const [amount, setAmount] = useState(100);
+  const [amount, setAmount] = useState(120);
 
   const [count, setCount] = useState(Number(amount) / userData.smsRate);
 

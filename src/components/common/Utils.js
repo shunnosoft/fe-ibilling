@@ -34,6 +34,7 @@ const addClass = {
   bulk: "primary",
   alert: "warning",
   processed: "warning",
+  failed: "danger",
 
   feature: "secondary",
   complain: "warning",

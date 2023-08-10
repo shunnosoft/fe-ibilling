@@ -405,11 +405,21 @@ export const updateIspOwnerCustomerStatus = async (
 };
 
 // get ispOwner bulletin
-export const getIspOwnerBulletin = async (setIspBulletin) => {
+export const getIspOwnerBulletin = async (setBulletins) => {
   try {
-    const res = await apiLink.get(`ispOwner/bulletin`);
-    setIspBulletin(res.data);
+    const res = await apiLink.get(`ispOwner/netFee/bulletin`);
+    setBulletins(res.data);
   } catch (error) {
-    console.log(error.response);
+    console.log(error.response.data);
+  }
+};
+
+// get reseller bulletin
+export const getResellerBulletin = async (setBulletins) => {
+  try {
+    const res = await apiLink.get(`reseller/netFee/bulletin`);
+    setBulletins(res.data);
+  } catch (error) {
+    console.log(error.response.data);
   }
 };

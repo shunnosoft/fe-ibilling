@@ -88,6 +88,7 @@ import BulkRecharge from "../Customer/customerCRUD/bulkOpration/BulkRecharge";
 import StaticCreateInvoice from "./StaticCreateInvoice";
 import { Accordion, Card, Collapse } from "react-bootstrap";
 import BulkPaymentStatusEdit from "../Customer/customerCRUD/bulkOpration/BulkPaymentStatusEdit";
+import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 
 export default function Customer() {
   //call hooks
@@ -1595,6 +1596,7 @@ export default function Customer() {
                 ) : (
                   ""
                 )}
+                <NetFeeBulletin />
               </FourGround>
 
               {/* Model start */}

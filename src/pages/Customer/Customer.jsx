@@ -87,7 +87,7 @@ import "./client.css";
 import BulkPaymentStatusEdit from "./customerCRUD/bulkOpration/BulkPaymentStatusEdit";
 import CreateInvoice from "./customerCRUD/CreateInvoice";
 import WithValue from "../../components/modals/passwordReset/WithValue";
-import NetFeeBulletin from "../../components/admin/header/NetFeeBulletin";
+import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 
 const PPPOECustomer = () => {
   const dispatch = useDispatch();
@@ -1525,7 +1525,7 @@ const PPPOECustomer = () => {
                     />
                   </div>
                 )}
-                {/* <NetFeeBulletin /> */}
+                <NetFeeBulletin />
               </FourGround>
               <Footer />
             </FontColor>

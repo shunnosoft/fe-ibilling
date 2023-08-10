@@ -838,5 +838,6 @@
   "ispOwnerCommission": "ISP Commission",
   "connectionOn": "Connection On",
   "connectionOff": "Connection Off",
-  "withOutPackageDelete": "Do you want to delete the package?"
+  "withOutPackageDelete": "Do you want to delete the package?",
+  "offlinePayment": "Offline Payment"
 }

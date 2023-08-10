@@ -1,0 +1,25 @@
+.bulletin {
+  background-color: #2e87df;
+  bottom: 0;
+  position: fixed;
+  margin-right: 12px;
+  padding: 6px 2%;
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  width: 82%;
+}
+
+.bulletin_title {
+  font-size: 18px;
+  color: #fff;
+}
+
+.bulletin_title::before {
+  bottom: 2px;
+  content: "\25C9 ";
+  font-size: 12px;
+  line-height: 5px;
+  margin: auto 20px;
+  position: relative;
+}

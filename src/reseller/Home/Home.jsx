@@ -369,12 +369,22 @@ export default function Home() {
                   <p style={{ fontSize: "18px" }}> {t("total collection")} </p>
                   <h2>৳ {FormatNumber(customerStat.totalMonthlyCollection)}</h2>
 
-                  <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                    {t("today collection")}{" "}
+                  <p>
+                    {t("today collection")}
                     {FormatNumber(
                       customerStat.totalResellerCollectionToday +
                         customerStat.totalCollectorCollectionToday
                     )}
+                  </p>
+
+                  <p style={{ fontSize: "13px" }}>
+                    {t("onlinePayment")}:&nbsp; ৳
+                    {FormatNumber(customerStat.onlinePayment)}
+                  </p>
+
+                  <p style={{ fontSize: "13px" }}>
+                    {t("offlinePayment")}:&nbsp; ৳
+                    {FormatNumber(customerStat.offlinePayment)}
                   </p>
                 </div>
               </div>

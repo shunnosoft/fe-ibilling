@@ -843,5 +843,6 @@
   "ispOwnerCommission": "আইএসপি কমিশন",
   "connectionOn": "সংযোগ চালু",
   "connectionOff": "সংযোগ বন্ধ",
-  "withOutPackageDelete": "আপনি কি প্যাকেজ ডিলিট করতে চান?"
+  "withOutPackageDelete": "আপনি কি প্যাকেজ ডিলিট করতে চান?",
+  "offlinePayment": "অফলাইন পেমেন্ট"
 }
