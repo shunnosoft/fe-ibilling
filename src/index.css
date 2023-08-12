@@ -139,6 +139,7 @@ p {
 
 .cardCollapse {
   background: linear-gradient(0deg, #328eea, #297fd4);
+  width: max-content;
 }
 
 .see_more {

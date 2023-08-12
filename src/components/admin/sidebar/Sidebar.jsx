@@ -38,6 +38,7 @@ import {
   BookmarksFill,
   BellFill,
   Headset,
+  Wallet2,
 } from "react-bootstrap-icons";
 import { NavLink, Router } from "react-router-dom";
 import activeClass from "../../../assets/css/active.module.css";
@@ -933,6 +934,37 @@ export default function Sidebar() {
                                   </div>
                                   <span className="sidebarLinksName">
                                     {t("message request")}
+                                  </span>
+                                </li>
+                              </FontColor>
+                            </NavLink>
+                          ) : (
+                            ""
+                          )}
+
+                          {userRole === "ispOwner" ? (
+                            <NavLink
+                              key={92}
+                              to={"/withdrawal-request"}
+                              className={(navInfo) =>
+                                navInfo.isActive ? activeClass.active : ""
+                              }
+                            >
+                              <FontColor>
+                                <li
+                                  className="sidebarItems"
+                                  id={
+                                    window.location.pathname ===
+                                    "/withdrawal-request"
+                                      ? "active"
+                                      : ""
+                                  }
+                                >
+                                  <div className="sidebarIcon">
+                                    {<Wallet2 />}
+                                  </div>
+                                  <span className="sidebarLinksName">
+                                    {t("withdrawal request")}
                                   </span>
                                 </li>
                               </FontColor>

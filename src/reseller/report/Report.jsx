@@ -12,9 +12,12 @@ import { FontColor, FourGround } from "../../assets/js/theme";
 import { useTranslation } from "react-i18next";
 import Loader from "../../components/common/Loader";
 import {
+  ArrowBarLeft,
+  ArrowBarRight,
   ArrowClockwise,
   FilterCircle,
   PrinterFill,
+  Wallet2,
 } from "react-bootstrap-icons";
 import Footer from "../../components/admin/footer/Footer";
 import { useDispatch, useSelector } from "react-redux";
@@ -29,7 +32,8 @@ import FormatNumber from "../../components/common/NumberFormat";
 import ReactToPrint from "react-to-print";
 import PrintReport from "./ReportPDF";
 import DatePicker from "react-datepicker";
-import { Accordion } from "react-bootstrap";
+import { Accordion, Card, Collapse } from "react-bootstrap";
+import WithdrawOnlinePayment from "./WithdrawOnlinePayment";
 
 const Report = () => {
   const { t } = useTranslation();
@@ -53,10 +57,11 @@ const Report = () => {
 
   // Loading state
   const [isLoading, setIsLoading] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [show, setShow] = useState(false);
 
   // collection all bills state
   const [mainData, setMainData] = useState(allBills);
-  console.log(mainData);
 
   // select area id state
   const [areaIds, setAreaIds] = useState("");
@@ -234,11 +239,14 @@ const Report = () => {
           <div className="container">
             <FontColor>
               <div className="collectorTitle d-flex justify-content-between px-4">
-                <div className="d-flex">
-                  <div>{t("billReport")}</div>
-                </div>
+                <div>{t("billReport")}</div>
 
-                <div className="d-flex justify-content-center align-items-center">
+                <div className="d-flex justify-content-center align-items-center"></div>
+
+                <div
+                  style={{ height: "45px" }}
+                  className="d-flex align-items-center"
+                >
                   <div
                     onClick={() => {
                       if (!activeKeys) {
@@ -260,20 +268,58 @@ const Report = () => {
                         className="arrowClock"
                         title={t("refresh")}
                         onClick={() => reloadHandler()}
-                      ></ArrowClockwise>
+                      />
                     )}
                   </div>
 
-                  <ReactToPrint
-                    documentTitle={t("CustomerList")}
-                    trigger={() => (
-                      <PrinterFill
-                        title={t("print")}
-                        className="addcutmButton"
-                      />
-                    )}
-                    content={() => componentRef.current}
-                  />
+                  <Collapse in={open} dimension="width">
+                    <div id="example-collapse-text">
+                      <Card className="cardCollapse border-0">
+                        <div className="d-flex align-items-center">
+                          <div
+                            className="addAndSettingIcon"
+                            onClick={() => setShow(true)}
+                            title={t("how")}
+                          >
+                            <Wallet2 className="addcutmButton" />
+                          </div>
+
+                          <ReactToPrint
+                            documentTitle={t("CustomerList")}
+                            trigger={() => (
+                              <PrinterFill
+                                title={t("print")}
+                                className="addcutmButton"
+                              />
+                            )}
+                            content={() => componentRef.current}
+                          />
+                        </div>
+                      </Card>
+                    </div>
+                  </Collapse>
+
+                  {!open && (
+                    <ArrowBarLeft
+                      className="ms-1"
+                      size={34}
+                      style={{ cursor: "pointer" }}
+                      onClick={() => setOpen(!open)}
+                      aria-controls="example-collapse-text"
+                      aria-expanded={open}
+                    />
+                  )}
+
+                  {open && (
+                    <ArrowBarRight
+                      className="ms-1"
+                      size={34}
+                      style={{ cursor: "pointer" }}
+                      onClick={() => setOpen(!open)}
+                      aria-controls="example-collapse-text"
+                      aria-expanded={open}
+                    />
+                  )}
                 </div>
               </div>
 
@@ -282,7 +328,7 @@ const Report = () => {
                   <Accordion alwaysOpen activeKey={activeKeys}>
                     <Accordion.Item eventKey="filter">
                       <Accordion.Body>
-                        <div className="selectFilteringg">
+                        <div className="displayGrid6">
                           <select
                             className="form-select me-2 mt-0"
                             onChange={(e) => setAreaIds(e.target.value)}
@@ -401,6 +447,7 @@ const Report = () => {
           </div>
         </div>
       </div>
+      <WithdrawOnlinePayment show={show} setShow={setShow} />
     </>
   );
 };

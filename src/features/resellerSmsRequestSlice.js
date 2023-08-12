@@ -4,6 +4,7 @@ const resellerSmsRequestSlice = createSlice({
   name: "resellerSmsHistory",
   initialState: {
     requestSmsHistory: [],
+    withdrawalHistory: [],
   },
   reducers: {
     getSmsRequestHistorySuccess: (state, { payload }) => {
@@ -20,9 +21,30 @@ const resellerSmsRequestSlice = createSlice({
         state.requestSmsHistory.findIndex((item) => item.id === payload.id)
       ] = updateData;
     },
+
+    // reseller online customer payment withdrawal history
+    getWithdrawalHistory: (state, { payload }) => {
+      state.withdrawalHistory = payload;
+    },
+
+    statusWithdrawalHistory: (state, { payload }) => {
+      const matchReport = state.withdrawalHistory?.find(
+        (item) => item.id === payload.id
+      );
+      const updateData = { ...matchReport, status: payload.status };
+      console.log(updateData);
+
+      state.withdrawalHistory[
+        state.withdrawalHistory.findIndex((item) => item.id === payload.id)
+      ] = updateData;
+    },
   },
 });
 
-export const { getSmsRequestHistorySuccess, acceptedStatusSuccess } =
-  resellerSmsRequestSlice.actions;
+export const {
+  getSmsRequestHistorySuccess,
+  acceptedStatusSuccess,
+  getWithdrawalHistory,
+  statusWithdrawalHistory,
+} = resellerSmsRequestSlice.actions;
 export default resellerSmsRequestSlice.reducer;

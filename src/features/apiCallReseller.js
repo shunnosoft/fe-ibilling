@@ -31,6 +31,8 @@ import {
   getTotalBalanceSuccess,
   updateDepositSuccess,
   addDepositSucces,
+  postWithdrawBalance,
+  getWithdrawBalance,
 } from "./paymentSlice";
 import { getChartSuccess } from "./chartsSlice";
 import { getMikrotikSuccess, getpppoePackageSuccess } from "./mikrotikSlice";
@@ -729,5 +731,58 @@ export const rejectChangePackage = async (dispatch, data, setIsLoading) => {
     console.log(error.response);
   }
 
+  setIsLoading(false);
+};
+
+//get reseller online customer payment balance
+export const getOnlineBalance = async (
+  resellerId,
+  year,
+  month,
+  setOnlineBalance
+) => {
+  try {
+    const res = await apiLink.get(
+      `reseller/customer-online-payment/${resellerId}?year=${year}&month=${month}`
+    );
+    setOnlineBalance(res.data);
+  } catch (error) {
+    toast.error(error.response?.data.message);
+  }
+};
+
+// reseller online customer payment withdraw balance
+export const postOnlinePayment = async (dispatch, data, setIsLoading) => {
+  console.log(data);
+  setIsLoading(true);
+  try {
+    const res = await apiLink.post(
+      `reseller/payment/withdraw/${data?.reseller}`,
+      data
+    );
+    dispatch(postWithdrawBalance(res.data));
+  } catch (error) {
+    toast.error(error.response?.data.message);
+  }
+  setIsLoading(false);
+};
+
+// get reseller payment withdraw report
+export const getPaymentWithdrawReport = async (
+  dispatch,
+  resellerId,
+  year,
+  month,
+  setIsLoading
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.get(
+      `reseller/payment/withdraw/${resellerId}?year=${year}&month=${month}`
+    );
+    dispatch(getWithdrawBalance(res.data));
+  } catch (error) {
+    toast.error(error.response?.data.message);
+  }
   setIsLoading(false);
 };

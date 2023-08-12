@@ -115,6 +115,7 @@ import CustomerInvoice from "./pages/customerInvoice/CustomerInvoice";
 import BillReport from "./pages/collector/BillReport";
 import NetFeeSupportNumbers from "./admin/Home/supportNumber/NetFeeSupportNumbers";
 import Bulletin from "./admin/Home/bulletin/Bulletin";
+import WithdrawalPaymentRequest from "./pages/withdrawalRequest/WithdrawalPaymentRequest";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
@@ -771,6 +772,10 @@ function App() {
               <Route path="new/customer" element={<NewCustomer />} />
               <Route path="reseller/customer" element={<RCustomer />} />
               <Route path="message-request" element={<ResellerSmsRequest />} />
+              <Route
+                path="withdrawal-request"
+                element={<WithdrawalPaymentRequest />}
+              />
 
               <Route path="*" element={<NotFound />} />
             </Route>

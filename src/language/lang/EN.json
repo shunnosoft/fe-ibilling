@@ -839,5 +839,10 @@
   "connectionOn": "Connection On",
   "connectionOff": "Connection Off",
   "withOutPackageDelete": "Do you want to delete the package?",
-  "offlinePayment": "Offline Payment"
+  "offlinePayment": "Offline Payment",
+  "withdrawAmount": "Withdraw Amount",
+  "onlinePaymentAmount": "Online Payment Amount",
+  "onlinePaymentWithdraw": "Online Payment Withdraw",
+  "withdrawal request": "Withdrawal Payment",
+  "paymentWithdrawalRequest": "Payment Withdrawal Request"
 }

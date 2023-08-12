@@ -10,6 +10,7 @@ const paymentSlice = createSlice({
     allBills: [],
     myDeposit: [],
     customerInvoice: [],
+    withdrawBalance: [],
   },
   reducers: {
     getTotalBalanceSuccess: (state, action) => {
@@ -66,6 +67,15 @@ const paymentSlice = createSlice({
         (item) => item.id !== action.payload.id
       );
     },
+
+    // reseller online payment withdraw
+    getWithdrawBalance: (state, action) => {
+      state.withdrawBalance = action.payload;
+    },
+
+    postWithdrawBalance: (state, action) => {
+      state.withdrawBalance.push(action.payload);
+    },
   },
 });
 
@@ -82,5 +92,7 @@ export const {
   getCustomerInvoice,
   updateCustomerInvoice,
   deleteCustomerInvoice,
+  getWithdrawBalance,
+  postWithdrawBalance,
 } = paymentSlice.actions;
 export default paymentSlice.reducer;

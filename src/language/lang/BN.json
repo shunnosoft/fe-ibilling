@@ -844,5 +844,10 @@
   "connectionOn": "সংযোগ চালু",
   "connectionOff": "সংযোগ বন্ধ",
   "withOutPackageDelete": "আপনি কি প্যাকেজ ডিলিট করতে চান?",
-  "offlinePayment": "অফলাইন পেমেন্ট"
+  "offlinePayment": "অফলাইন পেমেন্ট",
+  "withdrawAmount": "উইথড্র এমাউন্ট",
+  "onlinePaymentAmount": "অনলাইন পেমেন্টের পরিমাণ",
+  "onlinePaymentWithdraw": "অনলাইন পেমেন্ট উইথড্র",
+  "withdrawal request": "পেমেন্ট উত্তোলন",
+  "paymentWithdrawalRequest": "পেমেন্ট উত্তলনের অনুরোধ"
 }
