@@ -2319,10 +2319,18 @@ export const depositAcceptReject = async (
   }
 };
 
-export const getAllBills = async (dispatch, ispOwnerId, setIsLoading) => {
+export const getAllBills = async (
+  dispatch,
+  ispOwnerId,
+  year,
+  month,
+  setIsLoading
+) => {
   setIsLoading(true);
   try {
-    const res = await apiLink.get(`/bill/${ispOwnerId}`);
+    const res = await apiLink.get(
+      `/bill/${ispOwnerId}?year=${year}&month=${month}`
+    );
     dispatch(getAllBillsSuccess(res.data));
   } catch (error) {
     toast.error(error.response?.data.message);
@@ -2379,10 +2387,12 @@ export const getMyDeposit = async (dispatch, setIsLoading) => {
 
 //Collector Bills
 
-export const getCollectorBill = async (dispatch, setIsLoading) => {
+export const getCollectorBill = async (dispatch, year, month, setIsLoading) => {
   setIsLoading(true);
   try {
-    const res = await apiLink.get("/bill/monthlyBill");
+    const res = await apiLink.get(
+      `/bill/monthlyBill?year=${year}&month=${month}`
+    );
 
     dispatch(getCollectorBills(res.data));
   } catch (error) {

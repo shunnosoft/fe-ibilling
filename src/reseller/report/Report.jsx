@@ -40,6 +40,13 @@ const Report = () => {
   const dispatch = useDispatch();
   const componentRef = useRef();
 
+  // date & time find
+  var today = new Date();
+  var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+
+  firstDay.setHours(0, 0, 0, 0);
+  today.setHours(23, 59, 59, 999);
+
   // get user information
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
 
@@ -78,14 +85,58 @@ const Report = () => {
   // customer bill type
   const [billType, setBillType] = useState("");
 
-  // date & time find
-  var today = new Date();
-  var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+  // filter date state
+  const [filterDate, setFilterDate] = useState(firstDay);
 
-  firstDay.setHours(0, 0, 0, 0);
-  today.setHours(23, 59, 59, 999);
-  const [dateStart, setStartDate] = useState(firstDay);
-  const [dateEnd, setEndDate] = useState(today);
+  // curr & priv date state
+  const [dateStart, setStartDate] = useState(new Date());
+  const [dateEnd, setEndDate] = useState(new Date());
+
+  var selectDate = new Date(filterDate.getFullYear(), filterDate.getMonth(), 1);
+  var lastDate = new Date(
+    filterDate.getFullYear(),
+    filterDate.getMonth() + 1,
+    0
+  );
+
+  useEffect(() => {
+    setStartDate(selectDate);
+
+    if (lastDate.getMonth() + 1 === today.getMonth() + 1) {
+      setEndDate(today);
+    } else {
+      setEndDate(lastDate);
+    }
+
+    filterDate.getMonth() + 1 &&
+      getAllBills(
+        dispatch,
+        userData.id,
+        filterDate.getFullYear(),
+        filterDate.getMonth() + 1,
+        setIsLoading
+      );
+  }, [filterDate]);
+
+  useEffect(() => {
+    setMainData(allBills);
+  }, [allBills]);
+
+  useEffect(() => {
+    getSubAreas(dispatch, userData.id);
+    getCollector(dispatch, userData.id);
+  }, []);
+
+  // reload handler
+  const reloadHandler = () => {
+    getAllBills(
+      dispatch,
+      userData.id,
+      filterDate.getFullYear(),
+      filterDate.getMonth() + 1,
+      setIsLoading
+    );
+  };
 
   // reseller & collector collection bill report filter
   const collectionReportFilter = () => {
@@ -127,40 +178,6 @@ const Report = () => {
 
     setMainData(arr);
   };
-
-  // reload handler
-  const reloadHandler = () => {
-    getAllBills(dispatch, userData.id, setIsLoading);
-  };
-
-  useEffect(() => {
-    getAllBills(dispatch, userData.id, setIsLoading);
-  }, [userData]);
-
-  useEffect(() => {
-    // all bills current month filter data
-    var initialToday = new Date();
-    var initialFirst = new Date(
-      initialToday.getFullYear(),
-      initialToday.getMonth(),
-      1
-    );
-
-    initialFirst.setHours(0, 0, 0, 0);
-    initialToday.setHours(23, 59, 59, 999);
-    setMainData(
-      allBills.filter(
-        (item) =>
-          Date.parse(item.createdAt) >= Date.parse(initialFirst) &&
-          Date.parse(item.createdAt) <= Date.parse(initialToday)
-      )
-    );
-  }, [allBills]);
-
-  useEffect(() => {
-    getSubAreas(dispatch, userData.id);
-    getCollector(dispatch, userData.id);
-  }, []);
 
   // select area & collector find
   const areaName = subAreas.find((item) => item.id === areaIds);
@@ -329,6 +346,19 @@ const Report = () => {
                     <Accordion.Item eventKey="filter">
                       <Accordion.Body>
                         <div className="displayGrid6">
+                          <div>
+                            <DatePicker
+                              className="form-control mw-100 mt-0"
+                              selected={filterDate}
+                              onChange={(date) => setFilterDate(date)}
+                              dateFormat="MMM-yyyy"
+                              showMonthYearPicker
+                              showFullMonthYearPicker
+                              maxDate={new Date()}
+                              minDate={new Date(userData?.createdAt)}
+                            />
+                          </div>
+
                           <select
                             className="form-select me-2 mt-0"
                             onChange={(e) => setAreaIds(e.target.value)}
@@ -395,15 +425,27 @@ const Report = () => {
                               selected={dateStart}
                               onChange={(date) => setStartDate(date)}
                               dateFormat="MMM dd yyyy"
+                              minDate={selectDate}
+                              maxDate={
+                                lastDate.getMonth() + 1 === today.getMonth() + 1
+                                  ? today
+                                  : lastDate
+                              }
                               placeholderText={t("selectBillDate")}
                             />
                           </div>
-                          <div className="mx-2">
+                          <div>
                             <DatePicker
                               className="form-control mw-100 mt-0"
                               selected={dateEnd}
                               onChange={(date) => setEndDate(date)}
                               dateFormat="MMM dd yyyy"
+                              minDate={selectDate}
+                              maxDate={
+                                lastDate.getMonth() + 1 === today.getMonth() + 1
+                                  ? today
+                                  : lastDate
+                              }
                               placeholderText={t("selectBillDate")}
                             />
                           </div>

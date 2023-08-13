@@ -95,9 +95,6 @@ export default function Report() {
   firstDay.setHours(0, 0, 0, 0);
   today.setHours(23, 59, 59, 999);
 
-  const [dateStart, setStartDate] = useState(firstDay);
-  const [dateEnd, setEndDate] = useState(today);
-
   const allBills = useSelector((state) => state?.payment?.allBills);
   const [areaLoading, setAreaLoading] = useState(false);
   const [collectorLoading, setCollectorLoading] = useState(false);
@@ -117,6 +114,20 @@ export default function Report() {
   // filter Accordion handle state
   const [activeKeys, setActiveKeys] = useState("");
 
+  // filter date state
+  const [filterDate, setFilterDate] = useState(firstDay);
+
+  // curr & priv date state
+  const [dateStart, setStartDate] = useState(new Date());
+  const [dateEnd, setEndDate] = useState(new Date());
+
+  var selectDate = new Date(filterDate.getFullYear(), filterDate.getMonth(), 1);
+  var lastDate = new Date(
+    filterDate.getFullYear(),
+    filterDate.getMonth() + 1,
+    0
+  );
+
   //reload handler
   const reloadHandler = () => {
     if (userRole === "manager") {
@@ -124,7 +135,14 @@ export default function Report() {
       dispatch(managerFetchSuccess(userData));
     }
 
-    userRole === "ispOwner" && getAllBills(dispatch, ispOwnerId, setIsLoading);
+    userRole === "ispOwner" &&
+      getAllBills(
+        dispatch,
+        ispOwnerId,
+        filterDate.getFullYear(),
+        filterDate.getMonth() + 1,
+        setIsLoading
+      );
   };
 
   useEffect(() => {
@@ -136,9 +154,6 @@ export default function Report() {
         getAllManagerBills(dispatch, ispOwnerId, setIsLoading);
     }
 
-    if (userRole === "ispOwner") {
-      allBills.length === 0 && getAllBills(dispatch, ispOwnerId, setIsLoading);
-    }
     let collectors = [];
 
     allCollector.map((item) =>
@@ -186,21 +201,28 @@ export default function Report() {
   }, [allCollector, manager]);
 
   useEffect(() => {
-    var initialToday = new Date();
-    var initialFirst =
-      userRole === "ispOwner" || permissions?.dashboardCollectionData
-        ? new Date(initialToday.getFullYear(), initialToday.getMonth(), 1)
-        : new Date();
+    setStartDate(selectDate);
 
-    initialFirst.setHours(0, 0, 0, 0);
-    initialToday.setHours(23, 59, 59, 999);
-    setMainData(
-      allBills.filter(
-        (item) =>
-          Date.parse(item.createdAt) >= Date.parse(initialFirst) &&
-          Date.parse(item.createdAt) <= Date.parse(initialToday)
-      )
-    );
+    if (lastDate.getMonth() + 1 === today.getMonth() + 1) {
+      setEndDate(today);
+    } else {
+      setEndDate(lastDate);
+    }
+
+    filterDate.getMonth() + 1 &&
+      getAllBills(
+        dispatch,
+        ispOwnerId,
+        filterDate.getFullYear(),
+        filterDate.getMonth() + 1,
+        setIsLoading
+      );
+  }, [filterDate]);
+
+  useEffect(() => {
+    if (allBills) {
+      setMainData(allBills);
+    }
   }, [allBills]);
 
   useEffect(() => {
@@ -634,6 +656,19 @@ export default function Report() {
                     <Accordion.Item eventKey="filter">
                       <Accordion.Body>
                         <div className="displayGrid6">
+                          <div>
+                            <DatePicker
+                              className="form-control mw-100 mt-0"
+                              selected={filterDate}
+                              onChange={(date) => setFilterDate(date)}
+                              dateFormat="MMM-yyyy"
+                              showMonthYearPicker
+                              showFullMonthYearPicker
+                              maxDate={new Date()}
+                              minDate={new Date(userData?.createdAt)}
+                            />
+                          </div>
+
                           <select
                             className="form-select mt-0"
                             onChange={(e) => onChangeArea(e.target.value)}
@@ -718,6 +753,13 @@ export default function Report() {
                                   selected={dateStart}
                                   onChange={(date) => setStartDate(date)}
                                   dateFormat="MMM dd yyyy"
+                                  minDate={selectDate}
+                                  maxDate={
+                                    lastDate.getMonth() + 1 ===
+                                    today.getMonth() + 1
+                                      ? today
+                                      : lastDate
+                                  }
                                   placeholderText={t("selectBillDate")}
                                 />
                               </div>
@@ -728,6 +770,13 @@ export default function Report() {
                                   selected={dateEnd}
                                   onChange={(date) => setEndDate(date)}
                                   dateFormat="MMM dd yyyy"
+                                  minDate={selectDate}
+                                  maxDate={
+                                    lastDate.getMonth() + 1 ===
+                                    today.getMonth() + 1
+                                      ? today
+                                      : lastDate
+                                  }
                                   placeholderText={t("selectBillDate")}
                                 />
                               </div>

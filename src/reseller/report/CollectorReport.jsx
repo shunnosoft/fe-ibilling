@@ -1,28 +1,25 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { ToastContainer } from "react-toastify";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import useDash from "../../assets/css/dash.module.css";
 import { FontColor, FourGround } from "../../assets/js/theme";
 import moment from "moment";
 import {
-  ArchiveFill,
   ArrowClockwise,
-  ArrowDownUp,
   FilterCircle,
-  PenFill,
-  PersonFill,
   PrinterFill,
-  ThreeDots,
-  Wallet,
 } from "react-bootstrap-icons";
-import TdLoader from "../../components/common/TdLoader";
-import Pagination from "../../components/Pagination";
 import Footer from "../../components/admin/footer/Footer";
 import "../Customer/customer.css";
 import "./report.css";
 
 import { useDispatch, useSelector } from "react-redux";
-import arraySort from "array-sort";
 import { getCollectorBill } from "../../features/apiCalls";
 import FormatNumber from "../../components/common/NumberFormat";
 import Table from "../../components/table/Table";
@@ -38,27 +35,39 @@ export default function CollectorReport() {
   const componentRef = useRef();
   //   const allArea = useSelector(state => state.area.area);
   const [allArea, setAreas] = useState([]);
+
+  // get user information
+  const userData = useSelector((state) => state.persistedReducer.auth.userData);
+
   const collectorArea = useSelector(
     (state) => state.persistedReducer.auth.currentUser?.collector.areas
   );
-  console.log(collectorArea);
+
+  const allBills = useSelector((state) => state.collector.collectorBill);
 
   var today = new Date();
   var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
   firstDay.setHours(0, 0, 0, 0);
   today.setHours(23, 59, 59, 999);
 
-  const [dateStart, setStartDate] = useState(firstDay);
-  const [dateEnd, setEndDate] = useState(today);
+  // filter date state
+  const [filterDate, setFilterDate] = useState(firstDay);
 
-  const allBills = useSelector((state) => state.collector.collectorBill);
+  // curr & priv date state
+  const [dateStart, setStartDate] = useState(new Date());
+  const [dateEnd, setEndDate] = useState(new Date());
+
+  var selectDate = new Date(filterDate.getFullYear(), filterDate.getMonth(), 1);
+  var lastDate = new Date(
+    filterDate.getFullYear(),
+    filterDate.getMonth() + 1,
+    0
+  );
 
   const [singleArea, setArea] = useState({});
   const [subAreaIds, setSubArea] = useState([]);
   const [mainData, setMainData] = useState(allBills);
-  const [mainData2, setMainData2] = useState(allBills);
   const [isLoading, setIsLoading] = useState(false);
-  const [isSorted, setSorted] = useState(false);
 
   // filter Accordion handle state
   const [activeKeys, setActiveKeys] = useState("");
@@ -67,12 +76,13 @@ export default function CollectorReport() {
 
   // reload handler
   const reloadHandler = () => {
-    getCollectorBill(dispatch, setIsLoading);
+    getCollectorBill(
+      dispatch,
+      filterDate.getFullYear(),
+      filterDate.getMonth() + 1,
+      setIsLoading
+    );
   };
-
-  useEffect(() => {
-    if (allBills.length === 0) getCollectorBill(dispatch, setIsLoading);
-  }, [dispatch]);
 
   useEffect(() => {
     let areas = [];
@@ -102,31 +112,25 @@ export default function CollectorReport() {
   }, [collectorArea]);
 
   useEffect(() => {
-    var initialToday = new Date();
-    var initialFirst = new Date(
-      initialToday.getFullYear(),
-      initialToday.getMonth(),
-      1
-    );
+    setStartDate(selectDate);
 
-    initialFirst.setHours(0, 0, 0, 0);
-    initialToday.setHours(23, 59, 59, 999);
-    setMainData(
-      allBills?.filter(
-        (item) =>
-          Date.parse(item.createdAt) >= Date.parse(initialFirst) &&
-          Date.parse(item.createdAt) <= Date.parse(initialToday)
-      )
-    );
+    if (lastDate.getMonth() + 1 === today.getMonth() + 1) {
+      setEndDate(today);
+    } else {
+      setEndDate(lastDate);
+    }
 
-    // Temp varialbe for search
-    setMainData2(
-      allBills?.filter(
-        (item) =>
-          Date.parse(item.createdAt) >= Date.parse(initialFirst) &&
-          Date.parse(item.createdAt) <= Date.parse(initialToday)
-      )
-    );
+    filterDate.getMonth() + 1 &&
+      getCollectorBill(
+        dispatch,
+        filterDate.getFullYear(),
+        filterDate.getMonth() + 1,
+        setIsLoading
+      );
+  }, [filterDate]);
+
+  useEffect(() => {
+    setMainData(allBills);
   }, [allBills]);
 
   const onChangeArea = (param) => {
@@ -177,7 +181,6 @@ export default function CollectorReport() {
     );
 
     setMainData(arr);
-    setMainData2(arr);
   };
 
   const addAllBills = useCallback(() => {
@@ -188,7 +191,7 @@ export default function CollectorReport() {
     return FormatNumber(count);
   }, [mainData]);
 
-  const columns2 = React.useMemo(
+  const columns2 = useMemo(
     () => [
       {
         width: "25%",
@@ -211,7 +214,7 @@ export default function CollectorReport() {
         Header: t("date"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("MMM DD YYYY hh:mm a");
+          return moment(value).format("YYYY-MM-DD h:mm a");
         },
       },
     ],
@@ -247,7 +250,7 @@ export default function CollectorReport() {
             <FontColor>
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-4">
-                  <h2>{t("billReport")}</h2>
+                  <div>{t("billReport")}</div>
 
                   <div className="d-flex justify-content-center align-items-center">
                     <div
@@ -282,6 +285,7 @@ export default function CollectorReport() {
                       )}
                       content={() => componentRef.current}
                     />
+
                     {/* print report */}
                     <div style={{ display: "none" }}>
                       <PrintReport
@@ -290,23 +294,31 @@ export default function CollectorReport() {
                         ref={componentRef}
                       />
                     </div>
-                    {/* print report end*/}
                   </div>
                 </div>
               </FourGround>
-
-              {/* Model start */}
-
-              {/* Model finish */}
 
               <FourGround>
                 <div className="mt-2">
                   <Accordion alwaysOpen activeKey={activeKeys}>
                     <Accordion.Item eventKey="filter">
                       <Accordion.Body>
-                        <div className="selectFilteringg">
+                        <div className="displayGrid6">
+                          <div>
+                            <DatePicker
+                              className="form-control mw-100 mt-0"
+                              selected={filterDate}
+                              onChange={(date) => setFilterDate(date)}
+                              dateFormat="MMM-yyyy"
+                              showMonthYearPicker
+                              showFullMonthYearPicker
+                              maxDate={new Date()}
+                              minDate={new Date(userData?.createdAt)}
+                            />
+                          </div>
+
                           <select
-                            className="form-select me-2 mt-0"
+                            className="form-select mt-0"
                             onChange={(e) => onChangeArea(e.target.value)}
                           >
                             <option value={JSON.stringify({})} defaultValue>
@@ -318,8 +330,9 @@ export default function CollectorReport() {
                               </option>
                             ))}
                           </select>
+
                           <select
-                            className="form-select me-2 mt-0"
+                            className="form-select mt-0"
                             onChange={(e) => onChangeSubArea(e.target.value)}
                           >
                             <option value="" defaultValue>
@@ -338,15 +351,27 @@ export default function CollectorReport() {
                               selected={dateStart}
                               onChange={(date) => setStartDate(date)}
                               dateFormat="MMM dd yyyy"
+                              minDate={selectDate}
+                              maxDate={
+                                lastDate.getMonth() + 1 === today.getMonth() + 1
+                                  ? today
+                                  : lastDate
+                              }
                               placeholderText={t("selectBillDate")}
                             />
                           </div>
-                          <div className="mx-2">
+                          <div>
                             <DatePicker
                               className="form-control mw-100 mt-0"
                               selected={dateEnd}
                               onChange={(date) => setEndDate(date)}
                               dateFormat="MMM dd yyyy"
+                              minDate={selectDate}
+                              maxDate={
+                                lastDate.getMonth() + 1 === today.getMonth() + 1
+                                  ? today
+                                  : lastDate
+                              }
                               placeholderText={t("selectBillDate")}
                             />
                           </div>

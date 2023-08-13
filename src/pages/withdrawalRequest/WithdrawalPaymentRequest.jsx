@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { ToastContainer } from "react-toastify";
 import useDash from "../../assets/css/dash.module.css";
@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Table from "../../components/table/Table";
 import moment from "moment";
 import { badge } from "../../components/common/Utils";
+import FormatNumber from "../../components/common/NumberFormat";
 
 const WithdrawalPaymentRequest = () => {
   const { t } = useTranslation();
@@ -62,6 +63,32 @@ const WithdrawalPaymentRequest = () => {
     };
     patchResellerWithdrawalRequest(dispatch, id, data, setAccLoading);
   };
+
+  const resellerWithdrawPayment = useCallback(() => {
+    let initialValue = 0;
+    const totalWithdraw = resellerWithdrawal.map((val) => {
+      if (val.status === "accepted") {
+        return (initialValue += val.amount);
+      }
+    });
+
+    return FormatNumber(totalWithdraw);
+  }, [resellerWithdrawal]);
+
+  // sending table header data
+  const customComponent = (
+    <div
+      className="text-center"
+      style={{ fontSize: "18px", fontWeight: "500", display: "flex" }}
+    >
+      {resellerWithdrawPayment?.totalWithdraw > 0 && (
+        <div>
+          {t("totalWithdraw")}:-৳
+          {FormatNumber(resellerWithdrawPayment.totalWithdraw)}
+        </div>
+      )}
+    </div>
+  );
 
   const columns = useMemo(
     () => [
@@ -226,6 +253,7 @@ const WithdrawalPaymentRequest = () => {
                       <div className="table-section">
                         <Table
                           isLoading={isLoading}
+                          customComponent={customComponent}
                           columns={columns}
                           data={resellerWithdrawal}
                         />

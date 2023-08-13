@@ -504,10 +504,18 @@ export const depositAcceptReject = async (
   }
 };
 
-export const getAllBills = async (dispatch, resellerId, setIsLoading) => {
+export const getAllBills = async (
+  dispatch,
+  resellerId,
+  year,
+  month,
+  setIsLoading
+) => {
   setIsLoading(true);
   try {
-    const res = await apiLink.get(`/reseller/bills/${resellerId}`);
+    const res = await apiLink.get(
+      `/reseller/bills/${resellerId}?year=${year}&month=${month}`
+    );
     dispatch(getAllBillsSuccess(res.data));
   } catch (error) {
     toast.error(error.response?.data.message);
