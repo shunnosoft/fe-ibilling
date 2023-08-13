@@ -39,6 +39,7 @@ import {
   BellFill,
   Headset,
   Wallet2,
+  AppIndicator,
 } from "react-bootstrap-icons";
 import { NavLink, Router } from "react-router-dom";
 import activeClass from "../../../assets/css/active.module.css";
@@ -1613,7 +1614,7 @@ export default function Sidebar() {
                           : ""
                       }
                     >
-                      <div className="sidebarIcon">{<PhoneVibrate />}</div>
+                      <div className="sidebarIcon">{<AppIndicator />}</div>
                       <span className="sidebarLinksName">Bulletin</span>
                     </li>
                   </FontColor>

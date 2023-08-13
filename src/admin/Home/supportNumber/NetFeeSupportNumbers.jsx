@@ -3,8 +3,11 @@ import { ToastContainer } from "react-bootstrap";
 import Sidebar from "../../../components/admin/sidebar/Sidebar";
 import { FontColor } from "../../../assets/js/theme";
 import useDash from "../../../assets/css/dash.module.css";
-import { PersonPlusFill, ThreeDots } from "react-bootstrap-icons";
-import { getNetFeeSupportNumbers } from "../../../features/apiCalls";
+import { ArchiveFill, PersonPlusFill, ThreeDots } from "react-bootstrap-icons";
+import {
+  deleteNetFeeSupportNumbers,
+  getNetFeeSupportNumbers,
+} from "../../../features/apiCalls";
 import { useDispatch, useSelector } from "react-redux";
 import CreateSupportNumber from "./modal/CreateSupportNumber";
 import Table from "../../../components/table/Table";
@@ -25,6 +28,15 @@ const NetFeeSupportNumbers = () => {
     supportNumbers.length === 0 &&
       getNetFeeSupportNumbers(dispatch, setIsLoading);
   }, []);
+
+  // netFee support numbers delete handle
+  const supportNUmberDelete = (supportId) => {
+    const confirm = window.confirm("Do you want to delete the number?");
+
+    if (confirm) {
+      deleteNetFeeSupportNumbers(dispatch, supportId);
+    }
+  };
 
   const columns = useMemo(
     () => [
@@ -83,20 +95,16 @@ const NetFeeSupportNumbers = () => {
                       <p className="actionP">{t("edit")}</p>
                     </div>
                   </div>
-                </li>
+                </li>*/}
 
-                <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#supportDelete"
-                  onClick={() => supportDeleteHandler(original.id)}
-                >
+                <li onClick={() => supportNUmberDelete(original.id)}>
                   <div className="dropdown-item">
                     <div className="customerAction">
                       <ArchiveFill />
-                      <p className="actionP">{t("delete")}</p>
+                      <p className="actionP">Delete</p>
                     </div>
                   </div>
-                </li> */}
+                </li>
               </ul>
             </div>
           </div>

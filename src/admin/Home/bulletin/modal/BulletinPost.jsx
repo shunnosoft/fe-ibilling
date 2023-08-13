@@ -3,13 +3,15 @@ import { Modal, ModalBody, ModalHeader, ModalTitle } from "react-bootstrap";
 import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import Loader from "../../../../components/common/Loader";
-import { postBulletin } from "../../../../features/apiCalls";
-import { useDispatch } from "react-redux";
+import { patchBulletin, postBulletin } from "../../../../features/apiCalls";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import DatePickerField from "../../../../components/common/DatePickerField";
+import moment from "moment";
 
-const BulletinPost = ({ show, setShow }) => {
+const BulletinPost = ({ show, setShow, editId }) => {
   const dispatch = useDispatch();
+  const { bulletinId, modalStatus } = editId;
 
   // bulletin validation
   const netFeeBulletin = Yup.object({
@@ -19,6 +21,17 @@ const BulletinPost = ({ show, setShow }) => {
     ispOwner: Yup.string(),
     reseller: Yup.string(),
   });
+
+  //  netFee Bulletin all data
+  const bulletinData = useSelector((state) =>
+    modalStatus === "bulletinEdit" ? state.netFeeSupport?.bulletin : ""
+  );
+
+  // single bulletin find
+  let singleBulletin;
+  if (bulletinId) {
+    singleBulletin = bulletinData.find((val) => val.id === bulletinId);
+  }
 
   // Loading state
   const [isLoading, setIsLoading] = useState(false);
@@ -39,6 +52,19 @@ const BulletinPost = ({ show, setShow }) => {
     postBulletin(dispatch, sendData, setIsLoading, setShow);
   };
 
+  // bulletin update data submit handler
+  const bulletinEditHandler = (values) => {
+    if (!(values.ispOwner || values.reseller)) {
+      toast.error("One status must be selected.");
+      return;
+    }
+
+    const sendData = {
+      ...values,
+    };
+    patchBulletin(dispatch, bulletinId, sendData, setIsLoading, setShow);
+  };
+
   return (
     <>
       <Modal
@@ -55,15 +81,23 @@ const BulletinPost = ({ show, setShow }) => {
         <ModalBody>
           <Formik
             initialValues={{
-              title: "",
-              startDate: "",
-              endDate: "",
-              ispOwner: false,
-              reseller: false,
+              title: singleBulletin ? singleBulletin?.title : "",
+              startDate: singleBulletin
+                ? moment(singleBulletin?.startDate).format(
+                    "MMM DD yyyy hh:mm A"
+                  )
+                : "",
+              endDate: singleBulletin
+                ? moment(singleBulletin?.endDate).format("MMM DD yyyy hh:mm A")
+                : "",
+              ispOwner: singleBulletin ? singleBulletin?.ispOwner : false,
+              reseller: singleBulletin ? singleBulletin?.reseller : false,
             }}
             validationSchema={netFeeBulletin}
             onSubmit={(values) => {
-              bulletinHandler(values);
+              modalStatus === "bulletinEdit"
+                ? bulletinEditHandler(values)
+                : bulletinHandler(values);
             }}
             enableReinitialize
           >

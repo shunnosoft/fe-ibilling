@@ -8,12 +8,9 @@ import {
   ModalFooter,
   ModalHeader,
   ModalTitle,
-  ToastContainer,
 } from "react-bootstrap";
 import Loader from "../../../../components/common/Loader";
-import { toast } from "react-toastify";
 import { FtextField } from "../../../../components/common/FtextField";
-import moment from "moment";
 import { postNetFeeSupportNumbers } from "../../../../features/apiCalls";
 import { useDispatch } from "react-redux";
 
@@ -94,7 +91,6 @@ const CreateSupportNumber = ({ show, setShow }) => {
 
   return (
     <>
-      <ToastContainer position="top-right" theme="colored" />
       <Modal
         show={show}
         onHide={handleClose}

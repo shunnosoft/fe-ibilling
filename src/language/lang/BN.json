@@ -849,5 +849,6 @@
   "onlinePaymentAmount": "অনলাইন পেমেন্টের পরিমাণ",
   "onlinePaymentWithdraw": "অনলাইন পেমেন্ট উইথড্র",
   "withdrawal request": "পেমেন্ট উত্তোলন",
-  "paymentWithdrawalRequest": "পেমেন্ট উত্তলনের অনুরোধ"
+  "paymentWithdrawalRequest": "পেমেন্ট উত্তলনের অনুরোধ",
+  "buySms": "এসএমএস কিনুন"
 }

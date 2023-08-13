@@ -133,11 +133,13 @@ import {
   deleteBulletinSuccess,
   deleteIspOwnerSupports,
   deleteNetFeeSupport,
+  deleteSupportNumbers,
   getBulletinSuccess,
   getIspOwnerPackageChangeRequest,
   getIspOwnerSupports,
   getNetFeeSupport,
   getSupportNumbers,
+  patchBulletinSuccess,
   postBulletinSuccess,
   postIspOwnerSupports,
   postSupportNumbers,
@@ -3477,6 +3479,17 @@ export const getNetFeeSupportNumbers = async (dispatch, setIsLoading) => {
   setIsLoading(false);
 };
 
+// ispOwner number support
+export const deleteNetFeeSupportNumbers = async (dispatch, supportId) => {
+  try {
+    const res = await apiLink.delete(`admin/support/number/${supportId}`);
+    dispatch(deleteSupportNumbers(res.data));
+    toast.success("Support Number Delete successfuly");
+  } catch (error) {
+    toast.error(error.response?.data?.message);
+  }
+};
+
 // create ispOwner customr supporter
 export const postNetFeeSupportNumbers = async (
   dispatch,
@@ -3535,6 +3548,26 @@ export const postBulletin = async (dispatch, data, setIsLoading, setShow) => {
     dispatch(postBulletinSuccess(res.data));
     setShow(false);
     toast.success("Bulletin Add successful");
+  } catch (error) {
+    toast.error(error.response?.data?.message);
+  }
+  setIsLoading(false);
+};
+
+// edit netFee bulletin api call
+export const patchBulletin = async (
+  dispatch,
+  bulletinId,
+  data,
+  setIsLoading,
+  setShow
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.patch(`admin/bulletin/${bulletinId}`, data);
+    dispatch(patchBulletinSuccess(res.data));
+    setShow(false);
+    toast.success("Bulletin Update successful");
   } catch (error) {
     toast.error(error.response?.data?.message);
   }

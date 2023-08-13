@@ -76,9 +76,13 @@ export const netFeeSupportSlice = createSlice({
     getSupportNumbers: (state, action) => {
       state.supportNumbers = action.payload;
     },
-
     postSupportNumbers: (state, action) => {
       state.supportNumbers.push(action.payload);
+    },
+    deleteSupportNumbers: (state, action) => {
+      state.supportNumbers = state.supportNumbers.filter(
+        (item) => item.id !== action.payload.id
+      );
     },
 
     // netFee bulletin
@@ -87,6 +91,12 @@ export const netFeeSupportSlice = createSlice({
     },
     postBulletinSuccess: (state, action) => {
       state.bulletin.push(action.payload);
+    },
+    patchBulletinSuccess: (state, action) => {
+      const changeRequest = state.bulletin.findIndex(
+        (item) => item.id === action.payload.id
+      );
+      state.bulletin[changeRequest] = action.payload;
     },
     deleteBulletinSuccess: (state, action) => {
       state.bulletin = state.bulletin.filter(
@@ -112,8 +122,10 @@ export const {
   updateResellerChangePackageRequest,
   getSupportNumbers,
   postSupportNumbers,
+  deleteSupportNumbers,
   getBulletinSuccess,
   postBulletinSuccess,
+  patchBulletinSuccess,
   deleteBulletinSuccess,
 } = netFeeSupportSlice.actions;
 export default netFeeSupportSlice.reducer;

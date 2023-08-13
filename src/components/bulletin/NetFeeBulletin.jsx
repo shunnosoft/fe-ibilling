@@ -35,7 +35,7 @@ const NetFeeBulletin = () => {
             {bulletins &&
               bulletins.map((val) => {
                 if (
-                  moment(val.startDate).format("YYYY-MM-DD hh:mm") >=
+                  moment(val.startDate).format("YYYY-MM-DD hh:mm") <=
                     moment(date).format("YYYY-MM-DD hh:mm") &&
                   moment(date).format("YYYY-MM-DD hh:mm") <=
                     moment(val.endDate).format("YYYY-MM-DD hh:mm")

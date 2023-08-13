@@ -844,5 +844,6 @@
   "onlinePaymentAmount": "Online Payment Amount",
   "onlinePaymentWithdraw": "Online Payment Withdraw",
   "withdrawal request": "Withdrawal Payment",
-  "paymentWithdrawalRequest": "Payment Withdrawal Request"
+  "paymentWithdrawalRequest": "Payment Withdrawal Request",
+  "buySms": "Buy SMS"
 }

@@ -5,7 +5,12 @@ import { ToastContainer } from "react-toastify";
 import useDash from "../../../assets/css/dash.module.css";
 import { deleteBulletin, getBulletin } from "../../../features/apiCalls";
 import { useDispatch, useSelector } from "react-redux";
-import { ArchiveFill, PersonPlusFill, ThreeDots } from "react-bootstrap-icons";
+import {
+  ArchiveFill,
+  PenFill,
+  PersonPlusFill,
+  ThreeDots,
+} from "react-bootstrap-icons";
 import BulletinPost from "./modal/BulletinPost";
 import Table from "../../../components/table/Table";
 import moment from "moment";
@@ -22,6 +27,9 @@ const Bulletin = () => {
   // bulletin modal state
   const [show, setShow] = useState(false);
   const [modalStatus, setModalStatus] = useState(false);
+
+  // bulletin edit id state
+  const [bulletinId, setBulletinId] = useState("");
 
   useEffect(() => {
     bulletinData.length === 0 && getBulletin(dispatch, setIsLoading);
@@ -112,25 +120,12 @@ const Bulletin = () => {
                 aria-expanded="false"
               />
               <ul className="dropdown-menu" aria-labelledby="areaDropdown">
-                {/* <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#adminSupportDetails"
-                  onClick={() => {
-                    supportDetailsHandler(original.id);
-                  }}
-                >
-                  <div className="dropdown-item">
-                    <div className="customerAction">
-                      <PersonFill />
-                      <p className="actionP">Details</p>
-                    </div>
-                  </div>
-                </li>
-
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#adminSupportEditModal"
-                  onClick={() => supportEditId(original.id)}
+                  onClick={() => {
+                    setModalStatus("bulletinEdit");
+                    setShow(true);
+                    setBulletinId(original?.id);
+                  }}
                 >
                   <div className="dropdown-item">
                     <div className="customerAction">
@@ -138,7 +133,7 @@ const Bulletin = () => {
                       <p className="actionP">Edit</p>
                     </div>
                   </div>
-                </li> */}
+                </li>
                 <li onClick={() => bulletinDeleteHandle(original.id)}>
                   <div className="dropdown-item">
                     <div className="customerAction">
@@ -166,7 +161,9 @@ const Bulletin = () => {
             <div className="card">
               <div className="card-header">
                 <div className="d-flex justify-content-between">
-                  <h2 className="dashboardTitle text-center">Bulletin</h2>
+                  <h2 className="dashboardTitle text-center text-secondary">
+                    Bulletin
+                  </h2>
                   <div className="addAndSettingIcon d-flex justify-content-center align-items-center">
                     <PersonPlusFill
                       className="addcutmButton"
@@ -192,8 +189,12 @@ const Bulletin = () => {
       </FontColor>
 
       {/* bulletin all modal start */}
-      {modalStatus === "bulletinPost" && (
-        <BulletinPost show={show} setShow={setShow} />
+      {(modalStatus === "bulletinPost" || modalStatus === "bulletinEdit") && (
+        <BulletinPost
+          show={show}
+          setShow={setShow}
+          editId={modalStatus === "bulletinEdit" && { bulletinId, modalStatus }}
+        />
       )}
 
       {/* bulletin all modal end */}

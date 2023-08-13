@@ -47,6 +47,11 @@ const Report = () => {
   firstDay.setHours(0, 0, 0, 0);
   today.setHours(23, 59, 59, 999);
 
+  // get isp owner data
+  const bpSettings = useSelector(
+    (state) => state.persistedReducer.auth.ispOwnerData?.bpSettings
+  );
+
   // get user information
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
 
@@ -293,13 +298,15 @@ const Report = () => {
                     <div id="example-collapse-text">
                       <Card className="cardCollapse border-0">
                         <div className="d-flex align-items-center">
-                          <div
-                            className="addAndSettingIcon"
-                            onClick={() => setShow(true)}
-                            title={t("how")}
-                          >
-                            <Wallet2 className="addcutmButton" />
-                          </div>
+                          {bpSettings?.hasPG && (
+                            <div
+                              className="addAndSettingIcon"
+                              onClick={() => setShow(true)}
+                              title={t("withdrawal request")}
+                            >
+                              <Wallet2 className="addcutmButton" />
+                            </div>
+                          )}
 
                           <ReactToPrint
                             documentTitle={t("CustomerList")}

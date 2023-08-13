@@ -243,3 +243,30 @@
   border-radius: 7px;
   border: 1px solid #ddd;
 }
+
+.textButton {
+  width: max-content;
+  height: 2.1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.6rem;
+  color: var(--primaryColor);
+  background: white;
+  border-radius: 0.2rem;
+  margin-left: 0.8rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+.textButton:hover {
+  background: #0ea158;
+  color: white;
+}
+
+.text_icons {
+  font-size: 1.5rem;
+  margin-right: 0.2rem;
+}
