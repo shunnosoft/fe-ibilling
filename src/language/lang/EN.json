@@ -845,5 +845,9 @@
   "onlinePaymentWithdraw": "Online Payment Withdraw",
   "withdrawal request": "Withdrawal Payment",
   "paymentWithdrawalRequest": "Payment Withdrawal Request",
-  "buySms": "Buy SMS"
+  "buySms": "Buy SMS",
+  "totalWithdraw": "Total Withdraw",
+  "amountMustBeAbove": "Amount must be Above 250Tk",
+  "amountFieldIsRequired": "Amount Field is Required",
+  "notEnoughOnlineBalance": "Your don't have enough online balance!"
 }

@@ -35,6 +35,10 @@ export default function Profile() {
     (state) => state.persistedReducer.auth.userData
   );
 
+  const netFeeId = useSelector(
+    (state) => state.persistedReducer.auth.ispOwnerData?.netFeeId
+  );
+
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
   );
@@ -398,7 +402,7 @@ export default function Profile() {
                             ispInfo={{
                               company: currentUser?.company,
                               mobile: currentUser?.mobile,
-                              netFeeId: currentUser?.netFeeId,
+                              netFeeId: netFeeId,
                               address: currentUser?.address,
                             }}
                           />

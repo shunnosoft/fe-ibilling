@@ -19,7 +19,7 @@ import InvoiceEditModal from "./modal/InvoiceEditModal";
 import InvoiceCreate from "./modal/InvoiceCreate";
 import { Modal, ModalBody, ModalHeader, ModalTitle } from "react-bootstrap";
 
-const Invoices = ({ invoiceId, companyName, isOpen }) => {
+const Invoices = ({ ownerId, companyName, isOpen, setIsOpen }) => {
   // import dispatch
   const dispatch = useDispatch();
 
@@ -42,8 +42,8 @@ const Invoices = ({ invoiceId, companyName, isOpen }) => {
 
   // dispatch data to api
   useEffect(() => {
-    if (invoiceId) getIspOwnerInvoice(invoiceId, dispatch, setIsLoading);
-  }, [invoiceId]);
+    if (ownerId) getIspOwnerInvoice(ownerId, dispatch, setIsLoading);
+  }, [ownerId]);
 
   // edit section
 
@@ -86,14 +86,7 @@ const Invoices = ({ invoiceId, companyName, isOpen }) => {
     };
   }
 
-  //modal isOpen handler
-  const [isShow, setIsShow] = useState(false);
-
-  const handleClose = () => setIsShow(false);
-
-  useEffect(() => {
-    setIsShow(isOpen);
-  }, [isOpen]);
+  const handleClose = () => setIsOpen(false);
 
   // table column
   const columns = React.useMemo(
@@ -219,7 +212,7 @@ const Invoices = ({ invoiceId, companyName, isOpen }) => {
   return (
     <>
       <Modal
-        show={isShow}
+        show={isOpen}
         onHide={handleClose}
         backdrop="static"
         keyboard={false}
@@ -239,8 +232,8 @@ const Invoices = ({ invoiceId, companyName, isOpen }) => {
                 title="Invoice Create"
                 className="header_icon mx-3"
                 onClick={() => {
-                  setShow({ ...show, [false]: true });
-                  setIsShow(false);
+                  setShow(true);
+                  setIsOpen(false);
                 }}
               >
                 <FileEarmarkPlusFill />
@@ -347,7 +340,7 @@ const Invoices = ({ invoiceId, companyName, isOpen }) => {
       </Modal>
 
       <InvoiceEditModal invoiceeEditId={invoiceeEditId} />
-      <InvoiceCreate ispOwnerId={invoiceId} modal={show} />
+      <InvoiceCreate ispOwnerId={ownerId} modal={show} />
     </>
   );
 };

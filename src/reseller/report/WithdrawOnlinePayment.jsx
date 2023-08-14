@@ -15,6 +15,7 @@ import FormatNumber from "../../components/common/NumberFormat";
 import Table from "../../components/table/Table";
 import moment from "moment";
 import { badge } from "../../components/common/Utils";
+import { toast } from "react-toastify";
 
 const WithdrawOnlinePayment = ({ show, setShow }) => {
   const { t } = useTranslation();
@@ -26,7 +27,10 @@ const WithdrawOnlinePayment = ({ show, setShow }) => {
 
   // for validation -- reseller
   const paymentWithdraw = Yup.object({
-    amount: Yup.string().required("Please insert amount."),
+    amount: Yup.number()
+      .min(250, t("amountMustBeAbove"))
+      .integer(t("decimalNumberNotAcceptable"))
+      .required(t("amountFieldIsRequired")),
   });
 
   // get user information
@@ -37,12 +41,12 @@ const WithdrawOnlinePayment = ({ show, setShow }) => {
   // get reseller withdraw balance report
   const withdrawReport = useSelector((state) => state.payment?.withdrawBalance);
 
+  // customer online balance state
+  const [onlineBalance, setOnlineBalance] = useState("");
+
   // Loading state
   const [isLoading, setIsLoading] = useState(false);
   const [isPost, setIsPost] = useState(false);
-
-  // customer online balance state
-  const [onlineBalance, setOnlineBalance] = useState("");
 
   useEffect(() => {
     onlineBalance.length === 0 &&
@@ -57,15 +61,47 @@ const WithdrawOnlinePayment = ({ show, setShow }) => {
   // withdraw online payment handle
   const withdrawPaymentAmount = (values) => {
     const { amount, ...res } = values;
+
+    if (onlineBalance.amount < amount) {
+      toast.warn(t("notEnoughOnlineBalance"));
+    }
+
     const sendData = {
       reseller: resellerId,
-      amount: Number(amount),
-      balance: onlineBalance.amount - Number(amount),
+      amount: amount,
+      balance: onlineBalance.amount - amount,
       ...res,
     };
 
     postOnlinePayment(dispatch, sendData, setIsPost);
   };
+
+  const resellerWithdrawReport = useMemo(() => {
+    let initialValue = 0;
+
+    withdrawReport.map((val) => {
+      if (val.status === "accepted") {
+        return (initialValue += val.amount);
+      }
+    });
+
+    return { initialValue };
+  }, [withdrawReport]);
+
+  // sending table header data
+  const customComponent = (
+    <div
+      className="text-center"
+      style={{ fontSize: "18px", fontWeight: "500", display: "flex" }}
+    >
+      {resellerWithdrawReport?.initialValue > 0 && (
+        <div>
+          {t("totalWithdraw")}:- ৳
+          {FormatNumber(resellerWithdrawReport.initialValue)}
+        </div>
+      )}
+    </div>
+  );
 
   const columns = useMemo(
     () => [
@@ -157,7 +193,7 @@ const WithdrawOnlinePayment = ({ show, setShow }) => {
           <div className="tableSection">
             <Table
               isLoading={isLoading}
-              // customComponent={customComponent}
+              customComponent={customComponent}
               data={withdrawReport}
               columns={columns}
             ></Table>

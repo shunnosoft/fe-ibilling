@@ -1567,10 +1567,12 @@ const PPPOECustomer = () => {
 
       {/* transferReseller modal */}
       <TransferToReseller customerId={customerId} />
+
       {/* password reset modal */}
+      <PasswordReset resetCustomerId={userId} />
 
       {/* <PasswordReset resetCustomerId={userId} /> */}
-      <WithValue resetCustomerId={userId} />
+      {/* <WithValue resetCustomerId={userId} /> */}
 
       {/* create temp invoice */}
       <CreateInvoice single={customerId} customerData={customerData} />

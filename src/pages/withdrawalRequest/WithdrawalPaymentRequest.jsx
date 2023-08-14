@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { ToastContainer } from "react-toastify";
 import useDash from "../../assets/css/dash.module.css";
@@ -64,15 +64,16 @@ const WithdrawalPaymentRequest = () => {
     patchResellerWithdrawalRequest(dispatch, id, data, setAccLoading);
   };
 
-  const resellerWithdrawPayment = useCallback(() => {
+  const resellerWithdrawPayment = useMemo(() => {
     let initialValue = 0;
-    const totalWithdraw = resellerWithdrawal.map((val) => {
+
+    resellerWithdrawal.map((val) => {
       if (val.status === "accepted") {
         return (initialValue += val.amount);
       }
     });
 
-    return FormatNumber(totalWithdraw);
+    return { initialValue };
   }, [resellerWithdrawal]);
 
   // sending table header data
@@ -81,10 +82,10 @@ const WithdrawalPaymentRequest = () => {
       className="text-center"
       style={{ fontSize: "18px", fontWeight: "500", display: "flex" }}
     >
-      {resellerWithdrawPayment?.totalWithdraw > 0 && (
+      {resellerWithdrawPayment?.initialValue > 0 && (
         <div>
-          {t("totalWithdraw")}:-৳
-          {FormatNumber(resellerWithdrawPayment.totalWithdraw)}
+          {t("totalWithdraw")}:- ৳
+          {FormatNumber(resellerWithdrawPayment.initialValue)}
         </div>
       )}
     </div>
@@ -210,54 +211,15 @@ const WithdrawalPaymentRequest = () => {
                 </div>
               </FourGround>
               <FourGround>
-                <div>
-                  {/* <Accordion alwaysOpen activeKey={activeKeys}>
-                    <Accordion.Item
-                      eventKey="filter"
-                      className="accordionBorder"
-                    >
-                      <Accordion.Body className="accordionPadding">
-                        <div className="selectFilteringg">
-                          <div>
-                            <DatePicker
-                              className="form-control mw-100 mt-0"
-                              selected={startDate}
-                              onChange={(date) => setStartDate(date)}
-                              dateFormat="MMM dd yyyy"
-                              placeholderText={t("selectBillDate")}
-                            />
-                          </div>
-                          <div className="mx-2">
-                            <DatePicker
-                              className="form-control mw-100 mt-0"
-                              selected={endDate}
-                              onChange={(date) => setEndDate(date)}
-                              dateFormat="MMM dd yyyy"
-                              placeholderText={t("selectBillDate")}
-                            />
-                          </div>
-                          <button
-                            className="btn btn-outline-primary w-140 mt-0 chartFilteritem"
-                            type="button"
-                            onClick={onClickFilter}
-                          >
-                            {t("filter")}
-                          </button>
-                        </div>
-                      </Accordion.Body>
-                    </Accordion.Item>
-                  </Accordion> */}
-
-                  <div className="collectorWrapper mt-2 py-2">
-                    <div className="addCollector">
-                      <div className="table-section">
-                        <Table
-                          isLoading={isLoading}
-                          customComponent={customComponent}
-                          columns={columns}
-                          data={resellerWithdrawal}
-                        />
-                      </div>
+                <div className="collectorWrapper mt-2 py-2">
+                  <div className="addCollector">
+                    <div className="table-section">
+                      <Table
+                        isLoading={isLoading}
+                        customComponent={customComponent}
+                        columns={columns}
+                        data={resellerWithdrawal}
+                      />
                     </div>
                   </div>
                 </div>

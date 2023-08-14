@@ -64,9 +64,6 @@ export default function Home() {
   const [ownerId, setOwnerId] = useState();
   const [permissionId, setPermissionId] = useState("");
 
-  // invoice id state
-  const [invoiceId, setInvoiceId] = useState();
-
   // user id state
   const [userId, setUserId] = useState();
 
@@ -102,7 +99,6 @@ export default function Home() {
 
   // customer type
   const [customerType, setCustomerType] = useState("");
-  console.log(customerType);
 
   // Owner id
   const [ispOwnerId, setIspOwnerId] = useState("");
@@ -455,9 +451,9 @@ export default function Home() {
                   </li> */}
                   <li
                     onClick={() => {
-                      setInvoiceId(original?.id);
+                      setOwnerId(original?.id);
                       setCompanyName(original?.company);
-                      setIsOpen({ ...isOpen, [false]: true });
+                      setIsOpen(true);
                     }}
                   >
                     <div className="dropdown-item">
@@ -773,9 +769,10 @@ export default function Home() {
               <DetailsModal ownerId={ownerId} />
               <AddProprietorModal ownerId={ownerId} />
               <Invoices
-                invoiceId={invoiceId}
+                ownerId={ownerId}
                 companyName={companyName}
                 isOpen={isOpen}
+                setIsOpen={setIsOpen}
               />
               <IspOwnerCustomerUpdate
                 isShow={isShow}

@@ -344,7 +344,7 @@ export default function AddStaticCustomer() {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                {t("addNewCustomer")}
+                {t("addNewCustomer")}ok
               </h5>
               <button
                 type="button"
@@ -370,7 +370,7 @@ export default function AddStaticCustomer() {
                   referenceName: "",
                   referenceMobile: "",
                   customerId: "",
-                  customerBillingType: "",
+                  customerBillingType: "prepaid",
                 }}
                 validationSchema={customerValidator}
                 onSubmit={(values, { resetForm }) => {

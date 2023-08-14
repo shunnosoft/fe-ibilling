@@ -850,5 +850,9 @@
   "onlinePaymentWithdraw": "অনলাইন পেমেন্ট উইথড্র",
   "withdrawal request": "পেমেন্ট উত্তোলন",
   "paymentWithdrawalRequest": "পেমেন্ট উত্তলনের অনুরোধ",
-  "buySms": "এসএমএস কিনুন"
+  "buySms": "এসএমএস কিনুন",
+  "totalWithdraw": "মোট উত্তোলন",
+  "amountMustBeAbove": "পরিমাণ অবশ্যই ২৫০টাকার বেশি হতে হবে",
+  "amountFieldIsRequired": "টাকার পরিমাণ অবশ্যই প্রয়োজন",
+  "notEnoughOnlineBalance": "আপনার যথেষ্ট অনলাইন ব্যালেন্স নেই!"
 }

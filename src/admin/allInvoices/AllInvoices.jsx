@@ -19,6 +19,7 @@ import InvoiceEditModal from "./modal/EditModal";
 import { badge } from "../../components/common/Utils";
 import FormatNumber from "../../components/common/NumberFormat";
 import { CSVLink } from "react-csv";
+import Invoices from "../invoiceList/Invoices";
 
 const AllInvoices = () => {
   // get all note in redux
@@ -36,6 +37,7 @@ const AllInvoices = () => {
   // loading state
   const [isLoading, setIsLoading] = useState(false);
   const [ispOwnerLoading, setIspOwnerLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   // initial customer id state
   const [invoiceId, setInvoiceId] = useState();
@@ -86,21 +88,6 @@ const AllInvoices = () => {
   // if (typeFilterStatus && typeFilterStatus !== "All") {
   //   mainData = mainData.filter((value) => value.type === typeFilterStatus);
   // }
-
-  // handle delete
-  const detailsModal = (invoiceId) => {
-    setInvoiceId(invoiceId);
-  };
-
-  // handle edit
-  const handleEdit = (invoiceId) => {
-    setInvoiceId(invoiceId);
-  };
-
-  const showIndividualInvoice = (ispOwnerId, companyName) => {
-    setOwnerId(ispOwnerId);
-    setCompanyName(companyName);
-  };
 
   // invoice edit method
   const invoiceEditModal = (invoiceId) => {
@@ -204,9 +191,9 @@ const AllInvoices = () => {
         Header: "ID",
         Cell: ({ row: { original } }) => (
           <div>
-            {original.ispOwner
-              ? original.ispOwner?.netFeeId
-              : original.reseller.ispOwner?.netFeeId}
+            {original?.ispOwner
+              ? original?.ispOwner?.netFeeId
+              : original?.reseller?.ispOwner?.netFeeId}
           </div>
         ),
       },
@@ -215,9 +202,9 @@ const AllInvoices = () => {
         Header: "Company",
         Cell: ({ row: { original } }) => (
           <div>
-            {original.ispOwner
-              ? original.ispOwner?.company
-              : original.reseller.ispOwner?.company}
+            {original?.ispOwner
+              ? original?.ispOwner?.company
+              : original?.reseller?.ispOwner?.company}
           </div>
         ),
       },
@@ -226,9 +213,9 @@ const AllInvoices = () => {
         Header: "Name",
         Cell: ({ row: { original } }) => (
           <div>
-            {original.ispOwner
-              ? `${original.ispOwner?.name} (ispOwner)`
-              : `${original.reseller.ispOwner?.name} (reseller)`}
+            {original?.ispOwner
+              ? `${original?.ispOwner?.name} (ispOwner)`
+              : `${original?.reseller?.ispOwner?.name} (reseller)`}
           </div>
         ),
       },
@@ -306,10 +293,10 @@ const AllInvoices = () => {
               />
               <ul className="dropdown-menu" aria-labelledby="areaDropdown">
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#detailsInvoice"
                   onClick={() => {
-                    detailsModal(original.id);
+                    setOwnerId(original.ispOwner?.id);
+                    setCompanyName(original.ispOwner?.name);
+                    setIsOpen(true);
                   }}
                 >
                   <div className="dropdown-item">
@@ -436,6 +423,14 @@ const AllInvoices = () => {
           </div>
         </div>
       </FontColor>
+
+      {/* invoice details */}
+      <Invoices
+        ownerId={ownerId}
+        companyName={companyName}
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+      />
 
       {/* <DetailsModal id={invoiceId} isLoading={isLoading} /> */}
       <InvoiceEditModal invoiceId={invoiceId} />
