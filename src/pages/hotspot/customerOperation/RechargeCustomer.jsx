@@ -107,6 +107,7 @@ const RechargeCustomer = ({ customerId }) => {
       collectedBy: currentUser?.user.role,
       billType: billType,
       hotspotCustomer: data?.id,
+      customer: data?.id,
       ispOwner: ispOwner,
       user: currentUser?.user.id,
       collectorId: userData.id, //when collector is logged in
