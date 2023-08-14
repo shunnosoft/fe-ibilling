@@ -29,7 +29,7 @@ const NetFeeBulletin = () => {
 
   return (
     <>
-      {bulletins.length > 0 &&
+      {/* {bulletins.length > 0 &&
         bulletins.some(
           (val) =>
             moment(val.startDate).format("YYYY-MM-DD hh:mm") <=
@@ -64,7 +64,7 @@ const NetFeeBulletin = () => {
                 })}
             </marquee>
           </div>
-        )}
+        )} */}
     </>
   );
 };
