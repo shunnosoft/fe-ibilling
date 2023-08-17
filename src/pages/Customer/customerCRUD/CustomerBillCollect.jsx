@@ -78,7 +78,7 @@ export default function CustomerBillCollect({ single, customerData }) {
   const [medium, setMedium] = useState("cash");
   const [noteCheck, setNoteCheck] = useState(false);
   const [note, setNote] = useState("");
-  const [selectedMonth, setSelectedMonth] = useState([]);
+  const [selectedMonth, setSelectedMonth] = useState(null);
   const [billAmount, setBillAmount] = useState();
   const [balanceDue, setBalanceDue] = useState();
   const [billType, setBillType] = useState("bill");
@@ -156,30 +156,28 @@ export default function CustomerBillCollect({ single, customerData }) {
     const dataMonth = new Date(data?.billingCycle).getMonth();
 
     if (data?.balance === 0 && data?.paymentStatus === "unpaid") {
-      setSelectedMonth([options[dataMonth]]);
+      temp.push(options[dataMonth]);
     } else if (data?.balance === 0 && data?.paymentStatus === "paid") {
       temp.push(options[dataMonth + 1]);
+
       if (dataMonth + 1 > 11) setSelectedMonth([]);
-      else setSelectedMonth(temp);
     } else if (data?.balance > 0 && data?.paymentStatus === "paid") {
       const modVal = Math.floor(data?.balance / data?.monthlyFee);
       temp.push(options[dataMonth + modVal + 1]);
 
       if (dataMonth + modVal + 1 > 11) setSelectedMonth([]);
-      else setSelectedMonth(temp);
     } else if (data?.balance < 0 && data?.paymentStatus === "unpaid") {
       const modVal = Math.floor(Math.abs(data?.balance / data?.monthlyFee));
-
       let diff = dataMonth - modVal;
       if (diff < 0) {
         diff = 0;
       }
-
       for (let i = diff; i <= dataMonth; i++) {
         temp.push(options[i]);
       }
       setSelectedMonth(temp);
     }
+    setSelectedMonth(temp);
   }, [data]);
 
   const handleFormValue = (event) => {
@@ -228,6 +226,7 @@ export default function CustomerBillCollect({ single, customerData }) {
       sendingData.start = startDate.toISOString();
       sendingData.end = endDate.toISOString();
     }
+
     if (selectedMonth?.length > 0) {
       const monthValues = selectedMonth.map((item) => {
         return item.value;

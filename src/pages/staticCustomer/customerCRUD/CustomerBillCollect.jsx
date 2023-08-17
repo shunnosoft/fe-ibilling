@@ -16,22 +16,24 @@ import { useRef } from "react";
 import ReactToPrint from "react-to-print";
 import RechargePrintInvoice from "../../Customer/customerCRUD/bulkOpration/RechargePrintInvoice";
 
-const options = [
-  { value: "January", label: "জানুয়ারী" },
-  { value: "February", label: "ফেব্রুয়ারী" },
-  { value: "March", label: "মার্চ" },
-  { value: "April", label: "এপ্রিল" },
-  { value: "May", label: "মে" },
-  { value: "June", label: "জুন" },
-  { value: "July", label: "জুলাই" },
-  { value: "August", label: "আগস্ট" },
-  { value: "September", label: "সেপ্টেম্বর" },
-  { value: "October", label: "অক্টোবর" },
-  { value: "November", label: "নভেম্বর" },
-  { value: "December", label: "ডিসেম্বর" },
-];
 export default function CustomerBillCollect({ single, customerData }) {
   const { t } = useTranslation();
+
+  const options = [
+    { value: "January", label: t("january") },
+    { value: "February", label: t("february") },
+    { value: "March", label: t("march") },
+    { value: "April", label: t("april") },
+    { value: "May", label: t("may") },
+    { value: "June", label: t("june") },
+    { value: "July", label: t("July") },
+    { value: "August", label: t("august") },
+    { value: "September", label: t("september") },
+    { value: "October", label: t("october") },
+    { value: "November", label: t("november") },
+    { value: "December", label: t("december") },
+  ];
+
   // get all customer
   const customer = useSelector((state) => state?.customer?.staticCustomer);
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
@@ -140,18 +142,16 @@ export default function CustomerBillCollect({ single, customerData }) {
     const dataMonth = new Date(data?.billingCycle).getMonth();
 
     if (data?.balance === 0 && data?.paymentStatus === "unpaid") {
-      setSelectedMonth(options[dataMonth]);
+      temp.push(options[dataMonth]);
     } else if (data?.balance === 0 && data?.paymentStatus === "paid") {
       temp.push(options[dataMonth + 1]);
+
       if (dataMonth + 1 > 11) setSelectedMonth([]);
-      else setSelectedMonth(temp);
     } else if (data?.balance > 0 && data?.paymentStatus === "paid") {
       const modVal = Math.floor(data?.balance / data?.monthlyFee);
-
       temp.push(options[dataMonth + modVal + 1]);
 
       if (dataMonth + modVal + 1 > 11) setSelectedMonth([]);
-      else setSelectedMonth(temp);
     } else if (data?.balance < 0 && data?.paymentStatus === "unpaid") {
       const modVal = Math.floor(Math.abs(data?.balance / data?.monthlyFee));
       let diff = dataMonth - modVal;
@@ -163,6 +163,7 @@ export default function CustomerBillCollect({ single, customerData }) {
       }
       setSelectedMonth(temp);
     }
+    setSelectedMonth(temp);
   }, [data]);
 
   const handleFormValue = (event) => {
@@ -209,12 +210,14 @@ export default function CustomerBillCollect({ single, customerData }) {
       sendingData.start = startDate.toISOString();
       sendingData.end = endDate.toISOString();
     }
+
     if (selectedMonth?.length > 0) {
       const monthValues = selectedMonth.map((item) => {
         return item.value;
       });
       sendingData.month = monthValues.join(",");
     }
+
     billCollect(
       dispatch,
       sendingData,
