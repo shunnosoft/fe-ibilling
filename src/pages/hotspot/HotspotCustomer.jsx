@@ -38,6 +38,7 @@ import { Card, Collapse } from "react-bootstrap";
 import { CSVLink } from "react-csv";
 import ReactToPrint from "react-to-print";
 import HotspotPdf from "./customerOperation/HotspotPdf";
+import BulkStatusEdit from "../Customer/customerCRUD/bulkOpration/bulkStatusEdit";
 
 const HotspotCustomer = () => {
   const dispatch = useDispatch();
@@ -60,6 +61,11 @@ const HotspotCustomer = () => {
   // get isp owner data
   const ispOwnerData = useSelector(
     (state) => state.persistedReducer.auth.userData
+  );
+
+  // get bp settings
+  const bpSettings = useSelector(
+    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
   );
 
   // get hotspot customer
@@ -90,6 +96,10 @@ const HotspotCustomer = () => {
 
   // customers number update or delete modal show state
   const [numberModalShow, setNumberModalShow] = useState(false);
+
+  // bulk modal handle state
+  const [bulkStatus, setBulkStatus] = useState("");
+  const [show, setShow] = useState(false);
 
   // customer get api call
   useEffect(() => {
@@ -519,6 +529,18 @@ const HotspotCustomer = () => {
       {/* modal end */}
 
       {/* bulk modal start */}
+      {bpSettings.hasMikrotik && (
+        <>
+          {bulkStatus === "bulkStatusEdit" && (
+            <BulkStatusEdit
+              bulkCustomer={bulkCustomers}
+              show={show}
+              setShow={setShow}
+              bulkStatus="hotspot"
+            />
+          )}
+        </>
+      )}
 
       {/* bulk modal end */}
 
@@ -579,7 +601,7 @@ const HotspotCustomer = () => {
                   </div>
                   <div className="menu_label2">{t("editBalance")}</div>
                 </li>
-              )}
+              )} */}
 
               <hr className="mt-0 mb-0" />
               {bpSettings.hasMikrotik &&
@@ -611,8 +633,8 @@ const HotspotCustomer = () => {
                   </li>
                 )}
 
-              <hr className="mt-0 mb-0" />
-              {((role === "ispOwner" && bpSettings?.bulkPaymentStatusEdit) ||
+              {/*   <hr className="mt-0 mb-0" />
+             {((role === "ispOwner" && bpSettings?.bulkPaymentStatusEdit) ||
                 (bpSettings?.bulkPaymentStatusEdit &&
                   permission?.bulkPaymentStatusEdit &&
                   role === "manager") ||

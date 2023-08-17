@@ -5,6 +5,7 @@ import {
   bulkCustomerReturn,
   bulkResellerDelete,
 } from "../resellerCustomerAdminSlice";
+import { bulkUpdateSuccess } from "../hotspotSlice";
 
 export const bulkDeleteCustomer = async (
   dispatch,
@@ -84,6 +85,27 @@ export const bulkStatusEdit = async (dispatch, data, setIsLoading, setShow) => {
       toast.error(err.response.data.message);
     }
   }
+};
+
+// hostpot customer bulk status update
+export const hostpotBulkStatusEdit = async (
+  dispatch,
+  data,
+  setIsLoading,
+  setShow
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.patch(`hotspot/bulk/status/update`, data);
+    dispatch(bulkUpdateSuccess(res.data));
+    setShow(false);
+    toast.success("কাস্টমার স্টাটাস আপডেট সফল হয়েছে!");
+  } catch (err) {
+    if (err.response) {
+      toast.error(err.response.data.message);
+    }
+  }
+  setIsLoading(false);
 };
 
 //bulk Payment Status Edit

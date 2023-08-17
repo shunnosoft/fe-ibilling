@@ -2,11 +2,14 @@ import React from "react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import Loader from "../../../../components/common/Loader";
-import { bulkStatusEdit } from "../../../../features/actions/bulkOperationApi";
+import {
+  bulkStatusEdit,
+  hostpotBulkStatusEdit,
+} from "../../../../features/actions/bulkOperationApi";
 import RootBulkModal from "./bulkModal";
 import { useTranslation } from "react-i18next";
 
-const BulkStatusEdit = ({ bulkCustomer, show, setShow }) => {
+const BulkStatusEdit = ({ bulkCustomer, show, setShow, bulkStatus }) => {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [status, setStatus] = useState("");
@@ -25,11 +28,14 @@ const BulkStatusEdit = ({ bulkCustomer, show, setShow }) => {
           t("updateStatusSubArea")
       );
       if (confirm) {
-        bulkStatusEdit(dispatch, data, setIsLoading, setShow);
+        if (bulkStatus === "hotspot") {
+          hostpotBulkStatusEdit(dispatch, data, setIsLoading, setShow);
+        } else {
+          bulkStatusEdit(dispatch, data, setIsLoading, setShow);
+        }
       }
     }
   };
-
   return (
     <RootBulkModal show={show} setShow={setShow} header={t("updateStatus")}>
       <form onSubmit={changeStatus}>
