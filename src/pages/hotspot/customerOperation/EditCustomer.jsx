@@ -12,12 +12,11 @@ import { FtextField } from "../../../components/common/FtextField";
 import { getSubAreasApi } from "../../../features/actions/customerApiCall";
 import { fetchMikrotik, getArea } from "../../../features/apiCalls";
 import {
-  addHotspotCustomer,
   editHotspotCustomer,
   getHotspotPackage,
-  syncHotspotPackage,
 } from "../../../features/hotspotApi";
 import Loader from "../../../components/common/Loader";
+import SelectField from "../../../components/common/SelectField";
 
 const EditCustomer = ({ customerId }) => {
   const dispatch = useDispatch();
@@ -41,6 +40,7 @@ const EditCustomer = ({ customerId }) => {
     hotspotName: Yup.string().required(t("writePPPoEName")),
     hotspotPassword: Yup.string().required(t("writePPPoEPassword")),
     hotspotComment: Yup.string(),
+    billPayType: Yup.string().required(t("select billing type")),
     // balance: Yup.number().integer().required("পূর্বের ব্যালান্স দিন"),
   });
 
@@ -109,6 +109,9 @@ const EditCustomer = ({ customerId }) => {
   const [areaLoading, setAreaLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  // customer status change
+  const [status, setStatus] = useState("");
+
   useEffect(() => {
     // get mikrotik api call
     fetchMikrotik(dispatch, ispOwnerId, setMikrotikLoading);
@@ -136,6 +139,9 @@ const EditCustomer = ({ customerId }) => {
 
     // set sub area id
     if (editCustomer) setSubAreaId(editCustomer?.subArea);
+
+    // set status
+    if (editCustomer) setStatus(editCustomer?.status);
   }, [editCustomer]);
 
   useEffect(() => {
@@ -203,7 +209,7 @@ const EditCustomer = ({ customerId }) => {
 
     const sendingData = {
       address: data?.address,
-      paymentStatus: "unpaid",
+      // paymentStatus: "unpaid",
       area: slectSubArea[0]?.area,
       subArea: subareaId,
       ispOwner: ispOwnerId,
@@ -211,7 +217,7 @@ const EditCustomer = ({ customerId }) => {
       hotspotPackage: packageId,
       email: data?.email,
       mobile: data?.mobile,
-      billPayType: "prepaid",
+      billPayType: data.billPayType,
       autoDisable: false,
       promiseDate: promiseDate?.toISOString(),
       billingCycle: billDate?.toISOString(),
@@ -225,6 +231,7 @@ const EditCustomer = ({ customerId }) => {
         comment: data.hotspotComment,
         profile: data.hotspotProfile,
       },
+      status: status,
     };
     editHotspotCustomer(dispatch, sendingData, customerId, setIsLoading);
   };
@@ -268,6 +275,7 @@ const EditCustomer = ({ customerId }) => {
                   hotspotPassword: editCustomer?.hotspot.password || "",
                   hotspotComment: editCustomer?.hotspot.comment || "",
                   balance: editCustomer?.balance || 0,
+                  billPayType: editCustomer?.billPayType || "",
                 }}
                 validationSchema={customerValidator}
                 onSubmit={(values) => handleSubmit(values)}
@@ -457,7 +465,7 @@ const EditCustomer = ({ customerId }) => {
                         disabled={!packageId}
                       />
                     </div>
-                    <div className="newDisplay">
+                    <div className="displayGrid3">
                       <FtextField
                         type="text"
                         label={t("email")}
@@ -496,6 +504,73 @@ const EditCustomer = ({ customerId }) => {
                             disabled={!packageId}
                           />
                         </div>
+                      </div>
+                    </div>
+                    <div className="displayGrid3">
+                      <SelectField
+                        label={t("customerBillType")}
+                        id="exampleSelect"
+                        name="billPayType"
+                        className="form-select mw-100 mt-0"
+                      >
+                        <option value="">{t("customerBillType")}</option>
+
+                        <option value="prepaid">{t("prepaid")}</option>
+                        <option value="postpaid">{t("postPaid")}</option>
+                      </SelectField>
+
+                      <div className="pppoeStatus">
+                        <p className="p-0 mt-2">{t("status")}</p>
+                        <div className="form-check form-check-inline mt-0">
+                          <input
+                            className="form-check-input"
+                            type="radio"
+                            value={"active"}
+                            id="inlineRadio1"
+                            onChange={(e) => setStatus(e.target.value)}
+                            checked={status === "active"}
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="inlineRadio1"
+                          >
+                            {t("active")}
+                          </label>
+                        </div>
+                        <div className="form-check form-check-inline">
+                          <input
+                            className="form-check-input"
+                            type="radio"
+                            id="inlineRadio2"
+                            value={"inactive"}
+                            onChange={(e) => setStatus(e.target.value)}
+                            checked={status === "inactive"}
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="inlineRadio2"
+                          >
+                            {t("in active")}
+                          </label>
+                        </div>
+
+                        {editCustomer?.status === "expired" && (
+                          <div className="form-check form-check-inline">
+                            <input
+                              className="form-check-input"
+                              type="radio"
+                              id="inlineRadio3"
+                              disabled
+                              checked={status === "expired"}
+                            />
+                            <label
+                              className="form-check-label"
+                              htmlFor="inlineRadio3"
+                            >
+                              {t("expired")}
+                            </label>
+                          </div>
+                        )}
                       </div>
                     </div>
 
