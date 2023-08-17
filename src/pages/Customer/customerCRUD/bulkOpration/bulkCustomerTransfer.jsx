@@ -12,6 +12,11 @@ const BulkCustomerTransfer = ({ bulkCustomer, show, setShow }) => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
+  // get isp owner data
+  const bpSettings = useSelector(
+    (state) => state.persistedReducer.auth.userData?.bpSettings
+  );
+
   // get user role
   const role = useSelector((state) => state.persistedReducer.auth.role);
 
@@ -50,13 +55,19 @@ const BulkCustomerTransfer = ({ bulkCustomer, show, setShow }) => {
       subAreaId,
     };
 
-    bulkCustomer?.map((item) => {
-      if (selectedReseller?.mikrotiks.includes(item.original.mikrotik)) {
-        data.customerIds.push(item.original.id);
-      } else {
-        temp.push(item.original);
-      }
-    });
+    if (bpSettings?.hasMikrotik) {
+      bulkCustomer?.map((item) => {
+        if (selectedReseller?.mikrotiks.includes(item.original.mikrotik)) {
+          data.customerIds.push(item.original.id);
+        } else {
+          temp.push(item.original);
+        }
+      });
+    } else {
+      bulkCustomer?.map((val) => {
+        return data.customerIds.push(val.original.id);
+      });
+    }
 
     let confirm;
     if (enBn === "bn") {

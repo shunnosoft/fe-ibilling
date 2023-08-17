@@ -854,5 +854,7 @@
   "totalWithdraw": "মোট উত্তোলন",
   "amountMustBeAbove": "পরিমাণ অবশ্যই ২৫০টাকার বেশি হতে হবে",
   "amountFieldIsRequired": "টাকার পরিমাণ অবশ্যই প্রয়োজন",
-  "notEnoughOnlineBalance": "আপনার যথেষ্ট অনলাইন ব্যালেন্স নেই!"
+  "notEnoughOnlineBalance": "আপনার যথেষ্ট অনলাইন ব্যালেন্স নেই!",
+  "controlPanel": "কন্ট্রোল প্যানেল",
+  "customerReport": "গ্রাহক রিপোর্ট"
 }

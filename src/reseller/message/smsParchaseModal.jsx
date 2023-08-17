@@ -10,6 +10,7 @@ function SmsParchase() {
   const { t } = useTranslation();
   const userRole = useSelector((state) => state.persistedReducer.auth.role);
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
+  console.log(userData);
   const [isLoading, setIsloading] = useState(false);
   // console.log(userRole, userData);
 
@@ -17,14 +18,12 @@ function SmsParchase() {
   const [count, setCount] = useState(Number(amount) / userData.smsRate);
 
   const changeHandler = (sms) => {
-    // if (sms * userData.smsRate < 100) return;
     setAmount(sms * userData.smsRate);
     setCount(sms);
   };
 
   const submitHandler = (e) => {
-    // console.log(amount, count);
-    if (count * userData.smsRate < 100) {
+    if (count < 400) {
       alert(t("unsuccessSMSalertPurchageModal"));
     } else {
       let data = {

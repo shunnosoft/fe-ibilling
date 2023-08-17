@@ -417,7 +417,6 @@
   "sync": "Sync",
   "select": "Select",
   "PPPoEPackage": "PPPoE Package",
-  "mountly": "Mountly",
   "subAreaName": "Sub Area Name",
   "selectSubarea": "Select Sub Area",
   "ofSubArea": "Sub Areas",
@@ -849,5 +848,7 @@
   "totalWithdraw": "Total Withdraw",
   "amountMustBeAbove": "Amount must be Above 250Tk",
   "amountFieldIsRequired": "Amount Field is Required",
-  "notEnoughOnlineBalance": "Your don't have enough online balance!"
+  "notEnoughOnlineBalance": "Your don't have enough online balance!",
+  "controlPanel": "Control Panel",
+  "customerReport": "Customer Report"
 }

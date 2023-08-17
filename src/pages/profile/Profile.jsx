@@ -25,6 +25,7 @@ import moment from "moment/moment";
 import { badge } from "../../components/common/Utils";
 import { useEffect } from "react";
 import QrCode from "./QrCode";
+import { ispOwnerPermission } from "../../admin/Home/ispOwnerPermission/Permission";
 
 export default function Profile() {
   const { t } = useTranslation();
@@ -48,6 +49,9 @@ export default function Profile() {
   const [startRedirect, setStartRedirect] = useState(false);
   const [redirectTime, setRedirectTime] = useState(10);
   const [customerCount, setCustomerCount] = useState();
+
+  // permission state
+  const [permissions, setPermissions] = useState([]);
 
   const passwordValidator = Yup.object({
     mobile: Yup.string()
@@ -120,6 +124,8 @@ export default function Profile() {
 
   useEffect(() => {
     role === "ispOwner" && getAllCustomerCount(ispOwnerId, setCustomerCount);
+
+    setPermissions(ispOwnerPermission(currentUser?.bpSettings));
   }, []);
 
   return (
@@ -394,21 +400,47 @@ export default function Profile() {
                         </div>
                       </div>
                     </Tab>
-                    <Tab eventKey="qrCode" title={t("qrCode")}>
-                      <div className="collectorWrapper overflow-hidden">
-                        <div className="profileWrapper">
-                          <QrCode
-                            size={290}
-                            ispInfo={{
-                              company: currentUser?.company,
-                              mobile: currentUser?.mobile,
-                              netFeeId: netFeeId,
-                              address: currentUser?.address,
-                            }}
-                          />
+                    <Tab eventKey="controlPanel" title={t("controlPanel")}>
+                      <div
+                        className="container"
+                        style={{ display: "inline-block" }}
+                      >
+                        <div className="displayGrid3">
+                          {permissions?.map((val, key) => (
+                            <div className="CheckboxContainer" key={key}>
+                              <input
+                                type="checkbox"
+                                className="CheckBox"
+                                name={val.value}
+                                checked={val.isChecked}
+                                id={val.value + key}
+                                disabled={true}
+                              />
+                              <label className="checkboxLabel">
+                                {val.label}
+                              </label>
+                            </div>
+                          ))}
                         </div>
                       </div>
                     </Tab>
+                    {currentUser.bpSettings?.hasPG && (
+                      <Tab eventKey="qrCode" title={t("qrCode")}>
+                        <div className="collectorWrapper overflow-hidden">
+                          <div className="profileWrapper">
+                            <QrCode
+                              size={290}
+                              ispInfo={{
+                                company: currentUser?.company,
+                                mobile: currentUser?.mobile,
+                                netFeeId: netFeeId,
+                                address: currentUser?.address,
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </Tab>
+                    )}
                   </Tabs>
                 </FourGround>
                 <Footer />
