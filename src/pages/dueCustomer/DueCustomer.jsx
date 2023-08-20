@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getDueCustomer } from "../../features/apiCalls";
@@ -25,45 +25,20 @@ import PrintReport from "./print/ReportPDF";
 import StaticPrintReport from "./print/StaticReportPDF";
 import Footer from "../../components/admin/footer/Footer";
 import DatePicker from "react-datepicker";
+import { ToastContainer } from "react-toastify";
 
 const DueCustomer = () => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const componentRef = useRef();
-  const staticRef = useRef();
 
   // get current date
   const date = new Date();
-
   var firstDate = new Date(date.getFullYear(), date.getMonth() - 1);
-  var lastDate = new Date(date.getFullYear(), date.getMonth(), 0);
-
-  // loading state
-  const [isLoading, setIsLoading] = useState(false);
-
-  // static Customr loading
-  const [staticLoading, setStaticLoading] = useState(false);
-
-  // filter Accordion handle state
-  const [activeKeys, setActiveKeys] = useState("");
-
-  //filter state
-  const [filterDate, setFilterDate] = useState(firstDate);
-  const [staticDate, setStaticDate] = useState(firstDate);
-
-  const [open, setOpen] = useState(false);
 
   // get isp owner id
   const ispOwner = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
-  );
-
-  // get due customer
-  let dueCustomer = useSelector((state) => state.customer.dueCustomer);
-
-  // get due static customer
-  let staticDueCustomer = useSelector(
-    (state) => state.customer.staticDueCustomer
   );
 
   // get isp owner data
@@ -71,94 +46,65 @@ const DueCustomer = () => {
     (state) => state.persistedReducer.auth.userData
   );
 
-  // get bpSettings
-  const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
-  );
+  // get due customer
+  let dueCustomer = useSelector((state) => state.customer.dueCustomer);
 
-  // get customer type
-  const hasCustomerType = bpSettings?.customerType
-    ? bpSettings.customerType
-    : [];
+  // loading state
+  const [isLoading, setIsLoading] = useState(false);
+  const [open, setOpen] = useState(false);
 
-  // // reload handler
+  // prev month due customer state
+  const [customers, setCustomers] = useState([]);
+
+  //customer type state
+  const [customerType, setCustomerType] = useState("");
+
+  // filter Accordion handle state
+  const [activeKeys, setActiveKeys] = useState("");
+
+  //filter state
+  const [filterDate, setFilterDate] = useState(firstDate);
+
+  // get customer api call
+  useEffect(() => {
+    filterDate.getMonth() + 1 &&
+      getDueCustomer(
+        dispatch,
+        ispOwner,
+        filterDate.getMonth() + 1,
+        filterDate.getFullYear(),
+        setIsLoading
+      );
+  }, [filterDate]);
+
+  useEffect(() => {
+    setCustomers(dueCustomer);
+  }, [dueCustomer]);
+
+  // reload handler
   const reloadHandler = () => {
     getDueCustomer(
       dispatch,
       ispOwner,
       filterDate.getMonth() + 1,
       filterDate.getFullYear(),
-      setIsLoading,
-      "pppoe"
-    );
-    getDueCustomer(
-      dispatch,
-      ispOwner,
-      filterDate.getMonth() + 1,
-      filterDate.getFullYear(),
-      setStaticLoading,
-      "static"
+      setIsLoading
     );
   };
 
-  // get customer api call
-  useEffect(() => {
-    if (hasCustomerType.includes("pppoe"))
-      getDueCustomer(
-        dispatch,
-        ispOwner,
-        filterDate.getMonth() + 1,
-        filterDate.getFullYear(),
-        setIsLoading,
-        "pppoe"
-      );
-    if (hasCustomerType.includes("static"))
-      getDueCustomer(
-        dispatch,
-        ispOwner,
-        filterDate.getMonth() + 1,
-        filterDate.getFullYear(),
-        setStaticLoading,
-        "static"
-      );
-  }, []);
-
+  // filter function
   const dueCustomerFilterHandler = () => {
-    getDueCustomer(
-      dispatch,
-      ispOwner,
-      filterDate.getMonth() + 1,
-      filterDate.getFullYear(),
-      setIsLoading,
-      "pppoe"
-    );
-  };
+    let arr = [...dueCustomer];
+    if (!customerType) {
+      arr = dueCustomer;
+    } else if (customerType && customerType === "pppoe") {
+      arr = arr.filter((value) => value.userType === "pppoe");
+    } else {
+      arr = arr.filter((value) => value.userType !== "pppoe");
+    }
 
-  const staticCustomerFilterHandler = () => {
-    getDueCustomer(
-      dispatch,
-      ispOwner,
-      staticDate.getMonth() + 1,
-      staticDate.getFullYear(),
-      setStaticLoading,
-      "static"
-    );
+    setCustomers(arr);
   };
-
-  //pppoe customer export customer data
-  let customerForCsVTableInfo = dueCustomer.map((customer) => {
-    return {
-      name: customer.name,
-      customerAddress: customer.address,
-      package: customer?.pppoe?.profile,
-      mobile: customer?.mobile || "",
-      status: customer.status,
-      paymentStatus: customer.paymentStatus,
-      monthlyFee: customer.monthlyFee,
-      balance: customer.balance,
-      billingCycle: moment(customer.billingCycle).format("YYYY/MM/DD"),
-    };
-  });
 
   // pppoe customer csv table header
   const customerForCsVTableInfoHeader = [
@@ -173,21 +119,15 @@ const DueCustomer = () => {
     { label: "billing_cycle", key: "billingCycle" },
   ];
 
-  // satic customer export customer data
-  let staticCustomerForCsVTableInfo = staticDueCustomer.map((customer) => {
+  //pppoe customer export customer data
+  let customerForCsVTableInfo = customers.map((customer) => {
     return {
       name: customer.name,
-      ip:
-        customer.userType === "firewall-queue"
-          ? customer.queue.address
-          : customer.queue.target,
       customerAddress: customer.address,
-      createdAt: moment(customer.createdAt).format("YYYY/MM/DD"),
-      package: customer?.queue?.package,
+      package: customer?.pppoe?.profile,
       mobile: customer?.mobile || "",
       status: customer.status,
       paymentStatus: customer.paymentStatus,
-      email: customer.email || "",
       monthlyFee: customer.monthlyFee,
       balance: customer.balance,
       billingCycle: moment(customer.billingCycle).format("YYYY/MM/DD"),
@@ -210,8 +150,29 @@ const DueCustomer = () => {
     { label: "billing_cycle", key: "billingCycle" },
   ];
 
-  // pppoe column
-  const pppoeColumns = React.useMemo(
+  // satic customer export customer data
+  let staticCustomerForCsVTableInfo = customers.map((customer) => {
+    return {
+      name: customer.name,
+      ip:
+        customer.userType === "firewall-queue"
+          ? customer.queue.address
+          : customer.queue.target,
+      customerAddress: customer.address,
+      createdAt: moment(customer.createdAt).format("YYYY/MM/DD"),
+      package: customer?.queue?.package,
+      mobile: customer?.mobile || "",
+      status: customer.status,
+      paymentStatus: customer.paymentStatus,
+      email: customer.email || "",
+      monthlyFee: customer.monthlyFee,
+      balance: customer.balance,
+      billingCycle: moment(customer.billingCycle).format("YYYY/MM/DD"),
+    };
+  });
+
+  // due-customer column
+  const columns = useMemo(
     () => [
       {
         width: "8%",
@@ -234,8 +195,13 @@ const DueCustomer = () => {
       },
       {
         width: "9%",
-        Header: t("PPPoE"),
-        accessor: "pppoe.name",
+        Header: t("pppoeIp"),
+        accessor: (field) =>
+          field.userType === "pppoe"
+            ? field.pppoe.name
+            : field.userType === "firewall-queue"
+            ? field.queue.address
+            : field.queue.target,
       },
       {
         width: "12%",
@@ -266,7 +232,7 @@ const DueCustomer = () => {
       },
       {
         width: "10%",
-        Header: t("mountly"),
+        Header: t("monthly"),
         accessor: "monthlyFee",
       },
       {
@@ -286,75 +252,10 @@ const DueCustomer = () => {
     [t]
   );
 
-  // static column
-  const staticColumns = React.useMemo(
-    () => [
-      {
-        width: "8%",
-        Header: t("id"),
-        accessor: "customerId",
-      },
-      {
-        width: "9%",
-        Header: t("name"),
-        accessor: "name",
-      },
-      {
-        width: "12%",
-        Header: t("ip"),
-        accessor: (field) =>
-          field.userType === "firewall-queue"
-            ? field.queue.address
-            : field.queue.target,
-      },
-
-      {
-        width: "12%",
-        Header: t("mobile"),
-        accessor: "mobile",
-      },
-
-      {
-        width: "10%",
-        Header: t("status"),
-        accessor: "status",
-        Cell: ({ cell: { value } }) => {
-          return badge(value);
-        },
-      },
-      {
-        width: "11%",
-        Header: t("paymentStatus"),
-        accessor: "paymentStatus",
-        Cell: ({ cell: { value } }) => {
-          return badge(value);
-        },
-      },
-      {
-        width: "12%",
-        Header: t("mountly"),
-        accessor: "monthlyFee",
-      },
-      {
-        width: "11%",
-        Header: t("balance"),
-        accessor: "balance",
-      },
-      {
-        width: "12%",
-        Header: t("bill"),
-        accessor: "billingCycle",
-        Cell: ({ cell: { value } }) => {
-          return moment(value).format("YYYY/MM/DD hh:mm A");
-        },
-      },
-    ],
-    [t]
-  );
-
   return (
     <>
       <Sidebar />
+      <ToastContainer position="top-right" theme="colored" />
       <div className={useDash.dashboardWrapper}>
         <div className="container-fluied collector">
           <div className="container">
@@ -396,71 +297,40 @@ const DueCustomer = () => {
                       <div id="example-collapse-text">
                         <Card className="cardCollapse border-0">
                           <div className="d-flex align-items-center">
-                            {/* for pppoe customer begin*/}
-                            {hasCustomerType.includes("pppoe") && (
-                              <>
-                                <div className="addAndSettingIcon">
-                                  <CSVLink
-                                    data={customerForCsVTableInfo}
-                                    filename={ispOwnerData.company}
-                                    headers={customerForCsVTableInfoHeader}
-                                    title="PPPoE Customer Report"
-                                  >
-                                    <FiletypeCsv className="addcutmButton" />
-                                  </CSVLink>
-                                </div>
+                            <div className="addAndSettingIcon">
+                              <CSVLink
+                                filename={ispOwnerData.company}
+                                headers={
+                                  customerType === "pppoe"
+                                    ? customerForCsVTableInfoHeader
+                                    : staticCustomerForCsVTableInfoHeader
+                                }
+                                data={
+                                  customerType === "pppoe"
+                                    ? customerForCsVTableInfo
+                                    : staticCustomerForCsVTableInfo
+                                }
+                                title={t("customerReport")}
+                              >
+                                <FiletypeCsv className="addcutmButton" />
+                              </CSVLink>
+                            </div>
 
-                                <div
-                                  className="addAndSettingIcon"
-                                  title={t("PPPoE Customer Print")}
-                                >
-                                  <ReactToPrint
-                                    documentTitle={t("dueCustomer")}
-                                    trigger={() => (
-                                      <PrinterFill
-                                        title={t("print")}
-                                        className="addcutmButton"
-                                      />
-                                    )}
-                                    content={() => componentRef.current}
+                            <div
+                              className="addAndSettingIcon"
+                              title={t("PPPoE Customer Print")}
+                            >
+                              <ReactToPrint
+                                documentTitle={t("dueCustomer")}
+                                trigger={() => (
+                                  <PrinterFill
+                                    title={t("print")}
+                                    className="addcutmButton"
                                   />
-                                </div>
-                              </>
-                            )}
-
-                            {/* for static customer begin*/}
-                            {hasCustomerType.includes("static") && (
-                              <>
-                                <div className="addAndSettingIcon">
-                                  <CSVLink
-                                    data={staticCustomerForCsVTableInfo}
-                                    filename={ispOwnerData.company}
-                                    headers={
-                                      staticCustomerForCsVTableInfoHeader
-                                    }
-                                    title="Static Customer Report"
-                                  >
-                                    <FiletypeCsv className="addcutmButton" />
-                                  </CSVLink>
-                                </div>
-
-                                <div
-                                  className="addAndSettingIcon"
-                                  title={t("Static Customer Print")}
-                                >
-                                  <ReactToPrint
-                                    documentTitle={t("dueCustomer")}
-                                    trigger={() => (
-                                      <PrinterFill
-                                        title={t("print")}
-                                        className="addcutmButton"
-                                      />
-                                    )}
-                                    content={() => staticRef.current}
-                                  />
-                                </div>
-                              </>
-                            )}
+                                )}
+                                content={() => componentRef.current}
+                              />
+                            </div>
                           </div>
                         </Card>
                       </div>
@@ -491,157 +361,75 @@ const DueCustomer = () => {
                 </div>
               </FourGround>
               <FourGround>
-                <div className="collectorWrapper mt-2 py-2">
-                  <div className="addCollector">
-                    <Tabs id="uncontrolled-tab-example">
-                      {bpSettings?.customerType?.map(
-                        (type) =>
-                          (type === "pppoe" && (
-                            <Tab eventKey="pppoe" title={t("PPPoE")}>
-                              <Accordion alwaysOpen activeKey={activeKeys}>
-                                <Accordion.Item
-                                  eventKey="filter"
-                                  className="accordionBorder"
-                                >
-                                  <Accordion.Body className="accordionPadding pt-2">
-                                    <div
-                                      className="displayGrid6"
-                                      style={{
-                                        columnGap: "5px",
-                                        display: "flex",
-                                        justifyContent: "center",
-                                        alignItems: "center",
-                                      }}
-                                    >
-                                      <div>
-                                        <DatePicker
-                                          selected={filterDate}
-                                          className="form-control"
-                                          onChange={(date) =>
-                                            setFilterDate(date)
-                                          }
-                                          dateFormat="MMM/yyyy"
-                                          showMonthYearPicker
-                                          showFullMonthYearPicker
-                                          endDate={"2014/04/08"}
-                                          maxDate={lastDate}
-                                          minDate={
-                                            new Date(ispOwnerData?.createdAt)
-                                          }
-                                        />
-                                      </div>
+                <div className="mt-2">
+                  <Accordion alwaysOpen activeKey={activeKeys}>
+                    <Accordion.Item eventKey="filter">
+                      <Accordion.Body>
+                        <div className="displayGrid6">
+                          <div>
+                            <DatePicker
+                              className="form-control mw-100 mt-0"
+                              selected={filterDate}
+                              onChange={(date) => setFilterDate(date)}
+                              dateFormat="MMM-yyyy"
+                              showMonthYearPicker
+                              showFullMonthYearPicker
+                              maxDate={firstDate}
+                              minDate={new Date(ispOwnerData?.createdAt)}
+                            />
+                          </div>
 
-                                      <div className="gridButton">
-                                        <button
-                                          className="btn btn-outline-primary w-6rem"
-                                          type="button"
-                                          onClick={dueCustomerFilterHandler}
-                                          id="filterBtn"
-                                        >
-                                          {t("filter")}
-                                        </button>
-                                      </div>
-                                    </div>
-                                  </Accordion.Body>
-                                </Accordion.Item>
-                              </Accordion>
-                              {hasCustomerType.includes("pppoe") ? (
-                                <>
-                                  {/* print report */}
-                                  <div style={{ display: "none" }}>
-                                    <PrintReport
-                                      currentCustomers={dueCustomer}
-                                      ref={componentRef}
-                                    />
-                                    <StaticPrintReport
-                                      currentCustomers={staticDueCustomer}
-                                      ref={staticRef}
-                                    />
-                                  </div>
+                          <select
+                            className="form-select mw-100 mt-0"
+                            onChange={(e) => setCustomerType(e.target.value)}
+                          >
+                            <option selected value="">
+                              {t("userType")}
+                            </option>
+                            {ispOwnerData?.bpSettings?.customerType.map(
+                              (cType) => (
+                                <option value={cType}>{t(`${cType}`)}</option>
+                              )
+                            )}
+                          </select>
 
-                                  <div className="table-section">
-                                    <Table
-                                      isLoading={isLoading}
-                                      columns={pppoeColumns}
-                                      data={dueCustomer}
-                                    ></Table>
-                                  </div>
-                                </>
-                              ) : (
-                                <h5 className="text-center">
-                                  {t("youHaveNoPPPoECustomerType")}
-                                </h5>
-                              )}
-                            </Tab>
-                          )) ||
-                          (type === "static" && (
-                            <Tab eventKey="static" title={t("static")}>
-                              <Accordion alwaysOpen activeKey={activeKeys}>
-                                <Accordion.Item
-                                  eventKey="filter"
-                                  className="accordionBorder"
-                                >
-                                  <Accordion.Body className="accordionPadding pt-2">
-                                    <div
-                                      className="displayGrid6"
-                                      style={{
-                                        columnGap: "5px",
-                                        display: "flex",
-                                        justifyContent: "center",
-                                        alignItems: "center",
-                                      }}
-                                    >
-                                      <div>
-                                        <DatePicker
-                                          selected={staticDate}
-                                          className="form-control"
-                                          onChange={(date) =>
-                                            setStaticDate(date)
-                                          }
-                                          dateFormat="MMM/yyyy"
-                                          showMonthYearPicker
-                                          showFullMonthYearPicker
-                                          endDate={"2014/04/08"}
-                                          maxDate={lastDate}
-                                          minDate={
-                                            new Date(ispOwnerData?.createdAt)
-                                          }
-                                        />
-                                      </div>
+                          <div className="gridButton">
+                            <button
+                              className="btn btn-outline-primary w-6rem"
+                              type="button"
+                              onClick={dueCustomerFilterHandler}
+                              id="filterBtn"
+                            >
+                              {t("filter")}
+                            </button>
+                          </div>
+                        </div>
+                      </Accordion.Body>
+                    </Accordion.Item>
+                  </Accordion>
 
-                                      <div className="gridButton">
-                                        <button
-                                          className="btn btn-outline-primary w-6rem"
-                                          type="button"
-                                          onClick={staticCustomerFilterHandler}
-                                          id="filterBtn"
-                                        >
-                                          {t("filter")}
-                                        </button>
-                                      </div>
-                                    </div>
-                                  </Accordion.Body>
-                                </Accordion.Item>
-                              </Accordion>
-                              {hasCustomerType.includes("static") ? (
-                                <>
-                                  <div className="table-section">
-                                    <Table
-                                      isLoading={staticLoading}
-                                      columns={staticColumns}
-                                      data={staticDueCustomer}
-                                    ></Table>
-                                  </div>
-                                </>
-                              ) : (
-                                <h5 className="text-center">
-                                  {t("youHaveNoStaticCustomerType")}
-                                </h5>
-                              )}
-                            </Tab>
-                          ))
+                  <div className="collectorWrapper pb-2">
+                    <div style={{ display: "none" }}>
+                      {customerType === "pppoe" ? (
+                        <PrintReport
+                          currentCustomers={customers}
+                          ref={componentRef}
+                        />
+                      ) : (
+                        <StaticPrintReport
+                          currentCustomers={customers}
+                          ref={componentRef}
+                        />
                       )}
-                    </Tabs>
+                    </div>
+
+                    <div className="table-section">
+                      <Table
+                        isLoading={isLoading}
+                        columns={columns}
+                        data={customers}
+                      ></Table>
+                    </div>
                   </div>
                 </div>
               </FourGround>

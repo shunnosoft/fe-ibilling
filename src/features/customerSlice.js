@@ -4,9 +4,9 @@ const customerSliec = createSlice({
   name: "customer",
   initialState: {
     customer: [],
+    newCustomer: [],
     dueCustomer: [],
     staticCustomer: [],
-    staticDueCustomer: [],
     staticActiveCustomer: [],
     searchCustomer: [],
     fireWallFilterDrop: [],
@@ -18,9 +18,7 @@ const customerSliec = createSlice({
     getDueCustomerSuccess: (state, action) => {
       state.dueCustomer = action.payload;
     },
-    getStaticDueCustomerSuccess: (state, action) => {
-      state.staticDueCustomer = action.payload;
-    },
+
     addCustomerSuccess: (state, action) => {
       state.customer.push(action.payload);
     },
@@ -171,6 +169,11 @@ const customerSliec = createSlice({
         state.fireWallFilterDrop.find((item) => item.id === action.payload.id)
       ] = action.payload;
     },
+
+    // new customer reducer action
+    getNewCustomerSuccess: (state, action) => {
+      state.newCustomer = action.payload;
+    },
   },
 });
 
@@ -178,7 +181,6 @@ export const {
   getCustomerSuccess,
   clearCustomer,
   getDueCustomerSuccess,
-  getStaticDueCustomerSuccess,
   addCustomerSuccess,
   editCustomerSuccess,
   deleteCustomerSuccess,
@@ -196,6 +198,7 @@ export const {
   getFireWllFilterIpDrop,
   postFireWllFilterIpDrop,
   updateFireWallFilterIpDrop,
+  getNewCustomerSuccess,
 } = customerSliec.actions;
 
 export default customerSliec.reducer;

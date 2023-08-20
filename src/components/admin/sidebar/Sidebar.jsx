@@ -40,6 +40,7 @@ import {
   Headset,
   Wallet2,
   AppIndicator,
+  PersonFill,
 } from "react-bootstrap-icons";
 import { NavLink, Router } from "react-router-dom";
 import activeClass from "../../../assets/css/active.module.css";
@@ -662,6 +663,36 @@ export default function Sidebar() {
                             </FontColor>
                           </NavLink>
                         )}
+
+                        {(userRole === "ispOwner" ||
+                          userRole === "manager") && (
+                          <NavLink
+                            key={15}
+                            to={"/new/customer"}
+                            className={(navInfo) =>
+                              navInfo.isActive ? activeClass.active : ""
+                            }
+                          >
+                            <FontColor>
+                              <li
+                                className="sidebarItems"
+                                id={
+                                  window.location.pathname === "/new/customer"
+                                    ? "active"
+                                    : ""
+                                }
+                              >
+                                <div className="sidebarIcon">
+                                  {<PersonFill />}
+                                </div>
+                                <span className="sidebarLinksName">
+                                  {t("newCustomer")}
+                                </span>
+                              </li>
+                            </FontColor>
+                          </NavLink>
+                        )}
+
                         {(userRole === "ispOwner" ||
                           userRole === "manager") && (
                           <NavLink

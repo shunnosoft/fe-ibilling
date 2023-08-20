@@ -850,5 +850,8 @@
   "amountFieldIsRequired": "Amount Field is Required",
   "notEnoughOnlineBalance": "Your don't have enough online balance!",
   "controlPanel": "Control Panel",
-  "customerReport": "Customer Report"
+  "customerReport": "Customer Report",
+  "pppoeIp": "PPPoE/Ip",
+  "PPPoECustomer": "PPPoE Customer",
+  "StaticCustomer": "Static Customer"
 }

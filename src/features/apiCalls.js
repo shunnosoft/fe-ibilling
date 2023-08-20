@@ -48,6 +48,7 @@ import {
   updateFireWallFilterIpDrop,
   postFireWllFilterIpDrop,
   getSearchCustomer,
+  getNewCustomerSuccess,
 } from "./customerSlice";
 import {
   mtkIsLoading,
@@ -989,6 +990,18 @@ export const getCustomer = async (dispatch, ispOwner, setIsloading) => {
   setIsloading(false);
 };
 
+export const getNewCustomer = async (dispatch, ispOwner, setIsloading) => {
+  setIsloading(true);
+  try {
+    const res = await apiLink.get(`ispOwner/new/customer/${ispOwner}`);
+    console.log(res.data);
+    dispatch(getNewCustomerSuccess(res.data));
+  } catch (error) {
+    console.log(error.message);
+  }
+  setIsloading(false);
+};
+
 export const addCustomerNote = async (dispatch, setIsLoading, data) => {
   setIsLoading(true);
   try {
@@ -1018,20 +1031,14 @@ export const getDueCustomer = async (
   ispOwner,
   month,
   year,
-  setIsloading,
-  customerType
+  setIsloading
 ) => {
   setIsloading(true);
   try {
     const res = await apiLink.get(
-      `/customer/due/${ispOwner}?month=${month}&year=${year}&userType=${customerType}`
+      `/customer/due/${ispOwner}?month=${month}&year=${year}`
     );
-    if (customerType === "pppoe") {
-      dispatch(getDueCustomerSuccess(res.data.customers));
-    }
-    if (customerType === "static") {
-      dispatch(getStaticDueCustomerSuccess(res.data.customers));
-    }
+    dispatch(getDueCustomerSuccess(res.data.customers));
   } catch (error) {
     console.log(error.message);
   }
