@@ -204,11 +204,20 @@ export default function CollectorReport() {
         accessor: "customer.name",
       },
       {
+        width: "15%",
+        Header: t("mobile"),
+        accessor: "customer.mobile",
+      },
+      {
         width: "25%",
         Header: t("bill"),
         accessor: "amount",
       },
-
+      {
+        width: "15%",
+        Header: t("medium"),
+        accessor: "medium",
+      },
       {
         width: "25%",
         Header: t("date"),

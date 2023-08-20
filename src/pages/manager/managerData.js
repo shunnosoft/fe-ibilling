@@ -223,6 +223,13 @@ export const managerPermission = (permission, bpSettings, lang) => {
       isChecked: permission?.customerInvoice || false,
       disabled: !bpSettings?.customerInvoice,
     },
+    {
+      id: 33,
+      value: "updateCustomerBalance",
+      label: "Update Customer Balance",
+      isChecked: permission?.updateCustomerBalance || false,
+      disabled: !bpSettings?.updateCustomerBalance,
+    },
   ];
 
   const permissionBangla = [
@@ -449,6 +456,13 @@ export const managerPermission = (permission, bpSettings, lang) => {
       label: "কাস্টমার ইনভয়েস",
       isChecked: permission?.customerInvoice || false,
       disabled: !bpSettings?.customerInvoice,
+    },
+    {
+      id: 33,
+      value: "updateCustomerBalance",
+      label: "গ্রাহক ব্যালেন্স আপডেট",
+      isChecked: permission?.updateCustomerBalance || false,
+      disabled: !bpSettings?.updateCustomerBalance,
     },
   ];
 

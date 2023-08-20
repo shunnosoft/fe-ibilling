@@ -495,6 +495,33 @@ export default function Sidebar() {
                             </li>
                           </FontColor>
                         </NavLink> */}
+
+                        {(userRole === "ispOwner" ||
+                          userRole === "manager") && (
+                          <NavLink
+                            key={126}
+                            to={"/other/customer"}
+                            className={(navInfo) =>
+                              navInfo.isActive ? activeClass.active : ""
+                            }
+                          >
+                            <FontColor>
+                              <li
+                                className="sidebarItems"
+                                id={
+                                  window.location.pathname === "/other/customer"
+                                    ? "active"
+                                    : ""
+                                }
+                              >
+                                <div className="sidebarIcon">{<People />}</div>
+                                <span className="sidebarLinksName">
+                                  {t("otherCustomer")}
+                                </span>
+                              </li>
+                            </FontColor>
+                          </NavLink>
+                        )}
                       </Accordion.Body>
 
                       {/* রিপোর্ট */}
@@ -664,7 +691,7 @@ export default function Sidebar() {
                           </NavLink>
                         )}
 
-                        {(userRole === "ispOwner" ||
+                        {/* {(userRole === "ispOwner" ||
                           userRole === "manager") && (
                           <NavLink
                             key={15}
@@ -691,8 +718,8 @@ export default function Sidebar() {
                               </li>
                             </FontColor>
                           </NavLink>
-                        )}
-
+                        )} */}
+                        {/* 
                         {(userRole === "ispOwner" ||
                           userRole === "manager") && (
                           <NavLink
@@ -719,9 +746,9 @@ export default function Sidebar() {
                               </li>
                             </FontColor>
                           </NavLink>
-                        )}
+                        )} */}
 
-                        {(userRole === "ispOwner" ||
+                        {/* {(userRole === "ispOwner" ||
                           userRole === "manager") && (
                           <NavLink
                             key={10}
@@ -748,7 +775,7 @@ export default function Sidebar() {
                               </li>
                             </FontColor>
                           </NavLink>
-                        )}
+                        )} */}
                       </Accordion.Body>
                     </Accordion.Item>
                     {/* স্টাফ */}

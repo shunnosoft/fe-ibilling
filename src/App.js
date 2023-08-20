@@ -116,6 +116,7 @@ import BillReport from "./pages/collector/BillReport";
 import NetFeeSupportNumbers from "./admin/Home/supportNumber/NetFeeSupportNumbers";
 import Bulletin from "./admin/Home/bulletin/Bulletin";
 import WithdrawalPaymentRequest from "./pages/withdrawalRequest/WithdrawalPaymentRequest";
+import OtherCustomer from "./pages/otherCustomer/OtherCustomer";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
@@ -508,6 +509,18 @@ function App() {
               element={
                 userRole === "ispOwner" ? (
                   <ActiveHotspotCustomer />
+                ) : (
+                  <Navigate to={"/home"} />
+                )
+              }
+            />
+
+            {/* others customer  */}
+            <Route
+              path="/other/customer"
+              element={
+                userRole === "ispOwner" || userRole === "manager" ? (
+                  <OtherCustomer />
                 ) : (
                   <Navigate to={"/home"} />
                 )

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { useCallback, useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
@@ -8,17 +8,27 @@ import moment from "moment";
 import Footer from "../../components/admin/footer/Footer";
 import "../Customer/customer.css";
 import "./report.css";
-
+import DatePicker from "react-datepicker";
 import { useDispatch, useSelector } from "react-redux";
 import { getCollectorBill } from "../../features/apiCalls";
 import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
 import FormatNumber from "../../components/common/NumberFormat";
+import {
+  ArrowClockwise,
+  FilterCircle,
+  PrinterFill,
+} from "react-bootstrap-icons";
+import Loader from "../../components/common/Loader";
+import ReactToPrint from "react-to-print";
+import { Accordion } from "react-bootstrap";
+import PrintReport from "../../reseller/report/CollectorReportPDF";
 
 export default function CollectorReport() {
   const { t } = useTranslation();
-  //   const allArea = useSelector(state => state.area.area);
-  const [allArea, setAreas] = useState([]);
+  const dispatch = useDispatch();
+  const componentRef = useRef();
+
   const collectorArea = useSelector(
     (state) => state.persistedReducer.auth.currentUser?.collector.areas
   );
@@ -28,6 +38,11 @@ export default function CollectorReport() {
     (state) => state.persistedReducer.auth.currentUser.collector.permissions
   );
 
+  // get user information
+  const userData = useSelector((state) => state.persistedReducer.auth.userData);
+
+  const allBills = useSelector((state) => state.collector.collectorBill);
+
   var today = new Date();
   var firstDay = permissions?.dashboardCollectionData
     ? new Date(today.getFullYear(), today.getMonth(), 1)
@@ -36,22 +51,26 @@ export default function CollectorReport() {
   firstDay.setHours(0, 0, 0, 0);
   today.setHours(23, 59, 59, 999);
 
-  const [dateStart, setStartDate] = useState(firstDay);
-  const [dateEnd, setEndDate] = useState(today);
+  // filter date state
+  const [filterDate, setFilterDate] = useState(firstDay);
 
-  const allBills = useSelector((state) => state.collector.collectorBill);
+  const [dateStart, setStartDate] = useState(new Date());
+  const [dateEnd, setEndDate] = useState(new Date());
 
+  var selectDate = new Date(filterDate.getFullYear(), filterDate.getMonth(), 1);
+  var lastDate = new Date(
+    filterDate.getFullYear(),
+    filterDate.getMonth() + 1,
+    0
+  );
+  const [allArea, setAreas] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [singleArea, setArea] = useState({});
   const [subAreaIds, setSubArea] = useState([]);
   const [mainData, setMainData] = useState(allBills);
-  const [mainData2, setMainData2] = useState(allBills);
 
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    getCollectorBill(dispatch, setIsLoading);
-  }, [dispatch]);
+  // filter Accordion handle state
+  const [activeKeys, setActiveKeys] = useState("");
 
   useEffect(() => {
     let areas = [];
@@ -82,35 +101,40 @@ export default function CollectorReport() {
   }, [collectorArea]);
 
   useEffect(() => {
-    var initialToday = new Date();
-    var initialFirst = permissions?.dashboardCollectionData
-      ? new Date(initialToday.getFullYear(), initialToday.getMonth(), 1)
-      : new Date();
+    setStartDate(selectDate);
 
-    initialFirst.setHours(0, 0, 0, 0);
-    initialToday.setHours(23, 59, 59, 999);
-    setMainData(
-      allBills?.filter(
-        (item) =>
-          Date.parse(item.createdAt) >= Date.parse(initialFirst) &&
-          Date.parse(item.createdAt) <= Date.parse(initialToday)
-      )
-    );
+    if (lastDate.getMonth() + 1 === today.getMonth() + 1) {
+      setEndDate(today);
+    } else {
+      setEndDate(lastDate);
+    }
 
-    // Temp varialbe for search
-    setMainData2(
-      allBills?.filter(
-        (item) =>
-          Date.parse(item.createdAt) >= Date.parse(initialFirst) &&
-          Date.parse(item.createdAt) <= Date.parse(initialToday)
-      )
-    );
+    filterDate.getMonth() + 1 &&
+      getCollectorBill(
+        dispatch,
+        filterDate.getFullYear(),
+        filterDate.getMonth() + 1,
+        setIsLoading
+      );
+  }, [filterDate]);
+
+  useEffect(() => {
+    setMainData(allBills);
   }, [allBills]);
+
+  // reloadHandler
+  const reloadHandler = () => {
+    getCollectorBill(
+      dispatch,
+      filterDate.getFullYear(),
+      filterDate.getMonth() + 1,
+      setIsLoading
+    );
+  };
 
   const onChangeArea = (param) => {
     let area = JSON.parse(param);
     setArea(area);
-    console.log(area);
 
     if (
       area &&
@@ -154,7 +178,6 @@ export default function CollectorReport() {
     );
 
     setMainData(arr);
-    setMainData2(arr);
   };
 
   const addAllBills = useCallback(() => {
@@ -178,13 +201,6 @@ export default function CollectorReport() {
   const columns = React.useMemo(
     () => [
       {
-        width: "10%",
-        Header: "#",
-        id: "row",
-        accessor: (row) => Number(row.id + 1),
-        Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
-      },
-      {
         width: "15%",
         Header: t("id"),
         accessor: "customer.customerId",
@@ -198,6 +214,11 @@ export default function CollectorReport() {
         width: "15%",
         Header: t("mobile"),
         accessor: "customer.mobile",
+      },
+      {
+        width: "15%",
+        Header: t("medium"),
+        accessor: "medium",
       },
       {
         width: "15%",
@@ -226,84 +247,158 @@ export default function CollectorReport() {
           <div className="container">
             <FontColor>
               <FourGround>
-                <h2 className="collectorTitle"> {t("billReport")} </h2>
+                <div className="collectorTitle d-flex justify-content-between px-4">
+                  <div> {t("billReport")} </div>
+
+                  <div className="d-flex justify-content-center align-items-center">
+                    <div
+                      onClick={() => {
+                        if (!activeKeys) {
+                          setActiveKeys("filter");
+                        } else {
+                          setActiveKeys("");
+                        }
+                      }}
+                      title={t("filter")}
+                    >
+                      <FilterCircle className="addcutmButton" />
+                    </div>
+
+                    <div className="reloadBtn">
+                      {isLoading ? (
+                        <Loader />
+                      ) : (
+                        <ArrowClockwise
+                          className="arrowClock"
+                          title={t("refresh")}
+                          onClick={() => reloadHandler()}
+                        ></ArrowClockwise>
+                      )}
+                    </div>
+
+                    <ReactToPrint
+                      documentTitle={t("billReport")}
+                      trigger={() => (
+                        <PrinterFill className="addcutmButton border-0" />
+                      )}
+                      content={() => componentRef.current}
+                    />
+                    <div style={{ display: "none" }}>
+                      <PrintReport
+                        // filterData={filterData}
+                        currentCustomers={mainData}
+                        ref={componentRef}
+                      />
+                    </div>
+                  </div>
+                </div>
               </FourGround>
 
               <FourGround>
-                <div className="collectorWrapper mt-2 py-2">
-                  <div className="addCollector">
-                    {/* filter selector */}
-                    <div className="selectFilteringg">
-                      <select
-                        className="form-select"
-                        onChange={(e) => onChangeArea(e.target.value)}
-                      >
-                        <option value={JSON.stringify({})} defaultValue>
-                          {t("allArea")}{" "}
-                        </option>
-                        {allArea.map((area, key) => (
-                          <option key={key} value={JSON.stringify(area)}>
-                            {area.name}
-                          </option>
-                        ))}
-                      </select>
-                      <select
-                        className="form-select mx-3"
-                        onChange={(e) => onChangeSubArea(e.target.value)}
-                      >
-                        <option value="" defaultValue>
-                          {t("allSubArea")}{" "}
-                        </option>
-                        {singleArea?.subAreas?.map((sub, key) => (
-                          <option key={key} value={sub.id}>
-                            {sub.name}
-                          </option>
-                        ))}
-                      </select>
+                <div className="mt-2">
+                  <Accordion alwaysOpen activeKey={activeKeys}>
+                    <Accordion.Item eventKey="filter">
+                      <Accordion.Body>
+                        <div className="displayGrid6">
+                          <div>
+                            <DatePicker
+                              className="form-control mw-100 mt-0"
+                              selected={filterDate}
+                              onChange={(date) => setFilterDate(date)}
+                              dateFormat="MMM-yyyy"
+                              showMonthYearPicker
+                              showFullMonthYearPicker
+                              maxDate={new Date()}
+                              minDate={new Date(userData?.createdAt)}
+                            />
+                          </div>
 
-                      {permissions?.dashboardCollectionData && (
-                        <input
-                          className="form-select"
-                          type="date"
-                          id="start"
-                          name="trip-start"
-                          value={moment(dateStart).format("YYYY-MM-DD")}
-                          onChange={(e) => {
-                            setStartDate(e.target.value);
-                          }}
+                          <select
+                            className="form-select mt-0"
+                            onChange={(e) => onChangeArea(e.target.value)}
+                          >
+                            <option value={JSON.stringify({})} defaultValue>
+                              {t("allArea")}{" "}
+                            </option>
+                            {allArea.map((area, key) => (
+                              <option key={key} value={JSON.stringify(area)}>
+                                {area.name}
+                              </option>
+                            ))}
+                          </select>
+                          <select
+                            className="form-select mt-0"
+                            onChange={(e) => onChangeSubArea(e.target.value)}
+                          >
+                            <option value="" defaultValue>
+                              {t("allSubArea")}{" "}
+                            </option>
+                            {singleArea?.subAreas?.map((sub, key) => (
+                              <option key={key} value={sub.id}>
+                                {sub.name}
+                              </option>
+                            ))}
+                          </select>
+
+                          <div>
+                            {permissions?.dashboardCollectionData && (
+                              <DatePicker
+                                className="form-control mw-100 mt-0"
+                                selected={dateStart}
+                                onChange={(date) => setStartDate(date)}
+                                dateFormat="MMM dd yyyy"
+                                minDate={selectDate}
+                                maxDate={
+                                  lastDate.getMonth() + 1 ===
+                                  today.getMonth() + 1
+                                    ? today
+                                    : lastDate
+                                }
+                                placeholderText={t("selectBillDate")}
+                              />
+                            )}
+                          </div>
+                          <div>
+                            {permissions?.dashboardCollectionData && (
+                              <DatePicker
+                                className="form-control mw-100 mt-0"
+                                selected={dateEnd}
+                                onChange={(date) => setEndDate(date)}
+                                dateFormat="MMM dd yyyy"
+                                minDate={selectDate}
+                                maxDate={
+                                  lastDate.getMonth() + 1 ===
+                                  today.getMonth() + 1
+                                    ? today
+                                    : lastDate
+                                }
+                                placeholderText={t("selectBillDate")}
+                              />
+                            )}
+                          </div>
+
+                          <button
+                            className="btn btn-outline-primary w-140"
+                            type="button"
+                            onClick={onClickFilter}
+                          >
+                            {t("filter")}
+                          </button>
+                        </div>
+                      </Accordion.Body>
+                    </Accordion.Item>
+                  </Accordion>
+                  <div className="collectorWrapper pb-2">
+                    <div className="addCollector">
+                      <div className="table-section">
+                        <Table
+                          customComponent={customComponent}
+                          columns={columns}
+                          data={mainData}
+                          isLoading={isLoading}
                         />
-                      )}
-
-                      {permissions?.dashboardCollectionData && (
-                        <input
-                          className="form-select mx-3"
-                          type="date"
-                          id="end"
-                          name="trip-start"
-                          value={moment(dateEnd).format("YYYY-MM-DD")}
-                          onChange={(e) => {
-                            setEndDate(e.target.value);
-                          }}
-                        />
-                      )}
-
-                      <button
-                        className="btn btn-outline-primary w-140 mt-2"
-                        type="button"
-                        onClick={onClickFilter}
-                      >
-                        {t("filter")}
-                      </button>
+                      </div>
                     </div>
-                  </div>
-                  {/* table */}
-                  <div className="table-section">
-                    <Table
-                      customComponent={customComponent}
-                      columns={columns}
-                      data={mainData}
-                      isLoading={isLoading}
-                    />
                   </div>
                 </div>
               </FourGround>

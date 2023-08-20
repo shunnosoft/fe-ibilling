@@ -1,36 +1,27 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getDueCustomer } from "../../features/apiCalls";
 import { useTranslation } from "react-i18next";
 import Table from "../../components/table/Table";
-import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { badge } from "../../components/common/Utils";
 import moment from "moment";
 import Loader from "../../components/common/Loader";
-import useDash from "../../assets/css/dash.module.css";
-import {
-  ArrowBarLeft,
-  ArrowBarRight,
-  ArrowClockwise,
-  FiletypeCsv,
-  FilterCircle,
-  PrinterFill,
-} from "react-bootstrap-icons";
-import { FontColor, FourGround } from "../../assets/js/theme";
-import { Accordion, Card, Collapse, Tab, Tabs } from "react-bootstrap";
+import { Accordion } from "react-bootstrap";
 import { CSVLink } from "react-csv";
-import ReactToPrint from "react-to-print";
 import PrintReport from "./print/ReportPDF";
 import StaticPrintReport from "./print/StaticReportPDF";
-import Footer from "../../components/admin/footer/Footer";
 import DatePicker from "react-datepicker";
-import { ToastContainer } from "react-toastify";
 
-const DueCustomer = () => {
+const DueCustomer = ({
+  isDueLoading,
+  setIsDueLoading,
+  activeKeys,
+  csvLinkDown,
+  componentRef,
+}) => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
-  const componentRef = useRef();
 
   // get current date
   const date = new Date();
@@ -49,18 +40,11 @@ const DueCustomer = () => {
   // get due customer
   let dueCustomer = useSelector((state) => state.customer.dueCustomer);
 
-  // loading state
-  const [isLoading, setIsLoading] = useState(false);
-  const [open, setOpen] = useState(false);
-
   // prev month due customer state
   const [customers, setCustomers] = useState([]);
 
   //customer type state
   const [customerType, setCustomerType] = useState("");
-
-  // filter Accordion handle state
-  const [activeKeys, setActiveKeys] = useState("");
 
   //filter state
   const [filterDate, setFilterDate] = useState(firstDate);
@@ -73,24 +57,13 @@ const DueCustomer = () => {
         ispOwner,
         filterDate.getMonth() + 1,
         filterDate.getFullYear(),
-        setIsLoading
+        setIsDueLoading
       );
   }, [filterDate]);
 
   useEffect(() => {
     setCustomers(dueCustomer);
   }, [dueCustomer]);
-
-  // reload handler
-  const reloadHandler = () => {
-    getDueCustomer(
-      dispatch,
-      ispOwner,
-      filterDate.getMonth() + 1,
-      filterDate.getFullYear(),
-      setIsLoading
-    );
-  };
 
   // filter function
   const dueCustomerFilterHandler = () => {
@@ -254,187 +227,86 @@ const DueCustomer = () => {
 
   return (
     <>
-      <Sidebar />
-      <ToastContainer position="top-right" theme="colored" />
-      <div className={useDash.dashboardWrapper}>
-        <div className="container-fluied collector">
-          <div className="container">
-            <FontColor>
-              <FourGround>
-                <div className="collectorTitle d-flex justify-content-between px-4">
-                  <h2>{t("dueCustomer")}</h2>
+      <div className="collectorWrapper pb-2">
+        <Accordion alwaysOpen activeKey={activeKeys}>
+          <Accordion.Item eventKey="filter" className="accordionBorder">
+            <Accordion.Body className="accordionPadding pt-2">
+              <div className="displayGrid6">
+                <div>
+                  <DatePicker
+                    className="form-control mw-100 mt-0"
+                    selected={filterDate}
+                    onChange={(date) => setFilterDate(date)}
+                    dateFormat="MMM-yyyy"
+                    showMonthYearPicker
+                    showFullMonthYearPicker
+                    maxDate={firstDate}
+                    minDate={new Date(ispOwnerData?.createdAt)}
+                  />
+                </div>
 
-                  <div
-                    style={{ height: "45px" }}
-                    className="d-flex align-items-center"
+                <select
+                  className="form-select mw-100 mt-0"
+                  onChange={(e) => setCustomerType(e.target.value)}
+                >
+                  <option selected value="">
+                    {t("userType")}
+                  </option>
+                  {ispOwnerData?.bpSettings?.customerType.map((cType) => (
+                    <option value={cType}>{t(`${cType}`)}</option>
+                  ))}
+                </select>
+
+                <div className="gridButton">
+                  <button
+                    className="btn btn-outline-primary w-140 "
+                    type="button"
+                    onClick={dueCustomerFilterHandler}
+                    id="filterBtn"
                   >
-                    <div
-                      onClick={() => {
-                        if (!activeKeys) {
-                          setActiveKeys("filter");
-                        } else {
-                          setActiveKeys("");
-                        }
-                      }}
-                      title={t("filter")}
-                    >
-                      <FilterCircle className="addcutmButton" />
-                    </div>
-
-                    <div className="reloadBtn">
-                      {isLoading ? (
-                        <Loader />
-                      ) : (
-                        <ArrowClockwise
-                          className="arrowClock"
-                          title={t("refresh")}
-                          onClick={() => reloadHandler()}
-                        />
-                      )}
-                    </div>
-
-                    <Collapse in={open} dimension="width">
-                      <div id="example-collapse-text">
-                        <Card className="cardCollapse border-0">
-                          <div className="d-flex align-items-center">
-                            <div className="addAndSettingIcon">
-                              <CSVLink
-                                filename={ispOwnerData.company}
-                                headers={
-                                  customerType === "pppoe"
-                                    ? customerForCsVTableInfoHeader
-                                    : staticCustomerForCsVTableInfoHeader
-                                }
-                                data={
-                                  customerType === "pppoe"
-                                    ? customerForCsVTableInfo
-                                    : staticCustomerForCsVTableInfo
-                                }
-                                title={t("customerReport")}
-                              >
-                                <FiletypeCsv className="addcutmButton" />
-                              </CSVLink>
-                            </div>
-
-                            <div
-                              className="addAndSettingIcon"
-                              title={t("PPPoE Customer Print")}
-                            >
-                              <ReactToPrint
-                                documentTitle={t("dueCustomer")}
-                                trigger={() => (
-                                  <PrinterFill
-                                    title={t("print")}
-                                    className="addcutmButton"
-                                  />
-                                )}
-                                content={() => componentRef.current}
-                              />
-                            </div>
-                          </div>
-                        </Card>
-                      </div>
-                    </Collapse>
-
-                    {!open && (
-                      <ArrowBarLeft
-                        className="ms-1"
-                        size={34}
-                        style={{ cursor: "pointer" }}
-                        onClick={() => setOpen(!open)}
-                        aria-controls="example-collapse-text"
-                        aria-expanded={open}
-                      />
-                    )}
-
-                    {open && (
-                      <ArrowBarRight
-                        className="ms-1"
-                        size={34}
-                        style={{ cursor: "pointer" }}
-                        onClick={() => setOpen(!open)}
-                        aria-controls="example-collapse-text"
-                        aria-expanded={open}
-                      />
-                    )}
-                  </div>
+                    {t("filter")}
+                  </button>
                 </div>
-              </FourGround>
-              <FourGround>
-                <div className="mt-2">
-                  <Accordion alwaysOpen activeKey={activeKeys}>
-                    <Accordion.Item eventKey="filter">
-                      <Accordion.Body>
-                        <div className="displayGrid6">
-                          <div>
-                            <DatePicker
-                              className="form-control mw-100 mt-0"
-                              selected={filterDate}
-                              onChange={(date) => setFilterDate(date)}
-                              dateFormat="MMM-yyyy"
-                              showMonthYearPicker
-                              showFullMonthYearPicker
-                              maxDate={firstDate}
-                              minDate={new Date(ispOwnerData?.createdAt)}
-                            />
-                          </div>
+              </div>
+            </Accordion.Body>
+          </Accordion.Item>
+        </Accordion>
 
-                          <select
-                            className="form-select mw-100 mt-0"
-                            onChange={(e) => setCustomerType(e.target.value)}
-                          >
-                            <option selected value="">
-                              {t("userType")}
-                            </option>
-                            {ispOwnerData?.bpSettings?.customerType.map(
-                              (cType) => (
-                                <option value={cType}>{t(`${cType}`)}</option>
-                              )
-                            )}
-                          </select>
-
-                          <div className="gridButton">
-                            <button
-                              className="btn btn-outline-primary w-6rem"
-                              type="button"
-                              onClick={dueCustomerFilterHandler}
-                              id="filterBtn"
-                            >
-                              {t("filter")}
-                            </button>
-                          </div>
-                        </div>
-                      </Accordion.Body>
-                    </Accordion.Item>
-                  </Accordion>
-
-                  <div className="collectorWrapper pb-2">
-                    <div style={{ display: "none" }}>
-                      {customerType === "pppoe" ? (
-                        <PrintReport
-                          currentCustomers={customers}
-                          ref={componentRef}
-                        />
-                      ) : (
-                        <StaticPrintReport
-                          currentCustomers={customers}
-                          ref={componentRef}
-                        />
-                      )}
-                    </div>
-
-                    <div className="table-section">
-                      <Table
-                        isLoading={isLoading}
-                        columns={columns}
-                        data={customers}
-                      ></Table>
-                    </div>
-                  </div>
-                </div>
-              </FourGround>
-              <Footer />
-            </FontColor>
+        <div className="addCollector">
+          <div style={{ display: "none" }}>
+            {customerType === "pppoe" ? (
+              <PrintReport currentCustomers={customers} ref={componentRef} />
+            ) : (
+              <StaticPrintReport
+                currentCustomers={customers}
+                ref={componentRef}
+              />
+            )}
+          </div>
+          <div style={{ display: "none" }}>
+            <CSVLink
+              filename={ispOwnerData.company}
+              headers={
+                customerType === "pppoe"
+                  ? customerForCsVTableInfoHeader
+                  : staticCustomerForCsVTableInfoHeader
+              }
+              data={
+                customerType === "pppoe"
+                  ? customerForCsVTableInfo
+                  : staticCustomerForCsVTableInfo
+              }
+              title={t("customerReport")}
+              ref={csvLinkDown}
+              target="_blank"
+            ></CSVLink>
+          </div>
+          <div className="table-section">
+            <Table
+              isLoading={isDueLoading}
+              columns={columns}
+              data={customers}
+            ></Table>
           </div>
         </div>
       </div>

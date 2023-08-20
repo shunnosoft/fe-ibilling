@@ -1,0 +1,218 @@
+import React, { useRef, useState } from "react";
+import Sidebar from "../../components/admin/sidebar/Sidebar";
+import { ToastContainer } from "react-toastify";
+import useDash from "../../assets/css/dash.module.css";
+import { FontColor, FourGround } from "../../assets/js/theme";
+import { useTranslation } from "react-i18next";
+import { Card, Collapse, Tab, Tabs } from "react-bootstrap";
+import NewCustomer from "../newCustomer/NewCustomer";
+import InactiveCustomer from "../inactiveCustomer/InactiveCustomer";
+import Footer from "../../components/admin/footer/Footer";
+import {
+  ArrowBarLeft,
+  ArrowBarRight,
+  ArrowClockwise,
+  FiletypeCsv,
+  FilterCircle,
+  PrinterFill,
+} from "react-bootstrap-icons";
+import Loader from "../../components/common/Loader";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getDueCustomer,
+  getInactiveCustomer,
+  getNewCustomer,
+} from "../../features/apiCalls";
+import DueCustomer from "../dueCustomer/DueCustomer";
+import ReactToPrint from "react-to-print";
+
+const OtherCustomer = () => {
+  const { t } = useTranslation();
+  const dispatch = useDispatch();
+  const csvLink = useRef();
+  const componentRef = useRef();
+
+  //get current date
+  const date = new Date();
+  const month = date.getMonth() + 1;
+  const year = date.getFullYear();
+
+  // get all role
+  const role = useSelector((state) => state.persistedReducer.auth.role);
+
+  // get isp owner id
+  const ispOwner = useSelector(
+    (state) => state.persistedReducer.auth?.ispOwnerId
+  );
+
+  //loading state
+  const [isNewLoading, setIsNewLoading] = useState(false);
+  const [isInactiveLoading, setIsInactiveLoading] = useState(false);
+  const [isDueLoading, setIsDueLoading] = useState(false);
+  const [open, setOpen] = useState(false);
+
+  // filter Accordion handle state
+  const [activeKeys, setActiveKeys] = useState("");
+
+  // tabs state
+  const [otherTabs, setOtherTabs] = useState("newCustomer");
+
+  // reload handler
+  const reloadHandler = () => {
+    getNewCustomer(dispatch, ispOwner, setIsNewLoading);
+    getInactiveCustomer(dispatch, ispOwner, year, month, setIsNewLoading);
+    getDueCustomer(dispatch, ispOwner, month, year, setIsDueLoading);
+  };
+
+  // multiple tabs control
+  const changeTab = (key) => {
+    setOtherTabs(key);
+  };
+
+  return (
+    <>
+      <Sidebar />
+      <ToastContainer position="top-right" theme="colored" />
+      <div className={useDash.dashboardWrapper}>
+        <div className="container-fluied collector">
+          <div className="container">
+            <FontColor>
+              <FourGround>
+                <div className="collectorTitle d-flex justify-content-between px-4">
+                  <div>{t("otherCustomer")}</div>
+
+                  <div
+                    style={{ height: "45px" }}
+                    className="d-flex align-items-center"
+                  >
+                    <div
+                      onClick={() => {
+                        if (!activeKeys) {
+                          setActiveKeys("filter");
+                        } else {
+                          setActiveKeys("");
+                        }
+                      }}
+                      title={t("filter")}
+                    >
+                      <FilterCircle className="addcutmButton" />
+                    </div>
+
+                    <div className="reloadBtn">
+                      {isNewLoading || isInactiveLoading || isDueLoading ? (
+                        <Loader />
+                      ) : (
+                        <ArrowClockwise
+                          className="arrowClock"
+                          title={t("refresh")}
+                          onClick={reloadHandler}
+                        />
+                      )}
+                    </div>
+
+                    <Collapse in={open} dimension="width">
+                      <div id="example-collapse-text">
+                        <Card className="cardCollapse border-0">
+                          <div className="d-flex align-items-center">
+                            <div
+                              className="addAndSettingIcon"
+                              onClick={() => csvLink.current.link.click()}
+                            >
+                              <FiletypeCsv className="addcutmButton" />
+                            </div>
+
+                            <div className="addAndSettingIcon">
+                              <ReactToPrint
+                                documentTitle="report"
+                                trigger={() => (
+                                  <PrinterFill
+                                    title={t("print")}
+                                    className="addcutmButton"
+                                  />
+                                )}
+                                content={() => componentRef.current}
+                              />
+                            </div>
+                          </div>
+                        </Card>
+                      </div>
+                    </Collapse>
+
+                    {!open && role !== "collector" && (
+                      <ArrowBarLeft
+                        className="ms-1"
+                        size={34}
+                        style={{ cursor: "pointer" }}
+                        onClick={() => setOpen(!open)}
+                        aria-controls="example-collapse-text"
+                        aria-expanded={open}
+                      />
+                    )}
+
+                    {open && role !== "collector" && (
+                      <ArrowBarRight
+                        className="ms-1"
+                        size={34}
+                        style={{ cursor: "pointer" }}
+                        onClick={() => setOpen(!open)}
+                        aria-controls="example-collapse-text"
+                        aria-expanded={open}
+                      />
+                    )}
+                  </div>
+                </div>
+              </FourGround>
+              <FourGround>
+                <Tabs
+                  defaultActiveKey={"newCustomer"}
+                  id="uncontrolled-tab-example"
+                  onSelect={(eventKey) => changeTab(eventKey)}
+                >
+                  <Tab eventKey={"newCustomer"} title={t("newCustomer")}>
+                    {otherTabs === "newCustomer" && (
+                      <NewCustomer
+                        isNewLoading={isNewLoading}
+                        setIsNewLoading={setIsNewLoading}
+                        activeKeys={activeKeys}
+                        csvLinkDown={csvLink}
+                        componentRef={componentRef}
+                      />
+                    )}
+                  </Tab>
+                  <Tab
+                    eventKey={"inactiveCustomer"}
+                    title={t("inactiveCustomer")}
+                  >
+                    {otherTabs === "inactiveCustomer" && (
+                      <InactiveCustomer
+                        isInactiveLoading={isInactiveLoading}
+                        setIsInactiveLoading={setIsInactiveLoading}
+                        activeKeys={activeKeys}
+                        csvLinkDown={csvLink}
+                        componentRef={componentRef}
+                      />
+                    )}
+                  </Tab>
+                  <Tab eventKey={"dueCustomer"} title={t("dueCustomer")}>
+                    {otherTabs === "dueCustomer" && (
+                      <DueCustomer
+                        isDueLoading={isDueLoading}
+                        setIsDueLoading={setIsDueLoading}
+                        activeKeys={activeKeys}
+                        csvLinkDown={csvLink}
+                        componentRef={componentRef}
+                      />
+                    )}
+                  </Tab>
+                </Tabs>
+              </FourGround>
+              <Footer />
+            </FontColor>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default OtherCustomer;

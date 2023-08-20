@@ -1,40 +1,23 @@
-import React, { useEffect, useRef, useState } from "react";
-import {
-  ArrowBarLeft,
-  ArrowBarRight,
-  ArrowClockwise,
-  FiletypeCsv,
-  FilterCircle,
-  PrinterFill,
-} from "react-bootstrap-icons";
+import React, { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { FontColor, FourGround } from "../../assets/js/theme";
-import Sidebar from "../../components/admin/sidebar/Sidebar";
-import Loader from "../../components/common/Loader";
-import useDash from "../../assets/css/dash.module.css";
 import { getInactiveCustomer } from "../../features/apiCalls";
 import { useDispatch, useSelector } from "react-redux";
 import Table from "../../components/table/Table";
 import { badge } from "../../components/common/Utils";
 import moment from "moment";
-import ReactToPrint from "react-to-print";
 import CustomerPdf from "../Home/homePdf/CustomerPdf";
 import { CSVLink } from "react-csv";
-import Footer from "../../components/admin/footer/Footer";
-import { Accordion, Card, Collapse } from "react-bootstrap";
+import { Accordion } from "react-bootstrap";
 
-const InactiveCustomer = () => {
+const InactiveCustomer = ({
+  isInactiveLoading,
+  setIsInactiveLoading,
+  activeKeys,
+  csvLinkDown,
+  componentRef,
+}) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const componentRef = useRef();
-
-  //Loading state
-  const [isLoading, setIsLoading] = useState(false);
-
-  // filter Accordion handle state
-  const [activeKeys, setActiveKeys] = useState("");
-
-  const [open, setOpen] = useState(false);
 
   //get current date
   const date = new Date();
@@ -59,10 +42,27 @@ const InactiveCustomer = () => {
   //customer type state
   const [customerType, setCustomerType] = useState("");
 
+  useEffect(() => {
+    inactiveCustomer.length === 0 &&
+      getInactiveCustomer(
+        dispatch,
+        ispOwnerId,
+        year,
+        month,
+        setIsInactiveLoading
+      );
+  }, []);
+
   // reload handler
-  const reloadHandler = () => {
-    getInactiveCustomer(dispatch, ispOwnerId, year, month, setIsLoading);
-  };
+  // const reloadHandler = () => {
+  //   getInactiveCustomer(
+  //     dispatch,
+  //     ispOwnerId,
+  //     year,
+  //     month,
+  //     setIsInactiveLoading
+  //   );
+  // };
 
   //customer type filter
   if (customerType && customerType !== "all") {
@@ -106,7 +106,7 @@ const InactiveCustomer = () => {
   });
 
   //inactive customer
-  const inactive = React.useMemo(
+  const columns = useMemo(
     () => [
       {
         width: "8%",
@@ -181,154 +181,50 @@ const InactiveCustomer = () => {
     [t]
   );
 
-  useEffect(() => {
-    getInactiveCustomer(dispatch, ispOwnerId, year, month, setIsLoading);
-  }, [month]);
-
   return (
     <>
-      <Sidebar />
-      <div className={useDash.dashboardWrapper}>
-        <div className="container-fluied collector">
-          <div className="container">
-            <FontColor>
-              <FourGround>
-                <div className="collectorTitle d-flex justify-content-between px-4">
-                  <h2>{t("inactiveCustomer")}</h2>
+      <div className="collectorWrapper pb-2">
+        <Accordion alwaysOpen activeKey={activeKeys}>
+          <Accordion.Item eventKey="filter" className="accordionBorder">
+            <Accordion.Body className="accordionPadding pt-2">
+              <div className="displayGrid6">
+                <select
+                  className="form-select mw-100 mt-0"
+                  onChange={(event) => setCustomerType(event.target.value)}
+                >
+                  <option selected value="all">
+                    {t("userType")}
+                  </option>
+                  {ispOwnerData?.bpSettings?.customerType.map((cType) => (
+                    <option value={cType}>{t(`${cType}`)}</option>
+                  ))}
+                </select>
+              </div>
+            </Accordion.Body>
+          </Accordion.Item>
+        </Accordion>
 
-                  <div
-                    style={{ height: "45px" }}
-                    className="d-flex align-items-center"
-                  >
-                    <div
-                      onClick={() => {
-                        if (!activeKeys) {
-                          setActiveKeys("filter");
-                        } else {
-                          setActiveKeys("");
-                        }
-                      }}
-                      title={t("filter")}
-                    >
-                      <FilterCircle className="addcutmButton" />
-                    </div>
+        <div className="addCollector">
+          <div className="d-none">
+            <CustomerPdf customerData={inactiveCustomer} ref={componentRef} />
+          </div>
+          <div>
+            <CSVLink
+              data={customerForCsVTableInfo}
+              filename={ispOwnerData.company}
+              headers={customerForCsVTableInfoHeader}
+              title="inactive Customer CSV"
+              ref={csvLinkDown}
+              target="_blank"
+            ></CSVLink>
+          </div>
 
-                    <div className="reloadBtn">
-                      {isLoading ? (
-                        <Loader />
-                      ) : (
-                        <ArrowClockwise
-                          className="arrowClock"
-                          title={t("refresh")}
-                          onClick={() => reloadHandler()}
-                        />
-                      )}
-                    </div>
-
-                    <Collapse in={open} dimension="width">
-                      <div id="example-collapse-text">
-                        <Card className="cardCollapse border-0">
-                          <div className="d-flex align-items-center">
-                            <div className="addAndSettingIcon">
-                              <CSVLink
-                                data={customerForCsVTableInfo}
-                                filename={ispOwnerData.company}
-                                headers={customerForCsVTableInfoHeader}
-                                title="inactive Customer CSV"
-                              >
-                                <FiletypeCsv className="addcutmButton" />
-                              </CSVLink>
-                            </div>
-
-                            <div
-                              className="addAndSettingIcon"
-                              title={t("inactiveCustomer")}
-                            >
-                              <ReactToPrint
-                                documentTitle={t("inactiveCustomer")}
-                                trigger={() => (
-                                  <PrinterFill
-                                    title={t("print")}
-                                    className="addcutmButton"
-                                  />
-                                )}
-                                content={() => componentRef.current}
-                              />
-                            </div>
-                          </div>
-                        </Card>
-                      </div>
-                    </Collapse>
-
-                    {!open && (
-                      <ArrowBarLeft
-                        className="ms-1"
-                        size={34}
-                        style={{ cursor: "pointer" }}
-                        onClick={() => setOpen(!open)}
-                        aria-controls="example-collapse-text"
-                        aria-expanded={open}
-                      />
-                    )}
-
-                    {open && (
-                      <ArrowBarRight
-                        className="ms-1"
-                        size={34}
-                        style={{ cursor: "pointer" }}
-                        onClick={() => setOpen(!open)}
-                        aria-controls="example-collapse-text"
-                        aria-expanded={open}
-                      />
-                    )}
-                  </div>
-                </div>
-              </FourGround>
-              <FourGround>
-                <div className="mt-2">
-                  <Accordion alwaysOpen activeKey={activeKeys}>
-                    <Accordion.Item eventKey="filter">
-                      <Accordion.Body>
-                        <div className="col-md-2 form-group px-2 d-flex">
-                          <select
-                            className="form-select mw-100 mt-0"
-                            onChange={(event) =>
-                              setCustomerType(event.target.value)
-                            }
-                          >
-                            <option selected value="all">
-                              {t("userType")}
-                            </option>
-                            {ispOwnerData?.bpSettings?.customerType.map(
-                              (cType) => (
-                                <option value={cType}>{t(`${cType}`)}</option>
-                              )
-                            )}
-                          </select>
-                        </div>
-                      </Accordion.Body>
-                    </Accordion.Item>
-                  </Accordion>
-                  <div className="collectorWrapper pb-2">
-                    <div className="d-none">
-                      <CustomerPdf
-                        customerData={inactiveCustomer}
-                        ref={componentRef}
-                      />
-                    </div>
-
-                    <div className="table-section">
-                      <Table
-                        isLoading={isLoading}
-                        columns={inactive}
-                        data={inactiveCustomer}
-                      ></Table>
-                    </div>
-                  </div>
-                </div>
-              </FourGround>
-              <Footer />
-            </FontColor>
+          <div className="table-section">
+            <Table
+              isLoading={isInactiveLoading}
+              columns={columns}
+              data={inactiveCustomer}
+            ></Table>
           </div>
         </div>
       </div>
