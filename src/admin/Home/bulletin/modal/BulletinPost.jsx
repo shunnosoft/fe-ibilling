@@ -20,6 +20,13 @@ const BulletinPost = ({ show, setShow, editId }) => {
     endDate: Yup.string().required("Select Bulletin End Date"),
     ispOwner: Yup.string(),
     reseller: Yup.string(),
+    allPage: Yup.string(),
+    customer: Yup.string(),
+    activeCustomer: Yup.string(),
+    dashboard: Yup.string(),
+    deposit: Yup.string(),
+    message: Yup.string(),
+    collection: Yup.string(),
   });
 
   //  netFee Bulletin all data
@@ -41,26 +48,81 @@ const BulletinPost = ({ show, setShow, editId }) => {
 
   // bulletin submit handler
   const bulletinHandler = (values) => {
+    const {
+      title,
+      startDate,
+      endDate,
+      ispOwner,
+      reseller,
+      allPage,
+      customer,
+      activeCustomer,
+      dashboard,
+      deposit,
+      message,
+      collection,
+    } = values;
     if (!(values.ispOwner || values.reseller)) {
       toast.error("One status must be selected.");
       return;
     }
 
     const sendData = {
-      ...values,
+      title,
+      startDate,
+      endDate,
+      ispOwner,
+      reseller,
+      pagePermission: {
+        allPage,
+        customer,
+        activeCustomer,
+        dashboard,
+        deposit,
+        message,
+        collection,
+      },
     };
     postBulletin(dispatch, sendData, setIsLoading, setShow);
   };
 
   // bulletin update data submit handler
   const bulletinEditHandler = (values) => {
+    const {
+      title,
+      startDate,
+      endDate,
+      ispOwner,
+      reseller,
+      allPage,
+      customer,
+      activeCustomer,
+      dashboard,
+      deposit,
+      message,
+      collection,
+    } = values;
+
     if (!(values.ispOwner || values.reseller)) {
       toast.error("One status must be selected.");
       return;
     }
 
     const sendData = {
-      ...values,
+      title,
+      startDate,
+      endDate,
+      ispOwner,
+      reseller,
+      pagePermission: {
+        allPage,
+        customer,
+        activeCustomer,
+        dashboard,
+        deposit,
+        message,
+        collection,
+      },
     };
     patchBulletin(dispatch, bulletinId, sendData, setIsLoading, setShow);
   };
@@ -92,6 +154,27 @@ const BulletinPost = ({ show, setShow, editId }) => {
                 : "",
               ispOwner: singleBulletin ? singleBulletin?.ispOwner : false,
               reseller: singleBulletin ? singleBulletin?.reseller : false,
+              allPage: singleBulletin
+                ? singleBulletin.pagePermission?.allPage
+                : false,
+              customer: singleBulletin
+                ? singleBulletin.pagePermission?.customer
+                : false,
+              activeCustomer: singleBulletin
+                ? singleBulletin.pagePermission?.activeCustomer
+                : false,
+              dashboard: singleBulletin
+                ? singleBulletin.pagePermission?.dashboard
+                : false,
+              deposit: singleBulletin
+                ? singleBulletin.pagePermission?.deposit
+                : false,
+              message: singleBulletin
+                ? singleBulletin.pagePermission?.message
+                : false,
+              collection: singleBulletin
+                ? singleBulletin.pagePermission?.collection
+                : false,
             }}
             validationSchema={netFeeBulletin}
             onSubmit={(values) => {
@@ -129,35 +212,151 @@ const BulletinPost = ({ show, setShow, editId }) => {
                   />
                 </div>
 
-                <div className="d-flex justify-content-center">
-                  <div className="form-check me-4">
-                    <Field
-                      className="form-check-input"
-                      type="checkbox"
-                      id="ispOwnerShow"
-                      name="ispOwner"
-                    />
-                    <label
-                      className="form-check-label text-secondary"
-                      htmlFor="ispOwnerShow"
-                    >
-                      IspOwner
+                <div className="d-flex justify-content-between">
+                  {/* panel selection */}
+                  <div>
+                    <label className="form-check-label text-secondary">
+                      Select the Panel
                     </label>
+                    <div className="form-check me-4">
+                      <Field
+                        className="form-check-input"
+                        type="checkbox"
+                        id="ispOwnerShow"
+                        name="ispOwner"
+                      />
+                      <label
+                        className="form-check-label text-secondary"
+                        htmlFor="ispOwnerShow"
+                      >
+                        IspOwner
+                      </label>
+                    </div>
+                    <div className="form-check">
+                      <Field
+                        className="form-check-input"
+                        type="checkbox"
+                        id="resellerShow"
+                        name="reseller"
+                      />
+                      <label
+                        className="form-check-label text-secondary"
+                        htmlFor="resellerShow"
+                      >
+                        Reseller
+                      </label>
+                    </div>
                   </div>
 
-                  <div className="form-check">
-                    <Field
-                      className="form-check-input"
-                      type="checkbox"
-                      id="resellerShow"
-                      name="reseller"
-                    />
-                    <label
-                      className="form-check-label text-secondary"
-                      htmlFor="resellerShow"
-                    >
-                      Reseller
+                  {/* panel page selection */}
+                  <div>
+                    <label className="form-check-label text-secondary">
+                      Select the Panel page
                     </label>
+                    <div className="form-check">
+                      <Field
+                        className="form-check-input"
+                        type="checkbox"
+                        id="allPage"
+                        name="allPage"
+                      />
+                      <label
+                        className="form-check-label text-secondary"
+                        htmlFor="allPage"
+                      >
+                        All Page
+                      </label>
+                    </div>
+
+                    <div className="form-check">
+                      <Field
+                        className="form-check-input"
+                        type="checkbox"
+                        id="customer"
+                        name="customer"
+                      />
+                      <label
+                        className="form-check-label text-secondary"
+                        htmlFor="customer"
+                      >
+                        Customer
+                      </label>
+                    </div>
+
+                    <div className="form-check">
+                      <Field
+                        className="form-check-input"
+                        type="checkbox"
+                        id="activeCustomer"
+                        name="activeCustomer"
+                      />
+                      <label
+                        className="form-check-label text-secondary"
+                        htmlFor="activeCustomer"
+                      >
+                        Active Customer
+                      </label>
+                    </div>
+
+                    <div className="form-check">
+                      <Field
+                        className="form-check-input"
+                        type="checkbox"
+                        id="dashboard"
+                        name="dashboard"
+                      />
+                      <label
+                        className="form-check-label text-secondary"
+                        htmlFor="dashboard"
+                      >
+                        Dashboard
+                      </label>
+                    </div>
+
+                    <div className="form-check">
+                      <Field
+                        className="form-check-input"
+                        type="checkbox"
+                        id="deposit"
+                        name="deposit"
+                      />
+                      <label
+                        className="form-check-label text-secondary"
+                        htmlFor="deposit"
+                      >
+                        Deposit
+                      </label>
+                    </div>
+
+                    <div className="form-check">
+                      <Field
+                        className="form-check-input"
+                        type="checkbox"
+                        id="message"
+                        name="message"
+                      />
+                      <label
+                        className="form-check-label text-secondary"
+                        htmlFor="message"
+                      >
+                        Message
+                      </label>
+                    </div>
+
+                    <div className="form-check">
+                      <Field
+                        className="form-check-input"
+                        type="checkbox"
+                        id="collection"
+                        name="collection"
+                      />
+                      <label
+                        className="form-check-label text-secondary"
+                        htmlFor="collection"
+                      >
+                        Collection Report
+                      </label>
+                    </div>
                   </div>
                 </div>
 
