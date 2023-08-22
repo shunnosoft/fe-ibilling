@@ -24,6 +24,8 @@ import Footer from "../../components/admin/footer/Footer";
 import { CSVLink } from "react-csv";
 import moment from "moment";
 import { Accordion } from "react-bootstrap";
+import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
+import { getBulletinPermission } from "../../features/apiCallAdmin";
 
 const StaticActiveCustomer = () => {
   const { t } = useTranslation();
@@ -45,7 +47,6 @@ const StaticActiveCustomer = () => {
   let staticActiveCustomer = useSelector(
     (state) => state?.customer?.staticActiveCustomer
   );
-  console.log(staticActiveCustomer);
 
   // get isp owner id
   const ispOwnerId = useSelector(
@@ -55,6 +56,11 @@ const StaticActiveCustomer = () => {
   // get ispOwner data
   const ispOwnerData = useSelector(
     (state) => state.persistedReducer.auth?.userData
+  );
+
+  // get bulletin permission
+  const butPermission = useSelector(
+    (state) => state.adminNetFeeSupport?.bulletinPermission
   );
 
   // select mikrotik handler
@@ -83,6 +89,10 @@ const StaticActiveCustomer = () => {
   useEffect(() => {
     setMikrotikId(mikrotik[0]?.id);
   }, [mikrotik]);
+
+  useEffect(() => {
+    Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
+  }, []);
 
   // csv table header
   const activeCustomerForCsvInfoHeader = [
@@ -250,6 +260,10 @@ const StaticActiveCustomer = () => {
                     </div>
                   </div>
                 </div>
+
+                {(butPermission?.activeCustomer || butPermission?.allPage) && (
+                  <NetFeeBulletin />
+                )}
               </FourGround>
               <Footer />
             </FontColor>

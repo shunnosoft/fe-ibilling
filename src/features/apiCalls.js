@@ -166,6 +166,7 @@ import {
   getMikrotikCustomerSuccess,
   getNetFeeCustomerSuccess,
 } from "./customerCrossCheckSlice";
+import { updatePermissionSuccess } from "./adminNetFeeSupportSlice";
 
 const netFeeLang = localStorage.getItem("netFee:lang");
 const langMessage = (color, bangla, english) => {
@@ -3587,6 +3588,16 @@ export const deleteBulletin = async (dispatch, bulletinId) => {
     const res = await apiLink.delete(`admin/bulletin/${bulletinId}`);
     dispatch(deleteBulletinSuccess(bulletinId));
     toast.success("Bulletin successful Delete");
+  } catch (error) {
+    toast.error(error.response?.data?.message);
+  }
+};
+
+// post & update netFee bulletin parmission api call
+export const patchBulletinPermission = async (dispatch, data) => {
+  try {
+    const res = await apiLink.patch(`admin/page/permission`, data);
+    dispatch(updatePermissionSuccess(res.data));
   } catch (error) {
     toast.error(error.response?.data?.message);
   }

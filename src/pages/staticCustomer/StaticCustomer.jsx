@@ -89,6 +89,7 @@ import StaticCreateInvoice from "./StaticCreateInvoice";
 import { Accordion, Card, Collapse } from "react-bootstrap";
 import BulkPaymentStatusEdit from "../Customer/customerCRUD/bulkOpration/BulkPaymentStatusEdit";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
+import { getBulletinPermission } from "../../features/apiCallAdmin";
 
 export default function Customer() {
   //call hooks
@@ -132,6 +133,11 @@ export default function Customer() {
 
   //get all pole Box
   const poleBox = useSelector((state) => state.area?.poleBox);
+
+  // get bulletin permission
+  const butPermission = useSelector(
+    (state) => state.adminNetFeeSupport?.bulletinPermission
+  );
 
   //declare local state
   const [isLoading, setIsloading] = useState(false);
@@ -432,6 +438,8 @@ export default function Customer() {
 
       role === "ispOwner" && getManger(dispatch, ispOwner);
     }
+
+    Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
   }, []);
 
   const handleActiveFilter = () => {
@@ -1596,7 +1604,10 @@ export default function Customer() {
                 ) : (
                   ""
                 )}
-                <NetFeeBulletin />
+
+                {(butPermission?.customer || butPermission?.allPage) && (
+                  <NetFeeBulletin />
+                )}
               </FourGround>
 
               {/* Model start */}

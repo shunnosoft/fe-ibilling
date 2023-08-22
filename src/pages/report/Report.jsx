@@ -44,6 +44,8 @@ import DatePicker from "react-datepicker";
 import { getSubAreasApi } from "../../features/actions/customerApiCall";
 import { managerFetchSuccess } from "../../features/managerSlice";
 import { Accordion, Card, Collapse } from "react-bootstrap";
+import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
+import { getBulletinPermission } from "../../features/apiCallAdmin";
 export default function Report() {
   const { t } = useTranslation();
   const componentRef = useRef();
@@ -86,6 +88,12 @@ export default function Report() {
   const currentUser = useSelector(
     (state) => state.persistedReducer.auth?.currentUser
   );
+
+  // get bulletin permission
+  const butPermission = useSelector(
+    (state) => state.adminNetFeeSupport?.bulletinPermission
+  );
+
   var today = new Date();
   var firstDay =
     userRole === "ispOwner" || permissions?.dashboardCollectionData
@@ -232,6 +240,8 @@ export default function Report() {
     if (userRole === "ispOwner") getManger(dispatch, ispOwnerId);
     if (allCollector.length === 0)
       getCollector(dispatch, ispOwnerId, setCollectorLoading);
+
+    Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
   }, []);
 
   const onChangeArea = (param) => {
@@ -397,7 +407,14 @@ export default function Report() {
       {
         width: "10%",
         Header: t("pppoe"),
-        accessor: "customer.pppoe.name",
+        accessor: (field) =>
+          field.customer.userType === "pppoe"
+            ? field.customer.pppoe.name
+            : field.customer.userType === "firewall-queue"
+            ? field.customer.queue.address
+            : field.customer.userType === "core-queue"
+            ? field.customer.queue.srcAddress
+            : "",
       },
       {
         width: "9%",
@@ -818,6 +835,9 @@ export default function Report() {
                     </div>
                   </div>
                 </div>
+
+                {(butPermission?.collectionReport ||
+                  butPermission?.allPage) && <NetFeeBulletin />}
               </FourGround>
               <Footer />
             </FontColor>

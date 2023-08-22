@@ -20,6 +20,8 @@ import { getMikrotik } from "../../features/apiCallReseller";
 import Footer from "../../components/admin/footer/Footer";
 import moment from "moment";
 import { Accordion } from "react-bootstrap";
+import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
+import { getBulletinPermission } from "../../features/apiCallAdmin";
 
 const ResellserActiveCustomer = () => {
   const { t } = useTranslation();
@@ -44,6 +46,11 @@ const ResellserActiveCustomer = () => {
 
   //get subAreas
   const subAreas = useSelector((state) => state?.area?.area);
+
+  // get bulletin permission
+  const butPermission = useSelector(
+    (state) => state.adminNetFeeSupport?.bulletinPermission
+  );
 
   // mikrotik loading state
   const [loading, setIsloading] = useState(false);
@@ -132,6 +139,10 @@ const ResellserActiveCustomer = () => {
     setAllUsers(allMikrotikUsers);
     setMikrotikId(mikrotik[0]?.id);
   }, [allMikrotikUsers, mikrotik]);
+
+  useEffect(() => {
+    Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
+  }, []);
 
   // table column
   const columns = React.useMemo(
@@ -349,6 +360,10 @@ const ResellserActiveCustomer = () => {
                     </div>
                   </div>
                 </div>
+
+                {(butPermission?.activeCustomer || butPermission?.allPage) && (
+                  <NetFeeBulletin />
+                )}
               </FourGround>
               <Footer />
             </FontColor>

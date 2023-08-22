@@ -39,6 +39,8 @@ import { CSVLink } from "react-csv";
 import ReactToPrint from "react-to-print";
 import HotspotPdf from "./customerOperation/HotspotPdf";
 import BulkStatusEdit from "../Customer/customerCRUD/bulkOpration/bulkStatusEdit";
+import { getBulletinPermission } from "../../features/apiCallAdmin";
+import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 
 const HotspotCustomer = () => {
   const dispatch = useDispatch();
@@ -70,6 +72,11 @@ const HotspotCustomer = () => {
 
   // get hotspot customer
   const customer = useSelector((state) => state.hotspot.customer);
+
+  // get bulletin permission
+  const butPermission = useSelector(
+    (state) => state.adminNetFeeSupport?.bulletinPermission
+  );
 
   // loading state
   const [getCustomerLoading, setGetCustomerLoading] = useState(false);
@@ -105,6 +112,8 @@ const HotspotCustomer = () => {
   useEffect(() => {
     customer.length === 0 &&
       getHotspotCustomer(dispatch, ispOwnerId, setGetCustomerLoading);
+
+    Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
   }, []);
 
   // reload handler
@@ -499,6 +508,10 @@ const HotspotCustomer = () => {
                   </div>
                 ) : (
                   ""
+                )}
+
+                {(butPermission?.customer || butPermission?.allPage) && (
+                  <NetFeeBulletin />
                 )}
               </FourGround>
               <Footer />

@@ -17,6 +17,7 @@ import {
   editInvoiceSuccess,
 } from "./ispOwnerInvoiceSlice";
 import {
+  bulletinPermissionSuccess,
   deleteAdminSupport,
   deleteIspOwnerSupport,
   getAdminSupport,
@@ -419,6 +420,16 @@ export const getResellerBulletin = async (setBulletins) => {
   try {
     const res = await apiLink.get(`reseller/netFee/bulletin`);
     setBulletins(res.data);
+  } catch (error) {
+    console.log(error.response.data);
+  }
+};
+
+// get reseller bulletin
+export const getBulletinPermission = async (dispatch) => {
+  try {
+    const res = await apiLink.get(`admin/page/permission`);
+    dispatch(bulletinPermissionSuccess(res.data));
   } catch (error) {
     console.log(error.response.data);
   }

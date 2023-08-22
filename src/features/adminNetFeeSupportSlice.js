@@ -5,6 +5,7 @@ const adminNetFeeSupportSlice = createSlice({
   initialState: {
     adminSupport: [],
     ispOwnerSupport: [],
+    bulletinPermission: [],
   },
   reducers: {
     getAdminSupport: (state, action) => {
@@ -35,6 +36,17 @@ const adminNetFeeSupportSlice = createSlice({
         (item) => item.id !== action.payload.id
       );
     },
+
+    bulletinPermissionSuccess: (state, action) => {
+      state.bulletinPermission = action.payload;
+    },
+
+    updatePermissionSuccess: (state, action) => {
+      const permissionIndex = state.bulletinPermission.findIndex(
+        (item) => item.id === action.payload.id
+      );
+      state.bulletinPermission[permissionIndex] = action.payload;
+    },
   },
 });
 
@@ -45,5 +57,7 @@ export const {
   getIspOwnerSupport,
   deleteIspOwnerSupport,
   updateIspOwnerSupport,
+  bulletinPermissionSuccess,
+  updatePermissionSuccess,
 } = adminNetFeeSupportSlice.actions;
 export default adminNetFeeSupportSlice.reducer;

@@ -31,6 +31,8 @@ import { buildStyles, CircularProgressbar } from "react-circular-progressbar";
 import ReactDatePicker from "react-datepicker";
 import Loader from "../../components/common/Loader";
 import { Accordion } from "react-bootstrap";
+import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
+import { getBulletinPermission } from "../../features/apiCallAdmin";
 
 export default function Home() {
   const { t } = useTranslation();
@@ -52,6 +54,12 @@ export default function Home() {
 
   const ChartsData = useSelector((state) => state.chart.charts);
   const customerStat = useSelector((state) => state.chart.customerStat);
+
+  // get bulletin permission
+  const butPermission = useSelector(
+    (state) => state.adminNetFeeSupport?.bulletinPermission
+  );
+
   const [showGraphData, setShowGraphData] = useState("amount");
   const [label, setLabel] = useState([]);
   const [collection, setCollection] = useState([]);
@@ -143,6 +151,7 @@ export default function Home() {
           filterDate
         );
     }
+    Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
   }, []);
 
   useEffect(() => {
@@ -589,6 +598,10 @@ export default function Home() {
                 }}
               />
             </div>
+
+            {(butPermission?.dashboard || butPermission?.allPage) && (
+              <NetFeeBulletin />
+            )}
           </FourGround>
         </div>
       </FontColor>

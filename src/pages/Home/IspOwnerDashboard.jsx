@@ -48,6 +48,8 @@ import Active from "./dataComponent/Active";
 import AllCollector from "./dataComponent/AllCollector";
 import Reseller from "./dataComponent/Reseller";
 import Discount from "./dataComponent/Discount";
+import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
+import { getBulletinPermission } from "../../features/apiCallAdmin";
 
 export default function IspOwnerDashboard() {
   const { t } = useTranslation();
@@ -93,6 +95,11 @@ export default function IspOwnerDashboard() {
 
   //get payment invoice to check expiration
   const invoice = useSelector((state) => state.invoice.invoice);
+
+  // get bulletin permission
+  const butPermission = useSelector(
+    (state) => state.adminNetFeeSupport?.bulletinPermission
+  );
 
   //all internal states
   const [isLoading, setIsloading] = useState(false);
@@ -158,6 +165,8 @@ export default function IspOwnerDashboard() {
     getIspOwnerDashboardCardData(dispatch, setLoadingDashboardData, ispOwnerId);
 
     getAllPackages(dispatch, ispOwnerId, setPackageLoading);
+
+    Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
   }, []);
 
   //graph data calculation
@@ -331,7 +340,8 @@ export default function IspOwnerDashboard() {
                         <br /> ৳ &nbsp;
                         {FormatNumber(
                           customerStat.totalProbableAmount -
-                            customerStat.totalInactiveAmount
+                            customerStat.totalInactiveAmount -
+                            customerStat.newCustomerBillCount
                         )}{" "}
                       </h2>
                     </div>
@@ -484,7 +494,7 @@ export default function IspOwnerDashboard() {
                     <p style={{ fontSize: "16px" }}>{t("total customer")}</p>
                     <h2>{FormatNumber(customerStat.customers)}</h2>
 
-                    <Link to={"/new/customer"}>
+                    <Link to={"/other/customer"}>
                       <p
                         className="dashboardData"
                         style={{ fontSize: "15px", marginBottom: "0px" }}
@@ -1277,6 +1287,11 @@ export default function IspOwnerDashboard() {
         month={filterDate.getMonth() + 1}
         status={status}
       />
+
+      {/* dashboard netFee bulletin added */}
+      {(butPermission?.dashboard || butPermission?.allPage) && (
+        <NetFeeBulletin />
+      )}
     </>
   );
 }

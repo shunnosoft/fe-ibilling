@@ -19,6 +19,9 @@ import {
 } from "../../features/apiCallReseller";
 import { useDispatch, useSelector } from "react-redux";
 import Table from "../../components/table/Table";
+import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
+import Footer from "../../components/admin/footer/Footer";
+import { getBulletinPermission } from "../../features/apiCallAdmin";
 
 const ActiveStaticCustomer = () => {
   const { t } = useTranslation();
@@ -45,6 +48,11 @@ const ActiveStaticCustomer = () => {
   // get all static customer
   let staticActiveCustomer = useSelector(
     (state) => state?.customer?.staticActiveCustomer
+  );
+
+  // get bulletin permission
+  const butPermission = useSelector(
+    (state) => state.adminNetFeeSupport?.bulletinPermission
   );
 
   // loading state
@@ -99,6 +107,10 @@ const ActiveStaticCustomer = () => {
       );
     }
   }, [mikrotikId]);
+
+  useEffect(() => {
+    Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
+  }, []);
 
   const columns = React.useMemo(
     () => [
@@ -227,7 +239,12 @@ const ActiveStaticCustomer = () => {
                     </div>
                   </div>
                 </div>
+
+                {(butPermission?.activeCustomer || butPermission?.allPage) && (
+                  <NetFeeBulletin />
+                )}
               </FourGround>
+              <Footer />
             </FontColor>
           </div>
         </div>

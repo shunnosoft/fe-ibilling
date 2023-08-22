@@ -38,6 +38,8 @@ import PrintCustomer from "./customerPDF";
 import DatePicker from "react-datepicker";
 import { badge } from "../../components/common/Utils";
 import { Accordion } from "react-bootstrap";
+import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
+import { getBulletinPermission } from "../../features/apiCallAdmin";
 
 export default function Diposit() {
   const { t } = useTranslation();
@@ -82,6 +84,11 @@ export default function Diposit() {
 
   // get Own deposit from redux -- Collector
   const ownDeposits = useSelector((state) => state.payment.myDeposit);
+
+  // get bulletin permission
+  const butPermission = useSelector(
+    (state) => state.adminNetFeeSupport?.bulletinPermission
+  );
 
   // start date state -- Reseller
   const [startDate, setStartDate] = useState(firstDay);
@@ -224,6 +231,8 @@ export default function Diposit() {
       getTotalbal(dispatch, setIsLoading);
       getDeposit(dispatch, setResellerPageLoader);
     }
+
+    Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
   }, []);
 
   // api call
@@ -624,6 +633,9 @@ export default function Diposit() {
                 </FourGround>
               )}
 
+              {(butPermission?.deposit || butPermission?.allPage) && (
+                <NetFeeBulletin />
+              )}
               <Footer />
             </FontColor>
           </div>

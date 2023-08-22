@@ -859,5 +859,6 @@
   "customerReport": "গ্রাহক রিপোর্ট",
   "pppoeIp": "পিপিওই/আইপি",
   "PPPoECustomer": "পিপিওই গ্রাহক",
-  "StaticCustomer": "স্ট্যাটিক গ্রাহক"
+  "StaticCustomer": "স্ট্যাটিক গ্রাহক",
+  "minusBalanceCustomer": "টি মাইনাস ব্যালেন্স গ্রাহকের স্টাটাস আপডেট করা হবে না"
 }

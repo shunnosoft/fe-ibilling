@@ -690,92 +690,6 @@ export default function Sidebar() {
                             </FontColor>
                           </NavLink>
                         )}
-
-                        {/* {(userRole === "ispOwner" ||
-                          userRole === "manager") && (
-                          <NavLink
-                            key={15}
-                            to={"/new/customer"}
-                            className={(navInfo) =>
-                              navInfo.isActive ? activeClass.active : ""
-                            }
-                          >
-                            <FontColor>
-                              <li
-                                className="sidebarItems"
-                                id={
-                                  window.location.pathname === "/new/customer"
-                                    ? "active"
-                                    : ""
-                                }
-                              >
-                                <div className="sidebarIcon">
-                                  {<PersonFill />}
-                                </div>
-                                <span className="sidebarLinksName">
-                                  {t("newCustomer")}
-                                </span>
-                              </li>
-                            </FontColor>
-                          </NavLink>
-                        )} */}
-                        {/* 
-                        {(userRole === "ispOwner" ||
-                          userRole === "manager") && (
-                          <NavLink
-                            key={124}
-                            to={"/inactive/customer"}
-                            className={(navInfo) =>
-                              navInfo.isActive ? activeClass.active : ""
-                            }
-                          >
-                            <FontColor>
-                              <li
-                                className="sidebarItems"
-                                id={
-                                  window.location.pathname ===
-                                  "/inactive/customer"
-                                    ? "active"
-                                    : ""
-                                }
-                              >
-                                <div className="sidebarIcon">{<People />}</div>
-                                <span className="sidebarLinksName">
-                                  {t("inactiveCustomer")}
-                                </span>
-                              </li>
-                            </FontColor>
-                          </NavLink>
-                        )} */}
-
-                        {/* {(userRole === "ispOwner" ||
-                          userRole === "manager") && (
-                          <NavLink
-                            key={10}
-                            to={"/due/customer"}
-                            className={(navInfo) =>
-                              navInfo.isActive ? activeClass.active : ""
-                            }
-                          >
-                            <FontColor>
-                              <li
-                                className="sidebarItems"
-                                id={
-                                  window.location.pathname === "/due/customer"
-                                    ? "active"
-                                    : ""
-                                }
-                              >
-                                <div className="sidebarIcon">
-                                  {<PersonDash />}
-                                </div>
-                                <span className="sidebarLinksName">
-                                  {t("dueCustomer")}
-                                </span>
-                              </li>
-                            </FontColor>
-                          </NavLink>
-                        )} */}
                       </Accordion.Body>
                     </Accordion.Item>
                     {/* স্টাফ */}
@@ -1657,26 +1571,28 @@ export default function Sidebar() {
                   </FontColor>
                 </NavLink>
 
-                <NavLink
-                  to={"/admin/netFee/bulletin"}
-                  className={(navInfo) =>
-                    navInfo.isActive ? activeClass.active : ""
-                  }
-                >
-                  <FontColor>
-                    <li
-                      className="sidebarItems"
-                      id={
-                        window.location.pathname === "/admin/netFee/bulletin"
-                          ? "active"
-                          : ""
-                      }
-                    >
-                      <div className="sidebarIcon">{<AppIndicator />}</div>
-                      <span className="sidebarLinksName">Bulletin</span>
-                    </li>
-                  </FontColor>
-                </NavLink>
+                {userRole === "superadmin" && (
+                  <NavLink
+                    to={"/admin/netFee/bulletin"}
+                    className={(navInfo) =>
+                      navInfo.isActive ? activeClass.active : ""
+                    }
+                  >
+                    <FontColor>
+                      <li
+                        className="sidebarItems"
+                        id={
+                          window.location.pathname === "/admin/netFee/bulletin"
+                            ? "active"
+                            : ""
+                        }
+                      >
+                        <div className="sidebarIcon">{<AppIndicator />}</div>
+                        <span className="sidebarLinksName">Bulletin</span>
+                      </li>
+                    </FontColor>
+                  </NavLink>
+                )}
 
                 <NavLink
                   to={"/admin/netFee/numbers"}

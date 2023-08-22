@@ -39,6 +39,8 @@ import ReactToPrint from "react-to-print";
 import PrintCustomer from "./customerPDF";
 import AllCollector from "../Home/dataComponent/AllCollector";
 import NoteDetailsModal from "./NoteDetailsModal";
+import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
+import { getBulletinPermission } from "../../features/apiCallAdmin";
 
 export default function Diposit() {
   const { t } = useTranslation();
@@ -78,6 +80,11 @@ export default function Diposit() {
 
   // get owner users
   const ownerUsers = useSelector((state) => state?.ownerUsers?.ownerUser);
+
+  // get bulletin permission
+  const butPermission = useSelector(
+    (state) => state.adminNetFeeSupport?.bulletinPermission
+  );
 
   // get current date
   var today = new Date();
@@ -257,6 +264,8 @@ export default function Diposit() {
     if (userRole === "collector") {
       getMultipleManager(currentUser, setMultipleManager);
     }
+
+    Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
   }, []);
 
   useEffect(() => {
@@ -934,6 +943,10 @@ export default function Diposit() {
                     </Tabs>
                   </div>
                 </div>
+
+                {(butPermission?.deposit || butPermission?.allPage) && (
+                  <NetFeeBulletin />
+                )}
               </FourGround>
 
               <Footer />

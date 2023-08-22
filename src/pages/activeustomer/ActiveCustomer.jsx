@@ -39,6 +39,8 @@ import BulkCustomerMessage from "../Customer/customerCRUD/bulkOpration/BulkCusto
 import { CSVLink } from "react-csv";
 import { getSubAreasApi } from "../../features/actions/customerApiCall";
 import { Accordion } from "react-bootstrap";
+import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
+import { getBulletinPermission } from "../../features/apiCallAdmin";
 
 export default function ConfigMikrotik() {
   const { t } = useTranslation();
@@ -75,6 +77,11 @@ export default function ConfigMikrotik() {
   // get isp owner data
   const ispOwnerData = useSelector(
     (state) => state.persistedReducer.auth.userData
+  );
+
+  // get bulletin permission
+  const butPermission = useSelector(
+    (state) => state.adminNetFeeSupport?.bulletinPermission
   );
 
   // mikrotik loading state
@@ -199,6 +206,8 @@ export default function ConfigMikrotik() {
 
     // get sub area api
     if (subAreas.length === 0) getSubAreasApi(dispatch, ispOwnerId);
+
+    Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
   }, []);
 
   // api call for get update static customer
@@ -620,6 +629,10 @@ export default function ConfigMikrotik() {
                     </div>
                   </div>
                 </div>
+
+                {(butPermission?.activeCustomer || butPermission?.allPage) && (
+                  <NetFeeBulletin />
+                )}
               </FourGround>
               <Footer />
             </FontColor>

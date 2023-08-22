@@ -3,7 +3,11 @@ import { Modal, ModalBody, ModalHeader, ModalTitle } from "react-bootstrap";
 import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import Loader from "../../../../components/common/Loader";
-import { patchBulletin, postBulletin } from "../../../../features/apiCalls";
+import {
+  patchBulletin,
+  patchBulletinPermission,
+  postBulletin,
+} from "../../../../features/apiCalls";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import DatePickerField from "../../../../components/common/DatePickerField";
@@ -27,6 +31,7 @@ const BulletinPost = ({ show, setShow, editId }) => {
     deposit: Yup.string(),
     message: Yup.string(),
     collection: Yup.string(),
+    othersCustomer: Yup.string(),
   });
 
   //  netFee Bulletin all data
@@ -61,6 +66,7 @@ const BulletinPost = ({ show, setShow, editId }) => {
       deposit,
       message,
       collection,
+      othersCustomer,
     } = values;
     if (!(values.ispOwner || values.reseller)) {
       toast.error("One status must be selected.");
@@ -73,6 +79,9 @@ const BulletinPost = ({ show, setShow, editId }) => {
       endDate,
       ispOwner,
       reseller,
+    };
+
+    const permission = {
       pagePermission: {
         allPage,
         customer,
@@ -81,9 +90,12 @@ const BulletinPost = ({ show, setShow, editId }) => {
         deposit,
         message,
         collection,
+        othersCustomer,
       },
     };
+
     postBulletin(dispatch, sendData, setIsLoading, setShow);
+    patchBulletinPermission(dispatch, permission);
   };
 
   // bulletin update data submit handler
@@ -101,6 +113,7 @@ const BulletinPost = ({ show, setShow, editId }) => {
       deposit,
       message,
       collection,
+      othersCustomer,
     } = values;
 
     if (!(values.ispOwner || values.reseller)) {
@@ -114,6 +127,8 @@ const BulletinPost = ({ show, setShow, editId }) => {
       endDate,
       ispOwner,
       reseller,
+    };
+    const permission = {
       pagePermission: {
         allPage,
         customer,
@@ -122,9 +137,12 @@ const BulletinPost = ({ show, setShow, editId }) => {
         deposit,
         message,
         collection,
+        othersCustomer,
       },
     };
+
     patchBulletin(dispatch, bulletinId, sendData, setIsLoading, setShow);
+    patchBulletinPermission(dispatch, permission);
   };
 
   return (
@@ -174,6 +192,9 @@ const BulletinPost = ({ show, setShow, editId }) => {
                 : false,
               collection: singleBulletin
                 ? singleBulletin.pagePermission?.collection
+                : false,
+              othersCustomer: singleBulletin
+                ? singleBulletin.pagePermission?.othersCustomer
                 : false,
             }}
             validationSchema={netFeeBulletin}
@@ -272,6 +293,21 @@ const BulletinPost = ({ show, setShow, editId }) => {
                       <Field
                         className="form-check-input"
                         type="checkbox"
+                        id="dashboard"
+                        name="dashboard"
+                      />
+                      <label
+                        className="form-check-label text-secondary"
+                        htmlFor="dashboard"
+                      >
+                        Dashboard
+                      </label>
+                    </div>
+
+                    <div className="form-check">
+                      <Field
+                        className="form-check-input"
+                        type="checkbox"
                         id="customer"
                         name="customer"
                       />
@@ -302,14 +338,29 @@ const BulletinPost = ({ show, setShow, editId }) => {
                       <Field
                         className="form-check-input"
                         type="checkbox"
-                        id="dashboard"
-                        name="dashboard"
+                        id="othersCustomer"
+                        name="othersCustomer"
                       />
                       <label
                         className="form-check-label text-secondary"
-                        htmlFor="dashboard"
+                        htmlFor="othersCustomer"
                       >
-                        Dashboard
+                        Other Customer
+                      </label>
+                    </div>
+
+                    <div className="form-check">
+                      <Field
+                        className="form-check-input"
+                        type="checkbox"
+                        id="collection"
+                        name="collection"
+                      />
+                      <label
+                        className="form-check-label text-secondary"
+                        htmlFor="collection"
+                      >
+                        Collection Report
                       </label>
                     </div>
 
@@ -340,21 +391,6 @@ const BulletinPost = ({ show, setShow, editId }) => {
                         htmlFor="message"
                       >
                         Message
-                      </label>
-                    </div>
-
-                    <div className="form-check">
-                      <Field
-                        className="form-check-input"
-                        type="checkbox"
-                        id="collection"
-                        name="collection"
-                      />
-                      <label
-                        className="form-check-label text-secondary"
-                        htmlFor="collection"
-                      >
-                        Collection Report
                       </label>
                     </div>
                   </div>

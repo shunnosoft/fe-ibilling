@@ -88,6 +88,7 @@ import BulkPaymentStatusEdit from "./customerCRUD/bulkOpration/BulkPaymentStatus
 import CreateInvoice from "./customerCRUD/CreateInvoice";
 import WithValue from "../../components/modals/passwordReset/WithValue";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
+import { getBulletinPermission } from "../../features/apiCallAdmin";
 
 const PPPOECustomer = () => {
   const dispatch = useDispatch();
@@ -149,6 +150,12 @@ const PPPOECustomer = () => {
 
   //get all pole Box
   const poleBox = useSelector((state) => state.area?.poleBox);
+
+  // get bulletin permission
+  const butPermission = useSelector(
+    (state) => state.adminNetFeeSupport?.bulletinPermission
+  );
+  console.log(butPermission);
 
   //component states
   const [loading, setLoading] = useState(false);
@@ -282,6 +289,8 @@ const PPPOECustomer = () => {
     }
 
     setPrintOptions(printOptionDataBangla);
+
+    Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
   }, []);
 
   // set all customer in state
@@ -1525,7 +1534,10 @@ const PPPOECustomer = () => {
                     />
                   </div>
                 )}
-                <NetFeeBulletin />
+
+                {(butPermission?.customer || butPermission?.allPage) && (
+                  <NetFeeBulletin />
+                )}
               </FourGround>
               <Footer />
             </FontColor>

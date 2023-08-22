@@ -34,6 +34,8 @@ import PrintReport from "./ReportPDF";
 import DatePicker from "react-datepicker";
 import { Accordion, Card, Collapse } from "react-bootstrap";
 import WithdrawOnlinePayment from "./WithdrawOnlinePayment";
+import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
+import { getBulletinPermission } from "../../features/apiCallAdmin";
 
 const Report = () => {
   const { t } = useTranslation();
@@ -66,6 +68,11 @@ const Report = () => {
 
   // get user role
   const userRole = useSelector((state) => state.persistedReducer.auth.role);
+
+  // get bulletin permission
+  const butPermission = useSelector(
+    (state) => state.adminNetFeeSupport?.bulletinPermission
+  );
 
   // Loading state
   const [isLoading, setIsLoading] = useState(false);
@@ -130,6 +137,7 @@ const Report = () => {
   useEffect(() => {
     getSubAreas(dispatch, userData.id);
     getCollector(dispatch, userData.id);
+    Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
   }, []);
 
   // reload handler
@@ -490,6 +498,9 @@ const Report = () => {
                     </div>
                   </div>
                 </div>
+
+                {(butPermission?.collectionReport ||
+                  butPermission?.allPage) && <NetFeeBulletin />}
               </FourGround>
               <Footer />
             </FontColor>

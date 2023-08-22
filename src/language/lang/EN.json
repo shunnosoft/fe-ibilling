@@ -853,5 +853,6 @@
   "customerReport": "Customer Report",
   "pppoeIp": "PPPoE/Ip",
   "PPPoECustomer": "PPPoE Customer",
-  "StaticCustomer": "Static Customer"
+  "StaticCustomer": "Static Customer",
+  "minusBalanceCustomer": "Minus balance customer status will not be updated"
 }

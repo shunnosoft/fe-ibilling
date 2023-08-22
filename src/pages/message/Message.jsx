@@ -24,6 +24,8 @@ import SMSPurchase from "./SMSPurchase";
 import MessageAlert from "./MessageAlert";
 import { getSubAreasApi } from "../../features/actions/customerApiCall";
 import DatePicker from "react-datepicker";
+import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
+import { getBulletinPermission } from "../../features/apiCallAdmin";
 
 const useForceUpdate = () => {
   const [value, setValue] = useState(0); // integer state
@@ -108,6 +110,11 @@ export default function Message() {
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
 
+  // get bulletin permission
+  const butPermission = useSelector(
+    (state) => state.adminNetFeeSupport?.bulletinPermission
+  );
+
   const dispatch = useDispatch();
   const mobileNumRef = useRef();
   const smsRef = useRef();
@@ -131,6 +138,8 @@ export default function Message() {
       if (area.length === 0) getArea(dispatch, ispOwnerId, setIsLoading);
       getSubAreasApi(dispatch, ispOwnerId);
     }
+
+    Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
   }, [userRole, getIspownerwitSMS]);
 
   //get all subArea ids
@@ -1052,6 +1061,10 @@ export default function Message() {
                     </div>
                   </div>
                 </div>
+
+                {(butPermission?.message || butPermission?.allPage) && (
+                  <NetFeeBulletin />
+                )}
               </FourGround>
               <Footer />
             </FontColor>

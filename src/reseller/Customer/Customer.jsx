@@ -63,6 +63,7 @@ import BulkPackageEdit from "./bulkOpration/bulkPackageEdit";
 import CustomersNumber from "../../pages/Customer/CustomersNumber";
 import { Accordion, Card, Collapse } from "react-bootstrap";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
+import { getBulletinPermission } from "../../features/apiCallAdmin";
 // import CustomersNumber from "../../pages/Customer/CustomersNumber";
 
 export default function Customer() {
@@ -82,6 +83,12 @@ export default function Customer() {
   const ispOwnerData = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerData
   );
+
+  // get bulletin permission
+  const butPermission = useSelector(
+    (state) => state.adminNetFeeSupport?.bulletinPermission
+  );
+
   const dispatch = useDispatch();
   const [singleMikrotik, setSingleMikrotik] = useState("");
   const [mikrotikPackage, setMikrotikPackage] = useState("");
@@ -310,6 +317,8 @@ export default function Customer() {
       if (cus.length === 0)
         getCustomer(dispatch, userData?.collector?.reseller, setIsloading);
     }
+
+    Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
   }, [userData, role]);
 
   const [subAreaIds, setSubArea] = useState([]);
@@ -866,7 +875,10 @@ export default function Customer() {
                       </div>
                     </div>
                   </div>
-                  <NetFeeBulletin />
+
+                  {(butPermission?.customer || butPermission?.allPage) && (
+                    <NetFeeBulletin />
+                  )}
                 </FourGround>
               ) : (
                 ""

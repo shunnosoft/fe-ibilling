@@ -45,6 +45,7 @@ import CustomerEdit from "./staticCustomerCrud/CustomerEdit";
 import { fetchPackagefromDatabase } from "../../features/apiCalls";
 import { Accordion, Card, Collapse } from "react-bootstrap";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
+import { getBulletinPermission } from "../../features/apiCallAdmin";
 
 export default function RstaticCustomer() {
   const { t } = useTranslation();
@@ -96,6 +97,11 @@ export default function RstaticCustomer() {
   const subAreas = useSelector((state) => state?.area?.area);
   const userData = useSelector(
     (state) => state.persistedReducer.auth?.currentUser
+  );
+
+  // get bulletin permission
+  const butPermission = useSelector(
+    (state) => state.adminNetFeeSupport?.bulletinPermission
   );
 
   const [packageRate, setPackageRate] = useState({ rate: 0 });
@@ -298,6 +304,8 @@ export default function RstaticCustomer() {
           setIsloading
         );
     }
+
+    Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
   }, [dispatch, resellerId, userData, role]);
 
   const [subAreaIds, setSubArea] = useState([]);
@@ -742,7 +750,10 @@ export default function RstaticCustomer() {
                     </div>
                   </div>
                 </div>
-                <NetFeeBulletin />
+
+                {(butPermission?.customer || butPermission?.allPage) && (
+                  <NetFeeBulletin />
+                )}
               </FourGround>
               <Footer />
             </FontColor>

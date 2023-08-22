@@ -23,6 +23,8 @@ import { useTranslation } from "react-i18next";
 import FormatNumber from "../../components/common/NumberFormat";
 import RechargeModal from "../../pages/reseller/smsRecharge/modal/RechargeModal";
 import { getParchaseHistory } from "../../features/resellerParchaseSmsApi";
+import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
+import { getBulletinPermission } from "../../features/apiCallAdmin";
 
 const useForceUpdate = () => {
   const [value, setValue] = useState(0); // integer state
@@ -71,6 +73,11 @@ export default function RMessage() {
 
   // get data
   const data = useSelector((state) => state?.smsHistory?.smsParchase);
+
+  // get bulletin permission
+  const butPermission = useSelector(
+    (state) => state.adminNetFeeSupport?.bulletinPermission
+  );
 
   // get accept status
   const acceptStatus = data.filter((item) => item.status === "pending");
@@ -130,6 +137,9 @@ export default function RMessage() {
       getResellerNow();
       getSubAreas(dispatch, resellerId);
       getParchaseHistory(resellerId, dispatch, setIsLoading);
+
+      Object.keys(butPermission)?.length === 0 &&
+        getBulletinPermission(dispatch);
     }
   }, [userRole, getResellerNow, getSubAreas]);
 
@@ -893,6 +903,10 @@ export default function RMessage() {
                     </div>
                   </div>
                 </div>
+
+                {(butPermission?.message || butPermission?.allPage) && (
+                  <NetFeeBulletin />
+                )}
               </FourGround>
               <Footer />
             </FontColor>

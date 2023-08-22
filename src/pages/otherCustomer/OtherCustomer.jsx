@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { ToastContainer } from "react-toastify";
 import useDash from "../../assets/css/dash.module.css";
@@ -25,6 +25,8 @@ import {
 } from "../../features/apiCalls";
 import DueCustomer from "../dueCustomer/DueCustomer";
 import ReactToPrint from "react-to-print";
+import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
+import { getBulletinPermission } from "../../features/apiCallAdmin";
 
 const OtherCustomer = () => {
   const { t } = useTranslation();
@@ -43,6 +45,11 @@ const OtherCustomer = () => {
   // get isp owner id
   const ispOwner = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
+  );
+
+  // get bulletin permission
+  const butPermission = useSelector(
+    (state) => state.adminNetFeeSupport?.bulletinPermission
   );
 
   //loading state
@@ -68,6 +75,10 @@ const OtherCustomer = () => {
   const changeTab = (key) => {
     setOtherTabs(key);
   };
+
+  useEffect(() => {
+    Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
+  }, []);
 
   return (
     <>
@@ -205,6 +216,10 @@ const OtherCustomer = () => {
                     )}
                   </Tab>
                 </Tabs>
+
+                {(butPermission?.allPage || butPermission?.othersCustomer) && (
+                  <NetFeeBulletin />
+                )}
               </FourGround>
               <Footer />
             </FontColor>

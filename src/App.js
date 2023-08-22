@@ -582,16 +582,7 @@ function App() {
                 )
               }
             />
-            <Route
-              path="inactive/customer"
-              element={
-                user && (userRole === "ispOwner" || userRole === "manager") ? (
-                  <InactiveCustomer />
-                ) : (
-                  <Navigate to={"/home"} />
-                )
-              }
-            />
+
             <Route
               path="customer/invoice"
               element={
@@ -599,16 +590,6 @@ function App() {
                 ((userRole === "ispOwner" && bpSettings?.customerInvoice) ||
                   (userRole === "manager" && permissions?.customerInvoice)) ? (
                   <CustomerInvoice />
-                ) : (
-                  <Navigate to={"/home"} />
-                )
-              }
-            />
-            <Route
-              path="due/customer"
-              element={
-                user && (userRole === "ispOwner" || userRole === "manager") ? (
-                  <DueCustomer />
                 ) : (
                   <Navigate to={"/home"} />
                 )
@@ -782,7 +763,6 @@ function App() {
               />
               <Route path="customer" element={<Customer />} />
               <Route path="activeCustomer" element={<ActiveCustomer />} />
-              <Route path="new/customer" element={<NewCustomer />} />
               <Route path="reseller/customer" element={<RCustomer />} />
               <Route path="message-request" element={<ResellerSmsRequest />} />
               <Route
