@@ -89,6 +89,7 @@ import CreateInvoice from "./customerCRUD/CreateInvoice";
 import WithValue from "../../components/modals/passwordReset/WithValue";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
+import BulkCustomerMessage from "./customerCRUD/bulkOpration/BulkCustomerMessage";
 
 const PPPOECustomer = () => {
   const dispatch = useDispatch();
@@ -152,10 +153,9 @@ const PPPOECustomer = () => {
   const poleBox = useSelector((state) => state.area?.poleBox);
 
   // get bulletin permission
-  const butPermission = useSelector(
+  const bulletinPagePermission = useSelector(
     (state) => state.adminNetFeeSupport?.bulletinPermission
   );
-  console.log(butPermission);
 
   //component states
   const [loading, setLoading] = useState(false);
@@ -252,6 +252,7 @@ const PPPOECustomer = () => {
   // bulk modal handle state
   const [bulkStatus, setBulkStatus] = useState("");
   const [show, setShow] = useState(false);
+  console.log(show);
 
   //initial api calls
   useEffect(() => {
@@ -290,7 +291,8 @@ const PPPOECustomer = () => {
 
     setPrintOptions(printOptionDataBangla);
 
-    Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
+    Object.keys(bulletinPagePermission)?.length === 0 &&
+      getBulletinPermission(dispatch);
   }, []);
 
   // set all customer in state
@@ -1535,9 +1537,8 @@ const PPPOECustomer = () => {
                   </div>
                 )}
 
-                {(butPermission?.customer || butPermission?.allPage) && (
-                  <NetFeeBulletin />
-                )}
+                {(bulletinPagePermission?.customer ||
+                  bulletinPagePermission?.allPage) && <NetFeeBulletin />}
               </FourGround>
               <Footer />
             </FontColor>
@@ -1634,6 +1635,14 @@ const PPPOECustomer = () => {
 
       {bulkStatus === "bulkPromiseDateEdit" && (
         <BulkPromiseDateEdit
+          bulkCustomer={bulkCustomers}
+          show={show}
+          setShow={setShow}
+        />
+      )}
+
+      {bulkStatus === "bulkMessage" && (
+        <BulkCustomerMessage
           bulkCustomer={bulkCustomers}
           show={show}
           setShow={setShow}
@@ -1882,6 +1891,34 @@ const PPPOECustomer = () => {
                     </button>
                   </div>
                   <div className="menu_label2">{t("editPromiseDate")}</div>
+                </li>
+              )}
+
+              <hr className="mt-0 mb-0" />
+
+              {((role === "ispOwner" && bpSettings?.bulkMessage) ||
+                (bpSettings?.bulkMessage &&
+                  permission?.bulkMessage &&
+                  role === "manager")) && (
+                <li
+                  type="button"
+                  className="p-1"
+                  onClick={() => {
+                    setBulkStatus("bulkMessage");
+                    setShow(true);
+                  }}
+                >
+                  <div className="menu_icon2">
+                    <button
+                      className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-success"
+                      title={t("bulkMessage")}
+                    >
+                      <i class="fa-regular fa-envelope"></i>
+
+                      <span className="button_title">{t("bulkMessage")}</span>
+                    </button>
+                  </div>
+                  <div className="menu_label2">{t("bulkMessage")}</div>
                 </li>
               )}
 

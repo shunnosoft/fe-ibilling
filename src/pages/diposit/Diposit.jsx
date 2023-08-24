@@ -474,19 +474,24 @@ export default function Diposit() {
   const columns2 = React.useMemo(
     () => [
       {
-        width: "14%",
+        width: "10%",
         Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        width: "25%",
+        width: "15%",
         Header: t("amount"),
         accessor: "amount",
       },
       {
-        width: "25%",
+        width: "20%",
+        Header: t("manager"),
+        accessor: "manager.name",
+      },
+      {
+        width: "15%",
         Header: t("status"),
         accessor: "status",
         Cell: ({ row: { original } }) => (
@@ -516,7 +521,7 @@ export default function Diposit() {
         ),
       },
       {
-        width: "25%",
+        width: "20%",
         Header: t("note"),
         accessor: "note",
         Cell: ({ row: { original } }) => {
@@ -536,7 +541,7 @@ export default function Diposit() {
         },
       },
       {
-        width: "25%",
+        width: "20%",
         Header: t("date"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {

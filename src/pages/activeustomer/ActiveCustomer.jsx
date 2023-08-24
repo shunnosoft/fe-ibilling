@@ -126,6 +126,9 @@ export default function ConfigMikrotik() {
   // subArea ids state
   const [subareaIds, setSubareaIds] = useState([]);
 
+  // modal show state
+  const [show, setShow] = useState(false);
+
   // find single mikrotik details
   const singleMik = mikrotik.find((item) => item.id === mikrotikId);
 
@@ -665,8 +668,9 @@ export default function ConfigMikrotik() {
                 <button
                   className="bulk_action_button"
                   title={t("bulkMessage")}
-                  data-bs-toggle="modal"
-                  data-bs-target="#bulkCustomerMessage"
+                  onClick={() => {
+                    setShow(true);
+                  }}
                   type="button"
                   class="btn btn-primary btn-floating btn-sm"
                 >
@@ -699,7 +703,8 @@ export default function ConfigMikrotik() {
 
       <BulkCustomerMessage
         bulkCustomer={bulkCustomers}
-        modalId="bulkCustomerMessage"
+        show={show}
+        setShow={setShow}
       />
     </>
   );

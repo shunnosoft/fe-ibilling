@@ -495,7 +495,7 @@ export default function CustomerModal({ show, setShow }) {
                   {bpSettings?.poleBox && (
                     <div>
                       <label className="form-control-label changeLabelFontColor">
-                        {t("selectPoleBox")}
+                        {t("selectPoleBox/splitter")}
                       </label>
                       <select
                         className="form-select mw-100 mt-0"

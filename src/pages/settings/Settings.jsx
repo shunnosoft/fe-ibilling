@@ -23,6 +23,7 @@ import { getIspOwnerWitSMS } from "../../features/apiCalls";
 import MessageAlert from "../message/MessageAlert";
 import { useSelector } from "react-redux";
 import { EnvelopePlus } from "react-bootstrap-icons";
+import CustomerTicketSmsTemplate from "./template/CustomerTicketSmsTemplate";
 export default function Settings() {
   const { t } = useTranslation();
 
@@ -136,6 +137,15 @@ export default function Settings() {
                         <ResellerRechargeSmsTemplate />
                       </FourGround>
                     </Tab>
+                    {/* <Tab
+                      className="mt-5"
+                      eventKey="customerTicket"
+                      title={t("customerTicket")}
+                    >
+                      <FourGround>
+                        <CustomerTicketSmsTemplate />
+                      </FourGround>
+                    </Tab> */}
                   </Tabs>
                 </div>
               </FourGround>

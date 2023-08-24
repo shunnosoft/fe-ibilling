@@ -14,7 +14,6 @@ const SupportTicket = () => {
   const userData = useSelector(
     (state) => state.persistedReducer.auth?.currentUser.customer
   );
-  console.log(userData);
   const paymentHistory = useSelector((state) => state.client.supportTicket);
 
   const [supportMessage, setSupportMessage] = useState("");
@@ -43,7 +42,6 @@ const SupportTicket = () => {
     if (userData.reseller) {
       data.reseller = userData.reseller;
     }
-    console.log(data);
     createSupportTicketApi(data, dispatch, setLoading, setSupportMessage);
   };
 

@@ -344,7 +344,7 @@ export default function AddStaticCustomer() {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                {t("addNewCustomer")}ok
+                {t("addNewCustomer")}
               </h5>
               <button
                 type="button"
@@ -448,7 +448,7 @@ export default function AddStaticCustomer() {
                       {bpSettings?.poleBox && (
                         <div className="col-lg-4 col-md-4 col-xs-6">
                           <label className="form-control-label changeLabelFontColor">
-                            {t("selectPoleBox")}{" "}
+                            {t("selectPoleBox/splitter")}
                           </label>
                           <select
                             className="form-select mw-100 mt-0"

@@ -111,6 +111,7 @@ export default function Report() {
   const [subAreaIds, setSubArea] = useState([]);
 
   const [mainData, setMainData] = useState(allBills);
+  console.log(mainData);
 
   const [collectors, setCollectors] = useState([]);
   const [collectorIds, setCollectorIds] = useState([]);
@@ -406,20 +407,28 @@ export default function Report() {
       },
       {
         width: "10%",
-        Header: t("pppoe"),
+        Header: t("pppoeIp"),
         accessor: (field) =>
-          field.customer.userType === "pppoe"
-            ? field.customer.pppoe.name
-            : field.customer.userType === "firewall-queue"
-            ? field.customer.queue.address
-            : field.customer.userType === "core-queue"
-            ? field.customer.queue.srcAddress
+          field.customer?.userType === "pppoe"
+            ? field.customer?.pppoe.name
+            : field.customer?.userType === "firewall-queue"
+            ? field.customer?.queue.address
+            : field.customer?.userType === "core-queue"
+            ? field.customer?.queue.srcAddress
+            : field.customer?.userType === "simple-queue"
+            ? field.customer?.queue.target
             : "",
       },
       {
         width: "9%",
         Header: t("package"),
-        accessor: "customer.mikrotikPackage.name",
+        accessor: (field) =>
+          field.customer?.mikrotikPackage?.name
+            ? field.customer?.mikrotikPackage?.name
+            : field.customer?.userType === "pppoe"
+            ? field.customer?.pppoe?.profile
+            : "",
+        // accessor: "customer.mikrotikPackage.name",
       },
       {
         width: "8%",

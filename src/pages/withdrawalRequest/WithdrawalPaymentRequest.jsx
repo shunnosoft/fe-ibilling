@@ -34,7 +34,7 @@ const WithdrawalPaymentRequest = () => {
   const resellerWithdrawal = useSelector(
     (state) => state.resellerSmsRequest?.withdrawalHistory
   );
-
+  console.log(resellerWithdrawal);
   // Loading state
   const [isLoading, setIsLoading] = useState(false);
   const [acceptLoading, setAccLoading] = useState(false);
@@ -94,7 +94,7 @@ const WithdrawalPaymentRequest = () => {
   const columns = useMemo(
     () => [
       {
-        width: "20%",
+        width: "10%",
         Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
@@ -102,11 +102,16 @@ const WithdrawalPaymentRequest = () => {
       },
       {
         width: "20%",
+        Header: t("reseller"),
+        accessor: "reseller.name",
+      },
+      {
+        width: "15%",
         Header: t("amount"),
         accessor: "amount",
       },
       {
-        width: "20%",
+        width: "15%",
         Header: t("status"),
         accessor: "status",
         Cell: ({ cell: { value } }) => {
@@ -177,7 +182,7 @@ const WithdrawalPaymentRequest = () => {
         Header: t("date"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("YYYY/MM/DD hh:mm a");
+          return moment(value).format("YYYY/MM/DD hh:mm A");
         },
       },
     ],
