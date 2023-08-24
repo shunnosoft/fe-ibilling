@@ -107,6 +107,39 @@ const CustomerTicketSmsTemplate = () => {
             {t("fixedNumber")} {"              "}
           </div>
         </div>
+
+        <div className="displayFlexx">
+          <div className="radioselect">
+            <input
+              id="1"
+              type="checkbox"
+              className="getValueUsingClass"
+              // checked={matchFound.includes("ID: CUSTOMER_ID")}
+              value={"ID: CUSTOMER_ID"}
+              // onChange={(e) => {
+              //   itemSettingHandler(e.target.value);
+              // }}
+            />
+            <label className="templatelabel" htmlFor="2">
+              {"ID: CUSTOMER_ID"}
+            </label>
+          </div>
+          <div className="radioselect">
+            <input
+              id="2"
+              type="checkbox"
+              className="getValueUsingClass"
+              value={"SUB: TICKET_SUBJECT"}
+              // checked={matchFound.includes("SUB: TICKET_SUBJECT")}
+              // onChange={(e) => {
+              //   itemSettingHandler(e.target.value);
+              // }}
+            />
+            <label className="templatelabel" htmlFor="1">
+              {"SUB: TICKET_SUBJECT"}
+            </label>
+          </div>
+        </div>
       </div>
 
       <hr />

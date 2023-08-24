@@ -18,6 +18,7 @@ function CustomerInactiveSmsTemplate() {
   const settings = useSelector(
     (state) => state.persistedReducer.auth.userData?.settings
   );
+  console.log(settings);
   const dispatch = useDispatch();
   const [fontText, setFontText] = useState("");
   const [bottomText, setBottomText] = useState("");
@@ -119,6 +120,8 @@ function CustomerInactiveSmsTemplate() {
     ];
     var found = [];
 
+    console.log(settings?.sms?.template?.customerInactive);
+
     let messageBoxStr = settings?.sms?.template?.customerInactive
       ?.replace("USER: USERNAME", "")
       .replace("ID: CUSTOMER_ID", "")
@@ -194,7 +197,7 @@ function CustomerInactiveSmsTemplate() {
                 <input
                   value={fontText}
                   onChange={(event) => setFontText(event.target.value)}
-                  class="form-control"
+                  className="form-control"
                   type="text"
                   placeholder="Title"
                   maxLength={40}

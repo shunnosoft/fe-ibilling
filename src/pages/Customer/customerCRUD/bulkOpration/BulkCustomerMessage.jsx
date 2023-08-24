@@ -90,7 +90,7 @@ const BulkCustomerMessage = ({ bulkCustomer, show, setShow }) => {
 
             setIsloading(false);
             if (res.data.status) {
-              document.querySelector("#bulkCustomerMessage").click();
+              setShow(false);
               toast.success(t("successAlertSMS"));
             } else {
               toast.error(t("sendingProblem"));
@@ -105,7 +105,7 @@ const BulkCustomerMessage = ({ bulkCustomer, show, setShow }) => {
     }
   };
   return (
-    <RootBulkModal show={show} setShow={setShow} header={t("updateBalance")}>
+    <RootBulkModal show={show} setShow={setShow} header={t("bulkMessage")}>
       {/* model body here */}
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
@@ -170,6 +170,7 @@ const BulkCustomerMessage = ({ bulkCustomer, show, setShow }) => {
             className="btn btn-secondary"
             data-bs-dismiss="modal"
             disabled={isLoading}
+            onClick={() => setShow(false)}
           >
             {t("cancel")}
           </button>
