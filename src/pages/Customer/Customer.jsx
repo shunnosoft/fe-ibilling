@@ -252,7 +252,6 @@ const PPPOECustomer = () => {
   // bulk modal handle state
   const [bulkStatus, setBulkStatus] = useState("");
   const [show, setShow] = useState(false);
-  console.log(show);
 
   //initial api calls
   useEffect(() => {
