@@ -23,10 +23,22 @@ const CustomerTicketSmsTemplate = () => {
   // message type status
   const [sendingType, setSendingType] = useState();
 
+  // set ticket sub
+  const [ticketSub, setTicketSub] = useState();
+  // console.log(ticketSub);
+
+  const [customerId, setCustomerId] = useState();
+  // console.log(customerId);
+  console.log(customerId + "\n" + ticketSub);
+
   // get SMS settings
   const settings = useSelector(
     (state) => state.persistedReducer.auth.userData?.settings
   );
+
+  const itemSettingHandler = (value) => {
+    console.log(value);
+  };
 
   // handle submit method
   const handleSubmit = async (e) => {
@@ -116,9 +128,11 @@ const CustomerTicketSmsTemplate = () => {
               className="getValueUsingClass"
               // checked={matchFound.includes("ID: CUSTOMER_ID")}
               value={"ID: CUSTOMER_ID"}
-              // onChange={(e) => {
-              //   itemSettingHandler(e.target.value);
-              // }}
+              onChange={(e) => {
+                e.target.checked
+                  ? setCustomerId(e.target.value)
+                  : setCustomerId("");
+              }}
             />
             <label className="templatelabel" htmlFor="2">
               {"ID: CUSTOMER_ID"}
@@ -131,9 +145,11 @@ const CustomerTicketSmsTemplate = () => {
               className="getValueUsingClass"
               value={"SUB: TICKET_SUBJECT"}
               // checked={matchFound.includes("SUB: TICKET_SUBJECT")}
-              // onChange={(e) => {
-              //   itemSettingHandler(e.target.value);
-              // }}
+              onChange={(e) => {
+                e.target.checked
+                  ? setTicketSub(e.target.value)
+                  : setTicketSub("");
+              }}
             />
             <label className="templatelabel" htmlFor="1">
               {"SUB: TICKET_SUBJECT"}

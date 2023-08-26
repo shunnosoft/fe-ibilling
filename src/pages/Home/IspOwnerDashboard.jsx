@@ -262,10 +262,11 @@ export default function IspOwnerDashboard() {
 
   //percantage calculation
   const collectionPercentage = customerStat
-    ? Math.round(
+    ? Math.floor(
         (customerStat.totalBillCollection /
           (customerStat.totalProbableAmount -
-            customerStat.totalInactiveAmount)) *
+            customerStat.totalInactiveAmount -
+            customerStat.newCustomerBillCount)) *
           100
       )
     : 0;
@@ -356,14 +357,14 @@ export default function IspOwnerDashboard() {
                         {/* Percantage circular bar part*/}
                         <AnimatedProgressProvider
                           valueStart={0}
-                          valueEnd={Math.round(collectionPercentage)}
+                          valueEnd={Math.floor(collectionPercentage)}
                           duration={1}
                           easingFunction={easeQuadIn}
                         >
                           {(value) => {
                             const roundedValue = isNaN(value)
                               ? collectionPercentage
-                              : Math.round(value);
+                              : Math.floor(value);
                             return (
                               <CircularProgressbar
                                 value={roundedValue}
