@@ -9,36 +9,31 @@ import { toast } from "react-toastify";
 const CustomerTicketSmsTemplate = () => {
   const { t } = useTranslation();
 
-  // loading state
-  const [loading, setLoading] = useState(false);
-
   // get isp owner id
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
   );
-
-  // SMS state
-  const [rechargeSMS, setRechargeSMS] = useState(false);
-
-  // message type status
-  const [sendingType, setSendingType] = useState();
-
-  // set ticket sub
-  const [ticketSub, setTicketSub] = useState();
-  // console.log(ticketSub);
-
-  const [customerId, setCustomerId] = useState();
-  // console.log(customerId);
-  console.log(customerId + "\n" + ticketSub);
 
   // get SMS settings
   const settings = useSelector(
     (state) => state.persistedReducer.auth.userData?.settings
   );
 
-  const itemSettingHandler = (value) => {
-    console.log(value);
-  };
+  // get message from redux
+  let customerTicketMsg = settings.sms.template.customerTicket;
+
+  // loading state
+  const [loading, setLoading] = useState(false);
+
+  // SMS state
+  const [customerTicketStatus, setCustomerTicketStatus] = useState(false);
+
+  // message type status
+  const [sendingType, setSendingType] = useState();
+
+  // message state
+  const [ticketSub, setTicketSub] = useState("");
+  const [customerId, setCustomerId] = useState("");
 
   // handle submit method
   const handleSubmit = async (e) => {
@@ -46,7 +41,11 @@ const CustomerTicketSmsTemplate = () => {
     let data = {
       ...settings.sms,
       customerTicketSendBy: sendingType,
-      customerTicket: rechargeSMS,
+      customerTicket: customerTicketStatus,
+      template: {
+        ...settings.sms.template,
+        customerTicket: customerId + "\n" + ticketSub,
+      },
     };
     setLoading(true);
 
@@ -54,16 +53,20 @@ const CustomerTicketSmsTemplate = () => {
     try {
       await apiLink.patch(`/ispOwner/settings/sms/${ispOwnerId}`, data);
       setLoading(false);
-      toast.success(t("rechargeSMSToast"));
+      toast.success(t("customerTicketToast"));
     } catch (error) {
       setLoading(false);
     }
   };
 
-  // set reseller recharge sms setting in state
   useEffect(() => {
-    setRechargeSMS(settings.sms.customerTicket);
+    // split message
+    let message = customerTicketMsg?.split("\n");
+
+    setCustomerTicketStatus(settings.sms.customerTicket);
     setSendingType(settings?.sms?.customerTicketSendBy);
+    setCustomerId(message[0] ? message[0] : "");
+    setTicketSub(message[1] ? message[1] : "");
   }, [settings]);
 
   return (
@@ -74,19 +77,19 @@ const CustomerTicketSmsTemplate = () => {
             <h4> {t("customerTicketTemplate")} </h4>
             <input
               id="rechareRadioOn"
-              name="rechargeSMS"
+              name="customerTicket"
               type="radio"
-              checked={rechargeSMS}
-              onChange={() => setRechargeSMS(true)}
+              checked={customerTicketStatus}
+              onChange={() => setCustomerTicketStatus(true)}
             />
             &nbsp;
             {t("on")} {"              "}
             <input
               id="rechargeRadioOff"
-              name="rechargeSMS"
+              name="customerTicket"
               type="radio"
-              checked={!rechargeSMS}
-              onChange={() => setRechargeSMS(false)}
+              checked={!customerTicketStatus}
+              onChange={() => setCustomerTicketStatus(false)}
             />
             &nbsp;
             {t("off")} {"              "}
@@ -126,7 +129,7 @@ const CustomerTicketSmsTemplate = () => {
               id="1"
               type="checkbox"
               className="getValueUsingClass"
-              // checked={matchFound.includes("ID: CUSTOMER_ID")}
+              checked={customerId}
               value={"ID: CUSTOMER_ID"}
               onChange={(e) => {
                 e.target.checked
@@ -144,7 +147,7 @@ const CustomerTicketSmsTemplate = () => {
               type="checkbox"
               className="getValueUsingClass"
               value={"SUB: TICKET_SUBJECT"}
-              // checked={matchFound.includes("SUB: TICKET_SUBJECT")}
+              checked={ticketSub}
               onChange={(e) => {
                 e.target.checked
                   ? setTicketSub(e.target.value)

@@ -14,7 +14,8 @@ const SupportTicket = () => {
   const userData = useSelector(
     (state) => state.persistedReducer.auth?.currentUser.customer
   );
-  const paymentHistory = useSelector((state) => state.client.supportTicket);
+  const supportTicket = useSelector((state) => state.client.supportTicket);
+  console.log(supportTicket);
 
   const [supportMessage, setSupportMessage] = useState("");
   const [error, setError] = useState("");
@@ -83,7 +84,7 @@ const SupportTicket = () => {
       {error && !supportMessage && <p className="text-warning">{error}</p>}
       <div className="support-ticket-table">
         <div className="support-table-data">
-          <div className="support-count">#</div>
+          <div className="support-count">Ticket ID</div>
           <div className="support-message ">Support Message</div>
           <div className="support-status "> Status</div>
           <div className="support-apply-date">Support Applied</div>
@@ -94,16 +95,16 @@ const SupportTicket = () => {
             <Loader />
           </div>
         ) : (
-          paymentHistory.map((item, index) => (
+          supportTicket.map((item, index) => (
             <div key={item.createdAt} className="support-table-data mt-2">
-              <div className="support-count">{index + 1}. </div>
+              <div className="support-count">{item?.ticketId} </div>
 
               <div className="support-message"> {item.message}</div>
               <div className="support-status">
                 <span
                   className={`badge bg-${
                     (item.status === "pending" && "danger") ||
-                    (item.status === "processed" && "secondary") ||
+                    (item.status === "processing" && "info") ||
                     (item.status === "complete" && "success")
                   }`}
                 >

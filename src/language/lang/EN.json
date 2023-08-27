@@ -855,5 +855,6 @@
   "PPPoECustomer": "PPPoE Customer",
   "StaticCustomer": "Static Customer",
   "minusBalanceCustomer": "Minus balance customer status will not be updated",
-  "selectPoleBox/splitter": "Select PoleBox / Splitter"
+  "selectPoleBox/splitter": "Select PoleBox / Splitter",
+  "ticketId": "Ticket ID"
 }

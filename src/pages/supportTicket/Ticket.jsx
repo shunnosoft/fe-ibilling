@@ -98,17 +98,22 @@ const Ticket = () => {
         accessor: "customer.customerId",
       },
       {
+        width: "5%",
+        Header: t("ticketId"),
+        accessor: "ticketId",
+      },
+      {
         width: "12%",
         Header: t("name"),
         accessor: "customer.name",
       },
       {
-        width: "20%",
+        width: "18%",
         Header: t("message"),
         accessor: "message",
       },
       {
-        width: "13%",
+        width: "12%",
         Header: t("staff"),
         accessor: "assignedStaff",
         Cell: ({ cell: { value } }) => {
@@ -142,7 +147,7 @@ const Ticket = () => {
       },
 
       {
-        width: "17%",
+        width: "15%",
         Header: t("category"),
         accessor: "ticketCategory",
         Cell: ({ cell: { value } }) => {

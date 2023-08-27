@@ -18,7 +18,6 @@ function CustomerInactiveSmsTemplate() {
   const settings = useSelector(
     (state) => state.persistedReducer.auth.userData?.settings
   );
-  console.log(settings);
   const dispatch = useDispatch();
   const [fontText, setFontText] = useState("");
   const [bottomText, setBottomText] = useState("");
@@ -119,8 +118,6 @@ function CustomerInactiveSmsTemplate() {
       "LAST DATE: BILL_DATE",
     ];
     var found = [];
-
-    console.log(settings?.sms?.template?.customerInactive);
 
     let messageBoxStr = settings?.sms?.template?.customerInactive
       ?.replace("USER: USERNAME", "")
