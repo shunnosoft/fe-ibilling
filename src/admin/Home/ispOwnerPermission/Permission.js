@@ -210,6 +210,12 @@ export const ispOwnerPermission = (perm) => {
       label: "Customer Invoice",
       isChecked: perm?.customerInvoice,
     },
+    {
+      id: 36,
+      value: "dashboardProbabilityAmountWithNewCustomer",
+      label: "Dashboard Probability AmountWith NewCustomer",
+      isChecked: perm?.dashboardProbabilityAmountWithNewCustomer,
+    },
   ];
   return permission;
 };

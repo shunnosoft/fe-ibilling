@@ -73,10 +73,8 @@ export default function IspOwnerDashboard() {
     (state) => state.persistedReducer.auth.ispOwnerData
   );
 
-  // get user permission
-  const permissions = useSelector(
-    (state) => state.persistedReducer.auth.userData.permissions
-  );
+  // ispOwner permissions
+  const ispOwnerPermission = ispOwner.bpSettings;
 
   //get reseller data
   const reseller = useSelector((state) => state.reseller);
@@ -260,13 +258,25 @@ export default function IspOwnerDashboard() {
     registration: t("register"),
   };
 
+  // probability amount calculation ispOwner permission wise
+  const probabilityAmountCalculation = () => {
+    if (ispOwnerPermission?.dashboardProbabilityAmountWithNewCustomer) {
+      return (
+        customerStat.totalProbableAmount -
+        customerStat.totalInactiveAmount -
+        customerStat.newCustomerBillCount
+      );
+    } else {
+      return (
+        customerStat.totalProbableAmount - customerStat.totalInactiveAmount
+      );
+    }
+  };
+
   //percantage calculation
   const collectionPercentage = customerStat
     ? Math.floor(
-        (customerStat.totalBillCollection /
-          (customerStat.totalProbableAmount -
-            customerStat.totalInactiveAmount -
-            customerStat.newCustomerBillCount)) *
+        (customerStat.totalBillCollection / probabilityAmountCalculation()) *
           100
       )
     : 0;
@@ -332,18 +342,13 @@ export default function IspOwnerDashboard() {
               )}
 
               <div className="col-md-12 mb-3">
-                {(role === "ispOwner" ||
-                  permissions?.dashboardCollectionData) && (
+                {role === "ispOwner" && (
                   <div className="row">
                     <div className="col-md-3 d-flex justify-content-end align-items-center">
                       <h2>
                         {t("possibleCollection")}
                         <br /> ৳ &nbsp;
-                        {FormatNumber(
-                          customerStat.totalProbableAmount -
-                            customerStat.totalInactiveAmount -
-                            customerStat.newCustomerBillCount
-                        )}{" "}
+                        {FormatNumber(probabilityAmountCalculation())}{" "}
                       </h2>
                     </div>
                     <div className="col-md-6">
@@ -500,11 +505,10 @@ export default function IspOwnerDashboard() {
                         className="dashboardData"
                         style={{ fontSize: "15px", marginBottom: "0px" }}
                       >
-                        {t("new customer")}:
+                        {t("new customer")}
                         {FormatNumber(customerStat.newCustomer)}
                         &nbsp;
-                        {(role === "ispOwner" ||
-                          permissions?.dashboardCollectionData) && (
+                        {role === "ispOwner" && (
                           <span className="text-info">
                             ৳ {FormatNumber(customerStat.newCustomerBillCount)}
                           </span>
@@ -533,8 +537,7 @@ export default function IspOwnerDashboard() {
                       <h4>{FormatNumber(customerStat.active)}</h4>
                     </p>
 
-                    {(role === "ispOwner" ||
-                      permissions?.dashboardCollectionData) && (
+                    {role === "ispOwner" && (
                       <p
                         className="dashboardActive pb-1"
                         data-bs-toggle="modal"
@@ -558,8 +561,7 @@ export default function IspOwnerDashboard() {
                     >
                       {t("in active")}: {FormatNumber(customerStat.inactive)}{" "}
                       &nbsp;
-                      {(role === "ispOwner" ||
-                        permissions?.dashboardCollectionData) && (
+                      {role === "ispOwner" && (
                         <span className="text-info">
                           ৳ {FormatNumber(customerStat.totalInactiveAmount)}
                         </span>
@@ -574,8 +576,7 @@ export default function IspOwnerDashboard() {
                     >
                       {t("expired")}: {FormatNumber(customerStat.expired)}{" "}
                       &nbsp;
-                      {(role === "ispOwner" ||
-                        permissions?.dashboardCollectionData) && (
+                      {role === "ispOwner" && (
                         <span className="text-info">
                           ৳{FormatNumber(customerStat.totalExpiredAmount)}
                         </span>
@@ -635,8 +636,7 @@ export default function IspOwnerDashboard() {
                   <ThreeDotsVertical className="ThreeDots" />
                   <div className="cardIcon">৳</div>
                   <div className="chartSection">
-                    {(role === "ispOwner" ||
-                      permissions?.dashboardCollectionData) && (
+                    {role === "ispOwner" && (
                       <>
                         <p style={{ fontSize: "16px", paddingTop: "10px" }}>
                           {t("total collection")}
@@ -652,8 +652,7 @@ export default function IspOwnerDashboard() {
                     )}
                     {role !== "collector" && (
                       <>
-                        {(role === "ispOwner" ||
-                          permissions?.dashboardCollectionData) && (
+                        {role === "ispOwner" && (
                           <>
                             <p
                               className="dashboardCollection pb-0"
@@ -672,13 +671,7 @@ export default function IspOwnerDashboard() {
                               {FormatNumber(customerStat.totalBillCollection)}
                             </p>
 
-                            <p
-                              className={
-                                !permissions?.dashboardCollectionData
-                                  ? "fs-6"
-                                  : "fs-13"
-                              }
-                            >
+                            <p className="fs-6">
                               {t("today collection")}{" "}
                               {FormatNumber(customerStat.todayBillCollection)}
                             </p>

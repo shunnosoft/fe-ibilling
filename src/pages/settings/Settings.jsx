@@ -146,6 +146,15 @@ export default function Settings() {
                         <CustomerTicketSmsTemplate />
                       </FourGround>
                     </Tab>
+                    {/* <Tab
+                      className="mt-5"
+                      eventKey="assignTicket"
+                      title={t("assignTicket")}
+                    >
+                      <FourGround>
+                        <CustomerTicketSmsTemplate />
+                      </FourGround>
+                    </Tab> */}
                   </Tabs>
                 </div>
               </FourGround>

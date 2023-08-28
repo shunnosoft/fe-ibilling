@@ -864,5 +864,7 @@
   "selectPoleBox/splitter": "পোল বক্স / স্প্লিটার",
   "ticketId": "টিকিট আইডি",
   "customerTicket": "কাস্টমার টিকিট",
-  "customerTicketTemplate": "কাস্টমার টিকিট টেমপ্লেট"
+  "customerTicketTemplate": "কাস্টমার টিকিট টেমপ্লেট",
+  "assignTicket": "অ্যাসাইন টিকিট",
+  "assingTicketTemplate": "অ্যাসাইন টিকিট টেমপ্লেট"
 }

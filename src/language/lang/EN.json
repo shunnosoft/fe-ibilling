@@ -858,5 +858,7 @@
   "selectPoleBox/splitter": "Select PoleBox / Splitter",
   "ticketId": "Ticket ID",
   "customerTicket": "Customer Ticket",
-  "customerTicketTemplate": "Customer Ticket Template"
+  "customerTicketTemplate": "Customer Ticket Template",
+  "assignTicket": "Assign Ticket",
+  "assingTicketTemplate": "Assign Ticket Template"
 }
