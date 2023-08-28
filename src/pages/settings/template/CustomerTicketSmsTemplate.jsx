@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import Loader from "../../../components/common/Loader";
-
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import apiLink from "../../../api/apiLink";
@@ -33,7 +32,6 @@ const CustomerTicketSmsTemplate = () => {
 
   // message state
   const [ticketSub, setTicketSub] = useState("");
-  const [customerId, setCustomerId] = useState("");
 
   // handle submit method
   const handleSubmit = async (e) => {
@@ -44,7 +42,7 @@ const CustomerTicketSmsTemplate = () => {
       customerTicket: customerTicketStatus,
       template: {
         ...settings.sms.template,
-        customerTicket: customerId + "\n" + ticketSub,
+        customerTicket: ticketSub,
       },
     };
     setLoading(true);
@@ -60,13 +58,9 @@ const CustomerTicketSmsTemplate = () => {
   };
 
   useEffect(() => {
-    // split message
-    let message = customerTicketMsg?.split("\n");
-
     setCustomerTicketStatus(settings.sms.customerTicket);
     setSendingType(settings?.sms?.customerTicketSendBy);
-    setCustomerId(message[0] ? message[0] : "");
-    setTicketSub(message[1] ? message[1] : "");
+    setTicketSub(customerTicketMsg ? customerTicketMsg : "");
   }, [settings]);
 
   return (
@@ -124,23 +118,6 @@ const CustomerTicketSmsTemplate = () => {
         </div>
 
         <div className="displayFlexx">
-          <div className="radioselect">
-            <input
-              id="1"
-              type="checkbox"
-              className="getValueUsingClass"
-              checked={customerId}
-              value={"ID: CUSTOMER_ID"}
-              onChange={(e) => {
-                e.target.checked
-                  ? setCustomerId(e.target.value)
-                  : setCustomerId("");
-              }}
-            />
-            <label className="templatelabel" htmlFor="2">
-              {"ID: CUSTOMER_ID"}
-            </label>
-          </div>
           <div className="radioselect">
             <input
               id="2"

@@ -862,5 +862,7 @@
   "StaticCustomer": "স্ট্যাটিক গ্রাহক",
   "minusBalanceCustomer": "টি মাইনাস ব্যালেন্স গ্রাহকের স্টাটাস আপডেট করা হবে না",
   "selectPoleBox/splitter": "পোল বক্স / স্প্লিটার",
-  "ticketId": "টিকিট আইডি"
+  "ticketId": "টিকিট আইডি",
+  "customerTicket": "কাস্টমার টিকিট",
+  "customerTicketTemplate": "কাস্টমার টিকিট টেমপ্লেট"
 }

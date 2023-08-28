@@ -137,7 +137,7 @@ export default function Settings() {
                         <ResellerRechargeSmsTemplate />
                       </FourGround>
                     </Tab>
-                    {/* <Tab
+                    <Tab
                       className="mt-5"
                       eventKey="customerTicket"
                       title={t("customerTicket")}
@@ -145,7 +145,7 @@ export default function Settings() {
                       <FourGround>
                         <CustomerTicketSmsTemplate />
                       </FourGround>
-                    </Tab> */}
+                    </Tab>
                   </Tabs>
                 </div>
               </FourGround>
