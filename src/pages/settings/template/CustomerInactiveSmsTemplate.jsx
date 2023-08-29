@@ -194,7 +194,7 @@ function CustomerInactiveSmsTemplate() {
                 <input
                   value={fontText}
                   onChange={(event) => setFontText(event.target.value)}
-                  class="form-control"
+                  className="form-control"
                   type="text"
                   placeholder="Title"
                   maxLength={40}

@@ -5,8 +5,9 @@ import Loader from "../../../../components/common/Loader";
 import { useSelector } from "react-redux";
 import apiLink from "../../../../api/apiLink";
 import { toast } from "react-toastify";
+import RootBulkModal from "./bulkModal";
 
-const BulkCustomerMessage = ({ bulkCustomer }) => {
+const BulkCustomerMessage = ({ bulkCustomer, show, setShow }) => {
   const { t } = useTranslation();
 
   //get ispOwner Data
@@ -89,7 +90,7 @@ const BulkCustomerMessage = ({ bulkCustomer }) => {
 
             setIsloading(false);
             if (res.data.status) {
-              document.querySelector("#bulkCustomerMessage").click();
+              setShow(false);
               toast.success(t("successAlertSMS"));
             } else {
               toast.error(t("sendingProblem"));
@@ -104,107 +105,85 @@ const BulkCustomerMessage = ({ bulkCustomer }) => {
     }
   };
   return (
-    <div
-      className="modal fade modal-dialog-scrollable "
-      id="bulkCustomerMessage"
-      tabIndex="-1"
-      aria-labelledby="exampleModalLabel"
-      aria-hidden="true"
-    >
-      <div className="modal-dialog">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h5 className="modal-title" id="exampleModalLabel">
-              {t("bulkMessage")}
-            </h5>
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
+    <RootBulkModal show={show} setShow={setShow} header={t("bulkMessage")}>
+      {/* model body here */}
+      <form onSubmit={handleSubmit}>
+        <div className="mb-3">
+          <div className="d-flex justify-content-between">
+            <label
+              htmlFor="exampleFormControlTextarea1"
+              className="form-label fw-bold mb-0"
+            >
+              {t("message")}
+            </label>
+            <div className="smsCount mt-0">
+              <span className="smsLength">
+                {t("letter")} {messageText.length}
+              </span>
+              <span>SMS: {smsAmount}</span>
+            </div>
           </div>
-          <div className="modal-body">
-            {/* model body here */}
-            <form onSubmit={handleSubmit}>
-              <div className="mb-3">
-                <div className="d-flex justify-content-between">
-                  <label
-                    htmlFor="exampleFormControlTextarea1"
-                    className="form-label fw-bold mb-0"
-                  >
-                    {t("message")}
-                  </label>
-                  <div className="smsCount mt-0">
-                    <span className="smsLength">
-                      {t("letter")} {messageText.length}
-                    </span>
-                    <span>SMS: {smsAmount}</span>
-                  </div>
-                </div>
-                <textarea
-                  className="form-control"
-                  id="exampleFormControlTextarea1"
-                  rows="3"
-                  placeholder={t("messageLikhun")}
-                  onChange={handleChange}
-                  onBlur={hadleRequired}
-                ></textarea>
-                <div id="emailHelp" className="form-text text-danger">
-                  {errMsg}
-                </div>
+          <textarea
+            className="form-control"
+            id="exampleFormControlTextarea1"
+            rows="3"
+            placeholder={t("messageLikhun")}
+            onChange={handleChange}
+            onBlur={hadleRequired}
+          ></textarea>
+          <div id="emailHelp" className="form-text text-danger">
+            {errMsg}
+          </div>
 
-                <div
-                  className="message-sending-type mt-3"
-                  style={{ fontWeight: "normal" }}
-                >
-                  <h4 className="mb-0"> {t("sendingMessageType")} </h4>
-                  <input
-                    name="messageSendingType"
-                    type="radio"
-                    checked={sendingType === "nonMasking"}
-                    value={"nonMasking"}
-                    onChange={(event) => setSendingType(event.target.value)}
-                  />{" "}
-                  {t("nonMasking")}&nbsp; &nbsp;
-                  <input
-                    name="messageSendingType"
-                    type="radio"
-                    value={"masking"}
-                    onChange={(event) => setSendingType(event.target.value)}
-                  />{" "}
-                  {t("masking")}&nbsp; &nbsp;
-                  <input
-                    name="messageSendingType"
-                    type="radio"
-                    value={"fixedNumber"}
-                    onChange={(event) => setSendingType(event.target.value)}
-                  />{" "}
-                  {t("fixedNumber")}
-                </div>
-              </div>
-              <div className="modal-footer" style={{ border: "none" }}>
-                <button
-                  type="button"
-                  className="btn btn-secondary"
-                  data-bs-dismiss="modal"
-                  disabled={isLoading}
-                >
-                  {t("cancel")}
-                </button>
-                <button
-                  type="submit"
-                  className="btn btn-success"
-                  disabled={isLoading}
-                >
-                  {isLoading ? <Loader /> : t("sendMessage")}
-                </button>
-              </div>
-            </form>
+          <div
+            className="message-sending-type mt-3"
+            style={{ fontWeight: "normal" }}
+          >
+            <h4 className="mb-0"> {t("sendingMessageType")} </h4>
+            <input
+              name="messageSendingType"
+              type="radio"
+              checked={sendingType === "nonMasking"}
+              value={"nonMasking"}
+              onChange={(event) => setSendingType(event.target.value)}
+            />{" "}
+            {t("nonMasking")}&nbsp; &nbsp;
+            <input
+              name="messageSendingType"
+              type="radio"
+              value={"masking"}
+              onChange={(event) => setSendingType(event.target.value)}
+            />{" "}
+            {t("masking")}&nbsp; &nbsp;
+            <input
+              name="messageSendingType"
+              type="radio"
+              value={"fixedNumber"}
+              onChange={(event) => setSendingType(event.target.value)}
+            />{" "}
+            {t("fixedNumber")}
           </div>
         </div>
-      </div>
-    </div>
+        <div className="modal-footer" style={{ border: "none" }}>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            data-bs-dismiss="modal"
+            disabled={isLoading}
+            onClick={() => setShow(false)}
+          >
+            {t("cancel")}
+          </button>
+          <button
+            type="submit"
+            className="btn btn-success"
+            disabled={isLoading}
+          >
+            {isLoading ? <Loader /> : t("sendMessage")}
+          </button>
+        </div>
+      </form>
+    </RootBulkModal>
   );
 };
 

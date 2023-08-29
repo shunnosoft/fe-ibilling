@@ -15,40 +15,17 @@ const BulkStatusEdit = ({ bulkCustomer, show, setShow }) => {
 
   const changeStatus = (e) => {
     e.preventDefault();
-    let temp = [];
 
     if (status) {
       const data = {
-        customerIds: [],
+        customerIds: bulkCustomer.map((item) => item.original.id),
         status: status,
       };
-
-      bulkCustomer?.map((item) => {
-        if (!0 < item.original?.balance) {
-          data.customerIds.push(item.original.id);
-        } else {
-          temp.push(item.original.id);
-        }
-      });
-
-      let confirm;
-      if (data.customerIds.length > 0 && temp.length > 0) {
-        window.confirm(
-          t("areYouWantToUpdateStatus") +
-            data.customerIds.length +
-            t("updateStatusSubArea") +
-            temp.length +
-            t("minusBalanceCustomer")
-        );
-      } else if (data.customerIds.length > 0) {
-        window.confirm(
-          t("areYouWantToUpdateStatus") +
-            " " +
-            data.customerIds.length +
-            t("updateStatusSubArea")
-        );
-      }
-
+      const confirm = window.confirm(
+        t("areYouWantToUpdateStatus") +
+          bulkCustomer.length +
+          t("updateStatusSubArea")
+      );
       if (confirm) {
         bulkStatusEdit(dispatch, data, setIsLoading, setShow);
       }

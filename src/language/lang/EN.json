@@ -851,8 +851,14 @@
   "notEnoughOnlineBalance": "Your don't have enough online balance!",
   "controlPanel": "Control Panel",
   "customerReport": "Customer Report",
-  "pppoeIp": "PPPoE/Ip",
+  "pppoeIp": "PPPoE/IP",
   "PPPoECustomer": "PPPoE Customer",
   "StaticCustomer": "Static Customer",
-  "minusBalanceCustomer": "Minus balance customer status will not be updated"
+  "minusBalanceCustomer": "Minus balance customer status will not be updated",
+  "selectPoleBox/splitter": "Select PoleBox / Splitter",
+  "ticketId": "Ticket ID",
+  "customerTicket": "Customer Ticket",
+  "customerTicketTemplate": "Customer Ticket Template",
+  "assignTicket": "Assign Ticket",
+  "assingTicketTemplate": "Assign Ticket Template"
 }
