@@ -14,6 +14,7 @@ import CustomerInactiveSmsTemplate from "./template/CustomerInactiveSmsTemplate"
 import { useState } from "react";
 import { Tab, Tabs } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
+import CustomerTicketSmsTemplate from "../../pages/settings/template/CustomerTicketSmsTemplate";
 export default function RSettings() {
   const { t } = useTranslation();
   const [settingSelect, setSettingSelect] = useState("confirmation");
@@ -76,6 +77,16 @@ export default function RSettings() {
                     >
                       <FourGround>
                         <CustomerInactiveSmsTemplate />
+                      </FourGround>
+                    </Tab>
+
+                    <Tab
+                      className="mt-5"
+                      eventKey="customerTicket"
+                      title={t("customerTicket")}
+                    >
+                      <FourGround>
+                        <CustomerTicketSmsTemplate />
                       </FourGround>
                     </Tab>
                   </Tabs>

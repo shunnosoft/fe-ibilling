@@ -702,8 +702,8 @@ export default function CustomerEdit({ single }) {
                             </label>
                           </div>
                           {((0 < data?.balance &&
-                            !permission.logicalInactive) ||
-                            permission.logicalInactive) && (
+                            !permission?.logicalInactive) ||
+                            permission?.logicalInactive) && (
                             <div className="form-check form-check-inline">
                               <input
                                 className="form-check-input"
