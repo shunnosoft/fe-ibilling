@@ -860,5 +860,9 @@
   "customerTicket": "Customer Ticket",
   "customerTicketTemplate": "Customer Ticket Template",
   "assignTicket": "Assign Ticket",
-  "assingTicketTemplate": "Assign Ticket Template"
+  "assingTicketTemplate": "Assign Ticket Template",
+  "rslrC": "Rslr/C",
+  "ispC": "ISP/C",
+  "customerTicketToast": "Customer Ticket SMS Template Successfully Update.",
+  "assignTicketToast": "Assign Ticket SMS Template Updated."
 }

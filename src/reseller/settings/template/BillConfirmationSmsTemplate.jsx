@@ -327,7 +327,7 @@ function BillConfirmationSmsTemplate() {
                         itemSettingHandler(e.target.value);
                       }}
                     />
-                    <label className="templatelabel" htmlFor="1">
+                    <label className="templatelabel" htmlFor="6">
                       {"DUE: BILL_DUE"}
                     </label>
                   </div>
@@ -342,7 +342,7 @@ function BillConfirmationSmsTemplate() {
                         itemSettingHandler(e.target.value);
                       }}
                     />
-                    <label className="templatelabel" htmlFor="1">
+                    <label className="templatelabel" htmlFor="7">
                       {"NOTE: BILL_NOTE"}
                     </label>
                   </div>
@@ -358,13 +358,13 @@ function BillConfirmationSmsTemplate() {
                         itemSettingHandler(e.target.value);
                       }}
                     />
-                    <label className="templatelabel" htmlFor="1">
+                    <label className="templatelabel" htmlFor="8">
                       {"MONTH: BILL_MONTH"}
                     </label>
                   </div>
                   <div className="radioselect">
                     <input
-                      id="5"
+                      id="9"
                       type="checkbox"
                       className="getValueUsingClass"
                       checked={matchFound.includes("DATE: BILL_NOTE_DATE")}
@@ -373,7 +373,7 @@ function BillConfirmationSmsTemplate() {
                         itemSettingHandler(e.target.value);
                       }}
                     />
-                    <label className="templatelabel" htmlFor="5">
+                    <label className="templatelabel" htmlFor="9">
                       {"DATE: BILL_NOTE_DATE"}
                     </label>
                   </div>

@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import apiLink from "../../../api/apiLink";
 import { toast } from "react-toastify";
 
-const CustomerTicketSmsTemplate = ({ otherTabs }) => {
+const CustomerAssignTicketSmsTemplate = () => {
   const { t } = useTranslation();
 
   // get SMS settings
@@ -14,29 +14,21 @@ const CustomerTicketSmsTemplate = ({ otherTabs }) => {
   );
 
   // get message from redux
-  let customerTicketMsg = settings.sms.template.customerTicket;
+  let assignTicketMsg = settings.sms.template.assignTicket;
 
   // get isp owner id
   const ispOwner = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
   );
 
-  // get current user
-  const userId = useSelector(
-    (state) => state.persistedReducer.auth.currentUser.reseller?.id
-  );
-
-  // get user role
-  const role = useSelector((state) => state.persistedReducer.auth.role);
-
   // loading state
   const [loading, setLoading] = useState(false);
 
   // SMS state
-  const [customerTicketStatus, setCustomerTicketStatus] = useState(false);
+  const [assignTicketStatus, setAssignTicketStatus] = useState(false);
 
   // message type status
-  const [sendingType, setSendingType] = useState("");
+  const [sendingType, setSendingType] = useState();
 
   // message state
   const [ticketSub, setTicketSub] = useState("");
@@ -46,41 +38,29 @@ const CustomerTicketSmsTemplate = ({ otherTabs }) => {
     e.preventDefault();
     let data = {
       ...settings.sms,
-      customerTicketSendBy: sendingType,
-      customerTicket: customerTicketStatus,
+      assignTicketSendBy: sendingType,
+      assignTicket: assignTicketStatus,
       template: {
         ...settings.sms.template,
-        customerTicket: ticketSub,
+        assignTicket: ticketSub,
       },
     };
     setLoading(true);
 
     // api call
-    if (role === "ispOwner") {
-      try {
-        await apiLink.patch(`/ispOwner/settings/sms/${ispOwner}`, data);
-        setLoading(false);
-        toast.success(t("customerTicketToast"));
-      } catch (error) {
-        setLoading(false);
-      }
-    }
-
-    if (role === "reseller") {
-      try {
-        await apiLink.patch(`/reseller/settings/sms/${userId}`, data);
-        setLoading(false);
-        toast.success(t("customerTicketToast"));
-      } catch (error) {
-        setLoading(false);
-      }
+    try {
+      await apiLink.patch(`/ispOwner/settings/sms/${ispOwner}`, data);
+      setLoading(false);
+      toast.success(t("assignTicketToast"));
+    } catch (error) {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    setCustomerTicketStatus(settings.sms.customerTicket);
-    setSendingType(settings?.sms?.customerTicketSendBy);
-    setTicketSub(customerTicketMsg ? customerTicketMsg : "");
+    setAssignTicketStatus(settings.sms.assignTicket);
+    setSendingType(settings?.sms?.assignTicketSendBy);
+    setTicketSub(assignTicketMsg ? assignTicketMsg : "");
   }, [settings]);
 
   return (
@@ -88,22 +68,22 @@ const CustomerTicketSmsTemplate = ({ otherTabs }) => {
       <div className="writeMessageSection">
         <div className="messageStatus d-flex justify-content-between">
           <div className="sending-status">
-            <h4> {t("customerTicketTemplate")} </h4>
+            <h4> {t("assingTicketTemplate")} </h4>
             <input
               id="rechareRadioOn"
-              name="customerTicket"
+              name="assignTicket"
               type="radio"
-              checked={customerTicketStatus}
-              onChange={() => setCustomerTicketStatus(true)}
+              checked={assignTicketStatus}
+              onChange={() => setAssignTicketStatus(true)}
             />
             &nbsp;
             {t("on")} {"              "}
             <input
               id="rechargeRadioOff"
-              name="customerTicket"
+              name="assignTicket"
               type="radio"
-              checked={!customerTicketStatus}
-              onChange={() => setCustomerTicketStatus(false)}
+              checked={!assignTicketStatus}
+              onChange={() => setAssignTicketStatus(false)}
             />
             &nbsp;
             {t("off")} {"              "}
@@ -148,7 +128,7 @@ const CustomerTicketSmsTemplate = ({ otherTabs }) => {
                   : setTicketSub("");
               }}
             />
-            <label className="templatelabel" htmlFor="2">
+            <label className="templatelabel" htmlFor="1">
               {"SUB: TICKET_SUBJECT"}
             </label>
           </div>
@@ -163,4 +143,4 @@ const CustomerTicketSmsTemplate = ({ otherTabs }) => {
   );
 };
 
-export default CustomerTicketSmsTemplate;
+export default CustomerAssignTicketSmsTemplate;

@@ -1,5 +1,4 @@
 import React from "react";
-import { ArrowDownUp } from "react-bootstrap-icons";
 import moment from "moment";
 import FormatNumber from "../../components/common/NumberFormat";
 import { useSelector } from "react-redux";
@@ -59,20 +58,6 @@ const PrintReport = React.forwardRef((props, ref) => {
           </ul>
         )}
 
-        {status === "invoice" && (
-          <ul className="d-flex justify-content-around filter_list">
-            <li>
-              {t("billType")} : {filterData.billType}
-            </li>
-            <li>
-              {t("medium")} : {filterData.medium}
-            </li>
-            <li>
-              {t("date")} : {startDate} - {endDate}
-            </li>
-          </ul>
-        )}
-
         {status === "collection" && (
           <ul className="d-flex justify-content-around filter_list">
             <li>
@@ -96,25 +81,63 @@ const PrintReport = React.forwardRef((props, ref) => {
             {filterData.totalBill}
           </li>
         </ul>
-        <table className="table table-striped">
+        <table className="table table-striped text-center align-center">
           <thead>
             <tr className="spetialSortingRow">
               <th style={{ fontFamily: "sans-serif" }} scope="col">
                 {t("id")}
-                <ArrowDownUp className="arrowDownUp" />
               </th>
+
               <th style={{ fontFamily: "sans-serif" }} scope="col">
-                {t("customer")}
-                <ArrowDownUp className="arrowDownUp" />
+                {t("name")}
               </th>
+
+              {status === "report" && (
+                <th style={{ fontFamily: "sans-serif" }} scope="col">
+                  {t("pppoeIp")}
+                </th>
+              )}
+
+              <th style={{ fontFamily: "sans-serif" }} scope="col">
+                {t("package")}
+              </th>
+
               <th style={{ fontFamily: "sans-serif" }} scope="col">
                 {t("bill")}
-                <ArrowDownUp className="arrowDownUp" />
+              </th>
+
+              <th style={{ fontFamily: "sans-serif" }} scope="col">
+                {t("discount")}
+              </th>
+
+              {status === "report" && (
+                <th style={{ fontFamily: "sans-serif" }} scope="col">
+                  {t("due")}
+                </th>
+              )}
+
+              <th style={{ fontFamily: "sans-serif" }} scope="col">
+                {t("collector")}
+              </th>
+
+              {status !== "report" && (
+                <th style={{ fontFamily: "sans-serif" }} scope="col">
+                  {t("rslrC")}
+                </th>
+              )}
+
+              {status !== "report" && (
+                <th style={{ fontFamily: "sans-serif" }} scope="col">
+                  {t("ispC")}
+                </th>
+              )}
+
+              <th style={{ fontFamily: "sans-serif" }} scope="col">
+                {t("note")}
               </th>
 
               <th style={{ fontFamily: "sans-serif" }} scope="col">
                 {t("date")}
-                <ArrowDownUp className="arrowDownUp" />
               </th>
             </tr>
           </thead>
@@ -123,7 +146,39 @@ const PrintReport = React.forwardRef((props, ref) => {
               <tr key={key} id={val?.id}>
                 <td className="p-1">{val?.customer?.customerId}</td>
                 <td className="p-1">{val?.customer?.name}</td>
+                {status === "report" && (
+                  <td className="p-1">
+                    {val?.customer?.userType === "pppoe"
+                      ? val?.customer?.pppoe.name
+                      : val?.customer?.userType === "firewall-queue"
+                      ? val?.customer?.queue.address
+                      : val?.customer?.userType === "core-queue"
+                      ? val?.customer?.queue.srcAddress
+                      : val?.customer?.userType === "simple-queue"
+                      ? val?.customer?.queue.target
+                      : ""}
+                  </td>
+                )}
+                <td className="p-1">
+                  {val?.customer?.mikrotikPackage?.name
+                    ? val.customer?.mikrotikPackage?.name
+                    : val.customer?.userType === "pppoe"
+                    ? val.customer?.pppoe?.profile
+                    : ""}
+                </td>
                 <td className="p-1">{FormatNumber(val?.amount)}</td>
+                <td className="p-1">{FormatNumber(val?.discount)}</td>
+                {status === "report" && (
+                  <td className="p-1">{FormatNumber(val?.due)}</td>
+                )}
+                <td className="p-1">{val?.name}</td>
+                {status !== "report" && (
+                  <td className="p-1">{val?.resellerCommission}</td>
+                )}
+                {status !== "report" && (
+                  <td className="p-1">{val?.ispOwnerCommission}</td>
+                )}
+                <td className="p-1">{val?.month}</td>
                 <td className="p-1">
                   {moment(val?.createdAt).format("DD-MM-YYYY hh:mm:ss A")}
                 </td>
@@ -131,14 +186,6 @@ const PrintReport = React.forwardRef((props, ref) => {
             ))}
           </tbody>
         </table>
-        {/* <div className="page-footer">
-          <div className="signature_container">
-            <div className="p-3 signature_wraper">
-              <div className="signamture_field">{t("manager")}</div>
-              <div className="signamture_field">{t("admin")}</div>
-            </div>
-          </div>
-        </div> */}
       </div>
     </>
   );

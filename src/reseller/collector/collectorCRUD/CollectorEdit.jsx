@@ -25,7 +25,6 @@ export default function CollectorEdit({ collectorId }) {
 
   const area = useSelector((state) => state.area.area);
   const [allowedAreas, setAllowedAreas] = useState([]);
-  const [areaIds_Edit, setAreaIds_Edit] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [permissions, setPermissions] = useState([]);
   const resellerId = useSelector(
@@ -65,7 +64,6 @@ export default function CollectorEdit({ collectorId }) {
       }
     }
     setAllowedAreas(IDS_temp);
-    setAreaIds_Edit(IDS_temp);
   };
 
   const collectorEditHandler = async (data) => {
@@ -80,7 +78,7 @@ export default function CollectorEdit({ collectorId }) {
     };
     const sendingData = {
       ...data,
-      areas: areaIds_Edit,
+      areas: allowedAreas,
       collectorId: single.id,
       resellerId: resellerId,
       permissions: newPermission,

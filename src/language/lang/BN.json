@@ -866,5 +866,9 @@
   "customerTicket": "কাস্টমার টিকিট",
   "customerTicketTemplate": "কাস্টমার টিকিট টেমপ্লেট",
   "assignTicket": "অ্যাসাইন টিকিট",
-  "assingTicketTemplate": "অ্যাসাইন টিকিট টেমপ্লেট"
+  "assingTicketTemplate": "অ্যাসাইন টিকিট টেমপ্লেট",
+  "rslrC": "রিসেল/কমি",
+  "ispC": "আইএসপি/কমি",
+  "customerTicketToast": "গ্রাহক টিকিট এসএমএস টেমপ্লেট সফলভাবে আপডেট হয়েছে ।",
+  "assignTicketToast": "টিকিট এসএমএস টেমপ্লেট আপডেট করা হয়েছে ।"
 }

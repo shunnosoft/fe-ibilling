@@ -24,6 +24,7 @@ import MessageAlert from "../message/MessageAlert";
 import { useSelector } from "react-redux";
 import { EnvelopePlus } from "react-bootstrap-icons";
 import CustomerTicketSmsTemplate from "./template/CustomerTicketSmsTemplate";
+import CustomerAssignTicketSmsTemplate from "./template/CustomerAssignTicketSmsTemplate";
 export default function Settings() {
   const { t } = useTranslation();
 
@@ -146,15 +147,15 @@ export default function Settings() {
                         <CustomerTicketSmsTemplate />
                       </FourGround>
                     </Tab>
-                    {/* <Tab
+                    <Tab
                       className="mt-5"
                       eventKey="assignTicket"
                       title={t("assignTicket")}
                     >
                       <FourGround>
-                        <CustomerTicketSmsTemplate />
+                        <CustomerAssignTicketSmsTemplate />
                       </FourGround>
-                    </Tab> */}
+                    </Tab>
                   </Tabs>
                 </div>
               </FourGround>
