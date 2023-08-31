@@ -864,5 +864,7 @@
   "rslrC": "Rslr/C",
   "ispC": "ISP/C",
   "customerTicketToast": "Customer Ticket SMS Template Successfully Update.",
-  "assignTicketToast": "Assign Ticket SMS Template Updated."
+  "assignTicketToast": "Assign Ticket SMS Template Updated.",
+  "macBinding": "MAC-Binding",
+  "removeMACBinding": "Remove MAC-Binding"
 }

@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   fetchMikrotik,
   getStaticActiveCustomer,
+  staticMACBinding,
 } from "../../features/apiCalls";
 import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
@@ -16,6 +17,8 @@ import {
   ArrowClockwise,
   FileExcelFill,
   FilterCircle,
+  Router,
+  ThreeDots,
   Wifi,
   WifiOff,
 } from "react-bootstrap-icons";
@@ -36,6 +39,14 @@ const StaticActiveCustomer = () => {
 
   // filter Accordion handle state
   const [activeKeys, setActiveKeys] = useState("");
+
+  // get all role
+  const role = useSelector((state) => state.persistedReducer.auth.role);
+
+  // get bp settings
+  const bpSettings = useSelector(
+    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
+  );
 
   // get all mikrotik from redux
   const mikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
@@ -78,6 +89,12 @@ const StaticActiveCustomer = () => {
   // reload handler
   const reloadHandler = () => {
     getStaticActiveCustomer(dispatch, ispOwnerId, mikrotikId, setIsloading);
+  };
+
+  //mac-binding handler
+  const macBindingCall = (customerId) => {
+    console.log(customerId);
+    // staticMACBinding(customerId);
   };
 
   // api call for get update static customer
@@ -157,6 +174,41 @@ const StaticActiveCustomer = () => {
         width: "30%",
         Header: t("macAddress"),
         accessor: "macAddress",
+      },
+      {
+        width: "5%",
+        Header: () => <div className="text-center">{t("action")}</div>,
+        id: "option",
+
+        Cell: ({ row: { original } }) => {
+          return (
+            <div className="text-center">
+              <div className="dropdown">
+                <ThreeDots
+                  className="dropdown-toggle ActionDots"
+                  id="areaDropdown"
+                  type="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                />
+
+                <ul className="dropdown-menu" aria-labelledby="areaDropdown">
+                  {(role === "ispOwner" || role === "manager") &&
+                    bpSettings?.hasMikrotik && (
+                      <li onClick={() => macBindingCall(original)}>
+                        <div className="dropdown-item">
+                          <div className="customerAction">
+                            <Router />
+                            <p className="actionP">{t("macBinding")}</p>
+                          </div>
+                        </div>
+                      </li>
+                    )}
+                </ul>
+              </div>
+            </div>
+          );
+        },
       },
     ],
     [t]

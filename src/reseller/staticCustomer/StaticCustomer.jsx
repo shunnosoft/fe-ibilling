@@ -42,7 +42,10 @@ import PrintCustomer from "./customerPDF";
 import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
 import FormatNumber from "../../components/common/NumberFormat";
 import CustomerEdit from "./staticCustomerCrud/CustomerEdit";
-import { fetchPackagefromDatabase } from "../../features/apiCalls";
+import {
+  fetchPackagefromDatabase,
+  getAllPackages,
+} from "../../features/apiCalls";
 import { Accordion, Card, Collapse } from "react-bootstrap";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
@@ -70,6 +73,9 @@ export default function RstaticCustomer() {
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
+
+  // get all packages
+  const allPackages = useSelector((state) => state.package.allPackages);
 
   const role = useSelector((state) => state.persistedReducer.auth?.role);
   const dispatch = useDispatch();
@@ -155,6 +161,12 @@ export default function RstaticCustomer() {
       const getLimit = setPackageLimit(target.value, true);
       getLimit && setDownMaxLimit(getLimit);
     }
+  };
+
+  // customer current package find
+  const customerPackageFind = (pack) => {
+    const findPack = allPackages.find((item) => item.id.includes(pack));
+    return findPack;
   };
 
   //   filter
@@ -306,6 +318,7 @@ export default function RstaticCustomer() {
     }
 
     Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
+    getAllPackages(dispatch, ispOwnerId, setIsloading);
   }, [dispatch, resellerId, userData, role]);
 
   const [subAreaIds, setSubArea] = useState([]);
@@ -391,6 +404,14 @@ export default function RstaticCustomer() {
         Cell: ({ cell: { value } }) => {
           return badge(value);
         },
+      },
+      {
+        width: "11%",
+        Header: t("package"),
+        accessor: "mikrotikPackage",
+        Cell: ({ cell: { value } }) => (
+          <div>{Customers && customerPackageFind(value)?.name}</div>
+        ),
       },
       {
         width: "10%",
@@ -506,7 +527,7 @@ export default function RstaticCustomer() {
         ),
       },
     ],
-    [t]
+    [t, Customers]
   );
   return (
     <>

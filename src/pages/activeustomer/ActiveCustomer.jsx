@@ -11,6 +11,7 @@ import {
   Envelope,
   FileExcelFill,
   FilterCircle,
+  Router,
 } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -26,6 +27,8 @@ import {
   fetchMikrotik,
   fetchpppoeUser,
   getArea,
+  pppoeMACBinding,
+  pppoeRemoveMACBinding,
 } from "../../features/apiCalls";
 
 import Table from "../../components/table/Table";
@@ -328,6 +331,14 @@ export default function ConfigMikrotik() {
     [allUsers]
   );
 
+  //mac-binding handler
+  const macBindingCall = (customerId) => {
+    pppoeMACBinding(customerId);
+  };
+  const macBindingRemove = (customerId) => {
+    pppoeRemoveMACBinding(customerId);
+  };
+
   // table column
   const columns = React.useMemo(
     () => [
@@ -482,6 +493,34 @@ export default function ConfigMikrotik() {
                             <p className="actionP">{t("bandwidth")}</p>
                           </div>
                         </div>
+                      </li>
+                    )}
+
+                  {(role === "ispOwner" || role === "manager") &&
+                    bpSettings?.hasMikrotik &&
+                    original?.running && (
+                      <li>
+                        {!original?.macBinding ? (
+                          <div
+                            className="dropdown-item"
+                            onClick={() => macBindingCall(original.id)}
+                          >
+                            <div className="customerAction">
+                              <Router />
+                              <p className="actionP">{t("macBinding")}</p>
+                            </div>
+                          </div>
+                        ) : (
+                          <div
+                            className="dropdown-item"
+                            onClick={() => macBindingRemove(original.id)}
+                          >
+                            <div className="customerAction">
+                              <Router />
+                              <p className="actionP">{t("removeMACBinding")}</p>
+                            </div>
+                          </div>
+                        )}
                       </li>
                     )}
                 </ul>

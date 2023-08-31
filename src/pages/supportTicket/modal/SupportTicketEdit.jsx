@@ -5,9 +5,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { supportTicketsEditApi } from "../../../features/supportTicketApi";
 import { t } from "i18next";
 import { getManger } from "../../../features/apiCalls";
+import Loader from "../../../components/common/Loader";
 
 const SupportTicketEdit = ({ ticketEditId, allCollector }) => {
   const dispatch = useDispatch();
+
+  //Loading state
+  const [isLoading, setIsLoading] = useState(false);
+
   const [supportTicketStatusValue, setSupportTicketStatusValue] = useState("");
   const [supportTicketStaffId, setSupportTicketStaffId] = useState("");
   const [ticketType, setTicketType] = useState("");
@@ -73,7 +78,7 @@ const SupportTicketEdit = ({ ticketEditId, allCollector }) => {
       alert("Select Ticket Type");
       return;
     }
-    supportTicketsEditApi(dispatch, data, ticketEditId);
+    supportTicketsEditApi(dispatch, data, ticketEditId, setIsLoading);
   };
 
   //initially setting all values
@@ -246,10 +251,9 @@ const SupportTicketEdit = ({ ticketEditId, allCollector }) => {
               <button
                 type="button"
                 class="btn btn-primary"
-                data-bs-dismiss="modal"
                 onClick={supportTicketStatusSubmit}
               >
-                {t("save")}
+                {isLoading ? <Loader /> : t("save")}
               </button>
             )}
           </div>

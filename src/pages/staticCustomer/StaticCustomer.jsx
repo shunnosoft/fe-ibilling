@@ -31,6 +31,7 @@ import {
   ArrowBarRight,
   ReceiptCutoff,
   PencilSquare,
+  Router,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -51,6 +52,7 @@ import {
   getManger,
   fetchPackagefromDatabase,
   getAllPackages,
+  staticMACBinding,
 } from "../../features/apiCalls";
 import CustomerReport from "./customerCRUD/showCustomerReport";
 import { badge } from "../../components/common/Utils";
@@ -332,6 +334,11 @@ export default function Customer() {
     { label: "balance", key: "balance" },
     { label: "billing_cycle", key: "billingCycle" },
   ];
+
+  //mac-binding handler
+  const macBindingCall = (customerId) => {
+    staticMACBinding(customerId);
+  };
 
   // reload Handler
   const reloadHandler = () => {
@@ -983,6 +990,18 @@ export default function Customer() {
                 ) : (
                   ""
                 )}
+
+                {(role === "ispOwner" || role === "manager") &&
+                  bpSettings?.hasMikrotik && (
+                    <li onClick={() => macBindingCall(original.id)}>
+                      <div className="dropdown-item">
+                        <div className="customerAction">
+                          <Router />
+                          <p className="actionP">{t("macBinding")}</p>
+                        </div>
+                      </div>
+                    </li>
+                  )}
               </ul>
             </div>
           </div>

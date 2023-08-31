@@ -36,6 +36,8 @@ import { Accordion, Card, Collapse } from "react-bootstrap";
 import WithdrawOnlinePayment from "./WithdrawOnlinePayment";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
+import { getAllPackages } from "../../features/apiCalls";
+import ReportView from "../../pages/report/modal/ReportView";
 
 const Report = () => {
   const { t } = useTranslation();
@@ -49,6 +51,11 @@ const Report = () => {
   firstDay.setHours(0, 0, 0, 0);
   today.setHours(23, 59, 59, 999);
 
+  //get ispOwnerId
+  const ispOwnerId = useSelector(
+    (state) => state.persistedReducer.auth.ispOwnerId
+  );
+
   // get isp owner data
   const bpSettings = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerData?.bpSettings
@@ -59,6 +66,7 @@ const Report = () => {
 
   // get reseller, collector collection all bills
   const allBills = useSelector((state) => state.payment.allBills);
+  console.log(allBills);
 
   // get all area subArea
   const subAreas = useSelector((state) => state.area.area);
@@ -69,6 +77,9 @@ const Report = () => {
   // get user role
   const userRole = useSelector((state) => state.persistedReducer.auth.role);
 
+  // get all packages
+  const allPackages = useSelector((state) => state.package.allPackages);
+
   // get bulletin permission
   const butPermission = useSelector(
     (state) => state.adminNetFeeSupport?.bulletinPermission
@@ -78,6 +89,7 @@ const Report = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [show, setShow] = useState(false);
+  const [packageLoading, setPackageLoading] = useState(false);
 
   // collection all bills state
   const [mainData, setMainData] = useState(allBills);
@@ -96,6 +108,9 @@ const Report = () => {
 
   // customer bill type
   const [billType, setBillType] = useState("");
+
+  // report note view id
+  const [viewId, setViewId] = useState();
 
   // filter date state
   const [filterDate, setFilterDate] = useState(firstDay);
@@ -138,6 +153,8 @@ const Report = () => {
     getSubAreas(dispatch, userData.id);
     getCollector(dispatch, userData.id);
     Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
+
+    getAllPackages(dispatch, ispOwnerId, setPackageLoading);
   }, []);
 
   // reload handler
@@ -192,6 +209,12 @@ const Report = () => {
     setMainData(arr);
   };
 
+  // customer current package find
+  const getCustomerPackage = (pack) => {
+    const findPack = allPackages.find((item) => item.id.includes(pack));
+    return findPack;
+  };
+
   // select area & collector find
   const areaName = subAreas.find((item) => item.id === areaIds);
   const collector = allCollector.find((item) => item.user === collectorIds);
@@ -224,32 +247,90 @@ const Report = () => {
   const columns = useMemo(
     () => [
       {
-        width: "15%",
+        width: "8%",
         Header: t("id"),
         accessor: "customer.customerId",
       },
       {
-        width: "16%",
-        Header: t("customer"),
+        width: "12%",
+        Header: t("name"),
         accessor: "customer.name",
       },
       {
-        width: "16%",
-        Header: t("medium"),
-        accessor: "medium",
+        width: "11%",
+        Header: t("package"),
+        accessor: "customer.mikrotikPackage",
+        Cell: ({ cell: { value } }) => (
+          <div>{mainData && getCustomerPackage(value)?.name}</div>
+        ),
       },
       {
-        width: "16%",
+        width: "11%",
         Header: t("bill"),
         accessor: "amount",
       },
       {
-        width: "16%",
+        width: "11%",
+        Header: t("discount"),
+        accessor: "discount",
+      },
+      {
+        width: "11%",
         Header: t("billType"),
         accessor: "billType",
       },
       {
-        width: "16%",
+        width: "11%",
+        Header: t("medium"),
+        accessor: "medium",
+      },
+      {
+        width: "12%",
+        Header: t("note"),
+        accessor: (data) => {
+          return {
+            id: data.id,
+            note: data.note,
+            start: data.start,
+            end: data.end,
+            month: data.month,
+          };
+        },
+        Cell: ({ cell: { value } }) => {
+          return (
+            <>
+              <p>
+                {value.note && value.note.slice(0, 15)}{" "}
+                <span>{value?.note && value?.note?.length > 15 && "..."}</span>
+              </p>
+              {value?.start && value?.end && (
+                <span className="badge bg-secondary">
+                  {moment(value.start).format("YYYY/MM/DD")}
+                  {moment(value.end).format("YYYY/MM/DD")}
+                </span>
+              )}
+              <p>
+                {value?.month && value.month.slice(0, 15)}{" "}
+                <span>
+                  {value?.month && value?.month?.length > 15 && "..."}
+                </span>
+              </p>
+              <span
+                className="see_more"
+                data-bs-toggle="modal"
+                data-bs-target="#reportView"
+                onClick={() => {
+                  setViewId(value?.id);
+                }}
+              >
+                ...See More
+              </span>
+            </>
+          );
+        },
+      },
+      {
+        width: "12%",
         Header: t("date"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
@@ -257,7 +338,7 @@ const Report = () => {
         },
       },
     ],
-    []
+    [t, allBills]
   );
 
   return (
@@ -489,12 +570,14 @@ const Report = () => {
                       </div>
                       {/* print report end*/}
 
-                      <Table
-                        customComponent={customComponent}
-                        isLoading={isLoading}
-                        columns={columns}
-                        data={mainData}
-                      ></Table>
+                      <div className="table-section">
+                        <Table
+                          customComponent={customComponent}
+                          isLoading={isLoading}
+                          columns={columns}
+                          data={mainData}
+                        ></Table>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -508,6 +591,7 @@ const Report = () => {
         </div>
       </div>
       <WithdrawOnlinePayment show={show} setShow={setShow} />
+      <ReportView reportId={viewId} status="resellerCollection" />
     </>
   );
 };

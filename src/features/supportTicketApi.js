@@ -139,17 +139,25 @@ export const getResellerCollectorSupportTicket = async (
 };
 
 //Support Tickets Edit Api
-export const supportTicketsEditApi = async (dispatch, data, ticketId) => {
+export const supportTicketsEditApi = async (
+  dispatch,
+  data,
+  ticketId,
+  setIsLoading
+) => {
+  setIsLoading(true);
   try {
     const response = await apiLink.patch(
       `customer/supportTicket/${ticketId}`,
       data
     );
     dispatch(editSupportTickets(response.data.supportTicket));
+    document.getElementById("editModal").click();
     toast.success("Support Ticket Edit Success");
   } catch (error) {
     toast.error(error.response?.data.message);
   }
+  setIsLoading(false);
 };
 
 //Collector Support Tickets Edit Api

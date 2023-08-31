@@ -17,8 +17,18 @@ const PrintReport = React.forwardRef((props, ref) => {
       ? state.persistedReducer.auth.ispOwnerData
       : state.persistedReducer.auth.userData
   );
+
+  // get all packages
+  const allPackages = useSelector((state) => state.package.allPackages);
+
   const startDate = moment(filterData.startDate).format("DD/MM/YYYY");
   const endDate = moment(filterData.endDate).format("DD/MM/YYYY");
+
+  // customer package find
+  const getCustomerPackage = (pack) => {
+    const findPack = allPackages.find((item) => item.id.includes(pack));
+    return findPack;
+  };
   return (
     <>
       <div ref={ref}>
@@ -160,11 +170,13 @@ const PrintReport = React.forwardRef((props, ref) => {
                   </td>
                 )}
                 <td className="p-1">
-                  {val?.customer?.mikrotikPackage?.name
-                    ? val.customer?.mikrotikPackage?.name
-                    : val.customer?.userType === "pppoe"
-                    ? val.customer?.pppoe?.profile
-                    : ""}
+                  {status === "report"
+                    ? val?.customer?.mikrotikPackage?.name
+                      ? val.customer?.mikrotikPackage?.name
+                      : val.customer?.userType === "pppoe"
+                      ? val.customer?.pppoe?.profile
+                      : ""
+                    : getCustomerPackage(val.customer?.mikrotikPackage)?.name}
                 </td>
                 <td className="p-1">{FormatNumber(val?.amount)}</td>
                 <td className="p-1">{FormatNumber(val?.discount)}</td>
