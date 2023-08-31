@@ -9,13 +9,24 @@ const ReportView = ({ reportId, status }) => {
   let report = useSelector((state) =>
     status === "resellerCustomerReport"
       ? state.reseller?.resellerCollection
+      : status === "resellerCollection"
+      ? state.payment?.allBills
       : state.payment?.allBills
   );
+
+  // get all packages
+  const allPackages = useSelector((state) => state.package.allPackages);
 
   const data = report.find((item) => item.id === reportId);
 
   // loading state
   const [isLoading, setIsLoading] = useState(false);
+
+  // customer current package find
+  const getCustomerPackage = (pack) => {
+    const findPack = allPackages.find((item) => item.id.includes(pack));
+    return findPack;
+  };
 
   return (
     <div
@@ -48,7 +59,10 @@ const ReportView = ({ reportId, status }) => {
                   <b>{t("name")}</b> {data?.customer?.name}
                 </p>
                 <p>
-                  <b>{t("package")}</b> {data?.customer?.mikrotikPackage?.name}
+                  <b>{t("package")}</b>{" "}
+                  {status === "resellerCollection"
+                    ? getCustomerPackage(data?.customer?.mikrotikPackage)?.name
+                    : data.customer?.mikrotikPackage?.name}
                 </p>
                 <p>
                   <b>{t("bill")}</b> {data?.amount}

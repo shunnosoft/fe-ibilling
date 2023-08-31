@@ -4,7 +4,11 @@ import useDash from "../../assets/css/dash.module.css";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchpppoeUserForReseller } from "../../features/apiCalls";
+import {
+  fetchpppoeUserForReseller,
+  pppoeMACBinding,
+  pppoeRemoveMACBinding,
+} from "../../features/apiCalls";
 import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
 // get specific customer
@@ -12,6 +16,8 @@ import { useTranslation } from "react-i18next";
 import {
   ArrowClockwise,
   FilterCircle,
+  Router,
+  ThreeDots,
   Wifi,
   WifiOff,
 } from "react-bootstrap-icons";
@@ -43,6 +49,11 @@ const ResellserActiveCustomer = () => {
 
   // get all static customer
   let allMikrotikUsers = useSelector((state) => state?.mikrotik?.pppoeUser);
+
+  // get bp settings
+  const bpSettings = useSelector(
+    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
+  );
 
   //get subAreas
   const subAreas = useSelector((state) => state?.area?.area);
@@ -119,6 +130,14 @@ const ResellserActiveCustomer = () => {
   // reload handler
   const reloadHandler = () => {
     fetchpppoeUserForReseller(dispatch, ids, mikrotik[0].name, setIsloading);
+  };
+
+  //mac-binding handler
+  const macBindingCall = (customerId) => {
+    pppoeMACBinding(customerId);
+  };
+  const macBindingRemove = (customerId) => {
+    pppoeRemoveMACBinding(customerId);
   };
 
   // api call for get update static customer
@@ -236,6 +255,57 @@ const ResellserActiveCustomer = () => {
               moment(original.lastLogoutTime).format("YYYY/MM/DD hh:mm A")}
           </div>
         ),
+      },
+      {
+        width: "5%",
+        Header: () => <div className="text-center">{t("action")}</div>,
+        id: "option",
+
+        Cell: ({ row: { original } }) => {
+          return (
+            <div className="text-center">
+              <div className="dropdown">
+                <ThreeDots
+                  className="dropdown-toggle ActionDots"
+                  id="areaDropdown"
+                  type="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                />
+
+                <ul className="dropdown-menu" aria-labelledby="areaDropdown">
+                  {role !== "collector" &&
+                    bpSettings?.hasMikrotik &&
+                    original?.running && (
+                      <li>
+                        {!original?.macBinding ? (
+                          <div
+                            className="dropdown-item"
+                            onClick={() => macBindingCall(original.id)}
+                          >
+                            <div className="customerAction">
+                              <Router />
+                              <p className="actionP">{t("macBinding")}</p>
+                            </div>
+                          </div>
+                        ) : (
+                          <div
+                            className="dropdown-item"
+                            onClick={() => macBindingRemove(original.id)}
+                          >
+                            <div className="customerAction">
+                              <Router />
+                              <p className="actionP">{t("removeMACBinding")}</p>
+                            </div>
+                          </div>
+                        )}
+                      </li>
+                    )}
+                </ul>
+              </div>
+            </div>
+          );
+        },
       },
     ],
     [t]

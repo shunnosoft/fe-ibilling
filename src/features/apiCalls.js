@@ -3602,3 +3602,33 @@ export const patchBulletinPermission = async (dispatch, data) => {
     toast.error(error.response?.data?.message);
   }
 };
+
+// pppoe customer MAC-binding api call
+export const pppoeMACBinding = async (customerId) => {
+  try {
+    await apiLink.patch(`mikrotik/mac/binding/${customerId}`);
+    toast.success("Customer MAC-Binding Add Successful");
+  } catch (error) {
+    toast.error(error.response?.data?.message);
+  }
+};
+
+// pppoe customer remove MAC-binding api call
+export const pppoeRemoveMACBinding = async (customerId) => {
+  try {
+    await apiLink.patch(`mikrotik/remove/mac/binding/${customerId}`);
+    toast.success("Customer MAC-Binding Successful Remove");
+  } catch (error) {
+    toast.error(error.response?.data?.message);
+  }
+};
+
+// static customer MAC-binding api call
+export const staticMACBinding = async (customerId) => {
+  try {
+    await apiLink.patch(`mikrotik/static/mac/binding/${customerId}`);
+    toast.success("Customer MAC-Binding Add Successful");
+  } catch (error) {
+    toast.error(error.response?.data?.message);
+  }
+};
