@@ -62,7 +62,7 @@ const ReportView = ({ reportId, status }) => {
                   <b>{t("package")}</b>{" "}
                   {status === "resellerCollection"
                     ? getCustomerPackage(data?.customer?.mikrotikPackage)?.name
-                    : data.customer?.mikrotikPackage?.name}
+                    : data?.customer?.mikrotikPackage?.name}
                 </p>
                 <p>
                   <b>{t("bill")}</b> {data?.amount}

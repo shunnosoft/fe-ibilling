@@ -52,6 +52,11 @@ export default function Header(props) {
   const currentUser = useSelector(
     (state) => state.persistedReducer.auth.currentUser
   );
+
+  const ispOwnerData = useSelector(
+    (state) => state.persistedReducer.auth.ispOwnerData
+  );
+
   const userRole = useSelector((state) => state.persistedReducer.auth.role);
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
   const balancee = useSelector((state) => state?.payment?.balance);
@@ -146,18 +151,19 @@ export default function Header(props) {
             </div>
 
             <div className="headerLinks">
-              {/* <Link to="/netFee/support">
-                <SupportDetails />
-              </Link> */}
               {userRole !== "admin" && userRole !== "superadmin" ? (
                 <div
                   style={{ cursor: "pointer", width: "190px" }}
-                  className="fw-bold text-primary me-1 phone_view_none"
-                  title={t("netFeeSupportTeam")}
+                  className="me-1 phone_view_none"
+                  title={t("supportTicket")}
                 >
-                  <p onClick={() => setIsOpen({ ...isOpen, [false]: true })}>
-                    {t("netfeeSupportNumbers")}
-                  </p>
+                  <a
+                    href={`http://20.212.156.134:5601/support-ticket/create?&netfeeID=${ispOwnerData?.netFeeId}`}
+                    target="_blank"
+                    className="fw-bold text-primary"
+                  >
+                    {t("supportTicket")}
+                  </a>
                 </div>
               ) : (
                 ""

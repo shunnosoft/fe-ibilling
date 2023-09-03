@@ -379,9 +379,9 @@ export default function AddStaticCustomer() {
               >
                 {() => (
                   <Form>
-                    <div className="row align-items-center">
+                    <div className="displayGrid3">
                       {bpSettings?.hasMikrotik && (
-                        <div className="col-lg-4 col-md-4 col-xs-6 mb-3">
+                        <div>
                           <label className="form-control-label changeLabelFontColor">
                             {t("selectMikrotik")}{" "}
                           </label>
@@ -401,7 +401,7 @@ export default function AddStaticCustomer() {
                           </select>
                         </div>
                       )}
-                      <div className="col-lg-4 col-md-4 col-xs-6">
+                      <div>
                         <label className="form-control-label changeLabelFontColor">
                           {t("selectArea")}{" "}
                         </label>
@@ -421,9 +421,9 @@ export default function AddStaticCustomer() {
                         </select>
                       </div>
 
-                      <div className="col-lg-4 col-md-4 col-xs-6">
+                      <div>
                         <label className="form-control-label changeLabelFontColor">
-                          {t("selectSubArea")}{" "}
+                          {t("selectSubArea")}
                         </label>
                         <select
                           className="form-select mw-100 mt-0"
@@ -446,7 +446,7 @@ export default function AddStaticCustomer() {
                       </div>
 
                       {bpSettings?.poleBox && (
-                        <div className="col-lg-4 col-md-4 col-xs-6">
+                        <div>
                           <label className="form-control-label changeLabelFontColor">
                             {t("selectPoleBox/splitter")}
                           </label>
@@ -467,7 +467,7 @@ export default function AddStaticCustomer() {
                       )}
 
                       {userType === "simple-queue" && (
-                        <div className="col-lg-4 col-md-4 col-xs-6">
+                        <div>
                           <FtextField
                             type="text"
                             label={t("queueName")}
@@ -477,7 +477,7 @@ export default function AddStaticCustomer() {
                       )}
 
                       {userType === "simple-queue" && (
-                        <div className="col-lg-4 col-md-4 col-xs-6">
+                        <div>
                           <FtextField
                             type="text"
                             label={t("ipAddress")}
@@ -487,7 +487,7 @@ export default function AddStaticCustomer() {
                       )}
 
                       {userType === "firewall-queue" && (
-                        <div className="col-lg-4 col-md-4 col-xs-6">
+                        <div>
                           <FtextField
                             type="text"
                             label={t("ipAddress")}
@@ -497,7 +497,7 @@ export default function AddStaticCustomer() {
                       )}
 
                       {userType === "core-queue" && (
-                        <div className="col-lg-4 col-md-4 col-xs-6">
+                        <div>
                           <FtextField
                             type="text"
                             label={t("ipAddress")}
@@ -508,7 +508,7 @@ export default function AddStaticCustomer() {
 
                       {bpSettings?.hasMikrotik &&
                         userType === "firewall-queue" && (
-                          <div className="col-lg-4 col-md-4 col-xs-6">
+                          <div>
                             <>
                               <label className="form-control-label changeLabelFontColor">
                                 {t("selectPackage")}{" "}
@@ -535,7 +535,7 @@ export default function AddStaticCustomer() {
                         )}
 
                       {bpSettings?.hasMikrotik && userType === "core-queue" && (
-                        <div className="col-lg-4 col-md-4 col-xs-6">
+                        <div>
                           <>
                             <label className="form-control-label changeLabelFontColor">
                               {t("selectPackage")}{" "}
@@ -563,7 +563,7 @@ export default function AddStaticCustomer() {
 
                       {bpSettings?.hasMikrotik &&
                         userType === "simple-queue" && (
-                          <div className="col-lg-4 col-md-4 col-xs-6">
+                          <div>
                             <label className="form-control-label changeLabelFontColor">
                               {t("uploadPackge")}{" "}
                             </label>
@@ -589,7 +589,7 @@ export default function AddStaticCustomer() {
 
                       {bpSettings?.hasMikrotik &&
                         userType === "simple-queue" && (
-                          <div className="col-lg-4 col-md-4 col-xs-6">
+                          <div>
                             <label className="form-control-label changeLabelFontColor">
                               {t("downloadPackge")}
                             </label>
@@ -614,7 +614,7 @@ export default function AddStaticCustomer() {
                         )}
 
                       {!bpSettings?.hasMikrotik && (
-                        <div className="col-lg-4 col-md-4 col-xs-6">
+                        <div>
                           <label className="form-control-label changeLabelFontColor">
                             {t("downloadPackge")}
                           </label>
@@ -634,7 +634,7 @@ export default function AddStaticCustomer() {
                           </select>
                         </div>
                       )}
-                      <div className="col-lg-4 col-md-4 col-xs-6">
+                      <div>
                         <FtextField
                           type="number"
                           label={t("monthFee")}
@@ -645,7 +645,7 @@ export default function AddStaticCustomer() {
                         />
                       </div>
                       {!bpSettings?.hasMikrotik && (
-                        <div className="col-lg-4 col-md-4 col-xs-6">
+                        <div>
                           <FtextField
                             type="number"
                             label={t("prevDue")}
@@ -653,21 +653,21 @@ export default function AddStaticCustomer() {
                           />
                         </div>
                       )}
-                      <div className="col-lg-4 col-md-4 col-xs-6">
+                      <div>
                         <FtextField type="text" label={t("NIDno")} name="nid" />
                       </div>
 
-                      <div className="col-lg-4 col-md-4 col-xs-6">
+                      <div>
                         <FtextField type="text" label={t("name")} name="name" />
                       </div>
-                      <div className="col-lg-4 col-md-4 col-xs-6">
+                      <div>
                         <FtextField
                           type="text"
                           label={t("mobile")}
                           name="mobile"
                         />
                       </div>
-                      <div className="col-lg-4 col-md-4 col-xs-6">
+                      <div>
                         <FtextField
                           type="text"
                           label={t("address")}
@@ -676,7 +676,7 @@ export default function AddStaticCustomer() {
                       </div>
 
                       {divisionalAreaFormData.map((item) => (
-                        <div className="col-lg-4 col-md-4 col-xs-6 mb-3">
+                        <div>
                           <label className="form-control-label changeLabelFontColor">
                             {item.text}
                             {/* <span className="text-danger">*</span> */}
@@ -697,14 +697,14 @@ export default function AddStaticCustomer() {
                         </div>
                       ))}
 
-                      <div className="col-lg-4 col-md-4 col-xs-6">
+                      <div>
                         <FtextField
                           type="text"
                           label={t("email")}
                           name="email"
                         />
                       </div>
-                      <div className="col-lg-4 col-md-4 col-xs-6">
+                      <div>
                         <div className="billCycle">
                           <label className="form-control-label changeLabelFontColor">
                             {t("billingCycle")}{" "}
@@ -721,7 +721,7 @@ export default function AddStaticCustomer() {
                           />
                         </div>
                       </div>
-                      <div className="col-lg-4 col-md-4 col-xs-6">
+                      <div>
                         <label className="form-control-label changeLabelFontColor">
                           {t("connectionDate")}
                         </label>
@@ -735,7 +735,7 @@ export default function AddStaticCustomer() {
                           disabled={!mikrotikPackage}
                         />
                       </div>
-                      <div className="col-lg-4 col-md-4 col-xs-6">
+                      <div>
                         <SelectField
                           label={t("customerBillType")}
                           id="exampleSelect"
@@ -748,7 +748,7 @@ export default function AddStaticCustomer() {
                           <option value="postpaid">{t("postPaid")}</option>
                         </SelectField>
                       </div>
-                      <div className="col-lg-4 col-md-4 col-xs-6 mt-2">
+                      <div>
                         <FtextField
                           type="text"
                           label={t("referenceName")}
@@ -756,7 +756,7 @@ export default function AddStaticCustomer() {
                           disabled={!mikrotikPackage}
                         />
                       </div>
-                      <div className="col-lg-4 col-md-4 col-xs-6 mt-2">
+                      <div>
                         <FtextField
                           type="text"
                           label={t("referenceMobile")}
@@ -764,29 +764,27 @@ export default function AddStaticCustomer() {
                           disabled={!mikrotikPackage}
                         />
                       </div>
-                      <div className="col-lg-4 col-md-4 col-xs-6">
-                        {!bpSettings?.genCustomerId && (
-                          <FtextField
-                            type="text"
-                            label={t("customerId")}
-                            name="customerId"
-                            disabled={!mikrotikPackage}
-                            validation={"true"}
+
+                      {!bpSettings?.genCustomerId && (
+                        <FtextField
+                          type="text"
+                          label={t("customerId")}
+                          name="customerId"
+                          disabled={!mikrotikPackage}
+                          validation={"true"}
+                        />
+                      )}
+
+                      {bpSettings?.hasMikrotik && (
+                        <div className="customerDisable">
+                          <label> {t("automaticConnectionOff")} </label>
+                          <input
+                            type="checkBox"
+                            checked={autoDisable}
+                            onChange={(e) => setAutoDisable(e.target.checked)}
                           />
-                        )}
-                      </div>
-                      <div className="col-lg-4 col-md-4 col-xs-6">
-                        {bpSettings?.hasMikrotik && (
-                          <div className="autoDisable">
-                            <label> {t("automaticConnectionOff")} </label>
-                            <input
-                              type="checkBox"
-                              checked={autoDisable}
-                              onChange={(e) => setAutoDisable(e.target.checked)}
-                            />
-                          </div>
-                        )}
-                      </div>
+                        </div>
+                      )}
                     </div>
                     <div className="modal-footer" style={{ border: "none" }}>
                       <button

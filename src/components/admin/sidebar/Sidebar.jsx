@@ -497,7 +497,9 @@ export default function Sidebar() {
                         </NavLink> */}
 
                         {(userRole === "ispOwner" ||
-                          userRole === "manager") && (
+                          userRole === "manager" ||
+                          (userRole === "collector" &&
+                            user.collector.ispOwner)) && (
                           <NavLink
                             key={126}
                             to={"/other/customer"}
@@ -609,7 +611,7 @@ export default function Sidebar() {
                             (userRole === "collector" &&
                               user.collector.reseller)
                               ? "/reseller/diposit"
-                              : "/diposit"
+                              : "/deposit"
                           }
                           className={(navInfo) =>
                             navInfo.isActive ? activeClass.active : ""
@@ -622,14 +624,14 @@ export default function Sidebar() {
                                 window.location.pathname ===
                                 (userRole === "reseller"
                                   ? "/reseller/diposit"
-                                  : "/diposit")
+                                  : "/deposit")
                                   ? "active"
                                   : ""
                               }
                             >
                               <div className="sidebarIcon">{<CashCoin />}</div>
                               <span className="sidebarLinksName">
-                                {t("diposit")}
+                                {t("deposit")}
                               </span>
                             </li>
                           </FontColor>

@@ -38,7 +38,11 @@ import ReactToPrint from "react-to-print";
 import PrintCustomer from "./customerPDF";
 import BulkBillingCycleEdit from "../resellerModals/bulkBillingCycleEdit";
 import FormatNumber from "../../../components/common/NumberFormat";
-import { fetchMikrotik, getArea } from "../../../features/apiCalls";
+import {
+  fetchMikrotik,
+  getAllPackages,
+  getArea,
+} from "../../../features/apiCalls";
 import BulkStatusEdit from "../resellerModals/bulkStatusEdit";
 import BulkCustomerTransfer from "../resellerModals/bulkCustomerTransfer";
 import BulkPromiseDateEdit from "../../Customer/customerCRUD/bulkOpration/BulkPromiseDateEdit";
@@ -86,6 +90,9 @@ const ResellerCustomer = () => {
     (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
   );
 
+  // get all packages
+  const allPackages = useSelector((state) => state.package.allPackages);
+
   // customer state
   const [customer, setCustomer] = useState([]);
 
@@ -99,6 +106,7 @@ const ResellerCustomer = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [areaLoading, setAreaLoading] = useState(false);
+  const [packageLoading, setPackageLoading] = useState(false);
 
   // status local state
   const [filterStatus, setFilterStatus] = useState(null);
@@ -143,6 +151,8 @@ const ResellerCustomer = () => {
 
     getArea(dispatch, ispOwnerId, setAreaLoading);
     getSubAreasApi(dispatch, ispOwnerId);
+
+    getAllPackages(dispatch, ispOwnerId, setPackageLoading);
   }, []);
 
   // set customer at state
@@ -197,6 +207,12 @@ const ResellerCustomer = () => {
   // get specific customer Report
   const getSpecificCustomerReport = (reportData) => {
     setcustomerReportId(reportData);
+  };
+
+  // customer current package find
+  const getCustomerPackage = (pack) => {
+    const findPack = allPackages.find((item) => item.id.includes(pack));
+    return findPack;
   };
 
   //export customer data
@@ -316,13 +332,22 @@ const ResellerCustomer = () => {
         width: "9%",
       },
       {
-        Header: t("PPPoEName"),
-        accessor: "pppoe.name",
         width: "9%",
+        Header: t("pppoeIp"),
+        accessor: (field) =>
+          field?.userType === "pppoe"
+            ? field?.pppoe.name
+            : field?.userType === "firewall-queue"
+            ? field?.queue.address
+            : field?.userType === "core-queue"
+            ? field?.queue.srcAddress
+            : field?.userType === "simple-queue"
+            ? field?.queue.target
+            : "",
       },
       {
         width: "9%",
-        Header: t("customerType"),
+        Header: t("userType"),
         accessor: "userType",
       },
       {
@@ -350,10 +375,10 @@ const ResellerCustomer = () => {
       {
         width: "10%",
         Header: t("package"),
-        accessor: (field) =>
-          field.userType === "pppoe"
-            ? field.pppoe.profile
-            : field.queue.package,
+        accessor: "mikrotikPackage",
+        Cell: ({ cell: { value } }) => (
+          <div>{customer && getCustomerPackage(value)?.name}</div>
+        ),
       },
       {
         width: "8%",
@@ -460,7 +485,7 @@ const ResellerCustomer = () => {
         ),
       },
     ],
-    [t]
+    [t, customer, allPackages]
   );
 
   //total monthly fee and due calculation

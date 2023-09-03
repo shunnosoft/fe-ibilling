@@ -381,6 +381,8 @@ export default function RstaticCustomer() {
         accessor: (field) =>
           field.userType === "firewall-queue"
             ? field.queue.address
+            : field.userType === "core-queue"
+            ? field?.queue.srcAddress
             : field.queue.target,
       },
       {

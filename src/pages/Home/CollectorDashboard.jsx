@@ -405,7 +405,7 @@ export default function CollectorDashboard() {
                     <p style={{ fontSize: "16px" }}>{t("total customer")}</p>
                     <h2>{FormatNumber(customerStat?.customers)}</h2>
 
-                    <Link to={"/new/customer"}>
+                    <Link to={"/other/customer"}>
                       <p className="dashboardData">
                         {t("new customer")}{" "}
                         {FormatNumber(customerStat?.newCustomer)}

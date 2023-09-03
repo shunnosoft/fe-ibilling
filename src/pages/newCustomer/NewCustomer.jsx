@@ -8,7 +8,6 @@ import Table from "../../components/table/Table";
 import { badge } from "../../components/common/Utils";
 import moment from "moment";
 import DatePicker from "react-datepicker";
-import Loader from "../../components/common/Loader";
 import { Accordion } from "react-bootstrap";
 import PPPoECustomerPrint from "./customerPrint/PPPoECustomerPrint";
 import StaticCustomerPrint from "./customerPrint/StaticCustomerPrint";
@@ -26,11 +25,7 @@ const NewCustomer = ({
 
   // get Current date
   const today = new Date();
-
-  // get first date of month
-  const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
-
-  var lastDate = new Date(firstDay.getFullYear(), firstDay.getMonth() + 1, 0);
+  var firstDate = new Date(today.getFullYear(), today.getMonth(), 1);
 
   // get isp owner id
   const ispOwner = useSelector(
@@ -51,17 +46,40 @@ const NewCustomer = ({
   //customer type state
   const [customerType, setCustomerType] = useState("");
 
-  // start date state
-  const [startDate, setStartDate] = useState(firstDay);
+  //filter state
+  const [filterDate, setFilterDate] = useState(firstDate);
 
-  // end date state
-  const [endDate, setEndDate] = useState(today);
+  // current & priv date
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
+
+  // current start & end date
+  var selectDate = new Date(filterDate.getFullYear(), filterDate.getMonth(), 1);
+  var lastDate = new Date(
+    filterDate.getFullYear(),
+    filterDate.getMonth() + 1,
+    0
+  );
 
   // get customer api call
   useEffect(() => {
-    customer.length === 0 &&
-      getNewCustomer(dispatch, ispOwner, setIsNewLoading);
-  }, []);
+    setStartDate(selectDate);
+
+    if (lastDate.getMonth() + 1 === today.getMonth() + 1) {
+      setEndDate(today);
+    } else {
+      setEndDate(lastDate);
+    }
+
+    filterDate.getMonth() + 1 &&
+      getNewCustomer(
+        dispatch,
+        ispOwner,
+        filterDate.getFullYear(),
+        filterDate.getMonth() + 1,
+        setIsNewLoading
+      );
+  }, [filterDate]);
 
   useEffect(() => {
     setNewCustomer(customer);
@@ -292,6 +310,19 @@ const NewCustomer = ({
           <Accordion.Item eventKey="filter" className="accordionBorder">
             <Accordion.Body className="accordionPadding pt-2">
               <div className="displayGrid6">
+                <div>
+                  <DatePicker
+                    className="form-control mw-100 mt-0"
+                    selected={filterDate}
+                    onChange={(date) => setFilterDate(date)}
+                    dateFormat="MMM-yyyy"
+                    showMonthYearPicker
+                    showFullMonthYearPicker
+                    maxDate={firstDate}
+                    minDate={new Date(ispOwnerData?.createdAt)}
+                  />
+                </div>
+
                 <select
                   className="form-select mw-100 mt-0"
                   onChange={(e) => setCustomerType(e.target.value)}
@@ -310,7 +341,7 @@ const NewCustomer = ({
                     selected={startDate}
                     onChange={(date) => setStartDate(date)}
                     dateFormat="MMM dd yyyy"
-                    minDate={firstDay}
+                    minDate={selectDate}
                     maxDate={
                       lastDate.getMonth() + 1 === today.getMonth() + 1
                         ? today
@@ -325,7 +356,7 @@ const NewCustomer = ({
                     selected={endDate}
                     onChange={(date) => setEndDate(date)}
                     dateFormat="MMM dd yyyy"
-                    minDate={firstDay}
+                    minDate={selectDate}
                     maxDate={
                       lastDate.getMonth() + 1 === today.getMonth() + 1
                         ? today

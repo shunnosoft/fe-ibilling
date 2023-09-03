@@ -96,6 +96,7 @@ import {
   getCustomerInvoice,
   updateCustomerInvoice,
   deleteCustomerInvoice,
+  getDepositReportSuccess,
 } from "./paymentSlice";
 import { getChartSuccess, getCardDataSuccess } from "./chartsSlice";
 import {
@@ -991,10 +992,18 @@ export const getCustomer = async (dispatch, ispOwner, setIsloading) => {
   setIsloading(false);
 };
 
-export const getNewCustomer = async (dispatch, ispOwner, setIsloading) => {
+export const getNewCustomer = async (
+  dispatch,
+  ispOwner,
+  year,
+  month,
+  setIsloading
+) => {
   setIsloading(true);
   try {
-    const res = await apiLink.get(`ispOwner/new/customer/${ispOwner}`);
+    const res = await apiLink.get(
+      `ispOwner/new/customer/${ispOwner}?year=${year}&month=${month}`
+    );
     console.log(res.data);
     dispatch(getNewCustomerSuccess(res.data));
   } catch (error) {
@@ -2260,13 +2269,10 @@ export const addDeposit = async (dispatch, data, setLoading) => {
 //balance
 
 export const getTotalbal = async (dispatch, setLoading) => {
-  setLoading(true);
   try {
     const res = await apiLink.get(`bill/monthlyBill/balance`);
     dispatch(getTotalBalanceSuccess(res.data));
-    setLoading(false);
   } catch (error) {
-    setLoading(false);
     toast.error(error.response?.data.message);
   }
 };
@@ -2296,6 +2302,27 @@ export const getDeposit = async (
     console.log(error.response?.data.message);
   }
   setLoading(false);
+};
+
+export const getDepositReport = async (
+  dispatch,
+  manager,
+  year,
+  month,
+  setIsLoading
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.get(
+      `/deposit/manager-collects/${manager}?year=${year}&month=${month}`
+    );
+    console.log(res.data);
+    dispatch(getDepositReportSuccess(res.data));
+  } catch (error) {
+    console.log(error);
+    console.log(error.response?.data.message);
+  }
+  setIsLoading(false);
 };
 
 export const depositAcceptReject = async (
@@ -2384,10 +2411,10 @@ export const editBillReport = async (
 
 //my deposit
 
-export const getMyDeposit = async (dispatch, setIsLoading) => {
+export const getMyDeposit = async (dispatch, year, month, setIsLoading) => {
   setIsLoading(true);
   try {
-    const res = await apiLink.get("/deposit");
+    const res = await apiLink.get(`/deposit?year=${year}&month=${month}`);
     dispatch(getmyDepositSucces(res.data));
   } catch (error) {
     console.log(error?.response?.data.message);

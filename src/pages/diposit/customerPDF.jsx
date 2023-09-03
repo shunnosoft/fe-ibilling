@@ -7,7 +7,8 @@ import { useTranslation } from "react-i18next";
 
 const PrintCustomer = React.forwardRef((props, ref) => {
   const { t } = useTranslation();
-  const { currentCustomers, filterData } = props;
+  const { currentCustomers, filterData, status } = props;
+
   const ispOwnerData = useSelector(
     (state) => state.persistedReducer.auth?.userData
   );
@@ -41,54 +42,104 @@ const PrintCustomer = React.forwardRef((props, ref) => {
           </p>
           {ispOwnerData.address && (
             <p>
-              {t("address")} {ispOwnerData?.address}
+              {t("address")} : {ispOwnerData?.address}
             </p>
           )}
+          <li>
+            {t("totalData")} : {currentCustomers.length}
+          </li>
         </div>
       </div>
 
-      <ul className="d-flex justify-content-evenly filter_list">
-        <li>
-          {t("all collector")} : {filterData.collector}
-        </li>
-        <li>
-          {t("startDate")} : {filterData.startDate}
-        </li>
-        <li>
-          {t("endDate")} : {filterData.endDate}
-        </li>
-      </ul>
-      <table className="table table-striped ">
-        <thead>
-          <tr className="spetialSortingRow">
-            <th scope="col">{t("name")}</th>
-            <th scope="col">{t("total")}</th>
-            <th scope="col">{t("action")}</th>
-            <th scope="col">{t("date")}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {currentCustomers.map((val, key) => (
-            <tr key={key} id={val.id}>
-              <td className="prin_td">{getName(val.user)}</td>
-              <td className="prin_td">{FormatNumber(val.amount)}</td>
-              <td className="prin_td">{val.status}</td>
+      {status !== "ownDeposit" && (
+        <ul className="d-flex justify-content-evenly filter_list">
+          <li>
+            {t("all collector")} : {filterData.collector}
+          </li>
+          <li>
+            {t("totalData")} : {currentCustomers.length}
+          </li>
+          <li>
+            {t("startDate")} : {filterData.startDate}
+          </li>
+          <li>
+            {t("endDate")} : {filterData.endDate}
+          </li>
+        </ul>
+      )}
 
-              <td className="prin_td">
-                {moment(val.createdAt).format("DD-MM-YYYY")}
-              </td>
-            </tr>
-          ))}
-        </tbody>
+      <table className="table table-striped ">
+        {status !== "ownDeposit" ? (
+          <>
+            <thead>
+              <tr className="spetialSortingRow">
+                <th scope="col">{t("id")}</th>
+                <th scope="col">{t("name")}</th>
+                <th scope="col">{t("total")}</th>
+                <th scope="col">{t("action")}</th>
+                <th scope="col">{t("date")}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {currentCustomers.map((val, key) => (
+                <tr key={key} id={val.id}>
+                  <td className="prin_td">{key + 1}</td>
+                  <td className="prin_td">{getName(val.user)}</td>
+                  <td className="prin_td">{FormatNumber(val.amount)}</td>
+                  <td className="prin_td">{val.status}</td>
+
+                  <td className="prin_td">
+                    {moment(val.createdAt).format("DD-MM-YYYY")}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </>
+        ) : (
+          <>
+            <thead>
+              <tr className="spetialSortingRow">
+                <th scope="col">{t("id")}</th>
+                <th scope="col">{t("amount")}</th>
+                <th scope="col">{t("status")}</th>
+                <th scope="col">{t("not")}</th>
+                <th scope="col">{t("date")}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {currentCustomers.map((val, key) => (
+                <tr key={key} id={val.id}>
+                  <td className="prin_td">{key + 1}</td>
+                  <td className="prin_td">{FormatNumber(val.amount)}</td>
+                  <td className="prin_td">
+                    <div>
+                      {val.status === "accepted" && (
+                        <span className="badge bg-success">
+                          {t("adminAccepted")}
+                        </span>
+                      )}
+                      {val.status === "rejected" && (
+                        <span className="badge bg-danger">
+                          {t("adminCanceled")}
+                        </span>
+                      )}
+                      {val.status === "pending" && (
+                        <span className="badge bg-warning">
+                          {t("adminPending")}
+                        </span>
+                      )}
+                    </div>
+                  </td>
+                  <td className="prin_td">{val?.note}</td>
+                  <td className="prin_td">
+                    {moment(val.createdAt).format("DD-MM-YYYY")}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </>
+        )}
       </table>
-      {/* <div className="pdf_footer_line"></div>
-      <div className="signature_text text-mute">সাক্ষর এবং তারিখ</div>
-      <div className="signature_container">
-        <div className="p-3 signature_wraper">
-          <div className="signamture_field">ম্যানেজার</div>
-          <div className="signamture_field">এডমিন</div>
-        </div>
-      </div> */}
     </div>
   );
 });

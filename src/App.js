@@ -117,6 +117,7 @@ import NetFeeSupportNumbers from "./admin/Home/supportNumber/NetFeeSupportNumber
 import Bulletin from "./admin/Home/bulletin/Bulletin";
 import WithdrawalPaymentRequest from "./pages/withdrawalRequest/WithdrawalPaymentRequest";
 import OtherCustomer from "./pages/otherCustomer/OtherCustomer";
+import ManagerDeposit from "./pages/diposit/ManagerDeposit";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
@@ -519,7 +520,9 @@ function App() {
             <Route
               path="/other/customer"
               element={
-                userRole === "ispOwner" || userRole === "manager" ? (
+                userRole === "ispOwner" ||
+                userRole === "manager" ||
+                userRole === "collector" ? (
                   <OtherCustomer />
                 ) : (
                   <Navigate to={"/home"} />
@@ -697,7 +700,12 @@ function App() {
               />
               <Route path="area" element={<Area />} />
               {/* <Route path="bill" element={<Bill />} /> */}
-              <Route path="diposit" element={<Diposit />} />
+              <Route
+                path="deposit"
+                element={
+                  userRole === "ispOwner" ? <Diposit /> : <ManagerDeposit />
+                }
+              />
 
               <Route path="invoice" element={<Invoice />} />
               <Route

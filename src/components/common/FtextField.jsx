@@ -5,7 +5,7 @@ export const FtextField = ({ label, validation, ...props }) => {
   const [field, meta] = useField(props);
 
   return (
-    <div className="mb-3">
+    <div>
       <label htmlFor={field.name} className="changeLabelFontColor">
         {label} {validation && <span className="text-danger">*</span>}
       </label>
