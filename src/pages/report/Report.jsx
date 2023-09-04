@@ -17,9 +17,6 @@ import {
   ArrowBarLeft,
   ArrowBarRight,
   ArrowClockwise,
-  ArrowLeftCircle,
-  ArrowRightCircle,
-  FileExcelFill,
   FiletypeCsv,
   FilterCircle,
   PenFill,
@@ -111,7 +108,6 @@ export default function Report() {
   const [subAreaIds, setSubArea] = useState([]);
 
   const [mainData, setMainData] = useState(allBills);
-  console.log(mainData);
 
   const [collectors, setCollectors] = useState([]);
   const [collectorIds, setCollectorIds] = useState([]);

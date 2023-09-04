@@ -26,6 +26,7 @@ import {
   addCollectorSuccess,
   deleteCollectorSuccess,
   editCollectorSuccess,
+  getCollectorAllPrevBalance,
   getCollectorBills,
   getCollectorReportSuccess,
   getCollectorSuccess,
@@ -869,6 +870,23 @@ export const getCollector = async (dispatch, ispOwnerId, setIsLoading) => {
   try {
     const res = await apiLink.get(`/ispOwner/collector/${ispOwnerId}`);
     dispatch(getCollectorSuccess(res.data));
+  } catch (error) {
+    toast.error(error.response?.data.message);
+  }
+  setIsLoading(false);
+};
+
+export const collectorAllPrevBalance = async (
+  dispatch,
+  collectorId,
+  setIsLoading
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.get(
+      `/deposit/all-previous-balance/${collectorId}`
+    );
+    dispatch(getCollectorAllPrevBalance(res.data));
   } catch (error) {
     toast.error(error.response?.data.message);
   }
