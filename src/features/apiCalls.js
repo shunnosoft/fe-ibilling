@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import moment from "moment";
 
 import {
+  getMultipleManagerSuccess,
   managerAddSuccess,
   managerDeleteSuccess,
   managerEditSuccess,
@@ -97,6 +98,7 @@ import {
   updateCustomerInvoice,
   deleteCustomerInvoice,
   getDepositReportSuccess,
+  updateDepositReportSuccess,
 } from "./paymentSlice";
 import { getChartSuccess, getCardDataSuccess } from "./chartsSlice";
 import {
@@ -1004,7 +1006,6 @@ export const getNewCustomer = async (
     const res = await apiLink.get(
       `ispOwner/new/customer/${ispOwner}?year=${year}&month=${month}`
     );
-    console.log(res.data);
     dispatch(getNewCustomerSuccess(res.data));
   } catch (error) {
     console.log(error.message);
@@ -2316,7 +2317,6 @@ export const getDepositReport = async (
     const res = await apiLink.get(
       `/deposit/manager-collects/${manager}?year=${year}&month=${month}`
     );
-    console.log(res.data);
     dispatch(getDepositReportSuccess(res.data));
   } catch (error) {
     console.log(error);
@@ -2334,8 +2334,7 @@ export const depositAcceptReject = async (
   setAccLoading(true);
   try {
     const res = await apiLink.patch(`/deposit/${id}`, { status: status });
-    dispatch(updateDepositSuccess(res.data));
-    setAccLoading(false);
+    dispatch(updateDepositReportSuccess(res.data));
     if (res.data.status === "accepted") {
       langMessage(
         "success",
@@ -2350,10 +2349,9 @@ export const depositAcceptReject = async (
       );
     }
   } catch (error) {
-    setAccLoading(false);
-
     toast.error(error.response?.data.message);
   }
+  setAccLoading(false);
 };
 
 export const getAllBills = async (
@@ -3301,12 +3299,12 @@ export const customerNumberUpdate = async (
 };
 
 // Multiple manager api call
-export const getMultipleManager = async (currentUser, setMultipleManager) => {
+export const getMultipleManager = async (dispatch, currentUser) => {
   try {
     const res = await apiLink.get(
-      `collector/get-manager/${currentUser?.collector.id}`
+      `collector/get-manager/${currentUser?.collector?.id}`
     );
-    setMultipleManager(res.data);
+    dispatch(getMultipleManagerSuccess(res.data));
   } catch (error) {
     toast.error(error.response?.data?.message);
   }

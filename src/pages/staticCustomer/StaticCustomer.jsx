@@ -730,7 +730,7 @@ export default function Customer() {
       },
 
       {
-        width: "5%",
+        width: "9%",
         Header: t("mobile"),
         accessor: "mobile",
       },
@@ -745,7 +745,7 @@ export default function Customer() {
       },
 
       {
-        width: "11%",
+        width: "10%",
         Header: t("paymentStatus"),
         accessor: "paymentStatus",
         Cell: ({ cell: { value } }) => {
@@ -753,7 +753,7 @@ export default function Customer() {
         },
       },
       {
-        width: "11%",
+        width: "10%",
         Header: t("package"),
         accessor: "mikrotikPackage",
         Cell: ({ cell: { value } }) => (
@@ -761,12 +761,12 @@ export default function Customer() {
         ),
       },
       {
-        width: "11%",
+        width: "10%",
         Header: t("monthly"),
         accessor: "monthlyFee",
       },
       {
-        width: "11%",
+        width: "10%",
         Header: t("balance"),
         accessor: "balance",
       },

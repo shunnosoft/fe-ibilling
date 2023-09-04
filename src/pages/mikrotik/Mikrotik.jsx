@@ -121,16 +121,18 @@ export default function Mikrotik() {
               </Link>
             )}
 
-            {/* {permission.customerType.includes("pppoe") && ( */}
-            <button
-              title={t("checkConnection")}
-              style={{ padding: "0.10rem .5rem" }}
-              className="btn btn-sm btn-primary mx-1"
-              onClick={() => MikrotikConnectionTest(original.id, original.name)}
-            >
-              <PlugFill />
-            </button>
-            {/* )} */}
+            {permission.customerType.includes("pppoe") && (
+              <button
+                title={t("checkConnection")}
+                style={{ padding: "0.10rem .5rem" }}
+                className="btn btn-sm btn-primary mx-1"
+                onClick={() =>
+                  MikrotikConnectionTest(original.id, original.name)
+                }
+              >
+                <PlugFill />
+              </button>
+            )}
 
             {permission?.mikrotikDelete && (
               <button

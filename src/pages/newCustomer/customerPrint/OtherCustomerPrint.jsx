@@ -1,18 +1,29 @@
-import React from "react";
+import React, { forwardRef } from "react";
 import moment from "moment";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import FormatNumber from "../../../components/common/NumberFormat";
 import { badge } from "../../../components/common/Utils";
 
-const PPPoECustomerPrint = React.forwardRef((props, ref) => {
+const OtherCustomerPrint = forwardRef((props, ref) => {
   const { t } = useTranslation();
+
+  // print data props
   const { currentCustomers, filterData } = props;
+
   const ispOwnerData = useSelector(
     (state) => state.persistedReducer.auth.userData
   );
 
-  // console.log(ispOwnerData);
+  // get all packages
+  const allPackages = useSelector((state) => state.package.allPackages);
+
+  // customer current package find
+  const getCustomerPackage = (pack) => {
+    const findPack = allPackages.find((item) => item.id.includes(pack));
+    return findPack;
+  };
+
   return (
     <div className="mt-3 p-4" ref={ref}>
       <div className="page_header letter_header d-flex justify-content-between align-items-center pb-3 ">
@@ -33,9 +44,17 @@ const PPPoECustomerPrint = React.forwardRef((props, ref) => {
           )}
         </div>
       </div>
+
       <ul className="d-flex justify-content-evenly">
         <li>
-          {t("startDate")} :{" "}
+          {t("customerType")} :
+          {filterData.customerType ? filterData.customerType : t("all")}
+        </li>
+        <li>
+          {t("totalData")} :{currentCustomers.length}
+        </li>
+        <li>
+          {t("startDate")} :
           {moment(filterData?.startDate).format("DD MMM YYYY")}
         </li>
         <li>
@@ -47,13 +66,12 @@ const PPPoECustomerPrint = React.forwardRef((props, ref) => {
           <tr className="spetialSortingRow">
             <th scope="col">{t("id")}</th>
             <th scope="col">{t("name")}</th>
-            <th scope="col">{t("address")}</th>
-            <th scope="col">{t("PPPoEName")}</th>
+            <th scope="col">{t("pppoeIp")}</th>
             <th scope="col">{t("mobile")}</th>
             <th scope="col">{t("status")}</th>
-            <th scope="col">{t("amount")}</th>
+            <th scope="col">{t("paymentStatus")}</th>
             <th scope="col">{t("package")}</th>
-            <th scope="col">{t("month")}</th>
+            <th scope="col">{t("monthly")}</th>
             <th scope="col">{t("balance")}</th>
             <th scope="col">{t("bill")}</th>
             <th scope="col">{t("createdAt")}</th>
@@ -64,12 +82,24 @@ const PPPoECustomerPrint = React.forwardRef((props, ref) => {
             <tr key={key} id={val.id}>
               <td className="prin_td">{val.customerId}</td>
               <td className="prin_td">{val.name}</td>
-              <td className="prin_td">{val.address}</td>
-              <td className="prin_td">{val.pppoe.name}</td>
+              <td className="prin_td">
+                {val?.userType === "pppoe"
+                  ? val?.pppoe.name
+                  : val?.userType === "firewall-queue"
+                  ? val?.queue.address
+                  : val?.userType === "core-queue"
+                  ? val?.queue.srcAddress
+                  : val?.userType === "simple-queue"
+                  ? val?.queue.target
+                  : ""}
+              </td>
               <td className="prin_td">{val.mobile}</td>
               <td className="prin_td">{badge(val.status)}</td>
               <td className="prin_td">{badge(val.paymentStatus)}</td>
-              <td className="prin_td">{val.pppoe.profile}</td>
+              <td className="prin_td">
+                {val?.mikrotikPackage &&
+                  getCustomerPackage(val?.mikrotikPackage)?.name}
+              </td>
               <td className="prin_td">{FormatNumber(val.monthlyFee)}</td>
               <td className="prin_td">
                 <strong>{FormatNumber(val.balance)}</strong>
@@ -78,7 +108,7 @@ const PPPoECustomerPrint = React.forwardRef((props, ref) => {
                 {moment(val.billingCycle).format("DD MMM YYYY")}
               </td>
               <td className="prin_td">
-                {moment(val.created).format("DD MMM YYYY")}
+                {moment(val.createdAt).format("DD MMM YYYY")}
               </td>
             </tr>
           ))}
@@ -88,4 +118,4 @@ const PPPoECustomerPrint = React.forwardRef((props, ref) => {
   );
 });
 
-export default PPPoECustomerPrint;
+export default OtherCustomerPrint;

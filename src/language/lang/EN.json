@@ -843,7 +843,7 @@
   "onlinePaymentAmount": "Online Payment Amount",
   "onlinePaymentWithdraw": "Online Payment Withdraw",
   "withdrawal request": "Withdrawal Payment",
-  "paymentWithdrawalRequest": "Payment Withdrawal Request",
+  "paymentWithdrawalRequest": "Payment Withdrawal",
   "buySms": "Buy SMS",
   "totalWithdraw": "Total Withdraw",
   "amountMustBeAbove": "Amount must be Above 250Tk",

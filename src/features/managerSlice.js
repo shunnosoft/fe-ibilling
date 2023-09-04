@@ -4,6 +4,7 @@ const initialState = {
   isPending: false,
   manager: [],
   error: false,
+  multipleManager: [],
 };
 
 const managerSlice = createSlice({
@@ -43,6 +44,10 @@ const managerSlice = createSlice({
     clearManager: (state) => {
       state.manager = {};
     },
+
+    getMultipleManagerSuccess: (state, action) => {
+      state.multipleManager = action.payload;
+    },
   },
 });
 
@@ -54,6 +59,7 @@ export const {
   managerFetchStart,
   managerFetchSuccess,
   clearManager,
+  getMultipleManagerSuccess,
 } = managerSlice.actions;
 
 export default managerSlice.reducer;

@@ -118,6 +118,7 @@ import Bulletin from "./admin/Home/bulletin/Bulletin";
 import WithdrawalPaymentRequest from "./pages/withdrawalRequest/WithdrawalPaymentRequest";
 import OtherCustomer from "./pages/otherCustomer/OtherCustomer";
 import ManagerDeposit from "./pages/diposit/ManagerDeposit";
+import CollectorDeposit from "./pages/diposit/CollectorDeposit";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
@@ -703,7 +704,13 @@ function App() {
               <Route
                 path="deposit"
                 element={
-                  userRole === "ispOwner" ? <Diposit /> : <ManagerDeposit />
+                  userRole === "ispOwner" ? (
+                    <Diposit />
+                  ) : userRole === "manager" ? (
+                    <ManagerDeposit />
+                  ) : (
+                    <CollectorDeposit />
+                  )
                 }
               />
 

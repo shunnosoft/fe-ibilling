@@ -1,13 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
-import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { ToastContainer } from "react-toastify";
-import useDash from "../../assets/css/dash.module.css";
-import { FontColor, FourGround } from "../../assets/js/theme";
 import { useTranslation } from "react-i18next";
 import { Card, Collapse, Tab, Tabs } from "react-bootstrap";
-import NewCustomer from "../newCustomer/NewCustomer";
-import InactiveCustomer from "../inactiveCustomer/InactiveCustomer";
-import Footer from "../../components/admin/footer/Footer";
+import { useDispatch, useSelector } from "react-redux";
+import ReactToPrint from "react-to-print";
 import {
   ArrowBarLeft,
   ArrowBarRight,
@@ -16,15 +12,22 @@ import {
   FilterCircle,
   PrinterFill,
 } from "react-bootstrap-icons";
+
+// internal import
+import Sidebar from "../../components/admin/sidebar/Sidebar";
+import useDash from "../../assets/css/dash.module.css";
+import { FontColor, FourGround } from "../../assets/js/theme";
+import NewCustomer from "../newCustomer/NewCustomer";
+import InactiveCustomer from "../inactiveCustomer/InactiveCustomer";
+import Footer from "../../components/admin/footer/Footer";
 import Loader from "../../components/common/Loader";
-import { useDispatch, useSelector } from "react-redux";
 import {
+  getAllPackages,
   getDueCustomer,
   getInactiveCustomer,
   getNewCustomer,
 } from "../../features/apiCalls";
 import DueCustomer from "../dueCustomer/DueCustomer";
-import ReactToPrint from "react-to-print";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
 
@@ -57,6 +60,7 @@ const OtherCustomer = () => {
   const [isInactiveLoading, setIsInactiveLoading] = useState(false);
   const [isDueLoading, setIsDueLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  const [packageLoading, setPackageLoading] = useState(false);
 
   // filter Accordion handle state
   const [activeKeys, setActiveKeys] = useState("");
@@ -66,9 +70,21 @@ const OtherCustomer = () => {
 
   // reload handler
   const reloadHandler = () => {
-    getNewCustomer(dispatch, ispOwner, setIsNewLoading);
-    getInactiveCustomer(dispatch, ispOwner, year, month, setIsNewLoading);
-    getDueCustomer(dispatch, ispOwner, month, year, setIsDueLoading);
+    if (otherTabs === "newCustomer") {
+      getNewCustomer(dispatch, ispOwner, year, month, setIsNewLoading);
+    }
+    if (otherTabs === "inactiveCustomer") {
+      getInactiveCustomer(
+        dispatch,
+        ispOwner,
+        year,
+        month,
+        setIsInactiveLoading
+      );
+    }
+    if (otherTabs === "dueCustomer") {
+      getDueCustomer(dispatch, ispOwner, month, year, setIsDueLoading);
+    }
   };
 
   // multiple tabs control
@@ -77,6 +93,7 @@ const OtherCustomer = () => {
   };
 
   useEffect(() => {
+    getAllPackages(dispatch, ispOwner, setPackageLoading);
     Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
   }, []);
 

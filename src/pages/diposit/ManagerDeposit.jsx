@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Accordion, Tab, Tabs, ToastContainer } from "react-bootstrap";
+import { Accordion, Tab, Tabs } from "react-bootstrap";
 import { Form, Formik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import DatePicker from "react-datepicker";
@@ -18,6 +18,7 @@ import {
   PrinterFill,
 } from "react-bootstrap-icons";
 import ReactToPrint from "react-to-print";
+import { ToastContainer } from "react-toastify";
 
 // internal import
 import Sidebar from "../../components/admin/sidebar/Sidebar";
@@ -43,6 +44,7 @@ const ManagerDeposit = () => {
   const dispatch = useDispatch();
   const componentRef = useRef();
 
+  // current month date
   let date = new Date();
   var firstDate = new Date(date.getFullYear(), date.getMonth(), 1);
 
@@ -107,6 +109,7 @@ const ManagerDeposit = () => {
   const [dateStart, setStartDate] = useState(new Date());
   const [dateEnd, setEndDate] = useState(new Date());
 
+  // own deposit report monthly filter
   const [ownFilter, setOwnFilter] = useState(firstDate);
 
   // Owner deposit start & end date
@@ -154,7 +157,9 @@ const ManagerDeposit = () => {
           setIsLoading
         );
 
-      getOwnerUsers(dispatch, ispOwner);
+      ownerUsers.length === 0 && getOwnerUsers(dispatch, ispOwner);
+      allCollector.length === 0 &&
+        getCollector(dispatch, ispOwner, setIsLoading);
     }
 
     if (tabEventKey === "ownDeposit" && ownFilter) {
@@ -165,20 +170,18 @@ const ManagerDeposit = () => {
       } else {
         setOwnDepositEnd(ownLastDate);
       }
-      getMyDeposit(
-        dispatch,
-        ownFilter.getFullYear(),
-        ownFilter.getMonth() + 1,
-        setIsLoading
-      );
-      getCollector(dispatch, ispOwner, setIsLoading);
+      ownFilter.getMonth() + 1 &&
+        getMyDeposit(
+          dispatch,
+          ownFilter.getFullYear(),
+          ownFilter.getMonth() + 1,
+          setIsLoading
+        );
     }
   }, [tabEventKey, filterDate, ownFilter]);
 
   useEffect(() => {
-    if (collectorDeposit) {
-      setMainData(collectorDeposit);
-    }
+    setMainData(collectorDeposit);
   }, [collectorDeposit]);
 
   useEffect(() => {
@@ -206,11 +209,11 @@ const ManagerDeposit = () => {
       );
 
       getOwnerUsers(dispatch, ispOwner);
+      getCollector(dispatch, ispOwner, setIsLoading);
     }
 
     if (tabEventKey === "ownDeposit") {
       getMyDeposit(dispatch, setIsLoading);
-      getCollector(dispatch, ispOwner, setIsLoading);
     }
   };
 
@@ -387,7 +390,7 @@ const ManagerDeposit = () => {
                         depositAcceptRejectHandler("rejected", original.id);
                       }}
                     >
-                      {t("cancel")}
+                      {t("rejected")}
                     </span>
                   </div>
                 ) : (
@@ -399,16 +402,12 @@ const ManagerDeposit = () => {
                 <>
                   {original.status === "accepted" && (
                     <span className="badge bg-success">
-                      {original.depositBy === "manager"
-                        ? t("adminAccepted")
-                        : t("managerAccepted")}
+                      {t("managerAccepted")}
                     </span>
                   )}
                   {original.status === "rejected" && (
                     <span className="badge bg-danger">
-                      {original.depositBy === "manager"
-                        ? t("adminCanceled")
-                        : t("managerCanceled")}
+                      {t("managerCanceled")}
                     </span>
                   )}
                 </>
@@ -572,7 +571,7 @@ const ManagerDeposit = () => {
                         >
                           {() => (
                             <Form>
-                              <div className="displayGridForDiposit">
+                              <div className="displayGrid3 mt-4">
                                 <FtextField
                                   type="text"
                                   name="balance"

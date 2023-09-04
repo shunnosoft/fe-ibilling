@@ -1,17 +1,17 @@
 import React, { useMemo, useState } from "react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getDueCustomer } from "../../features/apiCalls";
 import { useTranslation } from "react-i18next";
+import moment from "moment";
+import { Accordion } from "react-bootstrap";
+import DatePicker from "react-datepicker";
+import { CSVLink } from "react-csv";
+
+// internal import
+import { getDueCustomer } from "../../features/apiCalls";
 import Table from "../../components/table/Table";
 import { badge } from "../../components/common/Utils";
-import moment from "moment";
-import Loader from "../../components/common/Loader";
-import { Accordion } from "react-bootstrap";
-import { CSVLink } from "react-csv";
-import PrintReport from "./print/ReportPDF";
-import StaticPrintReport from "./print/StaticReportPDF";
-import DatePicker from "react-datepicker";
+import OtherCustomerPrint from "../newCustomer/customerPrint/OtherCustomerPrint";
 
 const DueCustomer = ({
   isDueLoading,
@@ -25,6 +25,7 @@ const DueCustomer = ({
 
   // get current date
   const date = new Date();
+  var currentMonth = new Date(date.getFullYear(), date.getMonth(), 1);
   var firstDate = new Date(date.getFullYear(), date.getMonth() - 1);
 
   // get isp owner id
@@ -39,6 +40,9 @@ const DueCustomer = ({
 
   // get due customer
   let dueCustomer = useSelector((state) => state.customer.dueCustomer);
+
+  // get all packages
+  const allPackages = useSelector((state) => state.package.allPackages);
 
   // prev month due customer state
   const [customers, setCustomers] = useState([]);
@@ -79,81 +83,75 @@ const DueCustomer = ({
     setCustomers(arr);
   };
 
-  // pppoe customer csv table header
+  // customer current package find
+  const getCustomerPackage = (pack) => {
+    const findPack = allPackages.find((item) => item.id.includes(pack));
+    return findPack;
+  };
+
+  // inactive customer csv table header
   const customerForCsVTableInfoHeader = [
+    { label: "customer_id", key: "customerId" },
     { label: "name_of_client", key: "name" },
-    { label: "address_of_client", key: "customerAddress" },
+    { label: "PPPoEName/IP", key: "pppoeIp" },
+    { label: "client_phone", key: "mobile" },
+    { label: "status", key: "status" },
+    { label: "payment Status", key: "paymentStatus" },
     { label: "bandwidth_allocation MB", key: "package" },
-    { label: "client_phone", key: "mobile" },
-    { label: "status", key: "status" },
-    { label: "payment Status", key: "paymentStatus" },
     { label: "monthly_fee", key: "monthlyFee" },
     { label: "balance", key: "balance" },
-    { label: "billing_cycle", key: "billingCycle" },
-  ];
-
-  //pppoe customer export customer data
-  let customerForCsVTableInfo = customers.map((customer) => {
-    return {
-      name: customer.name,
-      customerAddress: customer.address,
-      package: customer?.pppoe?.profile,
-      mobile: customer?.mobile || "",
-      status: customer.status,
-      paymentStatus: customer.paymentStatus,
-      monthlyFee: customer.monthlyFee,
-      balance: customer.balance,
-      billingCycle: moment(customer.billingCycle).format("YYYY/MM/DD"),
-    };
-  });
-
-  // static customer csv table header
-  const staticCustomerForCsVTableInfoHeader = [
-    { label: "name_of_client", key: "name" },
     { label: "address_of_client", key: "customerAddress" },
-    { label: "activation_date", key: "createdAt" },
-    { label: "customer_ip", key: "ip" },
-    { label: "package", key: "package" },
-    { label: "client_phone", key: "mobile" },
-    { label: "status", key: "status" },
-    { label: "payment Status", key: "paymentStatus" },
     { label: "email", key: "email" },
-    { label: "monthly_fee", key: "monthlyFee" },
-    { label: "balance", key: "balance" },
+    { label: "activation_date", key: "createdAt" },
     { label: "billing_cycle", key: "billingCycle" },
   ];
 
-  // satic customer export customer data
-  let staticCustomerForCsVTableInfo = customers.map((customer) => {
+  //inactive customer export customer data
+  const customerForCsVTableInfo = customers.map((customer) => {
     return {
+      customerId: customer.customerId,
       name: customer.name,
-      ip:
-        customer.userType === "firewall-queue"
-          ? customer.queue.address
-          : customer.queue.target,
-      customerAddress: customer.address,
-      createdAt: moment(customer.createdAt).format("YYYY/MM/DD"),
-      package: customer?.queue?.package,
+      pppoeIp:
+        customer?.userType === "pppoe"
+          ? customer?.pppoe.name
+          : customer?.userType === "firewall-queue"
+          ? customer?.queue.address
+          : customer?.userType === "core-queue"
+          ? customer?.queue.srcAddress
+          : customer?.userType === "simple-queue"
+          ? customer?.queue.target
+          : "",
       mobile: customer?.mobile || "",
       status: customer.status,
       paymentStatus: customer.paymentStatus,
-      email: customer.email || "",
+      package:
+        customer?.mikrotikPackage &&
+        getCustomerPackage(customer?.mikrotikPackage)?.name,
       monthlyFee: customer.monthlyFee,
       balance: customer.balance,
-      billingCycle: moment(customer.billingCycle).format("YYYY/MM/DD"),
+      customerAddress: customer.address,
+      email: customer.email || "",
+      createdAt: moment(customer.createdAt).format("YYYY-MM-DD"),
+      billingCycle: moment(customer.billingCycle).format("YYYY-MM-DD"),
     };
   });
+
+  const filterData = {
+    startDate: currentMonth,
+    endDate: date,
+    customerType,
+  };
 
   // due-customer column
   const columns = useMemo(
     () => [
       {
-        width: "8%",
+        width: "7%",
         Header: t("id"),
         accessor: "customerId",
       },
       {
-        width: "9%",
+        width: "8%",
         Header: t("name"),
         Cell: ({ row: { original } }) => (
           <div
@@ -170,14 +168,18 @@ const DueCustomer = ({
         width: "9%",
         Header: t("pppoeIp"),
         accessor: (field) =>
-          field.userType === "pppoe"
-            ? field.pppoe.name
-            : field.userType === "firewall-queue"
-            ? field.queue.address
-            : field.queue.target,
+          field?.userType === "pppoe"
+            ? field?.pppoe.name
+            : field?.userType === "firewall-queue"
+            ? field?.queue.address
+            : field?.userType === "core-queue"
+            ? field?.queue.srcAddress
+            : field?.userType === "simple-queue"
+            ? field?.queue.target
+            : "",
       },
       {
-        width: "12%",
+        width: "10%",
         Header: t("mobile"),
         accessor: "mobile",
       },
@@ -191,7 +193,7 @@ const DueCustomer = ({
         },
       },
       {
-        width: "12%",
+        width: "10%",
         Header: t("paymentStatus"),
         accessor: "paymentStatus",
         Cell: ({ cell: { value } }) => {
@@ -201,7 +203,10 @@ const DueCustomer = ({
       {
         width: "10%",
         Header: t("package"),
-        accessor: "pppoe.profile",
+        accessor: "mikrotikPackage",
+        Cell: ({ cell: { value } }) => (
+          <div>{customers && getCustomerPackage(value)?.name}</div>
+        ),
       },
       {
         width: "10%",
@@ -214,15 +219,23 @@ const DueCustomer = ({
         accessor: "balance",
       },
       {
-        width: "11%",
-        Header: t("date"),
+        width: "8%",
+        Header: t("bill"),
         accessor: "billingCycle",
         Cell: ({ cell: { value } }) => {
           return moment(value).format("YYYY/MM/DD hh:mm A");
         },
       },
+      {
+        width: "8%",
+        Header: t("createdAt"),
+        accessor: "createdAt",
+        Cell: ({ cell: { value } }) => {
+          return moment(value).format("YYYY/MM/DD hh:mm A");
+        },
+      },
     ],
-    [t]
+    [t, customers, allPackages]
   );
 
   return (
@@ -274,33 +287,23 @@ const DueCustomer = ({
 
         <div className="addCollector">
           <div style={{ display: "none" }}>
-            {customerType === "pppoe" ? (
-              <PrintReport currentCustomers={customers} ref={componentRef} />
-            ) : (
-              <StaticPrintReport
-                currentCustomers={customers}
-                ref={componentRef}
-              />
-            )}
+            <OtherCustomerPrint
+              filterData={filterData}
+              currentCustomers={customers}
+              ref={componentRef}
+            />
           </div>
           <div style={{ display: "none" }}>
             <CSVLink
               filename={ispOwnerData.company}
-              headers={
-                customerType === "pppoe"
-                  ? customerForCsVTableInfoHeader
-                  : staticCustomerForCsVTableInfoHeader
-              }
-              data={
-                customerType === "pppoe"
-                  ? customerForCsVTableInfo
-                  : staticCustomerForCsVTableInfo
-              }
+              headers={customerForCsVTableInfoHeader}
+              data={customerForCsVTableInfo}
               title={t("customerReport")}
               ref={csvLinkDown}
               target="_blank"
             ></CSVLink>
           </div>
+
           <div className="table-section">
             <Table
               isLoading={isDueLoading}

@@ -127,7 +127,7 @@ export default function Report() {
   const [filterDate, setFilterDate] = useState(firstDay);
 
   // curr & priv date state
-  const [dateStart, setStartDate] = useState(new Date());
+  const [dateStart, setStartDate] = useState(firstDay);
   const [dateEnd, setEndDate] = useState(new Date());
 
   var selectDate = new Date(filterDate.getFullYear(), filterDate.getMonth(), 1);
@@ -331,7 +331,6 @@ export default function Report() {
     );
 
     setMainData(arr);
-    // setMainData2(arr);
   };
 
   const addAllBills = useMemo(() => {

@@ -54,6 +54,14 @@ const paymentSlice = createSlice({
       state.collectorDeposit = action.payload;
     },
 
+    updateDepositReportSuccess: (state, action) => {
+      state.collectorDeposit[
+        state.collectorDeposit.findIndex(
+          (item) => item.id === action.payload.id
+        )
+      ] = action.payload;
+    },
+
     clearBills: (state) => {
       state.balance = "";
       state.allBills = [];
@@ -100,5 +108,6 @@ export const {
   getWithdrawBalance,
   postWithdrawBalance,
   getDepositReportSuccess,
+  updateDepositReportSuccess,
 } = paymentSlice.actions;
 export default paymentSlice.reducer;
