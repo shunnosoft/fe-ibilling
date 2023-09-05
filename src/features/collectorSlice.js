@@ -6,6 +6,7 @@ const collectorSlice = createSlice({
     collector: [],
     collectorBill: [],
     collectorReport: [],
+    prevBalance: [],
   },
   reducers: {
     getCollectorSuccess: (state, action) => {
@@ -35,6 +36,9 @@ const collectorSlice = createSlice({
     getCollectorReportSuccess: (state, action) => {
       state.collectorReport = action.payload;
     },
+    getCollectorAllPrevBalance: (state, { payload }) => {
+      state.prevBalance = payload;
+    },
   },
 });
 
@@ -46,6 +50,7 @@ export const {
   editCollectorSuccess,
   deleteCollectorSuccess,
   getCollectorReportSuccess,
+  getCollectorAllPrevBalance,
 } = collectorSlice.actions;
 
 export default collectorSlice.reducer;

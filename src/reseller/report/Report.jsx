@@ -66,6 +66,7 @@ const Report = () => {
 
   // get reseller, collector collection all bills
   const allBills = useSelector((state) => state.payment.allBills);
+  console.log(allBills);
 
   // get all area subArea
   const subAreas = useSelector((state) => state.area.area);

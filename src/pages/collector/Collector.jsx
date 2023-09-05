@@ -10,6 +10,7 @@ import {
   ArchiveFill,
   PeopleFill,
   CashStack,
+  CurrencyDollar,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
@@ -36,6 +37,7 @@ import Loader from "../../components/common/Loader";
 import PasswordReset from "../../components/modals/passwordReset/PasswordReset";
 import { getSubAreasApi } from "../../features/actions/customerApiCall";
 import { Link } from "react-router-dom";
+import PrevBalanceReport from "./collectorCRUD/PrevBalanceReport";
 
 export default function Collector() {
   const { t } = useTranslation();
@@ -205,6 +207,22 @@ export default function Collector() {
                     </li>
                   </Link>
                 )}
+                {role === "ispOwner" && (
+                  <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#collectorPrevMonthBalance"
+                    onClick={() => {
+                      getSpecificCollector(original.id);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <CurrencyDollar />
+                        <p className="actionP">{t("previousBalance")}</p>
+                      </div>
+                    </div>
+                  </li>
+                )}
                 {original.mobile && (
                   <li
                     data-bs-toggle="modal"
@@ -321,6 +339,7 @@ export default function Collector() {
         <CollectorPost />
         <CollectorDetails collectorId={singleCollector} />
         <CollectorEdit collectorId={singleCollector} />
+        <PrevBalanceReport collectorId={singleCollector} />
         <SingleMessage single={collectorId} sendCustomer="collector" />
         <PasswordReset resetCustomerId={userId} />
       </div>
