@@ -196,7 +196,12 @@ export default function Diposit() {
         Cell: ({ cell: { value } }) => {
           const performer = ownerUsers.find((item) => item[value]);
 
-          return <div>{performer && performer[value].name}</div>;
+          return (
+            <div>
+              {performer &&
+                performer[value].name + "(" + performer[value].role + ")"}
+            </div>
+          );
         },
       },
       {
@@ -210,7 +215,13 @@ export default function Diposit() {
       {
         width: "15%",
         Header: t("depositBy"),
-        accessor: "depositBy",
+        Cell: ({ row: { original } }) => {
+          const performer = manager.find(
+            (item) => item.id === original.manager
+          );
+
+          return <div>{performer?.name || "Owner"}</div>;
+        },
       },
       {
         width: "20%",
@@ -300,8 +311,8 @@ export default function Diposit() {
               {original?.note && original?.note?.slice(0, 70)}
               <span
                 className="text-primary see-more"
-                data-bs-toggle="modal"
-                data-bs-target="#dipositNoteDetailsModal"
+                // data-bs-toggle="modal"
+                // data-bs-target="#dipositNoteDetailsModal"
                 // onClick={() => setMessage(original?.note)}
               >
                 {original?.note?.length > 70 ? "...see more" : ""}

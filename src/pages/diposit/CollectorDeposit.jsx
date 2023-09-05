@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Accordion, Tab, Tabs } from "react-bootstrap";
 import { Form, Formik } from "formik";
@@ -19,6 +19,7 @@ import Loader from "../../components/common/Loader";
 import Table from "../../components/table/Table";
 import {
   addDeposit,
+  collectorAllPrevBalance,
   getMultipleManager,
   getMyDeposit,
   getTotalbal,
@@ -26,6 +27,8 @@ import {
 import Footer from "../../components/admin/footer/Footer";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
+import PrevBalanceDeposit from "./PrevBalanceDeposit";
+import { badge } from "../../components/common/Utils";
 
 const CollectorDeposit = () => {
   const { t } = useTranslation();
@@ -57,6 +60,9 @@ const CollectorDeposit = () => {
   // get own deposit from redux
   let ownDeposits = useSelector((state) => state?.payment?.myDeposit);
 
+  // collector all previous balance
+  const allPrevBalance = useSelector((state) => state?.collector?.prevBalance);
+
   // get bulletin permission
   const butPermission = useSelector(
     (state) => state.adminNetFeeSupport?.bulletinPermission
@@ -64,6 +70,7 @@ const CollectorDeposit = () => {
 
   // loading state
   const [isLoading, setIsLoading] = useState(false);
+  const [show, setShow] = useState(false);
 
   // tabs change event key
   const [tabEventKey, setTabEventKey] = useState("deposit");
@@ -73,6 +80,9 @@ const CollectorDeposit = () => {
 
   // owner deposit data
   const [ownDepositData, setOwnDepositData] = useState([]);
+
+  // previous balance deposit data
+  const [depositData, setDepositData] = useState("");
 
   // filter Accordion handle state
   const [activeKeys, setActiveKeys] = useState("");
@@ -115,6 +125,14 @@ const CollectorDeposit = () => {
           dispatch,
           ownFilter.getFullYear(),
           ownFilter.getMonth() + 1,
+          setIsLoading
+        );
+    }
+    if (tabEventKey === "prevBalance") {
+      allPrevBalance.length === 0 &&
+        collectorAllPrevBalance(
+          dispatch,
+          userData?.collector?.id,
           setIsLoading
         );
     }
@@ -163,7 +181,7 @@ const CollectorDeposit = () => {
   };
 
   // own deposit column
-  const columns = React.useMemo(
+  const columns = useMemo(
     () => [
       {
         width: "10%",
@@ -232,6 +250,69 @@ const CollectorDeposit = () => {
     [t]
   );
 
+  // previous balance
+  const columns3 = useMemo(
+    () => [
+      {
+        width: "10%",
+        Header: "#",
+        id: "row",
+        accessor: (row) => Number(row.id + 1),
+        Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
+      },
+      {
+        width: "15%",
+        Header: t("month"),
+        accessor: "month",
+      },
+
+      {
+        width: "15%",
+        Header: t("year"),
+        accessor: "year",
+      },
+      {
+        width: "15%",
+        Header: t("diposit"),
+        accessor: "deposit",
+      },
+      {
+        width: "15%",
+        Header: t("billReport"),
+        accessor: "billReport",
+      },
+      {
+        width: "15%",
+        Header: t("balance"),
+        accessor: "balance",
+      },
+      {
+        width: "15%",
+        Header: () => <div className="text-center">{t("action")}</div>,
+        id: "option",
+        Cell: ({ row: { original } }) => (
+          <div className="d-flex justify-content-center align-items-center">
+            {original.status !== "" ? (
+              badge(original.status)
+            ) : (
+              <button
+                style={{ cursor: "pointer" }}
+                className="btn btn-outline-primary"
+                onClick={() => {
+                  setDepositData(original);
+                  setShow(true);
+                }}
+              >
+                {t("deposit")}
+              </button>
+            )}
+          </div>
+        ),
+      },
+    ],
+    [t]
+  );
+
   return (
     <>
       <Sidebar />
@@ -246,18 +327,20 @@ const CollectorDeposit = () => {
                   <div>{t("deposit")}</div>
 
                   <div className="d-flex justify-content-center align-items-center">
-                    <div
-                      onClick={() => {
-                        if (!activeKeys) {
-                          setActiveKeys("filter");
-                        } else {
-                          setActiveKeys("");
-                        }
-                      }}
-                      title={t("filter")}
-                    >
-                      <FilterCircle className="addcutmButton" />
-                    </div>
+                    {tabEventKey === "ownDeposit" && (
+                      <div
+                        onClick={() => {
+                          if (!activeKeys) {
+                            setActiveKeys("filter");
+                          } else {
+                            setActiveKeys("");
+                          }
+                        }}
+                        title={t("filter")}
+                      >
+                        <FilterCircle className="addcutmButton" />
+                      </div>
+                    )}
                   </div>
                 </div>
               </FourGround>
@@ -418,6 +501,14 @@ const CollectorDeposit = () => {
                           ></Table>
                         </div>
                       </Tab>
+
+                      <Tab eventKey="prevBalance" title={t("previousBalance")}>
+                        <Table
+                          isLoading={isLoading}
+                          columns={columns3}
+                          data={allPrevBalance}
+                        ></Table>
+                      </Tab>
                     </Tabs>
                   </div>
                 </div>
@@ -431,6 +522,13 @@ const CollectorDeposit = () => {
           </div>
         </div>
       </div>
+
+      {/* previous balance deposit in manager */}
+      <PrevBalanceDeposit
+        show={show}
+        setShow={setShow}
+        depositData={depositData}
+      />
     </>
   );
 };

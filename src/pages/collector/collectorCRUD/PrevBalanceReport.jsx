@@ -39,7 +39,7 @@ const PrevBalanceReport = ({ collectorId }) => {
       },
       {
         width: "18%",
-        Header: t("diposit"),
+        Header: t("deposit"),
         accessor: "deposit",
       },
       {

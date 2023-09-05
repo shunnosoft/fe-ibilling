@@ -2287,7 +2287,7 @@ export const addDeposit = async (dispatch, data, setLoading) => {
 
 //balance
 
-export const getTotalbal = async (dispatch, setLoading) => {
+export const getTotalbal = async (dispatch) => {
   try {
     const res = await apiLink.get(`bill/monthlyBill/balance`);
     dispatch(getTotalBalanceSuccess(res.data));

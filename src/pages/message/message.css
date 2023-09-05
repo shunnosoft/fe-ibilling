@@ -270,3 +270,20 @@
   font-size: 1.5rem;
   margin-right: 0.2rem;
 }
+
+.radioSelect {
+  margin-top: 1.5rem;
+  display: flex;
+  align-items: center;
+}
+.radioSelect > input {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.templateLabel {
+  margin-left: 5px;
+  font-weight: 700 bold;
+  color: rgb(104, 104, 104);
+}

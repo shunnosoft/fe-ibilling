@@ -355,7 +355,7 @@ const ManagerDeposit = () => {
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        width: "30%",
+        width: "20%",
         Header: t("collector"),
         accessor: "user",
         Cell: ({ cell: { value } }) => {
@@ -434,7 +434,27 @@ const ManagerDeposit = () => {
         ),
       },
       {
-        width: "25%",
+        width: "20%",
+        Header: t("note"),
+        accessor: "note",
+        Cell: ({ row: { original } }) => {
+          return (
+            <div>
+              {original?.note && original?.note?.slice(0, 70)}
+              <span
+                className="text-primary see-more"
+                data-bs-toggle="modal"
+                data-bs-target="#dipositNoteDetailsModal"
+                // onClick={() => setMessage(original?.note)}
+              >
+                {original?.note?.length > 70 ? "...see more" : ""}
+              </span>
+            </div>
+          );
+        },
+      },
+      {
+        width: "15%",
         Header: t("date"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
