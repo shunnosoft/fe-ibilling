@@ -1,43 +1,36 @@
 import React, { useRef, useState } from "react";
-import Sidebar from "../../components/admin/sidebar/Sidebar";
-import { ToastContainer, toast } from "react-toastify";
-import { Field, Form, Formik } from "formik";
-import { useSelector } from "react-redux";
-import * as Yup from "yup";
-
-// internal import
-import { FtextField } from "../../components/common/FtextField";
-import "./diposit.css";
-import { FontColor, FourGround } from "../../assets/js/theme";
-import Footer from "../../components/admin/footer/Footer";
-import useDash from "../../assets/css/dash.module.css";
 import { useCallback, useEffect } from "react";
-import {
-  addDeposit,
-  depositAcceptReject,
-  getCollector,
-  getDeposit,
-  getManger,
-  getMultipleManager,
-  getMyDeposit,
-  getTotalbal,
-} from "../../features/apiCalls";
+import { ToastContainer, toast } from "react-toastify";
+import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import moment from "moment";
-import Loader from "../../components/common/Loader";
-import FormatNumber from "../../components/common/NumberFormat";
-import Table from "../../components/table/Table";
-import { Accordion, Tab, Tabs } from "react-bootstrap";
+import DatePicker from "react-datepicker";
+import { Accordion } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
-import { getOwnerUsers } from "../../features/getIspOwnerUsersApi";
 import {
   ArrowClockwise,
   FilterCircle,
   PrinterFill,
 } from "react-bootstrap-icons";
 import ReactToPrint from "react-to-print";
+
+// internal import
+import "./diposit.css";
+import Sidebar from "../../components/admin/sidebar/Sidebar";
+import { FontColor, FourGround } from "../../assets/js/theme";
+import Footer from "../../components/admin/footer/Footer";
+import useDash from "../../assets/css/dash.module.css";
+import {
+  depositAcceptReject,
+  getCollector,
+  getDeposit,
+  getManger,
+} from "../../features/apiCalls";
+import Loader from "../../components/common/Loader";
+import FormatNumber from "../../components/common/NumberFormat";
+import Table from "../../components/table/Table";
+import { getOwnerUsers } from "../../features/getIspOwnerUsersApi";
 import PrintCustomer from "./customerPDF";
-import AllCollector from "../Home/dataComponent/AllCollector";
 import NoteDetailsModal from "./NoteDetailsModal";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
@@ -47,15 +40,9 @@ export default function Diposit() {
   const dispatch = useDispatch();
   const componentRef = useRef(); //reference of pdf export component
 
-  // get balance from redux
-  const balancee = useSelector((state) => state?.payment?.balance);
-
   // get all deposit form redux
   const allDeposit = useSelector((state) => state?.payment?.allDeposit);
 
-  const collectorDeposite = useSelector(
-    (state) => state?.payment?.collectorDeposite
-  );
   // get manager from redux
   const manager = useSelector((state) => state?.manager?.manager);
 
@@ -65,15 +52,9 @@ export default function Diposit() {
   );
 
   // get current user from redux
-  const currentUser = useSelector(
+  const userData = useSelector(
     (state) => state.persistedReducer.auth?.currentUser
   );
-
-  // get user role form redux
-  const userRole = useSelector((state) => state.persistedReducer.auth?.role);
-
-  // get own deposit from redux
-  let ownDeposits = useSelector((state) => state?.payment?.myDeposit);
 
   // get all collector form redux
   const allCollector = useSelector((state) => state?.collector?.collector);
@@ -93,260 +74,107 @@ export default function Diposit() {
   firstDay.setHours(0, 0, 0, 0);
   today.setHours(23, 59, 59, 999);
 
-  // all initial local state
-  const [dateStart, setStartDate] = useState(firstDay);
+  // loading statue
+  const [isLoading, setIsLoading] = useState(false);
+  const [acceptLoading, setAccLoading] = useState(false);
 
-  const [ownDepositStart, setOwnDepositStart] = useState(firstDay);
-
-  const [ownDepositEnd, setOwnDepositEnd] = useState(today);
-
-  const [dateEnd, setEndDate] = useState(today);
-
-  const [collectorIds, setCollectorIds] = useState("all");
-
+  // all deposit
   const [mainData, setMainData] = useState([]);
 
-  const [ownDepositData, setOwnDepositData] = useState([]);
-
-  const [isLoading, setLoading] = useState(false);
-
-  const [acceptLoading, setAccLoading] = useState(false);
-  const [selectedCollector, setSelectedCustomer] = useState("");
+  // manager message note
+  const [message, setMessage] = useState("");
 
   // filter Accordion handle state
   const [activeKeys, setActiveKeys] = useState("");
 
-  //multiple manager data state
-  const [multipleManager, setMultipleManager] = useState([]);
-  const [selectManager, setSelectManager] = useState("");
-  const [message, setMessage] = useState("");
+  //select depositor id
+  const [collectorIds, setCollectorIds] = useState("all");
+  const [depositedName, setDepositedName] = useState("");
 
-  // add deposit form validation
-  const BillValidatoin = Yup.object().shape({
-    amount: Yup.string().required("Please insert amount."),
-  });
-  // add bill deposit
-  const billDipositHandler = (data) => {
-    if (userRole !== "collector") {
-      const sendingData = {
-        depositBy: currentUser?.user.role,
-        amount: data.amount,
-        balance: data.balance,
-        user: currentUser?.user.id,
-        ispOwner: ispOwner,
-        note: data.note,
-      };
-      addDeposit(dispatch, sendingData, setLoading);
-      data.amount = "";
-    }
-    if (userRole === "collector") {
-      if (!selectManager) {
-        toast.error(t("selectManager"));
-      } else {
-        const sendingData = {
-          depositBy: currentUser?.user.role,
-          amount: data.amount,
-          balance: data.balance,
-          user: currentUser?.user.id,
-          ispOwner: ispOwner,
-          manager: selectManager,
-          note: data.note,
-        };
-        addDeposit(dispatch, sendingData, setLoading);
-        data.amount = "";
-      }
-    }
-  };
+  // filter date state
+  const [filterDate, setFilterDate] = useState(firstDay);
 
-  // bill report accept & reject handler
-  const depositAcceptRejectHandler = (status, id) => {
-    depositAcceptReject(dispatch, status, id, setAccLoading);
-  };
+  // all initial local state
+  const [dateStart, setStartDate] = useState(firstDay);
+  const [dateEnd, setEndDate] = useState(today);
 
-  // manager select deposit handler
-  const managerSelectHandler = (e) => {
-    setSelectManager(e.target.value);
-  };
-
-  // reload handler
-  const reloadHandler = () => {
-    if (userRole != "ispOwner") {
-      getMyDeposit(dispatch, setLoading);
-    }
-    if (userRole === "ispOwner") {
-      getDeposit(
-        dispatch,
-        {
-          depositerRole: "manager",
-          ispOwnerID: ispOwner,
-        },
-        userRole,
-        setLoading
-      );
-
-      getDeposit(
-        dispatch,
-        {
-          depositerRole: "collector",
-          ispOwnerID: ispOwner,
-        },
-        userRole,
-        setLoading
-      );
-    }
-
-    if (userRole === "manager") {
-      getDeposit(
-        dispatch,
-        {
-          depositerRole: "collector",
-          ispOwnerID: ispOwner,
-        },
-        userRole,
-        setLoading
-      );
-    }
-  };
+  // current month start & end date
+  var selectDate = new Date(filterDate.getFullYear(), filterDate.getMonth(), 1);
+  var lastDate = new Date(
+    filterDate.getFullYear(),
+    filterDate.getMonth() + 1,
+    0
+  );
 
   useEffect(() => {
-    if (userRole !== "collector") getCollector(dispatch, ispOwner, setLoading);
-    if (userRole === "ispOwner") getManger(dispatch, ispOwner);
-  }, []);
+    setStartDate(selectDate);
 
-  // get own deposit, ownerUser & total balance api call
+    if (lastDate.getMonth() + 1 === today.getMonth() + 1) {
+      setEndDate(today);
+    } else {
+      setEndDate(lastDate);
+    }
+
+    filterDate.getMonth() + 1 &&
+      getDeposit(
+        dispatch,
+        ispOwner,
+        filterDate.getFullYear(),
+        filterDate.getMonth() + 1,
+        setIsLoading
+      );
+  }, [filterDate]);
+
   useEffect(() => {
-    if (userRole != "ispOwner") {
-      if (allDeposit.length === 0) getMyDeposit(dispatch, setLoading);
-    }
-
-    getOwnerUsers(dispatch, ispOwner);
-    if (userRole !== "ispOwner") getTotalbal(dispatch, setLoading);
-  }, [userRole]);
-
-  useEffect(() => {
-    if (userRole === "ispOwner") {
-      if (allDeposit.length === 0)
-        getDeposit(
-          dispatch,
-          {
-            depositerRole: "manager",
-            ispOwnerID: ispOwner,
-          },
-          userRole,
-          setLoading
-        );
-
-      if (allDeposit.length === 0)
-        getDeposit(
-          dispatch,
-          {
-            depositerRole: "collector",
-            ispOwnerID: ispOwner,
-          },
-          userRole,
-          setLoading
-        );
-    }
-
-    if (userRole === "manager") {
-      if (allDeposit.length === 0)
-        getDeposit(
-          dispatch,
-          {
-            depositerRole: "collector",
-            ispOwnerID: ispOwner,
-          },
-          userRole,
-          setLoading
-        );
-    }
-
-    if (userRole === "collector") {
-      getMultipleManager(currentUser, setMultipleManager);
-    }
-
+    allCollector.length === 0 && getCollector(dispatch, ispOwner, setIsLoading);
+    manager.length === 0 && getManger(dispatch, ispOwner);
+    ownerUsers.length === 0 && getOwnerUsers(dispatch, ispOwner);
     Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
   }, []);
 
   useEffect(() => {
-    if (userRole === "ispOwner" && allDeposit && collectorDeposite) {
-      return setMainData([...allDeposit, ...collectorDeposite]);
-    } else {
-      setMainData(allDeposit);
-    }
-  }, [allDeposit, collectorDeposite]);
+    setMainData(allDeposit);
+  }, [allDeposit]);
 
-  // initial own deposit filter
-  useEffect(() => {
-    let ownDepositFilter = [...ownDeposits];
-    // date filter
-    ownDepositFilter = ownDepositFilter.filter(
-      (original) =>
-        new Date(moment(original.createdAt).format("YYYY-MM-DD")).getTime() >=
-          new Date(moment(ownDepositStart).format("YYYY-MM-DD")).getTime() &&
-        new Date(moment(original.createdAt).format("YYYY-MM-DD")).getTime() <=
-          new Date(moment(ownDepositEnd).format("YYYY-MM-DD")).getTime()
+  // reload handler
+  const reloadHandler = () => {
+    getDeposit(
+      dispatch,
+      ispOwner,
+      filterDate.getFullYear(),
+      filterDate.getMonth() + 1,
+      setIsLoading
     );
+  };
 
-    setOwnDepositData(ownDepositFilter);
-  }, [ownDeposits]);
+  // deposit report accept & reject handler
+  const depositAcceptRejectHandler = (status, id) => {
+    depositAcceptReject(dispatch, status, id, setAccLoading, "ispOwner");
+  };
 
   // filter section
   const onClickFilter = () => {
-    let arr = [...allDeposit, ...collectorDeposite];
+    let arr = [...allDeposit];
+
     if (collectorIds !== "all") {
       arr = arr.filter((bill) => bill.user === collectorIds);
     } else {
       arr = arr;
     }
-    //collector Filter
-    if (selectedCollector)
-      arr = arr.filter((item) => item.user === selectedCollector);
 
     // date filter
     arr = arr.filter(
-      (original) =>
-        new Date(moment(original.createdAt).format("YYYY-MM-DD")).getTime() >=
+      (val) =>
+        new Date(moment(val.createdAt).format("YYYY-MM-DD")).getTime() >=
           new Date(moment(dateStart).format("YYYY-MM-DD")).getTime() &&
-        new Date(moment(original.createdAt).format("YYYY-MM-DD")).getTime() <=
+        new Date(moment(val.createdAt).format("YYYY-MM-DD")).getTime() <=
           new Date(moment(dateEnd).format("YYYY-MM-DD")).getTime()
     );
     setMainData(arr);
   };
 
-  // initial filter for main deposit
-  useEffect(() => {
-    let initialAllDeposit = [...allDeposit, ...collectorDeposite];
-    initialAllDeposit = initialAllDeposit.filter(
-      (original) =>
-        new Date(moment(original.createdAt).format("YYYY-MM-DD")).getTime() >=
-          new Date(moment(dateStart).format("YYYY-MM-DD")).getTime() &&
-        new Date(moment(original.createdAt).format("YYYY-MM-DD")).getTime() <=
-          new Date(moment(dateEnd).format("YYYY-MM-DD")).getTime()
-    );
-    setMainData(initialAllDeposit);
-  }, [allDeposit, collectorDeposite]);
-
-  // own deposit filter
-  const ownDepositDateFilter = () => {
-    let ownDepositFilter = [...ownDeposits];
-    // date filter
-    ownDepositFilter = ownDepositFilter.filter(
-      (original) =>
-        new Date(moment(original.createdAt).format("YYYY-MM-DD")).getTime() >=
-          new Date(moment(ownDepositStart).format("YYYY-MM-DD")).getTime() &&
-        new Date(moment(original.createdAt).format("YYYY-MM-DD")).getTime() <=
-          new Date(moment(ownDepositEnd).format("YYYY-MM-DD")).getTime()
-    );
-
-    setOwnDepositData(ownDepositFilter);
-  };
-
-  // send filter data to print
-  const collector = allCollector.find((item) => item.user === collectorIds);
-
   const filterData = {
-    collector: collector?.name ? collector.name : t("all collector"),
+    deposit: depositedName ? depositedName : t("all"),
     startDate: moment(dateStart).format("YYYY-MM-DD"),
     endDate: moment(dateEnd).format("YYYY-MM-DD"),
   };
@@ -362,18 +190,13 @@ export default function Diposit() {
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        width: "20%",
+        width: "15%",
         Header: t("collector"),
         accessor: "user",
         Cell: ({ cell: { value } }) => {
           const performer = ownerUsers.find((item) => item[value]);
 
-          return (
-            <div>
-              {performer &&
-                performer[value].name + "(" + performer[value].role + ")"}
-            </div>
-          );
+          return <div>{performer && performer[value].name}</div>;
         },
       },
       {
@@ -387,30 +210,22 @@ export default function Diposit() {
       {
         width: "15%",
         Header: t("depositBy"),
-        accessor: "manager.name",
+        accessor: "depositBy",
       },
       {
         width: "20%",
         Header: t("action"),
 
         Cell: ({ row: { original } }) => (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
+          <div className="d-flex justify-content-center align-items-center">
             <div>
-              {original.status === "pending" ? (
+              {original.status === "pending" &&
+              original.depositBy === "manager" ? (
                 acceptLoading ? (
                   <div className="loaderDiv">
                     <Loader />
                   </div>
-                ) : (userRole === "ispOwner" &&
-                    original.depositBy === "manager") ||
-                  (userRole === "manager" &&
-                    original.depositBy === "collector") ? (
+                ) : original.depositBy === "manager" ? (
                   <div className="">
                     <span
                       style={{ cursor: "pointer" }}
@@ -428,100 +243,55 @@ export default function Diposit() {
                         depositAcceptRejectHandler("rejected", original.id);
                       }}
                     >
-                      {t("cancel")}
+                      {t("rejected")}
                     </span>
                   </div>
                 ) : (
-                  <span class="badge bg-warning shadow">
-                    {t("managerPending")}
-                  </span>
+                  ""
                 )
-              ) : (
-                <>
+              ) : original.depositBy === "collector" ? (
+                <div>
                   {original.status === "accepted" && (
                     <span className="badge bg-success">
-                      {original.depositBy === "manager"
-                        ? t("adminAccepted")
-                        : t("managerAccepted")}
+                      {t("managerAccepted")}
                     </span>
                   )}
                   {original.status === "rejected" && (
                     <span className="badge bg-danger">
-                      {original.depositBy === "manager"
-                        ? t("adminCanceled")
-                        : t("managerCanceled")}
+                      {t("managerCanceled")}
                     </span>
                   )}
-                </>
+                  {original.status === "pending" && (
+                    <span className="badge bg-warning">
+                      {t("managerPending")}
+                    </span>
+                  )}
+                </div>
+              ) : (
+                <div>
+                  {original.status === "accepted" && (
+                    <span className="badge bg-success">
+                      {t("adminAccepted")}
+                    </span>
+                  )}
+                  {original.status === "rejected" && (
+                    <span className="badge bg-danger">
+                      {t("adminCanceled")}
+                    </span>
+                  )}
+                  {original.status === "pending" && (
+                    <span className="badge bg-warning">
+                      {t("adminPending")}
+                    </span>
+                  )}
+                </div>
               )}
             </div>
           </div>
         ),
       },
       {
-        width: "20%",
-        Header: t("date"),
-        accessor: "createdAt",
-        Cell: ({ cell: { value } }) => {
-          return moment(value).format("YYYY/MM/DD hh:mm a");
-        },
-      },
-    ],
-    [t, ownerUsers]
-  );
-
-  // own deposit column
-  const columns2 = React.useMemo(
-    () => [
-      {
-        width: "10%",
-        Header: "#",
-        id: "row",
-        accessor: (row) => Number(row.id + 1),
-        Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
-      },
-      {
         width: "15%",
-        Header: t("amount"),
-        accessor: "amount",
-      },
-      {
-        width: "20%",
-        Header: t("manager"),
-        accessor: "manager.name",
-      },
-      {
-        width: "15%",
-        Header: t("status"),
-        accessor: "status",
-        Cell: ({ row: { original } }) => (
-          <div>
-            {original.status === "accepted" && (
-              <span className="badge bg-success">
-                {userRole === "manager"
-                  ? t("adminAccepted")
-                  : t("managerAccepted")}
-              </span>
-            )}
-            {original.status === "rejected" && (
-              <span className="badge bg-danger">
-                {userRole === "manager"
-                  ? t("adminCanceled")
-                  : t("managerCanceled")}
-              </span>
-            )}
-            {original.status === "pending" && (
-              <span className="badge bg-warning">
-                {userRole === "manager"
-                  ? t("adminPending")
-                  : t("managerPending")}
-              </span>
-            )}
-          </div>
-        ),
-      },
-      {
-        width: "20%",
         Header: t("note"),
         accessor: "note",
         Cell: ({ row: { original } }) => {
@@ -532,7 +302,7 @@ export default function Diposit() {
                 className="text-primary see-more"
                 data-bs-toggle="modal"
                 data-bs-target="#dipositNoteDetailsModal"
-                onClick={() => setMessage(original?.note)}
+                // onClick={() => setMessage(original?.note)}
               >
                 {original?.note?.length > 70 ? "...see more" : ""}
               </span>
@@ -541,21 +311,23 @@ export default function Diposit() {
         },
       },
       {
-        width: "20%",
+        width: "10%",
         Header: t("date"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("YYYY/MM/DD hh:mm a");
+          return moment(value).format("YYYY/MM/DD hh:mm A");
         },
       },
     ],
-    [t]
+    [t, ownerUsers]
   );
 
   // total deposit calculation
   let depositCalculation;
   const getTotalDeposit = useCallback(() => {
-    depositCalculation = mainData.filter((item) => item.status === "accepted");
+    depositCalculation = mainData.filter(
+      (item) => item.depositBy === "manager" && item.status === "accepted"
+    );
 
     const sumWithInitial = depositCalculation.reduce(
       (previousValue, currentValue) => previousValue + currentValue.amount,
@@ -564,37 +336,12 @@ export default function Diposit() {
     return sumWithInitial.toString();
   }, [mainData]);
 
-  // own deposit column
-  let ownDepositCalculation;
-  const getTotalOwnDeposit = useCallback(() => {
-    ownDepositCalculation = ownDepositData.filter(
-      (item) => item.status === "accepted"
-    );
-    const initialValue = 0;
-    const sumWithInitial = ownDepositCalculation.reduce(
-      (previousValue, currentValue) => previousValue + currentValue.amount,
-      initialValue
-    );
-    return sumWithInitial.toString();
-  }, [ownDepositData]);
-
   // send sum deposit of table header
   const depositReportSum = (
     <div style={{ fontSize: "18px", display: "flex", alignItems: "center" }}>
-      {(userRole === "ispOwner" || userRole === "manager") &&
-        getTotalDeposit() > 0 && (
-          <div style={{ marginRight: "10px" }}>
-            {t("totalDiposit")}:-৳{getTotalDeposit()}
-          </div>
-        )}
-    </div>
-  );
-
-  const ownDepositSum = (
-    <div style={{ fontSize: "18px", display: "flex", alignItems: "center" }}>
-      {userRole !== "ispOwner" && getTotalOwnDeposit() > 0 && (
-        <div>
-          {t("newDiposit")}:-৳{getTotalOwnDeposit()}
+      {getTotalDeposit() > 0 && (
+        <div style={{ marginRight: "10px" }}>
+          {t("totalDiposit")}:-৳{getTotalDeposit()}
         </div>
       )}
     </div>
@@ -611,9 +358,7 @@ export default function Diposit() {
             <FontColor>
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-4">
-                  <div className="d-flex">
-                    <div>{t("diposit")}</div>
-                  </div>
+                  <div>{t("deposit")}</div>
 
                   <div className="d-flex justify-content-center align-items-center">
                     <div
@@ -656,296 +401,111 @@ export default function Diposit() {
               </FourGround>
 
               <FourGround>
-                <div className="collectorWrapper mt-2 py-2">
-                  <div className="addCollector">
-                    <Tabs
-                      defaultActiveKey={
-                        userRole !== "collector" ? "profile" : "contact"
-                      }
-                      id="uncontrolled-tab-example"
-                    >
-                      {(userRole === "manager" || userRole === "collector") && (
-                        <Tab eventKey="home" title={t("diposit")}>
-                          <div className="managerDipositToIsp">
-                            <Formik
-                              initialValues={{
-                                amount: balancee,
-                                balance: balancee, //put the value from api
-                                note: "",
-                              }}
-                              validationSchema={BillValidatoin}
-                              onSubmit={(values) => {
-                                billDipositHandler(values);
-                              }}
-                              enableReinitialize
-                            >
-                              {() => (
-                                <Form>
-                                  {userRole === "collector" ? (
-                                    <div className="row d-flex justify-content-around">
-                                      <div className="col col-md-3">
-                                        <label className="form-control-label changeLabelFontColor">
-                                          {t("selectManager")}
-                                        </label>
-                                        <select
-                                          className="form-select mt-0 mw-100"
-                                          onChange={managerSelectHandler}
-                                        >
-                                          <option value="">
-                                            {t("selectManager")}
-                                          </option>
-                                          {multipleManager.map((value) => (
-                                            <option value={value.id}>
-                                              {value.name}
-                                            </option>
-                                          ))}
-                                        </select>
-                                      </div>
-                                      <div className="col col-md-3">
-                                        <FtextField
-                                          type="text"
-                                          name="balance"
-                                          label={t("totalBalance")}
-                                          disabled
-                                        />
-                                      </div>
-                                      <div className="col col-md-3">
-                                        <FtextField
-                                          type="text"
-                                          name="amount"
-                                          label={t("dipositAmount")}
-                                        />
-                                      </div>
-                                      <div className="col col-md-3">
-                                        <FtextField
-                                          type="text"
-                                          name="note"
-                                          label={t("note")}
-                                        />
-                                      </div>
-
-                                      <div className=" col-md-3 ">
-                                        <button
-                                          type="submit"
-                                          className="btn btn-outline-primary w-140 dipositSubmitBtn"
-                                        >
-                                          {isLoading ? (
-                                            <Loader></Loader>
-                                          ) : (
-                                            t("submit")
-                                          )}
-                                        </button>
-                                      </div>
-                                    </div>
-                                  ) : (
-                                    <div className="displayGridForDiposit">
-                                      <FtextField
-                                        type="text"
-                                        name="balance"
-                                        label={t("totalBalance")}
-                                        disabled
-                                      />
-                                      <FtextField
-                                        type="text"
-                                        name="amount"
-                                        label={t("dipositAmount")}
-                                      />
-                                      <FtextField
-                                        type="text"
-                                        name="note"
-                                        label={t("note")}
-                                      />
-                                      <button
-                                        type="submit"
-                                        className="btn btn-outline-primary w-140 dipositSubmitBtn"
-                                      >
-                                        {isLoading ? (
-                                          <Loader></Loader>
-                                        ) : (
-                                          t("submit")
-                                        )}
-                                      </button>
-                                    </div>
-                                  )}
-                                </Form>
-                              )}
-                            </Formik>
-                          </div>
-                        </Tab>
-                      )}
-
-                      {userRole !== "collector" && (
-                        <Tab eventKey="profile" title={t("depositReport")}>
-                          <Accordion alwaysOpen activeKey={activeKeys}>
-                            <Accordion.Item
-                              eventKey="filter"
-                              className="accordionBorder"
-                            >
-                              <Accordion.Body className="accordionPadding">
-                                <div className="selectFilteringg">
-                                  <select
-                                    className="form-select me-2"
-                                    onChange={(e) =>
-                                      setCollectorIds(e.target.value)
-                                    }
-                                  >
-                                    <option value="all" defaultValue>
-                                      {t("all collector")}
-                                    </option>
-                                    {allCollector?.map((c, key) => (
-                                      <option key={key} value={c.user}>
-                                        {c.name}
-                                      </option>
-                                    ))}
-                                    {userRole === "ispOwner" &&
-                                      manager.map((val) => (
-                                        <option value={val?.user}>
-                                          {val?.name} Manager
-                                        </option>
-                                      ))}
-                                  </select>
-
-                                  {/* {userRole === "manager" && (
-                                <div className="mx-2">
-                                  <select
-                                    className="form-select"
-                                    aria-label="Default select example"
-                                    onChange={(e) =>
-                                      setSelectedCustomer(e.target.value)
-                                    }
-                                  >
-                                    <option value="">Select Collector</option>
-                                    {allCollector.map((item) => (
-                                      <option value={item.user}>
-                                        {item.name}
-                                      </option>
-                                    ))}
-                                  </select>
-                                </div>
-                              )} */}
-                                  <div className="">
-                                    <input
-                                      className="form-select"
-                                      type="date"
-                                      id="start"
-                                      name="trip-start"
-                                      value={moment(dateStart).format(
-                                        "YYYY-MM-DD"
-                                      )}
-                                      onChange={(e) => {
-                                        setStartDate(e.target.value);
-                                      }}
-                                    />
-                                  </div>
-                                  <div className="mx-2">
-                                    <input
-                                      className="form-select"
-                                      type="date"
-                                      id="end"
-                                      name="trip-start"
-                                      value={moment(dateEnd).format(
-                                        "YYYY-MM-DD"
-                                      )}
-                                      onChange={(e) => {
-                                        setEndDate(e.target.value);
-                                      }}
-                                    />
-                                  </div>
-                                  <div className="">
-                                    <button
-                                      className="btn btn-outline-primary w-140 mt-2"
-                                      type="button"
-                                      onClick={onClickFilter}
-                                    >
-                                      {t("filter")}
-                                    </button>
-                                  </div>
-                                </div>
-                              </Accordion.Body>
-                            </Accordion.Item>
-                          </Accordion>
-
-                          <div style={{ display: "none" }}>
-                            <PrintCustomer
-                              filterData={filterData}
-                              currentCustomers={mainData}
-                              ref={componentRef}
+                <div className="mt-2">
+                  <Accordion alwaysOpen activeKey={activeKeys}>
+                    <Accordion.Item eventKey="filter">
+                      <Accordion.Body>
+                        <div className="displayGrid6">
+                          <div>
+                            <DatePicker
+                              className="form-control mw-100 mt-0"
+                              selected={filterDate}
+                              onChange={(date) => setFilterDate(date)}
+                              dateFormat="MMM-yyyy"
+                              showMonthYearPicker
+                              showFullMonthYearPicker
+                              maxDate={new Date()}
+                              minDate={new Date(userData?.createdAt)}
                             />
                           </div>
 
-                          <div className="table-section">
-                            <Table
-                              customComponent={depositReportSum}
-                              columns={columns}
-                              data={mainData}
-                              isLoading={isLoading}
-                            ></Table>
-                          </div>
-                        </Tab>
-                      )}
+                          <select
+                            className="form-select mt-0"
+                            onChange={(e) => {
+                              setCollectorIds(e.target.value);
+                              setDepositedName(e.target.name);
+                            }}
+                          >
+                            <option value="all" defaultValue>
+                              {t("all collector")}
+                            </option>
+                            {manager.map((val) => (
+                              <option name={val.name} value={val?.user}>
+                                {val?.name} (Manager)
+                              </option>
+                            ))}
+                            {allCollector?.map((c, key) => (
+                              <option key={key} name={c.name} value={c.user}>
+                                {c.name}
+                              </option>
+                            ))}
+                          </select>
 
-                      {(userRole === "manager" || userRole === "collector") && (
-                        <Tab eventKey="contact" title={t("ownDeposit")}>
-                          <Accordion alwaysOpen activeKey={activeKeys}>
-                            <Accordion.Item
-                              eventKey="filter"
-                              className="accordionBorder"
+                          <div>
+                            <DatePicker
+                              className="form-control"
+                              selected={dateStart}
+                              onChange={(date) => setStartDate(date)}
+                              dateFormat="MMM dd yyyy"
+                              minDate={selectDate}
+                              maxDate={
+                                lastDate.getMonth() + 1 === today.getMonth() + 1
+                                  ? today
+                                  : lastDate
+                              }
+                              placeholderText={t("selectBillDate")}
+                            />
+                          </div>
+
+                          <div>
+                            <DatePicker
+                              className="form-control"
+                              selected={dateEnd}
+                              onChange={(date) => setEndDate(date)}
+                              dateFormat="MMM dd yyyy"
+                              minDate={selectDate}
+                              maxDate={
+                                lastDate.getMonth() + 1 === today.getMonth() + 1
+                                  ? today
+                                  : lastDate
+                              }
+                              placeholderText={t("selectBillDate")}
+                            />
+                          </div>
+
+                          <div className="">
+                            <button
+                              className="btn btn-outline-primary w-140"
+                              type="button"
+                              onClick={onClickFilter}
                             >
-                              <Accordion.Body className="accordionPadding">
-                                <div className="selectFilteringg">
-                                  <div className="dateDiv  ">
-                                    <input
-                                      className="form-select"
-                                      type="date"
-                                      id="start"
-                                      name="trip-start"
-                                      value={moment(ownDepositStart).format(
-                                        "YYYY-MM-DD"
-                                      )}
-                                      onChange={(e) => {
-                                        setOwnDepositStart(e.target.value);
-                                      }}
-                                    />
-                                  </div>
-                                  <div className="dateDiv">
-                                    <input
-                                      className="form-select"
-                                      type="date"
-                                      id="end"
-                                      name="trip-start"
-                                      value={moment(ownDepositEnd).format(
-                                        "YYYY-MM-DD"
-                                      )}
-                                      onChange={(e) => {
-                                        setOwnDepositEnd(e.target.value);
-                                      }}
-                                    />
-                                  </div>
-                                  <div className="submitDiv">
-                                    <button
-                                      className="btn btn-outline-primary w-140 mt-2"
-                                      type="button"
-                                      onClick={ownDepositDateFilter}
-                                    >
-                                      {t("filter")}
-                                    </button>
-                                  </div>
-                                </div>
-                              </Accordion.Body>
-                            </Accordion.Item>
-                          </Accordion>
-
-                          <div className="table-section">
-                            <Table
-                              customComponent={ownDepositSum}
-                              data={ownDepositData}
-                              columns={columns2}
-                              isLoading={isLoading}
-                            ></Table>
+                              {t("filter")}
+                            </button>
                           </div>
-                        </Tab>
-                      )}
-                    </Tabs>
+                        </div>
+                      </Accordion.Body>
+                    </Accordion.Item>
+                  </Accordion>
+
+                  <div className="collectorWrapper pb-2">
+                    <div className="addCollector">
+                      <div className="d-none">
+                        <PrintCustomer
+                          filterData={filterData}
+                          currentCustomers={mainData}
+                          ref={componentRef}
+                        />
+                      </div>
+
+                      <div className="table-section">
+                        <Table
+                          isLoading={isLoading}
+                          columns={columns}
+                          data={mainData}
+                          customComponent={depositReportSum}
+                        ></Table>
+                      </div>
+                    </div>
                   </div>
                 </div>
 

@@ -2280,27 +2280,19 @@ export const getTotalbal = async (dispatch, setLoading) => {
 
 export const getDeposit = async (
   dispatch,
-  data,
-  userRole = null,
+  ispOwner,
+  year,
+  month,
   setLoading
 ) => {
   setLoading(true);
   try {
     const res = await apiLink.get(
-      `/deposit/${data.depositerRole}/${data.ispOwnerID}`
+      `/deposit/all/${ispOwner}?year=${year}&month=${month}`
     );
-    if (userRole === "ispOwner") {
-      if (data.depositerRole === "collector") {
-        dispatch(getCollectorDeposite(res.data));
-      } else {
-        dispatch(getDepositSuccess(res.data));
-      }
-    } else {
-      dispatch(getDepositSuccess(res.data));
-    }
+    dispatch(getDepositSuccess(res.data));
   } catch (error) {
-    console.log(error);
-    console.log(error.response?.data.message);
+    toast.error(error.response?.data.message);
   }
   setLoading(false);
 };
@@ -2329,12 +2321,17 @@ export const depositAcceptReject = async (
   dispatch,
   status,
   id,
-  setAccLoading
+  setAccLoading,
+  ispOwner
 ) => {
   setAccLoading(true);
   try {
     const res = await apiLink.patch(`/deposit/${id}`, { status: status });
-    dispatch(updateDepositReportSuccess(res.data));
+    if (ispOwner) {
+      dispatch(updateDepositSuccess(res.data));
+    } else {
+      dispatch(updateDepositReportSuccess(res.data));
+    }
     if (res.data.status === "accepted") {
       langMessage(
         "success",

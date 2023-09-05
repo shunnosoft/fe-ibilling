@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import "../collector/collector.css";
 import "../configMikrotik/configmikrotik.css";
 import {
@@ -12,6 +12,7 @@ import {
   FileExcelFill,
   FilterCircle,
   Router,
+  PrinterFill,
 } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -44,10 +45,13 @@ import { getSubAreasApi } from "../../features/actions/customerApiCall";
 import { Accordion } from "react-bootstrap";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
+import ActiveCustomerPDF from "../Customer/ActiveCustomerPrint";
+import ReactToPrint from "react-to-print";
 
 export default function ConfigMikrotik() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const componentRef = useRef();
 
   // get all mikrotik from redux
   const mikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
@@ -126,6 +130,13 @@ export default function ConfigMikrotik() {
   // offline customer state
   const [customerItData, setCustomerItData] = useState("");
 
+  // area & subarea name
+  const [areaName, setAreaName] = useState("");
+  const [subareaName, setSubareaName] = useState("");
+
+  // customer type
+  const [customerType, setCustomerType] = useState("");
+
   // subArea ids state
   const [subareaIds, setSubareaIds] = useState([]);
 
@@ -164,6 +175,7 @@ export default function ConfigMikrotik() {
 
   // customer online offline filter handler
   const customerItFilter = (e) => {
+    setCustomerType(e.target.value);
     let customer;
     setStatus(false);
     if (e.target.value === "All") {
@@ -232,6 +244,7 @@ export default function ConfigMikrotik() {
 
   // area subarea handler
   const areaSubareaHandler = (e) => {
+    setAreaName(e.target.name);
     let tempCustomers = allMikrotikUsers.reduce((acc, c) => {
       // find area all subareas
       let allSub = [];
@@ -260,6 +273,7 @@ export default function ConfigMikrotik() {
 
   // subarea handle
   const subAreasHandler = (e) => {
+    setSubareaName(e.target.name);
     let subAreaCustomers = allMikrotikUsers.reduce((acc, c) => {
       const condition = {
         subArea: e.target.value !== "" ? c.subArea === e.target.value : true,
@@ -533,6 +547,16 @@ export default function ConfigMikrotik() {
     [t]
   );
 
+  // mikrotik find in select mikrotik id
+  const mikrotikName = mikrotik.find((val) => val.id === mikrotikId);
+
+  const filterData = {
+    mikrotik: mikrotikName?.name,
+    area: areaName,
+    subarea: subareaName,
+    customer: customerType,
+  };
+
   return (
     <>
       <Sidebar />
@@ -579,6 +603,19 @@ export default function ConfigMikrotik() {
                     >
                       <FileExcelFill className="addcutmButton" />
                     </CSVLink>
+
+                    <div className="addAndSettingIcon">
+                      <ReactToPrint
+                        documentTitle={t("CustomerList")}
+                        trigger={() => (
+                          <PrinterFill
+                            title={t("print")}
+                            className="addcutmButton"
+                          />
+                        )}
+                        content={() => componentRef.current}
+                      />
+                    </div>
                   </div>
                 </div>
               </FourGround>
@@ -606,7 +643,9 @@ export default function ConfigMikrotik() {
                           >
                             <option value="">{t("allArea")}</option>
                             {areas.map((item) => (
-                              <option value={item.id}>{item.name}</option>
+                              <option name={item.name} value={item.id}>
+                                {item.name}
+                              </option>
                             ))}
                           </select>
 
@@ -617,7 +656,9 @@ export default function ConfigMikrotik() {
                           >
                             <option value="">{t("subArea")}</option>
                             {subareaIds.map((item) => (
-                              <option value={item.id}>{item.name}</option>
+                              <option name={item.name} value={item.id}>
+                                {item.name}
+                              </option>
                             ))}
                           </select>
 
@@ -658,6 +699,14 @@ export default function ConfigMikrotik() {
                     </Accordion.Item>
                   </Accordion>
                   <div className="collectorWrapper pb-2">
+                    <div className="d-none">
+                      <ActiveCustomerPDF
+                        filterData={filterData}
+                        currentCustomers={allUsers}
+                        ref={componentRef}
+                        status="pppoe"
+                      />
+                    </div>
                     <div className="table-section">
                       <Table
                         isLoading={mtkLoading}

@@ -38,6 +38,9 @@ import {
 } from "../../features/apiCalls";
 import PrintCustomer from "./customerPDF";
 import { getOwnerUsers } from "../../features/getIspOwnerUsersApi";
+import Footer from "../../components/admin/footer/Footer";
+import { getBulletinPermission } from "../../features/apiCallAdmin";
+import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 
 const ManagerDeposit = () => {
   const { t } = useTranslation();
@@ -83,6 +86,11 @@ const ManagerDeposit = () => {
   // get all collector form redux
   const allCollector = useSelector((state) => state?.collector?.collector);
 
+  // get bulletin permission
+  const butPermission = useSelector(
+    (state) => state.adminNetFeeSupport?.bulletinPermission
+  );
+
   // loading state
   const [isLoading, setIsLoading] = useState(false);
   const [acceptLoading, setAccLoading] = useState(false);
@@ -106,15 +114,15 @@ const ManagerDeposit = () => {
   const [filterDate, setFilterDate] = useState(firstDate);
 
   // deposit report start & end date
-  const [dateStart, setStartDate] = useState(new Date());
-  const [dateEnd, setEndDate] = useState(new Date());
+  const [dateStart, setStartDate] = useState(firstDate);
+  const [dateEnd, setEndDate] = useState(date);
 
   // own deposit report monthly filter
   const [ownFilter, setOwnFilter] = useState(firstDate);
 
   // Owner deposit start & end date
-  const [ownDepositStart, setOwnDepositStart] = useState(new Date());
-  const [ownDepositEnd, setOwnDepositEnd] = useState(new Date());
+  const [ownDepositStart, setOwnDepositStart] = useState(firstDate);
+  const [ownDepositEnd, setOwnDepositEnd] = useState(date);
 
   // current month start & end date
   var selectDate = new Date(filterDate.getFullYear(), filterDate.getMonth(), 1);
@@ -148,6 +156,7 @@ const ManagerDeposit = () => {
       } else {
         setEndDate(lastDate);
       }
+
       filterDate.getMonth() + 1 &&
         getDepositReport(
           dispatch,
@@ -178,6 +187,9 @@ const ManagerDeposit = () => {
           setIsLoading
         );
     }
+    tabEventKey &&
+      Object.keys(butPermission)?.length === 0 &&
+      getBulletinPermission(dispatch);
   }, [tabEventKey, filterDate, ownFilter]);
 
   useEffect(() => {
@@ -213,7 +225,12 @@ const ManagerDeposit = () => {
     }
 
     if (tabEventKey === "ownDeposit") {
-      getMyDeposit(dispatch, setIsLoading);
+      getMyDeposit(
+        dispatch,
+        ownFilter.getFullYear(),
+        ownFilter.getMonth() + 1,
+        setIsLoading
+      );
     }
   };
 
@@ -588,9 +605,11 @@ const ManagerDeposit = () => {
                                   name="note"
                                   label={t("note")}
                                 />
+                              </div>
+                              <div className="d-flex justify-content-center align-items-center mt-4">
                                 <button
                                   type="submit"
-                                  className="btn btn-outline-primary w-140 dipositSubmitBtn"
+                                  className="btn btn-outline-primary w-140"
                                 >
                                   {isLoading ? <Loader /> : t("submit")}
                                 </button>
@@ -796,7 +815,12 @@ const ManagerDeposit = () => {
                     </Tabs>
                   </div>
                 </div>
+
+                {(butPermission?.deposit || butPermission?.allPage) && (
+                  <NetFeeBulletin />
+                )}
               </FourGround>
+              <Footer />
             </FontColor>
           </div>
         </div>

@@ -23,6 +23,9 @@ import {
   getMyDeposit,
   getTotalbal,
 } from "../../features/apiCalls";
+import Footer from "../../components/admin/footer/Footer";
+import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
+import { getBulletinPermission } from "../../features/apiCallAdmin";
 
 const CollectorDeposit = () => {
   const { t } = useTranslation();
@@ -53,6 +56,11 @@ const CollectorDeposit = () => {
 
   // get own deposit from redux
   let ownDeposits = useSelector((state) => state?.payment?.myDeposit);
+
+  // get bulletin permission
+  const butPermission = useSelector(
+    (state) => state.adminNetFeeSupport?.bulletinPermission
+  );
 
   // loading state
   const [isLoading, setIsLoading] = useState(false);
@@ -90,7 +98,7 @@ const CollectorDeposit = () => {
 
   useEffect(() => {
     if (tabEventKey === "deposit") {
-      getMultipleManager(dispatch, userData);
+      manager.length === 0 && getMultipleManager(dispatch, userData);
       getTotalbal(dispatch);
     }
     if (tabEventKey === "ownDeposit") {
@@ -110,6 +118,9 @@ const CollectorDeposit = () => {
           setIsLoading
         );
     }
+    tabEventKey &&
+      Object.keys(butPermission)?.length === 0 &&
+      getBulletinPermission(dispatch);
   }, [tabEventKey, ownFilter]);
 
   useEffect(() => {
@@ -410,7 +421,12 @@ const CollectorDeposit = () => {
                     </Tabs>
                   </div>
                 </div>
+
+                {(butPermission?.deposit || butPermission?.allPage) && (
+                  <NetFeeBulletin />
+                )}
               </FourGround>
+              <Footer />
             </FontColor>
           </div>
         </div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import useDash from "../../assets/css/dash.module.css";
 import { FourGround, FontColor } from "../../assets/js/theme";
@@ -14,9 +14,12 @@ import { useTranslation } from "react-i18next";
 // get specific customer
 
 import {
+  ArrowBarLeft,
+  ArrowBarRight,
   ArrowClockwise,
   FileExcelFill,
   FilterCircle,
+  PrinterFill,
   Router,
   ThreeDots,
   Wifi,
@@ -26,16 +29,22 @@ import Loader from "../../components/common/Loader";
 import Footer from "../../components/admin/footer/Footer";
 import { CSVLink } from "react-csv";
 import moment from "moment";
-import { Accordion } from "react-bootstrap";
+import { Accordion, Card, Collapse } from "react-bootstrap";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
+import ReactToPrint from "react-to-print";
+import ActiveCustomerPDF from "../Customer/ActiveCustomerPrint";
+import ActiveCustomerPrint from "../Customer/ActiveCustomerPrint";
 
 const StaticActiveCustomer = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const componentRef = useRef();
+
   const [isLoading, setIsloading] = useState(false);
   const [mtkLoading, setMtkLoading] = useState(false);
   const [filterStatus, setFilterStatus] = useState();
+  const [open, setOpen] = useState(false);
 
   // filter Accordion handle state
   const [activeKeys, setActiveKeys] = useState("");
@@ -93,7 +102,6 @@ const StaticActiveCustomer = () => {
 
   //mac-binding handler
   const macBindingCall = (customerId) => {
-    console.log(customerId);
     // staticMACBinding(customerId);
   };
 
@@ -136,6 +144,14 @@ const StaticActiveCustomer = () => {
       }),
     [staticActiveCustomer]
   );
+
+  // mikrotik find in select mikrotik id
+  const mikrotikName = mikrotik.find((val) => val.id === mikrotikId);
+
+  const filterData = {
+    mikrotik: mikrotikName?.name,
+    customer: filterStatus,
+  };
 
   const columns = useMemo(
     () => [
@@ -224,14 +240,13 @@ const StaticActiveCustomer = () => {
             <FontColor>
               {/* modals */}
               <FourGround>
-                {/* <h2 className="collectorTitle">{t("activeStaticCustomer")}</h2> */}
-
                 <div className="collectorTitle d-flex justify-content-between px-4">
-                  <div className="d-flex">
-                    <div>{t("activeStaticCustomer")}</div>
-                  </div>
+                  <div>{t("activeStaticCustomer")}</div>
 
-                  <div className="d-flex justify-content-center align-items-center">
+                  <div
+                    style={{ height: "45px" }}
+                    className="d-flex align-items-center"
+                  >
                     <div
                       onClick={() => {
                         if (!activeKeys) {
@@ -244,7 +259,6 @@ const StaticActiveCustomer = () => {
                     >
                       <FilterCircle className="addcutmButton" />
                     </div>
-
                     <div className="reloadBtn">
                       {isLoading ? (
                         <Loader />
@@ -257,14 +271,55 @@ const StaticActiveCustomer = () => {
                       )}
                     </div>
 
-                    <CSVLink
-                      data={activeCustomerCsvInfo}
-                      filename={ispOwnerData.company}
-                      headers={activeCustomerForCsvInfoHeader}
-                      title="Active Customer BTRC Report"
-                    >
-                      <FileExcelFill className="addcutmButton" />
-                    </CSVLink>
+                    <Collapse in={open} dimension="width">
+                      <div id="example-collapse-text">
+                        <Card className="cardCollapse border-0">
+                          <div className="d-flex align-items-center">
+                            <CSVLink
+                              data={activeCustomerCsvInfo}
+                              filename={ispOwnerData.company}
+                              headers={activeCustomerForCsvInfoHeader}
+                              title="Active Customer BTRC Report"
+                            >
+                              <FileExcelFill className="addcutmButton" />
+                            </CSVLink>
+
+                            <div className="addAndSettingIcon">
+                              <ReactToPrint
+                                documentTitle={t("CustomerList")}
+                                trigger={() => (
+                                  <PrinterFill
+                                    title={t("print")}
+                                    className="addcutmButton"
+                                  />
+                                )}
+                                content={() => componentRef.current}
+                              />
+                            </div>
+                          </div>
+                        </Card>
+                      </div>
+                    </Collapse>
+                    {!open && (
+                      <ArrowBarLeft
+                        className="ms-1"
+                        size={34}
+                        style={{ cursor: "pointer" }}
+                        onClick={() => setOpen(!open)}
+                        aria-controls="example-collapse-text"
+                        aria-expanded={open}
+                      />
+                    )}
+                    {open && (
+                      <ArrowBarRight
+                        className="ms-1"
+                        size={34}
+                        style={{ cursor: "pointer" }}
+                        onClick={() => setOpen(!open)}
+                        aria-controls="example-collapse-text"
+                        aria-expanded={open}
+                      />
+                    )}
                   </div>
                 </div>
               </FourGround>
@@ -273,7 +328,7 @@ const StaticActiveCustomer = () => {
                   <Accordion alwaysOpen activeKey={activeKeys}>
                     <Accordion.Item eventKey="filter">
                       <Accordion.Body>
-                        <div className="d-flex justify-content-center">
+                        <div className="displayGrid6">
                           <div className="mikrotik-filter">
                             <select
                               id="selectMikrotikOption"
@@ -303,6 +358,14 @@ const StaticActiveCustomer = () => {
                     </Accordion.Item>
                   </Accordion>
                   <div className="collectorWrapper">
+                    <div style={{ display: "none" }}>
+                      <ActiveCustomerPrint
+                        filterData={filterData}
+                        currentCustomers={staticActiveCustomer}
+                        ref={componentRef}
+                        status="static"
+                      />
+                    </div>
                     <div className="table-section">
                       <Table
                         isLoading={isLoading}
