@@ -121,18 +121,16 @@ export default function Mikrotik() {
               </Link>
             )}
 
-            {permission.customerType.includes("pppoe") && (
-              <button
-                title={t("checkConnection")}
-                style={{ padding: "0.10rem .5rem" }}
-                className="btn btn-sm btn-primary mx-1"
-                onClick={() =>
-                  MikrotikConnectionTest(original.id, original.name)
-                }
-              >
-                <PlugFill />
-              </button>
-            )}
+            {/* {permission.customerType.includes("pppoe") && ( */}
+            <button
+              title={t("checkConnection")}
+              style={{ padding: "0.10rem .5rem" }}
+              className="btn btn-sm btn-primary mx-1"
+              onClick={() => MikrotikConnectionTest(original.id, original.name)}
+            >
+              <PlugFill />
+            </button>
+            {/* )} */}
 
             {permission?.mikrotikDelete && (
               <button
@@ -160,7 +158,6 @@ export default function Mikrotik() {
         <div className="container-fluied collector ">
           <div className="container">
             <FontColor>
-              {/* modals */}
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-4">
                   <h2> {t("mikrotik")} </h2>

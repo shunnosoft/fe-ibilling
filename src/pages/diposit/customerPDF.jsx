@@ -45,16 +45,13 @@ const PrintCustomer = React.forwardRef((props, ref) => {
               {t("address")} : {ispOwnerData?.address}
             </p>
           )}
-          <li>
-            {t("totalData")} : {currentCustomers.length}
-          </li>
         </div>
       </div>
 
       {status !== "ownDeposit" && (
         <ul className="d-flex justify-content-evenly filter_list">
           <li>
-            {t("all collector")} : {filterData.collector}
+            {t("deposit")} : {filterData.deposit}
           </li>
           <li>
             {t("totalData")} : {currentCustomers.length}

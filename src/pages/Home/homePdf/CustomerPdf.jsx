@@ -38,6 +38,9 @@ const CustomerPdf = forwardRef((props, ref) => {
               {t("address")} : {ispOwner?.address}
             </p>
           )}
+          <p>
+            {t("totalData")} {customerData.length}
+          </p>
         </div>
       </div>
 
@@ -47,6 +50,7 @@ const CustomerPdf = forwardRef((props, ref) => {
             <tr className="spetialSortingRow">
               <th scope="col">{t("id")}</th>
               <th scope="col">{t("name")}</th>
+              <th scope="col">{t("pppoeIp")}</th>
               <th scope="col">{t("mobile")}</th>
               <th scope="col">{t("status")}</th>
               <th scope="col">{t("paymentStatus")}</th>
@@ -63,6 +67,17 @@ const CustomerPdf = forwardRef((props, ref) => {
                 <tr key={key} id={val.id}>
                   <td className="prin_td">{val.customer.customerId}</td>
                   <td className="prin_td">{val.customer.name}</td>
+                  <td className="prin_td">
+                    {val.customer?.userType === "pppoe"
+                      ? val.customer?.pppoe.name
+                      : val.customer?.userType === "firewall-queue"
+                      ? val.customer?.queue.address
+                      : val.customer?.userType === "core-queue"
+                      ? val.customer?.queue.srcAddress
+                      : val.customer?.userType === "simple-queue"
+                      ? val.customer?.queue.target
+                      : ""}
+                  </td>
                   <td className="prin_td">{val.customer.mobile}</td>
                   <td className="prin_td">{badge(val.customer.status)}</td>
                   <td className="prin_td">{badge(val.paymentStatus)}</td>
@@ -85,7 +100,7 @@ const CustomerPdf = forwardRef((props, ref) => {
             <tr className="spetialSortingRow">
               <th scope="col">{t("id")}</th>
               <th scope="col">{t("name")}</th>
-              <th scope="col">{t("PPPoE")}</th>
+              <th scope="col">{t("pppoeIp")}</th>
               <th scope="col">{t("status")}</th>
               <th scope="col">{t("paymentStatus")}</th>
               <th scope="col">{t("package")}</th>
@@ -100,10 +115,27 @@ const CustomerPdf = forwardRef((props, ref) => {
                 <tr key={key} id={val.id}>
                   <td className="prin_td">{val.customerId}</td>
                   <td className="prin_td">{val.name}</td>
-                  <td className="prin_td">{val.pppoe.name}</td>
+                  <td className="prin_td">
+                    {
+                      <td className="prin_td">
+                        {val?.userType === "pppoe"
+                          ? val?.pppoe.name
+                          : val?.userType === "firewall-queue"
+                          ? val?.queue.address
+                          : val?.userType === "core-queue"
+                          ? val?.queue.srcAddress
+                          : val?.userType === "simple-queue"
+                          ? val?.queue.target
+                          : ""}
+                      </td>
+                    }
+                  </td>
                   <td className="prin_td">{badge(val.status)}</td>
                   <td className="prin_td">{badge(val.paymentStatus)}</td>
-                  <td className="prin_td">{val.pppoe.profile}</td>
+                  <td className="prin_td">
+                    {val?.mikrotikPackage &&
+                      getCustomerPackage(val?.mikrotikPackage)?.name}
+                  </td>
                   <td className="prin_td">{val.monthlyFee}</td>
                   <td className="prin_td">{val.balance}</td>
                   <td className="prin_td">

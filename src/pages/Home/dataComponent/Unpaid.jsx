@@ -34,8 +34,17 @@ const Unpaid = ({ ispOwnerId, month, year, status }) => {
     (state) => state.dashboardInformation?.unpaidCustomer
   );
 
+  // get all packages
+  const allPackages = useSelector((state) => state.package.allPackages);
+
   // is Loading state
   const [isLoading, setIsLoading] = useState(false);
+
+  // customer current package find
+  const getCustomerPackage = (pack) => {
+    const findPack = allPackages.find((item) => item.id.includes(pack));
+    return findPack;
+  };
 
   const column = useMemo(
     () => [
@@ -52,7 +61,17 @@ const Unpaid = ({ ispOwnerId, month, year, status }) => {
       {
         width: "8%",
         Header: t("PPPoE"),
-        accessor: "pppoe.name",
+        Header: t("pppoeIp"),
+        accessor: (field) =>
+          field?.userType === "pppoe"
+            ? field?.pppoe.name
+            : field?.userType === "firewall-queue"
+            ? field?.queue.address
+            : field?.userType === "core-queue"
+            ? field?.queue.srcAddress
+            : field?.userType === "simple-queue"
+            ? field?.queue.target
+            : "",
       },
       {
         width: "8%",
@@ -78,7 +97,10 @@ const Unpaid = ({ ispOwnerId, month, year, status }) => {
       {
         width: "8%",
         Header: t("package"),
-        accessor: "pppoe.profile",
+        accessor: "mikrotikPackage",
+        Cell: ({ cell: { value } }) => (
+          <div>{customer && getCustomerPackage(value)?.name}</div>
+        ),
       },
       {
         width: "8%",

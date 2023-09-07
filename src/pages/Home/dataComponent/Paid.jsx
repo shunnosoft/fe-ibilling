@@ -61,7 +61,17 @@ const Paid = ({ ispOwnerId, month, year, status }) => {
       {
         width: "10%",
         Header: t("PPPoE"),
-        accessor: "pppoe.name",
+        Header: t("pppoeIp"),
+        accessor: (field) =>
+          field?.userType === "pppoe"
+            ? field?.pppoe.name
+            : field?.userType === "firewall-queue"
+            ? field?.queue.address
+            : field?.userType === "core-queue"
+            ? field?.queue.srcAddress
+            : field?.userType === "simple-queue"
+            ? field?.queue.target
+            : "",
       },
       {
         width: "10%",

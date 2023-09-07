@@ -21,7 +21,16 @@ const PrintCustomer = React.forwardRef((props, ref) => {
   const userType = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings.queueType
   );
-  // console.log(ispOwnerData);
+
+  // get all packages
+  const allPackages = useSelector((state) => state.package.allPackages);
+
+  // customer current package find
+  const customerPackageFind = (pack) => {
+    const findPack = allPackages.find((item) => item.id.includes(pack));
+    return findPack;
+  };
+
   return (
     <div className="mt-3 p-4" ref={ref}>
       <div className="page_header letter_header d-flex justify-content-between align-items-center pb-3 ">
@@ -53,7 +62,7 @@ const PrintCustomer = React.forwardRef((props, ref) => {
           {t("status")} : {filterData.status}
         </li>
         <li>
-          {t("paymentStatus")} {filterData.payment}
+          {t("paymentStatus")} : {filterData.payment}
         </li>
       </ul>
       <table className="table table-striped ">
@@ -61,11 +70,10 @@ const PrintCustomer = React.forwardRef((props, ref) => {
           <tr className="spetialSortingRow">
             <th scope="col">{t("id")}</th>
             <th scope="col">{t("name")}</th>
-            <th scope="col">{t("address")}</th>
             <th scope="col">{t("ip")}</th>
             <th scope="col">{t("mobile")}</th>
             <th scope="col">{t("status")}</th>
-            <th scope="col">{t("amount")}</th>
+            <th scope="col">{t("paymentStatus")}</th>
             <th scope="col">{t("package")}</th>
             <th scope="col">{t("month")}</th>
             <th scope="col">{t("balance")}</th>
@@ -77,7 +85,6 @@ const PrintCustomer = React.forwardRef((props, ref) => {
             <tr key={key} id={val.id}>
               <td className="prin_td">{val.customerId}</td>
               <td className="prin_td">{val.name}</td>
-              <td className="prin_td">{val.address}</td>
               <td className="prin_td">
                 {userType === "firewall-queue"
                   ? val.queue.address
@@ -86,7 +93,10 @@ const PrintCustomer = React.forwardRef((props, ref) => {
               <td className="prin_td">{val.mobile}</td>
               <td className="prin_td">{badge(val.status)}</td>
               <td className="prin_td">{badge(val.paymentStatus)}</td>
-              <td className="prin_td">{val.queue.package}</td>
+              <td className="prin_td">
+                {val?.mikrotikPackage &&
+                  customerPackageFind(val?.mikrotikPackage)?.name}
+              </td>
               <td className="prin_td">{FormatNumber(val.monthlyFee)}</td>
               <td className="prin_td">
                 <strong>{FormatNumber(val.balance)}</strong>

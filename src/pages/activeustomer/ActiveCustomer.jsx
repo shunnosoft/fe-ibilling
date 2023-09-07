@@ -13,6 +13,8 @@ import {
   FilterCircle,
   Router,
   PrinterFill,
+  ArrowBarLeft,
+  ArrowBarRight,
 } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -42,7 +44,7 @@ import BulkCustomerDelete from "../Customer/customerCRUD/bulkOpration/Bulkdelete
 import BulkCustomerMessage from "../Customer/customerCRUD/bulkOpration/BulkCustomerMessage";
 import { CSVLink } from "react-csv";
 import { getSubAreasApi } from "../../features/actions/customerApiCall";
-import { Accordion } from "react-bootstrap";
+import { Accordion, Card, Collapse } from "react-bootstrap";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
 import ActiveCustomerPDF from "../Customer/ActiveCustomerPrint";
@@ -91,8 +93,9 @@ export default function ConfigMikrotik() {
     (state) => state.adminNetFeeSupport?.bulletinPermission
   );
 
-  // mikrotik loading state
+  // loading state
   const [loading, setIsloading] = useState(false);
+  const [open, setOpen] = useState(false);
 
   // customer loading state
   const [mtkLoading, setMtkLoading] = useState(false);
@@ -567,9 +570,12 @@ export default function ConfigMikrotik() {
             <FontColor>
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-4">
-                  <h2 className="component_name">{t("activeCustomer")}</h2>
+                  <div>{t("activeCustomer")}</div>
 
-                  <div className="d-flex align-items-center justify-content-center">
+                  <div
+                    style={{ height: "45px" }}
+                    className="d-flex align-items-center"
+                  >
                     <div
                       onClick={() => {
                         if (!activeKeys) {
@@ -595,27 +601,55 @@ export default function ConfigMikrotik() {
                       )}
                     </div>
 
-                    <CSVLink
-                      data={customerForCsVTableInfo}
-                      filename={ispOwnerData.company}
-                      headers={customerForCsVTableInfoHeader}
-                      title="Customer BTRC Report New"
-                    >
-                      <FileExcelFill className="addcutmButton" />
-                    </CSVLink>
+                    <Collapse in={open} dimension="width">
+                      <div id="example-collapse-text">
+                        <Card className="cardCollapse border-0">
+                          <div className="d-flex align-items-center">
+                            <CSVLink
+                              data={customerForCsVTableInfo}
+                              filename={ispOwnerData.company}
+                              headers={customerForCsVTableInfoHeader}
+                              title="Customer BTRC Report New"
+                            >
+                              <FileExcelFill className="addcutmButton" />
+                            </CSVLink>
 
-                    <div className="addAndSettingIcon">
-                      <ReactToPrint
-                        documentTitle={t("CustomerList")}
-                        trigger={() => (
-                          <PrinterFill
-                            title={t("print")}
-                            className="addcutmButton"
-                          />
-                        )}
-                        content={() => componentRef.current}
+                            <div className="addAndSettingIcon">
+                              <ReactToPrint
+                                documentTitle={t("CustomerList")}
+                                trigger={() => (
+                                  <PrinterFill
+                                    title={t("print")}
+                                    className="addcutmButton"
+                                  />
+                                )}
+                                content={() => componentRef.current}
+                              />
+                            </div>
+                          </div>
+                        </Card>
+                      </div>
+                    </Collapse>
+                    {!open && (
+                      <ArrowBarLeft
+                        className="ms-1"
+                        size={34}
+                        style={{ cursor: "pointer" }}
+                        onClick={() => setOpen(!open)}
+                        aria-controls="example-collapse-text"
+                        aria-expanded={open}
                       />
-                    </div>
+                    )}
+                    {open && (
+                      <ArrowBarRight
+                        className="ms-1"
+                        size={34}
+                        style={{ cursor: "pointer" }}
+                        onClick={() => setOpen(!open)}
+                        aria-controls="example-collapse-text"
+                        aria-expanded={open}
+                      />
+                    )}
                   </div>
                 </div>
               </FourGround>

@@ -639,10 +639,10 @@ export default function Customer() {
   }
 
   const filterData = {
-    area: singleArea?.name ? singleArea.name : "সকল এরিয়া",
-    subArea: subArea ? subArea.name : "সকল সাবএরিয়া",
-    status: customerStatus ? customerStatus : "সকল গ্রাহক",
-    payment: customerPaymentStatus ? customerPaymentStatus : "সকল গ্রাহক",
+    area: singleArea?.name ? singleArea.name : t("allArea"),
+    subArea: subArea ? subArea.name : t("allSubArea"),
+    status: customerStatus ? customerStatus : t("allCustomer"),
+    payment: customerPaymentStatus ? customerPaymentStatus : t("allCustomer"),
   };
   const mikrotikHandler = async (id) => {
     setFilterOption({

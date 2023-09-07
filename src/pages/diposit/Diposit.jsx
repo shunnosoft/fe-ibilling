@@ -90,6 +90,7 @@ export default function Diposit() {
   //select depositor id
   const [collectorIds, setCollectorIds] = useState("all");
   const [depositedName, setDepositedName] = useState("");
+  console.log(depositedName);
 
   // filter date state
   const [filterDate, setFilterDate] = useState(firstDay);
@@ -145,6 +146,14 @@ export default function Diposit() {
       filterDate.getMonth() + 1,
       setIsLoading
     );
+  };
+
+  // deposit select handler
+  const depositorHandler = (e) => {
+    let depositor = [...manager, ...allCollector];
+    const findDepositor = depositor?.find((val) => val.user === e.target.value);
+    setCollectorIds(findDepositor?.user);
+    setDepositedName(findDepositor?.name);
   };
 
   // deposit report accept & reject handler
@@ -432,10 +441,7 @@ export default function Diposit() {
 
                           <select
                             className="form-select mt-0"
-                            onChange={(e) => {
-                              setCollectorIds(e.target.value);
-                              setDepositedName(e.target.name);
-                            }}
+                            onChange={depositorHandler}
                           >
                             <option value="all" defaultValue>
                               {t("all collector")}

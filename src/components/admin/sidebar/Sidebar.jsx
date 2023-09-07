@@ -1311,35 +1311,34 @@ export default function Sidebar() {
                             </NavLink>
                           )} */}
 
-                          {userRole !== "reseller" &&
-                            !user?.collector?.reseller && (
-                              <NavLink
-                                key={13}
-                                to="/netFee/supportNumber"
-                                className={(navInfo) =>
-                                  navInfo.isActive ? activeClass.active : ""
-                                }
-                              >
-                                <FontColor>
-                                  <li
-                                    className="sidebarItems"
-                                    id={
-                                      window.location.pathname ===
-                                      "/netFee/supportNumber"
-                                        ? "active"
-                                        : ""
-                                    }
-                                  >
-                                    <div className="sidebarIcon">
-                                      <PhoneVibrate />
-                                    </div>
-                                    <span className="sidebarLinksName">
-                                      {t("supportNumbers")}
-                                    </span>
-                                  </li>
-                                </FontColor>
-                              </NavLink>
-                            )}
+                          {userRole === "ispOwner" && (
+                            <NavLink
+                              key={13}
+                              to="/netFee/supportNumber"
+                              className={(navInfo) =>
+                                navInfo.isActive ? activeClass.active : ""
+                              }
+                            >
+                              <FontColor>
+                                <li
+                                  className="sidebarItems"
+                                  id={
+                                    window.location.pathname ===
+                                    "/netFee/supportNumber"
+                                      ? "active"
+                                      : ""
+                                  }
+                                >
+                                  <div className="sidebarIcon">
+                                    <PhoneVibrate />
+                                  </div>
+                                  <span className="sidebarLinksName">
+                                    {t("supportNumbers")}
+                                  </span>
+                                </li>
+                              </FontColor>
+                            </NavLink>
+                          )}
 
                           {(userRole === "ispOwner" ||
                             userRole === "reseller") && (
