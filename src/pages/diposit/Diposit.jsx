@@ -90,7 +90,6 @@ export default function Diposit() {
   //select depositor id
   const [collectorIds, setCollectorIds] = useState("all");
   const [depositedName, setDepositedName] = useState("");
-  console.log(depositedName);
 
   // filter date state
   const [filterDate, setFilterDate] = useState(firstDay);
@@ -200,7 +199,7 @@ export default function Diposit() {
       },
       {
         width: "15%",
-        Header: t("collector"),
+        Header: t("depositBy"),
         accessor: "user",
         Cell: ({ cell: { value } }) => {
           const performer = ownerUsers.find((item) => item[value]);
@@ -223,7 +222,7 @@ export default function Diposit() {
       },
       {
         width: "15%",
-        Header: t("depositBy"),
+        Header: t("receivedBy"),
         Cell: ({ row: { original } }) => {
           const performer = manager.find(
             (item) => item.id === original.manager

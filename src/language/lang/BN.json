@@ -872,5 +872,9 @@
   "customerTicketToast": "গ্রাহক টিকিট এসএমএস টেমপ্লেট সফলভাবে আপডেট হয়েছে ।",
   "assignTicketToast": "টিকিট এসএমএস টেমপ্লেট আপডেট করা হয়েছে ।",
   "macBinding": "ম্যাক-বাইন্ডিং",
-  "removeMACBinding": "রিমুভ ম্যাক-বাইন্ডিং"
+  "removeMACBinding": "রিমুভ ম্যাক-বাইন্ডিং",
+  "receivedBy": "গ্রহণ করেছে",
+  "messageInvoice": "মেসেজ ইনভয়েস",
+  "hotspotName": "হটস্পট নাম",
+  "minAmount": "সর্বনিম্ন পরিমাণ ১০০টাকা"
 }

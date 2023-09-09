@@ -440,7 +440,7 @@ export default function Sidebar() {
                             )}
                           </>
                         )}
-                        {userRole === "ispOwner" &&
+                        {(userRole === "ispOwner" || userRole === "manager") &&
                           bpSettings?.hasMikrotik &&
                           hasCustomerType.includes("hotspot") && (
                             <NavLink
@@ -1024,7 +1024,7 @@ export default function Sidebar() {
                                       {<Envelope />}
                                     </div>
                                     <span className="sidebarLinksName">
-                                      {t("message")}
+                                      {t("messageInvoice")}
                                     </span>
                                   </li>
                                 </FontColor>

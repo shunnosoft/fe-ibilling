@@ -43,7 +43,9 @@ const CollectorDeposit = () => {
 
   // add deposit form validation
   const depositValidation = Yup.object().shape({
-    amount: Yup.string().required("Please insert amount."),
+    amount: Yup.string()
+      .min(3, t("minAmount"))
+      .required("Please insert amount."),
   });
 
   // get user data form redux
@@ -147,6 +149,11 @@ const CollectorDeposit = () => {
 
   // add bill deposit
   const collectorDeposit = (data) => {
+    if (data.amount < 100) {
+      toast.warn(t("minAmount"));
+      return;
+    }
+
     if (!selectManager) {
       toast.error(t("selectManager"));
       return;

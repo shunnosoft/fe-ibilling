@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal, ModalBody, ModalHeader, ModalTitle } from "react-bootstrap";
 import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import DatePickerField from "../../../../components/common/DatePickerField";
 import moment from "moment";
+import { getBulletinPermission } from "../../../../features/apiCallAdmin";
 
 const BulletinPost = ({ show, setShow, editId }) => {
   const dispatch = useDispatch();
@@ -37,6 +38,11 @@ const BulletinPost = ({ show, setShow, editId }) => {
   //  netFee Bulletin all data
   const bulletinData = useSelector((state) =>
     modalStatus === "bulletinEdit" ? state.netFeeSupport?.bulletin : ""
+  );
+
+  // get bulletin permission
+  const butPermission = useSelector(
+    (state) => state.adminNetFeeSupport?.bulletinPermission
   );
 
   // single bulletin find
@@ -145,6 +151,11 @@ const BulletinPost = ({ show, setShow, editId }) => {
     patchBulletinPermission(dispatch, permission);
   };
 
+  useEffect(() => {
+    // bulletin api
+    Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
+  }, [modalStatus === "bulletinEdit"]);
+
   return (
     <>
       <Modal
@@ -172,29 +183,17 @@ const BulletinPost = ({ show, setShow, editId }) => {
                 : "",
               ispOwner: singleBulletin ? singleBulletin?.ispOwner : false,
               reseller: singleBulletin ? singleBulletin?.reseller : false,
-              allPage: singleBulletin
-                ? singleBulletin.pagePermission?.allPage
+              allPage: butPermission ? butPermission?.allPage : false,
+              customer: butPermission ? butPermission?.customer : false,
+              activeCustomer: butPermission
+                ? butPermission?.activeCustomer
                 : false,
-              customer: singleBulletin
-                ? singleBulletin.pagePermission?.customer
-                : false,
-              activeCustomer: singleBulletin
-                ? singleBulletin.pagePermission?.activeCustomer
-                : false,
-              dashboard: singleBulletin
-                ? singleBulletin.pagePermission?.dashboard
-                : false,
-              deposit: singleBulletin
-                ? singleBulletin.pagePermission?.deposit
-                : false,
-              message: singleBulletin
-                ? singleBulletin.pagePermission?.message
-                : false,
-              collection: singleBulletin
-                ? singleBulletin.pagePermission?.collection
-                : false,
-              othersCustomer: singleBulletin
-                ? singleBulletin.pagePermission?.othersCustomer
+              dashboard: butPermission ? butPermission?.dashboard : false,
+              deposit: butPermission ? butPermission?.deposit : false,
+              message: butPermission ? butPermission?.message : false,
+              collection: butPermission ? butPermission?.collection : false,
+              othersCustomer: butPermission
+                ? butPermission?.othersCustomer
                 : false,
             }}
             validationSchema={netFeeBulletin}

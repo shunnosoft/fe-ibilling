@@ -866,5 +866,9 @@
   "customerTicketToast": "Customer Ticket SMS Template Successfully Update.",
   "assignTicketToast": "Assign Ticket SMS Template Updated.",
   "macBinding": "MAC-Binding",
-  "removeMACBinding": "Remove MAC-Binding"
+  "removeMACBinding": "Remove MAC-Binding",
+  "receivedBy": "Received By",
+  "messageInvoice": "Message Invoice",
+  "hotspotName": "Hotspot Name",
+  "minAmount": "Min deposit amount 100Taka"
 }

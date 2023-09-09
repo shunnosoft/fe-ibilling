@@ -18,7 +18,7 @@ import {
   PrinterFill,
 } from "react-bootstrap-icons";
 import ReactToPrint from "react-to-print";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 
 // internal import
 import Sidebar from "../../components/admin/sidebar/Sidebar";
@@ -56,7 +56,9 @@ const ManagerDeposit = () => {
 
   // deposit form validation
   const billValidation = Yup.object().shape({
-    amount: Yup.string().required("Please insert amount."),
+    amount: Yup.string()
+      .min(3, t("minAmount"))
+      .required("Please insert amount."),
   });
 
   // get isp owner id from redux
@@ -236,6 +238,11 @@ const ManagerDeposit = () => {
 
   // add bill deposit
   const billDepositHandler = (data) => {
+    if (data.amount < 100) {
+      toast.warn(t("minAmount"));
+      return;
+    }
+
     const sendingData = {
       depositBy: userData?.user.role,
       amount: data.amount,

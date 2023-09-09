@@ -6,6 +6,7 @@ import {
   ArrowClockwise,
   CurrencyDollar,
   FiletypeCsv,
+  FilterCircle,
   GearFill,
   PenFill,
   PencilSquare,
@@ -14,18 +15,25 @@ import {
   ThreeDots,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
+import { useTranslation } from "react-i18next";
+import { useDispatch, useSelector } from "react-redux";
+import moment from "moment";
+import { Accordion, Card, Collapse } from "react-bootstrap";
+import { CSVLink } from "react-csv";
+import ReactToPrint from "react-to-print";
+import DatePicker from "react-datepicker";
+
+// internal import
 import { FontColor, FourGround } from "../../assets/js/theme";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import useDash from "../../assets/css/dash.module.css";
-import { useTranslation } from "react-i18next";
-import { useDispatch, useSelector } from "react-redux";
 import AddCustomer from "./customerOperation/AddCustomer";
 import EditCustomer from "./customerOperation/EditCustomer";
 import {
   deleteHotspotCustomer,
   getHotspotCustomer,
+  getHotspotPackage,
 } from "../../features/hotspotApi";
-import moment from "moment";
 import { badge } from "../../components/common/Utils";
 import Footer from "../../components/admin/footer/Footer";
 import Table from "../../components/table/Table";
@@ -34,13 +42,13 @@ import RechargeCustomer from "./customerOperation/RechargeCustomer";
 import CustomersNumber from "../Customer/CustomersNumber";
 import IndeterminateCheckbox from "../../components/table/bulkCheckbox";
 import Loader from "../../components/common/Loader";
-import { Card, Collapse } from "react-bootstrap";
-import { CSVLink } from "react-csv";
-import ReactToPrint from "react-to-print";
 import HotspotPdf from "./customerOperation/HotspotPdf";
 import BulkStatusEdit from "../Customer/customerCRUD/bulkOpration/bulkStatusEdit";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
+import { fetchMikrotik, getArea } from "../../features/apiCalls";
+import { getSubAreasApi } from "../../features/actions/customerApiCall";
+import FormatNumber from "../../components/common/NumberFormat";
 
 const HotspotCustomer = () => {
   const dispatch = useDispatch();
@@ -73,30 +81,30 @@ const HotspotCustomer = () => {
   // get hotspot customer
   const customer = useSelector((state) => state.hotspot.customer);
 
+  //get mikrotik
+  const mikrotiks = useSelector((state) => state?.mikrotik?.mikrotik);
+
+  // get hotspot package
+  const hotsPackage = useSelector((state) => state.hotspot?.package);
+
+  //get all areas
+  const areas = useSelector((state) => state.area?.area);
+
+  // get all subarea
+  const subAreas = useSelector((state) => state.area?.subArea);
+
   // get bulletin permission
   const butPermission = useSelector(
     (state) => state.adminNetFeeSupport?.bulletinPermission
   );
 
   // loading state
+  const [isLoading, setIsLoading] = useState(false);
   const [getCustomerLoading, setGetCustomerLoading] = useState(false);
-
   const [open, setOpen] = useState(false);
 
   //bulk menu show and hide
   const [isMenuOpen, setMenuOpen] = useState(false);
-
-  // bulk customer state
-  const [bulkCustomers, setBulkCustomer] = useState([]);
-
-  // customer id state
-  const [customerId, setCustomerId] = useState();
-
-  // delete customer id state
-  const [deleteCustomerId, setDeleteCustomerId] = useState();
-
-  // set recharge id
-  const [rechargeId, setRechargeId] = useState();
 
   // check uncheck mikrotik state when delete customer
   const [checkMikrotik, setMikrotikCheck] = useState(false);
@@ -104,22 +112,319 @@ const HotspotCustomer = () => {
   // customers number update or delete modal show state
   const [numberModalShow, setNumberModalShow] = useState(false);
 
+  // hotspot customer state
+  const [hotspotCustomers, setHotspotCustomers] = useState([]);
+
+  // filter Accordion handle state
+  const [activeKeys, setActiveKeys] = useState("");
+
+  // Single area state
+  const [areaId, setAreaId] = useState("");
+
+  // customer id state
+  const [customerId, setCustomerId] = useState();
+
+  // mikrotik filter package
+  const [filterPackage, setFilterPackage] = useState([]);
+
+  // delete customer id state
+  const [deleteCustomerId, setDeleteCustomerId] = useState();
+
+  // set recharge id
+  const [rechargeId, setRechargeId] = useState();
+
+  // bulk customer state
+  const [bulkCustomers, setBulkCustomer] = useState([]);
+
   // bulk modal handle state
   const [bulkStatus, setBulkStatus] = useState("");
   const [show, setShow] = useState(false);
 
+  // filter options state
+  const [filterOptions, setFilterOptions] = useState({
+    area: "",
+    subArea: "",
+    status: "",
+    paymentStatus: "",
+    mikrotik: "",
+    package: "",
+    filterDate: null,
+  });
+
   // customer get api call
   useEffect(() => {
+    // get customer
     customer.length === 0 &&
       getHotspotCustomer(dispatch, ispOwnerId, setGetCustomerLoading);
 
+    // fatch mikrotik
+    mikrotiks.length === 0 && fetchMikrotik(dispatch, ispOwnerId, setIsLoading);
+
+    // get hotspot api
+    hotsPackage.length === 0 &&
+      getHotspotPackage(dispatch, ispOwnerId, setIsLoading);
+
+    // get area api
+    if (areas.length === 0) getArea(dispatch, ispOwnerId, setIsLoading);
+
+    // get sub area api
+    if (subAreas.length === 0) getSubAreasApi(dispatch, ispOwnerId);
+
+    // bulletin api
     Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
   }, []);
+
+  // set all customer in state
+  useEffect(() => {
+    setHotspotCustomers(customer);
+  }, [customer]);
 
   // reload handler
   const reloadHandler = () => {
     getHotspotCustomer(dispatch, ispOwnerId, setGetCustomerLoading);
   };
+
+  // select mikrotik filter & fetch mikrotik package
+  const mikrotikHandler = (id) => {
+    setFilterOptions({
+      ...filterOptions,
+      mikrotik: id,
+    });
+
+    const mikrotikPackage = hotsPackage.filter((val) => val.mikrotik === id);
+    setFilterPackage(mikrotikPackage);
+  };
+
+  // hotspot customer filter handler
+  const hotspotFilterHandler = () => {
+    let tempCustomers = customer.reduce((acc, c) => {
+      const { area, subArea, status, paymentStatus, mikrotik, filterDate } =
+        filterOptions;
+
+      // finds area all subareas
+      let getSubarea = [];
+      if (area) {
+        getSubarea = subAreas.filter((val) => val.area === area);
+      }
+
+      // filter date
+      const filterBillDate = new Date(
+        moment(filterDate).format("YYYY-MM-DD")
+      ).getTime();
+
+      // make possible conditions objects if the filter value not selected thats return true
+      //if filter value exist then compare
+      const conditions = {
+        area: area ? getSubarea.some((val) => val.id === c.subArea) : true,
+        subArea: subArea ? subArea === c.subArea : true,
+        status: status ? status === c.status : true,
+        paymentStatus: paymentStatus ? paymentStatus === c.paymentStatus : true,
+        mikrotik: mikrotik ? mikrotik === c.mikrotik : true,
+        package: filterOptions.package
+          ? filterOptions.package === c.hotspotPackage
+          : true,
+        filterDate: filterDate ? filterBillDate == c.billingCycle : true,
+      };
+
+      //check if condition pass got for next step or is fail stop operation
+      //if specific filter option value not exist it will return true
+      let isPass = false;
+
+      isPass = conditions["area"];
+      if (!isPass) return acc;
+
+      isPass = conditions["subArea"];
+      if (!isPass) return acc;
+
+      isPass = conditions["status"];
+      if (!isPass) return acc;
+
+      isPass = conditions["paymentStatus"];
+      if (!isPass) return acc;
+
+      isPass = conditions["mikrotik"];
+      if (!isPass) return acc;
+
+      isPass = conditions["package"];
+      if (!isPass) return acc;
+
+      isPass = conditions["filterDate"];
+      if (!isPass) return acc;
+
+      if (isPass) acc.push(c);
+      return acc;
+    }, []);
+
+    // set filter customer in customer state
+    setHotspotCustomers(tempCustomers);
+  };
+
+  // filter reset controller
+  const handleFilterReset = () => {
+    setFilterPackage([]);
+    setFilterOptions({
+      area: "",
+      subArea: "",
+      status: "",
+      paymentStatus: "",
+      mikrotik: "",
+      package: "",
+      filterDate: null,
+    });
+    setHotspotCustomers(customer);
+  };
+
+  // filter input options
+  const filterInputs = [
+    {
+      type: "select",
+      name: "area",
+      id: "area",
+      value: filterOptions.area,
+      isVisible: true,
+      disable: false,
+      options: areas,
+      onChange: (e) => {
+        setAreaId(e.target.value);
+        setFilterOptions({
+          ...filterOptions,
+          area: e.target.value,
+        });
+      },
+      firstOption: t("allArea"),
+      textAccessor: "name",
+      valueAccessor: "id",
+    },
+    {
+      type: "select",
+      name: "subarea",
+      id: "subarea",
+      value: filterOptions.subArea,
+      isVisible: true,
+      disable: false,
+      options: subAreas.filter((item) => item?.area === areaId),
+      onChange: (e) => {
+        setFilterOptions({
+          ...filterOptions,
+          subArea: e.target.value,
+        });
+      },
+      firstOption: t("subArea"),
+      textAccessor: "name",
+      valueAccessor: "id",
+    },
+    {
+      type: "select",
+      name: "status",
+      id: "status",
+      value: filterOptions.status,
+      isVisible: true,
+      disable: false,
+      options: [
+        { text: t("active"), value: "active" },
+        { text: t("in active"), value: "inactive" },
+        { text: t("expired"), value: "expired" },
+      ],
+      onChange: (e) => {
+        setFilterOptions({
+          ...filterOptions,
+          status: e.target.value,
+        });
+      },
+      firstOption: t("status"),
+      textAccessor: "text",
+      valueAccessor: "value",
+    },
+    {
+      type: "select",
+      name: "paymentStatus",
+      id: "paymentStatus",
+      value: filterOptions.paymentStatus,
+      isVisible: true,
+      disable: false,
+      options: [
+        { text: t("paid"), value: "paid" },
+        { text: t("unpaid"), value: "unpaid" },
+      ],
+      onChange: (e) => {
+        setFilterOptions({
+          ...filterOptions,
+          paymentStatus: e.target.value,
+        });
+      },
+      firstOption: t("paymentStatus"),
+      textAccessor: "text",
+      valueAccessor: "value",
+    },
+    {
+      type: "select",
+      name: "mikrotik",
+      id: "mikrotik",
+      value: filterOptions.mikrotik,
+      isVisible: bpSettings?.hasMikrotik,
+      disable: false,
+      options: mikrotiks,
+      onChange: (e) => {
+        mikrotikHandler(e.target.value);
+      },
+      firstOption: t("mikrotik"),
+      textAccessor: "name",
+      valueAccessor: "id",
+    },
+    {
+      type: "select",
+      name: "package",
+      id: "package",
+      value: filterOptions.package,
+      isVisible: true,
+      disable: false,
+      options: filterPackage,
+      onChange: (e) => {
+        setFilterOptions({
+          ...filterOptions,
+          package: e.target.value,
+        });
+      },
+      firstOption: t("package"),
+      textAccessor: "name",
+      valueAccessor: "id",
+    },
+  ];
+
+  //sum of all monthly fee and collection calculation
+  const monthlySum = useMemo(() => {
+    let totalMonthlyFee = 0;
+    let totalCollection = 0;
+
+    hotspotCustomers.map((item) => {
+      totalMonthlyFee += item.monthlyFee;
+      totalCollection += item.balance;
+    });
+
+    return { totalMonthlyFee, totalCollection };
+  }, [hotspotCustomers]);
+
+  //custom table header component
+  const customComponent = (
+    <div
+      className="text-center"
+      style={{ fontSize: "18px", fontWeight: "500", display: "flex" }}
+    >
+      {monthlySum?.totalMonthlyFee > 0 && (
+        <div>
+          {t("monthlyFee")}:-৳
+          {FormatNumber(monthlySum.totalMonthlyFee)}
+        </div>
+      )}
+      &nbsp;&nbsp;
+      {monthlySum.totalCollection > 0 && (
+        <div>
+          {t("totalCollection")}:-৳
+          {FormatNumber(monthlySum.totalCollection)}
+        </div>
+      )}
+    </div>
+  );
 
   const sortingCustomer = useMemo(() => {
     return [...customer].sort((a, b) => {
@@ -128,9 +433,9 @@ const HotspotCustomer = () => {
 
       return a - b;
     });
-  }, [customer]);
+  }, [hotspotCustomers]);
 
-  const tableData = useMemo(() => sortingCustomer, [customer]);
+  const tableData = useMemo(() => sortingCustomer, [hotspotCustomers]);
 
   // csv table header
   const customerForCsVHeader = [
@@ -168,6 +473,14 @@ const HotspotCustomer = () => {
     [customer]
   );
 
+  // find filter area and sub area
+  // const are
+
+  // filter data print
+  const filterData = {
+    area: filterOptions,
+  };
+
   //column for table
   const columns = useMemo(
     () => [
@@ -194,16 +507,12 @@ const HotspotCustomer = () => {
       {
         width: "9%",
         Header: t("name"),
-        Cell: ({ row: { original } }) => (
-          <div
-            style={{ cursor: "move" }}
-            data-toggle="tooltip"
-            data-placement="top"
-            title={original.address}
-          >
-            {original.name}
-          </div>
-        ),
+        accessor: "name",
+      },
+      {
+        width: "9%",
+        Header: t("hotspotName"),
+        accessor: "hotspot.name",
       },
       {
         width: "12%",
@@ -244,21 +553,12 @@ const HotspotCustomer = () => {
       },
       {
         width: "11%",
-        Header: t("date"),
+        Header: t("bill"),
         accessor: "billingCycle",
         Cell: ({ cell: { value } }) => {
           return moment(value).format("YYYY/MM/DD hh:mm A");
         },
       },
-      {
-        width: "11%",
-        Header: t("createdAt"),
-        accessor: "createdAt",
-        Cell: ({ cell: { value } }) => {
-          return moment(value).format("YYYY/MM/DD hh:mm A");
-        },
-      },
-
       {
         width: "6%",
         Header: () => <div className="text-center">{t("action")}</div>,
@@ -369,7 +669,7 @@ const HotspotCustomer = () => {
                     style={{ height: "45px" }}
                     className="d-flex align-items-center"
                   >
-                    {/* <div
+                    <div
                       onClick={() => {
                         if (!activeKeys) {
                           setActiveKeys("filter");
@@ -380,7 +680,7 @@ const HotspotCustomer = () => {
                       title={t("filter")}
                     >
                       <FilterCircle className="addcutmButton" />
-                    </div> */}
+                    </div>
 
                     <div className="reloadBtn">
                       {getCustomerLoading ? (
@@ -483,31 +783,95 @@ const HotspotCustomer = () => {
                 </div>
               </FourGround>
               <FourGround>
-                {permission?.viewCustomerList || role !== "collector" ? (
-                  <div className="collectorWrapper mt-2 py-2">
-                    <div className="addCollector">
-                      <div className="table-section">
-                        <Table
-                          isLoading={getCustomerLoading}
-                          columns={columns}
-                          data={customer}
-                          bulkState={{
-                            setBulkCustomer,
-                          }}
-                          bulkLength={bulkCustomers?.length}
-                        ></Table>
-                      </div>
+                {(permission?.viewCustomerList || role !== "collector") && (
+                  <div className="mt-2">
+                    <Accordion alwaysOpen activeKey={activeKeys}>
+                      <Accordion.Item eventKey="filter">
+                        <Accordion.Body>
+                          <div className="displayGrid6">
+                            {filterInputs.map(
+                              (item) =>
+                                item.isVisible && (
+                                  <select
+                                    className="form-select shadow-none mt-0"
+                                    onChange={item.onChange}
+                                    value={item.value}
+                                  >
+                                    <option value="">{item.firstOption}</option>
+                                    {item.options?.map((opt) => (
+                                      <option value={opt[item.valueAccessor]}>
+                                        {opt[item.textAccessor]}
+                                      </option>
+                                    ))}
+                                  </select>
+                                )
+                            )}
 
-                      <div style={{ display: "none" }}>
-                        <HotspotPdf
-                          currentCustomers={customer}
-                          ref={componentRef}
-                        />
+                            <div>
+                              <DatePicker
+                                className="form-control mt-0"
+                                selected={filterOptions.filterDate}
+                                onChange={(date) =>
+                                  setFilterOptions({
+                                    ...filterOptions,
+                                    filterDate: date,
+                                  })
+                                }
+                                dateFormat="dd/MM/yyyy"
+                                placeholderText={t("selectDate")}
+                              />
+                            </div>
+
+                            <div
+                              id="customer_filter_button"
+                              className="d-flex justify-content-end align-items-end mt-0 "
+                            >
+                              <button
+                                className="btn btn-outline-primary w-6rem h-76"
+                                type="button"
+                                onClick={hotspotFilterHandler}
+                                id="filterBtn"
+                              >
+                                {t("filter")}
+                              </button>
+                              <button
+                                id="filter_reset"
+                                handleFilterReset
+                                className="btn btn-outline-secondary w-6rem h-76 ms-1 "
+                                type="button"
+                                onClick={handleFilterReset}
+                              >
+                                {t("reset")}
+                              </button>
+                            </div>
+                          </div>
+                        </Accordion.Body>
+                      </Accordion.Item>
+                    </Accordion>
+
+                    <div className="collectorWrapper pb-2">
+                      <div className="addCollector">
+                        <div style={{ display: "none" }}>
+                          <HotspotPdf
+                            currentCustomers={hotspotCustomers}
+                            ref={componentRef}
+                          />
+                        </div>
+                        <div className="table-section">
+                          <Table
+                            isLoading={getCustomerLoading}
+                            customComponent={customComponent}
+                            columns={columns}
+                            data={hotspotCustomers}
+                            bulkState={{
+                              setBulkCustomer,
+                            }}
+                            bulkLength={bulkCustomers?.length}
+                          ></Table>
+                        </div>
                       </div>
                     </div>
                   </div>
-                ) : (
-                  ""
                 )}
 
                 {(butPermission?.customer || butPermission?.allPage) && (
