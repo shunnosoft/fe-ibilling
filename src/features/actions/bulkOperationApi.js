@@ -5,7 +5,7 @@ import {
   bulkCustomerReturn,
   bulkResellerDelete,
 } from "../resellerCustomerAdminSlice";
-import { bulkUpdateSuccess } from "../hotspotSlice";
+import { bulkDeleteSuccess, bulkUpdateSuccess } from "../hotspotSlice";
 
 export const bulkDeleteCustomer = async (
   dispatch,
@@ -30,6 +30,31 @@ export const bulkDeleteCustomer = async (
     }
   }
 };
+
+export const hotspotBulkDeleteCustomer = async (
+  dispatch,
+  data,
+  mikrotik,
+  setIsLoading,
+  setShow
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.delete(
+      `/hotspot/bulk/delete?deleteFromMikrotik=${mikrotik}`,
+      { data }
+    );
+    dispatch(bulkDeleteSuccess(res.data));
+    setShow(false);
+    toast.success("কাস্টমার ডিলিট সফল হয়েছে!");
+  } catch (err) {
+    if (err.response) {
+      toast.error(err.response.data.message);
+    }
+  }
+  setIsLoading(false);
+};
+
 export const bulksubAreaEdit = async (
   dispatch,
   data,
@@ -115,19 +140,39 @@ export const bulkPaymentStatusEdit = async (
   setIsLoading,
   setShow
 ) => {
+  setIsLoading(true);
   try {
-    setIsLoading(true);
     const res = await apiLink.patch("/customer/bulk-payment-status", data);
-    setShow(false);
     dispatch(bulkUpdate(res.data.data));
+    setShow(false);
     toast.success("কাস্টমার স্টাটাস আপডেট সফল হয়েছে!");
-    setIsLoading(false);
   } catch (err) {
     if (err.response) {
-      setIsLoading(false);
       toast.error(err.response.data.message);
     }
   }
+  setIsLoading(false);
+};
+
+//bulk Payment Status Edit
+export const hotspotBulkPaymentStatusEdit = async (
+  dispatch,
+  data,
+  setIsLoading,
+  setShow
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.patch(`/hotspot/bulk/payment-status`, data);
+    dispatch(bulkUpdateSuccess(res.data));
+    setShow(false);
+    toast.success("কাস্টমার স্টাটাস আপডেট সফল হয়েছে!");
+  } catch (err) {
+    if (err.response) {
+      toast.error(err.response.data.message);
+    }
+  }
+  setIsLoading(false);
 };
 
 export const bulkPackageEdit = async (

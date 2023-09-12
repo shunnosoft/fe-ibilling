@@ -15,6 +15,7 @@ import {
   FilterCircle,
   ArrowBarLeft,
   ArrowBarRight,
+  ArchiveFill,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -49,14 +50,22 @@ import {
 import { Accordion, Card, Collapse } from "react-bootstrap";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
+import CustomerDelete from "../../pages/Customer/customerCRUD/CustomerDelete";
 
 export default function RstaticCustomer() {
   const { t } = useTranslation();
   const componentRef = useRef(); //reference of pdf export component
+
   const cus = useSelector((state) => state?.customer?.staticCustomer);
   const Getmikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
+
   const reseller = useSelector(
     (state) => state.persistedReducer.auth?.userData
+  );
+
+  // get user data form redux
+  const userData = useSelector(
+    (state) => state.persistedReducer.auth?.currentUser
   );
 
   const bpSettings = useSelector(
@@ -83,9 +92,22 @@ export default function RstaticCustomer() {
     (state) => state.persistedReducer.auth?.userData?.id
   );
 
+  //get customer subareas form redux
+  const subAreas = useSelector((state) => state?.area?.area);
+
+  // get bulletin permission
+  const butPermission = useSelector(
+    (state) => state.adminNetFeeSupport?.bulletinPermission
+  );
+
+  // loading state
   const [isLoading, setIsloading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [open, setOpen] = useState(false);
+  const [show, setShow] = useState(false);
+
+  // check uncheck mikrotik state when delete customer
+  const [checkMikrotik, setMikrotikCheck] = useState(false);
 
   const permission = useSelector(
     (state) => state.persistedReducer.auth?.userData?.permission
@@ -99,16 +121,11 @@ export default function RstaticCustomer() {
   // get specific customer
   const [singleCustomer, setSingleCustomer] = useState("");
 
-  // const currentCustomers = Customers
-  const subAreas = useSelector((state) => state?.area?.area);
-  const userData = useSelector(
-    (state) => state.persistedReducer.auth?.currentUser
-  );
+  // customer id state
+  const [customerId, setCustomerId] = useState("");
 
-  // get bulletin permission
-  const butPermission = useSelector(
-    (state) => state.adminNetFeeSupport?.bulletinPermission
-  );
+  // component modal state
+  const [compStatus, setCompStatus] = useState("");
 
   const [packageRate, setPackageRate] = useState({ rate: 0 });
   const [paymentStatus, setPaymentStatus] = useState("");
@@ -167,6 +184,12 @@ export default function RstaticCustomer() {
   const customerPackageFind = (pack) => {
     const findPack = allPackages.find((item) => item.id.includes(pack));
     return findPack;
+  };
+
+  // customer delete controller
+  const customerDelete = (customerID) => {
+    setMikrotikCheck(false);
+    setCustomerId(customerID);
   };
 
   //   filter
@@ -276,17 +299,6 @@ export default function RstaticCustomer() {
 
   const getSpecificCustomerReport = (reportData) => {
     setId(reportData);
-  };
-
-  // DELETE handler
-  const deleteCustomer = async (ID) => {
-    setIsDeleting(true);
-    const IDs = {
-      ispID: resellerId,
-      customerID: ID,
-    };
-    deleteACustomer(dispatch, IDs);
-    setIsDeleting(false);
   };
 
   // reload handler
@@ -506,7 +518,22 @@ export default function RstaticCustomer() {
                     </div>
                   </li>
                 )}
-
+                {permission?.customerDelete && (
+                  <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#customerDelete"
+                    onClick={() => {
+                      customerDelete(original.id);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <ArchiveFill />
+                        <p className="actionP">{t("delete")}</p>
+                      </div>
+                    </div>
+                  </li>
+                )}
                 {original.mobile && (
                   <li
                     data-bs-toggle="modal"
@@ -578,8 +605,10 @@ export default function RstaticCustomer() {
                         collectorPermission?.customerAdd) && (
                         <PersonPlusFill
                           className="addcutmButton"
-                          data-bs-toggle="modal"
-                          data-bs-target="#addStaticCustomerModal"
+                          onClick={() => {
+                            setShow(true);
+                            setCompStatus("customerPost");
+                          }}
                         />
                       )}
                     </div>
@@ -627,22 +656,6 @@ export default function RstaticCustomer() {
                   </div>
                 </div>
               </FourGround>
-
-              {/* Model start */}
-              <CustomerBillCollect
-                single={singleCustomer}
-                customerData={customerReportData}
-              />
-              <AddStaticCustomer />
-              <CustomerEdit single={singleCustomer} />
-              <CustomerDetails single={singleCustomer} />
-              <SingleMessage
-                single={singleCustomer}
-                sendCustomer="staticCustomer"
-              />
-
-              {/* Model finish */}
-
               <FourGround>
                 <div className="mt-2">
                   <Accordion alwaysOpen activeKey={activeKeys}>
@@ -783,6 +796,39 @@ export default function RstaticCustomer() {
           </div>
         </div>
       </div>
+
+      {/* Model start */}
+
+      {/* new customer added */}
+      {compStatus === "customerPost" && (
+        <AddStaticCustomer show={show} setShow={setShow} />
+      )}
+
+      {/* customer bill collection */}
+      <CustomerBillCollect
+        single={singleCustomer}
+        customerData={customerReportData}
+      />
+
+      {/* single customer update */}
+      <CustomerEdit single={singleCustomer} />
+
+      {/* single customer profile details */}
+      <CustomerDetails single={singleCustomer} />
+
+      {/* single customer message */}
+      <SingleMessage single={singleCustomer} sendCustomer="staticCustomer" />
+
+      {/* customer delete modal  */}
+      <CustomerDelete
+        single={customerId}
+        mikrotikCheck={checkMikrotik}
+        setMikrotikCheck={setMikrotikCheck}
+        status="customerDelete"
+        page="reseller"
+      />
+
+      {/* Model finish */}
     </>
   );
 }

@@ -28,24 +28,25 @@ const HotspotPdf = forwardRef((props, ref) => {
           )}
         </div>
       </div>
-      {/* 
+
       <ul className="d-flex justify-content-evenly filter_list">
         <li>
           {t("area")} : {filterData.area}
         </li>
         <li>
-          {t("status")} : {filterData.status}
+          {t("subArea")} : {filterData.subarea}
         </li>
         <li>
-          {t("paymentStatus")} : {filterData.payment}
+          {t("totalData")} : {currentCustomers.length}
         </li>
-      </ul> */}
+      </ul>
 
       <table className="table table-striped ">
         <thead>
           <tr className="spetialSortingRow">
             <th scope="col">{t("id")}</th>
             <th scope="col">{t("name")}</th>
+            <th scope="col">{t("hotspotName")}</th>
             <th scope="col">{t("mobile")}</th>
             <th scope="col">{t("status")}</th>
             <th scope="col">{t("paymentStatus")}</th>
@@ -61,6 +62,7 @@ const HotspotPdf = forwardRef((props, ref) => {
             <tr key={key} id={val.id}>
               <td className="prin_td">{val.customerId}</td>
               <td className="prin_td">{val.name}</td>
+              <td className="prin_td">{val.hotspot.name}</td>
               <td className="prin_td">{val.mobile}</td>
               <td className="prin_td">{badge(val.status)}</td>
               <td className="prin_td">{badge(val.paymentStatus)}</td>

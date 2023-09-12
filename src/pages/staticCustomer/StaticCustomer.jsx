@@ -255,7 +255,7 @@ export default function Customer() {
     setSingleData(customerId);
   };
 
-  let customerForCsV = Customers.map((customer) => {
+  let customerForCsV = Customers1.map((customer) => {
     return {
       companyName: ispOwnerData.company,
       home: "Home",
@@ -300,7 +300,7 @@ export default function Customer() {
   ];
 
   //export customer data
-  let customerForCsVTableInfo = Customers.map((customer) => {
+  let customerForCsVTableInfo = Customers1.map((customer) => {
     return {
       name: customer.name,
       ip:
@@ -1601,7 +1601,7 @@ export default function Customer() {
                       <div style={{ display: "none" }}>
                         <PrintCustomer
                           filterData={filterData}
-                          currentCustomers={Customers}
+                          currentCustomers={Customers1}
                           ref={componentRef}
                         />
                       </div>

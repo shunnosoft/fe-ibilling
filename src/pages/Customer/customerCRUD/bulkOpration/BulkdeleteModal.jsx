@@ -1,12 +1,16 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../../../../components/common/Loader";
-import { bulkDeleteCustomer } from "../../../../features/actions/bulkOperationApi";
+import {
+  bulkDeleteCustomer,
+  hotspotBulkDeleteCustomer,
+} from "../../../../features/actions/bulkOperationApi";
 import RootBulkModal from "./bulkModal";
 import { useTranslation } from "react-i18next";
 
-const BulkCustomerDelete = ({ bulkCustomer, show, setShow }) => {
+const BulkCustomerDelete = ({ bulkCustomer, show, setShow, bulkStatus }) => {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
 
   // get bp settings
   const bpSettings = useSelector(
@@ -14,9 +18,9 @@ const BulkCustomerDelete = ({ bulkCustomer, show, setShow }) => {
   );
 
   // loading state
-  const [isLoading, setIsloading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [mikrotikCheck, setMikrotikCheck] = useState(false);
-  const dispatch = useDispatch();
+
   // DELETE handler
   const bulkDeleteHandler = () => {
     let checkCondition = true;
@@ -37,14 +41,25 @@ const BulkCustomerDelete = ({ bulkCustomer, show, setShow }) => {
       const confirm = window.confirm(
         data.customerIds.length + "টি গ্রাহক ডিলিট করতে চান?"
       );
-      if (confirm)
-        bulkDeleteCustomer(
-          dispatch,
-          data,
-          mikrotikCheck,
-          setIsloading,
-          setShow
-        );
+      if (confirm) {
+        if (bulkStatus === "hotspot") {
+          hotspotBulkDeleteCustomer(
+            dispatch,
+            data,
+            mikrotikCheck,
+            setIsLoading,
+            setShow
+          );
+        } else {
+          bulkDeleteCustomer(
+            dispatch,
+            data,
+            mikrotikCheck,
+            setIsLoading,
+            setShow
+          );
+        }
+      }
     }
   };
 
@@ -63,8 +78,11 @@ const BulkCustomerDelete = ({ bulkCustomer, show, setShow }) => {
             id="flexCheckDefault"
             onChange={(event) => setMikrotikCheck(event.target.checked)}
           />
-          <label class="form-check-label" for="flexCheckDefault">
-            <small className="text-secondary">{t("deleteMikrotik")}</small>
+          <label
+            class="form-check-label text-secondary"
+            htmlFor="flexCheckDefault"
+          >
+            {t("deleteMikrotik")}
           </label>
         </div>
       )}

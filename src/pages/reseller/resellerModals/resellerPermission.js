@@ -1,5 +1,4 @@
 export const resellerPermissions = (permission, bpSettings) => {
-  console.log(permission);
   const permissionEn = [
     {
       id: 1,
@@ -151,6 +150,13 @@ export const resellerPermissions = (permission, bpSettings) => {
     //   isChecked: permission?.bulkPaymentStatusEdit,
     //   disabled: !bpSettings?.bulkPaymentStatusEdit,
     // },
+    {
+      id: 2,
+      label: "Customer Delete",
+      value: "customerEdit",
+      isChecked: permission?.customerDelete,
+      disabled: false,
+    },
   ];
 
   const permissionBn = [

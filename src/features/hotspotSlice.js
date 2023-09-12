@@ -59,6 +59,20 @@ export const hotspotSlice = createSlice({
       }
       state.customer = [...customers];
     },
+
+    bulkDeleteSuccess: (state, { payload }) => {
+      let customers = [...state.customer];
+      let updateCustomer = [];
+
+      //loop through existing customer
+      for (let i = 0; i < customers.length; i++) {
+        const element = customers[i];
+        const found = payload.find((item) => item.id === element.id);
+        if (!found) updateCustomer.push(element);
+      }
+
+      state.customer = [...updateCustomer];
+    },
   },
 });
 
@@ -74,5 +88,6 @@ export const {
   getHotspotActiveCustomerSuccess,
   getCustomerSuccess,
   bulkUpdateSuccess,
+  bulkDeleteSuccess,
 } = hotspotSlice.actions;
 export default hotspotSlice.reducer;

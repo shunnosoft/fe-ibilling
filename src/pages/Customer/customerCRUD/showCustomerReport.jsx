@@ -436,7 +436,6 @@ export default function CustomerReport(props) {
                                     <button
                                       className="border-0 bg-transparent me-4"
                                       onClick={() => deletReport(val.id)}
-                                      disabled={props?.hideReportDelete}
                                     >
                                       <TrashFill
                                         color="#dc3545"

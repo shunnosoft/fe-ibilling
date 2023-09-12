@@ -12,9 +12,10 @@ const CustomerTicketSmsTemplate = ({ otherTabs }) => {
   const settings = useSelector(
     (state) => state.persistedReducer.auth.userData?.settings
   );
+  console.log(settings);
 
   // get message from redux
-  let customerTicketMsg = settings.sms.template.customerTicket;
+  let customerTicketMsg = settings.sms?.template?.customerTicket;
 
   // get isp owner id
   const ispOwner = useSelector(

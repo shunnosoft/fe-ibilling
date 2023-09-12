@@ -3,14 +3,23 @@ import { useDispatch, useSelector } from "react-redux";
 import Loader from "../../../components/common/Loader";
 import { deleteACustomer } from "../../../features/apiCalls";
 import { useTranslation } from "react-i18next";
+import { deleteResellerCustomer } from "../../../features/apiCallReseller";
 
 const CustomerDelete = ({
   single,
   mikrotikCheck,
   setMikrotikCheck,
   status,
+  page,
 }) => {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
+
+  // get isp owner id
+  const ispOwnerId = useSelector(
+    (state) => state.persistedReducer.auth?.ispOwnerId
+  );
+
   // get ispOwner bp settings
   const bpSettings = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
@@ -24,16 +33,8 @@ const CustomerDelete = ({
   // find deletable customer
   const singleData = customers.find((item) => item.id === single);
 
-  // import dispatch
-  const dispatch = useDispatch();
-
   // loading state
-  const [isLoading, setIsloading] = useState(false);
-
-  // get isp owner id
-  const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerId
-  );
+  const [isLoading, setIsLoading] = useState(false);
 
   // DELETE handler
   const deleteCustomer = (customerId) => {
@@ -50,9 +51,17 @@ const CustomerDelete = ({
       mikrotik: mikrotikCheck,
     };
 
+    const resellerCusData = {
+      reseller: singleData.reseller,
+      customerID: customerId,
+      mikrotik: mikrotikCheck,
+    };
+
     // api call
-    if (checkCondition) {
-      deleteACustomer(dispatch, data, setIsloading);
+    if (checkCondition && page !== "reseller") {
+      deleteACustomer(dispatch, data, setIsLoading);
+    } else {
+      deleteResellerCustomer(dispatch, resellerCusData, setIsLoading);
     }
   };
 

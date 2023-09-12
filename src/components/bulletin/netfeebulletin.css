@@ -23,3 +23,22 @@
   margin: auto 20px;
   position: relative;
 }
+
+@media only screen and (max-width: 575px) {
+  .bulletin {
+    background-color: #2e87df;
+    bottom: 0;
+    position: fixed;
+    margin-right: 12px;
+    padding: 4px 2%;
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    width: 100%;
+  }
+
+  .bulletin_title {
+    font-size: 1rem !important;
+    color: #fff;
+  }
+}

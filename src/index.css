@@ -293,9 +293,27 @@ p {
   cursor: pointer;
 } */
 
-@media only screen and (max-width: 992px) {
-  .customer_component {
+@media only screen and (max-width: 575px) {
+  #toggle_selection {
     display: none !important;
+  }
+
+  #custom_component_data {
+    display: none !important;
+  }
+
+  .allData {
+    background: rgb(0 0 0 / 13%);
+    border-radius: 21px;
+    font-size: 16px;
+    margin-left: 5px;
+    padding: 2px 15px;
+  }
+
+  .displayGrid2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr) !important;
+    grid-gap: 10px;
   }
 
   .displayGrid3 {
@@ -305,10 +323,48 @@ p {
   }
 }
 
+@media only screen and (min-width: 576px) and (max-width: 767px) {
+  .displayGrid3 {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr) !important;
+    grid-gap: 10px;
+  }
+
+  .displayGrid6 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr) !important;
+    grid-gap: 10px;
+  }
+}
+
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+  .customer_component {
+    display: none !important;
+  }
+
+  .displayGrid3 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr) !important;
+    grid-gap: 10px;
+  }
+
+  .displayGrid6 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr) !important;
+    grid-gap: 10px;
+  }
+}
+
 @media only screen and (min-width: 992px) and (max-width: 1200px) {
   .displayGrid3 {
     display: grid;
     grid-template-columns: repeat(2, 1fr) !important;
+    grid-gap: 10px;
+  }
+
+  .displayGrid6 {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr) !important;
     grid-gap: 10px;
   }
 }

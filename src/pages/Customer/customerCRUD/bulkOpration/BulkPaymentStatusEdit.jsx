@@ -2,18 +2,26 @@ import React from "react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import Loader from "../../../../components/common/Loader";
-import { bulkPaymentStatusEdit } from "../../../../features/actions/bulkOperationApi";
+import {
+  bulkPaymentStatusEdit,
+  hotspotBulkPaymentStatusEdit,
+} from "../../../../features/actions/bulkOperationApi";
 import RootBulkModal from "./bulkModal";
 import { useTranslation } from "react-i18next";
 
-const BulkPaymentStatusEdit = ({ bulkCustomer, show, setShow }) => {
+const BulkPaymentStatusEdit = ({ bulkCustomer, show, setShow, bulkStatus }) => {
   const { t } = useTranslation();
-  const [isLoading, setIsLoading] = useState(false);
-  const [status, setStatus] = useState("");
   const dispatch = useDispatch();
+
+  // loading state
+  const [isLoading, setIsLoading] = useState(false);
+
+  // select status state
+  const [status, setStatus] = useState("");
 
   const changeStatus = (e) => {
     e.preventDefault();
+
     if (status) {
       const data = {
         customerIds: bulkCustomer.map((item) => item.original.id),
@@ -27,7 +35,11 @@ const BulkPaymentStatusEdit = ({ bulkCustomer, show, setShow }) => {
       );
 
       if (confirm) {
-        bulkPaymentStatusEdit(dispatch, data, setIsLoading, setShow);
+        if (bulkStatus === "hotspot") {
+          hotspotBulkPaymentStatusEdit(dispatch, data, setIsLoading, setShow);
+        } else {
+          bulkPaymentStatusEdit(dispatch, data, setIsLoading, setShow);
+        }
       }
     }
   };

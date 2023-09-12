@@ -85,12 +85,14 @@
   font-size: 18px;
   font-weight: 400;
   margin-top: 7px;
+  margin-right: 0.5rem;
 }
 .allCollect > span {
   background: rgb(0 0 0 / 13%);
   border-radius: 21px;
   font-size: 16px;
   margin-left: 5px;
+  margin-top: -2px;
   padding: 2px 15px;
 }
 

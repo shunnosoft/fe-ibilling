@@ -1292,7 +1292,7 @@ const PPPOECustomer = () => {
             <FontColor>
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-4">
-                  <h2>{t("customer")}</h2>
+                  <div className="component_name">{t("customer")}</div>
 
                   <div
                     style={{ height: "45px" }}
@@ -1482,21 +1482,16 @@ const PPPOECustomer = () => {
                               </option>
                             </select>
 
-                            <div
-                              id="customer_filter_button"
-                              className="d-flex justify-content-end align-items-end mt-0 "
-                            >
+                            <div className="displayGrid2 mt-0 ">
                               <button
-                                className="btn btn-outline-primary w-6rem h-76"
+                                className="btn btn-outline-primary"
                                 type="button"
                                 onClick={handleActiveFilter}
-                                id="filterBtn"
                               >
                                 {t("filter")}
                               </button>
                               <button
-                                id="filter_reset"
-                                className="btn btn-outline-secondary w-6rem h-76 ms-1 "
+                                className="btn btn-outline-secondary"
                                 type="button"
                                 onClick={handleFilterReset}
                               >

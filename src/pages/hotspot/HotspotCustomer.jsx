@@ -49,6 +49,9 @@ import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { fetchMikrotik, getArea } from "../../features/apiCalls";
 import { getSubAreasApi } from "../../features/actions/customerApiCall";
 import FormatNumber from "../../components/common/NumberFormat";
+import BulkCustomerDelete from "../Customer/customerCRUD/bulkOpration/BulkdeleteModal";
+import BulkPaymentStatusEdit from "../Customer/customerCRUD/bulkOpration/BulkPaymentStatusEdit";
+import BulkCustomerMessage from "../Customer/customerCRUD/bulkOpration/BulkCustomerMessage";
 
 const HotspotCustomer = () => {
   const dispatch = useDispatch();
@@ -474,11 +477,15 @@ const HotspotCustomer = () => {
   );
 
   // find filter area and sub area
-  // const are
+  const areaName = areas.find((val) => val.id === filterOptions.area)?.name;
+  const subAreaName = subAreas.find(
+    (val) => val.id === filterOptions.subArea
+  )?.name;
 
   // filter data print
   const filterData = {
-    area: filterOptions,
+    area: areaName ? areaName : t("allArea"),
+    subarea: subAreaName ? subAreaName : t("allSubArea"),
   };
 
   //column for table
@@ -836,7 +843,6 @@ const HotspotCustomer = () => {
                               </button>
                               <button
                                 id="filter_reset"
-                                handleFilterReset
                                 className="btn btn-outline-secondary w-6rem h-76 ms-1 "
                                 type="button"
                                 onClick={handleFilterReset}
@@ -853,6 +859,7 @@ const HotspotCustomer = () => {
                       <div className="addCollector">
                         <div style={{ display: "none" }}>
                           <HotspotPdf
+                            filterData={filterData}
                             currentCustomers={hotspotCustomers}
                             ref={componentRef}
                           />
@@ -919,6 +926,32 @@ const HotspotCustomer = () => {
         </>
       )}
 
+      {bulkStatus === "bulkPaymentStatusEdit" && (
+        <BulkPaymentStatusEdit
+          bulkCustomer={bulkCustomers}
+          show={show}
+          setShow={setShow}
+          bulkStatus="hotspot"
+        />
+      )}
+
+      {bulkStatus === "bulkDeleteCustomer" && (
+        <BulkCustomerDelete
+          bulkCustomer={bulkCustomers}
+          show={show}
+          setShow={setShow}
+          bulkStatus="hotspot"
+        />
+      )}
+
+      {bulkStatus === "bulkMessage" && (
+        <BulkCustomerMessage
+          bulkCustomer={bulkCustomers}
+          show={show}
+          setShow={setShow}
+        />
+      )}
+
       {/* bulk modal end */}
 
       {bulkCustomers.length > 0 && (
@@ -937,7 +970,7 @@ const HotspotCustomer = () => {
                   type="button"
                   className="p-1"
                   onClick={() => {
-                    setBulkStatus("customerBulkEdit");
+                    setBulkStatus("customerAreaEdit");
                     setShow(true);
                   }}
                 >
@@ -981,6 +1014,7 @@ const HotspotCustomer = () => {
               )} */}
 
               <hr className="mt-0 mb-0" />
+
               {bpSettings.hasMikrotik &&
                 ((role === "ispOwner" && bpSettings?.bulkStatusEdit) ||
                   (bpSettings?.bulkStatusEdit &&
@@ -1010,8 +1044,9 @@ const HotspotCustomer = () => {
                   </li>
                 )}
 
-              {/*   <hr className="mt-0 mb-0" />
-             {((role === "ispOwner" && bpSettings?.bulkPaymentStatusEdit) ||
+              <hr className="mt-0 mb-0" />
+
+              {((role === "ispOwner" && bpSettings?.bulkPaymentStatusEdit) ||
                 (bpSettings?.bulkPaymentStatusEdit &&
                   permission?.bulkPaymentStatusEdit &&
                   role === "manager") ||
@@ -1042,6 +1077,34 @@ const HotspotCustomer = () => {
               )}
 
               <hr className="mt-0 mb-0" />
+
+              {((role === "ispOwner" && bpSettings?.bulkMessage) ||
+                (bpSettings?.bulkMessage &&
+                  permission?.bulkMessage &&
+                  role === "manager")) && (
+                <li
+                  type="button"
+                  className="p-1"
+                  onClick={() => {
+                    setBulkStatus("bulkMessage");
+                    setShow(true);
+                  }}
+                >
+                  <div className="menu_icon2">
+                    <button
+                      className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-success"
+                      title={t("bulkMessage")}
+                    >
+                      <i class="fa-regular fa-envelope"></i>
+
+                      <span className="button_title">{t("bulkMessage")}</span>
+                    </button>
+                  </div>
+                  <div className="menu_label2">{t("bulkMessage")}</div>
+                </li>
+              )}
+
+              {/*   <hr className="mt-0 mb-0" />
               {((role === "ispOwner" && bpSettings?.bulkBillingCycleEdit) ||
                 (bpSettings?.bulkBillingCycleEdit &&
                   permission?.bulkBillingCycleEdit &&
@@ -1241,7 +1304,7 @@ const HotspotCustomer = () => {
                   </div>
                   <div className="menu_label2">{t("transferReseller")}</div>
                 </li>
-              )}
+              )}*/}
 
               <hr className="mt-0 mb-0" />
 
@@ -1270,7 +1333,7 @@ const HotspotCustomer = () => {
                   </div>
                   <div className="menu_label2">{t("customerDelete")}</div>
                 </li>
-              )} */}
+              )}
             </ul>
 
             <div className="setting_icon_wraper2">

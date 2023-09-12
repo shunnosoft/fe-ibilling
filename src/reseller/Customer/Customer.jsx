@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import "../collector/collector.css";
 import moment from "moment";
-// import { Link } from "react-router-dom";
 import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import {
@@ -21,9 +20,14 @@ import {
   FiletypeCsv,
   ArrowBarLeft,
   ArrowBarRight,
+  ArchiveFill,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
+import { useTranslation } from "react-i18next";
+import ReactToPrint from "react-to-print";
+import { CSVLink } from "react-csv";
+import { Accordion, Card, Collapse } from "react-bootstrap";
 
 // internal imports
 import Footer from "../../components/admin/footer/Footer";
@@ -36,7 +40,6 @@ import Loader from "../../components/common/Loader";
 
 import {
   deleteACustomer,
-  fetchpppoePackage,
   getCustomer,
   getMikrotik,
   getSubAreas,
@@ -46,10 +49,7 @@ import {
 import CustomerReport from "./customerCRUD/showCustomerReport";
 import { badge } from "../../components/common/Utils";
 import Table from "../../components/table/Table";
-import { useTranslation } from "react-i18next";
-import ReactToPrint from "react-to-print";
 import PrintCustomer from "./customerPDF";
-import { CSVLink } from "react-csv";
 import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
 import IndeterminateCheckbox from "../../components/table/bulkCheckbox";
 import BulkBillingCycleEdit from "./bulkOpration/bulkBillingCycleEdit";
@@ -61,99 +61,72 @@ import BulkResellerRecharge from "./bulkOpration/BulkResellerRecharge";
 import ResellerBulkAutoConnectionEdit from "./bulkOpration/ResellerBulkAutoConnectionEdit";
 import BulkPackageEdit from "./bulkOpration/bulkPackageEdit";
 import CustomersNumber from "../../pages/Customer/CustomersNumber";
-import { Accordion, Card, Collapse } from "react-bootstrap";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
-// import CustomersNumber from "../../pages/Customer/CustomersNumber";
+import CustomerDelete from "../../pages/Customer/customerCRUD/CustomerDelete";
 
 export default function Customer() {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
   const componentRef = useRef(); //reference of pdf export component
-  const Getmikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
-  const reseller = useSelector(
-    (state) => state.persistedReducer.auth?.userData
-  );
-
-  const ppPackage = useSelector((state) => state?.mikrotik?.pppoePackage);
-  const cus = useSelector((state) => state?.customer?.customer);
-
-  const role = useSelector((state) => state.persistedReducer.auth?.role);
 
   // get ispOwner data from redux
   const ispOwnerData = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerData
   );
 
-  // get bulletin permission
-  const butPermission = useSelector(
-    (state) => state.adminNetFeeSupport?.bulletinPermission
+  // user data get form redux
+  const userData = useSelector(
+    (state) => state.persistedReducer.auth?.currentUser
   );
 
-  const dispatch = useDispatch();
-  const [singleMikrotik, setSingleMikrotik] = useState("");
-  const [mikrotikPackage, setMikrotikPackage] = useState("");
-  const [packageRate, setPackageRate] = useState("");
+  // get user role form redux
+  const role = useSelector((state) => state.persistedReducer.auth?.role);
 
-  // customers number update or delete modal show state
-  const [numberModalShow, setNumberModalShow] = useState(false);
-  const [open, setOpen] = useState(false);
-
-  // filter Accordion handle state
-  const [activeKeys, setActiveKeys] = useState("");
-
-  const selectMikrotik = (e) => {
-    const id = e.target.value;
-    if (id && resellerId) {
-      const IDs = {
-        reseller: resellerId,
-        mikrotikId: id,
-      };
-      fetchpppoePackage(dispatch, IDs);
-    }
-    setSingleMikrotik(id);
-  };
-
-  const selectMikrotikPackage = (e) => {
-    const mikrotikPackageId = e.target.value;
-    setMikrotikPackage(mikrotikPackageId);
-    const temp = ppPackage.find((val) => val.id === mikrotikPackageId);
-    setPackageRate(temp);
-  };
-
+  // get reseller & collector id
   const resellerId = useSelector((state) =>
     role === "reseller"
       ? state.persistedReducer.auth?.userData?.id
       : state.persistedReducer.auth?.userData?.reseller
   );
 
-  const [isLoading, setIsloading] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
-
+  // get permission form redux
   const permission = useSelector(
     (state) => state.persistedReducer.auth?.userData?.permission
   );
 
+  // customer get form redux
+  const allCustomer = useSelector((state) => state?.customer?.customer);
+
+  // const currentCustomers = Customers
+  const subAreas = useSelector((state) => state?.area?.area);
+
+  // get collector permission in redux
   const collectorPermission = useSelector(
     (state) => state.persistedReducer.auth?.userData?.permissions
   );
 
-  const [Customers, setCustomers] = useState(cus);
+  // get ispOwner mikrotik form redux
+  const mikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
 
-  // get specific customer
-  const [singleCustomer, setSingleCustomer] = useState("");
+  // get mikrotik package form redux
+  const ppPackage = useSelector((state) => state?.mikrotik?.pppoePackage);
 
-  // const currentCustomers = Customers
-  const subAreas = useSelector((state) => state?.area?.area);
-  const userData = useSelector(
-    (state) => state.persistedReducer.auth?.currentUser
+  // get bulletin permission
+  const butPermission = useSelector(
+    (state) => state.adminNetFeeSupport?.bulletinPermission
   );
 
-  const [paymentStatus, setPaymentStatus] = useState("");
-  const [status, setStatus] = useState("");
-  const [subAreaId, setSubAreaId] = useState("");
+  // loading state
+  const [isLoading, setIsLoading] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
-  // customer id state
-  const [customerId, setCustomerId] = useState("");
+  // check uncheck mikrotik state when delete customer
+  const [checkMikrotik, setMikrotikCheck] = useState(false);
+
+  // customers number update or delete modal show state
+  const [numberModalShow, setNumberModalShow] = useState(false);
+  const [open, setOpen] = useState(false);
 
   //bandwidth modal state
   const [bandWidthModal, setBandWidthModal] = useState(false);
@@ -165,142 +138,40 @@ export default function Customer() {
   const [bulkStatus, setBulkStatus] = useState("");
   const [show, setShow] = useState(false);
 
-  //   filter
-  const handleSubAreaChange = (id) => {
-    setSubAreaId(id);
-  };
+  // filter Accordion handle state
+  const [activeKeys, setActiveKeys] = useState("");
 
-  const handlePaymentChange = (e) => {
-    setPaymentStatus(e.target.value);
-  };
+  const [Customers, setCustomers] = useState([]);
 
-  const handleStatusChange = (e) => {
-    setStatus(e.target.value);
-  };
-
-  useEffect(() => {
-    let tempCustomers = cus;
-
-    if (subAreaId) {
-      tempCustomers = tempCustomers.filter(
-        (customer) => customer.subArea === subAreaId
-      );
-    }
-
-    if (packageRate) {
-      tempCustomers = tempCustomers.filter(
-        (customer) => customer.pppoe.profile === packageRate.name
-      );
-    }
-
-    if (singleMikrotik) {
-      tempCustomers = tempCustomers.filter(
-        (customer) => customer.mikrotik === singleMikrotik
-      );
-    }
-
-    if (status) {
-      tempCustomers = tempCustomers.filter(
-        (customer) => customer.status === status
-      );
-    }
-
-    if (paymentStatus) {
-      tempCustomers = tempCustomers.filter((customer) => {
-        if (customer.paymentStatus && paymentStatus === "free") {
-          if (customer.monthlyFee === parseInt("0")) {
-            return customer;
-          }
-        } else if (
-          customer.paymentStatus === "paid" &&
-          paymentStatus === "paid"
-        ) {
-          return customer;
-        } else if (
-          customer.paymentStatus === "unpaid" &&
-          paymentStatus === "unpaid" &&
-          customer.balance == 0
-        ) {
-          return customer;
-        } else if (
-          customer.paymentStatus === "unpaid" &&
-          paymentStatus === "partial"
-        ) {
-          if (
-            customer.monthlyFee > customer.balance &&
-            customer.balance > parseInt("0")
-          ) {
-            return customer;
-          }
-        } else if (
-          customer.paymentStatus === "paid" &&
-          paymentStatus === "advance"
-        ) {
-          if (2 * customer.monthlyFee < customer.balance) {
-            return customer;
-          }
-        } else if (
-          customer.paymentStatus === "unpaid" &&
-          paymentStatus === "overdue"
-        ) {
-          if (customer.balance < parseInt("0")) {
-            return customer;
-          }
-        }
-      });
-    }
-
-    setCustomers(tempCustomers);
-  }, [cus, paymentStatus, status, subAreaId, packageRate, singleMikrotik]);
-
-  // find area name
-  const areaName = subAreas.find((item) => item.id === subAreaId);
-
-  // send filter data to print
-  const filterData = {
-    area: areaName?.name ? areaName.name : t("allArea"),
-    status: status ? status : t("sokolCustomer"),
-    payment: paymentStatus ? paymentStatus : t("sokolCustomer"),
-  };
-
-  // get specific customer
-  const getSpecificCustomer = (id) => {
-    setSingleCustomer(id);
-  };
   // get specific customer Report
   const [customerReportData, setId] = useState([]);
 
-  const getSpecificCustomerReport = (reportData) => {
-    setId(reportData);
-  };
+  //bulk-operations
+  const [bulkCustomer, setBulkCustomer] = useState([]);
 
-  // DELETE handler
-  const deleteCustomer = async (ID) => {
-    setIsDeleting(true);
-    const IDs = {
-      ispID: resellerId,
-      customerID: ID,
-    };
-    deleteACustomer(dispatch, IDs);
-    setIsDeleting(false);
-  };
+  // get specific customer
+  const [singleCustomer, setSingleCustomer] = useState("");
 
-  const bandwidthModalController = (customerID) => {
-    setCustomerId(customerID);
-    setBandWidthModal(true);
-  };
+  const [paymentStatus, setPaymentStatus] = useState("");
 
-  // reload handler
-  const reloadHandler = () => {
-    if (role === "reseller") {
-      getCustomer(dispatch, userData?.reseller.id, setIsloading);
-    } else if (role === "collector") {
-      getCustomer(dispatch, userData?.collector?.reseller, setIsloading);
-    }
-  };
+  // customer id state
+  const [customerId, setCustomerId] = useState("");
 
+  // filter mikrotik package state
+  const [mikrotikPackage, setMikrotikPackage] = useState([]);
+
+  // customer info filter options state
+  const [filterOptions, setFilterOptions] = useState({
+    subArea: "",
+    status: "",
+    paymentStatus: "",
+    mikrotik: "",
+    package: "",
+  });
+
+  // api calls
   useEffect(() => {
-    if (!ispOwnerData.bpSettings?.hasMikrotik) {
+    if (ispOwnerData.bpSettings?.hasMikrotik) {
       withMtkPackage(dispatch, resellerId);
     }
     getSubAreas(dispatch, resellerId);
@@ -311,28 +182,256 @@ export default function Customer() {
     }
     if (role === "reseller") {
       getMikrotik(dispatch, resellerId);
-      if (cus.length === 0)
-        getCustomer(dispatch, userData?.reseller.id, setIsloading);
+      if (allCustomer.length === 0)
+        getCustomer(dispatch, userData?.reseller.id, setIsLoading);
     } else if (role === "collector") {
-      if (cus.length === 0)
-        getCustomer(dispatch, userData?.collector?.reseller, setIsloading);
+      if (allCustomer.length === 0)
+        getCustomer(dispatch, userData?.collector?.reseller, setIsLoading);
     }
 
     Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
   }, [userData, role]);
 
-  const [subAreaIds, setSubArea] = useState([]);
-
+  // set state api call data
   useEffect(() => {
-    if (subAreaIds.length) {
-      setCustomers(cus.filter((c) => subAreaIds.includes(c.subArea)));
-    } else {
-      setCustomers(cus);
-    }
-  }, [cus, subAreaIds]);
+    setCustomers(allCustomer);
+  }, [allCustomer]);
 
-  //bulk-operations
-  const [bulkCustomer, setBulkCustomer] = useState([]);
+  // reload handler
+  const reloadHandler = () => {
+    if (role === "reseller") {
+      getCustomer(dispatch, userData?.reseller.id, setIsLoading);
+    } else if (role === "collector") {
+      getCustomer(dispatch, userData?.collector?.reseller, setIsLoading);
+    }
+  };
+
+  // get specific customer
+  const getSpecificCustomer = (id) => {
+    setSingleCustomer(id);
+  };
+
+  // customer delete controller
+  const customerDelete = (customerID) => {
+    setMikrotikCheck(false);
+    setCustomerId(customerID);
+  };
+
+  const getSpecificCustomerReport = (reportData) => {
+    setId(reportData);
+  };
+
+  const bandwidthModalController = (customerID) => {
+    setCustomerId(customerID);
+    setBandWidthModal(true);
+  };
+
+  // mikrotik package find handler
+  const mikrotikPackageFind = (id) => {
+    setFilterOptions({
+      ...filterOptions,
+      mikrotik: id,
+    });
+
+    // package find
+    const temp = ppPackage.filter((val) => val.mikrotik === id);
+    setMikrotikPackage(temp);
+  };
+
+  // customer information filter handler
+  const cusInfoFilterHandler = () => {
+    let temporaryCustomer = allCustomer.reduce((acc, c) => {
+      const { subArea, status, paymentStatus, mikrotik } = filterOptions;
+
+      // make possible conditions objects if the filter value not selected thats return true
+      //if filter value exist then compare
+      const conditions = {
+        subArea: subArea ? subArea === c.subArea : true,
+        status: status ? status === c.status : true,
+        paymentStatus: paymentStatus ? paymentStatus === c.paymentStatus : true,
+        mikrotik: mikrotik ? mikrotik === c.mikrotik : true,
+        package: filterOptions.package
+          ? filterOptions.package === c.mikrotikPackage
+          : true,
+      };
+
+      //check if condition pass got for next step or is fail stop operation
+      //if specific filter option value not exist it will return true
+      let isPass = false;
+
+      isPass = conditions["subArea"];
+      if (!isPass) return acc;
+
+      isPass = conditions["status"];
+      if (!isPass) return acc;
+
+      isPass = conditions["paymentStatus"];
+      if (!isPass) return acc;
+
+      isPass = conditions["mikrotik"];
+      if (!isPass) return acc;
+
+      isPass = conditions["package"];
+      if (!isPass) return acc;
+
+      if (isPass) acc.push(c);
+      return acc;
+    }, []);
+
+    // set filter customer in customer state
+    setCustomers(temporaryCustomer);
+  };
+
+  // filter reset controller
+  const handleFilterReset = () => {
+    setMikrotikPackage([]);
+    setFilterOptions({
+      subArea: "",
+      status: "",
+      paymentStatus: "",
+      mikrotik: "",
+      package: "",
+    });
+    setCustomers(allCustomer);
+  };
+
+  // custom filter inputs customer info
+  const filterInputs = [
+    {
+      type: "select",
+      name: "mikrotik",
+      id: "mikrotik",
+      value: filterOptions.mikrotik,
+      disable: false,
+      isVisible: true,
+      options: mikrotik,
+      onChange: (e) => {
+        mikrotikPackageFind(e.target.value);
+      },
+      firstOption: t("mikrotik"),
+      textAccessor: "name",
+      valueAccessor: "id",
+    },
+    {
+      type: "select",
+      name: "package",
+      id: "package",
+      value: filterOptions.package,
+      disable: false,
+      isVisible: true,
+      options: mikrotikPackage,
+      onChange: (e) => {
+        setFilterOptions({
+          ...filterOptions,
+          package: e.target.value,
+        });
+      },
+      firstOption: t("package"),
+      textAccessor: "name",
+      valueAccessor: "id",
+    },
+    {
+      type: "select",
+      name: "subArea",
+      id: "subArea",
+      value: filterOptions.subArea,
+      disable: false,
+      isVisible: true,
+      options: subAreas,
+      onChange: (e) => {
+        setFilterOptions({
+          ...filterOptions,
+          subArea: e.target.value,
+        });
+      },
+      firstOption: t("subArea"),
+      textAccessor: "name",
+      valueAccessor: "id",
+    },
+    {
+      type: "select",
+      name: "status",
+      id: "status",
+      value: filterOptions.status,
+      disable: false,
+      isVisible: true,
+      options: [
+        { text: t("active"), value: "active" },
+        { text: t("in active"), value: "inactive" },
+        { text: t("expired"), value: "expired" },
+      ],
+      onChange: (e) => {
+        setFilterOptions({
+          ...filterOptions,
+          status: e.target.value,
+        });
+      },
+      firstOption: t("status"),
+      textAccessor: "text",
+      valueAccessor: "value",
+    },
+    {
+      type: "select",
+      name: "paymentStatus",
+      id: "paymentStatus",
+      value: filterOptions.paymentStatus,
+      disable: false,
+      isVisible: true,
+      options: [
+        { text: t("free"), value: "free" },
+        { text: t("paid"), value: "paid" },
+        { text: t("unpaid"), value: "unpaid" },
+        { text: t("partial"), value: "partial" },
+        { text: t("advance"), value: "advance" },
+        { text: t("overdue"), value: "overdue" },
+      ],
+      onChange: (e) => {
+        setFilterOptions({
+          ...filterOptions,
+          paymentStatus: e.target.value,
+        });
+      },
+      firstOption: t("paymentStatus"),
+      textAccessor: "text",
+      valueAccessor: "value",
+    },
+  ];
+
+  // export customer header
+  const customerForCsVTableInfoHeader = [
+    { label: "id", key: "customerId" },
+    { label: "name_of_client", key: "name" },
+    { label: "PPPoE_name", key: "pppoeName" },
+    { label: "client_phone", key: "mobile" },
+    { label: "bandwidth_allocation MB", key: "package" },
+    { label: "status", key: "status" },
+    { label: "payment Status", key: "paymentStatus" },
+    { label: "email", key: "email" },
+    { label: "monthly_fee", key: "monthlyFee" },
+    { label: "balance", key: "balance" },
+    { label: "address_of_client", key: "customerAddress" },
+    { label: "activation_date", key: "createdAt" },
+    { label: "billing_cycle", key: "billingCycle" },
+  ];
+
+  //export customer data
+  let customerForCsVTableInfo = Customers?.map((customer) => {
+    return {
+      customerId: customer.customerId,
+      name: customer.name,
+      pppoeName: customer.pppoe.name,
+      mobile: customer?.mobile || "",
+      package: customer?.pppoe?.profile,
+      status: customer.status,
+      paymentStatus: customer.paymentStatus,
+      email: customer.email || "",
+      monthlyFee: customer.monthlyFee,
+      balance: customer.balance,
+      customerAddress: customer.address,
+      createdAt: moment(customer.createdAt).format("MM/DD/YYYY"),
+      billingCycle: moment(customer.billingCycle).format("MMM-DD-YYYY"),
+    };
+  });
 
   //total monthly fee and due calculation
   const dueMonthlyFee = useMemo(() => {
@@ -342,7 +441,7 @@ export default function Customer() {
 
     Customers?.map((item) => {
       if (item.paymentStatus === "unpaid") {
-        // filter due ammount
+        // filter due amount
         dueAmount = item.monthlyFee - item.balance;
 
         // total sum due
@@ -377,6 +476,18 @@ export default function Customer() {
       )}
     </div>
   );
+
+  // find area name
+  const areaName = subAreas.find((item) => item.id === filterOptions.subArea);
+
+  // send filter data to print
+  const filterData = {
+    area: areaName?.name ? areaName.name : t("allArea"),
+    status: filterOptions.status ? filterOptions.status : t("allCustomer"),
+    payment: filterOptions.paymentStatus
+      ? filterOptions.paymentStatus
+      : t("allCustomer"),
+  };
 
   const columns = React.useMemo(
     () => [
@@ -542,23 +653,22 @@ export default function Customer() {
                     </div>
                   </li>
                 )}
-                {/* {permission?.customerDelete && (
+                {permission?.customerDelete && (
                   <li
+                    data-bs-toggle="modal"
+                    data-bs-target="#customerDelete"
                     onClick={() => {
-                      let con = window.confirm(
-                        `${original.name}  ${t("wantToDeleteCustomer")}`
-                      );
-                      con && deleteCustomer(original.id);
+                      customerDelete(original.id);
                     }}
                   >
-                    <div className="dropdown-item actionManager">
+                    <div className="dropdown-item">
                       <div className="customerAction">
                         <ArchiveFill />
-                        <p className="actionP"> {t("delete")} </p>
+                        <p className="actionP">{t("delete")}</p>
                       </div>
                     </div>
                   </li>
-                )} */}
+                )}
                 {original.mobile &&
                   (collectorPermission?.sendSMS || role !== "collector") && (
                     <li
@@ -595,37 +705,6 @@ export default function Customer() {
     ],
     [t]
   );
-
-  //export customer data
-  let customerForCsVTableInfo = Customers?.map((customer) => {
-    return {
-      name: customer.name,
-      customerAddress: customer.address,
-      createdAt: moment(customer.createdAt).format("MM/DD/YYYY"),
-      package: customer?.pppoe?.profile,
-      mobile: customer?.mobile || "",
-      status: customer.status,
-      paymentStatus: customer.paymentStatus,
-      email: customer.email || "",
-      monthlyFee: customer.monthlyFee,
-      balance: customer.balance,
-      billingCycle: moment(customer.billingCycle).format("MMM-DD-YYYY"),
-    };
-  });
-
-  const customerForCsVTableInfoHeader = [
-    { label: "name_of_client", key: "name" },
-    { label: "address_of_client", key: "customerAddress" },
-    { label: "activation_date", key: "createdAt" },
-    { label: "bandwidth_allocation MB", key: "package" },
-    { label: "client_phone", key: "mobile" },
-    { label: "status", key: "status" },
-    { label: "payment Status", key: "paymentStatus" },
-    { label: "email", key: "email" },
-    { label: "monthly_fee", key: "monthlyFee" },
-    { label: "balance", key: "balance" },
-    { label: "billing_cycle", key: "billingCycle" },
-  ];
 
   return (
     <>
@@ -759,92 +838,41 @@ export default function Customer() {
                     <Accordion alwaysOpen activeKey={activeKeys}>
                       <Accordion.Item eventKey="filter">
                         <Accordion.Body>
-                          {/* filter selector */}
-                          <div className="selectFiltering allFilter mx-auto">
-                            <select
-                              className="form-select mt-0"
-                              onChange={(e) =>
-                                handleSubAreaChange(e.target.value)
-                              }
-                            >
-                              <option value="" defaultValue>
-                                {t("area")}
-                              </option>
-                              {subAreas?.map((sub, key) => (
-                                <option key={key} value={sub.id}>
-                                  {sub.name}
-                                </option>
-                              ))}
-                            </select>
+                          <div className="displayGrid6">
+                            {filterInputs.map(
+                              (item) =>
+                                item.isVisible && (
+                                  <select
+                                    className="form-select shadow-none mt-0"
+                                    value={item.value}
+                                    onChange={item.onChange}
+                                  >
+                                    <option value="">{item.firstOption}</option>
+                                    {item.options?.map((val) => (
+                                      <option value={val[item.valueAccessor]}>
+                                        {val[item.textAccessor]}
+                                      </option>
+                                    ))}
+                                  </select>
+                                )
+                            )}
 
-                            <select
-                              className="form-select mt-0"
-                              onChange={handleStatusChange}
-                            >
-                              <option value="" defaultValue>
-                                {t("status")}
-                              </option>
-                              <option value="active"> {t("active")} </option>
-                              <option value="inactive">
-                                {t("in active")}{" "}
-                              </option>
-                              <option value="expired">{t("expired")} </option>
-                            </select>
-
-                            <select
-                              className="form-select mt-0"
-                              onChange={selectMikrotik}
-                            >
-                              <option value="" defaultValue>
-                                {t("mikrotik")}
-                              </option>
-
-                              {Getmikrotik?.length &&
-                                Getmikrotik?.map((val, key) => (
-                                  <option key={key} value={val.id}>
-                                    {val.name}
-                                  </option>
-                                ))}
-                            </select>
-
-                            <select
-                              className="form-select mt-0"
-                              onChange={selectMikrotikPackage}
-                            >
-                              <option value="" defaultValue>
-                                {t("PPPoEPackage")}
-                              </option>
-
-                              {ppPackage.length === undefined
-                                ? ""
-                                : ppPackage?.map((val, key) => (
-                                    <option key={key} value={val.id}>
-                                      {val.name}
-                                    </option>
-                                  ))}
-                            </select>
-
-                            <select
-                              className="form-select mt-0"
-                              onChange={handlePaymentChange}
-                            >
-                              <option value="" defaultValue>
-                                {t("paymentStatus")}
-                              </option>
-                              <option value="free">{t("free")}</option>
-                              <option value="paid"> {t("paid")} </option>
-                              <option value="unpaid"> {t("unpaid")} </option>
-                              <option value="partial">{t("partial")} </option>
-                              <option value="advance">{t("advance")} </option>
-                              <option value="overdue">{t("overDue")} </option>
-                            </select>
-                          </div>
-                          <div style={{ display: "none" }}>
-                            <PrintCustomer
-                              filterData={filterData}
-                              currentCustomers={Customers}
-                              ref={componentRef}
-                            />
+                            <div className="displayGrid2 mt-0 ">
+                              <button
+                                className="btn btn-outline-primary "
+                                type="button"
+                                onClick={cusInfoFilterHandler}
+                              >
+                                {t("filter")}
+                              </button>
+                              <button
+                                className="btn btn-outline-secondary"
+                                type="button"
+                                onClick={handleFilterReset}
+                              >
+                                {t("reset")}
+                              </button>
+                            </div>
                           </div>
                         </Accordion.Body>
                       </Accordion.Item>
@@ -859,6 +887,13 @@ export default function Customer() {
                         ) : (
                           ""
                         )}
+                      </div>
+                      <div style={{ display: "none" }}>
+                        <PrintCustomer
+                          filterData={filterData}
+                          currentCustomers={Customers}
+                          ref={componentRef}
+                        />
                       </div>
 
                       <div className="table-section">
@@ -903,6 +938,15 @@ export default function Customer() {
 
       {/* customers number update or delete modal */}
       <CustomersNumber showModal={numberModalShow} />
+
+      {/* customer delete modal  */}
+      <CustomerDelete
+        single={customerId}
+        mikrotikCheck={checkMikrotik}
+        setMikrotikCheck={setMikrotikCheck}
+        status="customerDelete"
+        page="reseller"
+      />
 
       {/* Model finish */}
 

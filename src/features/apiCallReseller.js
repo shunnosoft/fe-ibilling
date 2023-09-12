@@ -225,10 +225,14 @@ export const editCustomer = async (dispatch, data, setIsloading) => {
   }
 };
 
-export const deleteACustomer = async (dispatch, IDs) => {
+export const deleteResellerCustomer = async (dispatch, data, setIsLoading) => {
+  setIsLoading(true);
   try {
-    await apiLink.delete(`/reseller/customer/${IDs.ispID}/${IDs.customerID}`);
-    dispatch(deleteCustomerSuccess(IDs.customerID));
+    await apiLink.delete(
+      `/reseller/customer/${data.reseller}/${data.customerID}?removeFromMikrotik=${data.mikrotik}`
+    );
+    dispatch(deleteCustomerSuccess(data.customerId));
+    document.querySelector("#customerDelete").click();
     langMessage(
       "success",
       "কাস্টমার ডিলিট সফল হয়েছে!",
@@ -239,19 +243,21 @@ export const deleteACustomer = async (dispatch, IDs) => {
       toast.error(err.response.data.message);
     }
   }
+  setIsLoading(false);
 };
 
 // add reseller customer
 export const addResellerStaticCustomer = async (
   dispatch,
   data,
-  setIsloading
+  setIsloading,
+  setShow
 ) => {
   setIsloading(true);
   try {
     const res = await apiLink.post("reseller/create-static-customer/", data);
     dispatch(addStaticCustomerSuccess(res.data.customer));
-    document.getElementById("addStaticCustomerModal").click();
+    setShow(false);
     langMessage(
       "success",
       "কাস্টমার এড সফল হয়েছে",

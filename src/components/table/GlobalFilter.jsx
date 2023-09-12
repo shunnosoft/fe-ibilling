@@ -14,13 +14,15 @@ const GlobalFilter = ({
     <div className="childCollector">
       <div className="d-flex align-items-center">
         <div>{toggleColumnButton}</div>
-        <h6 style={{ fontSize: "18px" }} className="allCollector me-2">
+        <h6 className="allCollector">
           {t("totalData")}
           <span>
             {data ? data.length : "0"} {bulkLength ? `/ ${bulkLength}` : ""}
           </span>
         </h6>
-        <div className="customer_component">{customComponent}</div>
+        <div id="custom_component_data" className="customer_component">
+          {customComponent}
+        </div>
       </div>
 
       <div className="col-sm-4">

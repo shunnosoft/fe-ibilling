@@ -361,7 +361,7 @@ export default function CustomerModal({ show, setShow }) {
           >
             {() => (
               <Form id="createCustomer">
-                <div className="mikrotikSection">
+                <div className="displayGrid3">
                   {hasMikrotik && (
                     <div>
                       <label className="form-control-label changeLabelFontColor">
@@ -385,14 +385,13 @@ export default function CustomerModal({ show, setShow }) {
                     </div>
                   )}
 
-                  {/* pppoe package */}
                   <div>
                     <label className="form-control-label changeLabelFontColor">
                       {t("selectPackage")}
                       <span className="text-danger">*</span>
                     </label>
                     <select
-                      className="form-select mb-3 mw-100 mt-0"
+                      className="form-select mw-100 mt-0"
                       aria-label="Default select example"
                       onChange={selectMikrotikPackage}
                     >
@@ -405,6 +404,7 @@ export default function CustomerModal({ show, setShow }) {
                         ))}
                     </select>
                   </div>
+
                   <FtextField
                     type="number"
                     label={t("monthFee")}
@@ -421,9 +421,7 @@ export default function CustomerModal({ show, setShow }) {
                       name="balance"
                     />
                   )}
-                </div>
 
-                <div className="pppoeSection2">
                   <FtextField
                     type="text"
                     label={t("PPPoEName")}
@@ -431,6 +429,7 @@ export default function CustomerModal({ show, setShow }) {
                     disabled={!mikrotikPackage}
                     validation={"true"}
                   />
+
                   <FtextField
                     type="text"
                     label={t("password")}
@@ -438,15 +437,14 @@ export default function CustomerModal({ show, setShow }) {
                     disabled={!mikrotikPackage}
                     validation={"true"}
                   />
+
                   <FtextField
                     type="text"
                     label={t("comment")}
                     name="Pcomment"
                     disabled={!mikrotikPackage}
                   />
-                </div>
 
-                <div className="displayGrid3">
                   <div>
                     <label className="form-control-label changeLabelFontColor">
                       {t("selectArea")} <span className="text-danger">*</span>
@@ -515,9 +513,7 @@ export default function CustomerModal({ show, setShow }) {
                       </select>
                     </div>
                   )}
-                </div>
 
-                <div className="displayGrid3 mt-3">
                   <FtextField
                     type="text"
                     label={t("name")}
@@ -525,6 +521,7 @@ export default function CustomerModal({ show, setShow }) {
                     disabled={!mikrotikPackage}
                     validation={"true"}
                   />
+
                   <FtextField
                     type="text"
                     label={t("mobile")}
@@ -532,19 +529,18 @@ export default function CustomerModal({ show, setShow }) {
                     validation={bpSettings.addCustomerWithMobile}
                     disabled={!mikrotikPackage}
                   />
+
                   <FtextField
                     type="text"
                     label={t("email")}
                     name="email"
                     disabled={!mikrotikPackage}
                   />
-                </div>
-                <div className="displayGrid3">
+
                   {divisionalAreaFormData.map((item) => (
-                    <div className="mb-3">
+                    <div>
                       <label className="form-control-label changeLabelFontColor">
                         {item.text}
-                        {/* <span className="text-danger">*</span> */}
                       </label>
                       <select
                         className="form-select mw-100 mt-0"
@@ -561,14 +557,14 @@ export default function CustomerModal({ show, setShow }) {
                       </select>
                     </div>
                   ))}
-                </div>
-                <div className="displayGrid3">
+
                   <FtextField
                     type="text"
                     label={t("NIDno")}
                     name="nid"
                     disabled={!mikrotikPackage}
                   />
+
                   <FtextField
                     type="text"
                     label={t("address")}
@@ -587,9 +583,7 @@ export default function CustomerModal({ show, setShow }) {
                     <option value="prepaid">{t("prepaid")}</option>
                     <option value="postpaid">{t("postPaid")}</option>
                   </SelectField>
-                </div>
 
-                <div className="displayGrid3">
                   <div className="billCycle">
                     <label className="form-control-label changeLabelFontColor">
                       {t("billingCycle")} <span className="text-danger">*</span>
@@ -606,30 +600,29 @@ export default function CustomerModal({ show, setShow }) {
                       disabled={!(mikrotikPackage && userRole === "ispOwner")}
                     />
                   </div>
-                  <div className="billCycle">
-                    <div>
-                      <label className="form-control-label changeLabelFontColor">
-                        {t("connectionDate")}
-                      </label>
-                      <DatePicker
-                        className="form-control mw-100"
-                        selected={connectionDate}
-                        onChange={(date) => setConnectionDate(date)}
-                        dateFormat="MMM dd yyyy"
-                        maxDate={new Date()}
-                        placeholderText={t("selectDate")}
-                        disabled={!mikrotikPackage}
-                      />
-                    </div>
+
+                  <div>
+                    <label className="form-control-label changeLabelFontColor">
+                      {t("connectionDate")}
+                    </label>
+                    <DatePicker
+                      className="form-control mw-100"
+                      selected={connectionDate}
+                      onChange={(date) => setConnectionDate(date)}
+                      dateFormat="MMM dd yyyy"
+                      maxDate={new Date()}
+                      placeholderText={t("selectDate")}
+                      disabled={!mikrotikPackage}
+                    />
                   </div>
+
                   <FtextField
                     type="text"
                     label={t("referenceName")}
                     name="referenceName"
                     disabled={!mikrotikPackage}
                   />
-                </div>
-                <div className="displayGrid3 mb-3">
+
                   <FtextField
                     type="text"
                     label={t("referenceMobile")}
@@ -645,6 +638,7 @@ export default function CustomerModal({ show, setShow }) {
                       validation={!bpSettings.genCustomerId}
                     />
                   )}
+
                   {bpSettings?.hasMikrotik && (
                     <div className="autoDisable">
                       <label> {t("automaticConnectionOff")} </label>
@@ -666,8 +660,8 @@ export default function CustomerModal({ show, setShow }) {
                           onChange={(e) => setConnectionFee(e.target.checked)}
                         />
                       </div> */}
-                </div>
-                {/* {connectionFee && (
+
+                  {/* {connectionFee && (
                       <div className="displayGrid3">
                         <FtextField
                           type="number"
@@ -700,6 +694,7 @@ export default function CustomerModal({ show, setShow }) {
                         </div>
                       </div>
                     )} */}
+                </div>
               </Form>
             )}
           </Formik>

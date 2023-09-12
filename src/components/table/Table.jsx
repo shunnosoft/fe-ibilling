@@ -81,7 +81,7 @@ const Table = (props) => {
               className="d-flex justify-content-center align-items-center ms-1"
               style={{ marginTop: "-5px" }}
             >
-              <div className="toggle-setting">
+              <div id="toggle_selection" className="toggle-setting">
                 <div className="text-white me-2" onClick={handleToggleColumn}>
                   <GearFill />
                 </div>
@@ -112,7 +112,7 @@ const Table = (props) => {
               </div>
 
               {data?.length > 100 && (
-                <div className="toggle-pagination">
+                <div id="toggle_selection" className="toggle-pagination">
                   <div
                     className="text-white me-2"
                     onClick={paginationHandler}
