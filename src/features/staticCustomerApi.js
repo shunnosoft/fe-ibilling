@@ -30,6 +30,7 @@ export const addStaticCustomerApi = async (
   dispatch,
   data,
   setIsloading,
+  setShow,
   resetForm
 ) => {
   setIsloading(true);
@@ -39,7 +40,7 @@ export const addStaticCustomerApi = async (
       data
     );
     dispatch(addStaticCustomerSuccess(res.data.customer));
-    document.getElementById("addStaticCustomerModal").click();
+    setShow(false);
     langMessage(
       "success",
       "কাস্টমার এড সফল হয়েছে",
@@ -55,7 +56,8 @@ export const updateStaticCustomerApi = async (
   customerId,
   dispatch,
   data,
-  setIsloading
+  setIsloading,
+  setShow
 ) => {
   setIsloading(true);
   try {
@@ -64,7 +66,7 @@ export const updateStaticCustomerApi = async (
       data
     );
     dispatch(editStaticCustomerSuccess(res.data.customer));
-    document.getElementById("editStaticCustomerModal").click();
+    setShow(false);
     langMessage(
       "success",
       "কাস্টমার আপডেট সফল হয়েছে",

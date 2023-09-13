@@ -1134,7 +1134,7 @@ export const addCustomer = async (
   }
 };
 
-export const editCustomer = async (dispatch, data, setIsloading) => {
+export const editCustomer = async (dispatch, data, setIsloading, setShow) => {
   const { singleCustomerID, ispOwner, ...sendingData } = data;
 
   try {
@@ -1148,13 +1148,12 @@ export const editCustomer = async (dispatch, data, setIsloading) => {
       dispatch(editCustomerSuccess(res.data));
     }
     setIsloading(false);
-    document.getElementById("filterBtn").click();
+    setShow(false);
     langMessage(
       "success",
       "কাস্টমার এডিট সফল হয়েছে",
       "Customer Updated Successfully"
     );
-    document.querySelector("#customerEditModal").click();
   } catch (err) {
     if (err.response) {
       setIsloading(false);
@@ -2188,7 +2187,8 @@ export const billCollect = async (
   setLoading,
   resetForm = null,
   setResponseData,
-  setTest
+  setTest,
+  setShow
 ) => {
   setLoading(true);
   try {
@@ -2202,7 +2202,7 @@ export const billCollect = async (
       setResponseData(res.data);
       setTest(true);
     }
-    document.querySelector("#collectCustomerBillModal").click();
+    setShow(false);
     langMessage(
       "success",
       `${res.data.billType} বিল গ্রহণ সফল হয়েছে।`,
@@ -2210,7 +2210,6 @@ export const billCollect = async (
     );
     resetForm();
   } catch (error) {
-    document.querySelector("#collectCustomerBillModal").click();
     toast.error(error.response?.data.message);
   }
   setLoading(false);

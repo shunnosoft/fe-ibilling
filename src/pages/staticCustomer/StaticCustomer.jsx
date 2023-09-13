@@ -186,6 +186,10 @@ export default function Customer() {
 
   const [allArea, setAreas] = useState([]);
 
+  // optional modal state
+  const [modalStatus, setModalStatus] = useState("");
+  const [show, setShow] = useState(false);
+
   // customers number update or delete modal show state
   const [numberModalShow, setNumberModalShow] = useState(false);
 
@@ -840,10 +844,10 @@ export default function Customer() {
                 )}
                 {(role === "ispOwner" || permission.customerEdit) && (
                   <li
-                    data-bs-toggle="modal"
-                    data-bs-target="#editStaticCustomerModal"
                     onClick={() => {
-                      getSpecificCustomer(original.id);
+                      setSingleCustomer(original.id);
+                      setModalStatus("customerEdit");
+                      setShow(true);
                     }}
                   >
                     <div className="dropdown-item">
@@ -1104,8 +1108,10 @@ export default function Customer() {
                         <PersonPlusFill
                           title={t("addStaticCustomer")}
                           className="addcutmButton"
-                          data-bs-toggle="modal"
-                          data-bs-target="#addStaticCustomerModal"
+                          onClick={() => {
+                            setModalStatus("customerPost");
+                            setShow(true);
+                          }}
                         />
                       )}
                     </div>
@@ -1630,8 +1636,22 @@ export default function Customer() {
               </FourGround>
 
               {/* Model start */}
-              <AddStaticCustomer />
-              <StaticCustomerEdit single={singleCustomer} />
+
+              {/* customer create modal */}
+              {modalStatus === "customerPost" && (
+                <AddStaticCustomer show={show} setShow={setShow} />
+              )}
+
+              {/* single customer update */}
+              {modalStatus === "customerEdit" && (
+                <StaticCustomerEdit
+                  show={show}
+                  setShow={setShow}
+                  single={singleCustomer}
+                />
+              )}
+
+              {/* customer bill collection */}
               <CustomerBillCollect
                 single={singleCustomer}
                 customerData={customerReportData}

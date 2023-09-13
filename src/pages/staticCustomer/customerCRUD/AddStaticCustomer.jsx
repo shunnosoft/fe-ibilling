@@ -24,12 +24,19 @@ import getName from "../../../utils/getLocationName";
 import useISPowner from "../../../hooks/useISPOwner";
 import SelectField from "../../../components/common/SelectField";
 import apiLink from "../../../api/apiLink";
+import {
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  ModalTitle,
+} from "react-bootstrap";
 
 const divisions = divisionsJSON.divisions;
 const districts = districtsJSON.districts;
 const thana = thanaJSON.thana;
 
-export default function AddStaticCustomer() {
+export default function AddStaticCustomer({ show, setShow }) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const { ispOwnerId } = useISPowner();
@@ -104,6 +111,11 @@ export default function AddStaticCustomer() {
     //   .min(0, "সর্বনিম্ন প্যাকেজ রেট 0")
     //   .required("প্যাকেজ রেট দিন"),
   });
+
+  //modal show handler
+  const handleClose = () => {
+    setShow(false);
+  };
 
   const selectMikrotik = (e) => {
     const id = e.target.value;
@@ -290,7 +302,13 @@ export default function AddStaticCustomer() {
       delete sendingData.poleBox;
     }
 
-    addStaticCustomerApi(dispatch, sendingData, setIsloading, resetForm);
+    addStaticCustomerApi(
+      dispatch,
+      sendingData,
+      setIsloading,
+      setShow,
+      resetForm
+    );
   };
 
   //divisional area formula
@@ -332,484 +350,467 @@ export default function AddStaticCustomer() {
   };
 
   return (
-    <div>
-      <div
-        className="modal fade modal-dialog-scrollable "
-        id="addStaticCustomerModal"
-        tabIndex="-1"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
+    <>
+      <Modal
+        show={show}
+        onHide={handleClose}
+        backdrop="static"
+        keyboard={false}
+        size="xl"
       >
-        <div className="modal-dialog modal-xl">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLabel">
-                {t("addNewCustomer")}
-              </h5>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body">
-              {/* model body here */}
-              <Formik
-                initialValues={{
-                  name: "",
-                  mobile: "",
-                  address: "",
-                  email: "",
-                  nid: "",
-                  balance: "",
-                  ipAddress: "",
-                  srcAddress: "",
-                  queueName: "",
-                  target: "",
-                  referenceName: "",
-                  referenceMobile: "",
-                  customerId: "",
-                  customerBillingType: "prepaid",
-                }}
-                validationSchema={customerValidator}
-                onSubmit={(values, { resetForm }) => {
-                  customerHandler(values, resetForm);
-                }}
-              >
-                {() => (
-                  <Form>
-                    <div className="displayGrid3">
-                      {bpSettings?.hasMikrotik && (
-                        <div>
-                          <label className="form-control-label changeLabelFontColor">
-                            {t("selectMikrotik")}{" "}
-                          </label>
-                          <select
-                            className="form-select mw-100 mt-0"
-                            aria-label="Default select example"
-                            onChange={selectMikrotik}
-                          >
-                            <option value="">...</option>
-                            {Getmikrotik.length === undefined
-                              ? ""
-                              : Getmikrotik.map((val, key) => (
-                                  <option key={key} value={val.id}>
-                                    {val.name}
-                                  </option>
-                                ))}
-                          </select>
-                        </div>
-                      )}
-                      <div>
-                        <label className="form-control-label changeLabelFontColor">
-                          {t("selectArea")}{" "}
-                        </label>
-                        <select
-                          className="form-select mw-100 mt-0"
-                          aria-label="Default select example"
-                          onChange={selectSubArea}
-                        >
-                          <option value="">...</option>
-                          {area.length === undefined
-                            ? ""
-                            : area.map((val, key) => (
-                                <option key={key} value={val.id}>
-                                  {val.name}
-                                </option>
-                              ))}
-                        </select>
-                      </div>
-
-                      <div>
-                        <label className="form-control-label changeLabelFontColor">
-                          {t("selectSubArea")}
-                        </label>
-                        <select
-                          className="form-select mw-100 mt-0"
-                          aria-label="Default select example"
-                          name="subArea"
-                          id="subAreaId"
-                          onChange={(e) => {
-                            poleHandler(e.target.value);
-                          }}
-                        >
-                          <option value="">...</option>
-                          {subArea
-                            ? subArea.map((val, key) => (
-                                <option key={key} value={val.id}>
-                                  {val.name}
-                                </option>
-                              ))
-                            : ""}
-                        </select>
-                      </div>
-
-                      {bpSettings?.poleBox && (
-                        <div>
-                          <label className="form-control-label changeLabelFontColor">
-                            {t("selectPoleBox/splitter")}
-                          </label>
-                          <select
-                            className="form-select mw-100 mt-0"
-                            aria-label="Default select example"
-                            name="poleBox"
-                            id="poleBoxId"
-                          >
-                            <option value="">...</option>
-                            {poleBox?.map((val, key) => (
+        <ModalHeader closeButton>
+          <ModalTitle>
+            <h5 className="modal-title" id="exampleModalLabel">
+              {t("addNewCustomer")}
+            </h5>
+          </ModalTitle>
+        </ModalHeader>
+        <ModalBody>
+          <Formik
+            initialValues={{
+              name: "",
+              mobile: "",
+              address: "",
+              email: "",
+              nid: "",
+              balance: "",
+              ipAddress: "",
+              srcAddress: "",
+              queueName: "",
+              target: "",
+              referenceName: "",
+              referenceMobile: "",
+              customerId: "",
+              customerBillingType: "prepaid",
+            }}
+            validationSchema={customerValidator}
+            onSubmit={(values, { resetForm }) => {
+              customerHandler(values, resetForm);
+            }}
+          >
+            {() => (
+              <Form id="customerPost">
+                <div className="displayGrid3">
+                  {bpSettings?.hasMikrotik && (
+                    <div>
+                      <label className="form-control-label changeLabelFontColor">
+                        {t("selectMikrotik")}{" "}
+                      </label>
+                      <select
+                        className="form-select mw-100 mt-0"
+                        aria-label="Default select example"
+                        onChange={selectMikrotik}
+                      >
+                        <option value="">...</option>
+                        {Getmikrotik.length === undefined
+                          ? ""
+                          : Getmikrotik.map((val, key) => (
                               <option key={key} value={val.id}>
                                 {val.name}
                               </option>
                             ))}
-                          </select>
-                        </div>
-                      )}
+                      </select>
+                    </div>
+                  )}
+                  <div>
+                    <label className="form-control-label changeLabelFontColor">
+                      {t("selectArea")}{" "}
+                    </label>
+                    <select
+                      className="form-select mw-100 mt-0"
+                      aria-label="Default select example"
+                      onChange={selectSubArea}
+                    >
+                      <option value="">...</option>
+                      {area.length === undefined
+                        ? ""
+                        : area.map((val, key) => (
+                            <option key={key} value={val.id}>
+                              {val.name}
+                            </option>
+                          ))}
+                    </select>
+                  </div>
 
-                      {userType === "simple-queue" && (
-                        <div>
-                          <FtextField
-                            type="text"
-                            label={t("queueName")}
-                            name="queueName"
-                          />
-                        </div>
-                      )}
+                  <div>
+                    <label className="form-control-label changeLabelFontColor">
+                      {t("selectSubArea")}
+                    </label>
+                    <select
+                      className="form-select mw-100 mt-0"
+                      aria-label="Default select example"
+                      name="subArea"
+                      id="subAreaId"
+                      onChange={(e) => {
+                        poleHandler(e.target.value);
+                      }}
+                    >
+                      <option value="">...</option>
+                      {subArea
+                        ? subArea.map((val, key) => (
+                            <option key={key} value={val.id}>
+                              {val.name}
+                            </option>
+                          ))
+                        : ""}
+                    </select>
+                  </div>
 
-                      {userType === "simple-queue" && (
-                        <div>
-                          <FtextField
-                            type="text"
-                            label={t("ipAddress")}
-                            name="target"
-                          />
-                        </div>
-                      )}
+                  {bpSettings?.poleBox && (
+                    <div>
+                      <label className="form-control-label changeLabelFontColor">
+                        {t("selectPoleBox/splitter")}
+                      </label>
+                      <select
+                        className="form-select mw-100 mt-0"
+                        aria-label="Default select example"
+                        name="poleBox"
+                        id="poleBoxId"
+                      >
+                        <option value="">...</option>
+                        {poleBox?.map((val, key) => (
+                          <option key={key} value={val.id}>
+                            {val.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
 
-                      {userType === "firewall-queue" && (
-                        <div>
-                          <FtextField
-                            type="text"
-                            label={t("ipAddress")}
-                            name="ipAddress"
-                          />
-                        </div>
-                      )}
+                  {userType === "simple-queue" && (
+                    <div>
+                      <FtextField
+                        type="text"
+                        label={t("queueName")}
+                        name="queueName"
+                      />
+                    </div>
+                  )}
 
-                      {userType === "core-queue" && (
-                        <div>
-                          <FtextField
-                            type="text"
-                            label={t("ipAddress")}
-                            name="srcAddress"
-                          />
-                        </div>
-                      )}
+                  {userType === "simple-queue" && (
+                    <div>
+                      <FtextField
+                        type="text"
+                        label={t("ipAddress")}
+                        name="target"
+                      />
+                    </div>
+                  )}
 
-                      {bpSettings?.hasMikrotik &&
-                        userType === "firewall-queue" && (
-                          <div>
-                            <>
-                              <label className="form-control-label changeLabelFontColor">
-                                {t("selectPackage")}{" "}
-                              </label>
-                              <select
-                                name="firewallPackage"
-                                className="form-select mw-100 mb-3 mt-0"
-                                aria-label="Default select example"
-                                onChange={selectMikrotikPackage}
-                              >
-                                <option value={"0"}>...</option>
-                                {ppPackage &&
-                                  ppPackage?.map(
-                                    (val, key) =>
-                                      val.packageType === "queue" && (
-                                        <option key={key} value={val.id}>
-                                          {val.name}
-                                        </option>
-                                      )
-                                  )}
-                              </select>
-                            </>
-                          </div>
-                        )}
+                  {userType === "firewall-queue" && (
+                    <div>
+                      <FtextField
+                        type="text"
+                        label={t("ipAddress")}
+                        name="ipAddress"
+                      />
+                    </div>
+                  )}
 
-                      {bpSettings?.hasMikrotik && userType === "core-queue" && (
-                        <div>
-                          <>
-                            <label className="form-control-label changeLabelFontColor">
-                              {t("selectPackage")}{" "}
-                            </label>
-                            <select
-                              name="corePackage"
-                              className="form-select mw-100 mb-3 mt-0"
-                              aria-label="Default select example"
-                              onChange={selectMikrotikPackage}
-                            >
-                              <option value={"0"}>...</option>
-                              {ppPackage &&
-                                ppPackage?.map(
-                                  (val, key) =>
-                                    val.packageType === "queue" && (
-                                      <option key={key} value={val.id}>
-                                        {val.name}
-                                      </option>
-                                    )
-                                )}
-                            </select>
-                          </>
-                        </div>
-                      )}
+                  {userType === "core-queue" && (
+                    <div>
+                      <FtextField
+                        type="text"
+                        label={t("ipAddress")}
+                        name="srcAddress"
+                      />
+                    </div>
+                  )}
 
-                      {bpSettings?.hasMikrotik &&
-                        userType === "simple-queue" && (
-                          <div>
-                            <label className="form-control-label changeLabelFontColor">
-                              {t("uploadPackge")}{" "}
-                            </label>
-                            <select
-                              name="upPackage"
-                              className="form-select mw-100 mt-0"
-                              aria-label="Default select example"
-                              onChange={selectMikrotikPackage}
-                            >
-                              <option value={"0"}>...</option>
-                              {ppPackage &&
-                                ppPackage?.map(
-                                  (val, key) =>
-                                    val.packageType === "queue" && (
-                                      <option key={key} value={val.id}>
-                                        {val.name}
-                                      </option>
-                                    )
-                                )}
-                            </select>
-                          </div>
-                        )}
+                  {bpSettings?.hasMikrotik && userType === "firewall-queue" && (
+                    <div>
+                      <>
+                        <label className="form-control-label changeLabelFontColor">
+                          {t("selectPackage")}{" "}
+                        </label>
+                        <select
+                          name="firewallPackage"
+                          className="form-select mw-100 mb-3 mt-0"
+                          aria-label="Default select example"
+                          onChange={selectMikrotikPackage}
+                        >
+                          <option value={"0"}>...</option>
+                          {ppPackage &&
+                            ppPackage?.map(
+                              (val, key) =>
+                                val.packageType === "queue" && (
+                                  <option key={key} value={val.id}>
+                                    {val.name}
+                                  </option>
+                                )
+                            )}
+                        </select>
+                      </>
+                    </div>
+                  )}
 
-                      {bpSettings?.hasMikrotik &&
-                        userType === "simple-queue" && (
-                          <div>
-                            <label className="form-control-label changeLabelFontColor">
-                              {t("downloadPackge")}
-                            </label>
-                            <select
-                              name="downPackage"
-                              className="form-select mw-100 mb-3 mt-0"
-                              aria-label="Default select example"
-                              onChange={selectMikrotikPackage}
-                            >
-                              <option value={"0"}>...</option>
-                              {ppPackage &&
-                                ppPackage?.map(
-                                  (val, key) =>
-                                    val.packageType === "queue" && (
-                                      <option key={key} value={val.id}>
-                                        {val.name}
-                                      </option>
-                                    )
-                                )}
-                            </select>
-                          </div>
-                        )}
+                  {bpSettings?.hasMikrotik && userType === "core-queue" && (
+                    <div>
+                      <>
+                        <label className="form-control-label changeLabelFontColor">
+                          {t("selectPackage")}{" "}
+                        </label>
+                        <select
+                          name="corePackage"
+                          className="form-select mw-100 mb-3 mt-0"
+                          aria-label="Default select example"
+                          onChange={selectMikrotikPackage}
+                        >
+                          <option value={"0"}>...</option>
+                          {ppPackage &&
+                            ppPackage?.map(
+                              (val, key) =>
+                                val.packageType === "queue" && (
+                                  <option key={key} value={val.id}>
+                                    {val.name}
+                                  </option>
+                                )
+                            )}
+                        </select>
+                      </>
+                    </div>
+                  )}
 
-                      {!bpSettings?.hasMikrotik && (
-                        <div>
-                          <label className="form-control-label changeLabelFontColor">
-                            {t("downloadPackge")}
-                          </label>
-                          <select
-                            name="downPackage"
-                            className="form-select mw-100 mb-3 mt-0"
-                            aria-label="Default select example"
-                            onChange={selectMikrotikPackage}
-                          >
-                            <option value={"0"}>...</option>
-                            {ppPackage &&
-                              ppPackage?.map((val, key) => (
+                  {bpSettings?.hasMikrotik && userType === "simple-queue" && (
+                    <div>
+                      <label className="form-control-label changeLabelFontColor">
+                        {t("uploadPackge")}{" "}
+                      </label>
+                      <select
+                        name="upPackage"
+                        className="form-select mw-100 mt-0"
+                        aria-label="Default select example"
+                        onChange={selectMikrotikPackage}
+                      >
+                        <option value={"0"}>...</option>
+                        {ppPackage &&
+                          ppPackage?.map(
+                            (val, key) =>
+                              val.packageType === "queue" && (
                                 <option key={key} value={val.id}>
                                   {val.name}
                                 </option>
-                              ))}
-                          </select>
-                        </div>
-                      )}
-                      <div>
-                        <FtextField
-                          type="number"
-                          label={t("monthFee")}
-                          name="monthlyFee"
-                          min={0}
-                          value={monthlyFee}
-                          onChange={(e) => setMonthlyFee(e.target.value)}
-                        />
-                      </div>
-                      {!bpSettings?.hasMikrotik && (
-                        <div>
-                          <FtextField
-                            type="number"
-                            label={t("prevDue")}
-                            name="balance"
-                          />
-                        </div>
-                      )}
-                      <div>
-                        <FtextField type="text" label={t("NIDno")} name="nid" />
-                      </div>
-
-                      <div>
-                        <FtextField type="text" label={t("name")} name="name" />
-                      </div>
-                      <div>
-                        <FtextField
-                          type="text"
-                          label={t("mobile")}
-                          name="mobile"
-                        />
-                      </div>
-                      <div>
-                        <FtextField
-                          type="text"
-                          label={t("address")}
-                          name="address"
-                        />
-                      </div>
-
-                      {divisionalAreaFormData.map((item) => (
-                        <div>
-                          <label className="form-control-label changeLabelFontColor">
-                            {item.text}
-                            {/* <span className="text-danger">*</span> */}
-                          </label>
-                          <select
-                            className="form-select mw-100 mt-0"
-                            aria-label="Default select example"
-                            name={item.name}
-                            id={item.id}
-                            onChange={onDivisionalAreaChange}
-                            value={item.value}
-                          >
-                            <option value="">...</option>
-                            {item.data.map((item) => (
-                              <option value={item.id}>{item.name}</option>
-                            ))}
-                          </select>
-                        </div>
-                      ))}
-
-                      <div>
-                        <FtextField
-                          type="text"
-                          label={t("email")}
-                          name="email"
-                        />
-                      </div>
-                      <div>
-                        <div className="billCycle">
-                          <label className="form-control-label changeLabelFontColor">
-                            {t("billingCycle")}{" "}
-                          </label>
-
-                          <DatePicker
-                            className="form-control mw-100"
-                            selected={billDate}
-                            onChange={(date) => setBillDate(date)}
-                            dateFormat="MMM dd yyyy hh:mm"
-                            timeIntervals={60}
-                            showTimeSelect
-                            placeholderText={t("selectBillDate")}
-                          />
-                        </div>
-                      </div>
-                      <div>
-                        <label className="form-control-label changeLabelFontColor">
-                          {t("connectionDate")}
-                        </label>
-                        <DatePicker
-                          className="form-control mw-100"
-                          selected={connectionDate}
-                          onChange={(date) => setConnectionDate(date)}
-                          dateFormat="MMM dd yyyy"
-                          maxDate={new Date()}
-                          placeholderText={t("selectDate")}
-                          disabled={!mikrotikPackage}
-                        />
-                      </div>
-                      <div>
-                        <SelectField
-                          label={t("customerBillType")}
-                          id="exampleSelect"
-                          name="customerBillingType"
-                          className="form-select mw-100 mt-0"
-                        >
-                          <option value="">{t("customerBillType")}</option>
-
-                          <option value="prepaid">{t("prepaid")}</option>
-                          <option value="postpaid">{t("postPaid")}</option>
-                        </SelectField>
-                      </div>
-                      <div>
-                        <FtextField
-                          type="text"
-                          label={t("referenceName")}
-                          name="referenceName"
-                          disabled={!mikrotikPackage}
-                        />
-                      </div>
-                      <div>
-                        <FtextField
-                          type="text"
-                          label={t("referenceMobile")}
-                          name="referenceMobile"
-                          disabled={!mikrotikPackage}
-                        />
-                      </div>
-
-                      {!bpSettings?.genCustomerId && (
-                        <FtextField
-                          type="text"
-                          label={t("customerId")}
-                          name="customerId"
-                          disabled={!mikrotikPackage}
-                          validation={"true"}
-                        />
-                      )}
-
-                      {bpSettings?.hasMikrotik && (
-                        <div className="customerDisable">
-                          <label> {t("automaticConnectionOff")} </label>
-                          <input
-                            type="checkBox"
-                            checked={autoDisable}
-                            onChange={(e) => setAutoDisable(e.target.checked)}
-                          />
-                        </div>
-                      )}
+                              )
+                          )}
+                      </select>
                     </div>
-                    <div className="modal-footer" style={{ border: "none" }}>
-                      <button
-                        type="button"
-                        className="btn btn-secondary"
-                        data-bs-dismiss="modal"
-                        disabled={isLoading}
+                  )}
+
+                  {bpSettings?.hasMikrotik && userType === "simple-queue" && (
+                    <div>
+                      <label className="form-control-label changeLabelFontColor">
+                        {t("downloadPackge")}
+                      </label>
+                      <select
+                        name="downPackage"
+                        className="form-select mw-100 mb-3 mt-0"
+                        aria-label="Default select example"
+                        onChange={selectMikrotikPackage}
                       >
-                        {t("cancel")}
-                      </button>
-                      <button
-                        type="submit"
-                        className="btn btn-success"
-                        disabled={isLoading}
-                      >
-                        {isLoading ? <Loader /> : t("save")}
-                      </button>
+                        <option value={"0"}>...</option>
+                        {ppPackage &&
+                          ppPackage?.map(
+                            (val, key) =>
+                              val.packageType === "queue" && (
+                                <option key={key} value={val.id}>
+                                  {val.name}
+                                </option>
+                              )
+                          )}
+                      </select>
                     </div>
-                  </Form>
-                )}
-              </Formik>
-            </div>
+                  )}
+
+                  {!bpSettings?.hasMikrotik && (
+                    <div>
+                      <label className="form-control-label changeLabelFontColor">
+                        {t("downloadPackge")}
+                      </label>
+                      <select
+                        name="downPackage"
+                        className="form-select mw-100 mb-3 mt-0"
+                        aria-label="Default select example"
+                        onChange={selectMikrotikPackage}
+                      >
+                        <option value={"0"}>...</option>
+                        {ppPackage &&
+                          ppPackage?.map((val, key) => (
+                            <option key={key} value={val.id}>
+                              {val.name}
+                            </option>
+                          ))}
+                      </select>
+                    </div>
+                  )}
+                  <div>
+                    <FtextField
+                      type="number"
+                      label={t("monthFee")}
+                      name="monthlyFee"
+                      min={0}
+                      value={monthlyFee}
+                      onChange={(e) => setMonthlyFee(e.target.value)}
+                    />
+                  </div>
+                  {!bpSettings?.hasMikrotik && (
+                    <div>
+                      <FtextField
+                        type="number"
+                        label={t("prevDue")}
+                        name="balance"
+                      />
+                    </div>
+                  )}
+                  <div>
+                    <FtextField type="text" label={t("NIDno")} name="nid" />
+                  </div>
+
+                  <div>
+                    <FtextField type="text" label={t("name")} name="name" />
+                  </div>
+                  <div>
+                    <FtextField type="text" label={t("mobile")} name="mobile" />
+                  </div>
+                  <div>
+                    <FtextField
+                      type="text"
+                      label={t("address")}
+                      name="address"
+                    />
+                  </div>
+
+                  {divisionalAreaFormData.map((item) => (
+                    <div>
+                      <label className="form-control-label changeLabelFontColor">
+                        {item.text}
+                        {/* <span className="text-danger">*</span> */}
+                      </label>
+                      <select
+                        className="form-select mw-100 mt-0"
+                        aria-label="Default select example"
+                        name={item.name}
+                        id={item.id}
+                        onChange={onDivisionalAreaChange}
+                        value={item.value}
+                      >
+                        <option value="">...</option>
+                        {item.data.map((item) => (
+                          <option value={item.id}>{item.name}</option>
+                        ))}
+                      </select>
+                    </div>
+                  ))}
+
+                  <div>
+                    <FtextField type="text" label={t("email")} name="email" />
+                  </div>
+                  <div>
+                    <div className="billCycle">
+                      <label className="form-control-label changeLabelFontColor">
+                        {t("billingCycle")}{" "}
+                      </label>
+
+                      <DatePicker
+                        className="form-control mw-100"
+                        selected={billDate}
+                        onChange={(date) => setBillDate(date)}
+                        dateFormat="MMM dd yyyy hh:mm"
+                        timeIntervals={60}
+                        showTimeSelect
+                        placeholderText={t("selectBillDate")}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="form-control-label changeLabelFontColor">
+                      {t("connectionDate")}
+                    </label>
+                    <DatePicker
+                      className="form-control mw-100"
+                      selected={connectionDate}
+                      onChange={(date) => setConnectionDate(date)}
+                      dateFormat="MMM dd yyyy"
+                      maxDate={new Date()}
+                      placeholderText={t("selectDate")}
+                      disabled={!mikrotikPackage}
+                    />
+                  </div>
+                  <div>
+                    <SelectField
+                      label={t("customerBillType")}
+                      id="exampleSelect"
+                      name="customerBillingType"
+                      className="form-select mw-100 mt-0"
+                    >
+                      <option value="">{t("customerBillType")}</option>
+
+                      <option value="prepaid">{t("prepaid")}</option>
+                      <option value="postpaid">{t("postPaid")}</option>
+                    </SelectField>
+                  </div>
+                  <div>
+                    <FtextField
+                      type="text"
+                      label={t("referenceName")}
+                      name="referenceName"
+                      disabled={!mikrotikPackage}
+                    />
+                  </div>
+                  <div>
+                    <FtextField
+                      type="text"
+                      label={t("referenceMobile")}
+                      name="referenceMobile"
+                      disabled={!mikrotikPackage}
+                    />
+                  </div>
+
+                  {!bpSettings?.genCustomerId && (
+                    <FtextField
+                      type="text"
+                      label={t("customerId")}
+                      name="customerId"
+                      disabled={!mikrotikPackage}
+                      validation={"true"}
+                    />
+                  )}
+
+                  {bpSettings?.hasMikrotik && (
+                    <div className="autoDisable">
+                      <label> {t("automaticConnectionOff")} </label>
+                      <input
+                        type="checkBox"
+                        checked={autoDisable}
+                        onChange={(e) => setAutoDisable(e.target.checked)}
+                      />
+                    </div>
+                  )}
+                </div>
+              </Form>
+            )}
+          </Formik>
+        </ModalBody>
+        <ModalFooter>
+          <div className="modal-footer border-none">
+            <button
+              type="button"
+              className="btn btn-secondary"
+              disabled={isLoading}
+              onClick={() => setShow(false)}
+            >
+              {t("cancel")}
+            </button>
+            <button
+              type="submit"
+              form="customerPost"
+              className="btn btn-success"
+              disabled={isLoading}
+            >
+              {isLoading ? <Loader /> : t("save")}
+            </button>
           </div>
-        </div>
-      </div>
-    </div>
+        </ModalFooter>
+      </Modal>
+    </>
   );
 }

@@ -714,11 +714,11 @@ const PPPOECustomer = () => {
                 </li>
                 {(permission?.billPosting || role === "ispOwner") && (
                   <li
-                    data-bs-toggle="modal"
-                    data-bs-target="#collectCustomerBillModal"
                     onClick={() => {
-                      getSpecificCustomer(original.id);
+                      setCustomerId(original.id);
                       setCustomerData(original);
+                      setModalStatus("customerRecharge");
+                      setShowModal(true);
                     }}
                   >
                     <div className="dropdown-item">
@@ -732,10 +732,10 @@ const PPPOECustomer = () => {
 
                 {(permission?.customerEdit || role === "ispOwner") && (
                   <li
-                    data-bs-toggle="modal"
-                    data-bs-target="#customerEditModal"
                     onClick={() => {
-                      getSpecificCustomer(original.id);
+                      setCustomerId(original.id);
+                      setModalStatus("customerEdit");
+                      setShowModal(true);
                     }}
                   >
                     <div className="dropdown-item">
@@ -1542,16 +1542,29 @@ const PPPOECustomer = () => {
 
       {/* all modal */}
 
-      {/* custommodalStatuser create modal  */}
+      {/* customer create modal  */}
       {modalStatus === "customerPost" && (
         <CustomerPost show={showModal} setShow={setShowModal} />
       )}
 
       {/* customer edit modal  */}
-      <CustomerEdit single={customerId} />
+      {modalStatus === "customerEdit" && (
+        <CustomerEdit
+          show={showModal}
+          setShow={setShowModal}
+          single={customerId}
+        />
+      )}
 
       {/* bill collection modal  */}
-      <CustomerBillCollect single={customerId} customerData={customerData} />
+      {modalStatus === "customerRecharge" && (
+        <CustomerBillCollect
+          show={showModal}
+          setShow={setShowModal}
+          single={customerId}
+          customerData={customerData}
+        />
+      )}
 
       {/* customer details modal  */}
       <CustomerDetails single={customerId} />
