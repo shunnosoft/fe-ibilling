@@ -440,7 +440,7 @@ export default function Sidebar() {
                             )}
                           </>
                         )}
-                        {(userRole === "ispOwner" || userRole === "manager") &&
+                        {userRole === "ispOwner" &&
                           bpSettings?.hasMikrotik &&
                           hasCustomerType.includes("hotspot") && (
                             <NavLink

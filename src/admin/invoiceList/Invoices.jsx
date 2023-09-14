@@ -18,6 +18,7 @@ import {
 import InvoiceEditModal from "./modal/InvoiceEditModal";
 import InvoiceCreate from "./modal/InvoiceCreate";
 import { Modal, ModalBody, ModalHeader, ModalTitle } from "react-bootstrap";
+import SelectField from "../../components/common/SelectField";
 
 const Invoices = ({ ownerId, companyName, isOpen, setIsOpen }) => {
   // import dispatch
@@ -263,7 +264,7 @@ const Invoices = ({ ownerId, companyName, isOpen, setIsOpen }) => {
                 >
                   {() => (
                     <Form>
-                      <div className="d-flex justify-content-center align-items-center">
+                      <div className="displayGrid5">
                         {role === "superadmin" && (
                           <>
                             <FtextField
@@ -271,47 +272,40 @@ const Invoices = ({ ownerId, companyName, isOpen, setIsOpen }) => {
                               name="amount"
                               label="Amount"
                             />
-                            <div
-                              className="payment-status mx-2"
-                              style={{ marginTop: "-16px" }}
+
+                            <SelectField
+                              as="select"
+                              label="Payment Status"
+                              className="form-select mw-100 mt-0"
+                              name="paymentStatus"
                             >
-                              <label className="form-control-label changeLabelFontColor">
-                                Payment Status
-                              </label>
-                              <Field
-                                as="select"
-                                className="form-select w-200 mt-0"
-                                aria-label="Default select example"
-                                name="paymentStatus"
-                              >
-                                <option value="paid">Paid</option>
-                                <option value="unpaid">Unpaid</option>
-                              </Field>
-                            </div>
+                              <option value="paid">Paid</option>
+                              <option value="unpaid">Unpaid</option>
+                            </SelectField>
                           </>
                         )}
 
                         <FtextField type="date" name="dueDate" label="Date" />
 
-                        <div className="mx-2">
-                          <FtextField type="time" name="time" label="Time" />
-                        </div>
+                        <FtextField type="time" name="time" label="Time" />
 
-                        <button
-                          type="submit"
-                          className="btn btn-outline-success mt-2 me-1"
-                          disabled={loadingState}
-                        >
-                          {loadingState ? <Loader /> : "Submit"}
-                        </button>
-                        <button
-                          type="button"
-                          className="btn btn-outline-secondary mt-2"
-                          disabled={loadingState}
-                          onClick={cancelHandle}
-                        >
-                          Cancel
-                        </button>
+                        <div className="invoiceAction">
+                          <button
+                            type="submit"
+                            className="btn btn-outline-success"
+                            disabled={loadingState}
+                          >
+                            {loadingState ? <Loader /> : "Submit"}
+                          </button>
+                          <button
+                            type="button"
+                            className="btn btn-outline-secondary"
+                            disabled={loadingState}
+                            onClick={cancelHandle}
+                          >
+                            Cancel
+                          </button>
+                        </div>
                       </div>
                     </Form>
                   )}

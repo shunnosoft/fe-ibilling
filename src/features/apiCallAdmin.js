@@ -31,13 +31,11 @@ export const getIspOwners = async (dispatch, setIsLoading) => {
   setIsLoading(true);
   try {
     const res = await apiLink.get(`/admin/getIspOwners`);
-
-    setIsLoading(false);
     dispatch(getIspOwnersSuccess(res.data));
   } catch (error) {
     console.log(error);
-    setIsLoading(false);
   }
+  setIsLoading(false);
 };
 
 // get owners

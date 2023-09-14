@@ -497,7 +497,7 @@ function App() {
             <Route
               path="/hotspot/customer"
               element={
-                userRole === "ispOwner" || userRole === "manager" ? (
+                userRole === "ispOwner" ? (
                   <HotspotCustomer />
                 ) : (
                   <Navigate to={"/home"} />

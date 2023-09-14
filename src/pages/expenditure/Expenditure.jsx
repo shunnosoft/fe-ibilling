@@ -582,7 +582,8 @@ export default function Expenditure() {
                                       for (const key in item) {
                                         return (
                                           (item[key].role === "manager" ||
-                                            item[key].role === "ispOwner") && (
+                                            item[key].role === "ispOwner" ||
+                                            item[key].role === "collector") && (
                                             <option value={key}>
                                               {item[key].name}
                                             </option>

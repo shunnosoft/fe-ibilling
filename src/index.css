@@ -316,6 +316,12 @@ p {
     grid-gap: 10px;
   }
 
+  .displayGrid5 {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr) !important;
+    grid-gap: 10px;
+  }
+
   .displayGrid3 {
     display: grid;
     grid-template-columns: repeat(1, 1fr) !important;
@@ -327,6 +333,12 @@ p {
   .displayGrid3 {
     display: grid;
     grid-template-columns: repeat(1, 1fr) !important;
+    grid-gap: 10px;
+  }
+
+  .displayGrid5 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr) !important;
     grid-gap: 10px;
   }
 
@@ -348,6 +360,12 @@ p {
     grid-gap: 10px;
   }
 
+  .displayGrid5 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr) !important;
+    grid-gap: 10px;
+  }
+
   .displayGrid6 {
     display: grid;
     grid-template-columns: repeat(4, 1fr) !important;
@@ -359,6 +377,12 @@ p {
   .displayGrid3 {
     display: grid;
     grid-template-columns: repeat(2, 1fr) !important;
+    grid-gap: 10px;
+  }
+
+  .displayGrid5 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr) !important;
     grid-gap: 10px;
   }
 

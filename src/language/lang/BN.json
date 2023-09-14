@@ -857,7 +857,7 @@
   "notEnoughOnlineBalance": "আপনার যথেষ্ট অনলাইন ব্যালেন্স নেই!",
   "controlPanel": "কন্ট্রোল প্যানেল",
   "customerReport": "গ্রাহক রিপোর্ট",
-  "pppoeIp": "পিপিওই/আইপি",
+  "pppoeIp": "পিপি/আইপি/এইচপি",
   "PPPoECustomer": "পিপিওই গ্রাহক",
   "StaticCustomer": "স্ট্যাটিক গ্রাহক",
   "minusBalanceCustomer": "টি মাইনাস ব্যালেন্স গ্রাহকের স্টাটাস আপডেট করা হবে না",

@@ -51,14 +51,22 @@ const districts = districtsJSON.districts;
 
 export default function Home() {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
+
+  // get isp owner
+  let ispOwners = useSelector((state) => state.admin?.ispOwners);
+
+  // get user role from redux
+  const userRole = useSelector((state) => state.persistedReducer.auth.role);
+
   // loading
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isPermission, setIsPermission] = useState(false);
   const [isShow, setIsShow] = useState(false);
 
-  // import dispatch
-  const dispatch = useDispatch();
+  // clint data state
+  const [clintData, setClintData] = useState([]);
 
   // set owner at local state
   const [ownerId, setOwnerId] = useState();
@@ -70,20 +78,8 @@ export default function Home() {
   // set owner name
   const [companyName, setCompanyName] = useState();
 
-  // set filter status
-  const [filterStatus, setFilterStatus] = useState(null);
-
-  // status state
-  const [status, setStatus] = useState(null);
-
-  // mikrotik filter state
-  const [mikrotik, setMikrotik] = useState();
-
   // mikrotik status state
   const [mikrotikStatus, setMikrotikStatus] = useState("");
-
-  // execute billing cycle statue state
-  const [executeBill, setExecuteBill] = useState("");
 
   // billing cycle response data state
   const [billingCycle, setBillingCycle] = useState("");
@@ -91,87 +87,30 @@ export default function Home() {
   //reseller data state
   const [resellerBillCycleData, setResellerBillCycleData] = useState("");
 
-  //district filter data state
-  const [district, setDistrict] = useState("");
-
-  // ispOwner queue type state
-  const [queueType, setQueueType] = useState("");
-
-  // customer type
-  const [customerType, setCustomerType] = useState("");
-
   // Owner id
   const [ispOwnerId, setIspOwnerId] = useState("");
 
-  // get isp owner
-  let ispOwners = useSelector((state) => state.admin?.ispOwners);
-
-  // get user role from redux
-  const userRole = useSelector((state) => state.persistedReducer.auth.role);
-
-  // payment filter
-  if (filterStatus && filterStatus !== "All") {
-    ispOwners = ispOwners.filter(
-      (value) => value.bpSettings.paymentStatus === filterStatus
-    );
-  }
-
-  if (status && status !== "status") {
-    ispOwners = ispOwners.filter((item) => item.status === status);
-  }
-
-  // execute billing cycle filter
-  if (executeBill && executeBill !== "All") {
-    let billCycle;
-    if (executeBill === "true") {
-      billCycle = true;
-    } else if (executeBill === "false") {
-      billCycle = false;
-    }
-
-    ispOwners = ispOwners.filter(
-      (value) => value.bpSettings.executeBillingCycle === billCycle
-    );
-  }
-
-  // ispOwner queue type filter
-  if (queueType && queueType !== "All") {
-    ispOwners = ispOwners.filter(
-      (value) => value.bpSettings.queueType === queueType
-    );
-  }
-
-  // customer type filter
-  if (customerType && customerType !== "All") {
-    ispOwners = ispOwners.filter((value) =>
-      value.bpSettings?.customerType.includes(customerType)
-    );
-  }
-
-  // mikrotik filter
-  if (mikrotik && mikrotik !== "All") {
-    let mtkStatus;
-    if (mikrotik === "true") {
-      mtkStatus = true;
-    } else if (mikrotik === "false") {
-      mtkStatus = false;
-    }
-
-    ispOwners = ispOwners.filter(
-      (value) => value.bpSettings.hasMikrotik === mtkStatus
-    );
-  }
-
-  //divisional area filter
-  if (district && district !== "All") {
-    const districtName = getName(districts, district)?.name;
-    ispOwners = ispOwners.filter((item) => item.district === districtName);
-  }
+  // filter options state
+  const [filterOptions, setFilterOptions] = useState({
+    status: "",
+    paymentStatus: "",
+    billingCycle: "",
+    queueType: "",
+    customerType: "",
+    mikrotik: "",
+    district: "",
+    startDate: "",
+    endDate: "",
+  });
 
   // api call
   useEffect(() => {
     if (!ispOwners.length) getIspOwners(dispatch, setIsLoading);
   }, []);
+
+  useEffect(() => {
+    setClintData(ispOwners);
+  }, [ispOwners]);
 
   // edit modal method
   const editModal = (ispOwnerId) => {
@@ -196,6 +135,82 @@ export default function Home() {
   const fileModal = (ownerId, mtk) => {
     setOwnerId(ownerId);
     setMikrotikStatus(mtk);
+  };
+
+  // clint filter handler
+  const handleClintFilter = () => {
+    const {
+      status,
+      paymentStatus,
+      billingCycle,
+      queueType,
+      customerType,
+      mikrotik,
+      district,
+    } = filterOptions;
+
+    let tempClint = [...ispOwners];
+
+    // payment filter
+    if (paymentStatus && paymentStatus !== "") {
+      tempClint = tempClint.filter(
+        (value) => value.bpSettings.paymentStatus === paymentStatus
+      );
+    }
+
+    if (status && status !== "") {
+      tempClint = tempClint.filter((item) => item.status === status);
+    }
+
+    // execute billing cycle filter
+    if (billingCycle && billingCycle !== "") {
+      let billCycle;
+      if (billingCycle === "true") {
+        billCycle = true;
+      } else if (billingCycle === "false") {
+        billCycle = false;
+      }
+
+      tempClint = tempClint.filter(
+        (value) => value.bpSettings.executeBillingCycle === billCycle
+      );
+    }
+
+    // ispOwner queue type filter
+    if (queueType && queueType !== "") {
+      tempClint = tempClint.filter(
+        (value) => value.bpSettings.queueType === queueType
+      );
+    }
+
+    // customer type filter
+    if (customerType && customerType !== "") {
+      tempClint = tempClint.filter((value) =>
+        value.bpSettings?.customerType.includes(customerType)
+      );
+    }
+
+    // mikrotik filter
+    if (mikrotik && mikrotik !== "") {
+      let mtkStatus;
+      if (mikrotik === "true") {
+        mtkStatus = true;
+      } else if (mikrotik === "false") {
+        mtkStatus = false;
+      }
+
+      tempClint = tempClint.filter(
+        (value) => value.bpSettings.hasMikrotik === mtkStatus
+      );
+    }
+
+    //divisional area filter
+    if (district && district !== "") {
+      const districtName = getName(districts, district)?.name;
+      tempClint = tempClint.filter((item) => item.district === districtName);
+    }
+
+    setClintData(tempClint);
   };
 
   const ipsOwnerBillingCycleHandler = (ispOwner) => {
@@ -233,7 +248,7 @@ export default function Home() {
   ];
 
   //ispOwner export data
-  const ispOwnerForCsVTableInfo = ispOwners.map((ispOwner) => {
+  const ispOwnerForCsVTableInfo = clintData.map((ispOwner) => {
     return {
       netFeeId: ispOwner.netFeeId,
       company: ispOwner.company,
@@ -650,9 +665,14 @@ export default function Home() {
               <select
                 className="form-select mt-0"
                 aria-label="Default select example"
-                onChange={(event) => setFilterStatus(event.target.value)}
+                onChange={(e) =>
+                  setFilterOptions({
+                    ...filterOptions,
+                    paymentStatus: e.target.value,
+                  })
+                }
               >
-                <option value="All" selected>
+                <option value="" selected>
                   All
                 </option>
                 <option value="paid">Paid</option>
@@ -662,9 +682,14 @@ export default function Home() {
               <select
                 className="form-select mt-0"
                 aria-label="Default select example"
-                onChange={(event) => setStatus(event.target.value)}
+                onChange={(e) =>
+                  setFilterOptions({
+                    ...filterOptions,
+                    status: e.target.value,
+                  })
+                }
               >
-                <option value="status" selected>
+                <option value="" selected>
                   Status
                 </option>
                 <option value="new">New</option>
@@ -678,9 +703,14 @@ export default function Home() {
               <select
                 className="form-select mt-0"
                 aria-label="Default select example"
-                onChange={(event) => setExecuteBill(event.target.value)}
+                onChange={(e) =>
+                  setFilterOptions({
+                    ...filterOptions,
+                    billingCycle: e.target.value,
+                  })
+                }
               >
-                <option value="All" selected>
+                <option value="" selected>
                   Execute Billing Cycle
                 </option>
                 <option value="true">Run Billing Cycle</option>
@@ -690,9 +720,14 @@ export default function Home() {
               <select
                 className="form-select mt-0"
                 aria-label="Default select example"
-                onChange={(event) => setQueueType(event.target.value)}
+                onChange={(e) =>
+                  setFilterOptions({
+                    ...filterOptions,
+                    queueType: e.target.value,
+                  })
+                }
               >
-                <option value="All">Queue Type</option>
+                <option value="">Queue Type</option>
                 <option value="simple-queue">Simple Queue</option>
                 <option value="firewall-queue">Firewall Queue</option>
                 <option value="core-queue">Core Queue</option>
@@ -701,9 +736,14 @@ export default function Home() {
               <select
                 className="form-select mt-0"
                 aria-label="Default select example"
-                onChange={(event) => setCustomerType(event.target.value)}
+                onChange={(e) =>
+                  setFilterOptions({
+                    ...filterOptions,
+                    customerType: e.target.value,
+                  })
+                }
               >
-                <option value="All">Customer Type</option>
+                <option value="">Customer Type</option>
                 <option value="pppoe">PPPoE</option>
                 <option value="static">Static</option>
                 <option value="hotspot">Hotspot</option>
@@ -712,9 +752,14 @@ export default function Home() {
               <select
                 className="form-select mt-0"
                 aria-label="Default select example"
-                onChange={(event) => setMikrotik(event.target.value)}
+                onChange={(e) =>
+                  setFilterOptions({
+                    ...filterOptions,
+                    mikrotik: e.target.value,
+                  })
+                }
               >
-                <option value="All" selected>
+                <option value="" selected>
                   Mikrotik
                 </option>
                 <option value="true">With Mikrotik</option>
@@ -724,9 +769,14 @@ export default function Home() {
               <select
                 className="form-select mt-0"
                 aria-label="Default select example"
-                onChange={(event) => setDistrict(event.target.value)}
+                onChange={(e) =>
+                  setFilterOptions({
+                    ...filterOptions,
+                    district: e.target.value,
+                  })
+                }
               >
-                <option value="All" selected>
+                <option value="" selected>
                   All District
                 </option>
                 {districts.map((item) => {
@@ -751,13 +801,23 @@ export default function Home() {
                   </div>
                 </Link>
               )}
+
+              <div className="displayGrid2 mt-0 ">
+                <button
+                  className="btn btn-outline-primary"
+                  type="button"
+                  onClick={handleClintFilter}
+                >
+                  Filter
+                </button>
+              </div>
             </div>
 
             <FontColor>
               <Table
                 isLoading={isLoading}
                 columns={columns}
-                data={ispOwners}
+                data={clintData}
               ></Table>
 
               <Permissions

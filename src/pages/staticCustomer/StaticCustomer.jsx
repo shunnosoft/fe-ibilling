@@ -995,7 +995,7 @@ export default function Customer() {
                   ""
                 )}
 
-                {(role === "ispOwner" || role === "manager") &&
+                {/* {(role === "ispOwner" || role === "manager") &&
                   bpSettings?.hasMikrotik && (
                     <li onClick={() => macBindingCall(original.id)}>
                       <div className="dropdown-item">
@@ -1005,7 +1005,7 @@ export default function Customer() {
                         </div>
                       </div>
                     </li>
-                  )}
+                  )} */}
               </ul>
             </div>
           </div>
