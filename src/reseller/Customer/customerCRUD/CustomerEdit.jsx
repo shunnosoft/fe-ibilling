@@ -663,16 +663,15 @@ export default function CustomerEdit({ single }) {
                       )}
 
                       {Getmikrotik.length > 0 &&
-                        (permission?.customerAutomaticConnectionOnOff ||
+                        (permission?.customerAutoDisableEdit ||
                           collectorResellerInfo.permission
-                            ?.customerAutomaticConnectionOnOff) && (
+                            ?.customerAutoDisableEdit) && (
                           <div className="autoDisable">
                             <label> {t("automaticConnectionOff")} </label>
                             <input
                               type="checkBox"
                               checked={autoDisable}
                               onChange={(e) => setAutoDisable(e.target.checked)}
-                              disabled={!permission?.customerAutoDisableEdit}
                             />
                           </div>
                         )}

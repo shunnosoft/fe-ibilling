@@ -98,6 +98,7 @@ const PPPOECustomer = () => {
 
   // get all customer
   const customers = useSelector((state) => state.customer.customer);
+  console.log(customers);
 
   // get all role
   const role = useSelector((state) => state.persistedReducer.auth.role);

@@ -29,13 +29,25 @@ const FreeCustomer = ({ ispOwnerId, year, month, status }) => {
   // get all packages
   const allPackages = useSelector((state) => state.package.allPackages);
 
+  // get hotspot package
+  const hotsPackage = useSelector((state) => state.hotspot?.package);
+
   // is Loading state
   const [isLoading, setIsLoading] = useState(false);
 
   // customer current package find
-  const getCustomerPackage = (pack) => {
-    const findPack = allPackages.find((item) => item.id.includes(pack));
-    return findPack;
+  const getCustomerPackage = (value) => {
+    if (value?.userType === "hotspot") {
+      const findPack = hotsPackage.find((item) =>
+        item.id.includes(value?.hotspotPackage)
+      );
+      return findPack;
+    } else {
+      const findPack = allPackages.find((item) =>
+        item.id.includes(value?.mikrotikPackage)
+      );
+      return findPack;
+    }
   };
 
   const column = useMemo(
@@ -63,7 +75,7 @@ const FreeCustomer = ({ ispOwnerId, year, month, status }) => {
             ? field?.queue.srcAddress
             : field?.userType === "simple-queue"
             ? field?.queue.target
-            : "",
+            : field?.hotspot.name,
       },
       {
         width: "8%",
@@ -87,11 +99,10 @@ const FreeCustomer = ({ ispOwnerId, year, month, status }) => {
         },
       },
       {
-        width: "8%",
+        width: "10%",
         Header: t("package"),
-        accessor: "mikrotikPackage",
-        Cell: ({ cell: { value } }) => (
-          <div>{customer && getCustomerPackage(value)?.name}</div>
+        Cell: ({ row: { original } }) => (
+          <div>{original && getCustomerPackage(original)?.name}</div>
         ),
       },
       {
@@ -113,7 +124,7 @@ const FreeCustomer = ({ ispOwnerId, year, month, status }) => {
         },
       },
     ],
-    [t]
+    [t, allPackages, hotsPackage]
   );
 
   useEffect(() => {

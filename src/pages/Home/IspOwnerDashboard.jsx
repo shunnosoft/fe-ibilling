@@ -50,6 +50,7 @@ import Reseller from "./dataComponent/Reseller";
 import Discount from "./dataComponent/Discount";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
+import { getHotspotPackage } from "../../features/hotspotApi";
 
 export default function IspOwnerDashboard() {
   const { t } = useTranslation();
@@ -162,7 +163,11 @@ export default function IspOwnerDashboard() {
     //get card data
     getIspOwnerDashboardCardData(dispatch, setLoadingDashboardData, ispOwnerId);
 
+    //get all customer package
     getAllPackages(dispatch, ispOwnerId, setPackageLoading);
+
+    // get hotspot package api call
+    getHotspotPackage(dispatch, ispOwnerId, setPackageLoading);
 
     Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
   }, []);

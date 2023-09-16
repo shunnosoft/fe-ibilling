@@ -74,7 +74,7 @@ const CustomerInvoicePrint = React.forwardRef((props, ref) => {
               <Table
                 bordered
                 className="text-center align-center"
-                style={{ lineHeight: "6px" }}
+                style={{ lineHeight: "4px" }}
               >
                 <tbody>
                   <tr>
@@ -96,6 +96,10 @@ const CustomerInvoicePrint = React.forwardRef((props, ref) => {
                   <tr>
                     <th>{t("discount")}</th>
                     <td>{invoiceData?.discount}</td>
+                  </tr>
+                  <tr>
+                    <th>{t("note")}</th>
+                    <td>{invoiceData?.note}</td>
                   </tr>
                   <tr>
                     <th>{t("medium")}</th>
@@ -126,7 +130,7 @@ const CustomerInvoicePrint = React.forwardRef((props, ref) => {
 
               <div
                 className="d-flex justify-content-between h5"
-                style={{ marginTop: "1.8rem" }}
+                style={{ marginTop: "1rem" }}
               >
                 <div>
                   <hr className="mb-1" />
@@ -209,7 +213,7 @@ const CustomerInvoicePrint = React.forwardRef((props, ref) => {
             <Table
               bordered
               className="text-center align-align"
-              style={{ lineHeight: "6px" }}
+              style={{ lineHeight: "4px" }}
             >
               <tbody>
                 <tr>
@@ -231,6 +235,10 @@ const CustomerInvoicePrint = React.forwardRef((props, ref) => {
                 <tr>
                   <th>{t("discount")}</th>
                   <td>{invoiceData?.discount}</td>
+                </tr>
+                <tr>
+                  <th>{t("note")}</th>
+                  <td>{invoiceData?.note}</td>
                 </tr>
                 <tr>
                   <th>{t("medium")}</th>
@@ -261,7 +269,7 @@ const CustomerInvoicePrint = React.forwardRef((props, ref) => {
 
             <div
               className="d-flex justify-content-between h5"
-              style={{ marginTop: "1.8rem" }}
+              style={{ marginTop: "1rem" }}
             >
               <div>
                 <hr className="mb-1" />

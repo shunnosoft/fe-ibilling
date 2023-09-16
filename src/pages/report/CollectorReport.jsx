@@ -42,6 +42,7 @@ export default function CollectorReport() {
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
 
   const allBills = useSelector((state) => state.collector.collectorBill);
+  console.log(allBills);
 
   var today = new Date();
   var firstDay = permissions?.dashboardCollectionData
@@ -201,32 +202,62 @@ export default function CollectorReport() {
   const columns = React.useMemo(
     () => [
       {
-        width: "15%",
+        width: "10%",
         Header: t("id"),
-        accessor: "customer.customerId",
+        accessor: (field) =>
+          field?.hotspotCustomer
+            ? field?.hotspotCustomer?.customerId
+            : field?.customer?.customerId,
       },
       {
         width: "15%",
-        Header: t("customer"),
-        accessor: "customer.name",
+        Header: t("name"),
+        accessor: (field) =>
+          field?.hotspotCustomer
+            ? field?.hotspotCustomer?.name
+            : field?.customer?.name,
       },
       {
         width: "15%",
-        Header: t("mobile"),
-        accessor: "customer.mobile",
+        Header: t("pppoeIp"),
+        accessor: (field) =>
+          field.customer?.userType === "pppoe"
+            ? field.customer?.pppoe.name
+            : field.customer?.userType === "firewall-queue"
+            ? field.customer?.queue.address
+            : field.customer?.userType === "core-queue"
+            ? field.customer?.queue.srcAddress
+            : field.customer?.userType === "simple-queue"
+            ? field.customer?.queue.target
+            : field?.hotspotCustomer?.hotspot.name,
       },
       {
         width: "15%",
+        Header: t("package"),
+        accessor: (field) =>
+          field.customer?.mikrotikPackage?.name
+            ? field.customer?.mikrotikPackage?.name
+            : field.customer?.userType === "pppoe"
+            ? field.customer?.pppoe?.profile
+            : field?.hotspotCustomer?.hotspot.profile,
+      },
+      {
+        width: "12%",
         Header: t("medium"),
         accessor: "medium",
       },
       {
-        width: "15%",
+        width: "12%",
         Header: t("amount"),
         accessor: "amount",
       },
       {
-        width: "20%",
+        width: "8%",
+        Header: t("note"),
+        accessor: "note",
+      },
+      {
+        width: "12%",
         Header: t("date"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {

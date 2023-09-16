@@ -30,6 +30,7 @@ import {
 import DueCustomer from "../dueCustomer/DueCustomer";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
+import { getHotspotPackage } from "../../features/hotspotApi";
 
 const OtherCustomer = () => {
   const { t } = useTranslation();
@@ -93,7 +94,12 @@ const OtherCustomer = () => {
   };
 
   useEffect(() => {
+    // get all package
     getAllPackages(dispatch, ispOwner, setPackageLoading);
+
+    // get hotspot package api call
+    getHotspotPackage(dispatch, ispOwner, setPackageLoading);
+
     Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
   }, []);
 

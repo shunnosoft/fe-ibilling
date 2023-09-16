@@ -13,10 +13,22 @@ const CustomerPdf = forwardRef((props, ref) => {
   // get all packages
   const allPackages = useSelector((state) => state.package.allPackages);
 
+  // get hotspot package
+  const hotsPackage = useSelector((state) => state.hotspot?.package);
+
   // customer current package find
-  const getCustomerPackage = (pack) => {
-    const findPack = allPackages.find((item) => item.id.includes(pack));
-    return findPack;
+  const getCustomerPackage = (value) => {
+    if (value?.userType === "hotspot") {
+      const findPack = hotsPackage.find((item) =>
+        item.id.includes(value?.hotspotPackage)
+      );
+      return findPack;
+    } else {
+      const findPack = allPackages.find((item) =>
+        item.id.includes(value?.mikrotikPackage)
+      );
+      return findPack;
+    }
   };
 
   const { customerData, status } = props;
@@ -76,13 +88,13 @@ const CustomerPdf = forwardRef((props, ref) => {
                       ? val.customer?.queue.srcAddress
                       : val.customer?.userType === "simple-queue"
                       ? val.customer?.queue.target
-                      : ""}
+                      : val.customer?.hotspot.name}
                   </td>
                   <td className="prin_td">{val.customer.mobile}</td>
                   <td className="prin_td">{badge(val.customer.status)}</td>
                   <td className="prin_td">{badge(val.paymentStatus)}</td>
                   <td className="prin_td">
-                    {getCustomerPackage(val.customer.mikrotikPackage)?.name}
+                    {val.customer && getCustomerPackage(val.customer)?.name}
                   </td>
                   <td className="prin_td">{val.discount}</td>
                   <td className="prin_td">{val.customer.monthlyFee}</td>
@@ -101,6 +113,7 @@ const CustomerPdf = forwardRef((props, ref) => {
               <th scope="col">{t("id")}</th>
               <th scope="col">{t("name")}</th>
               <th scope="col">{t("pppoeIp")}</th>
+              <th scope="col">{t("mobile")}</th>
               <th scope="col">{t("status")}</th>
               <th scope="col">{t("paymentStatus")}</th>
               <th scope="col">{t("package")}</th>
@@ -126,15 +139,15 @@ const CustomerPdf = forwardRef((props, ref) => {
                           ? val?.queue.srcAddress
                           : val?.userType === "simple-queue"
                           ? val?.queue.target
-                          : ""}
+                          : val?.hotspot.name}
                       </td>
                     }
                   </td>
+                  <td className="prin_td">{val.mobile}</td>
                   <td className="prin_td">{badge(val.status)}</td>
                   <td className="prin_td">{badge(val.paymentStatus)}</td>
                   <td className="prin_td">
-                    {val?.mikrotikPackage &&
-                      getCustomerPackage(val?.mikrotikPackage)?.name}
+                    {val && getCustomerPackage(val)?.name}
                   </td>
                   <td className="prin_td">{val.monthlyFee}</td>
                   <td className="prin_td">{val.balance}</td>

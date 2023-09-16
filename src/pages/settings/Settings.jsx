@@ -113,8 +113,8 @@ export default function Settings() {
 
                     <Tab
                       className="mt-5"
-                      eventKey="inactiveCustomer"
-                      title={t("customerInactiveSMS")}
+                      eventKey="expiredCustomer"
+                      title={t("expiredCustomer")}
                     >
                       <FourGround>
                         <CustomerInactiveSmsTemplate />

@@ -344,12 +344,12 @@ const CustomerInvoice = () => {
   const columns = useMemo(
     () => [
       {
-        width: "7%",
+        width: "6%",
         Header: t("id"),
         accessor: "customer.customerId",
       },
       {
-        width: "11%",
+        width: "10%",
         Header: t("PPPoEName"),
         accessor: (item) =>
           item.customer?.userType === "pppoe"
@@ -394,12 +394,17 @@ const CustomerInvoice = () => {
         accessor: "discount",
       },
       {
-        width: "8%",
+        width: "6%",
         Header: t("due"),
         accessor: "due",
       },
       {
-        width: "10%",
+        width: "8%",
+        Header: t("note"),
+        accessor: "note",
+      },
+      {
+        width: "8%",
         Header: t("createdAt"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
@@ -407,7 +412,7 @@ const CustomerInvoice = () => {
         },
       },
       {
-        width: "8%",
+        width: "6%",
         Header: () => <div className="text-center">{t("action")}</div>,
         id: "option",
 
@@ -710,6 +715,7 @@ const CustomerInvoice = () => {
                             amount: singleInvoice.amount,
                             due: singleInvoice.due,
                             discount: singleInvoice.discount,
+                            note: singleInvoice.note,
                             billType: singleInvoice.billType,
                             medium: singleInvoice.medium,
                             billingCycle: singleInvoice?.customer?.billingCycle,

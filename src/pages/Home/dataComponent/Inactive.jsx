@@ -32,15 +32,27 @@ const Inactive = ({ ispOwnerId, year, month, status }) => {
   // get all packages
   const allPackages = useSelector((state) => state.package.allPackages);
 
+  // get hotspot package
+  const hotsPackage = useSelector((state) => state.hotspot?.package);
+
   // get inactive customer
   const customer = useSelector(
     (state) => state.dashboardInformation?.inactiveCustomer
   );
 
   // customer current package find
-  const getCustomerPackage = (pack) => {
-    const findPack = allPackages.find((item) => item.id.includes(pack));
-    return findPack;
+  const getCustomerPackage = (value) => {
+    if (value?.userType === "hotspot") {
+      const findPack = hotsPackage.find((item) =>
+        item.id.includes(value?.hotspotPackage)
+      );
+      return findPack;
+    } else {
+      const findPack = allPackages.find((item) =>
+        item.id.includes(value?.mikrotikPackage)
+      );
+      return findPack;
+    }
   };
 
   //column for table
@@ -69,7 +81,7 @@ const Inactive = ({ ispOwnerId, year, month, status }) => {
             ? field?.queue.srcAddress
             : field?.userType === "simple-queue"
             ? field?.queue.target
-            : "",
+            : field?.hotspot.name,
       },
       {
         width: "10%",
@@ -95,9 +107,8 @@ const Inactive = ({ ispOwnerId, year, month, status }) => {
       {
         width: "10%",
         Header: t("package"),
-        accessor: "mikrotikPackage",
-        Cell: ({ cell: { value } }) => (
-          <div>{customer && getCustomerPackage(value)?.name}</div>
+        Cell: ({ row: { original } }) => (
+          <div>{original && getCustomerPackage(original)?.name}</div>
         ),
       },
       {
@@ -119,7 +130,7 @@ const Inactive = ({ ispOwnerId, year, month, status }) => {
         },
       },
     ],
-    [t, allPackages]
+    [t, allPackages, hotsPackage]
   );
 
   useEffect(() => {

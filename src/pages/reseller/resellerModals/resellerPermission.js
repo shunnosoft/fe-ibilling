@@ -122,13 +122,13 @@ export const resellerPermissions = (permission, bpSettings) => {
       isChecked: permission?.singleCustomerNumberEdit,
       disabled: false,
     },
-    {
-      id: 18,
-      label: "Customer Automatic Connection OnOff",
-      value: "customerAutomaticConnectionOnOff",
-      isChecked: permission?.customerAutomaticConnectionOnOff,
-      disabled: false,
-    },
+    // {
+    //   id: 18,
+    //   label: "Customer Automatic Connection OnOff",
+    //   value: "customerAutomaticConnectionOnOff",
+    //   isChecked: permission?.customerAutomaticConnectionOnOff,
+    //   disabled: false,
+    // },
     {
       id: 19,
       label: "Daily Recharge Feature",
@@ -283,13 +283,13 @@ export const resellerPermissions = (permission, bpSettings) => {
       isChecked: permission?.singleCustomerNumberEdit,
       disabled: false,
     },
-    {
-      id: 18,
-      label: "গ্রাহক অটোমেটিক সংযোগ অনঅফ",
-      value: "customerAutomaticConnectionOnOff",
-      isChecked: permission?.customerAutomaticConnectionOnOff,
-      disabled: false,
-    },
+    // {
+    //   id: 18,
+    //   label: "গ্রাহক অটোমেটিক সংযোগ অনঅফ",
+    //   value: "customerAutomaticConnectionOnOff",
+    //   isChecked: permission?.customerAutomaticConnectionOnOff,
+    //   disabled: false,
+    // },
     {
       id: 19,
       label: "দৈনিক রিচার্জ ফিচার",

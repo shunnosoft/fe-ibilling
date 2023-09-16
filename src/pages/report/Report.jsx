@@ -68,6 +68,9 @@ export default function Report() {
     (state) => state.persistedReducer.auth.ispOwnerId
   );
 
+  // customer bill collection
+  const allBills = useSelector((state) => state?.payment?.allBills);
+
   // get userdata
   const userData = useSelector(
     (state) => state.persistedReducer.auth.currentUser
@@ -100,7 +103,6 @@ export default function Report() {
   firstDay.setHours(0, 0, 0, 0);
   today.setHours(23, 59, 59, 999);
 
-  const allBills = useSelector((state) => state?.payment?.allBills);
   const [areaLoading, setAreaLoading] = useState(false);
   const [collectorLoading, setCollectorLoading] = useState(false);
   const [singleArea, setArea] = useState({});
@@ -364,8 +366,14 @@ export default function Report() {
     let start = data?.start ? moment(data?.start).format("DD/MM/YY") : "";
     let end = data?.end ? moment(data?.end).format("DD/MM/YY") : "";
     return {
-      name: data?.customer?.name,
-      package: data.customer?.mikrotikPackage?.name,
+      name: data?.hotspotCustomer
+        ? data?.hotspotCustomer?.name
+        : data?.customer?.name,
+      package: data?.customer?.mikrotikPackage?.name
+        ? data.customer?.mikrotikPackage?.name
+        : data.customer?.userType === "pppoe"
+        ? data.customer?.pppoe?.profile
+        : data.hotspotCustomer?.hotspot.profile,
       amount: data.amount,
       due: data.due,
       medium: data.medium,
@@ -393,12 +401,18 @@ export default function Report() {
       {
         width: "7%",
         Header: t("id"),
-        accessor: "customer.customerId",
+        accessor: (field) =>
+          field?.hotspotCustomer
+            ? field?.hotspotCustomer?.customerId
+            : field?.customer?.customerId,
       },
       {
         width: "8%",
         Header: t("name"),
-        accessor: "customer.name",
+        accessor: (field) =>
+          field?.hotspotCustomer
+            ? field?.hotspotCustomer?.name
+            : field?.customer?.name,
       },
       {
         width: "10%",
@@ -412,7 +426,7 @@ export default function Report() {
             ? field.customer?.queue.srcAddress
             : field.customer?.userType === "simple-queue"
             ? field.customer?.queue.target
-            : "",
+            : field?.hotspotCustomer?.hotspot.name,
       },
       {
         width: "9%",
@@ -422,8 +436,7 @@ export default function Report() {
             ? field.customer?.mikrotikPackage?.name
             : field.customer?.userType === "pppoe"
             ? field.customer?.pppoe?.profile
-            : "",
-        // accessor: "customer.mikrotikPackage.name",
+            : field?.hotspotCustomer?.hotspot.profile,
       },
       {
         width: "8%",

@@ -26,6 +26,9 @@ const Active = ({ ispOwnerId, month, year, status }) => {
   // get all packages
   const allPackages = useSelector((state) => state.package.allPackages);
 
+  // get hotspot package
+  const hotsPackage = useSelector((state) => state.hotspot?.package);
+
   // get active customer data
   const customer = useSelector(
     (state) => state.dashboardInformation?.activeCustomer
@@ -35,9 +38,18 @@ const Active = ({ ispOwnerId, month, year, status }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   // customer current package find
-  const getCustomerPackage = (pack) => {
-    const findPack = allPackages.find((item) => item.id.includes(pack));
-    return findPack;
+  const getCustomerPackage = (value) => {
+    if (value?.userType === "hotspot") {
+      const findPack = hotsPackage.find((item) =>
+        item.id.includes(value?.hotspotPackage)
+      );
+      return findPack;
+    } else {
+      const findPack = allPackages.find((item) =>
+        item.id.includes(value?.mikrotikPackage)
+      );
+      return findPack;
+    }
   };
 
   const column = useMemo(
@@ -54,7 +66,6 @@ const Active = ({ ispOwnerId, month, year, status }) => {
       },
       {
         width: "10%",
-        Header: t("PPPoE"),
         Header: t("pppoeIp"),
         accessor: (field) =>
           field?.userType === "pppoe"
@@ -65,7 +76,7 @@ const Active = ({ ispOwnerId, month, year, status }) => {
             ? field?.queue.srcAddress
             : field?.userType === "simple-queue"
             ? field?.queue.target
-            : "",
+            : field?.hotspot.name,
       },
       {
         width: "10%",
@@ -91,9 +102,8 @@ const Active = ({ ispOwnerId, month, year, status }) => {
       {
         width: "10%",
         Header: t("package"),
-        accessor: "mikrotikPackage",
-        Cell: ({ cell: { value } }) => (
-          <div>{customer && getCustomerPackage(value)?.name}</div>
+        Cell: ({ row: { original } }) => (
+          <div>{original && getCustomerPackage(original)?.name}</div>
         ),
       },
       {
@@ -115,7 +125,7 @@ const Active = ({ ispOwnerId, month, year, status }) => {
         },
       },
     ],
-    [t, allPackages]
+    [t, allPackages, hotsPackage]
   );
 
   useEffect(() => {

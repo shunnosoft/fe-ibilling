@@ -4,6 +4,7 @@ import {
   ArrowBarLeft,
   ArrowBarRight,
   ArrowClockwise,
+  CashStack,
   CurrencyDollar,
   FiletypeCsv,
   FilterCircle,
@@ -52,6 +53,7 @@ import FormatNumber from "../../components/common/NumberFormat";
 import BulkCustomerDelete from "../Customer/customerCRUD/bulkOpration/BulkdeleteModal";
 import BulkPaymentStatusEdit from "../Customer/customerCRUD/bulkOpration/BulkPaymentStatusEdit";
 import BulkCustomerMessage from "../Customer/customerCRUD/bulkOpration/BulkCustomerMessage";
+import HotspotCustomerReport from "./hotspotBulkOperation/modal/HotspotCustomerReport";
 
 const HotspotCustomer = () => {
   const dispatch = useDispatch();
@@ -127,14 +129,11 @@ const HotspotCustomer = () => {
   // customer id state
   const [customerId, setCustomerId] = useState();
 
+  // customer data state
+  const [customerData, setCustomerData] = useState("");
+
   // mikrotik filter package
   const [filterPackage, setFilterPackage] = useState([]);
-
-  // delete customer id state
-  const [deleteCustomerId, setDeleteCustomerId] = useState();
-
-  // set recharge id
-  const [rechargeId, setRechargeId] = useState();
 
   // bulk customer state
   const [bulkCustomers, setBulkCustomer] = useState([]);
@@ -587,7 +586,7 @@ const HotspotCustomer = () => {
                     data-bs-toggle="modal"
                     data-bs-target="#customerRecharge"
                     onClick={() => {
-                      setRechargeId(original.id);
+                      setCustomerId(original.id);
                     }}
                   >
                     <div className="dropdown-item">
@@ -616,11 +615,26 @@ const HotspotCustomer = () => {
                   </li>
                 )}
 
+                <li
+                  onClick={() => {
+                    setCustomerData(original);
+                    setBulkStatus("customerReport");
+                    setShow(true);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <CashStack />
+                      <p className="actionP">{t("report")}</p>
+                    </div>
+                  </div>
+                </li>
+
                 {(permission?.customerDelete || role === "ispOwner") && (
                   <li
                     data-bs-toggle="modal"
                     data-bs-target="#hotsportCustomerDelete"
-                    onClick={() => setDeleteCustomerId(original.id)}
+                    onClick={() => setCustomerId(original.id)}
                   >
                     <div className="dropdown-item">
                       <div className="customerAction">
@@ -900,16 +914,26 @@ const HotspotCustomer = () => {
 
       {/* single customer delete modal */}
       <DeleteCustomer
-        customerId={deleteCustomerId}
+        customerId={customerId}
         mikrotikCheck={checkMikrotik}
         setMikrotikCheck={setMikrotikCheck}
       />
 
       {/* customer recharge modal */}
-      <RechargeCustomer customerId={rechargeId} />
+      <RechargeCustomer customerId={customerId} />
 
       {/* customers number update or delete modal */}
       <CustomersNumber showModal={numberModalShow} />
+
+      {/* single customer recharge report */}
+      {bulkStatus === "customerReport" && (
+        <HotspotCustomerReport
+          show={show}
+          setShow={setShow}
+          customerData={customerData}
+        />
+      )}
+
       {/* modal end */}
 
       {/* bulk modal start */}

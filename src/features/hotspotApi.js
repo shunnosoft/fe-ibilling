@@ -292,3 +292,19 @@ export const hotspotPackageDelete = async (
   }
   setDeleteLoading(false);
 };
+
+// get customer single recharge report
+export const getCustomerRechargeReport = async (
+  setCustomerReport,
+  customerData,
+  setIsLoading
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.get(`bill/hotspot-customer/${customerData.id}`);
+    setCustomerReport(res.data);
+  } catch (err) {
+    toast.error(err.response?.data?.message);
+  }
+  setIsLoading(false);
+};

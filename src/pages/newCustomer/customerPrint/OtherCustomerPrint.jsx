@@ -18,10 +18,22 @@ const OtherCustomerPrint = forwardRef((props, ref) => {
   // get all packages
   const allPackages = useSelector((state) => state.package.allPackages);
 
+  // get hotspot package
+  const hotsPackage = useSelector((state) => state.hotspot?.package);
+
   // customer current package find
-  const getCustomerPackage = (pack) => {
-    const findPack = allPackages.find((item) => item.id.includes(pack));
-    return findPack;
+  const getCustomerPackage = (value) => {
+    if (value?.userType === "hotspot") {
+      const findPack = hotsPackage.find((item) =>
+        item.id.includes(value?.hotspotPackage)
+      );
+      return findPack;
+    } else {
+      const findPack = allPackages.find((item) =>
+        item.id.includes(value?.mikrotikPackage)
+      );
+      return findPack;
+    }
   };
 
   return (
@@ -91,14 +103,13 @@ const OtherCustomerPrint = forwardRef((props, ref) => {
                   ? val?.queue.srcAddress
                   : val?.userType === "simple-queue"
                   ? val?.queue.target
-                  : ""}
+                  : val?.hotspot.name}
               </td>
               <td className="prin_td">{val.mobile}</td>
               <td className="prin_td">{badge(val.status)}</td>
               <td className="prin_td">{badge(val.paymentStatus)}</td>
               <td className="prin_td">
-                {val?.mikrotikPackage &&
-                  getCustomerPackage(val?.mikrotikPackage)?.name}
+                {val && getCustomerPackage(val)?.name}
               </td>
               <td className="prin_td">{FormatNumber(val.monthlyFee)}</td>
               <td className="prin_td">

@@ -154,8 +154,16 @@ const PrintReport = React.forwardRef((props, ref) => {
           <tbody>
             {currentCustomers.map((val, key) => (
               <tr key={key} id={val?.id}>
-                <td className="p-1">{val?.customer?.customerId}</td>
-                <td className="p-1">{val?.customer?.name}</td>
+                <td className="p-1">
+                  {val?.hotspotCustomer
+                    ? val.hotspotCustomer?.customerId
+                    : val.customer?.customerId}
+                </td>
+                <td className="p-1">
+                  {val?.hotspotCustomer
+                    ? val.hotspotCustomer?.name
+                    : val.customer?.name}
+                </td>
                 {status === "report" && (
                   <td className="p-1">
                     {val?.customer?.userType === "pppoe"
@@ -166,7 +174,7 @@ const PrintReport = React.forwardRef((props, ref) => {
                       ? val?.customer?.queue.srcAddress
                       : val?.customer?.userType === "simple-queue"
                       ? val?.customer?.queue.target
-                      : ""}
+                      : val?.hotspotCustomer?.hotspot.name}
                   </td>
                 )}
                 <td className="p-1">
@@ -175,7 +183,7 @@ const PrintReport = React.forwardRef((props, ref) => {
                       ? val.customer?.mikrotikPackage?.name
                       : val.customer?.userType === "pppoe"
                       ? val.customer?.pppoe?.profile
-                      : ""
+                      : val?.hotspotCustomer?.hotspot.profile
                     : getCustomerPackage(val.customer?.mikrotikPackage)?.name}
                 </td>
                 <td className="p-1">{FormatNumber(val?.amount)}</td>
