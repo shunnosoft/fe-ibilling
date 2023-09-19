@@ -42,7 +42,6 @@ export default function CollectorReport() {
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
 
   const allBills = useSelector((state) => state.collector.collectorBill);
-  console.log(allBills);
 
   var today = new Date();
   var firstDay = permissions?.dashboardCollectionData
@@ -221,14 +220,14 @@ export default function CollectorReport() {
         width: "15%",
         Header: t("pppoeIp"),
         accessor: (field) =>
-          field.customer?.userType === "pppoe"
-            ? field.customer?.pppoe.name
+          field?.customer?.userType === "pppoe"
+            ? field.customer?.name
             : field.customer?.userType === "firewall-queue"
-            ? field.customer?.queue.address
+            ? field.customer?.address
             : field.customer?.userType === "core-queue"
-            ? field.customer?.queue.srcAddress
+            ? field.customer?.srcAddress
             : field.customer?.userType === "simple-queue"
-            ? field.customer?.queue.target
+            ? field.customer.queue?.target
             : field?.hotspotCustomer?.hotspot.name,
       },
       {
@@ -238,7 +237,7 @@ export default function CollectorReport() {
           field.customer?.mikrotikPackage?.name
             ? field.customer?.mikrotikPackage?.name
             : field.customer?.userType === "pppoe"
-            ? field.customer?.pppoe?.profile
+            ? field?.package
             : field?.hotspotCustomer?.hotspot.profile,
       },
       {

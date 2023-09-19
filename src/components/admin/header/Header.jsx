@@ -24,14 +24,12 @@ import i18n from "../../../language/i18n/i18n";
 import FormatNumber from "../../common/NumberFormat";
 import { useTranslation } from "react-i18next";
 import ResellerOnlinePayment from "../../../reseller/onlinePayment/ResellerOnlinePayment";
-import SupportCall from "../../../pages/netFeeSupport/supportOpration/SupportCall";
 
 export default function Header(props) {
   const { t } = useTranslation();
   // const userRole = useSelector(state => state.persistedReducer.auth.role);
   const [isRefrsh, setIsrefresh] = useState(false);
   const [isLoading, setLoading] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
 
   // reseller payment modal state
   const [paymentShow, setPaymentShow] = useState(false);
@@ -469,7 +467,6 @@ export default function Header(props) {
       </FourGround>
       <ResellerOnlinePayment show={paymentShow} setShow={setPaymentShow} />
       {/* <MessageAlert ispOwner={ispOwner} /> */}
-      <SupportCall isOpen={isOpen} />
     </div>
   );
 }

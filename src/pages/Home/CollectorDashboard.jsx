@@ -19,6 +19,7 @@ import "./home.css";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import { monthsName } from "./homeData";
 import {
+  getAllPackages,
   getCollectorDashboardCardData,
   getCollectorDashboardCharts,
   getIspOwnerData,
@@ -40,6 +41,7 @@ import FreeCustomer from "./dataComponent/FreeCustomer";
 import Paid from "./dataComponent/Paid";
 import Unpaid from "./dataComponent/Unpaid";
 import Active from "./dataComponent/Active";
+import { getHotspotPackageSuccess } from "../../features/packageSlice";
 
 export default function CollectorDashboard() {
   const { t } = useTranslation();
@@ -80,7 +82,7 @@ export default function CollectorDashboard() {
   const ChartsData = useSelector((state) => state.chart.charts);
 
   //all internal states
-  const [isLoading, setIsloading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loadingDashboardData, setLoadingDashboardData] = useState(false);
   const [showGraphData, setShowGraphData] = useState("amount");
@@ -99,7 +101,7 @@ export default function CollectorDashboard() {
   //api calls
   useEffect(() => {
     Object.keys(ispOwner)?.length === 0 &&
-      getIspOwnerData(dispatch, ispOwnerId, setIsloading);
+      getIspOwnerData(dispatch, ispOwnerId, setIsLoading);
 
     //get graph chart data
     getCollectorDashboardCharts(setLoading, dispatch, collectorId, Year, Month);
@@ -110,6 +112,12 @@ export default function CollectorDashboard() {
       setLoadingDashboardData,
       collectorId
     );
+
+    //get all customer package
+    getAllPackages(dispatch, ispOwnerId, setIsLoading);
+
+    // get hotspot package api call
+    getHotspotPackageSuccess(dispatch, ispOwnerId, setIsLoading);
   }, []);
 
   //graph data calculation
@@ -257,11 +265,11 @@ export default function CollectorDashboard() {
                   <div className="row">
                     <div className="col-md-3 d-flex justify-content-end align-items-center">
                       <h2>
-                        {t("possibleCollection")} <br /> <CurrencyDollar />{" "}
+                        {t("possibleCollection")} <br /> <CurrencyDollar />
                         {FormatNumber(
                           customerStat?.totalProbableAmount -
                             customerStat?.totalInactiveAmount
-                        )}{" "}
+                        )}
                       </h2>
                     </div>
                     <div className="col-md-6">
@@ -301,7 +309,7 @@ export default function CollectorDashboard() {
                     <div className="col-md-3 d-flex justify-content-start align-items-center">
                       <h2>
                         {t("totalCollection")} <br />
-                        <CurrencyDollar />{" "}
+                        <CurrencyDollar />
                         {FormatNumber(customerStat?.totalOwnCollection)}
                       </h2>
                     </div>
@@ -407,7 +415,7 @@ export default function CollectorDashboard() {
 
                     <Link to={"/other/customer"}>
                       <p className="dashboardData">
-                        {t("new customer")}{" "}
+                        {t("new customer")}
                         {FormatNumber(customerStat?.newCustomer)}
                       </p>
                     </Link>
@@ -423,27 +431,22 @@ export default function CollectorDashboard() {
                   </div>
                   <div className="chartSection">
                     <p
-                      className="dashboardActive"
+                      className="dashboardActive pb-0"
                       data-bs-toggle="modal"
                       data-bs-target="#activeCustomer"
                       style={{ fontSize: "16px" }}
+                      onClick={() => setStatus("active")}
                     >
                       {t("active")}
+                      <h4>{FormatNumber(customerStat?.active)}</h4>
                     </p>
-                    <h2
-                      className="dashboardActive"
-                      data-bs-toggle="modal"
-                      data-bs-target="#activeCustomer"
-                    >
-                      {FormatNumber(customerStat?.active)}
-                    </h2>
 
                     {permissions?.dashboardCollectionData && (
                       <p
-                        className="dashboardActive pb-1"
+                        className="dashboardActive pb-0"
                         data-bs-toggle="modal"
                         data-bs-target="#activeCustomer"
-                        style={{ fontSize: "15px" }}
+                        style={{ fontSize: "15px", marginTop: "0px" }}
                         onClick={() => setStatus("active")}
                       >
                         {t("active")}
@@ -454,13 +457,13 @@ export default function CollectorDashboard() {
                       </p>
                     )}
                     <p
-                      className="dashboardData pb-1 pt-0"
+                      className="dashboardActive pb-1"
                       data-bs-toggle="modal"
                       data-bs-target="#inactiveCustomer"
                       style={{ fontSize: "15px", marginBottom: "0px" }}
                       onClick={() => setStatus("inactive")}
                     >
-                      {t("in active")}: {FormatNumber(customerStat?.inactive)}{" "}
+                      {t("in active")}: {FormatNumber(customerStat?.inactive)}
                       &nbsp;
                       {permissions?.dashboardCollectionData && (
                         <span className="text-info">
@@ -469,13 +472,13 @@ export default function CollectorDashboard() {
                       )}
                     </p>
                     <p
-                      className="dashboardData pb-1"
+                      className="dashboardActive pb-1"
                       data-bs-toggle="modal"
                       data-bs-target="#expiredCustomer"
-                      style={{ fontSize: "15px", paddingTop: "0px" }}
+                      style={{ fontSize: "15px", marginBottom: "0px" }}
                       onClick={() => setStatus("expired")}
                     >
-                      {t("expired")}: {FormatNumber(customerStat?.expired)}{" "}
+                      {t("expired")}: {FormatNumber(customerStat?.expired)}
                       &nbsp;
                       {permissions?.dashboardCollectionData && (
                         <span className="text-info">
@@ -495,24 +498,18 @@ export default function CollectorDashboard() {
                   </div>
                   <div className="chartSection">
                     <p
-                      className="dashboardUnpaid pb-1"
+                      className="dashboardActive pb-1"
                       data-bs-toggle="modal"
                       data-bs-target="#paid"
                       style={{ fontSize: "16px" }}
                       onClick={() => setStatus("paid")}
                     >
                       {t("paid")}
+                      <h4>{FormatNumber(customerStat?.paid)}</h4>
                     </p>
-                    <h2
-                      className="dashboardUnpaid"
-                      data-bs-toggle="modal"
-                      data-bs-target="#paid"
-                      onClick={() => setStatus("paid")}
-                    >
-                      {FormatNumber(customerStat?.paid)}
-                    </h2>
+
                     <p
-                      className="dashboardUnpaid pb-1"
+                      className="dashboardActive pb-1"
                       data-bs-toggle="modal"
                       data-bs-target="#unPaid"
                       style={{ fontSize: "15px", paddingTop: "10px" }}
@@ -561,7 +558,7 @@ export default function CollectorDashboard() {
                         !permissions?.dashboardCollectionData ? "fs-6" : "fs-13"
                       }
                     >
-                      {t("today collection")}{" "}
+                      {t("today collection")}
                       {FormatNumber(customerStat?.totalOwnCollectionToday)}
                     </p>
                   </div>

@@ -1438,7 +1438,9 @@ export default function Sidebar() {
                                 </li>
                               </FontColor>
                             </NavLink> */}
-                            <a
+                            <NavLink
+                              key={16}
+                              to={"/netFee/support/numbers"}
                               className={(navInfo) =>
                                 navInfo.isActive ? activeClass.active : ""
                               }
@@ -1451,17 +1453,12 @@ export default function Sidebar() {
                                   <div className="sidebarIcon">
                                     {<TelephoneFill />}
                                   </div>
-                                  <span
-                                    className="sidebarLinksName"
-                                    onClick={() =>
-                                      setIsOpen({ ...isOpen, [false]: true })
-                                    }
-                                  >
+                                  <span className="sidebarLinksName">
                                     {t("supportNumbers")}
                                   </span>
                                 </li>
                               </FontColor>
-                            </a>
+                            </NavLink>
                           </Accordion.Body>
                         </Accordion.Item>
                       </>
@@ -1624,7 +1621,7 @@ export default function Sidebar() {
         </div>
         {/* <span className="unblock"></span> */}
       </div>
-      <SupportCall isOpen={isOpen} />
+      {/* <SupportCall isOpen={isOpen} /> */}
     </TitleColor>
   );
 }

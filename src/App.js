@@ -119,6 +119,7 @@ import WithdrawalPaymentRequest from "./pages/withdrawalRequest/WithdrawalPaymen
 import OtherCustomer from "./pages/otherCustomer/OtherCustomer";
 import ManagerDeposit from "./pages/diposit/ManagerDeposit";
 import CollectorDeposit from "./pages/diposit/CollectorDeposit";
+import SupportCall from "./pages/netFeeSupport/supportOpration/SupportCall";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
@@ -621,6 +622,20 @@ function App() {
               element={
                 user && (userRole === "ispOwner" || userRole === "manager") ? (
                   <NetFeeSupport />
+                ) : (
+                  <Navigate to={"/home"} />
+                )
+              }
+            />
+
+            <Route
+              path="/netFee/support/numbers"
+              element={
+                user &&
+                (userRole === "ispOwner" ||
+                  userRole === "manager" ||
+                  userRole === "reseller") ? (
+                  <SupportCall />
                 ) : (
                   <Navigate to={"/home"} />
                 )

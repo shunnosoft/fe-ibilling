@@ -138,7 +138,13 @@ export default function Report() {
   //reload handler
   const reloadHandler = () => {
     if (userRole === "manager") {
-      getAllManagerBills(dispatch, ispOwnerId, setIsLoading);
+      getAllManagerBills(
+        dispatch,
+        ispOwnerId,
+        filterDate.getFullYear(),
+        filterDate.getMonth() + 1,
+        setIsLoading
+      );
       dispatch(managerFetchSuccess(userData));
     }
 
@@ -156,9 +162,34 @@ export default function Report() {
     allArea.length === 0 && getArea(dispatch, ispOwnerId, setAreaLoading);
     storeSubArea.length === 0 && getSubAreasApi(dispatch, ispOwner);
 
+    if (userRole === "ispOwner") {
+      setStartDate(selectDate);
+
+      if (lastDate.getMonth() + 1 === today.getMonth() + 1) {
+        setEndDate(today);
+      } else {
+        setEndDate(lastDate);
+      }
+
+      filterDate.getMonth() + 1 &&
+        getAllBills(
+          dispatch,
+          ispOwnerId,
+          filterDate.getFullYear(),
+          filterDate.getMonth() + 1,
+          setIsLoading
+        );
+    }
+
     if (userRole === "manager") {
-      allBills.length === 0 &&
-        getAllManagerBills(dispatch, ispOwnerId, setIsLoading);
+      filterDate.getMonth() + 1 &&
+        getAllManagerBills(
+          dispatch,
+          ispOwnerId,
+          filterDate.getFullYear(),
+          filterDate.getMonth() + 1,
+          setIsLoading
+        );
     }
 
     let collectors = [];
@@ -166,6 +197,7 @@ export default function Report() {
     allCollector.map((item) =>
       collectors.push({ name: item.name, user: item.user, id: item.id })
     );
+
     if (collectors.length === allCollector.length) {
       if (userRole === "ispOwner") {
         // const { user, name, id } = manager;
@@ -205,26 +237,7 @@ export default function Report() {
     let collectorUserIdsArr = [];
     collectors.map((item) => collectorUserIdsArr.push(item.user));
     setCollectorIds(collectorUserIdsArr);
-  }, [allCollector, manager]);
-
-  useEffect(() => {
-    setStartDate(selectDate);
-
-    if (lastDate.getMonth() + 1 === today.getMonth() + 1) {
-      setEndDate(today);
-    } else {
-      setEndDate(lastDate);
-    }
-
-    filterDate.getMonth() + 1 &&
-      getAllBills(
-        dispatch,
-        ispOwnerId,
-        filterDate.getFullYear(),
-        filterDate.getMonth() + 1,
-        setIsLoading
-      );
-  }, [filterDate]);
+  }, [allCollector, manager, filterDate]);
 
   useEffect(() => {
     if (allBills) {

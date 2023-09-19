@@ -143,6 +143,7 @@ import {
   getIspOwnerPackageChangeRequest,
   getIspOwnerSupports,
   getNetFeeSupport,
+  getSupportCall,
   getSupportNumbers,
   patchBulletinSuccess,
   postBulletinSuccess,
@@ -151,6 +152,7 @@ import {
   updateIspOwnerSupports,
   updateNetFeeSupport,
   updatePackageChangeRequest,
+  updateSupportNumbers,
 } from "./netFeeSupportSlice";
 import {
   getActiveCustomerSuccess,
@@ -2390,12 +2392,16 @@ export const getAllBills = async (
 export const getAllManagerBills = async (
   dispatch,
   ispOwnerId,
+  year,
+  month,
   setIsLoading
 ) => {
   setIsLoading(true);
 
   try {
-    const res = await apiLink.get(`/bill/get-bill-by-managerId/${ispOwnerId}`);
+    const res = await apiLink.get(
+      `/bill/get-bill-by-managerId/${ispOwnerId}?year=${year}&month=${month}`
+    );
     dispatch(getAllBillsSuccess(res.data));
   } catch (error) {
     toast.error(error.response?.data.message);
@@ -3527,6 +3533,18 @@ export const getNetFeeSupportNumbers = async (dispatch, setIsLoading) => {
 };
 
 // ispOwner number support
+export const getIspOwnerNetFeeSupport = async (dispatch, setIsLoading) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.get(`ispOwner/support/number`);
+    dispatch(getSupportCall(res.data));
+  } catch (error) {
+    toast.error(error.response?.data?.message);
+  }
+  setIsLoading(false);
+};
+
+// ispOwner number support
 export const deleteNetFeeSupportNumbers = async (dispatch, supportId) => {
   try {
     const res = await apiLink.delete(`admin/support/number/${supportId}`);
@@ -3558,6 +3576,16 @@ export const postNetFeeSupportNumbers = async (
     toast.error(error.response?.data?.message);
   }
   setIsLoading(false);
+};
+
+// create ispOwner customr supporter
+export const updateNetFeeSupportNumbers = async (dispatch, data, id) => {
+  try {
+    const res = await apiLink.patch(`admin/support/number/${id}`, data);
+    dispatch(updateSupportNumbers(res.data));
+  } catch (error) {
+    toast.error(error.response?.data?.message);
+  }
 };
 
 // with out mirotik package delete api call

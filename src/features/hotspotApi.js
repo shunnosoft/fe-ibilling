@@ -308,3 +308,27 @@ export const getCustomerRechargeReport = async (
   }
   setIsLoading(false);
 };
+
+// get customer single recharge report
+export const deleteCustomerSingleReport = async (
+  dispatch,
+  customerReport,
+  setCustomerReport,
+  reportId
+) => {
+  try {
+    const res = await apiLink.delete(`/bill/monthlyBill/${reportId}`);
+
+    const updatedState = customerReport.filter((item) => item.id !== reportId);
+    setCustomerReport(updatedState);
+    dispatch(editCustomerSuccess(res.data.customer));
+
+    langMessage(
+      "success",
+      "রিপোর্ট ডিলিট সফল হয়েছে!",
+      "Report Deleted Successfully"
+    );
+  } catch (err) {
+    toast.error(err.response?.data?.message);
+  }
+};

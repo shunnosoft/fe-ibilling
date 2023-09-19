@@ -1,16 +1,22 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { ToastContainer } from "react-bootstrap";
 import Sidebar from "../../../components/admin/sidebar/Sidebar";
 import { FontColor } from "../../../assets/js/theme";
 import useDash from "../../../assets/css/dash.module.css";
-import { ArchiveFill, PersonPlusFill, ThreeDots } from "react-bootstrap-icons";
+import {
+  ArchiveFill,
+  PenFill,
+  PersonPlusFill,
+  ThreeDots,
+} from "react-bootstrap-icons";
 import {
   deleteNetFeeSupportNumbers,
   getNetFeeSupportNumbers,
+  updateNetFeeSupportNumbers,
 } from "../../../features/apiCalls";
 import { useDispatch, useSelector } from "react-redux";
 import CreateSupportNumber from "./modal/CreateSupportNumber";
 import Table from "../../../components/table/Table";
+import { ToastContainer } from "react-toastify";
 
 const NetFeeSupportNumbers = () => {
   const dispatch = useDispatch();
@@ -23,6 +29,9 @@ const NetFeeSupportNumbers = () => {
   // Loading state
   const [isLoading, setIsLoading] = useState(false);
   const [show, setShow] = useState(false);
+
+  // modal open close status
+  const [modalStatus, setModalStatus] = useState(false);
 
   useEffect(() => {
     supportNumbers.length === 0 &&
@@ -38,14 +47,37 @@ const NetFeeSupportNumbers = () => {
     }
   };
 
+  // netFee support online offline handle
+  const supportOnlineHandle = (value) => {
+    const data = { isShow: value.checked };
+    updateNetFeeSupportNumbers(dispatch, data, value.id);
+  };
+
   const columns = useMemo(
     () => [
       {
-        width: "16%",
+        width: "10%",
         Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
+      },
+      {
+        Header: "status",
+        width: "10%",
+        accessor: "isShow",
+        Cell: ({ row: { original } }) => (
+          <div className="form-check form-switch">
+            <input
+              className="form-check-input"
+              type="checkbox"
+              role="switch"
+              id={original.id}
+              checked={original.isShow}
+              onChange={(e) => supportOnlineHandle(e.target)}
+            />
+          </div>
+        ),
       },
       {
         Header: "Name",
@@ -53,23 +85,28 @@ const NetFeeSupportNumbers = () => {
         accessor: "name",
       },
       {
-        Header: "Mobile",
-        width: "20%",
-        accessor: "mobile",
+        Header: "Mobile 1",
+        width: "16%",
+        accessor: "mobile1",
       },
       {
+        Header: "Mobile 2",
         width: "16%",
+        accessor: "mobile2",
+      },
+      {
+        width: "10%",
         Header: "Start Time",
         accessor: "start",
       },
       {
-        width: "16%",
+        width: "10%",
         Header: "End Time",
         accessor: "end",
       },
 
       {
-        width: "16%",
+        width: "12%",
         Header: () => <div className="text-center">Action</div>,
         id: "option",
 
@@ -85,17 +122,19 @@ const NetFeeSupportNumbers = () => {
               />
               <ul className="dropdown-menu" aria-labelledby="customerDrop">
                 {/* <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#supportEdit"
-                  onClick={() => numberEditHandler(original.id)}
+                  onClick={() => {
+                    setSupportId(original.id);
+                    setModalStatus("supportEdit");
+                    setShow(true);
+                  }}
                 >
                   <div className="dropdown-item">
                     <div className="customerAction">
                       <PenFill />
-                      <p className="actionP">{t("edit")}</p>
+                      <p className="actionP">Edit</p>
                     </div>
                   </div>
-                </li>*/}
+                </li> */}
 
                 <li onClick={() => supportNUmberDelete(original.id)}>
                   <div className="dropdown-item">
@@ -131,7 +170,10 @@ const NetFeeSupportNumbers = () => {
                     <PersonPlusFill
                       className="addcutmButton"
                       title="Create Support Number"
-                      onClick={() => setShow(true)}
+                      onClick={() => {
+                        setModalStatus("supportPost");
+                        setShow(true);
+                      }}
                     />
                   </div>
                 </div>
@@ -149,7 +191,9 @@ const NetFeeSupportNumbers = () => {
       </FontColor>
 
       {/* create support number */}
-      <CreateSupportNumber show={show} setShow={setShow} />
+      {modalStatus === "supportPost" && (
+        <CreateSupportNumber show={show} setShow={setShow} />
+      )}
     </>
   );
 };

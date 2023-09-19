@@ -4,6 +4,7 @@ export const netFeeSupportSlice = createSlice({
   name: "netFeeSupport",
   initialState: {
     bulletin: [],
+    supportCall: [],
     netFeeSupport: [],
     ispOwnerSupport: [],
     supportNumbers: [],
@@ -84,6 +85,12 @@ export const netFeeSupportSlice = createSlice({
         (item) => item.id !== action.payload.id
       );
     },
+    updateSupportNumbers: (state, action) => {
+      const changeRequest = state.supportNumbers.findIndex(
+        (item) => item.id === action.payload.id
+      );
+      state.supportNumbers[changeRequest] = action.payload;
+    },
 
     // netFee bulletin
     getBulletinSuccess: (state, action) => {
@@ -102,6 +109,11 @@ export const netFeeSupportSlice = createSlice({
       state.bulletin = state.bulletin.filter(
         (item) => item.id !== action.payload
       );
+    },
+
+    // ispOwner support call number
+    getSupportCall: (state, action) => {
+      state.supportCall = action.payload;
     },
   },
 });
@@ -127,5 +139,7 @@ export const {
   postBulletinSuccess,
   patchBulletinSuccess,
   deleteBulletinSuccess,
+  getSupportCall,
+  updateSupportNumbers,
 } = netFeeSupportSlice.actions;
 export default netFeeSupportSlice.reducer;

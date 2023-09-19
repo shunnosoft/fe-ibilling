@@ -216,6 +216,12 @@ export const ispOwnerPermission = (perm) => {
       label: "Dashboard Probability AmountWith NewCustomer",
       isChecked: perm?.dashboardProbabilityAmountWithNewCustomer,
     },
+    {
+      id: 37,
+      value: "fixedBillingCycle",
+      label: "Fixed BillingCycle Date",
+      isChecked: perm?.fixedBillingCycle,
+    },
   ];
   return permission;
 };

@@ -2,19 +2,23 @@ import React, { useEffect, useRef, useState } from "react";
 import { Modal, ModalBody, ModalHeader, ModalTitle } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import moment from "moment";
-import { useSelector } from "react-redux";
-
-// internal import
-import { getCustomerRechargeReport } from "../../../../features/hotspotApi";
-import TdLoader from "../../../../components/common/TdLoader";
-import FormatNumber from "../../../../components/common/NumberFormat";
+import { useDispatch, useSelector } from "react-redux";
 import { PrinterFill, TrashFill } from "react-bootstrap-icons";
 import ReactToPrint from "react-to-print";
+
+// internal import
+import {
+  deleteCustomerSingleReport,
+  getCustomerRechargeReport,
+} from "../../../../features/hotspotApi";
+import TdLoader from "../../../../components/common/TdLoader";
+import FormatNumber from "../../../../components/common/NumberFormat";
 import CustomerInvoicePrint from "../../../customerInvoice/customerInvoicePrint/CustomerInvoicePrint";
 
 const HotspotCustomerReport = ({ show, setShow, customerData }) => {
   const { t } = useTranslation();
   const billReport = useRef();
+  const dispatch = useDispatch();
 
   // get isp owner data
   const ispOwnerData = useSelector(
@@ -64,6 +68,19 @@ const HotspotCustomerReport = ({ show, setShow, customerData }) => {
     setTimeout(function () {
       document.getElementById("invoicePrint").click();
     }, 100);
+  };
+
+  // single report delete
+  const deleteReport = async (reportId) => {
+    const con = window.confirm(t("deleteAlert"));
+    if (con) {
+      deleteCustomerSingleReport(
+        dispatch,
+        customerReport,
+        setCustomerReport,
+        reportId
+      );
+    }
   };
 
   return (
@@ -268,7 +285,7 @@ const HotspotCustomerReport = ({ show, setShow, customerData }) => {
                             <div
                               className="border-0 bg-transparent me-4"
                               style={{ cursor: "pointer" }}
-                              //   onClick={() => deletReport(val.id)}
+                              onClick={() => deleteReport(val.id)}
                             >
                               <TrashFill
                                 color="#dc3545"

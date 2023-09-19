@@ -69,7 +69,6 @@ const PPPoE = () => {
 
   // user state
   let [allUsers, setAllUsers] = useState(allMikrotikUsers);
-  console.log(allUsers);
 
   // section show state
   const [showSection, setShowSection] = useState("PPPoEPackage");

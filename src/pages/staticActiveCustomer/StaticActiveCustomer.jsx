@@ -83,27 +83,11 @@ const StaticActiveCustomer = () => {
     (state) => state.adminNetFeeSupport?.bulletinPermission
   );
 
-  // select mikrotik handler
-  const mikrotiSelectionHandler = (event) => {
-    setMikrotikId(event.target.value);
-  };
+  // static customer state
+  const [staticCustomers, setStaticCustomers] = useState([]);
 
-  // filter
-  if (filterStatus && filterStatus !== t("sokolCustomer")) {
-    staticActiveCustomer = staticActiveCustomer.filter(
-      (value) => value.complete === JSON.parse(filterStatus)
-    );
-  }
-
-  // reload handler
-  const reloadHandler = () => {
-    getStaticActiveCustomer(dispatch, ispOwnerId, mikrotikId, setIsloading);
-  };
-
-  //mac-binding handler
-  const macBindingCall = (customerId) => {
-    // staticMACBinding(customerId);
-  };
+  // inactive customer state
+  const [inactiveCustomers, setInactiveCustomers] = useState([]);
 
   // api call for get update static customer
   useEffect(() => {
@@ -116,8 +100,54 @@ const StaticActiveCustomer = () => {
   }, [mikrotik]);
 
   useEffect(() => {
+    setStaticCustomers(staticActiveCustomer);
+  }, [staticActiveCustomer]);
+
+  useEffect(() => {
     Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
   }, []);
+
+  // select mikrotik handler
+  const mikrotiSelectionHandler = (event) => {
+    setMikrotikId(event.target.value);
+  };
+
+  // reload handler
+  const reloadHandler = () => {
+    getStaticActiveCustomer(dispatch, ispOwnerId, mikrotikId, setIsloading);
+  };
+
+  // customer filter state
+  const customerStatusFilter = (e) => {
+    let temp;
+
+    if (e.target.value === "online") {
+      temp = staticActiveCustomer.filter((item) => item.complete == true);
+      setInactiveCustomers([]);
+    } else if (e.target.value === "offline") {
+      temp = staticActiveCustomer.filter((item) => item.complete != true);
+      setInactiveCustomers(temp);
+    } else {
+      temp = staticActiveCustomer;
+    }
+
+    setStaticCustomers(temp);
+  };
+
+  // inactive customer filter handler
+  const inactiveCustomerHandler = (e) => {
+    let customer;
+
+    if (e.target.value === "activeOffline") {
+      customer = inactiveCustomers.filter((item) => item.status == "active");
+    } else if (e.target.value === "inactiveOffline") {
+      customer = inactiveCustomers.filter((item) => item.status === "inactive");
+    } else if (e.target.value === "expiredOffline") {
+      customer = inactiveCustomers.filter((item) => item.status === "expired");
+    }
+
+    setStaticCustomers(customer);
+  };
 
   // csv table header
   const activeCustomerForCsvInfoHeader = [
@@ -132,7 +162,7 @@ const StaticActiveCustomer = () => {
   //export customer data
   let activeCustomerCsvInfo = useMemo(
     () =>
-      staticActiveCustomer.map((customer) => {
+      staticCustomers.map((customer) => {
         return {
           name: customer.name,
           address: customer.address,
@@ -142,7 +172,7 @@ const StaticActiveCustomer = () => {
           billingCycle: moment(customer.billingCycle).format("MMM-DD-YYYY"),
         };
       }),
-    [staticActiveCustomer]
+    [staticCustomers]
   );
 
   // mikrotik find in select mikrotik id
@@ -208,7 +238,7 @@ const StaticActiveCustomer = () => {
                   aria-expanded="false"
                 />
 
-                <ul className="dropdown-menu" aria-labelledby="areaDropdown">
+                {/* <ul className="dropdown-menu" aria-labelledby="areaDropdown">
                   {(role === "ispOwner" || role === "manager") &&
                     bpSettings?.hasMikrotik && (
                       <li onClick={() => macBindingCall(original)}>
@@ -220,7 +250,7 @@ const StaticActiveCustomer = () => {
                         </div>
                       </li>
                     )}
-                </ul>
+                </ul> */}
               </div>
             </div>
           );
@@ -329,30 +359,46 @@ const StaticActiveCustomer = () => {
                     <Accordion.Item eventKey="filter">
                       <Accordion.Body>
                         <div className="displayGrid6">
-                          <div className="mikrotik-filter">
+                          <select
+                            id="selectMikrotikOption"
+                            onChange={mikrotiSelectionHandler}
+                            className="form-select mt-0"
+                          >
+                            {mikrotik.map((item) => (
+                              <option value={item.id}>{item.name}</option>
+                            ))}
+                          </select>
+
+                          <select
+                            className="form-select mt-0"
+                            aria-label="Default select example"
+                            onChange={customerStatusFilter}
+                          >
+                            <option selected value="">
+                              {t("sokolCustomer")}
+                            </option>
+                            <option value="online"> {t("online")} </option>
+                            <option value="offline">{t("ofline")}</option>
+                          </select>
+
+                          {inactiveCustomers.length > 0 && (
                             <select
                               id="selectMikrotikOption"
-                              onChange={mikrotiSelectionHandler}
                               className="form-select mt-0"
+                              onChange={inactiveCustomerHandler}
                             >
-                              {mikrotik.map((item) => (
-                                <option value={item.id}>{item.name}</option>
-                              ))}
+                              <option value="">{t("status")}</option>
+                              <option value="activeOffline">
+                                {t("activeOffline")}
+                              </option>
+                              <option value="inactiveOffline">
+                                {t("inactiveOffline")}
+                              </option>
+                              <option value="expiredOffline">
+                                {t("expiredOffline")}
+                              </option>
                             </select>
-                          </div>
-                          <div className="customer-filter ms-4">
-                            <select
-                              className="form-select mt-0"
-                              aria-label="Default select example"
-                              onChange={(event) =>
-                                setFilterStatus(event.target.value)
-                              }
-                            >
-                              <option selected> {t("sokolCustomer")} </option>
-                              <option value={true}> {t("active")} </option>
-                              <option value={false}> {t("in active")} </option>
-                            </select>
-                          </div>
+                          )}
                         </div>
                       </Accordion.Body>
                     </Accordion.Item>
@@ -361,7 +407,7 @@ const StaticActiveCustomer = () => {
                     <div style={{ display: "none" }}>
                       <ActiveCustomerPrint
                         filterData={filterData}
-                        currentCustomers={staticActiveCustomer}
+                        currentCustomers={staticCustomers}
                         ref={componentRef}
                         status="static"
                       />
@@ -370,7 +416,7 @@ const StaticActiveCustomer = () => {
                       <Table
                         isLoading={isLoading}
                         columns={columns}
-                        data={staticActiveCustomer}
+                        data={staticCustomers}
                       />
                     </div>
                   </div>

@@ -13,6 +13,8 @@ import Loader from "../../../../components/common/Loader";
 import { FtextField } from "../../../../components/common/FtextField";
 import { postNetFeeSupportNumbers } from "../../../../features/apiCalls";
 import { useDispatch } from "react-redux";
+import { Plus, Trash } from "react-bootstrap-icons";
+import { error } from "jquery";
 
 const CreateSupportNumber = ({ show, setShow }) => {
   const dispatch = useDispatch();
@@ -20,11 +22,16 @@ const CreateSupportNumber = ({ show, setShow }) => {
   // supports validation
   const supportNumbers = Yup.object({
     name: Yup.string().min(3).required("Write Supporter Name"),
-    mobile: Yup.string()
+    mobile1: Yup.string()
       .matches(/^(01){1}[3456789]{1}(\d){8}$/, "Incorrect Mobile Number")
       .min(11, "Write 11 Digit Mobile Number")
       .max(11, "Over 11 Digit Mobile Number")
       .required("Write Mobile Number"),
+    mobile2: Yup.string()
+      .matches(/^(01){1}[3456789]{1}(\d){8}$/, "Incorrect Mobile Number")
+      .min(11, "Write 11 Digit Mobile Number")
+      .max(11, "Over 11 Digit Mobile Number"),
+
     startTime: Yup.string().required("Select Support Start Time"),
     endTime: Yup.string().required("Select Support End Time"),
   });
@@ -38,9 +45,48 @@ const CreateSupportNumber = ({ show, setShow }) => {
   // modal close handler
   const handleClose = () => setShow(false);
 
+  //mobile number handler
+  // const mobileNumbersHandle = (e) => {
+  //   console.log(e.target.value);
+  // };
+
+  // const add = () => {
+  //   const formField = document.getElementById("formField");
+
+  //   if (formField.childElementCount < 2) {
+  //     let newField = document.createElement("input");
+  //     newField.setAttribute("type", "text");
+  //     newField.setAttribute("name", "mobile");
+  //     newField.setAttribute("class", "form-control mt-2");
+  //     newField.setAttribute("placeholder", "Mobile Number");
+  //     newField.setAttribute("onChange", mobileNumbersHandle);
+
+  //     // const main = document.createElement("div");
+  //     // main.setAttribute("class", "childInput");
+
+  //     // const removeBtn = document.createElement("span");
+  //     // removeBtn.setAttribute("class", "addButton");
+  //     // removeBtn.innerText = "D";
+  //     // removeBtn.addEventListener("click", remove);
+
+  //     formField.appendChild(newField);
+  //     // main.appendChild(newField);
+  //     // main.appendChild(removeBtn);
+  //   }
+  // };
+
+  // function remove() {
+  //   const formField = document.getElementById("formField");
+  //   console.log(formField);
+  //   var input_tags = formField.getElementsByTagName("input");
+  //   if (input_tags.length > 2) {
+  //     formField.childNodes.remove(input_tags[input_tags.length - 1]);
+  //   }
+  // }
+
   // support number submit handler
   const supportNumbersHandler = (values) => {
-    const { name, mobile } = values;
+    const { name, mobile1, mobile2 } = values;
 
     let currStartTime = "";
     if (values.startTime) {
@@ -81,12 +127,13 @@ const CreateSupportNumber = ({ show, setShow }) => {
     const sendingData = {
       name,
       isShow,
-      mobile,
+      mobile1,
+      mobile2,
       start: currStartTime,
       end: currEndTime,
     };
-
     postNetFeeSupportNumbers(dispatch, sendingData, setIsLoading, setShow);
+    setIsShow(false);
   };
 
   return (
@@ -108,7 +155,8 @@ const CreateSupportNumber = ({ show, setShow }) => {
           <Formik
             initialValues={{
               name: "",
-              mobile: "",
+              mobile1: "",
+              mobile2: "",
               startTime: "",
               endTime: "",
             }}
@@ -129,10 +177,12 @@ const CreateSupportNumber = ({ show, setShow }) => {
 
                 <FtextField
                   type="text"
-                  label="Mobile"
-                  name="mobile"
+                  label="Mobile 1"
+                  name="mobile1"
                   validation={"true"}
                 />
+
+                <FtextField type="text" label="Mobile 2" name="mobile2" />
 
                 <FtextField
                   type="time"
