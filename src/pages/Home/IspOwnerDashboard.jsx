@@ -268,7 +268,7 @@ export default function IspOwnerDashboard() {
     if (ispOwnerPermission?.dashboardProbabilityAmountWithNewCustomer) {
       return (
         customerStat.totalProbableAmount -
-        customerStat.totalInactiveAmount +
+        customerStat.totalInactiveAmount -
         customerStat.newCustomerBillCount
       );
     } else {
