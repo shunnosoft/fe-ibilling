@@ -320,8 +320,10 @@ const ResellerCollection = () => {
     setCurrentData(
       collectionReport.filter(
         (item) =>
-          Date.parse(item.createdAt) >= Date.parse(initialFirst) &&
-          Date.parse(item.createdAt) <= Date.parse(initialToday)
+          new Date(moment(item.createdAt).format("YYYY-MM-DD")).getTime() >=
+            new Date(moment(initialFirst).format("YYYY-MM-DD")).getTime() &&
+          new Date(moment(item.createdAt).format("YYYY-MM-DD")).getTime() <=
+            new Date(moment(initialToday).format("YYYY-MM-DD")).getTime()
       )
     );
   }, [collectionReport]);

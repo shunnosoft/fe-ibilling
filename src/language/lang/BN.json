@@ -869,5 +869,6 @@
   "receivedBy": "গ্রহণ করেছে",
   "messageInvoice": "মেসেজ ইনভয়েস",
   "hotspotName": "হটস্পট নাম",
-  "minAmount": "সর্বনিম্ন পরিমাণ ১০০টাকা"
+  "minAmount": "সর্বনিম্ন পরিমাণ ১০০টাকা",
+  "canNotDeletePackage": "আপনি প্যাকেজটি এডিট এবং ডিলিট করতে পারবেন না!"
 }

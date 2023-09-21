@@ -23,6 +23,7 @@ import CustomerSync from "../configMikrotikModals/CustomerSync";
 import Table from "../../../components/table/Table";
 import PPPoEpackageEditModal from "../configMikrotikModals/PPPoEpackageEditModal";
 import { CSVLink } from "react-csv";
+import { toast } from "react-toastify";
 
 const PPPoE = () => {
   const { t } = useTranslation();
@@ -98,17 +99,32 @@ const PPPoE = () => {
     }
   };
 
-  // delete single pppoe package
-  const deleteSinglePPPoEpackage = async (mikrotikID, Id) => {
-    const confirm = window.confirm(t("doWantDeletePackage"));
-    if (confirm) {
-      setIsDeleting(true);
-      const IDs = {
-        mikrotikId: mikrotikID,
-        pppPackageId: Id,
-      };
+  // package update handler
+  const packageUpdateHandle = (value) => {
+    if (value.name === "Block") {
+      toast.warn(t("canNotDeletePackage"));
+      return;
+    } else {
+      setPackageId(value.id);
+    }
+  };
 
-      deletePPPoEpackage(dispatch, IDs, configMikrotik?.name);
+  // delete single pppoe package
+  const deleteSinglePPPoEpackage = async (original, mikrotikID, Id) => {
+    if (original.name === "Block") {
+      toast.warn(t("canNotDeletePackage"));
+      return;
+    } else {
+      const confirm = window.confirm(t("doWantDeletePackage"));
+      if (confirm) {
+        setIsDeleting(true);
+        const IDs = {
+          mikrotikId: mikrotikID,
+          pppPackageId: Id,
+        };
+
+        deletePPPoEpackage(dispatch, IDs, configMikrotik?.name);
+      }
     }
   };
 
@@ -218,7 +234,7 @@ const PPPoE = () => {
                   data-bs-toggle="modal"
                   data-bs-target="#pppoePackageEditModal"
                   onClick={() => {
-                    setPackageId(original.id);
+                    packageUpdateHandle(original);
                   }}
                 >
                   <div className="dropdown-item">
@@ -231,7 +247,11 @@ const PPPoE = () => {
 
                 <li
                   onClick={() => {
-                    deleteSinglePPPoEpackage(original.mikrotik, original.id);
+                    deleteSinglePPPoEpackage(
+                      original,
+                      original.mikrotik,
+                      original.id
+                    );
                   }}
                 >
                   <div className="dropdown-item actionManager">

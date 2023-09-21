@@ -863,5 +863,6 @@
   "receivedBy": "Received By",
   "messageInvoice": "Message Invoice",
   "hotspotName": "Hotspot Name",
-  "minAmount": "Min deposit amount 100Taka"
+  "minAmount": "Min deposit amount 100Taka",
+  "canNotDeletePackage": "You cannot edit and delete the package!"
 }

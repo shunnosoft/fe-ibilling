@@ -44,6 +44,7 @@ import Unpaid from "./dataComponent/Unpaid";
 import Active from "./dataComponent/Active";
 import AllCollector from "./dataComponent/AllCollector";
 import Discount from "./dataComponent/Discount";
+import { getHotspotPackage } from "../../features/hotspotApi";
 
 export default function ManagerDashboard() {
   const { t } = useTranslation();
@@ -135,6 +136,9 @@ export default function ManagerDashboard() {
     getManagerDashboardCardData(dispatch, setLoadingDashboardData, managerId);
 
     getAllPackages(dispatch, ispOwnerId, setPackageLoading);
+
+    // get hotspot package api call
+    getHotspotPackage(dispatch, ispOwnerId, setPackageLoading);
   }, []);
 
   //graph data calculation
