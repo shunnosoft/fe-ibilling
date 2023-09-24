@@ -870,5 +870,10 @@
   "messageInvoice": "মেসেজ ইনভয়েস",
   "hotspotName": "হটস্পট নাম",
   "minAmount": "সর্বনিম্ন পরিমাণ ১০০টাকা",
-  "canNotDeletePackage": "আপনি প্যাকেজটি এডিট এবং ডিলিট করতে পারবেন না!"
+  "canNotDeletePackage": "আপনি প্যাকেজটি এডিট এবং ডিলিট করতে পারবেন না!",
+  "defaultPassword": "ডিফল্ট পাসওয়ার্ড",
+  "manuallyPassword": "ম্যানুয়ালি পাসওয়ার্ড",
+  "inputYourPassword": "ইনপুট নতুন পাসওয়ার্ড",
+  "wrrtePassword": "কমপক্ষে আটটি সংখ্যার সংমিশ্রণ লিখুন",
+  "mobileNumberPassword": "আপনার মোবাইল নম্বর নির্বাচন করুন"
 }

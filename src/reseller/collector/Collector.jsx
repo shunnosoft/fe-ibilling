@@ -53,6 +53,10 @@ export default function Collector() {
   );
   const role = useSelector((state) => state.persistedReducer.auth.role);
 
+  // modal open handler
+  const [modalStatus, setModalStatus] = useState("");
+  const [show, setShow] = useState(false);
+
   // reload handler
   const reloadHandler = () => {
     getCollector(dispatch, userData.id, setIsloading);
@@ -175,6 +179,8 @@ export default function Collector() {
                   data-bs-target="#resetPassword"
                   onClick={() => {
                     setUserId(original.user);
+                    setModalStatus("password");
+                    setShow(true);
                   }}
                 >
                   <div className="dropdown-item">
@@ -251,7 +257,12 @@ export default function Collector() {
               <CollectorPost />
               <CollectorDetails single={singleCollector} />
               <CollectorEdit collectorId={singleCollector} />
-              <PasswordReset resetCustomerId={userId} />
+
+              {/* collector password reset */}
+              {modalStatus === "password" && (
+                <PasswordReset show={show} setShow={setShow} userId={userId} />
+              )}
+
               <SingleMessage
                 single={singleCollector}
                 sendCustomer="collector"

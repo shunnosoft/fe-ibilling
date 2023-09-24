@@ -90,6 +90,10 @@ export default function Reseller() {
   // data loader
   const [dataLoader, setDataLoader] = useState(false);
 
+  // modal open handler
+  const [modalStatus, setModalStatus] = useState("");
+  const [show, setShow] = useState(false);
+
   // reload handler
   const reloadHandler = () => {
     fetchReseller(dispatch, auth.ispOwner.id, setDataLoader);
@@ -347,6 +351,8 @@ export default function Reseller() {
                       onClick={() => {
                         getSpecificReseller(original.id);
                         setUserId(original.user);
+                        setModalStatus("password");
+                        setShow(true);
                       }}
                     >
                       <div className="dropdown-item">
@@ -506,7 +512,9 @@ export default function Reseller() {
       <EditResellerBalance resellerId={resellerId} />
 
       {/* password reset modal */}
-      <PasswordReset resetCustomerId={userId} />
+      {modalStatus === "password" && (
+        <PasswordReset show={show} setShow={setShow} userId={userId} />
+      )}
 
       {/* end modals section*/}
     </>

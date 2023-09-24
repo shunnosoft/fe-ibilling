@@ -198,7 +198,7 @@ const DetailsModal = ({ ownerId }) => {
                         </strong>
                         <strong>
                           <p class="h6 m-2">
-                            Firewall Customer:{" "}
+                            Firewall Customer:
                             {staffs.firewallQueueCustomerCount}
                           </p>
                         </strong>
@@ -245,7 +245,6 @@ const DetailsModal = ({ ownerId }) => {
                                 <td scope="col">Email</td>
                                 <td>
                                   <i className="text-body">
-                                    {" "}
                                     {ownerData?.email}
                                   </i>
                                 </td>
@@ -495,11 +494,8 @@ const DetailsModal = ({ ownerId }) => {
                                 </td>
                               </tr>
                               <tr>
-                                <td scope="col">
-                                  Registration Payment Status{" "}
-                                </td>
+                                <td scope="col">Registration Payment Status</td>
                                 <td>
-                                  {" "}
                                   <i className="text-body">
                                     <span
                                       class={`badge bg-${
@@ -585,63 +581,59 @@ const DetailsModal = ({ ownerId }) => {
                         </div>
                       ) : (
                         <div className="staffs d-flex justify-content-evenly">
-                          {staffs?.manager ? (
+                          {staffs.manager?.length ? (
                             <div className="manager">
                               <h5 className="text-primary">Manager</h5>
-                              <h6 className="mt-3">
-                                <Person /> {staffs.manager.name}
-                              </h6>
-
-                              <h6>
-                                <Telephone /> {staffs.manager.mobile}
-                                {"  "}
-                                <PenFill
-                                  className="text-primary"
-                                  onClick={() =>
-                                    editHandler(staffs?.manager.id)
-                                  }
-                                />{" "}
-                                <KeyFill
-                                  className="text-danger"
-                                  size={25}
-                                  onClick={() =>
-                                    resetPassHandler(staffs.manager.user)
-                                  }
-                                />
-                              </h6>
-
-                              {editToggle === staffs?.manager.id && (
+                              {staffs.manager?.map((val) => (
                                 <>
+                                  <h6 className="mt-3">
+                                    <Person /> {val.name}
+                                  </h6>
+
                                   <h6>
-                                    <input
-                                      type="number"
-                                      className="w-75 me-2"
-                                      onChange={(e) =>
-                                        setEditNumber(e.target.value)
-                                      }
+                                    <Telephone /> {val.mobile}
+                                    <PenFill
+                                      className="text-primary"
+                                      onClick={() => editHandler(val.id)}
+                                    />
+                                    <KeyFill
+                                      className="text-danger"
+                                      size={25}
+                                      onClick={() => resetPassHandler(val.user)}
                                     />
                                   </h6>
-                                  <h6>
-                                    <button
-                                      onClick={() =>
-                                        editNumberHandler(
-                                          staffs.manager.id,
-                                          "manager"
-                                        )
-                                      }
-                                      class="btn btn-primary btn-sm py-0 me-3"
-                                    >
-                                      Submit
-                                    </button>
-                                    <button
-                                      class="btn btn-primary btn-sm py-0"
-                                      onClick={() => setEditToggle("")}
-                                    >
-                                      Cancel
-                                    </button>
-                                  </h6>
+
+                                  {editToggle === val.id && (
+                                    <>
+                                      <h6>
+                                        <input
+                                          type="number"
+                                          className="w-75 me-2"
+                                          onChange={(e) =>
+                                            setEditNumber(e.target.value)
+                                          }
+                                        />
+                                      </h6>
+                                      <h6>
+                                        <button
+                                          onClick={() =>
+                                            editNumberHandler(val.id, "manager")
+                                          }
+                                          class="btn btn-primary btn-sm py-0 me-3"
+                                        >
+                                          Submit
+                                        </button>
+                                        <button
+                                          class="btn btn-primary btn-sm py-0"
+                                          onClick={() => setEditToggle("")}
+                                        >
+                                          Cancel
+                                        </button>
+                                      </h6>
+                                    </>
+                                  )}
                                 </>
-                              )}
+                              ))}
                             </div>
                           ) : (
                             <div>Manager not found !</div>
@@ -660,14 +652,11 @@ const DetailsModal = ({ ownerId }) => {
                                         <Person /> {item?.name}
                                       </h6>
                                       <h6>
-                                        {" "}
                                         <Telephone /> {item?.mobile}
-                                        {"  "}
                                         <PenFill
                                           className="text-primary"
                                           onClick={() => editHandler(item?.id)}
                                         />
-                                        {"  "}
                                         <KeyFill
                                           className="text-danger"
                                           size={25}
@@ -726,16 +715,13 @@ const DetailsModal = ({ ownerId }) => {
                                           <Person /> {item?.name}
                                         </h6>
                                         <h6>
-                                          {" "}
                                           <Telephone /> {item?.mobile}
-                                          {"  "}
                                           <PenFill
                                             className="text-primary"
                                             onClick={() =>
                                               editHandler(item?.id)
                                             }
                                           />
-                                          {"  "}
                                           <KeyFill
                                             className="text-danger"
                                             size={25}
@@ -798,11 +784,9 @@ const DetailsModal = ({ ownerId }) => {
                                       <tr>
                                         <td key={key} className="mt-3">
                                           <Person /> {item?.name}
-                                          {"  "}
                                         </td>
                                         <td>
                                           <Telephone /> {item?.mobile}
-                                          {"  "}
                                           <PenFill
                                             className="text-primary"
                                             onClick={() => editHandler(item.id)}
@@ -871,7 +855,7 @@ const DetailsModal = ({ ownerId }) => {
                       {subAreas && subAreas.length > 0 ? (
                         <>
                           <h4 type="button" class="btn btn-primary">
-                            Total Sub Area{" "}
+                            Total Sub Area
                             <span class="badge bg-secondary">
                               {subAreas.length}
                             </span>
@@ -932,7 +916,6 @@ const DetailsModal = ({ ownerId }) => {
                                   <td>{item?.host}</td>
                                   <td>{item?.port}</td>
                                   <td>
-                                    {" "}
                                     <button
                                       title="checkConnection"
                                       style={{ padding: "0.10rem .5rem" }}

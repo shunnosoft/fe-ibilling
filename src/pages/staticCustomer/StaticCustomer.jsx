@@ -962,6 +962,8 @@ export default function Customer() {
                     data-bs-target="#resetPassword"
                     onClick={() => {
                       setUserId(original.user);
+                      setModalStatus("password");
+                      setShow(true);
                     }}
                   >
                     <div className="dropdown-item">
@@ -1677,7 +1679,10 @@ export default function Customer() {
               <TransferToReseller customerId={singleCustomer} />
 
               {/* password reset modal */}
-              <PasswordReset resetCustomerId={userId} />
+              {modalStatus === "password" && (
+                <PasswordReset show={show} setShow={setShow} userId={userId} />
+              )}
+
               {/* bulk Modal */}
 
               {/* static customer create invoice */}

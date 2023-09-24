@@ -864,5 +864,10 @@
   "messageInvoice": "Message Invoice",
   "hotspotName": "Hotspot Name",
   "minAmount": "Min deposit amount 100Taka",
-  "canNotDeletePackage": "You cannot edit and delete the package!"
+  "canNotDeletePackage": "You cannot edit and delete the package!",
+  "defaultPassword": "Default Password",
+  "manuallyPassword": "Manually Password",
+  "inputYourPassword": "Input new Password",
+  "wrrtePassword": "Enter a combination of at least eight numbers",
+  "mobileNumberPassword": "Choose your Mobile umber"
 }

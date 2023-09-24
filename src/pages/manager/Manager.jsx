@@ -41,6 +41,10 @@ export default function Manager() {
   const [userId, setUserId] = useState();
   const [singleManager, setSingleManager] = useState();
 
+  // modal open handler
+  const [modalStatus, setModalStatus] = useState("");
+  const [show, setShow] = useState(false);
+
   //get all managers
   const manager = useSelector((state) => state.manager?.manager);
 
@@ -198,6 +202,8 @@ export default function Manager() {
                   data-bs-target="#resetPassword"
                   onClick={() => {
                     setUserId(original.user);
+                    setModalStatus("password");
+                    setShow(true);
                   }}
                 >
                   <div className="dropdown-item">
@@ -254,7 +260,12 @@ export default function Manager() {
               <ManagerPost />
               <ManagerDetails managerId={singleManager} />
               <SingleMessage single={singleManager} sendCustomer="manager" />
-              <PasswordReset resetCustomerId={userId} />
+
+              {/* collector password reset */}
+              {modalStatus === "password" && (
+                <PasswordReset show={show} setShow={setShow} userId={userId} />
+              )}
+
               <ManagerEdit managerId={singleManager} />
               {/* modal End */}
               <FourGround>

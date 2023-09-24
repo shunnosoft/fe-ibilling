@@ -61,12 +61,13 @@ export default function Home() {
 
   // loading
   const [isLoading, setIsLoading] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
-  const [isPermission, setIsPermission] = useState(false);
-  const [isShow, setIsShow] = useState(false);
 
   // clint data state
   const [clintData, setClintData] = useState([]);
+
+  // modal handle status
+  const [modalStatus, setModalStatus] = useState("");
+  const [show, setShow] = useState(false);
 
   // set owner at local state
   const [ownerId, setOwnerId] = useState();
@@ -422,7 +423,8 @@ export default function Home() {
                   <li
                     onClick={() => {
                       setPermissionId(original?.id);
-                      setIsPermission(true);
+                      setModalStatus("permission");
+                      setShow(true);
                     }}
                   >
                     <div className="dropdown-item">
@@ -468,7 +470,8 @@ export default function Home() {
                     onClick={() => {
                       setOwnerId(original?.id);
                       setCompanyName(original?.company);
-                      setIsOpen(true);
+                      setModalStatus("invoice");
+                      setShow(true);
                     }}
                   >
                     <div className="dropdown-item">
@@ -482,7 +485,8 @@ export default function Home() {
                     onClick={() => {
                       setIspOwnerId(original?.id);
                       setCompanyName(original?.company);
-                      setIsShow(true);
+                      setModalStatus("multiple");
+                      setShow(true);
                     }}
                   >
                     <div className="dropdown-item">
@@ -586,6 +590,8 @@ export default function Home() {
                     data-bs-target="#resetPassword"
                     onClick={() => {
                       setUserId(original.user);
+                      setModalStatus("password");
+                      setShow(true);
                     }}
                   >
                     <div className="dropdown-item">
@@ -820,32 +826,48 @@ export default function Home() {
                 data={clintData}
               ></Table>
 
-              <Permissions
-                ownerId={permissionId}
-                isPermission={isPermission}
-                setIsPermission={setIsPermission}
-              />
+              {/* owner permissions  */}
+              {modalStatus === "permission" && (
+                <Permissions
+                  ownerId={permissionId}
+                  isPermission={show}
+                  setIsPermission={setShow}
+                />
+              )}
+
               <EditModal ownerId={ownerId} />
               <DetailsModal ownerId={ownerId} />
               <AddProprietorModal ownerId={ownerId} />
-              <Invoices
-                ownerId={ownerId}
-                companyName={companyName}
-                isOpen={isOpen}
-                setIsOpen={setIsOpen}
-              />
-              <IspOwnerCustomerUpdate
-                isShow={isShow}
-                setIsShow={setIsShow}
-                ispOwnerId={ispOwnerId}
-                companyName={companyName}
-              />
+
+              {/* customer invoice list */}
+              {modalStatus === "invoice" && (
+                <Invoices
+                  ownerId={ownerId}
+                  companyName={companyName}
+                  isOpen={show}
+                  setIsOpen={setShow}
+                />
+              )}
+
+              {/* owner multiple customer update */}
+              {modalStatus === "multiple" && (
+                <IspOwnerCustomerUpdate
+                  isShow={show}
+                  setIsShow={setShow}
+                  ispOwnerId={ispOwnerId}
+                  companyName={companyName}
+                />
+              )}
+
               <Note ownerId={ownerId} companyName={companyName} />
               <FileUpload ownerID={ownerId} mikrotikStatus={mikrotikStatus} />
               <DeleteByMobileModal />
 
               {/* password reset modal */}
-              <PasswordReset resetCustomerId={userId} />
+              {modalStatus === "password" && (
+                <PasswordReset show={show} setShow={setShow} userId={userId} />
+              )}
+
               {/* Execute billing cycle ispOwner */}
             </FontColor>
           </div>

@@ -96,6 +96,10 @@ const PPPOECustomer = () => {
   const { t } = useTranslation();
   const componentRef = useRef();
 
+  // current date
+  let date = new Date();
+  let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+
   // get all customer
   const customers = useSelector((state) => state.customer.customer);
 
@@ -228,7 +232,8 @@ const PPPOECustomer = () => {
     package: "",
     mikrotik: "",
     freeUser: "",
-    filterDate: null,
+    startDate: firstDay,
+    endDate: new Date(),
     dayFilter: "",
     changedPromiseDate: "",
     connection: "",
@@ -357,7 +362,8 @@ const PPPOECustomer = () => {
         mikrotik,
         paymentStatus,
         freeUser,
-        filterDate,
+        startDate,
+        endDate,
         dayFilter,
         changedPromiseDate,
         connection,
@@ -382,8 +388,12 @@ const PPPOECustomer = () => {
         moment(new Date()).format("YYYY-MM-DD")
       ).getTime();
 
-      const filterDateData = new Date(
-        moment(filterOptions.filterDate).format("YYYY-MM-DD")
+      const filterStartData = new Date(
+        moment(filterOptions.startDate).format("YYYY-MM-DD")
+      ).getTime();
+
+      const filterEndData = new Date(
+        moment(filterOptions.endDate).format("YYYY-MM-DD")
       ).getTime();
 
       let getArea = [];
@@ -434,7 +444,10 @@ const PPPOECustomer = () => {
         package: filterOptions.package
           ? c.mikrotikPackage === filterOptions.package
           : true,
-        filterDate: filterDate ? billingCycle == filterDateData : true,
+        filterDate:
+          startDate && endDate
+            ? filterStartData <= billingCycle && filterEndData >= billingCycle
+            : true,
         dayFilter: dayFilter
           ? moment(c.billingCycle).diff(moment(), "days") ===
             Number(filterOptions.dayFilter)
@@ -856,10 +869,10 @@ const PPPOECustomer = () => {
 
                 {role === "ispOwner" && original.mobile && (
                   <li
-                    data-bs-toggle="modal"
-                    data-bs-target="#resetPassword"
                     onClick={() => {
                       setUserId(original.user);
+                      setModalStatus("passwordReset");
+                      setShowModal(true);
                     }}
                   >
                     <div className="dropdown-item">
@@ -1453,14 +1466,29 @@ const PPPOECustomer = () => {
                             )}
 
                             {/* date picker for filter billing cycle */}
-                            <div className="d-flex justify-content-end align-items-end h-76">
+                            <div>
                               <DatePicker
                                 className="form-control mt-0"
-                                selected={filterOptions.filterDate}
+                                selected={filterOptions.startDate}
                                 onChange={(date) =>
                                   setFilterOption({
                                     ...filterOptions,
-                                    filterDate: date,
+                                    startDate: date,
+                                  })
+                                }
+                                dateFormat="dd/MM/yyyy"
+                                placeholderText={t("selectDate")}
+                              />
+                            </div>
+
+                            <div>
+                              <DatePicker
+                                className="form-control mt-0"
+                                selected={filterOptions.endDate}
+                                onChange={(date) =>
+                                  setFilterOption({
+                                    ...filterOptions,
+                                    endDate: date,
                                   })
                                 }
                                 dateFormat="dd/MM/yyyy"
@@ -1589,7 +1617,13 @@ const PPPOECustomer = () => {
       <TransferToReseller customerId={customerId} />
 
       {/* password reset modal */}
-      <PasswordReset resetCustomerId={userId} />
+      {modalStatus === "passwordReset" && (
+        <PasswordReset
+          show={showModal}
+          setShow={setShowModal}
+          userId={userId}
+        />
+      )}
 
       {/* <PasswordReset resetCustomerId={userId} /> */}
       {/* <WithValue resetCustomerId={userId} /> */}
