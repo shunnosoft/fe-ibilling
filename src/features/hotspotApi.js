@@ -91,20 +91,23 @@ export const syncHotspotCustomer = async (
 };
 
 // add hotspot customer
-export const addHotspotCustomer = async (dispatch, data, setIsLoading) => {
+export const addHotspotCustomer = async (
+  dispatch,
+  data,
+  setIsLoading,
+  setShow
+) => {
   setIsLoading(true);
   try {
     const res = await apiLink.post(`hotspot/`, data);
     dispatch(addCustomerSuccess(res.data.newCustomer));
-    document.querySelector("#AddHotspotCustomer").click();
-
+    setShow(false);
     langMessage(
       "success",
       "গ্রাহক এড সফল হয়েছে!",
       "Customer Added Successfully"
     );
   } catch (err) {
-    console.log(err.response?.data);
     toast.error(err.response?.data?.message);
   }
   setIsLoading(false);
@@ -115,20 +118,20 @@ export const editHotspotCustomer = async (
   dispatch,
   data,
   customerId,
-  setIsLoading
+  setIsLoading,
+  setShow
 ) => {
   setIsLoading(true);
   try {
     const res = await apiLink.patch(`hotspot/${customerId}`, data);
     dispatch(editCustomerSuccess(res.data.customer));
-    document.querySelector("#EditHotspotCustomer").click();
+    setShow(false);
     langMessage(
       "success",
       "গ্রাহক এডিট সফল হয়েছে!",
       "Customer Edited Successfully"
     );
   } catch (err) {
-    console.log(err.response?.data);
     toast.error(err.response?.data?.message);
   }
   setIsLoading(false);

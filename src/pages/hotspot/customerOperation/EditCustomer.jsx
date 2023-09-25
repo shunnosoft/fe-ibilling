@@ -17,8 +17,15 @@ import {
 } from "../../../features/hotspotApi";
 import Loader from "../../../components/common/Loader";
 import SelectField from "../../../components/common/SelectField";
+import {
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  ModalTitle,
+} from "react-bootstrap";
 
-const EditCustomer = ({ customerId }) => {
+const EditCustomer = ({ show, setShow, customerId }) => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
@@ -77,8 +84,17 @@ const EditCustomer = ({ customerId }) => {
   // get all subarea
   const subAreas = useSelector((state) => state.area?.subArea);
 
+  // loading state
+  const [hotspotPackageLoading, setHotspotPackageLoading] = useState(false);
+  const [mikrotikLoading, setMikrotikLoading] = useState(false);
+  const [areaLoading, setAreaLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
   // bill date state
   const [billDate, setBillDate] = useState(new Date());
+
+  // customer select date state
+  const [dayToday, setDayToday] = useState("");
 
   // connection date state
   const [promiseDate, setPromiseDate] = useState();
@@ -89,7 +105,10 @@ const EditCustomer = ({ customerId }) => {
   // package id state
   const [packageId, setPackageId] = useState();
 
-  // rate state
+  // customer package state
+  const [packageInfo, setPackageInfo] = useState();
+
+  //customer package rate state
   const [packageRate, setPackageRate] = useState();
 
   // area id state
@@ -102,12 +121,6 @@ const EditCustomer = ({ customerId }) => {
   const [subArea, setSubArea] = useState();
 
   const [slectSubArea, setSelectSubArea] = useState([]);
-
-  // loading state
-  const [hotspotPackageLoading, setHotspotPackageLoading] = useState(false);
-  const [mikrotikLoading, setMikrotikLoading] = useState(false);
-  const [areaLoading, setAreaLoading] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
   // customer status change
   const [status, setStatus] = useState("");
@@ -128,11 +141,25 @@ const EditCustomer = ({ customerId }) => {
     // set mikrotikId into state
     setMikrotikId(editCustomer?.mikrotik);
 
+    // customer day length
+    if (editCustomer) setDayToday(editCustomer?.dayLength);
+
     // set billing cycle
     if (editCustomer) setBillDate(new Date(editCustomer?.billingCycle));
 
     // set connection Date
     if (editCustomer) setPromiseDate(new Date(editCustomer?.promiseDate));
+
+    // set customer package info
+    if (editCustomer) {
+      const customerPackage = hotspotPackage?.find(
+        (val) => val.id === editCustomer?.hotspotPackage
+      );
+      setPackageInfo(customerPackage);
+    }
+
+    // set customer package rate
+    if (editCustomer) setPackageRate(editCustomer?.monthlyFee);
 
     // set package id
     if (editCustomer) setPackageId(editCustomer?.hotspotPackage);
@@ -170,13 +197,16 @@ const EditCustomer = ({ customerId }) => {
     setSelectSubArea(initialSubAreas);
   }, [area, editCustomer, storeSubArea]);
 
+  // modal close handler
+  const handleClose = () => setShow(false);
+
   // package handler
   const selectPackage = (event) => {
     setPackageId(event.target.value);
     const filterPackageRate = hotspotPackage.find(
-      (item) => item.id === packageId
+      (item) => item.id === event.target.value
     );
-    setPackageRate(filterPackageRate);
+    setPackageInfo(filterPackageRate);
   };
 
   // subarea handler
@@ -189,6 +219,27 @@ const EditCustomer = ({ customerId }) => {
       setSubAreaId(allSub[0].id);
     }
   };
+
+  // customer daily package rate handle
+  useEffect(() => {
+    const dt = new Date();
+    const getTotalMonthDate = new Date(
+      dt.getFullYear(),
+      dt.getMonth() + 1,
+      0
+    ).getDate();
+
+    if (dayToday === getTotalMonthDate) {
+      setPackageRate(packageInfo?.rate);
+    } else {
+      const cusotmerPerDayBill = Math.ceil(
+        packageInfo?.rate / getTotalMonthDate
+      );
+
+      const dayTodayFee = cusotmerPerDayBill * dayToday;
+      setPackageRate(dayTodayFee);
+    }
+  }, [dayToday, packageInfo]);
 
   // handle Submit
   const handleSubmit = (data) => {
@@ -222,6 +273,7 @@ const EditCustomer = ({ customerId }) => {
       promiseDate: promiseDate?.toISOString(),
       billingCycle: billDate?.toISOString(),
       balance: 0,
+      dayLength: Number(dayToday),
       monthlyFee: data?.monthlyFee,
       name: data?.name,
       nid: data?.nid,
@@ -233,372 +285,364 @@ const EditCustomer = ({ customerId }) => {
       },
       status: status,
     };
-    editHotspotCustomer(dispatch, sendingData, customerId, setIsLoading);
+    editHotspotCustomer(
+      dispatch,
+      sendingData,
+      customerId,
+      setIsLoading,
+      setShow
+    );
   };
 
   return (
-    <div
-      className="modal fade modal-dialog-scrollable "
-      id="EditHotspotCustomer"
-      tabIndex="-1"
-      aria-labelledby="exampleModalLabel"
-      aria-hidden="true"
-    >
-      <div className="modal-dialog modal-xl">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h5 className="modal-title" id="exampleModalLabel">
+    <>
+      <Modal show={show} onHide={handleClose} backdrop="static" size="xl">
+        <ModalHeader closeButton>
+          <ModalTitle>
+            <h5 className="modal-title text-secondary">
               {t("updateCustomer")}
             </h5>
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div className="modal-body">
-            <div className="modal-body p-3">
-              {/* model body here */}
-              <Formik
-                initialValues={{
-                  name: editCustomer?.name || "",
-                  mobile: editCustomer?.mobile || "",
-                  address: editCustomer?.address || "",
-                  email: editCustomer?.email || "",
-                  nid: editCustomer?.nid || "",
-                  monthlyFee:
-                    editCustomer?.monthlyFee || packageRate?.rate || 0,
-                  hotspotName: editCustomer?.hotspot.name || "",
-                  hotspotProfile:
-                    editCustomer?.hotspot.profile || packageRate?.name || "",
-                  hotspotPassword: editCustomer?.hotspot.password || "",
-                  hotspotComment: editCustomer?.hotspot.comment || "",
-                  balance: editCustomer?.balance || 0,
-                  billPayType: editCustomer?.billPayType || "",
-                }}
-                validationSchema={customerValidator}
-                onSubmit={(values) => handleSubmit(values)}
-                enableReinitialize
-              >
-                {(formik) => (
-                  <Form>
-                    <div className="mikrotikSection">
-                      {bpSettings?.hasMikrotik && (
-                        <div>
-                          <label className="form-control-label changeLabelFontColor">
-                            {t("selectMikrotik")}{" "}
-                            <span className="text-danger">*</span>
-                          </label>
-                          <select
-                            className="form-select mw-100 mt-0"
-                            aria-label="Default select example"
-                            onChange={(event) =>
-                              setMikrotikId(event.target.value)
-                            }
-                          >
-                            <option value="">...</option>
-                            {mikrotik.length &&
-                              mikrotik?.map((val, key) => (
-                                <option
-                                  key={key}
-                                  value={val.id}
-                                  selected={editCustomer?.mikrotik === val.id}
-                                >
-                                  {val.name}
-                                </option>
-                              ))}
-                          </select>
-                        </div>
-                      )}
+          </ModalTitle>
+        </ModalHeader>
+        <ModalBody>
+          <Formik
+            initialValues={{
+              dayLength: dayToday,
+              name: editCustomer?.name || "",
+              mobile: editCustomer?.mobile || "",
+              address: editCustomer?.address || "",
+              email: editCustomer?.email || "",
+              nid: editCustomer?.nid || "",
+              monthlyFee: packageRate,
+              hotspotName: editCustomer?.hotspot.name || "",
+              hotspotProfile:
+                editCustomer?.hotspot.profile || packageInfo?.name || "",
+              hotspotPassword: editCustomer?.hotspot.password || "",
+              hotspotComment: editCustomer?.hotspot.comment || "",
+              balance: editCustomer?.balance || 0,
+              billPayType: editCustomer?.billPayType || "",
+            }}
+            validationSchema={customerValidator}
+            onSubmit={(values) => handleSubmit(values)}
+            enableReinitialize
+          >
+            {() => (
+              <Form id="customerEdit">
+                <div className="displayGrid3">
+                  <FtextField
+                    type="number"
+                    label={t("dayLength")}
+                    name="dayLength"
+                    disabled={userRole !== "ispOwner"}
+                    validation={"true"}
+                    onChange={(e) => setDayToday(e.target.value)}
+                  />
 
-                      {/* pppoe package */}
-                      <div>
-                        <label className="form-control-label changeLabelFontColor">
-                          {t("selectPackage")}{" "}
-                          <span className="text-danger">*</span>
-                        </label>
-                        <select
-                          className="form-select mb-3 mw-100 mt-0"
-                          aria-label="Default select example"
-                          onChange={(event) => selectPackage(event)}
-                        >
-                          <option value="">...</option>
-                          {hotspotPackage &&
-                            hotspotPackage?.map((val, key) => (
-                              <>
-                                {val.mikrotik === mikrotikId && (
-                                  <option
-                                    key={key}
-                                    value={val.id}
-                                    selected={
-                                      editCustomer?.hotspotPackage === val.id
-                                    }
-                                  >
-                                    {val.name}
-                                  </option>
-                                )}
-                              </>
-                            ))}
-                        </select>
-                      </div>
-                      <FtextField
-                        type="number"
-                        label={t("monthFee")}
-                        name="monthlyFee"
-                        min={0}
-                        disabled={!(packageId && userRole === "ispOwner")}
-                        validation={"true"}
-                      />
-                      {!bpSettings?.hasMikrotik && (
-                        <FtextField
-                          type="number"
-                          label={t("prevDue")}
-                          name="balance"
-                        />
-                      )}
-                    </div>
-
-                    <div className="pppoeSection2">
-                      <FtextField
-                        type="text"
-                        label={t("hotspotName")}
-                        name="hotspotName"
-                        disabled={!packageId}
-                        validation={"true"}
-                      />
-                      <FtextField
-                        type="text"
-                        label={t("password")}
-                        name="hotspotPassword"
-                        disabled={!packageId}
-                        validation={"true"}
-                      />
-                      <FtextField
-                        type="text"
-                        label={t("comment")}
-                        name="hotspotComment"
-                        disabled={!packageId}
-                      />
-                    </div>
-
-                    <div className="displayGrid3">
-                      <div>
-                        <label className="form-control-label changeLabelFontColor">
-                          {t("selectArea")}{" "}
-                          <span className="text-danger">*</span>
-                        </label>
-                        <select
-                          className="form-select mw-100 mt-0"
-                          aria-label="Default select example"
-                          onChange={(event) => selectArea(event.target.value)}
-                          disabled={!packageId}
-                        >
-                          <option value="">...</option>
-                          {area.length &&
-                            area?.map((val, key) => (
-                              <option
-                                key={key}
-                                value={val.id}
-                                selected={val.id === areaId}
-                              >
-                                {val.name}
-                              </option>
-                            ))}
-                        </select>
-                      </div>
-
-                      <div>
-                        <label className="form-control-label changeLabelFontColor">
-                          {t("selectSubArea")}{" "}
-                          <span className="text-danger">*</span>
-                        </label>
-                        <select
-                          className="form-select mw-100 mt-0"
-                          aria-label="Default select example"
-                          name="subArea"
-                          id="subAreaIdHotspot"
-                          onChange={(event) => setSubAreaId(event.target.value)}
-                          disabled={!packageId}
-                        >
-                          <option value="">...</option>
-                          {subArea?.subAreas &&
-                            subArea.subAreas.map((val, key) => (
-                              <option
-                                key={key}
-                                value={val.id}
-                                selected={val.id === editCustomer?.subArea}
-                              >
-                                {val.name}
-                              </option>
-                            ))}
-                        </select>
-                      </div>
-
-                      <FtextField
-                        type="text"
-                        label={t("NIDno")}
-                        name="nid"
-                        disabled={!packageId}
-                      />
-                    </div>
-
-                    <div className="displayGrid3">
-                      <FtextField
-                        type="text"
-                        label={t("name")}
-                        name="name"
-                        disabled={!packageId}
-                        validation={"true"}
-                      />
-                      <FtextField
-                        type="text"
-                        label={t("mobile")}
-                        name="mobile"
-                        disabled={!packageId}
-                        validation={"true"}
-                      />
-                      <FtextField
-                        type="text"
-                        label={t("address")}
-                        name="address"
-                        disabled={!packageId}
-                      />
-                    </div>
-                    <div className="displayGrid3">
-                      <FtextField
-                        type="text"
-                        label={t("email")}
-                        name="email"
-                        disabled={!packageId}
-                      />
-
-                      <div className="billCycle">
-                        <label className="form-control-label changeLabelFontColor">
-                          {t("billingCycle")}{" "}
-                          <span className="text-danger">*</span>
-                        </label>
-
-                        <ReactDatePicker
-                          className="form-control mw-100"
-                          selected={billDate}
-                          onChange={(date) => setBillDate(date)}
-                          dateFormat="MMM dd yyyy hh:mm"
-                          showTimeSelect
-                          placeholderText={t("selectBillDate")}
-                          disabled={!(packageId && userRole === "ispOwner")}
-                        />
-                      </div>
-
-                      <div className="billCycle">
-                        <div>
-                          <label className="form-control-label changeLabelFontColor">
-                            {t("promiseDate")}
-                          </label>
-                          <ReactDatePicker
-                            className="form-control mw-100"
-                            selected={promiseDate}
-                            onChange={(date) => setPromiseDate(date)}
-                            dateFormat="MM/dd/yyyy"
-                            placeholderText={t("selectDate")}
-                            disabled={!packageId}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <div className="displayGrid3">
-                      <SelectField
-                        label={t("customerBillType")}
-                        id="exampleSelect"
-                        name="billPayType"
+                  {bpSettings?.hasMikrotik && (
+                    <div>
+                      <label className="form-control-label changeLabelFontColor">
+                        {t("selectMikrotik")}
+                        <span className="text-danger">*</span>
+                      </label>
+                      <select
                         className="form-select mw-100 mt-0"
+                        aria-label="Default select example"
+                        onChange={(event) => setMikrotikId(event.target.value)}
                       >
-                        <option value="">{t("customerBillType")}</option>
-
-                        <option value="prepaid">{t("prepaid")}</option>
-                        <option value="postpaid">{t("postPaid")}</option>
-                      </SelectField>
-
-                      <div className="pppoeStatus">
-                        <p className="p-0 mt-2">{t("status")}</p>
-                        <div className="form-check form-check-inline mt-0">
-                          <input
-                            className="form-check-input"
-                            type="radio"
-                            value={"active"}
-                            id="inlineRadio1"
-                            onChange={(e) => setStatus(e.target.value)}
-                            checked={status === "active"}
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor="inlineRadio1"
-                          >
-                            {t("active")}
-                          </label>
-                        </div>
-                        <div className="form-check form-check-inline">
-                          <input
-                            className="form-check-input"
-                            type="radio"
-                            id="inlineRadio2"
-                            value={"inactive"}
-                            onChange={(e) => setStatus(e.target.value)}
-                            checked={status === "inactive"}
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor="inlineRadio2"
-                          >
-                            {t("in active")}
-                          </label>
-                        </div>
-
-                        {editCustomer?.status === "expired" && (
-                          <div className="form-check form-check-inline">
-                            <input
-                              className="form-check-input"
-                              type="radio"
-                              id="inlineRadio3"
-                              disabled
-                              checked={status === "expired"}
-                            />
-                            <label
-                              className="form-check-label"
-                              htmlFor="inlineRadio3"
+                        <option value="">...</option>
+                        {mikrotik.length &&
+                          mikrotik?.map((val, key) => (
+                            <option
+                              key={key}
+                              value={val.id}
+                              selected={editCustomer?.mikrotik === val.id}
                             >
-                              {t("expired")}
-                            </label>
-                          </div>
-                        )}
-                      </div>
+                              {val.name}
+                            </option>
+                          ))}
+                      </select>
+                    </div>
+                  )}
+
+                  <div>
+                    <label className="form-control-label changeLabelFontColor">
+                      {t("selectPackage")}
+                      <span className="text-danger">*</span>
+                    </label>
+                    <select
+                      className="form-select mw-100 mt-0"
+                      aria-label="Default select example"
+                      onChange={(event) => selectPackage(event)}
+                    >
+                      <option value="">...</option>
+                      {hotspotPackage &&
+                        hotspotPackage?.map((val, key) => (
+                          <>
+                            {val.mikrotik === mikrotikId && (
+                              <option
+                                key={key}
+                                value={val.id}
+                                selected={
+                                  editCustomer?.hotspotPackage === val.id
+                                }
+                              >
+                                {val.name}
+                              </option>
+                            )}
+                          </>
+                        ))}
+                    </select>
+                  </div>
+
+                  <FtextField
+                    type="number"
+                    label={t("monthFee")}
+                    name="monthlyFee"
+                    min={0}
+                    disabled={!(packageId && userRole === "ispOwner")}
+                    validation={"true"}
+                  />
+
+                  {!bpSettings?.hasMikrotik && (
+                    <FtextField
+                      type="number"
+                      label={t("prevDue")}
+                      name="balance"
+                    />
+                  )}
+
+                  <FtextField
+                    type="text"
+                    label={t("hotspotName")}
+                    name="hotspotName"
+                    disabled={!packageId}
+                    validation={"true"}
+                  />
+
+                  <FtextField
+                    type="text"
+                    label={t("password")}
+                    name="hotspotPassword"
+                    disabled={!packageId}
+                    validation={"true"}
+                  />
+
+                  <FtextField
+                    type="text"
+                    label={t("comment")}
+                    name="hotspotComment"
+                    disabled={!packageId}
+                  />
+
+                  <div>
+                    <label className="form-control-label changeLabelFontColor">
+                      {t("selectArea")} <span className="text-danger">*</span>
+                    </label>
+                    <select
+                      className="form-select mw-100 mt-0"
+                      aria-label="Default select example"
+                      onChange={(event) => selectArea(event.target.value)}
+                      disabled={!packageId}
+                    >
+                      <option value="">...</option>
+                      {area.length &&
+                        area?.map((val, key) => (
+                          <option
+                            key={key}
+                            value={val.id}
+                            selected={val.id === areaId}
+                          >
+                            {val.name}
+                          </option>
+                        ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="form-control-label changeLabelFontColor">
+                      {t("selectSubArea")}
+                      <span className="text-danger">*</span>
+                    </label>
+                    <select
+                      className="form-select mw-100 mt-0"
+                      aria-label="Default select example"
+                      name="subArea"
+                      id="subAreaIdHotspot"
+                      onChange={(event) => setSubAreaId(event.target.value)}
+                      disabled={!packageId}
+                    >
+                      <option value="">...</option>
+                      {subArea?.subAreas &&
+                        subArea.subAreas.map((val, key) => (
+                          <option
+                            key={key}
+                            value={val.id}
+                            selected={val.id === editCustomer?.subArea}
+                          >
+                            {val.name}
+                          </option>
+                        ))}
+                    </select>
+                  </div>
+
+                  <FtextField
+                    type="text"
+                    label={t("NIDno")}
+                    name="nid"
+                    disabled={!packageId}
+                  />
+
+                  <FtextField
+                    type="text"
+                    label={t("name")}
+                    name="name"
+                    disabled={!packageId}
+                    validation={"true"}
+                  />
+
+                  <FtextField
+                    type="text"
+                    label={t("mobile")}
+                    name="mobile"
+                    disabled={!packageId}
+                    validation={"true"}
+                  />
+
+                  <FtextField
+                    type="text"
+                    label={t("address")}
+                    name="address"
+                    disabled={!packageId}
+                  />
+
+                  <FtextField
+                    type="text"
+                    label={t("email")}
+                    name="email"
+                    disabled={!packageId}
+                  />
+                  <div>
+                    <label className="form-control-label changeLabelFontColor">
+                      {t("billingCycle")} <span className="text-danger">*</span>
+                    </label>
+
+                    <ReactDatePicker
+                      className="form-control mw-100"
+                      selected={billDate}
+                      onChange={(date) => setBillDate(date)}
+                      dateFormat="MMM dd yyyy hh:mm"
+                      showTimeSelect
+                      placeholderText={t("selectBillDate")}
+                      disabled={!(packageId && userRole === "ispOwner")}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="form-control-label changeLabelFontColor">
+                      {t("promiseDate")}
+                    </label>
+                    <ReactDatePicker
+                      className="form-control mw-100"
+                      selected={promiseDate}
+                      onChange={(date) => setPromiseDate(date)}
+                      dateFormat="MM/dd/yyyy"
+                      placeholderText={t("selectDate")}
+                      disabled={!packageId}
+                    />
+                  </div>
+
+                  <SelectField
+                    label={t("customerBillType")}
+                    id="exampleSelect"
+                    name="billPayType"
+                    className="form-select mw-100 mt-0"
+                  >
+                    <option value="">{t("customerBillType")}</option>
+
+                    <option value="prepaid">{t("prepaid")}</option>
+                    <option value="postpaid">{t("postPaid")}</option>
+                  </SelectField>
+
+                  <div className="pppoeStatus">
+                    <p className="p-0 mt-2">{t("status")}</p>
+                    <div className="form-check form-check-inline mt-0">
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        value={"active"}
+                        id="inlineRadio1"
+                        onChange={(e) => setStatus(e.target.value)}
+                        checked={status === "active"}
+                      />
+                      <label
+                        className="form-check-label"
+                        htmlFor="inlineRadio1"
+                      >
+                        {t("active")}
+                      </label>
                     </div>
 
-                    <div className="modal-footer" style={{ border: "none" }}>
-                      <button
-                        type="button"
-                        className="btn btn-secondary"
-                        data-bs-dismiss="modal"
-                        disabled={isLoading}
+                    <div className="form-check form-check-inline">
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        id="inlineRadio2"
+                        value={"inactive"}
+                        onChange={(e) => setStatus(e.target.value)}
+                        checked={status === "inactive"}
+                      />
+                      <label
+                        className="form-check-label"
+                        htmlFor="inlineRadio2"
                       >
-                        {t("cancel")}
-                      </button>
-                      <button
-                        type="submit"
-                        className="btn btn-success"
-                        disabled={isLoading}
-                      >
-                        {isLoading ? <Loader /> : t("save")}
-                      </button>
+                        {t("in active")}
+                      </label>
                     </div>
-                  </Form>
-                )}
-              </Formik>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+
+                    {editCustomer?.status === "expired" && (
+                      <div className="form-check form-check-inline">
+                        <input
+                          className="form-check-input"
+                          type="radio"
+                          id="inlineRadio3"
+                          disabled
+                          checked={status === "expired"}
+                        />
+                        <label
+                          className="form-check-label"
+                          htmlFor="inlineRadio3"
+                        >
+                          {t("expired")}
+                        </label>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </Form>
+            )}
+          </Formik>
+        </ModalBody>
+        <ModalFooter>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            disabled={isLoading}
+            onClick={handleClose}
+          >
+            {t("cancel")}
+          </button>
+
+          <button
+            type="submit"
+            form="customerEdit"
+            className="btn btn-success"
+            disabled={isLoading}
+          >
+            {isLoading ? <Loader /> : t("save")}
+          </button>
+        </ModalFooter>
+      </Modal>
+    </>
   );
 };
 

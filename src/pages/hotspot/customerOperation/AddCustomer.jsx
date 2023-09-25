@@ -17,13 +17,32 @@ import {
   syncHotspotPackage,
 } from "../../../features/hotspotApi";
 import Loader from "../../../components/common/Loader";
+import {
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  ModalTitle,
+} from "react-bootstrap";
 
-const AddCustomer = () => {
+const AddCustomer = ({ show, setShow }) => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
+  //curent month date
+  const today = new Date();
+  const monthDay = new Date(
+    today.getFullYear(),
+    today.getMonth() + 1,
+    0
+  ).getDate();
+
   // customer validator
   const customerValidator = Yup.object({
+    dayLength: Yup.number()
+      .integer()
+      .min(1, t("minimumDay"))
+      .required(t("minimumDay")),
     name: Yup.string().required(t("writeCustomerName")),
     mobile: Yup.string()
       .matches(/^(01){1}[3456789]{1}(\d){8}$/, t("incorrectMobile"))
@@ -67,20 +86,32 @@ const AddCustomer = () => {
   // get all subAreas
   const storeSubArea = useSelector((state) => state.area?.subArea);
 
+  // loading state
+  const [hotspotPackageLoading, setHotspotPackageLoading] = useState(false);
+  const [mikrotikLoading, setMikrotikLoading] = useState(false);
+  const [areaLoading, setAreaLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
   // bill date state
   const [billDate, setBillDate] = useState(new Date());
+
+  // customer select date state
+  const [dayToday, setDayToday] = useState(monthDay);
 
   // connection date state
   const [connectionDate, setConnectionDate] = useState();
 
   // mikrotik id state
-  const [mikrotikId, setMikrotikId] = useState(mikrotik[0]?.id);
+  const [mikrotikId, setMikrotikId] = useState("");
 
   // package id state
   const [packageId, setPackageId] = useState();
 
-  // rate state
-  const [packageRate, setPackageRate] = useState();
+  // customer package state
+  const [packageInfo, setPackageInfo] = useState();
+
+  // customer package rate
+  const [packageRate, setPackageRate] = useState("");
 
   // area id state
   const [areaId, setAreaId] = useState();
@@ -90,12 +121,6 @@ const AddCustomer = () => {
 
   // subarea state
   const [subArea, setSubArea] = useState();
-
-  // loading state
-  const [hotspotPackageLoading, setHotspotPackageLoading] = useState(false);
-  const [mikrotikLoading, setMikrotikLoading] = useState(false);
-  const [areaLoading, setAreaLoading] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     fetchMikrotik(dispatch, ispOwnerId, setMikrotikLoading);
@@ -109,11 +134,14 @@ const AddCustomer = () => {
     getSubAreasApi(dispatch, ispOwnerId);
   }, []);
 
+  // modal close handler
+  const handleClose = () => setShow(false);
+
   // package handler
   const selectPackage = (data) => {
     setPackageId(data);
     const filterPackageRate = hotspotPackage.find((item) => item.id === data);
-    setPackageRate(filterPackageRate);
+    setPackageInfo(filterPackageRate);
   };
 
   // subarea handler
@@ -125,6 +153,27 @@ const AddCustomer = () => {
       setAreaId(areaId);
     }
   };
+
+  // customer daily package rate handle
+  useEffect(() => {
+    const dt = new Date();
+    const getTotalMonthDate = new Date(
+      dt.getFullYear(),
+      dt.getMonth() + 1,
+      0
+    ).getDate();
+
+    if (dayToday === getTotalMonthDate) {
+      setPackageRate(packageInfo?.rate);
+    } else {
+      const cusotmerPerDayBill = Math.ceil(
+        packageInfo?.rate / getTotalMonthDate
+      );
+
+      const dayTodayFee = cusotmerPerDayBill * dayToday;
+      setPackageRate(dayTodayFee);
+    }
+  }, [dayToday, packageInfo]);
 
   // handle Submit
   const handleSubmit = (data) => {
@@ -158,6 +207,7 @@ const AddCustomer = () => {
       connectionDate: connectionDate?.toISOString(),
       billingCycle: billDate?.toISOString(),
       balance: 0,
+      dayLength: Number(dayToday),
       monthlyFee: data?.monthlyFee,
       name: data?.name,
       nid: data?.nid,
@@ -165,292 +215,276 @@ const AddCustomer = () => {
         name: data.hotspotName,
         password: data.hotspotPassword,
         comment: data.hotspotComment,
-        profile: packageRate?.name,
+        profile: packageInfo?.name,
       },
     };
 
-    addHotspotCustomer(dispatch, sendingData, setIsLoading);
+    addHotspotCustomer(dispatch, sendingData, setIsLoading, setShow);
   };
 
   return (
-    <div
-      className="modal fade modal-dialog-scrollable "
-      id="AddHotspotCustomer"
-      tabIndex="-1"
-      aria-labelledby="exampleModalLabel"
-      aria-hidden="true"
-    >
-      <div className="modal-dialog modal-xl">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h5 className="modal-title" id="exampleModalLabel">
+    <>
+      <Modal show={show} onHide={handleClose} backdrop="static" size="xl">
+        <ModalHeader closeButton>
+          <ModalTitle>
+            <h5 className="modal-title text-secondary">
               {t("addNewCustomer")}
             </h5>
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div className="modal-body">
-            <div className="modal-body p-3">
-              {/* model body here */}
-              <Formik
-                initialValues={{
-                  name: "",
-                  mobile: "",
-                  address: "",
-                  email: "",
-                  nid: "",
-                  monthlyFee: packageRate?.rate || 0,
-                  hotspotName: "",
-                  // hotspotProfile: packageRate?.name || "",
-                  hotspotPassword: "",
-                  hotspotComment: "",
-                  balance: "",
-                }}
-                validationSchema={customerValidator}
-                onSubmit={(values) => handleSubmit(values)}
-                enableReinitialize
-              >
-                {(formik) => (
-                  <Form>
-                    <div className="mikrotikSection">
-                      {bpSettings?.hasMikrotik && (
-                        <div>
-                          <label className="form-control-label changeLabelFontColor">
-                            {t("selectMikrotik")}{" "}
-                            <span className="text-danger">*</span>
-                          </label>
-                          <select
-                            className="form-select mw-100 mt-0"
-                            aria-label="Default select example"
-                            onChange={(event) =>
-                              setMikrotikId(event.target.value)
-                            }
-                          >
-                            <option value="">...</option>
-                            {mikrotik.length &&
-                              mikrotik?.map((val, key) => (
-                                <option key={key} value={val.id}>
-                                  {val.name}
-                                </option>
-                              ))}
-                          </select>
-                        </div>
-                      )}
+          </ModalTitle>
+        </ModalHeader>
+        <ModalBody>
+          <Formik
+            initialValues={{
+              dayLength: dayToday,
+              name: "",
+              mobile: "",
+              address: "",
+              email: "",
+              nid: "",
+              monthlyFee: packageRate,
+              hotspotName: "",
+              // hotspotProfile: packageInfo?.name || "",
+              hotspotPassword: "",
+              hotspotComment: "",
+              balance: "",
+            }}
+            validationSchema={customerValidator}
+            onSubmit={(values) => handleSubmit(values)}
+            enableReinitialize
+          >
+            {() => (
+              <Form id="customerPost">
+                <div className="displayGrid3">
+                  <FtextField
+                    type="number"
+                    label={t("dayLength")}
+                    name="dayLength"
+                    disabled={userRole !== "ispOwner"}
+                    validation={"true"}
+                    onChange={(e) => setDayToday(e.target.value)}
+                  />
 
-                      {/* pppoe package */}
-                      <div>
-                        <label className="form-control-label changeLabelFontColor">
-                          {t("selectPackage")}{" "}
-                          <span className="text-danger">*</span>
-                        </label>
-                        <select
-                          className="form-select mb-3 mw-100 mt-0"
-                          aria-label="Default select example"
-                          onChange={(event) =>
-                            selectPackage(event.target.value)
-                          }
-                        >
-                          <option value="">...</option>
-                          {hotspotPackage &&
-                            hotspotPackage?.map((val, key) => (
-                              <>
-                                {val.mikrotik === mikrotikId && (
-                                  <option key={key} value={val.id}>
-                                    {val.name}
-                                  </option>
-                                )}
-                              </>
-                            ))}
-                        </select>
-                      </div>
-                      <FtextField
-                        type="number"
-                        label={t("monthFee")}
-                        name="monthlyFee"
-                        min={0}
-                        disabled={!(packageId && userRole === "ispOwner")}
-                        validation={"true"}
-                      />
-                      {!bpSettings?.hasMikrotik && (
-                        <FtextField
-                          type="number"
-                          label={t("prevDue")}
-                          name="balance"
-                        />
-                      )}
-                    </div>
-
-                    <div className="pppoeSection2">
-                      <FtextField
-                        type="text"
-                        label={t("hotspotName")}
-                        name="hotspotName"
-                        disabled={!packageId}
-                        validation={"true"}
-                      />
-                      <FtextField
-                        type="text"
-                        label={t("password")}
-                        name="hotspotPassword"
-                        disabled={!packageId}
-                        validation={"true"}
-                      />
-                      <FtextField
-                        type="text"
-                        label={t("comment")}
-                        name="hotspotComment"
-                        disabled={!packageId}
-                      />
-                    </div>
-
-                    <div className="displayGrid3">
-                      <div>
-                        <label className="form-control-label changeLabelFontColor">
-                          {t("selectArea")}{" "}
-                          <span className="text-danger">*</span>
-                        </label>
-                        <select
-                          className="form-select mw-100 mt-0"
-                          aria-label="Default select example"
-                          onChange={(event) => selectArea(event.target.value)}
-                          disabled={!packageId}
-                        >
-                          <option value="">...</option>
-                          {area.length &&
-                            area?.map((val, key) => (
-                              <option key={key} value={val.id}>
-                                {val.name}
-                              </option>
-                            ))}
-                        </select>
-                      </div>
-
-                      <div>
-                        <label className="form-control-label changeLabelFontColor">
-                          {t("selectSubArea")}{" "}
-                          <span className="text-danger">*</span>
-                        </label>
-                        <select
-                          className="form-select mw-100 mt-0"
-                          aria-label="Default select example"
-                          name="subArea"
-                          id="subAreaId"
-                          onChange={(event) => setSubAreaId(event.target.value)}
-                          disabled={!packageId}
-                        >
-                          <option value="">...</option>
-                          {subArea?.map((val, key) => (
-                            <option
-                              key={key}
-                              value={val.id}
-                              selected={val.id === subareaId || ""}
-                            >
+                  {bpSettings?.hasMikrotik && (
+                    <div>
+                      <label className="form-control-label changeLabelFontColor">
+                        {t("selectMikrotik")}
+                        <span className="text-danger">*</span>
+                      </label>
+                      <select
+                        className="form-select mw-100 mt-0"
+                        onChange={(event) => setMikrotikId(event.target.value)}
+                      >
+                        <option value="">...</option>
+                        {mikrotik.length &&
+                          mikrotik?.map((val, key) => (
+                            <option key={key} value={val.id}>
                               {val.name}
                             </option>
                           ))}
-                        </select>
-                      </div>
-
-                      <FtextField
-                        type="text"
-                        label={t("NIDno")}
-                        name="nid"
-                        disabled={!packageId}
-                      />
+                      </select>
                     </div>
+                  )}
 
-                    <div className="displayGrid3">
-                      <FtextField
-                        type="text"
-                        label={t("name")}
-                        name="name"
-                        disabled={!packageId}
-                        validation={"true"}
-                      />
-                      <FtextField
-                        type="text"
-                        label={t("mobile")}
-                        name="mobile"
-                        disabled={!packageId}
-                        validation={"true"}
-                      />
-                      <FtextField
-                        type="text"
-                        label={t("address")}
-                        name="address"
-                        disabled={!packageId}
-                      />
-                    </div>
-                    <div className="newDisplay">
-                      <FtextField
-                        type="text"
-                        label={t("email")}
-                        name="email"
-                        disabled={!packageId}
-                      />
+                  <div>
+                    <label className="form-control-label changeLabelFontColor">
+                      {t("selectPackage")}
+                      <span className="text-danger">*</span>
+                    </label>
+                    <select
+                      className="form-select mw-100 mt-0"
+                      onChange={(event) => selectPackage(event.target.value)}
+                      disabled={!mikrotikId}
+                    >
+                      <option value="">...</option>
+                      {hotspotPackage &&
+                        hotspotPackage?.map((val, key) => (
+                          <>
+                            {val.mikrotik === mikrotikId && (
+                              <option key={key} value={val.id}>
+                                {val.name}
+                              </option>
+                            )}
+                          </>
+                        ))}
+                    </select>
+                  </div>
 
-                      <div className="billCycle">
-                        <label className="form-control-label changeLabelFontColor">
-                          {t("billingCycle")}{" "}
-                          <span className="text-danger">*</span>
-                        </label>
+                  <FtextField
+                    type="number"
+                    label={t("packageRate")}
+                    name="monthlyFee"
+                    min={0}
+                    disabled={!(packageId && userRole === "ispOwner")}
+                    validation={"true"}
+                  />
 
-                        <ReactDatePicker
-                          className="form-control mw-100"
-                          selected={billDate}
-                          onChange={(date) => setBillDate(date)}
-                          dateFormat="MMM dd yyyy hh:mm"
-                          showTimeSelect
-                          placeholderText={t("selectBillDate")}
-                          disabled={!(packageId && userRole === "ispOwner")}
-                        />
-                      </div>
-                      <div className="billCycle">
-                        <div>
-                          <label className="form-control-label changeLabelFontColor">
-                            {t("connectionDate")}
-                          </label>
-                          <ReactDatePicker
-                            className="form-control mw-100"
-                            selected={connectionDate}
-                            onChange={(date) => setConnectionDate(date)}
-                            dateFormat="MM/dd/yyyy"
-                            placeholderText={t("selectDate")}
-                            disabled={!packageId}
-                          />
-                        </div>
-                      </div>
-                    </div>
+                  {!bpSettings?.hasMikrotik && (
+                    <FtextField
+                      type="number"
+                      label={t("prevDue")}
+                      name="balance"
+                    />
+                  )}
 
-                    <div className="modal-footer" style={{ border: "none" }}>
-                      <button
-                        type="button"
-                        className="btn btn-secondary"
-                        data-bs-dismiss="modal"
-                        disabled={isLoading}
-                      >
-                        {t("cancel")}
-                      </button>
-                      <button
-                        type="submit"
-                        className="btn btn-success"
-                        disabled={isLoading}
-                      >
-                        {isLoading ? <Loader /> : t("save")}
-                      </button>
-                    </div>
-                  </Form>
-                )}
-              </Formik>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+                  <FtextField
+                    type="text"
+                    label={t("hotspotName")}
+                    name="hotspotName"
+                    disabled={!packageId}
+                    validation={"true"}
+                  />
+
+                  <FtextField
+                    type="text"
+                    label={t("password")}
+                    name="hotspotPassword"
+                    disabled={!packageId}
+                    validation={"true"}
+                  />
+
+                  <FtextField
+                    type="text"
+                    label={t("comment")}
+                    name="hotspotComment"
+                    disabled={!packageId}
+                  />
+
+                  <div>
+                    <label className="form-control-label changeLabelFontColor">
+                      {t("selectArea")} <span className="text-danger">*</span>
+                    </label>
+                    <select
+                      className="form-select mw-100 mt-0"
+                      onChange={(event) => selectArea(event.target.value)}
+                      disabled={!packageId}
+                    >
+                      <option value="">...</option>
+                      {area.length &&
+                        area?.map((val, key) => (
+                          <option key={key} value={val.id}>
+                            {val.name}
+                          </option>
+                        ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="form-control-label changeLabelFontColor">
+                      {t("selectSubArea")}
+                      <span className="text-danger">*</span>
+                    </label>
+                    <select
+                      className="form-select mw-100 mt-0"
+                      name="subArea"
+                      id="subAreaId"
+                      onChange={(event) => setSubAreaId(event.target.value)}
+                      disabled={!packageId}
+                    >
+                      <option value="">...</option>
+                      {subArea?.map((val, key) => (
+                        <option
+                          key={key}
+                          value={val.id}
+                          selected={val.id === subareaId || ""}
+                        >
+                          {val.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <FtextField
+                    type="text"
+                    label={t("NIDno")}
+                    name="nid"
+                    disabled={!packageId}
+                  />
+
+                  <FtextField
+                    type="text"
+                    label={t("name")}
+                    name="name"
+                    disabled={!packageId}
+                    validation={"true"}
+                  />
+
+                  <FtextField
+                    type="text"
+                    label={t("mobile")}
+                    name="mobile"
+                    disabled={!packageId}
+                    validation={"true"}
+                  />
+
+                  <FtextField
+                    type="text"
+                    label={t("address")}
+                    name="address"
+                    disabled={!packageId}
+                  />
+
+                  <FtextField
+                    type="text"
+                    label={t("email")}
+                    name="email"
+                    disabled={!packageId}
+                  />
+
+                  <div>
+                    <label className="form-control-label changeLabelFontColor">
+                      {t("billingCycle")} <span className="text-danger">*</span>
+                    </label>
+
+                    <ReactDatePicker
+                      className="form-control mw-100"
+                      selected={billDate}
+                      onChange={(date) => setBillDate(date)}
+                      dateFormat="MMM dd yyyy hh:mm"
+                      showTimeSelect
+                      placeholderText={t("selectBillDate")}
+                      disabled={!(packageId && userRole === "ispOwner")}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="form-control-label changeLabelFontColor">
+                      {t("connectionDate")}
+                    </label>
+                    <ReactDatePicker
+                      className="form-control mw-100"
+                      selected={connectionDate}
+                      onChange={(date) => setConnectionDate(date)}
+                      dateFormat="MM/dd/yyyy"
+                      placeholderText={t("selectDate")}
+                      disabled={!packageId}
+                    />
+                  </div>
+                </div>
+              </Form>
+            )}
+          </Formik>
+        </ModalBody>
+        <ModalFooter>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            disabled={isLoading}
+            onClick={handleClose}
+          >
+            {t("cancel")}
+          </button>
+
+          <button
+            type="submit"
+            form="customerPost"
+            className="btn btn-success"
+            disabled={isLoading}
+          >
+            {isLoading ? <Loader /> : t("save")}
+          </button>
+        </ModalFooter>
+      </Modal>
+    </>
   );
 };
 

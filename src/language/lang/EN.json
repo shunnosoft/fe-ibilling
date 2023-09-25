@@ -869,5 +869,7 @@
   "manuallyPassword": "Manually Password",
   "inputYourPassword": "Input new Password",
   "wrrtePassword": "Enter a combination of at least eight numbers",
-  "mobileNumberPassword": "Choose your Mobile umber"
+  "mobileNumberPassword": "Mobile number password",
+  "minimumDay": "Minimum Day-1",
+  "dayLength": "Day Length"
 }

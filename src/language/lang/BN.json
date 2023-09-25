@@ -875,5 +875,7 @@
   "manuallyPassword": "ম্যানুয়ালি পাসওয়ার্ড",
   "inputYourPassword": "ইনপুট নতুন পাসওয়ার্ড",
   "wrrtePassword": "কমপক্ষে আটটি সংখ্যার সংমিশ্রণ লিখুন",
-  "mobileNumberPassword": "আপনার মোবাইল নম্বর নির্বাচন করুন"
+  "mobileNumberPassword": "মোবাইল নম্বর পাসওয়ার্ড",
+  "minimumDay": "নূন্যতম ১দিন",
+  "dayLength": "ডে লেংথ"
 }

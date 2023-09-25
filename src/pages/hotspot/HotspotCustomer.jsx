@@ -139,7 +139,7 @@ const HotspotCustomer = () => {
   const [bulkCustomers, setBulkCustomer] = useState([]);
 
   // bulk modal handle state
-  const [bulkStatus, setBulkStatus] = useState("");
+  const [modalStatus, setModalStatus] = useState("");
   const [show, setShow] = useState(false);
 
   // filter options state
@@ -600,10 +600,10 @@ const HotspotCustomer = () => {
 
                 {(permission?.customerEdit || role === "ispOwner") && (
                   <li
-                    data-bs-toggle="modal"
-                    data-bs-target="#EditHotspotCustomer"
                     onClick={() => {
                       setCustomerId(original.id);
+                      setModalStatus("customerEdit");
+                      setShow(true);
                     }}
                   >
                     <div className="dropdown-item">
@@ -618,7 +618,7 @@ const HotspotCustomer = () => {
                 <li
                   onClick={() => {
                     setCustomerData(original);
-                    setBulkStatus("customerReport");
+                    setModalStatus("customerReport");
                     setShow(true);
                   }}
                 >
@@ -720,9 +720,11 @@ const HotspotCustomer = () => {
                         <div className="addAndSettingIcon">
                           <PersonPlusFill
                             className="addcutmButton"
-                            data-bs-toggle="modal"
-                            data-bs-target="#AddHotspotCustomer"
                             title={t("newCustomer")}
+                            onClick={() => {
+                              setModalStatus("customerPost");
+                              setShow(true);
+                            }}
                           />
                         </div>
                       )}
@@ -907,10 +909,14 @@ const HotspotCustomer = () => {
 
       {/* modal start */}
       {/* hotspot customer post modal */}
-      <AddCustomer />
+      {modalStatus === "customerPost" && (
+        <AddCustomer show={show} setShow={setShow} />
+      )}
 
       {/* hotspot customer update modal */}
-      <EditCustomer customerId={customerId} />
+      {modalStatus === "customerEdit" && (
+        <EditCustomer show={show} setShow={setShow} customerId={customerId} />
+      )}
 
       {/* single customer delete modal */}
       <DeleteCustomer
@@ -926,7 +932,7 @@ const HotspotCustomer = () => {
       <CustomersNumber showModal={numberModalShow} />
 
       {/* single customer recharge report */}
-      {bulkStatus === "customerReport" && (
+      {modalStatus === "customerReport" && (
         <HotspotCustomerReport
           show={show}
           setShow={setShow}
@@ -939,36 +945,36 @@ const HotspotCustomer = () => {
       {/* bulk modal start */}
       {bpSettings.hasMikrotik && (
         <>
-          {bulkStatus === "bulkStatusEdit" && (
-            <BulkStatusEdit
+          {modalStatus === "modalStatusEdit" && (
+            <modalStatusEdit
               bulkCustomer={bulkCustomers}
               show={show}
               setShow={setShow}
-              bulkStatus="hotspot"
+              modalStatus="hotspot"
             />
           )}
         </>
       )}
 
-      {bulkStatus === "bulkPaymentStatusEdit" && (
+      {modalStatus === "bulkPaymentStatusEdit" && (
         <BulkPaymentStatusEdit
           bulkCustomer={bulkCustomers}
           show={show}
           setShow={setShow}
-          bulkStatus="hotspot"
+          modalStatus="hotspot"
         />
       )}
 
-      {bulkStatus === "bulkDeleteCustomer" && (
+      {modalStatus === "bulkDeleteCustomer" && (
         <BulkCustomerDelete
           bulkCustomer={bulkCustomers}
           show={show}
           setShow={setShow}
-          bulkStatus="hotspot"
+          modalStatus="hotspot"
         />
       )}
 
-      {bulkStatus === "bulkMessage" && (
+      {modalStatus === "bulkMessage" && (
         <BulkCustomerMessage
           bulkCustomer={bulkCustomers}
           show={show}
@@ -994,7 +1000,7 @@ const HotspotCustomer = () => {
                   type="button"
                   className="p-1"
                   onClick={() => {
-                    setBulkStatus("customerAreaEdit");
+                    setModalStatus("customerAreaEdit");
                     setShow(true);
                   }}
                 >
@@ -1020,7 +1026,7 @@ const HotspotCustomer = () => {
                   type="button"
                   className="p-1"
                   onClick={() => {
-                    setBulkStatus("customerBalanceEdit");
+                    setModalStatus("customerBalanceEdit");
                     setShow(true);
                   }}
                 >
@@ -1040,18 +1046,18 @@ const HotspotCustomer = () => {
               <hr className="mt-0 mb-0" />
 
               {bpSettings.hasMikrotik &&
-                ((role === "ispOwner" && bpSettings?.bulkStatusEdit) ||
-                  (bpSettings?.bulkStatusEdit &&
-                    permission?.bulkStatusEdit &&
+                ((role === "ispOwner" && bpSettings?.modalStatusEdit) ||
+                  (bpSettings?.modalStatusEdit &&
+                    permission?.modalStatusEdit &&
                     role === "manager") ||
                   (role === "collector" &&
-                    bpSettings.bulkStatusEdit &&
-                    permission.bulkStatusEdit)) && (
+                    bpSettings.modalStatusEdit &&
+                    permission.modalStatusEdit)) && (
                   <li
                     type="button"
                     className="p-1"
                     onClick={() => {
-                      setBulkStatus("bulkStatusEdit");
+                      setModalStatus("modalStatusEdit");
                       setShow(true);
                     }}
                   >
@@ -1081,7 +1087,7 @@ const HotspotCustomer = () => {
                   type="button"
                   className="p-1"
                   onClick={() => {
-                    setBulkStatus("bulkPaymentStatusEdit");
+                    setModalStatus("bulkPaymentStatusEdit");
                     setShow(true);
                   }}
                 >
@@ -1110,7 +1116,7 @@ const HotspotCustomer = () => {
                   type="button"
                   className="p-1"
                   onClick={() => {
-                    setBulkStatus("bulkMessage");
+                    setModalStatus("bulkMessage");
                     setShow(true);
                   }}
                 >
@@ -1137,7 +1143,7 @@ const HotspotCustomer = () => {
                   type="button"
                   className="p-1"
                   onClick={() => {
-                    setBulkStatus("customerBillingCycle");
+                    setModalStatus("customerBillingCycle");
                     setShow(true);
                   }}
                 >
@@ -1165,7 +1171,7 @@ const HotspotCustomer = () => {
                   type="button"
                   className="p-1"
                   onClick={() => {
-                    setBulkStatus("bulkPromiseDateEdit");
+                    setModalStatus("bulkPromiseDateEdit");
                     setShow(true);
                   }}
                 >
@@ -1193,7 +1199,7 @@ const HotspotCustomer = () => {
                   type="button"
                   className="p-1"
                   onClick={() => {
-                    setBulkStatus("autoDisableEditModal");
+                    setModalStatus("autoDisableEditModal");
                     setShow(true);
                   }}
                 >
@@ -1225,7 +1231,7 @@ const HotspotCustomer = () => {
                     type="button"
                     className="p-1"
                     onClick={() => {
-                      setBulkStatus("bulkMikrotikEdit");
+                      setModalStatus("bulkMikrotikEdit");
                       setShow(true);
                     }}
                   >
@@ -1254,7 +1260,7 @@ const HotspotCustomer = () => {
                     type="button"
                     className="p-1"
                     onClick={() => {
-                      setBulkStatus("bulkPackageEdit");
+                      setModalStatus("bulkPackageEdit");
                       setShow(true);
                     }}
                   >
@@ -1283,7 +1289,7 @@ const HotspotCustomer = () => {
                     type="button"
                     className="p-1"
                     onClick={() => {
-                      setBulkStatus("bulkRecharge");
+                      setModalStatus("bulkRecharge");
                       setShow(true);
                     }}
                   >
@@ -1311,7 +1317,7 @@ const HotspotCustomer = () => {
                   type="button"
                   className="p-1"
                   onClick={() => {
-                    setBulkStatus("bulkTransferToReseller");
+                    setModalStatus("bulkTransferToReseller");
                     setShow(true);
                   }}
                 >
@@ -1340,7 +1346,7 @@ const HotspotCustomer = () => {
                   type="button"
                   className="p-1"
                   onClick={() => {
-                    setBulkStatus("bulkDeleteCustomer");
+                    setModalStatus("bulkDeleteCustomer");
                     setShow(true);
                   }}
                 >
