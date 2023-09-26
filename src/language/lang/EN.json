@@ -873,5 +873,7 @@
   "minimumDay": "Minimum Day-1",
   "dayLength": "Day Length",
   "startBillingCycleDate": "Start BillingCycle Date",
-  "endBillingCycleDate": "End BillingCycle Date"
+  "endBillingCycleDate": "End BillingCycle Date",
+  "manualInactive": "Manual Inactive",
+  "manualInactiveToast": "Customer Manual Inactive SMS Template Updated."
 }

@@ -25,6 +25,7 @@ import { useSelector } from "react-redux";
 import { EnvelopePlus } from "react-bootstrap-icons";
 import CustomerTicketSmsTemplate from "./template/CustomerTicketSmsTemplate";
 import CustomerAssignTicketSmsTemplate from "./template/CustomerAssignTicketSmsTemplate";
+import CustomerManualEdit from "./template/CustomerManualEdit";
 export default function Settings() {
   const { t } = useTranslation();
 
@@ -154,6 +155,15 @@ export default function Settings() {
                     >
                       <FourGround>
                         <CustomerAssignTicketSmsTemplate />
+                      </FourGround>
+                    </Tab>
+                    <Tab
+                      className="mt-5"
+                      eventKey="manualInactive"
+                      title={t("manualInactive")}
+                    >
+                      <FourGround>
+                        <CustomerManualEdit />
                       </FourGround>
                     </Tab>
                   </Tabs>
