@@ -415,7 +415,7 @@ function App() {
             <Route path="/privacy-policy" element={<Privacy></Privacy>} />
             <Route path="/terms-conditions" element={<Terms></Terms>} />
             <Route path="/isp/:ispId" element={<QRCodePay />} />
-            <Route path="/mobile" element={<MobilePayment />} />
+            <Route path="/bkash-payment" element={<MobilePayment />} />
             <Route
               path="/return-and-refund-policy"
               element={<Refund></Refund>}

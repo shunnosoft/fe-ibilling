@@ -877,5 +877,7 @@
   "wrrtePassword": "কমপক্ষে আটটি সংখ্যার সংমিশ্রণ লিখুন",
   "mobileNumberPassword": "মোবাইল নম্বর পাসওয়ার্ড",
   "minimumDay": "নূন্যতম ১দিন",
-  "dayLength": "ডে লেংথ"
+  "dayLength": "ডে লেংথ",
+  "startBillingCycleDate": "বিলিং সাইকেল শুরু তারিখ",
+  "endBillingCycleDate": "বিলিং সাইকেল শেষ তারিখ"
 }

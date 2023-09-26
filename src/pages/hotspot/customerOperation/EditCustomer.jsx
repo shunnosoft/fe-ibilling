@@ -29,8 +29,20 @@ const EditCustomer = ({ show, setShow, customerId }) => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
+  // current month day
+  var today = new Date();
+  var getTotalMonthDate = new Date(
+    today.getFullYear(),
+    today.getMonth() + 1,
+    0
+  ).getDate();
+
   // customer validator
   const customerValidator = Yup.object({
+    dayLength: Yup.number()
+      .integer()
+      .min(1, t("minimumDay"))
+      .required(t("minimumDay")),
     name: Yup.string().required(t("writeCustomerName")),
     mobile: Yup.string()
       .matches(/^(01){1}[3456789]{1}(\d){8}$/, t("incorrectMobile"))
@@ -200,15 +212,6 @@ const EditCustomer = ({ show, setShow, customerId }) => {
   // modal close handler
   const handleClose = () => setShow(false);
 
-  // package handler
-  const selectPackage = (event) => {
-    setPackageId(event.target.value);
-    const filterPackageRate = hotspotPackage.find(
-      (item) => item.id === event.target.value
-    );
-    setPackageInfo(filterPackageRate);
-  };
-
   // subarea handler
   const selectArea = (areaId) => {
     if (area) {
@@ -220,26 +223,36 @@ const EditCustomer = ({ show, setShow, customerId }) => {
     }
   };
 
-  // customer daily package rate handle
-  useEffect(() => {
-    const dt = new Date();
-    const getTotalMonthDate = new Date(
-      dt.getFullYear(),
-      dt.getMonth() + 1,
-      0
-    ).getDate();
-
-    if (dayToday === getTotalMonthDate) {
+  // customer day length package rate handle
+  const customerDayLengthHandle = (e) => {
+    if (Number(e.target.value) === getTotalMonthDate) {
       setPackageRate(packageInfo?.rate);
     } else {
-      const cusotmerPerDayBill = Math.ceil(
-        packageInfo?.rate / getTotalMonthDate
-      );
+      const cusotmerPerDayBill = packageInfo?.rate / getTotalMonthDate;
 
-      const dayTodayFee = cusotmerPerDayBill * dayToday;
-      setPackageRate(dayTodayFee);
+      const dayTodayFee = cusotmerPerDayBill * Number(e.target.value);
+      setPackageRate(Math.trunc(dayTodayFee));
     }
-  }, [dayToday, packageInfo]);
+    setDayToday(e.target.value);
+  };
+
+  //customer package handle
+  const customerPackageHandle = (e) => {
+    setPackageId(e.target.value);
+    const filterPackageRate = hotspotPackage.find(
+      (item) => item.id === e.target.value
+    );
+    setPackageInfo(filterPackageRate);
+
+    if (Number(dayToday) === getTotalMonthDate) {
+      setPackageRate(filterPackageRate?.rate);
+    } else {
+      const cusotmerPerDayBill = filterPackageRate?.rate / getTotalMonthDate;
+
+      const dayTodayFee = cusotmerPerDayBill * Number(dayToday);
+      setPackageRate(Math.trunc(dayTodayFee));
+    }
+  };
 
   // handle Submit
   const handleSubmit = (data) => {
@@ -335,7 +348,7 @@ const EditCustomer = ({ show, setShow, customerId }) => {
                     name="dayLength"
                     disabled={userRole !== "ispOwner"}
                     validation={"true"}
-                    onChange={(e) => setDayToday(e.target.value)}
+                    onChange={customerDayLengthHandle}
                   />
 
                   {bpSettings?.hasMikrotik && (
@@ -371,8 +384,7 @@ const EditCustomer = ({ show, setShow, customerId }) => {
                     </label>
                     <select
                       className="form-select mw-100 mt-0"
-                      aria-label="Default select example"
-                      onChange={(event) => selectPackage(event)}
+                      onChange={customerPackageHandle}
                     >
                       <option value="">...</option>
                       {hotspotPackage &&
@@ -382,6 +394,7 @@ const EditCustomer = ({ show, setShow, customerId }) => {
                               <option
                                 key={key}
                                 value={val.id}
+                                status="package"
                                 selected={
                                   editCustomer?.hotspotPackage === val.id
                                 }
@@ -396,7 +409,7 @@ const EditCustomer = ({ show, setShow, customerId }) => {
 
                   <FtextField
                     type="number"
-                    label={t("monthFee")}
+                    label={t("packageRate")}
                     name="monthlyFee"
                     min={0}
                     disabled={!(packageId && userRole === "ispOwner")}

@@ -166,12 +166,10 @@ const AddCustomer = ({ show, setShow }) => {
     if (dayToday === getTotalMonthDate) {
       setPackageRate(packageInfo?.rate);
     } else {
-      const cusotmerPerDayBill = Math.ceil(
-        packageInfo?.rate / getTotalMonthDate
-      );
+      const cusotmerPerDayBill = packageInfo?.rate / getTotalMonthDate;
 
       const dayTodayFee = cusotmerPerDayBill * dayToday;
-      setPackageRate(dayTodayFee);
+      setPackageRate(Math.trunc(dayTodayFee));
     }
   }, [dayToday, packageInfo]);
 

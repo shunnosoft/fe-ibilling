@@ -871,5 +871,7 @@
   "wrrtePassword": "Enter a combination of at least eight numbers",
   "mobileNumberPassword": "Mobile number password",
   "minimumDay": "Minimum Day-1",
-  "dayLength": "Day Length"
+  "dayLength": "Day Length",
+  "startBillingCycleDate": "Start BillingCycle Date",
+  "endBillingCycleDate": "End BillingCycle Date"
 }

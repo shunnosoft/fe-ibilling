@@ -14,6 +14,7 @@ import "./report.css";
 import { useDispatch, useSelector } from "react-redux";
 
 import {
+  ArchiveFill,
   ArrowBarLeft,
   ArrowBarRight,
   ArrowClockwise,
@@ -43,6 +44,7 @@ import { managerFetchSuccess } from "../../features/managerSlice";
 import { Accordion, Card, Collapse } from "react-bootstrap";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
+import { deleteCustomerSingleReport } from "../../features/hotspotApi";
 export default function Report() {
   const { t } = useTranslation();
   const componentRef = useRef();
@@ -344,6 +346,19 @@ export default function Report() {
     setMainData(arr);
   };
 
+  // delete customer collection report delete handler
+  const collectionReportDeleteHandler = () => {
+    const con = window.confirm(t("deleteAlert"));
+    if (con) {
+      // deleteCustomerSingleReport(
+      //   dispatch,
+      //   customerReport,
+      //   setCustomerReport,
+      //   reportId
+      // );
+    }
+  };
+
   const addAllBills = useMemo(() => {
     var count = 0;
     let discount = 0;
@@ -536,13 +551,7 @@ export default function Report() {
         id: "option",
 
         Cell: ({ row: { original } }) => (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
+          <div className="d-flex justify-content-center align-items-center">
             <div className="dropdown">
               <ThreeDots
                 className="dropdown-toggle ActionDots"
@@ -566,6 +575,18 @@ export default function Report() {
                     </div>
                   </div>
                 </li>
+
+                {original.customer === null &&
+                  original.hotspotCustomer === null && (
+                    <li onClick={collectionReportDeleteHandler}>
+                      <div className="dropdown-item">
+                        <div className="customerAction">
+                          <ArchiveFill />
+                          <p className="actionP">{t("delete")}</p>
+                        </div>
+                      </div>
+                    </li>
+                  )}
               </ul>
             </div>
           </div>

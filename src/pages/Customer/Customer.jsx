@@ -96,10 +96,6 @@ const PPPOECustomer = () => {
   const { t } = useTranslation();
   const componentRef = useRef();
 
-  // current date
-  let date = new Date();
-  let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-
   // get all customer
   const customers = useSelector((state) => state.customer.customer);
 
@@ -232,8 +228,8 @@ const PPPOECustomer = () => {
     package: "",
     mikrotik: "",
     freeUser: "",
-    startDate: firstDay,
-    endDate: new Date(),
+    startDate: "",
+    endDate: "",
     dayFilter: "",
     changedPromiseDate: "",
     connection: "",
@@ -396,9 +392,8 @@ const PPPOECustomer = () => {
         moment(filterOptions.endDate).format("YYYY-MM-DD")
       ).getTime();
 
-      let getArea = [];
       // get all subarea
-
+      var getArea = [];
       var allSub = [];
       if (area) {
         allSub = subAreas.filter((val) => val.area === area);
@@ -524,7 +519,8 @@ const PPPOECustomer = () => {
       mikrotik: "",
       package: "",
       isFree: "",
-      filterDate: null,
+      startDate: "",
+      endDate: "",
       poleBox: "",
     });
     setPPPoeCustomers(customers);
@@ -1476,8 +1472,8 @@ const PPPOECustomer = () => {
                                     startDate: date,
                                   })
                                 }
-                                dateFormat="dd/MM/yyyy"
-                                placeholderText={t("selectDate")}
+                                dateFormat="dd-MM-yyyy"
+                                placeholderText={t("startBillingCycleDate")}
                               />
                             </div>
 
@@ -1491,8 +1487,8 @@ const PPPOECustomer = () => {
                                     endDate: date,
                                   })
                                 }
-                                dateFormat="dd/MM/yyyy"
-                                placeholderText={t("selectDate")}
+                                dateFormat="dd-MM-yyyy"
+                                placeholderText={t("endBillingCycleDate")}
                               />
                             </div>
 

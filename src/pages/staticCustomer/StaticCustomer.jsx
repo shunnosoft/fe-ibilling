@@ -69,6 +69,7 @@ import BulkStatusEdit from "../Customer/customerCRUD/bulkOpration/bulkStatusEdit
 import BulkCustomerDelete from "../Customer/customerCRUD/bulkOpration/BulkdeleteModal";
 import IndeterminateCheckbox from "../../components/table/bulkCheckbox";
 import { useTranslation } from "react-i18next";
+import DatePicker from "react-datepicker";
 import BulkAutoConnectionEdit from "../Customer/customerCRUD/bulkOpration/bulkAutoConnectionEdit";
 import Loader from "../../components/common/Loader";
 import FormatNumber from "../../components/common/NumberFormat";
@@ -171,7 +172,8 @@ export default function Customer() {
     package: "",
     mikrotik: "",
     freeUser: "",
-    filterDate: null,
+    startDate: "",
+    endDate: "",
     dayFilter: "",
     changedPromiseDate: "",
     connection: "",
@@ -463,7 +465,8 @@ export default function Customer() {
         mikrotik,
         paymentStatus,
         freeUser,
-        filterDate,
+        startDate,
+        endDate,
         dayFilter,
         changedPromiseDate,
         connection,
@@ -488,8 +491,12 @@ export default function Customer() {
         moment(new Date()).format("YYYY/MM/DD")
       ).getTime();
 
-      const filterDateData = new Date(
-        moment(filterOptions.filterDate).format("YYYY/MM/DD")
+      const filterStartData = new Date(
+        moment(filterOptions.startDate).format("YYYY-MM-DD")
+      ).getTime();
+
+      const filterEndData = new Date(
+        moment(filterOptions.endDate).format("YYYY-MM-DD")
       ).getTime();
 
       let getArea = [];
@@ -536,7 +543,10 @@ export default function Customer() {
         package: filterOptions.package
           ? c.mikrotikPackage === filterOptions.package
           : true,
-        filterDate: filterDate ? billingCycle == filterDateData : true,
+        filterDate:
+          startDate && endDate
+            ? filterStartData <= billingCycle && filterEndData >= billingCycle
+            : true,
         dayFilter: dayFilter
           ? moment(c.billingCycle).diff(moment(), "days") ===
             Number(filterOptions.dayFilter)
@@ -609,7 +619,8 @@ export default function Customer() {
       area: "",
       subArea: "",
       package: "",
-      filterDate: null,
+      startDate: "",
+      endDate: "",
     });
     setCustomers1(cus);
   };
@@ -1539,16 +1550,7 @@ export default function Customer() {
                                 {t("nonFreeCustomer")}
                               </option>
                             </select>
-                            <input
-                              className="form-select shadow-none mt-0"
-                              type="date"
-                              onChange={(e) =>
-                                setFilterOption({
-                                  ...filterOptions,
-                                  filterDate: e.target.value,
-                                })
-                              }
-                            />
+
                             <select
                               className="form-select shadow-none mt-0"
                               onChange={(e) =>
@@ -1564,6 +1566,36 @@ export default function Customer() {
                               <option value="3">{t("threeDayLeft")}</option>
                               <option value="4">{t("fourDayLeft")}</option>
                             </select>
+
+                            <div>
+                              <DatePicker
+                                className="form-control mt-0"
+                                selected={filterOptions.startDate}
+                                onChange={(date) =>
+                                  setFilterOption({
+                                    ...filterOptions,
+                                    startDate: date,
+                                  })
+                                }
+                                dateFormat="dd-MM-yyyy"
+                                placeholderText={t("startBillingCycleDate")}
+                              />
+                            </div>
+
+                            <div>
+                              <DatePicker
+                                className="form-control mt-0"
+                                selected={filterOptions.endDate}
+                                onChange={(date) =>
+                                  setFilterOption({
+                                    ...filterOptions,
+                                    endDate: date,
+                                  })
+                                }
+                                dateFormat="dd-MM-yyyy"
+                                placeholderText={t("endBillingCycleDate")}
+                              />
+                            </div>
 
                             <select
                               className="form-select shadow-none mt-0"
