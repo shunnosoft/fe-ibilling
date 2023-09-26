@@ -49,12 +49,12 @@ const InvoicePrint = forwardRef((props, ref) => {
               <td className="prin_td">{val.customer?.customerId}</td>
               <td className="prin_td">
                 {val.customer?.userType === "pppoe"
-                  ? val.customer.pppoe?.name
+                  ? val.customer?.pppoe?.name
                   : val.customer?.userType === "firewall-queue"
-                  ? val.customer.queue?.address
+                  ? val.customer?.queue?.address
                   : val.customer?.userType === "core-queue"
-                  ? val.customer.queue?.srcAddress
-                  : val.customer.queue?.target}
+                  ? val.customer?.queue?.srcAddress
+                  : val.customer?.queue?.target}
               </td>
               <td className="prin_td">{val?.package}</td>
               <td className="prin_td">{val.customer?.monthlyFee}</td>

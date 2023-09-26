@@ -71,7 +71,6 @@ const CustomerInvoice = () => {
   // Loading state
   const [isLoading, setIsLoading] = useState(false);
   const [show, setShow] = useState(false);
-
   const [customerLoading, setCustomerLoading] = useState(false);
 
   // customer state
@@ -88,7 +87,6 @@ const CustomerInvoice = () => {
 
   // status handle state
   const [status, setStatus] = useState("");
-
   const [open, setOpen] = useState(false);
 
   //filter state
@@ -353,12 +351,12 @@ const CustomerInvoice = () => {
         Header: t("PPPoEName"),
         accessor: (item) =>
           item.customer?.userType === "pppoe"
-            ? item.customer.pppoe?.name
+            ? item.customer?.pppoe?.name
             : item.customer?.userType === "firewall-queue"
-            ? item.customer.queue?.address
+            ? item.customer?.queue?.address
             : item.customer?.userType === "core-queue"
-            ? item.customer.queue?.srcAddress
-            : item.customer.queue?.target,
+            ? item.customer?.queue?.srcAddress
+            : item.customer?.queue?.target,
       },
       {
         width: "9%",
@@ -433,21 +431,22 @@ const CustomerInvoice = () => {
                 aria-expanded="false"
               />
               <ul className="dropdown-menu" aria-labelledby="customerDrop">
-                {original?.paymentStatus !== "paid" && (
-                  <li
-                    onClick={() => {
-                      setInvoiceId(original.id);
-                      setShow(true);
-                    }}
-                  >
-                    <div className="dropdown-item">
-                      <div className="customerAction">
-                        <CurrencyDollar />
-                        <p className="actionP">{t("recharge")}</p>
+                {original?.paymentStatus !== "paid" &&
+                  original?.customer !== null && (
+                    <li
+                      onClick={() => {
+                        setInvoiceId(original.id);
+                        setShow(true);
+                      }}
+                    >
+                      <div className="dropdown-item">
+                        <div className="customerAction">
+                          <CurrencyDollar />
+                          <p className="actionP">{t("recharge")}</p>
+                        </div>
                       </div>
-                    </div>
-                  </li>
-                )}
+                    </li>
+                  )}
 
                 <li
                   onClick={() => {

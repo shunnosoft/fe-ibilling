@@ -108,9 +108,9 @@ const ActiveCustomerPrint = forwardRef((props, ref) => {
               <td className="prin_td">{val.name}</td>
               {status === "pppoe" ? (
                 <>
-                  <td className="prin_td">{val?.pppoe.name}</td>
+                  <td className="prin_td">{val?.pppoe?.name}</td>
                   <td className="prin_td">{val.ip}</td>
-                  <td className="prin_td">{val?.pppoe.profile}</td>
+                  <td className="prin_td">{val?.pppoe?.profile}</td>
                   <td className="prin_td">{val.lastLinkUpTime}</td>
                   <td className="prin_td">{val.lastLogoutTime}</td>
                 </>
