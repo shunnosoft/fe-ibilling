@@ -120,6 +120,7 @@ import {
   deletePackageSuccess,
   getpackageSuccess,
   getAllPackagesSuccess,
+  getPppoePackages,
 } from "./packageSlice";
 import {
   addExpenditureSectorsSuccess,
@@ -3698,4 +3699,16 @@ export const staticMACBinding = async (customerId) => {
   } catch (error) {
     toast.error(error.response?.data?.message);
   }
+};
+
+// get pppoe customer all package list api
+export const getPPPoEPackage = async (dispatch, ispOwner, setIsloading) => {
+  setIsloading(true);
+  try {
+    const res = await apiLink.get(`mikrotik/pppoe/package/${ispOwner}`);
+    dispatch(getPppoePackages(res.data.packages));
+  } catch (error) {
+    console.log(error.message);
+  }
+  setIsloading(false);
 };

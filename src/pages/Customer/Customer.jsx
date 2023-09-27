@@ -43,6 +43,7 @@ import {
   getCollector,
   getCustomer,
   getManger,
+  getPPPoEPackage,
   getPackagewithoutmikrotik,
 } from "../../features/apiCalls";
 import { ToastContainer } from "react-toastify";
@@ -68,7 +69,6 @@ import {
   printOptionDataBangla,
   printOptionDataEng,
 } from "./customerCRUD/printOptionData";
-import apiLink from "../../api/apiLink";
 import DatePicker from "react-datepicker";
 import PrintCustomer from "./customerPDF";
 import { Accordion, Button, Card, Collapse, Modal } from "react-bootstrap";
@@ -137,6 +137,9 @@ const PPPOECustomer = () => {
   //get mikrotik
   const mikrotiks = useSelector((state) => state?.mikrotik?.mikrotik);
 
+  // get all package list
+  let packages = useSelector((state) => state?.package?.pppoePackages);
+
   //get collector areas
   const collectorSubAreas = useSelector((state) =>
     role === "collector"
@@ -157,7 +160,7 @@ const PPPOECustomer = () => {
     (state) => state.adminNetFeeSupport?.bulletinPermission
   );
 
-  //component states
+  //loading states
   const [loading, setLoading] = useState(false);
 
   // filter Accordion handle state
@@ -273,6 +276,10 @@ const PPPOECustomer = () => {
     if (customers.length === 0)
       getCustomer(dispatch, ispOwner, setCustomerLoading);
 
+    // get package list api
+    if (packages.length === 0)
+      getPPPoEPackage(dispatch, ispOwner, setIsLoadingPole);
+
     if (role !== "collector") {
       if (collectors.length === 0)
         getCollector(dispatch, ispOwner, setCollectorLoading);
@@ -335,10 +342,8 @@ const PPPOECustomer = () => {
       setMikrotikPackages([]);
     }
     if (id) {
-      try {
-        const res = await apiLink.get(`/mikrotik/ppp/package/${id}`);
-        setMikrotikPackages(res.data);
-      } catch (error) {}
+      const mikrotikPackage = packages.filter((pack) => pack.mikrotik === id);
+      setMikrotikPackages(mikrotikPackage);
     }
   };
 

@@ -874,6 +874,6 @@
   "dayLength": "Day Length",
   "startBillingCycleDate": "Start BillingCycle Date",
   "endBillingCycleDate": "End BillingCycle Date",
-  "manualInactive": "Manual Inactive",
+  "manualInactive": "Manual Active/Inactive",
   "manualInactiveToast": "Customer Manual Inactive SMS Template Updated."
 }

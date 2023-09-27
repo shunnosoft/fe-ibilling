@@ -53,6 +53,7 @@ import {
   fetchPackagefromDatabase,
   getAllPackages,
   staticMACBinding,
+  getQueuePackageByIspOwnerId,
 } from "../../features/apiCalls";
 import CustomerReport from "./customerCRUD/showCustomerReport";
 import { badge } from "../../components/common/Utils";
@@ -127,6 +128,9 @@ export default function Customer() {
       ? state.persistedReducer.auth?.currentUser?.collector?.areas
       : []
   );
+
+  // get all package list
+  let packages = useSelector((state) => state?.package?.packages);
 
   // get all packages
   const allPackages = useSelector((state) => state.package.allPackages);
@@ -365,7 +369,10 @@ export default function Customer() {
     ) {
       getPackagewithoutmikrotik(ispOwner, dispatch, setIsloading);
     } else {
-      getAllPackages(dispatch, ispOwner, setIsloading);
+      allPackages.length === 0 &&
+        getAllPackages(dispatch, ispOwner, setIsloading);
+      packages.length === 0 &&
+        getQueuePackageByIspOwnerId(ispOwner, dispatch, setIsloading);
     }
 
     if (cus.length === 0)
@@ -668,12 +675,8 @@ export default function Customer() {
       setMikrotikPac([]);
     }
     if (id) {
-      try {
-        const res = await apiLink.get(`/mikrotik/ppp/package/${id}`);
-        setMikrotikPac(res.data);
-      } catch (error) {
-        console.log(error);
-      }
+      const mikrotikPackage = packages.filter((pack) => pack.mikrotik === id);
+      setMikrotikPac(mikrotikPackage);
     }
   };
 
@@ -1775,6 +1778,7 @@ export default function Customer() {
                   bulkCustomer={bulkCustomer}
                   show={isShow}
                   setShow={setIsShow}
+                  status="static"
                 />
               )}
 

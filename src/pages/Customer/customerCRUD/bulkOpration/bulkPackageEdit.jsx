@@ -1,21 +1,17 @@
 import React from "react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
+import { toast } from "react-toastify";
+
+//internal import
 import Loader from "../../../../components/common/Loader";
 import { bulkPackageEdit } from "../../../../features/actions/bulkOperationApi";
 import RootBulkModal from "./bulkModal";
-import { useTranslation } from "react-i18next";
-import { fetchPackagefromDatabase } from "../../../../features/apiCalls";
-import { toast } from "react-toastify";
 
-const BulkPackageEdit = ({ bulkCustomer, show, setShow }) => {
+const BulkPackageEdit = ({ bulkCustomer, show, setShow, status }) => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
-
-  // get isp owner id
-  const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerId
-  );
 
   // get bp settings
   const bpSettings = useSelector(
@@ -25,36 +21,35 @@ const BulkPackageEdit = ({ bulkCustomer, show, setShow }) => {
   // get mikrotik
   const Getmikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
 
-  // get pppoe Package
-  const ppPackage = useSelector((state) =>
-    bpSettings?.hasMikrotik
-      ? state?.mikrotik?.packagefromDatabase
+  // get pppoe & static Package
+  const packages = useSelector((state) =>
+    bpSettings?.hasMikrotik && status !== "static"
+      ? state?.package?.pppoePackages
       : state?.package?.packages
   );
 
+  // loading state
   const [isLoading, setIsLoading] = useState(false);
+
+  // mikrotik pppoe & static package state
+  const [PPPoEPackage, setPPPoEPackage] = useState([]);
+
+  // select mikrotik id state
   const [singleMikrotik, setSingleMikrotik] = useState("");
 
+  // select mikrotik package state
   const [mikrotikPackage, setMikrotikPackage] = useState("");
 
-  // select Getmikrotik
+  // select mikrotik package filter
   const selectMikrotik = (e) => {
     const id = e.target.value;
-    if (id && ispOwnerId) {
-      const IDs = {
-        ispOwner: ispOwnerId,
-        mikrotikId: id,
-      };
-      //ToDo
-      if (bpSettings?.hasMikrotik) {
-        fetchPackagefromDatabase(dispatch, IDs, setIsLoading);
-      }
-    }
     setSingleMikrotik(id);
-    setMikrotikPackage("");
+
+    const mikrotikPackage = packages.filter((pack) => pack.mikrotik === id);
+    setPPPoEPackage(mikrotikPackage);
   };
 
-  // select Mikrotik Package
+  // mikrotik Package handler
   const selectMikrotikPackage = (e) => {
     const mikrotikPackageId = e.target.value;
     if (mikrotikPackageId === "0") {
@@ -64,6 +59,7 @@ const BulkPackageEdit = ({ bulkCustomer, show, setShow }) => {
     }
   };
 
+  // change package submit hadler
   const changePackage = (e) => {
     e.preventDefault();
     let otherCusetomerCount = 0;
@@ -142,12 +138,11 @@ const BulkPackageEdit = ({ bulkCustomer, show, setShow }) => {
               onChange={selectMikrotikPackage}
             >
               <option value={"0"}>...</option>
-              {ppPackage &&
-                ppPackage?.map((val, key) => (
-                  <option key={key} value={val.id}>
-                    {val.name}
-                  </option>
-                ))}
+              {PPPoEPackage?.map((val, key) => (
+                <option key={key} value={val.id}>
+                  {val.name}
+                </option>
+              ))}
             </select>
           </div>
         </div>

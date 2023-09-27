@@ -73,11 +73,7 @@ export default function StaticCustomerEdit({ show, setShow, single }) {
   // get all mikrotik
   const Getmikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
 
-  const ppPackage = useSelector((state) =>
-    bpSettings?.hasMikrotik
-      ? state?.mikrotik?.packagefromDatabase
-      : state?.package?.packages
-  );
+  const ppPackage = useSelector((state) => state?.package?.packages);
 
   const [packageRate, setPackageRate] = useState({ rate: 0 });
   const [isLoading, setIsloading] = useState(false);

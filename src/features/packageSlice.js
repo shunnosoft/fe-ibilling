@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   packages: [],
   allPackages: [],
+  pppoePackages: [],
   hotspotPackage: [],
 };
 
@@ -33,6 +34,11 @@ const packageSlice = createSlice({
     getHotspotPackageSuccess: (state, action) => {
       state.hotspotPackage = action.payload;
     },
+
+    // pppoe packages
+    getPppoePackages: (state, action) => {
+      state.pppoePackages = action.payload;
+    },
   },
 });
 
@@ -43,6 +49,7 @@ export const {
   addPackageSuccess,
   deletePackageSuccess,
   getHotspotPackageSuccess,
+  getPppoePackages,
 } = packageSlice.actions;
 
 export default packageSlice.reducer;

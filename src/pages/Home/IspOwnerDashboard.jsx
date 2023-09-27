@@ -281,7 +281,9 @@ export default function IspOwnerDashboard() {
   //percantage calculation
   const collectionPercentage = customerStat
     ? Math.floor(
-        (customerStat.totalBillCollection / probabilityAmountCalculation()) *
+        ((customerStat.totalBillCollection -
+          customerStat.totalMonthlyDiscount) /
+          probabilityAmountCalculation()) *
           100
       )
     : 0;

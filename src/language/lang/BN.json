@@ -880,6 +880,6 @@
   "dayLength": "ডে লেংথ",
   "startBillingCycleDate": "বিলিং সাইকেল শুরু তারিখ",
   "endBillingCycleDate": "বিলিং সাইকেল শেষ তারিখ",
-  "manualInactive": "ম্যানুয়াল ইন-এক্টিভ",
+  "manualInactive": "ম্যানুয়াল এক্টিভ/ইন-এক্টিভ",
   "manualInactiveToast": "কাস্টমার ম্যানুয়াল ইন-এক্টিভ এসএমএস টেমপ্লেট আপডেট।"
 }
