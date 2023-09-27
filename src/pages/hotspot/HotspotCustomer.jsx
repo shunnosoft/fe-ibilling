@@ -970,7 +970,7 @@ const HotspotCustomer = () => {
           bulkCustomer={bulkCustomers}
           show={show}
           setShow={setShow}
-          modalStatus="hotspot"
+          status="hotspot"
         />
       )}
 

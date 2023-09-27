@@ -8,7 +8,7 @@ import {
 import RootBulkModal from "./bulkModal";
 import { useTranslation } from "react-i18next";
 
-const BulkCustomerDelete = ({ bulkCustomer, show, setShow, bulkStatus }) => {
+const BulkCustomerDelete = ({ bulkCustomer, show, setShow, status }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
@@ -42,7 +42,7 @@ const BulkCustomerDelete = ({ bulkCustomer, show, setShow, bulkStatus }) => {
         data.customerIds.length + "টি গ্রাহক ডিলিট করতে চান?"
       );
       if (confirm) {
-        if (bulkStatus === "hotspot") {
+        if (status === "hotspot") {
           hotspotBulkDeleteCustomer(
             dispatch,
             data,

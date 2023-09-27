@@ -20,6 +20,7 @@ const Discount = ({ show, setShow, ispOwnerId, year, month, status }) => {
   const discountCustomer = useSelector(
     (state) => state.dashboardInformation?.discountCustomer
   );
+  console.log(discountCustomer);
 
   // get all packages
   const allPackages = useSelector((state) => state.package.allPackages);
@@ -44,7 +45,7 @@ const Discount = ({ show, setShow, ispOwnerId, year, month, status }) => {
       return findPack;
     } else {
       const findPack = allPackages.find((item) =>
-        item.id.includes(value?.mikrotikPackage)
+        item.id.includes(value.customer?.mikrotikPackage)
       );
       return findPack;
     }
