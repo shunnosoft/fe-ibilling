@@ -2698,7 +2698,7 @@ export const getQueuePackageByIspOwnerId = async (
     const res = await apiLink.get(`/mikrotik/queue/package/${ispOwnerId}`);
     // console.log(res.data.packages);
     dispatch(getpackageSuccess(res.data.packages));
-    dispatch(getpppoePackageSuccess(res.data.packages));
+    // dispatch(getpppoePackageSuccess(res.data.packages));
     setIsloading(false);
   } catch (error) {
     console.log(error.response?.data.message);

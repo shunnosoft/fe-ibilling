@@ -151,9 +151,9 @@ export const resellerPermissions = (permission, bpSettings) => {
     //   disabled: !bpSettings?.bulkPaymentStatusEdit,
     // },
     {
-      id: 2,
+      id: 22,
       label: "Customer Delete",
-      value: "customerEdit",
+      value: "customerDelete",
       isChecked: permission?.customerDelete,
       disabled: false,
     },
@@ -311,6 +311,13 @@ export const resellerPermissions = (permission, bpSettings) => {
     //   isChecked: permission?.bulkPaymentStatusEdit,
     //   disabled: !bpSettings?.bulkPaymentStatusEdit,
     // },
+    {
+      id: 22,
+      label: "কাস্টমার ডিলিট",
+      value: "customerDelete",
+      isChecked: permission?.customerDelete,
+      disabled: false,
+    },
   ];
 
   if (localStorage.getItem("netFee:lang") === "bn") return permissionBn;

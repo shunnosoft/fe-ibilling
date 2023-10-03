@@ -376,10 +376,8 @@ export default function ConfigMikrotik() {
       },
       {
         width: "5%",
-        Header: "#",
-        id: "row",
-        accessor: (row) => Number(row.id + 1),
-        Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
+        Header: t("id"),
+        accessor: "customerId",
       },
       {
         width: "7%",

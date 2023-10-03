@@ -2,13 +2,24 @@ import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
-import { PersonLinesFill } from "react-bootstrap-icons";
+import {
+  ArchiveFill,
+  PenFill,
+  PersonLinesFill,
+  ThreeDots,
+} from "react-bootstrap-icons";
 import CustomerSync from "./staticOperation/CustomerSync";
 import { useEffect } from "react";
-import { getStaticCustomer, testFireWallApi } from "../../../features/apiCalls";
+import {
+  deleteStaticPackage,
+  getQueuePackageByIspOwnerId,
+  getStaticCustomer,
+  testFireWallApi,
+} from "../../../features/apiCalls";
 import { useDispatch } from "react-redux";
 import Table from "../../../components/table/Table";
 import moment from "moment";
+import EditPackage from "../../staticCustomer/EditPackageModal";
 
 const Static = () => {
   const { t } = useTranslation();
@@ -17,6 +28,9 @@ const Static = () => {
   const dispatch = useDispatch();
 
   const { ispOwner, mikrotikId } = useParams();
+
+  // get all package list
+  let packages = useSelector((state) => state?.package?.packages);
 
   // get all mikrotik
   const mikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
@@ -27,11 +41,18 @@ const Static = () => {
   // get static customer
   const customer = useSelector((state) => state?.customer?.staticCustomer);
 
+  // customer loading
+  const [customerLoading, setCustomerLoading] = useState(false);
+  const [isLoading, setIsloading] = useState(false);
+
+  // section show state
+  const [showSection, setShowSection] = useState("staticPackage");
+
   // customer state
   const [staticCustomer, setStatiCustomer] = useState(customer);
 
-  // customer loading
-  const [customerLoading, setCustomerLoading] = useState(false);
+  // set editable data for state
+  const [singlePackage, setSinglePackage] = useState("");
 
   useEffect(() => {
     // filter mikrotik customer
@@ -44,9 +65,93 @@ const Static = () => {
   }, [customer]);
 
   useEffect(() => {
+    // get package api call
+    getQueuePackageByIspOwnerId(ispOwner, dispatch, setIsloading);
+
     getStaticCustomer(dispatch, ispOwner, setCustomerLoading);
   }, []);
 
+  // delete handle function
+  const deletePackageHandler = (packageId) => {
+    const confirm = window.confirm(t("doWantDeletePackage"));
+    if (confirm) {
+      deleteStaticPackage(dispatch, packageId);
+    }
+  };
+
+  // package column
+  const packageColumn = React.useMemo(
+    () => [
+      {
+        Header: t("serial"),
+        id: "row",
+        accessor: (row) => Number(row.id + 1),
+        Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
+      },
+      {
+        Header: t("package"),
+        accessor: "name",
+      },
+      {
+        Header: t("rate"),
+        accessor: "rate",
+      },
+
+      {
+        Header: () => <div className="text-center">{t("action")}</div>,
+        id: "option",
+
+        Cell: ({ row: { original } }) => (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <ThreeDots
+              className="dropdown-toggle ActionDots"
+              id="areaDropdown"
+              type="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            />
+            <ul className="dropdown-menu" aria-labelledby="customerDrop">
+              {
+                <li
+                  data-bs-toggle="modal"
+                  data-bs-target="#editPackage"
+                  onClick={() => {
+                    setSinglePackage(original);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <PenFill />
+                      <p className="actionP">{t("edit")}</p>
+                    </div>
+                  </div>
+                </li>
+              }
+              <li
+                onClick={() => {
+                  deletePackageHandler(original.id);
+                }}
+              >
+                <div className="dropdown-item actionManager">
+                  <div className="customerAction">
+                    <ArchiveFill />
+                    <p className="actionP">{t("delete")}</p>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        ),
+      },
+    ],
+    []
+  );
   // customer column
   const columns = React.useMemo(
     () => [
@@ -87,17 +192,17 @@ const Static = () => {
       <div className="collectorWrapper mt-2 py-2">
         <div className="addCollector">
           <div className=" d-flex justify-content-around">
-            {/* <div className="rightSideMikrotik">
+            <div className="filter-section">
               <h5 className="mb-1"> {t("select")} </h5>
               <select
                 id="selectMikrotikOption"
                 className="form-select mt-0"
                 onChange={(event) => setShowSection(event.target.value)}
               >
-                <option value="hotspotPackage">{t("package")}</option>
-                <option value="hotsPotCustomer">{t("sokolCustomer")}</option>
+                <option value="staticPackage">{t("package")}</option>
+                <option value="staticCustomer">{t("sokolCustomer")}</option>
               </select>
-            </div> */}
+            </div>
 
             {/* mikrotik information */}
             <div className="mikrotikDetails">
@@ -128,14 +233,27 @@ const Static = () => {
               </button>
             </div>
           </div>
-          <Table
-            isLoading={customerLoading}
-            columns={columns}
-            data={staticCustomer}
-          ></Table>
+
+          {showSection === "staticPackage" && (
+            <Table
+              isLoading={isLoading}
+              columns={packageColumn}
+              data={packages}
+            ></Table>
+          )}
+          {showSection === "staticCustomer" && (
+            <Table
+              isLoading={customerLoading}
+              columns={columns}
+              data={staticCustomer}
+            ></Table>
+          )}
         </div>
       </div>
       <CustomerSync mikrotikId={mikrotikId} ispOwner={ispOwner} />
+
+      {/* package edit modal */}
+      <EditPackage package={singlePackage} />
     </>
   );
 };

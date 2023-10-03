@@ -51,6 +51,7 @@ import BulkPaymentStatusEdit from "../../Customer/customerCRUD/bulkOpration/Bulk
 import BulkAutoConnectionEdit from "../../Customer/customerCRUD/bulkOpration/bulkAutoConnectionEdit";
 import { getSubAreasApi } from "../../../features/actions/customerApiCall";
 import { Accordion, Card, Collapse } from "react-bootstrap";
+import BulkCustomerDelete from "../../Customer/customerCRUD/bulkOpration/BulkdeleteModal";
 
 // get specific customer
 
@@ -813,6 +814,14 @@ const ResellerCustomer = () => {
         />
       )}
 
+      {bulkStatus === "bulkDeleteCustomer" && (
+        <BulkCustomerDelete
+          show={show}
+          setShow={setShow}
+          bulkCustomer={bulkCustomer}
+        />
+      )}
+
       {bulkCustomer.length > 0 && (
         <div className="client_wraper2">
           <div
@@ -1016,6 +1025,32 @@ const ResellerCustomer = () => {
                     </button>
                   </div>
                   <div className="menu_label2">{t("autoConnectOnOff")}</div>
+                </li>
+              )}
+
+              <hr className="mt-0 mb-0" />
+
+              {bpSettings?.bulkCustomerDelete && (
+                <li
+                  type="button"
+                  className="p-1"
+                  onClick={() => {
+                    setBulkStatus("bulkDeleteCustomer");
+                    setShow(true);
+                  }}
+                >
+                  <div className="menu_icon2">
+                    <button
+                      className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-danger"
+                      title={t("customerDelete")}
+                    >
+                      <i className="fas fa-trash-alt fa-xs "></i>
+                      <span className="button_title">
+                        {t("customerDelete")}
+                      </span>
+                    </button>
+                  </div>
+                  <div className="menu_label2">{t("customerDelete")}</div>
                 </li>
               )}
             </ul>

@@ -49,6 +49,7 @@ const PPPoE = () => {
 
   // get pppoe package
   let pppoePackage = useSelector((state) => state?.mikrotik?.pppoePackage);
+  console.log(pppoePackage);
 
   // get all user
   const allMikrotikUsers = useSelector((state) => state?.mikrotik?.pppoeUser);

@@ -59,9 +59,11 @@ const StaticActiveCustomer = () => {
 
   // get all mikrotik from redux
   const mikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
+  console.log(mikrotik);
 
   // set initial mikrotik id
   const [mikrotikId, setMikrotikId] = useState(mikrotik[0]?.id);
+  console.log(mikrotikId);
 
   // get all static customer
   let staticActiveCustomer = useSelector(
@@ -91,21 +93,22 @@ const StaticActiveCustomer = () => {
 
   // api call for get update static customer
   useEffect(() => {
-    fetchMikrotik(dispatch, ispOwnerId, setMtkLoading);
-    getStaticActiveCustomer(dispatch, ispOwnerId, mikrotikId, setIsloading);
-  }, [mikrotikId]);
+    mikrotik.length === 0 && fetchMikrotik(dispatch, ispOwnerId, setMtkLoading);
+    Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
+  }, []);
 
   useEffect(() => {
     setMikrotikId(mikrotik[0]?.id);
   }, [mikrotik]);
 
   useEffect(() => {
-    setStaticCustomers(staticActiveCustomer);
-  }, [staticActiveCustomer]);
+    mikrotikId &&
+      getStaticActiveCustomer(dispatch, ispOwnerId, mikrotikId, setIsloading);
+  }, [mikrotikId]);
 
   useEffect(() => {
-    Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
-  }, []);
+    setStaticCustomers(staticActiveCustomer);
+  }, [staticActiveCustomer]);
 
   // select mikrotik handler
   const mikrotiSelectionHandler = (event) => {
@@ -187,10 +190,8 @@ const StaticActiveCustomer = () => {
     () => [
       {
         width: "10%",
-        Header: "#",
-        id: "row",
-        accessor: (row) => Number(row.id + 1),
-        Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
+        Header: t("id"),
+        accessor: "customerId",
       },
       {
         width: "20%",
@@ -403,7 +404,7 @@ const StaticActiveCustomer = () => {
                       </Accordion.Body>
                     </Accordion.Item>
                   </Accordion>
-                  <div className="collectorWrapper">
+                  <div className="collectorWrapper pb-2">
                     <div style={{ display: "none" }}>
                       <ActiveCustomerPrint
                         filterData={filterData}
