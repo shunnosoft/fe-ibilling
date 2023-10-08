@@ -846,6 +846,8 @@ export default function Customer() {
                     onClick={() => {
                       getSpecificCustomer(original.id);
                       getSpecificCustomerReport(original);
+                      setModalStatus("customerRecharge");
+                      setShow(true);
                     }}
                   >
                     <div className="dropdown-item">
@@ -1689,10 +1691,15 @@ export default function Customer() {
               )}
 
               {/* customer bill collection */}
-              <CustomerBillCollect
-                single={singleCustomer}
-                customerData={customerReportData}
-              />
+              {modalStatus === "customerRecharge" && (
+                <CustomerBillCollect
+                  show={show}
+                  setShow={setShow}
+                  single={singleCustomer}
+                  customerData={customerReportData}
+                />
+              )}
+
               <CustomerDetails single={singleCustomer} />
               <CustomerReport single={customerReportData} />
               {/* customer note modal */}

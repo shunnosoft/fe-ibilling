@@ -17,11 +17,16 @@ export default function CustomerReport({ single }) {
   const billRefwithOutNote = useRef();
 
   // get user role
-  const userRole = useSelector((state) => state.persistedReducer.auth?.role);
+  const role = useSelector((state) => state.persistedReducer.auth?.role);
 
   //get isp owner data
   const ispOwnerData = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerData
+  );
+
+  // get user permission
+  const permission = useSelector(
+    (state) => state.persistedReducer.auth.userData.permissions
   );
 
   // loading state
@@ -51,9 +56,9 @@ export default function CustomerReport({ single }) {
     setPrintVal(val);
     setTimeout(function () {
       if (val.note || val.start || val.end || val.month) {
-        document.getElementById("PrintWithNote").click();
+        document.getElementById("PrintPppoeWithNote").click();
       } else {
-        document.getElementById("PrintWithoutNote").click();
+        document.getElementById("PrintPppoeWithoutNote").click();
       }
     }, 100);
   };
@@ -84,191 +89,244 @@ export default function CustomerReport({ single }) {
                 aria-label="Close"
               ></button>
             </div>
-            <div className="modal-body">
-              <div className="table-responsive-lg">
-                <table className="table table-striped ">
-                  <thead>
-                    <tr className="spetialSortingRow">
-                      <th scope="col">{t("package")}</th>
-                      <th scope="col">{t("amount")}</th>
-                      <th scope="col">{t("type")}</th>
-                      <th scope="col">{t("due")}</th>
-                      <th scope="col">{t("previousBalance")}</th>
-                      <th scope="col">{t("date")}</th>
-                      <th scope="col">{t("billingCycle")}</th>
-                      <th scope="col">{t("promiseDate")}</th>
-                      <th scope="col">{t("medium")}</th>
-                      <th scope="col">{t("collector")}</th>
-                      <th scope="col">{t("note")}</th>
-                      <th scope="col">{t("action")}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {isLoading ? (
-                      <TdLoader colspan={5} />
-                    ) : customerReport.length > 0 ? (
-                      customerReport.map((val, index) => {
-                        return (
-                          <tr className="spetialSortingRow" key={index}>
-                            <td>{single.pppoe.profile}</td>
-                            <td>{FormatNumber(val.amount)}</td>
-                            <td>{val.billType}</td>
-                            <td>{FormatNumber(val.due)}</td>
-                            <td>{FormatNumber(val?.prevState?.balance)}</td>
-                            <td>
+            <table className="table table-striped">
+              <thead>
+                <tr className="spetialSortingRow">
+                  <th scope="col">{t("package")}</th>
+                  <th scope="col">{t("collected")}</th>
+                  <th scope="col">{t("amount")}</th>
+                  <th scope="col">{t("previousState")}</th>
+                  <th scope="col">{t("currentState")}</th>
+                  <th scope="col">{t("note")}</th>
+                  <th scope="col">{t("action")}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {isLoading ? (
+                  <TdLoader colspan={5} />
+                ) : customerReport.length > 0 ? (
+                  customerReport.map((val, index) => {
+                    return (
+                      <tr className="spetialSortingRow" key={index}>
+                        <td>
+                          <p>
+                            {t("bandWith")}{" "}
+                            <b className="text-secondary">
+                              {single.pppoe.profile}
+                            </b>
+                          </p>
+                          <p>
+                            {t("amount")}{" "}
+                            <b className="text-secondary">
+                              {FormatNumber(val.amount)}
+                            </b>
+                          </p>
+                          <p>
+                            {t("type")}{" "}
+                            <b className="text-secondary">{val.billType}</b>
+                          </p>
+                          <p>
+                            {t("medium")}{" "}
+                            <b className="text-secondary">{val.medium}</b>
+                          </p>
+                        </td>
+
+                        <td>
+                          <p>
+                            {t("collected")}{" "}
+                            <b className="text-secondary">{val.name}</b>
+                          </p>
+                          <p>
+                            {t("createdAt")}{" "}
+                            <b className="text-secondary">
                               {moment(val.createdAt).format(
                                 "MMM DD YYYY hh:mm a"
                               )}
-                            </td>
-                            <td>
+                            </b>
+                          </p>
+                        </td>
+                        <td>
+                          <p>
+                            {t("discount")}{" "}
+                            <b className="text-secondary">
+                              {FormatNumber(val?.discount)}
+                            </b>
+                          </p>
+                          <p>
+                            {t("due")}{" "}
+                            <b className="text-secondary">
+                              {FormatNumber(val.due)}
+                            </b>
+                          </p>
+                          <p>
+                            {t("previousBalance")}{" "}
+                            <b className="text-secondary">
+                              {FormatNumber(val?.prevState?.balance)}
+                            </b>
+                          </p>
+                          <p>
+                            {t("currentBalance")}{" "}
+                            <b className="text-secondary">
+                              {FormatNumber(val?.currentState?.balance)}
+                            </b>
+                          </p>
+                        </td>
+                        <td>
+                          <p>
+                            {t("billDate")}{" "}
+                            <b className="text-secondary">
                               {moment(val.prevState?.billingCycle).format(
                                 "MMM DD YYYY hh:mm a"
                               )}
-                            </td>
-                            <td>
+                            </b>
+                          </p>
+                          <p>
+                            {t("promiseDate")}{" "}
+                            <b className="text-secondary">
                               {moment(val.prevState?.promiseDate).format(
                                 "MMM DD YYYY hh:mm a"
                               )}
-                            </td>
-
-                            <td>{val.medium}</td>
-                            <td>{val.name}</td>
-
-                            <td>
-                              <p>
-                                {val.note && val.note.slice(0, 20)}
-                                <span>
-                                  {val?.note && val?.note?.length > 20 && "..."}
-                                </span>
-                              </p>
-                              {val.start && val.end && (
-                                <span className="badge bg-secondary">
-                                  {moment(val.start).format("MMM/DD/YY")}--
-                                  {moment(val.end).format("MMM/DD/YY")}
-                                </span>
+                            </b>
+                          </p>
+                        </td>
+                        <td>
+                          <p>
+                            {t("billDate")}{" "}
+                            <b className="text-secondary">
+                              {moment(val.currentState?.billingCycle).format(
+                                "MMM DD YYYY hh:mm a"
                               )}
-                              <p>
-                                {val?.month && val.month.slice(0, 20)}
-                                <span>
-                                  {val?.month &&
-                                    val?.month?.length > 20 &&
-                                    "..."}
-                                </span>
-                              </p>
-                            </td>
-                            {/* conditional rendering because print component doesnot perform with conditon  */}
-                            {val.note || val.start || val.end || val.month ? (
-                              <td className="text-center">
-                                <div style={{ display: "none" }}>
-                                  <BillCollectInvoiceWithNote
-                                    ref={billRefwithNote}
-                                    customerData={single}
-                                    billingData={{
-                                      amount: printVal.amount,
-                                      due: printVal.due,
-                                      discount: printVal.discount,
-                                      billType: printVal.billType,
-                                      paymentDate: printVal.createdAt,
-                                      medium: printVal.medium,
-                                      startDate: printVal.start,
-                                      endDate: printVal.end,
-                                      note: printVal.note,
-                                      month: printVal.month,
-                                      billingCycle:
-                                        printVal?.prevState?.billingCycle,
-                                      promiseDate:
-                                        printVal?.prevState?.promiseDate,
-                                      status: status,
-                                    }}
-                                    ispOwnerData={ispOwnerData}
-                                    paymentDate={printVal.createdAt}
-                                  />
-                                </div>
-                                {/* <div>
-                                  <PrinterFill
-                                    style={{ cursor: "pointer" }}
-                                    onClick={() => {
-                                      handlePrint(val);
-                                    }}
-                                  />
-                                  <ReactToPrint
-                                    documentTitle={t("billIvoice")}
-                                    trigger={() => (
-                                      <div
-                                        className="d-none"
-                                        title={t("printInvoiceBill")}
-                                        style={{ cursor: "pointer" }}
-                                      >
-                                        <button id="pressPrintReseller">
-                                          btn
-                                        </button>
-                                      </div>
-                                    )}
-                                    content={() => billRefwithNote.current}
-                                  />
-                                </div> */}
-                                <div>
-                                  <div
-                                    style={{ cursor: "pointer" }}
-                                    onClick={() => {
-                                      handlePrint(val, "both"); //button for printing
-                                    }}
-                                    className="d-flex"
-                                  >
-                                    <PrinterFill className="me-1 mt-1 text-success" />
-                                    <span>{t("office&customer")}</span>
-                                  </div>
+                            </b>
+                          </p>
+                          <p>
+                            {t("promiseDate")}{" "}
+                            <b className="text-secondary">
+                              {moment(val.currentState?.promiseDate).format(
+                                "MMM DD YYYY hh:mm a"
+                              )}
+                            </b>
+                          </p>
+                        </td>
 
-                                  <div
-                                    style={{ cursor: "pointer" }}
-                                    onClick={() => {
-                                      handlePrint(val, "customer"); //button for printing
-                                    }}
-                                    className="d-flex"
-                                  >
-                                    <PrinterFill className="me-1 mt-1 text-primary" />
-                                    <span>{t("customer")}</span>
-                                  </div>
+                        <td>
+                          <p>
+                            {val.note && val.note.slice(0, 20)}
+                            <span>
+                              {val?.note && val?.note?.length > 20 && "..."}
+                            </span>
+                          </p>
+                          {val.start && val.end && (
+                            <span className="badge bg-secondary">
+                              {moment(val.start).format("MMM/DD/YY")}--
+                              {moment(val.end).format("MMM/DD/YY")}
+                            </span>
+                          )}
+                          <p>
+                            {val?.month && val.month.slice(0, 20)}
+                            <span>
+                              {val?.month && val?.month?.length > 20 && "..."}
+                            </span>
+                          </p>
+                        </td>
+                        {/* conditional rendering because print component doesnot perform with conditon  */}
 
-                                  <ReactToPrint
-                                    documentTitle={t("billIvoice")}
-                                    trigger={() => (
-                                      <div
-                                        className="d-none"
-                                        title={t("printInvoiceBill")}
-                                        style={{ cursor: "pointer" }}
-                                      >
-                                        <button id="PrintWithNote">btn</button>
-                                      </div>
-                                    )}
-                                    content={() => billRefwithNote.current}
-                                  />
+                        {val.note || val.start || val.end || val.month ? (
+                          <td>
+                            <div style={{ display: "none" }}>
+                              <BillCollectInvoiceWithNote
+                                ref={billRefwithNote}
+                                customerData={single}
+                                billingData={{
+                                  amount: printVal.amount,
+                                  due: printVal.due,
+                                  discount: printVal.discount,
+                                  billType: printVal.billType,
+                                  collectedBy: printVal.collectedBy,
+                                  paymentDate: printVal.createdAt,
+                                  medium: printVal.medium,
+                                  startDate: printVal.start,
+                                  endDate: printVal.end,
+                                  note: printVal.note,
+                                  month: printVal.month,
+                                  billingCycle:
+                                    printVal?.prevState?.billingCycle,
+                                  promiseDate: printVal?.prevState?.promiseDate,
+                                  status: status,
+                                }}
+                                ispOwnerData={ispOwnerData}
+                                paymentDate={printVal.createdAt}
+                              />
+                            </div>
+                            {permission?.billPrint || role !== "collector" ? (
+                              <>
+                                <div
+                                  style={{ cursor: "pointer" }}
+                                  onClick={() => {
+                                    handlePrint(val, "both"); //button for printing
+                                  }}
+                                  className="d-flex"
+                                >
+                                  <PrinterFill className="me-1 mt-1 text-success" />
+                                  <span>{t("office&customer")}</span>
                                 </div>
-                              </td>
+
+                                <div
+                                  style={{ cursor: "pointer" }}
+                                  onClick={() => {
+                                    handlePrint(val, "customer"); //button for printing
+                                  }}
+                                  className="d-flex"
+                                >
+                                  <PrinterFill className="me-1 mt-1 text-primary" />
+                                  <span>{t("customer")}</span>
+                                </div>
+
+                                <ReactToPrint
+                                  documentTitle={t("billIvoice")}
+                                  trigger={() => (
+                                    <div
+                                      className="d-none"
+                                      title={t("printInvoiceBill")}
+                                      style={{ cursor: "pointer" }}
+                                    >
+                                      <button id="PrintPppoeWithNote">
+                                        btn
+                                      </button>
+                                    </div>
+                                  )}
+                                  content={() => billRefwithNote.current}
+                                />
+                              </>
                             ) : (
-                              <td className="text-center">
-                                <div style={{ display: "none" }}>
-                                  <BillCollectInvoiceWithoutNote
-                                    ref={billRefwithOutNote}
-                                    customerData={single}
-                                    billingData={{
-                                      amount: printVal.amount,
-                                      due: printVal.due,
-                                      discount: printVal.discount,
-                                      billType: printVal.billType,
-                                      paymentDate: printVal.createdAt,
-                                      billingCycle:
-                                        printVal?.prevState?.billingCycle,
-                                      promiseDate:
-                                        printVal?.prevState?.promiseDate,
-                                      medium: printVal.medium,
-                                      status: status,
-                                    }}
-                                    ispOwnerData={ispOwnerData}
-                                    paymentDate={printVal.createdAt}
-                                  />
-                                </div>
-                                <div>
+                              ""
+                            )}
+                          </td>
+                        ) : (
+                          <td>
+                            <div style={{ display: "none" }}>
+                              <BillCollectInvoiceWithoutNote
+                                ref={billRefwithOutNote}
+                                customerData={single}
+                                billingData={{
+                                  amount: printVal.amount,
+                                  due: printVal.due,
+                                  discount: printVal.discount,
+                                  billType: printVal.billType,
+                                  collectedBy: printVal.collectedBy,
+                                  paymentDate: printVal.createdAt,
+                                  billingCycle:
+                                    printVal?.prevState?.billingCycle,
+                                  promiseDate: printVal?.prevState?.promiseDate,
+                                  medium: printVal.medium,
+                                  status: status,
+                                }}
+                                ispOwnerData={ispOwnerData}
+                                paymentDate={printVal.createdAt}
+                              />
+                            </div>
+                            <div>
+                              {permission?.billPrint || role !== "collector" ? (
+                                <>
                                   <div
                                     style={{ cursor: "pointer" }}
                                     onClick={() => {
@@ -299,28 +357,30 @@ export default function CustomerReport({ single }) {
                                         title={t("printInvoiceBill")}
                                         style={{ cursor: "pointer" }}
                                       >
-                                        <button id="PrintWithoutNote">
+                                        <button id="PrintPppoeWithoutNote">
                                           btn
                                         </button>
                                       </div>
                                     )}
                                     content={() => billRefwithOutNote.current}
                                   />
-                                </div>
-                              </td>
-                            )}
-                          </tr>
-                        );
-                      })
-                    ) : (
-                      <td colSpan={5}>
-                        <h5 className="text-center">{t("doNotGetAnyData")}</h5>
-                      </td>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
+                                </>
+                              ) : (
+                                ""
+                              )}
+                            </div>
+                          </td>
+                        )}
+                      </tr>
+                    );
+                  })
+                ) : (
+                  <td colSpan={5}>
+                    <h5 className="text-center">{t("doNotGetAnyData")}</h5>
+                  </td>
+                )}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
