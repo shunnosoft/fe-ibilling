@@ -301,10 +301,11 @@ export default function ResellerEdit({ resellerId }) {
   // select area all subArea handler
   const resellerAreaSubAreaHandle = (e) => {
     const { id, checked } = e.target;
-    if (checked) {
-      let selectArea = storeSubArea.filter((item) => item.area === id);
-      let areaSubArea = selectArea?.map((sub) => sub.id);
 
+    let selectArea = storeSubArea.filter((item) => item.area === id);
+    let areaSubArea = selectArea?.map((sub) => sub.id);
+
+    if (checked) {
       let selectData = [...allowedAreas];
       for (let i = 0; i < areaSubArea.length; i++) {
         if (!selectData.includes(areaSubArea[i])) {
@@ -314,13 +315,10 @@ export default function ResellerEdit({ resellerId }) {
       setAllowedAreas(selectData);
       setAreaIds_Edit(selectData);
     } else {
-      const areaSelect = storeSubArea.filter((item) => item.area === id);
-      const areaSubAreaSelect = areaSelect?.map((sub) => sub.id);
-
       let data = [...allowedAreas];
-      for (let i = 0; i < areaSubAreaSelect.length; i++) {
-        if (data.includes(areaSubAreaSelect[i])) {
-          data = data.filter((sub) => sub !== areaSubAreaSelect[i]);
+      for (let i = 0; i < areaSubArea.length; i++) {
+        if (data.includes(areaSubArea[i])) {
+          data = data.filter((sub) => sub !== areaSubArea[i]);
         }
       }
       setAllowedAreas(data);

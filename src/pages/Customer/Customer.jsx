@@ -1965,34 +1965,35 @@ const PPPOECustomer = () => {
               )}
 
               <hr className="mt-0 mb-0" />
-              {((role === "ispOwner" && bpSettings?.bulkAutoDisableEdit) ||
-                (bpSettings?.bulkAutoDisableEdit &&
-                  permission?.bulkAutoDisableEdit &&
-                  role === "manager")) && (
-                <li
-                  type="button"
-                  className="p-1"
-                  onClick={() => {
-                    setBulkStatus("autoDisableEditModal");
-                    setShow(true);
-                  }}
-                >
-                  <div className="menu_icon2">
-                    <button
-                      className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-secondary"
-                      title={t("automaticConnectionOff")}
-                    >
-                      <i class="fas fa-power-off fa-xs"></i>
-                      <span className="button_title">
-                        {t("automaticConnectionOff")}
-                      </span>
-                    </button>
-                  </div>
-                  <div className="menu_label2">
-                    {t("automaticConnectionOff")}
-                  </div>
-                </li>
-              )}
+              {bpSettings?.hasMikrotik &&
+                ((role === "ispOwner" && bpSettings?.bulkAutoDisableEdit) ||
+                  (bpSettings?.bulkAutoDisableEdit &&
+                    permission?.bulkAutoDisableEdit &&
+                    role === "manager")) && (
+                  <li
+                    type="button"
+                    className="p-1"
+                    onClick={() => {
+                      setBulkStatus("autoDisableEditModal");
+                      setShow(true);
+                    }}
+                  >
+                    <div className="menu_icon2">
+                      <button
+                        className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-secondary"
+                        title={t("automaticConnectionOff")}
+                      >
+                        <i class="fas fa-power-off fa-xs"></i>
+                        <span className="button_title">
+                          {t("automaticConnectionOff")}
+                        </span>
+                      </button>
+                    </div>
+                    <div className="menu_label2">
+                      {t("automaticConnectionOff")}
+                    </div>
+                  </li>
+                )}
 
               <hr className="mt-0 mb-0" />
               {bpSettings.hasMikrotik &&

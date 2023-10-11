@@ -262,9 +262,7 @@ const DetailsForm = ({ ispOwner }) => {
             <FtextField type="text" label="Name" name="name" />
             <FtextField type="text" label="Company" name="company" />
             <FtextField type="text" label="Address" name="address" />
-          </div>
 
-          <div className="displayGrid3">
             <FtextField
               type="text"
               label="Package Rate"
@@ -281,15 +279,13 @@ const DetailsForm = ({ ispOwner }) => {
             {role === "superadmin" && (
               <FtextField type="text" label="SMS Balance" name="smsBalance" />
             )}
-          </div>
-          <div className="displayGrid3">
+
             <div>
-              <h6 className="mb-0">Package Type</h6>
+              <lable>Package Type</lable>
               <Field
                 as="select"
                 name="packType"
                 className="form-select mw-100 mt-0"
-                aria-label="Default select example"
               >
                 <option
                   value="Basic"
@@ -307,11 +303,10 @@ const DetailsForm = ({ ispOwner }) => {
             </div>
 
             <div>
-              <h6 className="mb-0">Package</h6>
+              <lable>Package</lable>
               <Field
                 as="select"
                 className="form-select mw-100 mt-0"
-                aria-label="Default select example"
                 name="pack"
                 disabled={role === "admin"}
               >
@@ -335,11 +330,10 @@ const DetailsForm = ({ ispOwner }) => {
 
             {role === "superadmin" && (
               <div>
-                <h6 className="mb-0">Payment Status</h6>
+                <lable>Payment Status</lable>
                 <Field
                   as="select"
                   className="form-select mw-100 mt-0"
-                  aria-label="Default select example"
                   name="paymentStatus"
                 >
                   <option value="paid">Paid</option>
@@ -349,11 +343,10 @@ const DetailsForm = ({ ispOwner }) => {
             )}
 
             <div>
-              <h6 className="mb-0">Queue Type</h6>
+              <lable>Queue Type</lable>
               <Field
                 as="select"
                 className="form-select mw-100 mt-0"
-                aria-label="Default select example"
                 name="queueType"
               >
                 <option value="simple-queue">Simple Queue</option>
@@ -363,7 +356,7 @@ const DetailsForm = ({ ispOwner }) => {
             </div>
 
             <div>
-              <h6 className="customerFieldsTitle mb-0">Invoice Date</h6>
+              <lable className="customerFieldsTitle mb-0">Invoice Date</lable>
 
               <div className="timeDate">
                 <DatePicker
@@ -378,12 +371,11 @@ const DetailsForm = ({ ispOwner }) => {
             </div>
 
             <div>
-              <h6 className="mb-0">Status</h6>
+              <lable>Status</lable>
               <Field
                 as="select"
                 name="status"
                 className="form-select mw-100 mt-0"
-                aria-label="Default select example"
               >
                 <option value="new" selected={ispOwner?.status === "new"}>
                   New
@@ -413,12 +405,11 @@ const DetailsForm = ({ ispOwner }) => {
             </div>
 
             <div>
-              <h6 className="mb-0">Execute Billing Cycle</h6>
+              <lable>Execute Billing Cycle</lable>
               <Field
                 as="select"
                 name="executeBillingCycle"
                 className="form-select mw-100 mt-0"
-                aria-label="Default select example"
               >
                 <option
                   value="true"
@@ -438,15 +429,12 @@ const DetailsForm = ({ ispOwner }) => {
                 </option>
               </Field>
             </div>
-          </div>
 
-          <div className="displayGrid3">
             {divisionalAreaFormat.map((item) => (
-              <div className="mb-3 mt-3">
+              <div>
                 <p className="customerFieldsTitle">{item.text}</p>
                 <select
                   className="form-select mw-100 mt-0"
-                  aria-label="Default select example"
                   name={item.name}
                   id={item.id}
                   onChange={divisionalAreaChangeHandler}
@@ -459,9 +447,7 @@ const DetailsForm = ({ ispOwner }) => {
                 </select>
               </div>
             ))}
-          </div>
 
-          <div className="displayGrid3">
             {role === "superadmin" && (
               <FtextField
                 type="text"
@@ -477,7 +463,7 @@ const DetailsForm = ({ ispOwner }) => {
             />
 
             <div className="mt-3">
-              <h6 className="mb-0">Customer Type</h6>
+              <lable>Customer Type</lable>
               <div className="d-inline-flex mb-4">
                 <div className="form-check me-3">
                   <Field

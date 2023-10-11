@@ -14,6 +14,14 @@ import makeAnimated from "react-select/animated";
 import { useTranslation } from "react-i18next";
 import ReactToPrint from "react-to-print";
 import RechargePrintInvoice from "../../../pages/Customer/customerCRUD/bulkOpration/RechargePrintInvoice";
+import {
+  Modal,
+  ModalBody,
+  ModalDialog,
+  ModalHeader,
+  ModalTitle,
+} from "react-bootstrap";
+import SelectField from "../../../components/common/SelectField";
 
 const options = [
   { value: "January", label: "জানুয়ারী" },
@@ -30,7 +38,12 @@ const options = [
   { value: "December", label: "ডিসেম্বর" },
 ];
 
-export default function CustomerBillCollect({ single, customerData }) {
+export default function CustomerBillCollect({
+  show,
+  setShow,
+  single,
+  customerData,
+}) {
   const { t } = useTranslation();
   const customer = useSelector((state) => state?.customer?.staticCustomer);
 
@@ -79,7 +92,6 @@ export default function CustomerBillCollect({ single, customerData }) {
   //billing date
   const [startDate, setStartDate] = useState(false);
   const [endDate, setEndDate] = useState(false);
-  const [medium, setMedium] = useState("cash");
   const [noteCheck, setNoteCheck] = useState(false);
   const [note, setNote] = useState("");
   const [selectedMonth, setSelectedMonth] = useState([]);
@@ -154,6 +166,11 @@ export default function CustomerBillCollect({ single, customerData }) {
     resellerInfo(resellerId, dispatch);
   }, [resellerId]);
 
+  //modal show handler
+  const handleClose = () => {
+    setShow(false);
+  };
+
   // bill amount
   const customerBillHandler = (formValue) => {
     const sendingData = {
@@ -165,7 +182,7 @@ export default function CustomerBillCollect({ single, customerData }) {
       ispOwner: ispOwner,
       user: currentUser?.user.id,
       collectorId: currentUserId, //when collector is logged in
-      medium,
+      medium: formValue.medium,
       package: data.queue.package,
     };
     if (note) sendingData.note = note;
@@ -186,271 +203,248 @@ export default function CustomerBillCollect({ single, customerData }) {
       resetForm,
       setResponseData,
       setTest,
-      "static"
+      "static",
+      setShow
     );
   };
 
   return (
-    <div>
-      <div>
-        <div
-          className="modal fade"
-          id="collectCustomerBillModal"
-          tabIndex="-1"
-          aria-labelledby="customerModalDetails"
-          aria-hidden="true"
-        >
-          <div className="modal-dialog modal-dialog-scrollable">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5
-                  style={{ color: "#0abb7a" }}
-                  className="modal-title"
-                  id="customerModalDetails"
+    <>
+      <Modal
+        show={show}
+        onHide={handleClose}
+        backdrop="static"
+        keyboard={false}
+        centered
+      >
+        <ModalHeader closeButton>
+          <ModalTitle>
+            <h5
+              style={{ color: "#0abb7a" }}
+              className="modal-title"
+              id="customerModalDetails"
+            >
+              {t("recharge")}
+            </h5>
+          </ModalTitle>
+        </ModalHeader>
+        <ModalBody>
+          <Formik
+            initialValues={{
+              amount:
+                data?.balance < data?.monthlyFee
+                  ? data?.monthlyFee - data?.balance
+                  : data?.monthlyFee,
+              medium: "cash",
+            }}
+            validationSchema={BillValidatoin}
+            onSubmit={(values) => {
+              customerBillHandler(values);
+            }}
+            enableReinitialize
+          >
+            {() => (
+              <Form>
+                <table
+                  className="table table-bordered"
+                  style={{ lineHeight: "12px" }}
                 >
-                  {t("recharge")}
-                </h5>
-                <button
-                  type="button"
-                  className="btn-close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                  onClick={resetForm}
-                ></button>
-              </div>
-              <div className="modal-body">
-                <Formik
-                  initialValues={{
-                    amount:
-                      data?.balance < data?.monthlyFee
-                        ? data?.monthlyFee - data?.balance
-                        : data?.monthlyFee,
-                  }}
-                  validationSchema={BillValidatoin}
-                  onSubmit={(values) => {
-                    customerBillHandler(values);
-                  }}
-                  enableReinitialize
-                >
-                  {() => (
-                    <Form>
-                      <table
-                        className="table table-bordered"
-                        style={{ lineHeight: "12px" }}
-                      >
-                        <tbody>
-                          <tr>
-                            <td>{t("id")}</td>
-                            <td>
-                              <b>{data?.customerId}</b>
-                            </td>
-                            <td>{t("queue")}</td>
-                            <td>
-                              <b>{data?.queue?.name}</b>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>{t("name")}</td>
-                            <td>
-                              <b>{data?.name}</b>
-                            </td>
-                            <td>{t("mobile")}</td>
-                            <td className="text-primary">
-                              <b>{data?.mobile}</b>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>{t("monthly")}</td>
-                            <td className="text-success">
-                              <b>{data?.monthlyFee}</b>
-                            </td>
-                            <td>{t("balance")}</td>
-                            <td className="text-info">
-                              <b>{data?.balance}</b>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
+                  <tbody>
+                    <tr>
+                      <td>{t("id")}</td>
+                      <td>
+                        <b>{data?.customerId}</b>
+                      </td>
+                      <td>{t("queue")}</td>
+                      <td>
+                        <b>{data?.queue?.name}</b>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>{t("name")}</td>
+                      <td>
+                        <b>{data?.name}</b>
+                      </td>
+                      <td>{t("mobile")}</td>
+                      <td className="text-primary">
+                        <b>{data?.mobile}</b>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>{t("monthly")}</td>
+                      <td className="text-success">
+                        <b>{data?.monthlyFee}</b>
+                      </td>
+                      <td>{t("balance")}</td>
+                      <td className="text-info">
+                        <b>{data?.balance}</b>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
 
-                      <div className="bill_collect_form">
-                        <div className="w-50 me-2">
-                          <FtextField
-                            type="number"
-                            name="amount"
-                            label={t("amount")}
+                <div className="displayGrid">
+                  <div className="displayGrid2">
+                    <FtextField
+                      type="number"
+                      name="amount"
+                      label={t("amount")}
+                    />
+
+                    <SelectField label={t("medium")} name="medium">
+                      <option value="cash" selected>
+                        {t("handCash")}
+                      </option>
+                      <option value="bKash"> {t("bKash")} </option>
+                      <option value="rocket"> {t("rocket")} </option>
+                      <option value="nagad"> {t("nagad")} </option>
+                      <option value="others"> {t("others")} </option>
+                    </SelectField>
+                  </div>
+
+                  <div className="month">
+                    <label
+                      className="form-check-label changeLabelFontColor"
+                      htmlFor="selectMonth"
+                    >
+                      {t("selectMonth")}
+                    </label>
+                    <Select
+                      className="mt-0"
+                      value={selectedMonth}
+                      onChange={(data) => setSelectedMonth(data)}
+                      options={options}
+                      isMulti={true}
+                      placeholder={t("selectMonth")}
+                      isSearchable
+                      id="selectMonth"
+                    />
+                  </div>
+
+                  <div className="displayGrid2">
+                    <div>
+                      <label className="form-control-label changeLabelFontColor">
+                        {t("billType")}
+                      </label>
+                      <select
+                        className="form-select mt-0"
+                        onChange={(e) => setBillType(e.target.value)}
+                      >
+                        <option value="bill"> {t("bill")} </option>
+                        <option value="connectionFee">
+                          {t("connectionFee")}
+                        </option>
+                      </select>
+                    </div>
+
+                    <div className="d-flex align-self-end">
+                      <input
+                        type="checkbox"
+                        className="form-check-input me-1"
+                        id="addNOte"
+                        onChange={(e) => setNoteCheck(e.target.checked)}
+                        checked={noteCheck}
+                      />
+                      <label
+                        className="form-check-label changeLabelFontColor"
+                        htmlFor="addNOte"
+                      >
+                        {t("noteAndDate")}
+                      </label>
+                    </div>
+                  </div>
+
+                  {noteCheck && (
+                    <>
+                      <div className="displayGrid2">
+                        <div>
+                          <label className="form-control-label changeLabelFontColor">
+                            {t("startDate")}
+                          </label>
+                          <DatePicker
+                            selected={startDate}
+                            className="form-control mw-100"
+                            onChange={(date) => setStartDate(date)}
+                            dateFormat="dd/MM/yyyy"
+                            placeholderText={t("selectDate")}
                           />
                         </div>
-                        <div className="d-inline w-50 mb-3">
-                          <label
-                            htmlFor="receiver_type"
-                            className="form-control-label changeLabelFontColor"
-                          >
-                            {t("medium")}
+
+                        <div>
+                          <label className="form-control-label changeLabelFontColor">
+                            {t("endDate")}
                           </label>
 
-                          <select
-                            as="select"
-                            id="receiver_type"
-                            className="form-select mt-0 mw-100"
-                            aria-label="Default select example"
-                            onChange={(e) => setMedium(e.target.value)}
-                          >
-                            <option value="cash" selected>
-                              {t("handCash")}
-                            </option>
-                            <option value="bKash"> {t("bKash")} </option>
-                            <option value="rocket"> {t("rocket")} </option>
-                            <option value="nagad"> {t("nagad")} </option>
-                            <option value="others"> {t("others")} </option>
-                          </select>
+                          <DatePicker
+                            selected={endDate}
+                            className="form-control mw-100"
+                            onChange={(date) => setEndDate(date)}
+                            dateFormat="dd/MM/yyyy"
+                            placeholderText={t("selectDate")}
+                          />
                         </div>
                       </div>
 
-                      <div className="month mb-3">
-                        <label
-                          className="form-check-label changeLabelFontColor"
-                          htmlFor="selectMonth"
-                        >
-                          {t("selectMonth")}
-                        </label>
-                        <Select
-                          className="mt-1"
-                          value={selectedMonth}
-                          onChange={(data) => setSelectedMonth(data)}
-                          options={options}
-                          isMulti={true}
-                          placeholder={t("selectMonth")}
-                          isSearchable
-                          id="selectMonth"
+                      <div class="form-floating">
+                        <textarea
+                          cols={200}
+                          class="form-control shadow-none"
+                          placeholder="নোট লিখুন"
+                          id="noteField"
+                          onChange={(e) => setNote(e.target.value)}
+                        ></textarea>
+                        <label for="noteField"> {t("addNote")} </label>
+                      </div>
+                    </>
+                  )}
+
+                  {/* Print the report after instant payment component and button */}
+                  <>
+                    {((role === "reseller" &&
+                      resellerPermission?.instantRechargeBillPrint) ||
+                      (role === "collector" &&
+                        collectorPermission?.instantRechargeBillPrint &&
+                        collectorResellerInfo?.permission
+                          ?.instantRechargeBillPrint)) && (
+                      <div className="d-none">
+                        <RechargePrintInvoice
+                          ref={resellerRechargePrint}
+                          customerData={customerData}
+                          billingData={responseData}
+                          ispOwnerData={userData}
                         />
                       </div>
-                      <div className="d-flex justify-content-between align-items-center">
-                        <div className="w-50 mb-3">
-                          <label className="form-control-label changeLabelFontColor">
-                            {t("billType")}
-                          </label>
-                          <select
-                            className="form-select mt-0"
-                            onChange={(e) => setBillType(e.target.value)}
+                    )}
+
+                    <div className="d-none">
+                      <ReactToPrint
+                        documentTitle={t("saddda")}
+                        trigger={() => (
+                          <div
+                            title={t("printInvoiceBill")}
+                            style={{ cursor: "pointer" }}
                           >
-                            <option value="bill"> {t("bill")} </option>
-                            <option value="connectionFee">
-                              {" "}
-                              {t("connectionFee")}{" "}
-                            </option>
-                          </select>
-                        </div>
-
-                        <div className="form-check">
-                          <input
-                            type="checkbox"
-                            className="form-check-input me-1"
-                            id="addNOte"
-                            onChange={(e) => setNoteCheck(e.target.checked)}
-                            checked={noteCheck}
-                          />
-                          <label
-                            className="form-check-label changeLabelFontColor"
-                            htmlFor="addNOte"
-                          >
-                            {t("noteAndDate")}
-                          </label>
-                        </div>
-                      </div>
-
-                      {noteCheck && (
-                        <>
-                          <div className="mb-1">
-                            <div className="d-flex">
-                              <div className="me-2">
-                                <label className="form-control-label changeLabelFontColor">
-                                  {t("startDate")}
-                                </label>
-                                <DatePicker
-                                  selected={startDate}
-                                  className="form-control mw-100"
-                                  onChange={(date) => setStartDate(date)}
-                                  dateFormat="dd/MM/yyyy"
-                                  placeholderText={t("selectDate")}
-                                />
-                              </div>
-                              <div>
-                                <label className="form-control-label changeLabelFontColor">
-                                  {t("endDate")}
-                                </label>
-
-                                <DatePicker
-                                  selected={endDate}
-                                  className="form-control mw-100"
-                                  onChange={(date) => setEndDate(date)}
-                                  dateFormat="dd/MM/yyyy"
-                                  placeholderText={t("selectDate")}
-                                />
-                              </div>
-                            </div>
-                          </div>
-
-                          <div class="form-floating mt-3">
-                            <textarea
-                              cols={200}
-                              class="form-control shadow-none"
-                              placeholder="নোট লিখুন"
-                              id="noteField"
-                              onChange={(e) => setNote(e.target.value)}
-                            ></textarea>
-                            <label for="noteField"> {t("addNote")} </label>
-                          </div>
-                        </>
-                      )}
-
-                      {/* Print the report after instant payment component and button */}
-                      <>
-                        {((role === "reseller" &&
-                          resellerPermission?.instantRechargeBillPrint) ||
-                          (role === "collector" &&
-                            collectorPermission?.instantRechargeBillPrint &&
-                            collectorResellerInfo?.permission
-                              ?.instantRechargeBillPrint)) && (
-                          <div className="d-none">
-                            <RechargePrintInvoice
-                              ref={resellerRechargePrint}
-                              customerData={customerData}
-                              billingData={responseData}
-                              ispOwnerData={userData}
-                            />
+                            <button type="button" id="printButtonReseller">
+                              Print
+                            </button>
                           </div>
                         )}
+                        content={() => resellerRechargePrint.current}
+                      />
+                    </div>
+                  </>
+                </div>
 
-                        <div className="d-none">
-                          <ReactToPrint
-                            documentTitle={t("saddda")}
-                            trigger={() => (
-                              <div
-                                title={t("printInvoiceBill")}
-                                style={{ cursor: "pointer" }}
-                              >
-                                <button type="button" id="printButtonReseller">
-                                  Print
-                                </button>
-                              </div>
-                            )}
-                            content={() => resellerRechargePrint.current}
-                          />
-                        </div>
-                      </>
-                      <div className="mt-4">
-                        <button type="submit" className="btn btn-success">
-                          {isLoading ? <Loader /> : t("submit")}
-                        </button>
-                      </div>
-                    </Form>
-                  )}
-                </Formik>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+                <div className="mt-4 float-end">
+                  <button type="submit" className="btn btn-success">
+                    {isLoading ? <Loader /> : t("submit")}
+                  </button>
+                </div>
+              </Form>
+            )}
+          </Formik>
+        </ModalBody>
+      </Modal>
+    </>
   );
 }

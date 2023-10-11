@@ -27,7 +27,9 @@ const CustomerDelete = ({
 
   // get all customer
   const customers = useSelector((state) =>
-    status === "customerDelete" ? state?.customer?.customer : ""
+    status !== "customerDelete"
+      ? state?.customer?.customer
+      : state?.customer?.staticCustomer
   );
 
   // find deletable customer
@@ -56,7 +58,6 @@ const CustomerDelete = ({
       customerID: customerId,
       mikrotik: mikrotikCheck,
     };
-
     // api call
     if (checkCondition && page !== "reseller") {
       deleteACustomer(dispatch, data, setIsLoading);
@@ -92,7 +93,7 @@ const CustomerDelete = ({
           </div>
           <div className="modal-body">
             <h5>
-              {singleData?.name} {t("deleteCustomer")}{" "}
+              {singleData?.name} {t("deleteCustomer")}
             </h5>
             {bpSettings?.hasMikrotik && (
               <div class="form-check mt-4">

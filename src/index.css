@@ -221,6 +221,11 @@ p {
   align-items: center;
 }
 
+.displayGrid {
+  display: grid;
+  grid-gap: 10px 10px;
+}
+
 @media only screen and (max-width: 438px) {
   /* #global_name_options {
     flex-direction: column;
@@ -310,9 +315,15 @@ p {
     padding: 2px 15px;
   }
 
-  .displayGrid2 {
+  .displayGrid1 {
     display: grid;
     grid-template-columns: repeat(2, 1fr) !important;
+    grid-gap: 10px;
+  }
+
+  .displayGrid2 {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr) !important;
     grid-gap: 10px;
   }
 

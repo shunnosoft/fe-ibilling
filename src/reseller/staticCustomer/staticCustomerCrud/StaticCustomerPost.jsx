@@ -224,13 +224,7 @@ export default function AddStaticCustomer({ show, setShow }) {
       if (districtName) sendingData.district = districtName;
       if (thanaName) sendingData.thana = thanaName;
     }
-    addResellerStaticCustomer(
-      dispatch,
-      sendingData,
-      setIsloading,
-      resetForm,
-      setShow
-    );
+    addResellerStaticCustomer(dispatch, sendingData, setIsloading, setShow);
   };
   //divisional area formula
   const divisionalAreaFormData = [

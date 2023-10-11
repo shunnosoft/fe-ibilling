@@ -392,7 +392,8 @@ export const billCollect = async (
   resetForm,
   setResponseData,
   setTest,
-  status
+  status,
+  setShow
 ) => {
   setLoading(true);
   try {
@@ -405,8 +406,7 @@ export const billCollect = async (
     }
     setResponseData(res.data);
     setTest(true);
-
-    document.querySelector("#collectCustomerBillModal").click();
+    setShow(false);
     langMessage(
       "success",
       "রিচার্জ সফল হয়েছে",
@@ -415,7 +415,6 @@ export const billCollect = async (
 
     resetForm();
   } catch (error) {
-    //document.querySelector("#collectCustomerBillModal").click();
     toast.error(error.response?.data.message);
   }
   setLoading(false);
@@ -632,8 +631,8 @@ export const getStaticCustomerApi = async (
     setIsloading(false);
   } catch (error) {
     console.log(error.message);
-    setIsloading(false);
   }
+  setIsloading(false);
 };
 
 // get support

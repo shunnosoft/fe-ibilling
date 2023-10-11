@@ -125,7 +125,7 @@ export default function RstaticCustomer() {
   const [customerId, setCustomerId] = useState("");
 
   // component modal state
-  const [compStatus, setCompStatus] = useState("");
+  const [modalStatus, setModalStatus] = useState("");
 
   const [packageRate, setPackageRate] = useState({ rate: 0 });
   const [paymentStatus, setPaymentStatus] = useState("");
@@ -503,11 +503,11 @@ export default function RstaticCustomer() {
 
                 {(role === "reseller" || role === "collector") && (
                   <li
-                    data-bs-toggle="modal"
-                    data-bs-target="#collectCustomerBillModal"
                     onClick={() => {
                       getSpecificCustomer(original.id);
                       getSpecificCustomerReport(original);
+                      setModalStatus("billCollect");
+                      setShow(true);
                     }}
                   >
                     <div className="dropdown-item">
@@ -556,7 +556,7 @@ export default function RstaticCustomer() {
         ),
       },
     ],
-    [t, Customers]
+    [t, Customers, allPackages]
   );
   return (
     <>
@@ -606,8 +606,8 @@ export default function RstaticCustomer() {
                         <PersonPlusFill
                           className="addcutmButton"
                           onClick={() => {
+                            setModalStatus("customerPost");
                             setShow(true);
-                            setCompStatus("customerPost");
                           }}
                         />
                       )}
@@ -800,15 +800,19 @@ export default function RstaticCustomer() {
       {/* Model start */}
 
       {/* new customer added */}
-      {compStatus === "customerPost" && (
+      {modalStatus === "customerPost" && (
         <AddStaticCustomer show={show} setShow={setShow} />
       )}
 
       {/* customer bill collection */}
-      <CustomerBillCollect
-        single={singleCustomer}
-        customerData={customerReportData}
-      />
+      {modalStatus === "billCollect" && (
+        <CustomerBillCollect
+          show={show}
+          setShow={setShow}
+          single={singleCustomer}
+          customerData={customerReportData}
+        />
+      )}
 
       {/* single customer update */}
       <CustomerEdit single={singleCustomer} />

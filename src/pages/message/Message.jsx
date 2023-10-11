@@ -94,6 +94,7 @@ export default function Message() {
   const storeSubArea = useSelector((state) => state.area?.subArea);
   const [areaIds, setAreaIds] = useState([]);
   const [subAreaIds, setSubAreaIds] = useState([]);
+  console.log(subAreaIds);
   const [title, setTitle] = useState("");
 
   const [days, setDays] = useState([]);
@@ -425,10 +426,10 @@ export default function Message() {
     const { id, value, checked, name } = e.target;
 
     if (name === "area") {
-      if (checked) {
-        let selectArea = storeSubArea.filter((item) => item.area === id);
-        let areaSubArea = selectArea?.map((sub) => sub.id);
+      let selectArea = storeSubArea.filter((item) => item.area === id);
+      let areaSubArea = selectArea?.map((sub) => sub.id);
 
+      if (checked) {
         for (let i = 0; i < areaSubArea.length; i++) {
           if (!subAreaIds.includes(areaSubArea[i])) {
             let allData = subAreaIds.push(areaSubArea[i]);
@@ -436,13 +437,10 @@ export default function Message() {
           }
         }
       } else {
-        let selectArea = storeSubArea.filter((item) => item.area === id);
-        let areaSubAreaSelect = selectArea?.map((sub) => sub.id);
-
         let data = [...subAreaIds];
-        for (let i = 0; i < areaSubAreaSelect.length; i++) {
-          if (data.includes(areaSubAreaSelect[i])) {
-            data = data.filter((sub) => sub !== areaSubAreaSelect[i]);
+        for (let i = 0; i < areaSubArea.length; i++) {
+          if (data.includes(areaSubArea[i])) {
+            data = data.filter((sub) => sub !== areaSubArea[i]);
           }
         }
         setSubAreaIds(data);
@@ -610,14 +608,14 @@ export default function Message() {
                                   }}
                                   className="areaParent"
                                 >
-                                  {/* <input
+                                  <input
                                     type="checkbox"
                                     className="getValueUsingClasses form-check-input"
                                     name="area"
                                     id={val.id}
                                     onChange={areasSubareaHandler}
                                     isChecked
-                                  /> */}
+                                  />
                                   <label
                                     htmlFor={val.id}
                                     className="ms-2"

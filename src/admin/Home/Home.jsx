@@ -808,7 +808,7 @@ export default function Home() {
                 </Link>
               )}
 
-              <div className="displayGrid2 mt-0 ">
+              <div className="displayGrid1 mt-0 ">
                 <button
                   className="btn btn-outline-primary"
                   type="button"

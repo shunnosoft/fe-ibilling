@@ -190,7 +190,7 @@ const PasswordReset = ({ show, setShow, userId }) => {
           </div>
         </ModalBody>
         <ModalFooter>
-          <div className="displayGrid2">
+          <div className="displayGrid1">
             <button
               type="button"
               className="btn btn-outline-secondary"
