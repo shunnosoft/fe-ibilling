@@ -226,6 +226,12 @@ p {
   grid-gap: 10px 10px;
 }
 
+.displayGrid1 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr) !important;
+  grid-gap: 10px;
+}
+
 @media only screen and (max-width: 438px) {
   /* #global_name_options {
     flex-direction: column;

@@ -23,12 +23,19 @@ import divisionsJSON from "../../../bdAddress/bd-divisions.json";
 import districtsJSON from "../../../bdAddress/bd-districts.json";
 import thanaJSON from "../../../bdAddress/bd-upazilas.json";
 import SelectField from "../../../components/common/SelectField";
+import {
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  ModalTitle,
+} from "react-bootstrap";
 
 const divisions = divisionsJSON.divisions;
 const districts = districtsJSON.districts;
 const thana = thanaJSON.thana;
 
-export default function CustomerModal() {
+export default function CustomerModal({ show, setShow }) {
   const { t } = useTranslation();
   const { hasMikrotik } = useISPowner();
   // import dispatch
@@ -92,6 +99,9 @@ export default function CustomerModal() {
   // set package state
   const [mikrotikPackage, setMikrotikPackage] = useState("");
 
+  // mikrorik package state
+  const [mikrotikPackages, setMikrotikPackages] = useState([]);
+
   // auto disable state
   const [autoDisable, setAutoDisable] = useState(true);
 
@@ -103,6 +113,7 @@ export default function CustomerModal() {
     district: "",
     thana: "",
   });
+
   // form validation validator
   const customerValidator = Yup.object({
     name: Yup.string().required(t("writeCustomerName")),
@@ -130,12 +141,11 @@ export default function CustomerModal() {
   // select Getmikrotik
   const selectMikrotik = (e) => {
     const id = e.target.value;
-    if (id && resellerId) {
-      const IDs = {
-        reseller: resellerId,
-        mikrotikId: id,
-      };
-      fetchpppoePackage(dispatch, IDs);
+    if (id) {
+      const mikrotikPackage = ppPackage.filter((pack) => pack.mikrotik === id);
+      setMikrotikPackages(mikrotikPackage);
+    } else {
+      setMikrotikPackages([]);
     }
     setSingleMikrotik(id);
   };
@@ -154,6 +164,11 @@ export default function CustomerModal() {
       reseller?.commissionStyle === "fixedRate" &&
       getResellerPackageRate(resellerId, mikrotikPackage, setPackageCommission);
   }, [mikrotikPackage]);
+
+  //modal show handler
+  const handleClose = () => {
+    setShow(false);
+  };
 
   // sending data to backed
   const customerHandler = async (data, resetForm) => {
@@ -218,7 +233,7 @@ export default function CustomerModal() {
       if (thanaName) mainData.thana = thanaName;
     }
 
-    addCustomer(dispatch, mainData, setIsloading, resetForm);
+    addCustomer(dispatch, mainData, setIsloading, resetForm, setShow);
   };
 
   //divisional area formula
@@ -261,377 +276,332 @@ export default function CustomerModal() {
   };
 
   return (
-    <div>
-      <div
-        className="modal fade modal-dialog-scrollable "
-        id="customerModal"
-        tabIndex="-1"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
+    <>
+      <Modal
+        show={show}
+        onHide={handleClose}
+        backdrop="static"
+        keyboard={false}
+        size="xl"
       >
-        <div className="modal-dialog modal-xl">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLabel">
-                {t("addNewCustomer")}
-              </h5>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body">
-              {/* model body here */}
-              <Formik
-                initialValues={{
-                  name: "",
-                  mobile: "",
-                  address: "",
-                  email: "",
-                  nid: "",
-                  monthlyFee: packageRate?.rate || "",
-                  Pname: "",
-                  Pprofile: packageRate?.name || "",
-                  Ppassword: "",
-                  Pcomment: "",
-                  customerBillingType: "",
-                }}
-                validationSchema={customerValidator}
-                onSubmit={(values, { resetForm }) => {
-                  customerHandler(values, resetForm);
-                }}
-                enableReinitialize
-              >
-                {(formik) => (
-                  <Form>
-                    <div className="mikrotikSection ">
-                      {/* pppoe package */}
-                      {(userRole === "ispOwner" ||
-                        userRole === "collector" ||
-                        userRole === "manager") && (
-                        <>
-                          <div>
-                            <label className="form-control-label changeLabelFontColor">
-                              {t("selectMikrotik")}
-                              <span className="text-danger">*</span>
-                            </label>
-                            <select
-                              className="form-select mw-100 mt-0"
-                              aria-label="Default select example"
-                              onChange={selectMikrotik}
-                            >
-                              <option value="">...</option>
-                              {Getmikrotik?.length === undefined
-                                ? ""
-                                : Getmikrotik?.map((val, key) => (
-                                    <option key={key} value={val.id}>
-                                      {val.name}
-                                    </option>
-                                  ))}
-                            </select>
-                          </div>
-
-                          <div>
-                            <label className="form-control-label changeLabelFontColor">
-                              {t("selectPackage")}{" "}
-                              <span className="text-danger">*</span>
-                            </label>
-                            <select
-                              style={{ width: "22rem" }}
-                              className="form-select mb-3 mw-100"
-                              aria-label="Default select example"
-                              onChange={selectMikrotikPackage}
-                            >
-                              <option value="">...</option>
-                              {ppPackage.length === undefined
-                                ? ""
-                                : ppPackage?.map((val, key) => (
-                                    <option key={key} value={val.id}>
-                                      {val.name}
-                                    </option>
-                                  ))}
-                            </select>
-                          </div>
-                        </>
-                      )}
-
-                      {userRole === "reseller" && Getmikrotik.length > 0 && (
-                        <>
-                          <div>
-                            <label className="form-control-label changeLabelFontColor">
-                              {t("selectMikrotik")}
-                              <span className="text-danger">*</span>
-                            </label>
-                            <select
-                              className="form-select mw-100 mt-0"
-                              aria-label="Default select example"
-                              onChange={selectMikrotik}
-                            >
-                              <option value="">...</option>
-                              {Getmikrotik?.length === undefined
-                                ? ""
-                                : Getmikrotik?.map((val, key) =>
-                                    reseller.mikrotiks.map(
-                                      (item) =>
-                                        val.id === item && (
-                                          <option key={key} value={val.id}>
-                                            {val.name}
-                                          </option>
-                                        )
-                                    )
-                                  )}
-                            </select>
-                          </div>
-                          <div>
-                            <label className="form-control-label changeLabelFontColor">
-                              {t("selectPackage")}
-                              <span className="text-danger">*</span>
-                            </label>
-                            <select
-                              className="form-select mb-3 mw-100 mt-0"
-                              aria-label="Default select example"
-                              onChange={selectMikrotikPackage}
-                            >
-                              <option value="">...</option>
-                              {ppPackage.length === undefined
-                                ? ""
-                                : ppPackage?.map((val, key) =>
-                                    reseller.mikrotikPackages.map(
-                                      (p) =>
-                                        p === val.id && (
-                                          <option key={key} value={val.id}>
-                                            {val.name}
-                                          </option>
-                                        )
-                                    )
-                                  )}
-                            </select>
-                          </div>
-                        </>
-                      )}
-
-                      {userRole === "reseller" && Getmikrotik.length == 0 && (
-                        <>
-                          <div>
-                            <label className="form-control-label changeLabelFontColor">
-                              {t("selectPPPoEPackage")}{" "}
-                              <span className="text-danger">*</span>
-                            </label>
-                            <select
-                              className="form-select mb-3 mt-0 mw-100"
-                              aria-label="Default select example"
-                              onChange={selectMikrotikPackage}
-                            >
-                              <option value="">...</option>
-                              {ppPackage.length === undefined
-                                ? ""
-                                : ppPackage?.map((val, key) =>
-                                    reseller.mikrotikPackages.map(
-                                      (p) =>
-                                        p === val.id && (
-                                          <option key={key} value={val.id}>
-                                            {val.name}
-                                          </option>
-                                        )
-                                    )
-                                  )}
-                            </select>
-                          </div>
-                        </>
-                      )}
-
-                      <FtextField
-                        type="text"
-                        label={t("monthFee")}
-                        name="monthlyFee"
-                        validation={"true"}
-                        disabled={!permission?.monthlyFeeEdit}
-                      />
-                    </div>
-
-                    <div className="pppoeSection2">
-                      <FtextField
-                        type="text"
-                        label={t("PPPoEName")}
-                        name="Pname"
-                        validation={"true"}
-                      />
-                      <FtextField
-                        type="text"
-                        label={t("password")}
-                        name="Ppassword"
-                        validation={"true"}
-                      />
-                      <FtextField
-                        type="text"
-                        label={t("comment")}
-                        name="Pcomment"
-                      />
-                    </div>
-
-                    <div className="displayGrid3">
+        <ModalHeader closeButton>
+          <ModalTitle>
+            <h5 className="modal-title" id="exampleModalLabel">
+              {t("addNewCustomer")}
+            </h5>
+          </ModalTitle>
+        </ModalHeader>
+        <ModalBody>
+          <Formik
+            initialValues={{
+              name: "",
+              mobile: "",
+              address: "",
+              email: "",
+              nid: "",
+              monthlyFee: packageRate?.rate || "",
+              Pname: "",
+              Pprofile: packageRate?.name || "",
+              Ppassword: "",
+              Pcomment: "",
+              customerBillingType: "prepaid",
+            }}
+            validationSchema={customerValidator}
+            onSubmit={(values, { resetForm }) => {
+              customerHandler(values, resetForm);
+            }}
+            enableReinitialize
+          >
+            {() => (
+              <Form id="customerPost">
+                <div className="displayGrid3">
+                  {/* ispOwner collector */}
+                  {userRole === "collector" && (
+                    <>
                       <div>
                         <label className="form-control-label changeLabelFontColor">
-                          {t("selectArea")}{" "}
+                          {t("selectMikrotik")}
                           <span className="text-danger">*</span>
                         </label>
                         <select
                           className="form-select mw-100 mt-0"
                           aria-label="Default select example"
-                          onChange={(e) => setsubAreaId(e.target.value)}
+                          onChange={selectMikrotik}
                         >
                           <option value="">...</option>
-                          {area?.length === undefined
-                            ? ""
-                            : area?.map((val, key) => (
-                                <option key={key} value={val.id}>
-                                  {val.name}
-                                </option>
-                              ))}
+                          {Getmikrotik?.map((val, key) => (
+                            <option key={key} value={val.id}>
+                              {val.name}
+                            </option>
+                          ))}
                         </select>
                       </div>
 
-                      <FtextField type="text" label={t("NIDno")} name="nid" />
-                      <FtextField
-                        type="text"
-                        label={t("name")}
-                        name="name"
-                        validation={"true"}
-                      />
-                    </div>
+                      <div>
+                        <label className="form-control-label changeLabelFontColor">
+                          {t("selectPackage")}
+                          <span className="text-danger">*</span>
+                        </label>
+                        <select
+                          style={{ width: "22rem" }}
+                          className="form-select mb-3 mw-100"
+                          aria-label="Default select example"
+                          onChange={selectMikrotikPackage}
+                        >
+                          <option value="">...</option>
+                          {mikrotikPackages?.map((val, key) => (
+                            <option key={key} value={val.id}>
+                              {val.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </>
+                  )}
+                  {userRole === "reseller" && Getmikrotik.length > 0 && (
+                    <>
+                      <div>
+                        <label className="form-control-label changeLabelFontColor">
+                          {t("selectMikrotik")}
+                          <span className="text-danger">*</span>
+                        </label>
+                        <select
+                          className="form-select mw-100 mt-0"
+                          aria-label="Default select example"
+                          onChange={selectMikrotik}
+                        >
+                          <option value="">...</option>
+                          {Getmikrotik?.map((val, key) =>
+                            reseller.mikrotiks.map(
+                              (item) =>
+                                val.id === item && (
+                                  <option key={key} value={val.id}>
+                                    {val.name}
+                                  </option>
+                                )
+                            )
+                          )}
+                        </select>
+                      </div>
 
-                    <div className="displayGrid3">
-                      <FtextField
-                        type="text"
-                        label={t("mobile")}
-                        validation={
-                          permission?.addCustomerWithMobile ||
-                          collectorResellerInfo.permission
-                            ?.addCustomerWithMobile
-                        }
-                        name="mobile"
-                      />
-                      <FtextField
-                        type="text"
-                        label={t("address")}
-                        name="address"
-                      />
-                      <FtextField type="text" label={t("email")} name="email" />
+                      <div>
+                        <label className="form-control-label changeLabelFontColor">
+                          {t("selectPackage")}
+                          <span className="text-danger">*</span>
+                        </label>
+                        <select
+                          className="form-select mw-100 mt-0"
+                          aria-label="Default select example"
+                          onChange={selectMikrotikPackage}
+                        >
+                          <option value="">...</option>
+                          {mikrotikPackages?.map((val, key) => (
+                            <option key={key} value={val.id}>
+                              {val.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </>
+                  )}
+
+                  {userRole === "reseller" && Getmikrotik.length === 0 && (
+                    <div>
+                      <label className="form-control-label changeLabelFontColor">
+                        {t("selectPPPoEPackage")}
+                        <span className="text-danger">*</span>
+                      </label>
+                      <select
+                        className="form-select mt-0 mw-100"
+                        aria-label="Default select example"
+                        onChange={selectMikrotikPackage}
+                      >
+                        <option value="">...</option>
+                        {ppPackage?.map((val, key) => (
+                          <option key={key} value={val.id}>
+                            {val.name}
+                          </option>
+                        ))}
+                      </select>
                     </div>
-                    <div className="displayGrid3">
-                      {divisionalAreaFormData.map((item) => (
-                        <div className="mb-2">
-                          <label className="form-control-label changeLabelFontColor">
-                            {item.text}
-                            {/* <span className="text-danger">*</span> */}
-                          </label>
-                          <select
-                            className="form-select mw-100 mt-0"
-                            aria-label="Default select example"
-                            name={item.name}
-                            id={item.id}
-                            onChange={onDivisionalAreaChange}
-                          >
-                            <option value="">...</option>
-                            {item.data.map((item) => (
-                              <option value={item.id}>{item.name}</option>
-                            ))}
-                          </select>
-                        </div>
+                  )}
+
+                  <FtextField
+                    type="text"
+                    label={t("monthFee")}
+                    name="monthlyFee"
+                    validation={"true"}
+                    disabled={!permission?.monthlyFeeEdit}
+                  />
+
+                  <FtextField
+                    type="text"
+                    label={t("PPPoEName")}
+                    name="Pname"
+                    validation={"true"}
+                  />
+
+                  <FtextField
+                    type="text"
+                    label={t("password")}
+                    name="Ppassword"
+                    validation={"true"}
+                  />
+
+                  <FtextField
+                    type="text"
+                    label={t("comment")}
+                    name="Pcomment"
+                  />
+
+                  <div>
+                    <label className="form-control-label changeLabelFontColor">
+                      {t("selectArea")} <span className="text-danger">*</span>
+                    </label>
+                    <select
+                      className="form-select mw-100 mt-0"
+                      aria-label="Default select example"
+                      onChange={(e) => setsubAreaId(e.target.value)}
+                    >
+                      <option value="">...</option>
+                      {area?.map((val, key) => (
+                        <option key={key} value={val.id}>
+                          {val.name}
+                        </option>
                       ))}
-                    </div>
-                    <div className="newDisplay">
-                      {userRole === "collector" ? (
-                        <div className="billCycle">
-                          <label className="form-control-label changeLabelFontColor">
-                            {t("billingCycle")}{" "}
-                          </label>
+                    </select>
+                  </div>
 
-                          <DatePicker
-                            className="form-control mw-100"
-                            selected={billDate}
-                            onChange={(date) => setBillDate(date)}
-                            dateFormat="dd/MM/yyyy:hh:mm"
-                            showTimeSelect
-                            timeIntervals={60}
-                            maxDate={billDate}
-                            placeholderText={t("selectBillDate")}
-                            disabled
-                          />
-                        </div>
-                      ) : (
-                        <div className="billCycle">
-                          <label className="form-control-label changeLabelFontColor">
-                            {t("billingCycle")}{" "}
-                          </label>
+                  <FtextField type="text" label={t("NIDno")} name="nid" />
 
-                          <DatePicker
-                            className="form-control mw-100"
-                            selected={billDate}
-                            onChange={(date) => setBillDate(date)}
-                            dateFormat="dd/MM/yyyy:hh:mm"
-                            timeIntervals={60}
-                            showTimeSelect
-                            maxDate={billDate}
-                            placeholderText={t("selectBillDate")}
-                            disabled={permission?.billingCycleEdit === false}
-                          />
-                        </div>
-                      )}
-                      <SelectField
-                        label={t("customerBillType")}
-                        id="exampleSelect"
-                        name="customerBillingType"
+                  <FtextField
+                    type="text"
+                    label={t("name")}
+                    name="name"
+                    validation={"true"}
+                  />
+
+                  <FtextField
+                    type="text"
+                    label={t("mobile")}
+                    validation={
+                      permission?.addCustomerWithMobile ||
+                      collectorResellerInfo.permission?.addCustomerWithMobile
+                    }
+                    name="mobile"
+                  />
+                  <FtextField type="text" label={t("address")} name="address" />
+
+                  <FtextField type="text" label={t("email")} name="email" />
+
+                  {divisionalAreaFormData.map((item) => (
+                    <div>
+                      <label className="form-control-label changeLabelFontColor">
+                        {item.text}
+                      </label>
+                      <select
                         className="form-select mw-100 mt-0"
-                        validation={"true"}
+                        aria-label="Default select example"
+                        name={item.name}
+                        id={item.id}
+                        onChange={onDivisionalAreaChange}
                       >
-                        <option value="">{t("customerBillType")}</option>
-
-                        <option value="prepaid">{t("prepaid")}</option>
-                        <option value="postpaid">{t("postPaid")}</option>
-                      </SelectField>
-
-                      {Getmikrotik.length > 0 &&
-                        (permission?.customerAutomaticConnectionOnOff ||
-                          collectorResellerInfo.permission
-                            ?.customerAutomaticConnectionOnOff) && (
-                          <div className="autoDisable">
-                            <label> {t("automaticConnectionOff")} </label>
-                            <input
-                              type="checkBox"
-                              checked={autoDisable}
-                              onChange={(e) => setAutoDisable(e.target.checked)}
-                            />
-                          </div>
-                        )}
+                        <option value="">...</option>
+                        {item.data.map((item) => (
+                          <option value={item.id}>{item.name}</option>
+                        ))}
+                      </select>
                     </div>
+                  ))}
 
-                    <div className="modal-footer" style={{ border: "none" }}>
-                      <button
-                        type="button"
-                        className="btn btn-secondary"
-                        data-bs-dismiss="modal"
-                        disabled={isLoading}
-                      >
-                        {t("cancel")}
-                      </button>
-                      <button
-                        type="submit"
-                        className="btn btn-success"
-                        disabled={isLoading}
-                      >
-                        {isLoading ? <Loader /> : t("save")}
-                      </button>
+                  {userRole === "collector" ? (
+                    <div className="billCycle">
+                      <label className="form-control-label changeLabelFontColor">
+                        {t("billingCycle")}
+                      </label>
+
+                      <DatePicker
+                        className="form-control mw-100"
+                        selected={billDate}
+                        onChange={(date) => setBillDate(date)}
+                        dateFormat="dd/MM/yyyy:hh:mm"
+                        showTimeSelect
+                        timeIntervals={60}
+                        maxDate={billDate}
+                        placeholderText={t("selectBillDate")}
+                        disabled
+                      />
                     </div>
-                  </Form>
-                )}
-              </Formik>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+                  ) : (
+                    <div className="billCycle">
+                      <label className="form-control-label changeLabelFontColor">
+                        {t("billingCycle")}
+                      </label>
+
+                      <DatePicker
+                        className="form-control mw-100"
+                        selected={billDate}
+                        onChange={(date) => setBillDate(date)}
+                        dateFormat="dd/MM/yyyy:hh:mm"
+                        timeIntervals={60}
+                        showTimeSelect
+                        maxDate={billDate}
+                        placeholderText={t("selectBillDate")}
+                        disabled={permission?.billingCycleEdit === false}
+                      />
+                    </div>
+                  )}
+
+                  <SelectField
+                    label={t("customerBillType")}
+                    id="exampleSelect"
+                    name="customerBillingType"
+                    className="form-select mw-100 mt-0"
+                    validation={"true"}
+                  >
+                    <option value="">{t("customerBillType")}</option>
+
+                    <option value="prepaid">{t("prepaid")}</option>
+                    <option value="postpaid">{t("postPaid")}</option>
+                  </SelectField>
+
+                  {Getmikrotik.length > 0 &&
+                    (permission?.customerAutomaticConnectionOnOff ||
+                      collectorResellerInfo.permission
+                        ?.customerAutomaticConnectionOnOff) && (
+                      <div className="autoDisable">
+                        <label> {t("automaticConnectionOff")} </label>
+                        <input
+                          type="checkBox"
+                          checked={autoDisable}
+                          onChange={(e) => setAutoDisable(e.target.checked)}
+                        />
+                      </div>
+                    )}
+                </div>
+              </Form>
+            )}
+          </Formik>
+        </ModalBody>
+        <ModalFooter>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            disabled={isLoading}
+            onClick={handleClose}
+          >
+            {t("cancel")}
+          </button>
+          <button
+            type="submit"
+            form="customerPost"
+            className="btn btn-success"
+            disabled={isLoading}
+          >
+            {isLoading ? <Loader /> : t("save")}
+          </button>
+        </ModalFooter>
+      </Modal>
+    </>
   );
 }

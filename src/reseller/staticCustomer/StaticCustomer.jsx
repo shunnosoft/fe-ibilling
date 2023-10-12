@@ -828,7 +828,6 @@ export default function RstaticCustomer() {
         single={customerId}
         mikrotikCheck={checkMikrotik}
         setMikrotikCheck={setMikrotikCheck}
-        status="customerDelete"
         page="reseller"
       />
 

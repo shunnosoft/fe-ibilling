@@ -31,6 +31,9 @@ const BulkPackageEdit = ({ bulkCustomer, show, setShow }) => {
     (state) => state.persistedReducer.auth?.userData?.permission
   );
 
+  // get mikrotik package from redux
+  const pppoePackage = useSelector((state) => state?.mikrotik?.pppoePackage);
+
   // find profile package
   //   const findPackage = ppPackage.find((item) => item.id === dataPackageRate);
 
@@ -45,24 +48,16 @@ const BulkPackageEdit = ({ bulkCustomer, show, setShow }) => {
   // select Getmikrotik
   const selectMikrotik = (e) => {
     const id = e.target.value;
-    if (id && ispOwnerId) {
-      const IDs = {
-        ispOwner: ispOwnerId,
-        mikrotikId: id,
-      };
 
-      const fetchPac = async () => {
-        try {
-          const res = await apiLink.get(
-            `/mikrotik/ppp/package/${IDs.mikrotikId}`
-          );
-          setppPackage(res.data);
-        } catch (error) {
-          console.log(error);
-        }
-      };
-      fetchPac();
+    if (id) {
+      const mikrotikPackage = pppoePackage.filter(
+        (pack) => pack.mikrotik === id
+      );
+      setppPackage(mikrotikPackage);
+    } else {
+      setppPackage([]);
     }
+
     setSingleMikrotik(id);
     setMikrotikPackage("");
   };
@@ -102,7 +97,7 @@ const BulkPackageEdit = ({ bulkCustomer, show, setShow }) => {
           t("otherMtkUsers")
       );
       if (confirm) {
-        bulkPackageEdit(dispatch, data, setIsLoading);
+        bulkPackageEdit(dispatch, data, setIsLoading, setShow);
       }
     } else {
       alert(t("selectPackage"));
@@ -122,28 +117,49 @@ const BulkPackageEdit = ({ bulkCustomer, show, setShow }) => {
   return (
     <RootBulkModal show={show} setShow={setShow} header={t("updatePackage")}>
       <form onSubmit={changePackage}>
-        <div className="mikrotikSection">
-          <div>
-            <label className="form-control-label changeLabelFontColor">
-              {t("mikrotik")} <span className="text-danger">*</span>
-            </label>
-            <select
-              className="form-select mw-100 mt-0"
-              aria-label="Default select example"
-              onChange={selectMikrotik}
-            >
-              <option value="">...</option>
-              {Getmikrotik.length === undefined
-                ? ""
-                : Getmikrotik.map((val, key) => (
-                    <option key={key} value={val.id}>
-                      {val.name}
-                    </option>
-                  ))}
-            </select>
-          </div>
+        {Getmikrotik.length > 0 ? (
+          <div className="displayGrid2">
+            <div>
+              <label className="form-control-label changeLabelFontColor">
+                {t("mikrotik")} <span className="text-danger">*</span>
+              </label>
+              <select
+                className="form-select mw-100 mt-0"
+                aria-label="Default select example"
+                onChange={selectMikrotik}
+              >
+                <option value="">...</option>
+                {Getmikrotik?.map((val, key) => (
+                  <option key={key} value={val.id}>
+                    {val.name}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-          {/* pppoe package */}
+            <div>
+              <label className="form-control-label changeLabelFontColor">
+                {t("selectPackage")} <span className="text-danger">*</span>
+              </label>
+              <select
+                className="form-select mb-3 mw-100 mt-0"
+                aria-label="Default select example"
+                onChange={selectMikrotikPackage}
+              >
+                <option value={"0"}>...</option>
+                {ppPackage?.map((val, key) => (
+                  <option
+                    disabled={val.rate < bulkCustomer[0]?.original.monthlyFee}
+                    key={key}
+                    value={val.id || ""}
+                  >
+                    {val.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        ) : (
           <div>
             <label className="form-control-label changeLabelFontColor">
               {t("selectPackage")} <span className="text-danger">*</span>
@@ -152,23 +168,20 @@ const BulkPackageEdit = ({ bulkCustomer, show, setShow }) => {
               className="form-select mb-3 mw-100 mt-0"
               aria-label="Default select example"
               onChange={selectMikrotikPackage}
-              disabled={!permission?.customerMikrotikPackageEdit}
             >
               <option value={"0"}>...</option>
-              {ppPackage &&
-                ppPackage?.map((val, key) => (
-                  <option
-                    // selected={val.id === packageRate?.id}
-                    disabled={val.rate < bulkCustomer[0]?.original.monthlyFee}
-                    key={key}
-                    value={val.id || ""}
-                  >
-                    {val.name}
-                  </option>
-                ))}
+              {pppoePackage?.map((val, key) => (
+                <option
+                  disabled={val.rate < bulkCustomer[0]?.original.monthlyFee}
+                  key={key}
+                  value={val.id || ""}
+                >
+                  {val.name}
+                </option>
+              ))}
             </select>
           </div>
-        </div>
+        )}
 
         <div className="modal-footer" style={{ border: "none" }}>
           <button

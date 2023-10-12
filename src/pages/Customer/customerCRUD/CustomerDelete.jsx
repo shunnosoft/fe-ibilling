@@ -27,7 +27,7 @@ const CustomerDelete = ({
 
   // get all customer
   const customers = useSelector((state) =>
-    status !== "customerDelete"
+    status === "customerDelete"
       ? state?.customer?.customer
       : state?.customer?.staticCustomer
   );

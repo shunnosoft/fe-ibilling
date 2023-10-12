@@ -120,7 +120,7 @@
 .displayGrid2 {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  grid-gap: 10px 5px;
+  grid-gap: 10px;
 }
 
 .displayGrid5 {

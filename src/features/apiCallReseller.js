@@ -180,12 +180,19 @@ export const getCustomer = async (dispatch, reseller, setIsloading) => {
   }
 };
 
-export const addCustomer = async (dispatch, data, setIsloading, resetForm) => {
+export const addCustomer = async (
+  dispatch,
+  data,
+  setIsloading,
+  resetForm,
+  setShow
+) => {
   setIsloading(true);
   try {
     const res = await apiLink.post("/reseller/customer", data);
     dispatch(addCustomerSuccess(res.data));
     setIsloading(false);
+    setShow(false);
     langMessage(
       "success",
       "কাস্টমার সংযুক্ত সফল হয়েছে!",
@@ -378,6 +385,7 @@ export const getResellerPackageRate = async (
     const res = await apiLink.get(
       `/reseller/package/rate/${resellerId}/${packageId}`
     );
+    console.log(res.data);
     setPackageRate(res.data);
   } catch (error) {
     toast.error(error.response?.data.message);

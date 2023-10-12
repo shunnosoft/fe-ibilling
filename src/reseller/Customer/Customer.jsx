@@ -135,7 +135,7 @@ export default function Customer() {
   const [isMenuOpen, setMenuOpen] = useState(false);
 
   // bulk modal handle state
-  const [bulkStatus, setBulkStatus] = useState("");
+  const [modalStatus, setModalStatus] = useState("");
   const [show, setShow] = useState(false);
 
   // filter Accordion handle state
@@ -151,8 +151,6 @@ export default function Customer() {
 
   // get specific customer
   const [singleCustomer, setSingleCustomer] = useState("");
-
-  const [paymentStatus, setPaymentStatus] = useState("");
 
   // customer id state
   const [customerId, setCustomerId] = useState("");
@@ -171,15 +169,17 @@ export default function Customer() {
 
   // api calls
   useEffect(() => {
-    if (ispOwnerData.bpSettings?.hasMikrotik) {
-      withMtkPackage(dispatch, resellerId);
-    }
+    // withMikrotik & withOutMikrotik package get api
+    if (ppPackage.length === 0) withMtkPackage(dispatch, resellerId);
+
+    // reseller subarea get api
     getSubAreas(dispatch, resellerId);
 
     if (role === "collector") {
       getMikrotik(dispatch, userData.collector.reseller);
       resellerInfo(resellerId, dispatch);
     }
+
     if (role === "reseller") {
       getMikrotik(dispatch, resellerId);
       if (allCustomer.length === 0)
@@ -189,6 +189,7 @@ export default function Customer() {
         getCustomer(dispatch, userData?.collector?.reseller, setIsLoading);
     }
 
+    // bulletin permission get api
     Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
   }, [userData, role]);
 
@@ -573,13 +574,7 @@ export default function Customer() {
         id: "option",
 
         Cell: ({ row: { original } }) => (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
+          <div className="d-flex justify-content-center align-items-center">
             <div className="dropdown">
               <ThreeDots
                 className="dropdown-toggle ActionDots"
@@ -748,18 +743,19 @@ export default function Customer() {
                       )}
                     </div>
 
-                    <div>
-                      {(permission?.customerAdd ||
-                        collectorPermission?.customerAdd) && (
-                        <>
-                          <PersonPlusFill
-                            className="addcutmButton"
-                            data-bs-toggle="modal"
-                            data-bs-target="#customerModal"
-                          />
-                        </>
-                      )}
-                    </div>
+                    {(permission?.customerAdd ||
+                      collectorPermission?.customerAdd) && (
+                      <div>
+                        <PersonPlusFill
+                          className="addcutmButton"
+                          onClick={() => {
+                            setModalStatus("customerPost");
+                            setShow(true);
+                          }}
+                          title={t("newCustomer")}
+                        />
+                      </div>
+                    )}
 
                     <Collapse in={open} dimension="width">
                       <div id="example-collapse-text">
@@ -926,7 +922,11 @@ export default function Customer() {
 
       {/* Model start */}
 
-      <CustomerPost />
+      {/* new customer create */}
+      {modalStatus === "customerPost" && (
+        <CustomerPost show={show} setShow={setShow} />
+      )}
+
       <CustomerEdit single={singleCustomer} />
       <CustomerBillCollect
         single={singleCustomer}
@@ -951,7 +951,7 @@ export default function Customer() {
       {/* Model finish */}
 
       {/* bulk operation modal section */}
-      {bulkStatus === "customerBulkEdit" && (
+      {modalStatus === "customerBulkEdit" && (
         <BulkSubAreaEdit
           bulkCustomer={bulkCustomer}
           show={show}
@@ -959,7 +959,7 @@ export default function Customer() {
         />
       )}
 
-      {bulkStatus === "bulkResellerRecharge" && (
+      {modalStatus === "bulkResellerRecharge" && (
         <BulkResellerRecharge
           bulkCustomer={bulkCustomer}
           show={show}
@@ -967,7 +967,7 @@ export default function Customer() {
         />
       )}
 
-      {bulkStatus === "customerBillingCycle" && (
+      {modalStatus === "customerBillingCycle" && (
         <BulkBillingCycleEdit
           bulkCustomer={bulkCustomer}
           show={show}
@@ -975,15 +975,15 @@ export default function Customer() {
         />
       )}
 
-      {bulkStatus === "bulkStatusEdit" && (
-        <BulkStatusEdit
+      {modalStatus === "modalStatusEdit" && (
+        <modalStatusEdit
           bulkCustomer={bulkCustomer}
           show={show}
           setShow={setShow}
         />
       )}
 
-      {bulkStatus === "autoDisableEditModal" && (
+      {modalStatus === "autoDisableEditModal" && (
         <ResellerBulkAutoConnectionEdit
           bulkCustomer={bulkCustomer}
           show={show}
@@ -991,7 +991,7 @@ export default function Customer() {
         />
       )}
 
-      {bulkStatus === "bulkPackageEdit" && (
+      {modalStatus === "bulkPackageEdit" && (
         <BulkPackageEdit
           bulkCustomer={bulkCustomer}
           show={show}
@@ -1013,7 +1013,7 @@ export default function Customer() {
                   type="button"
                   className="p-1"
                   onClick={() => {
-                    setBulkStatus("customerBulkEdit");
+                    setModalStatus("customerBulkEdit");
                     setShow(true);
                   }}
                 >
@@ -1037,7 +1037,7 @@ export default function Customer() {
                   type="button"
                   className="p-1"
                   onClick={() => {
-                    setBulkStatus("bulkResellerRecharge");
+                    setModalStatus("bulkResellerRecharge");
                     setShow(true);
                   }}
                 >
@@ -1061,7 +1061,7 @@ export default function Customer() {
                   type="button"
                   className="p-1"
                   onClick={() => {
-                    setBulkStatus("bulkStatusEdit");
+                    setModalStatus("modalStatusEdit");
                     setShow(true);
                   }}
                 >
@@ -1084,7 +1084,7 @@ export default function Customer() {
                   type="button"
                   className="p-1"
                   onClick={() => {
-                    setBulkStatus("customerBillingCycle");
+                    setModalStatus("customerBillingCycle");
                     setShow(true);
                   }}
                 >
@@ -1105,31 +1105,32 @@ export default function Customer() {
 
               <hr className="mt-0 mb-0" />
 
-              {permission?.customerAutoDisableEdit && (
-                <li
-                  type="button"
-                  className="p-1"
-                  onClick={() => {
-                    setBulkStatus("autoDisableEditModal");
-                    setShow(true);
-                  }}
-                >
-                  <div className="menu_icon2">
-                    <button
-                      className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-secondary"
-                      title={t("autoConnectOnOff")}
-                    >
-                      <i class="fas fa-power-off fa-xs"></i>
-                      <span className="button_title">
-                        {t("automaticConnectionOff")}
-                      </span>
-                    </button>
-                  </div>
-                  <div className="menu_label2">
-                    {t("automaticConnectionOff")}
-                  </div>
-                </li>
-              )}
+              {ispOwnerData?.bpSettings?.hasMikrotik &&
+                permission?.customerAutoDisableEdit && (
+                  <li
+                    type="button"
+                    className="p-1"
+                    onClick={() => {
+                      setModalStatus("autoDisableEditModal");
+                      setShow(true);
+                    }}
+                  >
+                    <div className="menu_icon2">
+                      <button
+                        className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-secondary"
+                        title={t("autoConnectOnOff")}
+                      >
+                        <i class="fas fa-power-off fa-xs"></i>
+                        <span className="button_title">
+                          {t("automaticConnectionOff")}
+                        </span>
+                      </button>
+                    </div>
+                    <div className="menu_label2">
+                      {t("automaticConnectionOff")}
+                    </div>
+                  </li>
+                )}
 
               <hr className="mt-0 mb-0" />
 
@@ -1138,7 +1139,7 @@ export default function Customer() {
                   type="button"
                   className="p-1"
                   onClick={() => {
-                    setBulkStatus("bulkPackageEdit");
+                    setModalStatus("bulkPackageEdit");
                     setShow(true);
                   }}
                 >
@@ -1200,7 +1201,7 @@ export default function Customer() {
               className="bulk_action_button"
               title={t("editStatus")}
               data-bs-toggle="modal"
-              data-bs-target="#bulkStatusEdit"
+              data-bs-target="#modalStatusEdit"
               type="button"
               class="btn btn-dark btn-floating btn-sm"
             >
