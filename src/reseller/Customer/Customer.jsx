@@ -600,11 +600,11 @@ export default function Customer() {
                 </li>
                 {(role === "reseller" || collectorPermission?.billPosting) && (
                   <li
-                    data-bs-toggle="modal"
-                    data-bs-target="#collectCustomerBillModal"
                     onClick={() => {
                       getSpecificCustomer(original.id);
                       getSpecificCustomerReport(original);
+                      setModalStatus("billCollect");
+                      setShow(true);
                     }}
                   >
                     <div className="dropdown-item">
@@ -618,10 +618,10 @@ export default function Customer() {
                 {(permission?.customerEdit ||
                   collectorPermission?.customerEdit) && (
                   <li
-                    data-bs-toggle="modal"
-                    data-bs-target="#customerEditModal"
                     onClick={() => {
                       getSpecificCustomer(original.id);
+                      setModalStatus("customerEdit");
+                      setShow(true);
                     }}
                   >
                     <div className="dropdown-item">
@@ -927,11 +927,21 @@ export default function Customer() {
         <CustomerPost show={show} setShow={setShow} />
       )}
 
-      <CustomerEdit single={singleCustomer} />
-      <CustomerBillCollect
-        single={singleCustomer}
-        customerData={customerReportData}
-      />
+      {/* create customer information update */}
+      {modalStatus === "customerEdit" && (
+        <CustomerEdit show={show} setShow={setShow} single={singleCustomer} />
+      )}
+
+      {/* customer bill collection */}
+      {modalStatus === "billCollect" && (
+        <CustomerBillCollect
+          show={show}
+          setShow={setShow}
+          single={singleCustomer}
+          customerData={customerReportData}
+        />
+      )}
+
       <CustomerDetails single={singleCustomer} />
       <CustomerReport single={customerReportData} />
       <SingleMessage single={singleCustomer} sendCustomer="customer" />

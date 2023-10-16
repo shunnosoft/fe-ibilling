@@ -208,7 +208,7 @@ export const addCustomer = async (
   }
 };
 
-export const editCustomer = async (dispatch, data, setIsloading) => {
+export const editCustomer = async (dispatch, data, setIsloading, setShow) => {
   setIsloading(true);
   const { singleCustomerID, reseller, ...sendingData } = data;
   try {
@@ -217,19 +217,18 @@ export const editCustomer = async (dispatch, data, setIsloading) => {
       sendingData
     );
     dispatch(editCustomerSuccess(res.data));
-    setIsloading(false);
+    setShow(false);
     langMessage(
       "success",
       "কাস্টমার এডিট সফল হয়েছে!",
       "Customer Updated Successfully"
     );
-    document.querySelector("#customerEditModal").click();
   } catch (err) {
     if (err.response) {
-      setIsloading(false);
       toast.error(err.response.data.message);
     }
   }
+  setIsloading(false);
 };
 
 export const deleteResellerCustomer = async (dispatch, data, setIsLoading) => {
@@ -385,7 +384,6 @@ export const getResellerPackageRate = async (
     const res = await apiLink.get(
       `/reseller/package/rate/${resellerId}/${packageId}`
     );
-    console.log(res.data);
     setPackageRate(res.data);
   } catch (error) {
     toast.error(error.response?.data.message);

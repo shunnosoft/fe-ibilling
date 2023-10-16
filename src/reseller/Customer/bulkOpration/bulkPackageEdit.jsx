@@ -187,8 +187,8 @@ const BulkPackageEdit = ({ bulkCustomer, show, setShow }) => {
           <button
             type="button"
             className="btn btn-secondary"
-            data-bs-dismiss="modal"
             disabled={isLoading}
+            onClick={() => setShow(false)}
           >
             {t("cancel")}
           </button>

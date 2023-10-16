@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import { Link } from "react-router-dom";
 import moment from "moment";
-
+import DatePicker from "react-datepicker";
 import { useDispatch, useSelector } from "react-redux";
 // internal imports
 import "chart.js/auto";
@@ -148,6 +148,8 @@ export default function Home() {
       customerType,
       mikrotik,
       district,
+      startDate,
+      endDate,
     } = filterOptions;
 
     let tempClint = [...ispOwners];
@@ -210,6 +212,15 @@ export default function Home() {
       const districtName = getName(districts, district)?.name;
       tempClint = tempClint.filter((item) => item.district === districtName);
     }
+
+    // create date filter
+    tempClint = tempClint.filter(
+      (item) =>
+        new Date(moment(item.createdAt).format("YYYY-MM-DD")).getTime() >=
+          new Date(moment(startDate).format("YYYY-MM-DD")).getTime() &&
+        new Date(moment(item.createdAt).format("YYYY-MM-DD")).getTime() <=
+          new Date(moment(endDate).format("YYYY-MM-DD")).getTime()
+    );
 
     setClintData(tempClint);
   };
@@ -789,6 +800,36 @@ export default function Home() {
                   return <option value={item.id}>{item.name}</option>;
                 })}
               </select>
+
+              <div>
+                <DatePicker
+                  className="form-control mt-0"
+                  selected={filterOptions.startDate}
+                  onChange={(date) =>
+                    setFilterOptions({
+                      ...filterOptions,
+                      startDate: date,
+                    })
+                  }
+                  dateFormat="dd-MM-yyyy"
+                  placeholderText={t("startDate")}
+                />
+              </div>
+
+              <div>
+                <DatePicker
+                  className="form-control mt-0"
+                  selected={filterOptions.endDate}
+                  onChange={(date) =>
+                    setFilterOptions({
+                      ...filterOptions,
+                      endDate: date,
+                    })
+                  }
+                  dateFormat="dd-MM-yyyy"
+                  placeholderText={t("endDate")}
+                />
+              </div>
 
               <Link to={"/admin/all-comments"}>
                 <div className="all-comment-btn">
