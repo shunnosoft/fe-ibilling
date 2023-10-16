@@ -604,6 +604,16 @@ const PPPOECustomer = () => {
     setModalShow(true);
   };
 
+  // atuomatic connection on off doble clicked handle
+  // const autoDisableHandle = (event) => {
+  //   if (event.detail == 2 && event.target.id) {
+  //     const singleCustomer = customers.find(
+  //       (val) => val.id === event.target.id
+  //     );
+  //     console.log(singleCustomer);
+  //   }
+  // };
+
   //column for table
   const columns = useMemo(
     () => [

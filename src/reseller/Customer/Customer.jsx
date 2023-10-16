@@ -985,8 +985,8 @@ export default function Customer() {
         />
       )}
 
-      {modalStatus === "modalStatusEdit" && (
-        <modalStatusEdit
+      {modalStatus === "editStatus" && (
+        <BulkStatusEdit
           bulkCustomer={bulkCustomer}
           show={show}
           setShow={setShow}
@@ -1071,7 +1071,7 @@ export default function Customer() {
                   type="button"
                   className="p-1"
                   onClick={() => {
-                    setModalStatus("modalStatusEdit");
+                    setModalStatus("editStatus");
                     setShow(true);
                   }}
                 >
