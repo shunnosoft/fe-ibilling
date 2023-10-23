@@ -881,5 +881,13 @@
   "startBillingCycleDate": "বিলিং সাইকেল শুরু তারিখ",
   "endBillingCycleDate": "বিলিং সাইকেল শেষ তারিখ",
   "manualInactive": "ম্যানুয়াল এক্টিভ/ইন-এক্টিভ",
-  "manualInactiveToast": "কাস্টমার ম্যানুয়াল ইন-এক্টিভ এসএমএস টেমপ্লেট আপডেট।"
+  "manualInactiveToast": "কাস্টমার ম্যানুয়াল ইন-এক্টিভ এসএমএস টেমপ্লেট আপডেট।",
+  "profileSetting": "প্রোফাইল সেটিং",
+  "deleteProfile": "ডিলিট প্রোফাইল",
+  "areYouSure": "আপনি কি নিশ্চিত ?",
+  "permanentlyDelete": "এই কাজটি স্থিরভাবে প্রোফাইল ডেটা মুছে ফেলবে৷",
+  "profileDetail": "প্রোফাইল ডিটেল",
+  "autoConnection": "অটোমেটিক সংযোগ",
+  "billingDate": "বিলিং ডেট",
+  "createDate": "ক্রিয়েট ডেট"
 }

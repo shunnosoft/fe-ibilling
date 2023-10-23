@@ -100,6 +100,7 @@ import {
   deleteCustomerInvoice,
   getDepositReportSuccess,
   updateDepositReportSuccess,
+  getCustomerBillReport,
 } from "./paymentSlice";
 import { getChartSuccess, getCardDataSuccess } from "./chartsSlice";
 import {
@@ -1137,9 +1138,14 @@ export const addCustomer = async (
   }
 };
 
-export const editCustomer = async (dispatch, data, setIsloading, setShow) => {
+export const editCustomer = async (
+  dispatch,
+  data,
+  setIsloading,
+  setShow,
+  status
+) => {
   const { singleCustomerID, ispOwner, ...sendingData } = data;
-
   try {
     const res = await apiLink.patch(
       `/ispOwner/customer/${ispOwner}/${singleCustomerID}`,
@@ -1152,11 +1158,20 @@ export const editCustomer = async (dispatch, data, setIsloading, setShow) => {
     }
     setIsloading(false);
     setShow(false);
-    langMessage(
-      "success",
-      "কাস্টমার এডিট সফল হয়েছে",
-      "Customer Updated Successfully"
-    );
+
+    if (status) {
+      langMessage(
+        "success",
+        "কাস্টমার আটো ডিজেবল আপডেট সফল হয়েছে",
+        "Customer Auto Disable Updated Successfully"
+      );
+    } else {
+      langMessage(
+        "success",
+        "কাস্টমার এডিট সফল হয়েছে",
+        "Customer Updated Successfully"
+      );
+    }
   } catch (err) {
     if (err.response) {
       setIsloading(false);
@@ -1169,7 +1184,8 @@ export const deleteACustomer = async (
   dispatch,
   data,
   setIsLoading,
-  isResellerCustomer = false
+  isResellerCustomer = false,
+  setShow
 ) => {
   try {
     setIsLoading(true);
@@ -1178,6 +1194,7 @@ export const deleteACustomer = async (
     );
     dispatch(deleteCustomerSuccess(data.customerID));
     isResellerCustomer && dispatch(deleteReCustomer(data.customerID));
+    setShow(false);
     document.querySelector("#customerDelete").click();
     setIsLoading(false);
     langMessage(
@@ -3711,4 +3728,15 @@ export const getPPPoEPackage = async (dispatch, ispOwner, setIsloading) => {
     console.log(error.message);
   }
   setIsloading(false);
+};
+
+export const getCustoemrReport = async (dispatch, customerId, setIsLoading) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink(`/bill/customer/${customerId}`);
+    dispatch(getCustomerBillReport(res.data));
+  } catch (err) {
+    toast.error("Error to get report: ", err);
+  }
+  setIsLoading(false);
 };

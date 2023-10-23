@@ -1,4 +1,10 @@
-import React, { useEffect, useMemo, useState, useRef } from "react";
+import React, {
+  useEffect,
+  useMemo,
+  useState,
+  useRef,
+  useCallback,
+} from "react";
 import {
   ArchiveFill,
   ArrowClockwise,
@@ -22,6 +28,7 @@ import {
   ArrowBarRight,
   Check2Circle,
   PencilSquare,
+  XCircle,
 } from "react-bootstrap-icons";
 import Table from "../../components/table/Table";
 
@@ -38,6 +45,7 @@ import {
   getSubAreasApi,
 } from "../../features/actions/customerApiCall";
 import {
+  editCustomer,
   fetchMikrotik,
   getArea,
   getCollector,
@@ -90,6 +98,8 @@ import WithValue from "../../components/modals/passwordReset/WithValue";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
 import BulkCustomerMessage from "./customerCRUD/bulkOpration/BulkCustomerMessage";
+import EditPPPoECustomer from "./customerCRUD/temp/EditPPPoECustomer";
+import RechargeCustomer from "./customerCRUD/temp/RechargeCustomer";
 
 const PPPOECustomer = () => {
   const dispatch = useDispatch();
@@ -605,14 +615,16 @@ const PPPOECustomer = () => {
   };
 
   // atuomatic connection on off doble clicked handle
-  // const autoDisableHandle = (event) => {
-  //   if (event.detail == 2 && event.target.id) {
-  //     const singleCustomer = customers.find(
-  //       (val) => val.id === event.target.id
-  //     );
-  //     console.log(singleCustomer);
-  //   }
-  // };
+  const autoDisableHandle = (value, e) => {
+    if (e?.detail == 2 && value) {
+      let data = {
+        ...value,
+        singleCustomerID: value?.id,
+        autoDisable: !value?.autoDisable,
+      };
+      editCustomer(dispatch, data, setLoading, setShow, "page");
+    }
+  };
 
   //column for table
   const columns = useMemo(
@@ -642,11 +654,14 @@ const PPPOECustomer = () => {
         Header: t("Auto/C"),
         accessor: "autoDisable",
         Cell: ({ row: { original } }) => (
-          <div>
+          <div
+            onClick={(e) => autoDisableHandle(original, e)}
+            style={{ cursor: "pointer" }}
+          >
             {original?.autoDisable ? (
               <Check2Circle className="text-success" />
             ) : (
-              <Check2Circle className="text-danger" />
+              <XCircle className="text-danger" />
             )}
           </div>
         ),
@@ -722,11 +737,13 @@ const PPPOECustomer = () => {
                 aria-expanded="false"
               />
               <ul className="dropdown-menu" aria-labelledby="customerDrop">
-                <li
+                {/* <li
                   data-bs-toggle="modal"
                   data-bs-target="#showCustomerDetails"
                   onClick={() => {
                     getSpecificCustomer(original.id);
+                    setModalStatus("profile");
+                    setShowModal(true);
                   }}
                 >
                   <div className="dropdown-item">
@@ -735,7 +752,7 @@ const PPPOECustomer = () => {
                       <p className="actionP">{t("profile")}</p>
                     </div>
                   </div>
-                </li>
+                </li> */}
                 {(permission?.billPosting || role === "ispOwner") && (
                   <li
                     onClick={() => {
@@ -1521,7 +1538,7 @@ const PPPOECustomer = () => {
                               </option>
                             </select>
 
-                            <div className="displayGrid2 mt-0 ">
+                            <div className="displayGrid1 mt-0">
                               <button
                                 className="btn btn-outline-primary"
                                 type="button"
@@ -1581,6 +1598,15 @@ const PPPOECustomer = () => {
 
       {/* all modal */}
 
+      {/* customer details modal  */}
+      {modalStatus === "profile" && (
+        <CustomerDetails
+          show={showModal}
+          setShow={setShowModal}
+          customerId={customerId}
+        />
+      )}
+
       {/* customer create modal  */}
       {modalStatus === "customerPost" && (
         <CustomerPost show={showModal} setShow={setShowModal} />
@@ -1588,7 +1614,7 @@ const PPPOECustomer = () => {
 
       {/* customer edit modal  */}
       {modalStatus === "customerEdit" && (
-        <CustomerEdit
+        <EditPPPoECustomer
           show={showModal}
           setShow={setShowModal}
           single={customerId}
@@ -1597,16 +1623,13 @@ const PPPOECustomer = () => {
 
       {/* bill collection modal  */}
       {modalStatus === "customerRecharge" && (
-        <CustomerBillCollect
+        <RechargeCustomer
           show={showModal}
           setShow={setShowModal}
           single={customerId}
           customerData={customerData}
         />
       )}
-
-      {/* customer details modal  */}
-      <CustomerDetails single={customerId} />
 
       {/* customer report modal  */}
       <CustomerReport single={customerData} />

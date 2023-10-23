@@ -1,12 +1,11 @@
 import { useState } from "react";
-import { Form, Formik } from "formik";
+import { ErrorMessage, Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
 
 // internal imports
 import "../../collector/collector.css";
 import "../customer.css";
-import { FtextField } from "../../../components/common/FtextField";
 import Loader from "../../../components/common/Loader";
 import {
   editCustomer,
@@ -30,18 +29,22 @@ import { getPoleBoxApi } from "../../../features/actions/customerApiCall";
 import { toast } from "react-toastify";
 import moment from "moment";
 import {
+  Card,
+  InputGroup,
   Modal,
   ModalBody,
   ModalFooter,
   ModalHeader,
   ModalTitle,
 } from "react-bootstrap";
+import { TextField } from "../../../components/common/HorizontalTextField";
+import { Cash, Envelope, Eye, EyeSlash } from "react-bootstrap-icons";
 
 const divisions = divisionsJSON.divisions;
 const districts = districtsJSON.districts;
 const thana = thanaJSON.thana;
 
-export default function CustomerEdit({ show, setShow, single }) {
+export default function CustomerEdit({ customerId, setProfileOption }) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
@@ -52,7 +55,7 @@ export default function CustomerEdit({ show, setShow, single }) {
   const customer = useSelector((state) => state?.customer?.customer);
 
   // find editable data
-  const data = customer.find((item) => item.id === single);
+  const data = customer.find((item) => item.id === customerId);
 
   // get all area
   const area = useSelector((state) => state?.area?.area);
@@ -110,6 +113,9 @@ export default function CustomerEdit({ show, setShow, single }) {
   const [packageId, setPackageId] = useState("");
   //component states
   const [_loading, setLoading] = useState(false);
+
+  // password type default password
+  const [passType, setPassType] = useState("password");
 
   const [divisionalArea, setDivisionalArea] = useState({
     division: "",
@@ -231,11 +237,6 @@ export default function CustomerEdit({ show, setShow, single }) {
 
     // balance: Yup.number().integer(),
   });
-
-  //modal show handler
-  const handleClose = () => {
-    setShow(false);
-  };
 
   // select Mikrotik Package
   useEffect(() => {
@@ -376,7 +377,7 @@ export default function CustomerEdit({ show, setShow, single }) {
     if (!poleBoxIds) {
       delete mainData.poleBox;
     }
-    editCustomer(dispatch, mainData, setIsloading, setShow);
+    editCustomer(dispatch, mainData, setIsloading);
   };
 
   const selectedSubArea = (e) => {
@@ -439,412 +440,471 @@ export default function CustomerEdit({ show, setShow, single }) {
 
   return (
     <>
-      <Modal
-        show={show}
-        onHide={handleClose}
-        backdrop="static"
-        keyboard={false}
-        size="xl"
-      >
-        <ModalHeader closeButton>
-          <ModalTitle>
-            <h5 className="modal-title" id="exampleModalLabel">
-              {data?.name} {t("editProfile")}
-            </h5>
-          </ModalTitle>
-        </ModalHeader>
-        <ModalBody>
-          <Formik
-            initialValues={{
-              customerId: data?.customerId,
-              name: data?.name || "",
-              mobile: data?.mobile || "",
-              address: data?.address || "",
-              email: data?.email || "",
-              nid: data?.nid || "",
-              Pcomment: data?.pppoe?.comment || "",
-              monthlyFee: packageRate?.rate || data?.monthlyFee || 0,
-              Pname: data?.pppoe?.name || "",
-              Pprofile: packageRate?.name || data?.pppoe?.profile || "",
-              Ppassword: data?.pppoe?.password || "",
-              status: status || "",
-              balance: data?.balance || "",
-              customerBillingType: data?.customerBillingType || "",
-            }}
-            validationSchema={customerValidator}
-            onSubmit={(values) => {
-              customerHandler(values);
-            }}
-            enableReinitialize
-          >
-            {() => (
-              <Form id="customerEdit">
-                <div className="displayGrid3">
-                  {bpSettings?.hasMikrotik && (
-                    <div>
-                      <label className="form-control-label changeLabelFontColor">
-                        {t("selectMikrotik")}
-                        <span className="text-danger">*</span>
-                      </label>
-                      <select
-                        className="form-select mw-100 mt-0"
-                        aria-label="Default select example"
-                        disabled
-                        value={data?.mikrotik || ""}
-                      >
-                        <option value={mikrotikName?.id || ""}>
-                          {mikrotikName?.name || ""}
-                        </option>
-                      </select>
-                    </div>
-                  )}
+      <Card.Title className="clintTitle mb-0">
+        <h5 className="profileInfo">{t("updateProfile")}</h5>
+      </Card.Title>
 
+      <Card.Body>
+        <Formik
+          initialValues={{
+            customerId: data?.customerId,
+            name: data?.name || "",
+            mobile: data?.mobile || "",
+            address: data?.address || "",
+            email: data?.email || "",
+            nid: data?.nid || "",
+            Pcomment: data?.pppoe?.comment || "",
+            monthlyFee: packageRate?.rate || data?.monthlyFee || 0,
+            Pname: data?.pppoe?.name || "",
+            Pprofile: packageRate?.name || data?.pppoe?.profile || "",
+            Ppassword: data?.pppoe?.password || "",
+            status: status || "",
+            balance: data?.balance || "",
+            customerBillingType: data?.customerBillingType || "",
+          }}
+          validationSchema={customerValidator}
+          onSubmit={(values) => {
+            customerHandler(values);
+          }}
+          enableReinitialize
+        >
+          {() => (
+            <Form id="customerEdit">
+              <div>
+                {/* {bpSettings?.hasMikrotik && (
                   <div>
-                    <label className="form-control-label changeLabelFontColor">
-                      {t("selectPackage")}
+                    <label className="form-control-label manualLable">
+                      {t("selectMikrotik")}
                       <span className="text-danger">*</span>
                     </label>
                     <select
                       className="form-select mw-100 mt-0"
                       aria-label="Default select example"
-                      onChange={selectMikrotikPackage}
-                      value={mikrotikPackage}
-                      disabled={role === "collector"}
+                      disabled
+                      value={data?.mikrotik || ""}
                     >
-                      {ppPackage?.map((val, key) => (
-                        <option
-                          selected={data?.mikrotikPackage === val?.id}
-                          key={key}
-                          value={val.id}
-                        >
-                          {val.name}
-                        </option>
-                      ))}
+                      <option value={mikrotikName?.id || ""}>
+                        {mikrotikName?.name || ""}
+                      </option>
                     </select>
                   </div>
+                )} */}
 
-                  <FtextField
-                    type="number"
-                    min={0}
-                    label={t("monthFee")}
-                    name="monthlyFee"
-                    validation={"true"}
+                {!bpSettings.genCustomerId && (
+                  <TextField
+                    type="text"
+                    label="Customer Id"
+                    name="customerId"
+                    validation={!bpSettings.genCustomerId}
                   />
+                )}
 
-                  {!bpSettings?.hasMikrotik && (
-                    <FtextField
-                      type="number"
-                      label={t("balance")}
-                      name="balance"
-                    />
-                  )}
+                <div className="displayGridManual6_4">
+                  <label className="form-control-label manualLable">
+                    {t("package")}
+                    <span className="text-danger">*</span>
+                  </label>
 
-                  {!bpSettings.genCustomerId && (
-                    <FtextField
-                      type="text"
-                      label="Customer Id"
-                      name="customerId"
-                      validation={!bpSettings.genCustomerId}
-                    />
-                  )}
-                  <FtextField
-                    type="text"
-                    label={`PPPoE ${t("name")}`}
-                    name="Pname"
-                    validation={"true"}
-                  />
-                  <FtextField
-                    type="text"
-                    label={t("password")}
-                    name="Ppassword"
-                    validation={"true"}
-                  />
-                  <FtextField
-                    type="text"
-                    label={t("comment")}
-                    name="Pcomment"
-                  />
+                  <select
+                    className="form-select mw-100 mt-0"
+                    aria-label="Default select example"
+                    onChange={selectMikrotikPackage}
+                    value={mikrotikPackage}
+                    disabled={role === "collector"}
+                  >
+                    {ppPackage?.map((val, key) => (
+                      <option
+                        selected={data?.mikrotikPackage === val?.id}
+                        key={key}
+                        value={val.id}
+                      >
+                        {val.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="displayGridManual6_4">
+                  <label
+                    class="form-control-label text-secondary d-flex justify-content-end"
+                    htmlFor="manuallyPassword"
+                  >
+                    {t("monthlyFee")}
+                    <span className="text-danger">*</span>
+                  </label>
 
                   <div>
-                    <label className="form-control-label changeLabelFontColor">
-                      {t("selectArea")}
+                    <InputGroup>
+                      <Field
+                        className="form-control shadow-none"
+                        type="number"
+                        min={0}
+                        name="monthlyFee"
+                        validation={"true"}
+                      />
+                      {data?.monthlyFee > 0 && (
+                        <InputGroup.Text
+                          style={{ cursor: "pointer" }}
+                          onClick={() => setProfileOption("recharge")}
+                        >
+                          <Cash size={22} title={t("recharge")} />
+                        </InputGroup.Text>
+                      )}
+                    </InputGroup>
+
+                    <ErrorMessage name="monthlyFee" component="div">
+                      {(err) => (
+                        <span className="errorMessage text-danger">{err}</span>
+                      )}
+                    </ErrorMessage>
+                  </div>
+                </div>
+
+                {!bpSettings?.hasMikrotik && (
+                  <TextField
+                    type="number"
+                    label={t("balance")}
+                    name="balance"
+                  />
+                )}
+
+                <TextField
+                  type="text"
+                  label={t("name")}
+                  name="name"
+                  validation={"true"}
+                />
+
+                <TextField
+                  type="text"
+                  label={`PPPoE ${t("name")}`}
+                  name="Pname"
+                  validation={"true"}
+                />
+
+                <div className="displayGridManual6_4">
+                  <label
+                    class="form-control-label text-secondary d-flex justify-content-end"
+                    htmlFor="manuallyPassword"
+                  >
+                    {t("mobile")}
+                    {bpSettings?.addCustomerWithMobile && (
                       <span className="text-danger">*</span>
+                    )}
+                  </label>
+
+                  <div>
+                    <InputGroup>
+                      <Field
+                        className="form-control shadow-none"
+                        type="text"
+                        name="mobile"
+                        disabled={
+                          !permission?.customerMobileEdit &&
+                          role === "collector"
+                        }
+                      />
+                      {data?.mobile && (
+                        <InputGroup.Text
+                          style={{ cursor: "pointer" }}
+                          onClick={() => setProfileOption("message")}
+                        >
+                          <Envelope size={22} title={t("message")} />
+                        </InputGroup.Text>
+                      )}
+                    </InputGroup>
+
+                    <ErrorMessage name="mobile" component="div">
+                      {(err) => (
+                        <span className="errorMessage text-danger">{err}</span>
+                      )}
+                    </ErrorMessage>
+                  </div>
+                </div>
+
+                <div className="displayGridManual6_4">
+                  <label
+                    class="form-control-label text-secondary d-flex justify-content-end"
+                    htmlFor="manuallyPassword"
+                  >
+                    {t("password")}
+                    <span className="text-danger">*</span>
+                  </label>
+
+                  <div>
+                    <InputGroup>
+                      <Field
+                        className="form-control shadow-none"
+                        type={passType}
+                        name="Ppassword"
+                      />
+                      <InputGroup.Text style={{ cursor: "pointer" }}>
+                        <div>
+                          {passType === "password" ? (
+                            <EyeSlash
+                              size={22}
+                              onClick={(e) => setPassType("text")}
+                            />
+                          ) : (
+                            <Eye
+                              size={22}
+                              onClick={(e) => setPassType("password")}
+                            />
+                          )}
+                        </div>
+                      </InputGroup.Text>
+                    </InputGroup>
+
+                    <ErrorMessage name="Ppassword" component="div">
+                      {(err) => (
+                        <span className="errorMessage text-danger">{err}</span>
+                      )}
+                    </ErrorMessage>
+                  </div>
+                </div>
+
+                <TextField type="text" label={t("NIDno")} name="nid" />
+
+                <div className="displayGridManual6_4">
+                  <label className="form-control-label manualLable">
+                    {t("area")}
+                    <span className="text-danger">*</span>
+                  </label>
+
+                  <select
+                    className="form-select mw-100 mt-0"
+                    aria-label="Default select example"
+                    onChange={selectSubArea}
+                  >
+                    {area.length === undefined
+                      ? ""
+                      : area.map((val, key) => (
+                          <option
+                            selected={areaID === val.id}
+                            key={key}
+                            value={val.id || ""}
+                          >
+                            {val.name}
+                          </option>
+                        ))}
+                  </select>
+                </div>
+
+                <div className="displayGridManual6_4">
+                  <label className="form-control-label manualLable">
+                    {t("SubArea")}
+                    <span className="text-danger">*</span>
+                  </label>
+
+                  <select
+                    className="form-select mw-100 mt-0"
+                    aria-label="Default select example"
+                    name="subArea"
+                    id="subAreaIdFromEdit"
+                    onChange={selectedSubArea}
+                  >
+                    <option value="">{t("selectSubArea")}</option>
+                    {subArea?.map((val, key) => (
+                      <option
+                        selected={val?.id === subAreaId}
+                        key={key}
+                        value={val?.id || ""}
+                      >
+                        {val?.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {bpSettings?.poleBox && (
+                  <div className="displayGridManual6_4">
+                    <label className="form-control-label manualLable">
+                      {t("poleBox")}
                     </label>
+
                     <select
                       className="form-select mw-100 mt-0"
                       aria-label="Default select example"
-                      onChange={selectSubArea}
+                      name="poleBox"
+                      onChange={(e) => setPoleBoxIds(e.target.value)}
                     >
-                      {area.length === undefined
-                        ? ""
-                        : area.map((val, key) => (
+                      <option value="">...</option>
+                      {subAreasPoleBox
+                        ? subAreasPoleBox?.map((val, key) => (
                             <option
-                              selected={areaID === val.id}
                               key={key}
-                              value={val.id || ""}
+                              value={val?.id}
+                              selected={val.id === poleBoxId}
                             >
                               {val.name}
                             </option>
-                          ))}
+                          ))
+                        : ""}
                     </select>
                   </div>
+                )}
 
-                  <div>
-                    <label className="form-control-label changeLabelFontColor">
-                      {t("selectSubArea")}
-                      <span className="text-danger">*</span>
-                    </label>
-                    <select
-                      className="form-select mw-100 mt-0"
-                      aria-label="Default select example"
-                      name="subArea"
-                      id="subAreaIdFromEdit"
-                      onChange={selectedSubArea}
-                    >
-                      <option value="">Select Sub Area</option>
-                      {subArea?.map((val, key) => (
-                        <option
-                          selected={val?.id === subAreaId}
-                          key={key}
-                          value={val?.id || ""}
-                        >
-                          {val?.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+                <div className="displayGridManual6_4">
+                  <label className="form-control-label manualLable">
+                    {t("billingCycle")}
+                    <span className="text-danger">*</span>
+                  </label>
 
-                  {bpSettings?.poleBox && (
-                    <div>
-                      <label className="form-control-label changeLabelFontColor">
-                        {t("selectPoleBox")}
+                  <DatePicker
+                    className="form-control mw-100"
+                    selected={billDate}
+                    onChange={(date) => setBillDate(date)}
+                    dateFormat="MMM dd yyyy hh:mm a"
+                    timeIntervals={60}
+                    showTimeSelect
+                  />
+                </div>
+
+                {bpSettings.promiseDate &&
+                  (role === "manager" || role === "ispOwner") && (
+                    <div className="displayGridManual6_4">
+                      <label className="form-control-label manualLable">
+                        {t("promiseDate")}
                       </label>
-                      <select
-                        className="form-select mw-100 mt-0"
-                        aria-label="Default select example"
-                        name="poleBox"
-                        onChange={(e) => setPoleBoxIds(e.target.value)}
-                      >
-                        <option value="">...</option>
-                        {subAreasPoleBox
-                          ? subAreasPoleBox?.map((val, key) => (
-                              <option
-                                key={key}
-                                value={val?.id}
-                                selected={val.id === poleBoxId}
-                              >
-                                {val.name}
-                              </option>
-                            ))
-                          : ""}
-                      </select>
+
+                      <DatePicker
+                        className="form-control mw-100"
+                        selected={promiseDate}
+                        onChange={(date) => setPromiseDate(date)}
+                        dateFormat="MMM dd yyyy hh:mm a"
+                        placeholderText={t("selectDate")}
+                        timeIntervals={60}
+                        minDate={new Date(data?.billingCycle)}
+                        maxDate={lastDayOfMonth}
+                        minTime={initialTime}
+                        maxTime={lastTime}
+                        showTimeSelect
+                      />
                     </div>
                   )}
 
-                  <FtextField type="text" label={t("NIDno")} name="nid" />
-
-                  <FtextField
-                    type="text"
-                    label={t("name")}
-                    name="name"
-                    validation={"true"}
-                  />
-                  <FtextField
-                    type="text"
-                    label={t("mobile")}
-                    name="mobile"
-                    validation={bpSettings?.addCustomerWithMobile}
-                    disabled={
-                      !permission?.customerMobileEdit && role === "collector"
-                    }
-                  />
-
-                  {divisionalAreaFormData.map((item) => (
-                    <div>
-                      <label className="form-control-label changeLabelFontColor">
-                        {item.text}
-                        <span className="text-danger">*</span>
-                      </label>
-                      <select
-                        className="form-select mw-100 mt-0"
-                        aria-label="Default select example"
-                        name={item.name}
-                        id={item.id}
-                        disabled={!mikrotikPackage}
-                        onChange={onDivisionalAreaChange}
-                        value={item.value}
-                      >
-                        <option value="">...</option>
-                        {item.data.map((item) => (
-                          <option value={item.id}>{item.name}</option>
-                        ))}
-                      </select>
-                    </div>
-                  ))}
-
-                  <FtextField type="text" label={t("address")} name="address" />
-                  <FtextField type="text" label={t("email")} name="email" />
-
-                  <div>
-                    <label className="form-control-label changeLabelFontColor">
-                      {t("billingCycle")}
-                      <span className="text-danger">*</span>
+                {divisionalAreaFormData.map((item) => (
+                  <div className="displayGridManual6_4">
+                    <label className="form-control-label manualLable">
+                      {item.text}
                     </label>
 
-                    <DatePicker
-                      className="form-control mw-100"
-                      selected={billDate}
-                      onChange={(date) => setBillDate(date)}
-                      dateFormat="MMM dd yyyy hh:mm a"
-                      timeIntervals={60}
-                      showTimeSelect
-                    />
+                    <select
+                      className="form-select mw-100 mt-0"
+                      aria-label="Default select example"
+                      name={item.name}
+                      id={item.id}
+                      disabled={!mikrotikPackage}
+                      onChange={onDivisionalAreaChange}
+                      value={item.value}
+                    >
+                      <option value="">...</option>
+                      {item.data.map((item) => (
+                        <option value={item.id}>{item.name}</option>
+                      ))}
+                    </select>
                   </div>
+                ))}
 
-                  {bpSettings.promiseDate &&
-                    (role === "manager" || role === "ispOwner") && (
-                      <div>
-                        <label className="form-control-label changeLabelFontColor">
-                          {t("promiseDate")}
-                        </label>
-                        <DatePicker
-                          className="form-control mw-100"
-                          selected={promiseDate}
-                          onChange={(date) => setPromiseDate(date)}
-                          dateFormat="MMM dd yyyy hh:mm a"
-                          placeholderText={t("selectDate")}
-                          timeIntervals={60}
-                          minDate={new Date(data?.billingCycle)}
-                          maxDate={lastDayOfMonth}
-                          minTime={initialTime}
-                          maxTime={lastTime}
-                          showTimeSelect
-                        />
-                      </div>
-                    )}
+                <TextField type="text" label={t("address")} name="address" />
 
-                  <div>
-                    <label className="form-control-label changeLabelFontColor">
-                      {t("connectionDate")}
-                    </label>
-                    <DatePicker
-                      className="form-control mw-100"
-                      selected={connectionDate}
-                      onChange={(date) => setConnectionDate(date)}
-                      dateFormat="dd/MM/yyyy"
-                      placeholderText={t("selectDate")}
-                    />
-                  </div>
+                <TextField type="text" label={t("email")} name="email" />
 
-                  <SelectField
-                    label={t("customerBillType")}
-                    id="exampleSelect"
-                    name="customerBillingType"
+                <TextField type="text" label={t("comment")} name="Pcomment" />
+
+                <div className="displayGridManual6_4">
+                  <label className="form-control-label manualLable">
+                    {t("connectionDate")}
+                  </label>
+                  <DatePicker
+                    className="form-control mw-100"
+                    selected={connectionDate}
+                    onChange={(date) => setConnectionDate(date)}
+                    dateFormat="MMM dd yyyy"
+                    placeholderText={t("selectDate")}
+                  />
+                </div>
+
+                <div className="displayGridManual6_4">
+                  <label className="form-control-label manualLable">
+                    {t("customerBillType")}
+                  </label>
+
+                  <select
                     className="form-select mw-100 mt-0"
+                    name="customerBillingType"
                   >
                     <option value="">{t("customerBillType")}</option>
-
                     <option value="prepaid">{t("prepaid")}</option>
                     <option value="postpaid">{t("postPaid")}</option>
-                  </SelectField>
+                  </select>
+                </div>
 
-                  <div>
-                    <p>{t("status")}</p>
-                    <div className="form-check form-check-inline mt-0">
-                      <input
-                        className="form-check-input"
-                        type="radio"
-                        name="staus"
-                        value={"active"}
-                        disabled={
-                          !permission?.customerActivate && role !== "ispOwner"
-                        }
-                        onChange={(e) => setStatus(e.target.value)}
-                        checked={status === "active"}
-                      />
-                      <label
-                        className="form-check-label"
-                        htmlFor="inlineRadio1"
-                      >
-                        {t("active")}
-                      </label>
-                    </div>
+                <div>
+                  <p>{t("status")}</p>
+                  <div className="form-check form-check-inline mt-0">
+                    <input
+                      className="form-check-input"
+                      type="radio"
+                      name="staus"
+                      value={"active"}
+                      disabled={
+                        !permission?.customerActivate && role !== "ispOwner"
+                      }
+                      onChange={(e) => setStatus(e.target.value)}
+                      checked={status === "active"}
+                    />
+                    <label className="form-check-label" htmlFor="inlineRadio1">
+                      {t("active")}
+                    </label>
+                  </div>
 
+                  <div className="form-check form-check-inline">
+                    <input
+                      className="form-check-input"
+                      type="radio"
+                      id="inlineRadio2"
+                      value={"inactive"}
+                      disabled={
+                        !permission?.customerDeactivate && role !== "ispOwner"
+                      }
+                      onChange={(e) => setStatus(e.target.value)}
+                      checked={status === "inactive"}
+                    />
+                    <label className="form-check-label" htmlFor="inlineRadio2">
+                      {t("in active")}
+                    </label>
+                  </div>
+
+                  {data?.status === "expired" && (
                     <div className="form-check form-check-inline">
                       <input
                         className="form-check-input"
                         type="radio"
                         id="inlineRadio2"
-                        value={"inactive"}
-                        disabled={
-                          !permission?.customerDeactivate && role !== "ispOwner"
-                        }
-                        onChange={(e) => setStatus(e.target.value)}
-                        checked={status === "inactive"}
+                        disabled
+                        checked={status === "expired"}
                       />
                       <label
                         className="form-check-label"
                         htmlFor="inlineRadio2"
                       >
-                        {t("in active")}
+                        {t("expired")}
                       </label>
-                    </div>
-
-                    {data?.status === "expired" && (
-                      <div className="form-check form-check-inline">
-                        <input
-                          className="form-check-input"
-                          type="radio"
-                          id="inlineRadio2"
-                          disabled
-                          checked={status === "expired"}
-                        />
-                        <label
-                          className="form-check-label"
-                          htmlFor="inlineRadio2"
-                        >
-                          {t("expired")}
-                        </label>
-                      </div>
-                    )}
-                  </div>
-
-                  {bpSettings?.hasMikrotik && (
-                    <div className="autoDisable">
-                      <label> {t("automaticConnectionOff")} </label>
-                      <input
-                        type="checkBox"
-                        checked={autoDisable}
-                        onChange={(e) => setAutoDisable(e.target.checked)}
-                      />
                     </div>
                   )}
                 </div>
-              </Form>
-            )}
-          </Formik>
-        </ModalBody>
-        <ModalFooter>
-          <div className="modal-footer" style={{ border: "none" }}>
-            <button
-              type="button"
-              className="btn btn-secondary"
-              disabled={isLoading}
-              onClick={() => setShow(false)}
-            >
-              {t("cancel")}
-            </button>
-            <button
-              type="submit"
-              form="customerEdit"
-              className="btn btn-success"
-              disabled={isLoading}
-            >
-              {isLoading ? <Loader /> : t("save")}
-            </button>
-          </div>
-        </ModalFooter>
-      </Modal>
+              </div>
+
+              <div className="d-flex justify-content-end mt-5">
+                <button type="submit" className="btn btn-outline-success">
+                  {isLoading ? <Loader /> : t("save")}
+                </button>
+              </div>
+            </Form>
+          )}
+        </Formik>
+      </Card.Body>
     </>
   );
 }

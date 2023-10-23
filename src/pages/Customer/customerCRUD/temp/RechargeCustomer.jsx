@@ -3,28 +3,27 @@ import { Form, Formik } from "formik";
 import { useSelector } from "react-redux";
 import * as Yup from "yup";
 //internal imports
-import { FtextField } from "../../../components/common/FtextField";
-import "../../Customer/customer.css";
+import { FtextField } from "../../../../components/common/FtextField";
+import "../../../Customer/customer.css";
 import { useDispatch } from "react-redux";
-import { billCollect } from "../../../features/apiCalls";
-import Loader from "../../../components/common/Loader";
+import { billCollect } from "../../../../features/apiCalls";
+import Loader from "../../../../components/common/Loader";
 import DatePicker from "react-datepicker";
 import Select from "react-select";
 import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
 import ReactToPrint from "react-to-print";
-import RechargePrintInvoice from "./bulkOpration/RechargePrintInvoice";
+import RechargePrintInvoice from "../bulkOpration/RechargePrintInvoice";
 import {
-  Card,
   Modal,
   ModalBody,
   ModalFooter,
   ModalHeader,
   ModalTitle,
 } from "react-bootstrap";
-import { CashStack } from "react-bootstrap-icons";
+import { toast } from "react-toastify";
 
-export default function CustomerBillCollect({
+export default function RechargeCustomer({
   show,
   setShow,
   single,
@@ -178,12 +177,12 @@ export default function CustomerBillCollect({
     } else if (data?.balance === 0 && data?.paymentStatus === "paid") {
       temp.push(options[dataMonth + 1]);
 
-      if (dataMonth + 1 > 11) setSelectedMonth([]);
+      if (dataMonth + 1 > 11) temp.push(options[0]);
     } else if (data?.balance > 0 && data?.paymentStatus === "paid") {
       const modVal = Math.floor(data?.balance / data?.monthlyFee);
       temp.push(options[dataMonth + modVal + 1]);
 
-      if (dataMonth + modVal + 1 > 11) setSelectedMonth([]);
+      if (dataMonth + modVal + 1 > 11) temp.push(options[0]);
     } else if (data?.balance < 0 && data?.paymentStatus === "unpaid") {
       const modVal = Math.floor(Math.abs(data?.balance / data?.monthlyFee));
       let diff = dataMonth - modVal;
@@ -245,7 +244,10 @@ export default function CustomerBillCollect({
       sendingData.end = endDate.toISOString();
     }
 
-    if (selectedMonth?.length > 0) {
+    if (selectedMonth?.length === 0) {
+      setLoading(false);
+      return toast.warn(t("selctMonth"));
+    } else {
       const monthValues = selectedMonth.map((item) => {
         return item.value;
       });
@@ -267,47 +269,101 @@ export default function CustomerBillCollect({
 
   return (
     <>
-      <Card.Title className="clintTitle mb-0">
-        <h5 className="profileInfo">{t("recharge")}</h5>
-      </Card.Title>
-      <Card.Body>
-        <Formik
-          initialValues={{
-            amount:
-              data?.balance > 0 && data?.balance <= data?.monthlyFee
-                ? data?.monthlyFee - data?.balance
-                : data?.balance > data?.monthlyFee
-                ? 0
-                : data?.monthlyFee,
-            due: data?.balance < 0 ? Math.abs(data?.balance) : 0,
-            discount: 0,
-          }}
-          validationSchema={BillValidatoin}
-          onSubmit={(values) => {
-            customerBillHandler(values);
-          }}
-          enableReinitialize
-        >
-          {() => (
-            <Form onChange={handleFormValue}>
-              <div className="monthlyBill">
-                <span className="text-secondary">{data?.name}</span>&nbsp;
-                <span className="text-secondary">{t("monthlyFee")} ৳</span>
-                <span className="text-primary">{data?.monthlyFee} </span>
-              </div>
-              <div className="displayGrid">
-                <div className="displayGrid2">
-                  <FtextField
-                    type="number"
-                    name="amount"
-                    label={t("amount")}
-                    value={billAmount}
-                  />
+      <Modal
+        show={show}
+        onHide={handleClose}
+        backdrop="static"
+        keyboard={false}
+        centered
+      >
+        <ModalHeader closeButton>
+          <ModalTitle>
+            <h5
+              style={{ color: "#0abb7a" }}
+              className="modal-title"
+              id="customerModalDetails"
+            >
+              {t("recharge")}
+            </h5>
+          </ModalTitle>
+        </ModalHeader>
+        <ModalBody>
+          <Formik
+            initialValues={{
+              amount:
+                data?.balance > 0 && data?.balance <= data?.monthlyFee
+                  ? data?.monthlyFee - data?.balance
+                  : data?.balance > data?.monthlyFee
+                  ? 0
+                  : data?.monthlyFee,
+              due: data?.balance < 0 ? Math.abs(data?.balance) : 0,
+              discount: 0,
+            }}
+            validationSchema={BillValidatoin}
+            onSubmit={(values) => {
+              customerBillHandler(values);
+            }}
+            enableReinitialize
+          >
+            {() => (
+              <Form onChange={handleFormValue}>
+                <table
+                  className="table table-bordered"
+                  style={{ lineHeight: "12px" }}
+                >
+                  <tbody>
+                    <tr>
+                      <td>{t("id")}</td>
+                      <td>
+                        <b>{data?.customerId}</b>
+                      </td>
+                      <td>{t("pppoe")}</td>
+                      <td>
+                        <b>{data?.pppoe.name}</b>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>{t("name")}</td>
+                      <td>
+                        <b>{data?.name}</b>
+                      </td>
+                      <td>{t("mobile")}</td>
+                      <td className="text-primary">
+                        <b>{data?.mobile}</b>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>{t("monthly")}</td>
+                      <td className="text-success">
+                        <b>{data?.monthlyFee}</b>
+                      </td>
+                      <td>{t("balance")}</td>
+                      <td className="text-info">
+                        <b>{data?.balance}</b>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <h6>
+                  <span className="text-success">{t("totalBillAmount")}</span>
+                  <span className="text-danger">{totalAmount} </span>
+                </h6>
 
-                  <FtextField type="number" name="due" label={t("due")} />
+                <div className="bill_collect_form">
+                  <div className="w-100 me-2">
+                    <FtextField
+                      type="number"
+                      name="amount"
+                      label={t("amount")}
+                      value={billAmount}
+                    />
+                  </div>
+                  <div className="w-100 me-2">
+                    <FtextField type="number" name="due" label={t("due")} />
+                  </div>
                 </div>
-                <div className="displayGrid2">
-                  <div>
+                <div className="d-flex justify-content-between align-items-center">
+                  <div className="w-100 me-2 mb-3">
                     <label className="form-control-label changeLabelFontColor">
                       {t("billType")}
                     </label>
@@ -316,16 +372,16 @@ export default function CustomerBillCollect({
                       onChange={(e) => setBillType(e.target.value)}
                     >
                       <option value="bill"> {t("bill")} </option>
-                      {permission?.connectionFee ||
-                        (role !== "collector" && (
-                          <option value="connectionFee">
-                            {t("connectionFee")}
-                          </option>
-                        ))}
+                      {permission?.connectionFee || role !== "collector" ? (
+                        <option value="connectionFee">
+                          {t("connectionFee")}
+                        </option>
+                      ) : (
+                        ""
+                      )}
                     </select>
                   </div>
-
-                  <div>
+                  <div className="d-inline w-100 mb-3">
                     <label
                       htmlFor="receiver_type"
                       className="form-control-label changeLabelFontColor"
@@ -350,17 +406,15 @@ export default function CustomerBillCollect({
                     </select>
                   </div>
                 </div>
-
-                <div className="month">
+                <div className="month mb-2">
                   <label
                     className="form-check-label changeLabelFontColor"
                     htmlFor="selectMonth"
                   >
                     {t("selectMonth")}
                   </label>
-
                   <Select
-                    className="mt-0"
+                    className="mt-1"
                     value={selectedMonth}
                     onChange={(data) => setSelectedMonth(data)}
                     options={options}
@@ -371,9 +425,9 @@ export default function CustomerBillCollect({
                   />
                 </div>
 
-                <div className="displayGrid2">
+                <div className="d-flex justify-content-between align-items-center">
                   {(role === "ispOwner" || permission.billDiscount) && (
-                    <div>
+                    <div className="w-50">
                       <FtextField
                         type="number"
                         name="discount"
@@ -381,18 +435,17 @@ export default function CustomerBillCollect({
                       />
                     </div>
                   )}
-
-                  <div className="d-flex align-self-end">
+                  <div className="form-check">
                     <input
                       type="checkbox"
                       className="form-check-input me-1"
-                      id="addNOtes"
+                      id="addNOte"
                       checked={noteCheck}
                       onChange={(e) => setNoteCheck(e.target.checked)}
                     />
                     <label
                       className="form-check-label changeLabelFontColor"
-                      htmlFor="addNOtes"
+                      htmlFor="addNOte"
                     >
                       {t("noteAndDate")}
                     </label>
@@ -401,36 +454,37 @@ export default function CustomerBillCollect({
 
                 {noteCheck && (
                   <>
-                    <div className="displayGrid2">
-                      <div>
-                        <label className="form-control-label changeLabelFontColor">
-                          {t("startDate")}
-                        </label>
-                        <DatePicker
-                          className="form-control mw-100"
-                          selected={startDate}
-                          onChange={(date) => setStartDate(date)}
-                          dateFormat="dd/MM/yyyy"
-                          placeholderText={t("selectDate")}
-                        />
-                      </div>
+                    <div className="mt-1">
+                      <div className="d-flex">
+                        <div className="me-2">
+                          <label className="form-control-label changeLabelFontColor">
+                            {t("startDate")}
+                          </label>
+                          <DatePicker
+                            className="form-control mw-100"
+                            selected={startDate}
+                            onChange={(date) => setStartDate(date)}
+                            dateFormat="dd/MM/yyyy"
+                            placeholderText={t("selectDate")}
+                          />
+                        </div>
+                        <div>
+                          <label className="form-control-label changeLabelFontColor">
+                            {t("endDate")}
+                          </label>
 
-                      <div>
-                        <label className="form-control-label changeLabelFontColor">
-                          {t("endDate")}
-                        </label>
-
-                        <DatePicker
-                          className="form-control mw-100"
-                          selected={endDate}
-                          onChange={(date) => setEndDate(date)}
-                          dateFormat="dd/MM/yyyy"
-                          placeholderText={t("selectDate")}
-                        />
+                          <DatePicker
+                            className="form-control mw-100"
+                            selected={endDate}
+                            onChange={(date) => setEndDate(date)}
+                            dateFormat="dd/MM/yyyy"
+                            placeholderText={t("selectDate")}
+                          />
+                        </div>
                       </div>
                     </div>
 
-                    <div class="form-floating">
+                    <div class="form-floating mt-3">
                       <textarea
                         cols={200}
                         className="form-control shadow-none"
@@ -442,57 +496,53 @@ export default function CustomerBillCollect({
                     </div>
                   </>
                 )}
-              </div>
-              {/* Invoice Printer Page Component with button and they are hidden*/}
-              <>
-                {((role === "ispOwner" &&
-                  bpSettings?.instantRechargeBillPrint) ||
-                  ((role === "manager" || role === "collector") &&
-                    permission?.instantRechargeBillPrint &&
-                    bpSettings?.instantRechargeBillPrint)) && (
+
+                {/* Invoice Printer Page Component with button and they are hidden*/}
+
+                <>
+                  {((role === "ispOwner" &&
+                    bpSettings?.instantRechargeBillPrint) ||
+                    ((role === "manager" || role === "collector") &&
+                      permission?.instantRechargeBillPrint &&
+                      bpSettings?.instantRechargeBillPrint)) && (
+                    <div className="d-none">
+                      <RechargePrintInvoice
+                        ref={rechargePrint}
+                        customerData={customerData}
+                        billingData={responseData}
+                        ispOwnerData={userData}
+                      />
+                    </div>
+                  )}
+
                   <div className="d-none">
-                    <RechargePrintInvoice
-                      ref={rechargePrint}
-                      customerData={customerData}
-                      billingData={responseData}
-                      ispOwnerData={userData}
+                    <ReactToPrint
+                      documentTitle={t("billInvoice")}
+                      trigger={() => (
+                        <div
+                          title={t("printInvoiceBill")}
+                          style={{ cursor: "pointer" }}
+                        >
+                          <button type="button" id="printButton">
+                            Print
+                          </button>
+                        </div>
+                      )}
+                      content={() => rechargePrint.current}
                     />
                   </div>
-                )}
+                </>
 
-                <div className="d-none">
-                  <ReactToPrint
-                    documentTitle={t("billInvoice")}
-                    trigger={() => (
-                      <div
-                        title={t("printInvoiceBill")}
-                        style={{ cursor: "pointer" }}
-                      >
-                        <button type="button" id="printButton">
-                          Print
-                        </button>
-                      </div>
-                    )}
-                    content={() => rechargePrint.current}
-                  />
+                <div className="mt-4 float-end">
+                  <button type="submit" className="btn btn-success">
+                    {isLoading ? <Loader /> : t("submit")}
+                  </button>
                 </div>
-              </>
-              <div className="d-flex justify-content-end mt-5">
-                <button type="submit" className="btn btn-outline-success">
-                  {isLoading ? (
-                    <Loader />
-                  ) : (
-                    <span className="submitButton">
-                      {t("pay")}
-                      <CashStack />
-                    </span>
-                  )}
-                </button>
-              </div>
-            </Form>
-          )}
-        </Formik>
-      </Card.Body>
+              </Form>
+            )}
+          </Formik>
+        </ModalBody>
+      </Modal>
     </>
   );
 }

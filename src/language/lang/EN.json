@@ -875,5 +875,13 @@
   "startBillingCycleDate": "Start BillingCycle Date",
   "endBillingCycleDate": "End BillingCycle Date",
   "manualInactive": "Manual Active/Inactive",
-  "manualInactiveToast": "Customer Manual Inactive SMS Template Updated."
+  "manualInactiveToast": "Customer Manual Inactive SMS Template Updated.",
+  "profileSetting": "Profile Setting",
+  "deleteProfile": "Delete Profile",
+  "areYouSure": "Are you sure ?",
+  "permanentlyDelete": "This action will permanently delete the profile data.",
+  "profileDetail": "Profile Detail",
+  "autoConnection": "Auto Connection",
+  "billingDate": "Billing Date",
+  "createDate": "Create Date"
 }

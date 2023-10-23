@@ -52,28 +52,26 @@ const BkashForm = ({ ispOwner }) => {
   });
 
   const bkashHandler = (values) => {
-    if (role === "admin") {
-      let postBody = {
-        ...ispOwner,
-        bpSettings: {
-          ...ispOwner.bpSettings,
-          paymentGateway: {
-            ...ispOwner.bpSettings.paymentGateway,
-            gatewayType: "bKashPG",
-            bKash: {
-              username: values.username,
-              appSecret: values.appSecret,
-              password: values.password,
-              appKey: values.appKey,
-              isTokenized: values.isTokenized,
-            },
+    let postBody = {
+      ...ispOwner,
+      bpSettings: {
+        ...ispOwner.bpSettings,
+        paymentGateway: {
+          ...ispOwner.bpSettings.paymentGateway,
+          gatewayType: "bKashPG",
+          bKash: {
+            username: values.username,
+            appSecret: values.appSecret,
+            password: values.password,
+            appKey: values.appKey,
+            isTokenized: values.isTokenized,
           },
-          hasPG: values.hasPG,
         },
-      };
+        hasPG: values.hasPG,
+      },
+    };
 
-      updateOwner(ispOwner.id, postBody, setIsLoading, dispatch);
-    }
+    updateOwner(ispOwner.id, postBody, setIsLoading, dispatch);
   };
 
   return (

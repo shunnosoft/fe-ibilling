@@ -19,12 +19,12 @@ ul.client_service_list2 li:hover {
   background-color: #5e5d5d;
 }
 
-ul.client_service_list2 li:first-child:hover{
+ul.client_service_list2 li:first-child:hover {
   background-color: #5e5d5d;
   border-top-left-radius: 10px;
 }
 
-ul.client_service_list2 li:last-child:hover{
+ul.client_service_list2 li:last-child:hover {
   background-color: #5e5d5d;
   border-bottom-left-radius: 10px;
 }
@@ -47,8 +47,7 @@ ul.client_service_list2 li:last-child:hover{
 
 @-webkit-keyframes rotating
 
-/* Safari and Chrome */
-  {
+/* Safari and Chrome */ {
   from {
     -webkit-transform: rotate(0deg);
     -o-transform: rotate(0deg);
@@ -123,10 +122,176 @@ ul.client_service_list2 li:last-child:hover{
   transform: translate(50%, 50%);
 }
 
-.menu_label2{
-  font-size:10.5px;
+.menu_label2 {
+  font-size: 10.5px;
 }
 
 /* @media screen and (max-width: 2100px) {
   
 } */
+
+.profile_header {
+  height: 2.3rem;
+  width: 100%;
+  padding: 1rem;
+  margin: 1.5rem 0;
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  box-shadow: 10px 0px 5px #96969689;
+  background-color: #4498ecd6;
+}
+
+.profileDelete {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: #fff;
+  font-size: 1.1rem;
+  cursor: pointer;
+  margin-right: 2rem;
+}
+
+.clintProfile {
+  width: auto;
+  height: 100%;
+  border: none !important;
+}
+
+.monthlyBill {
+  font-size: 1.2rem;
+  padding: 0.4rem 0.3rem;
+  margin: 0rem 0rem 0.6rem 0rem;
+  font-weight: 600;
+  background-color: #1276a705;
+  border-radius: 0.4rem;
+}
+
+.clintTitle {
+  display: flex;
+  align-items: center;
+  background-color: #b1b1b11b;
+}
+
+.clintPotos {
+  width: 5rem;
+  height: 5rem;
+  object-fit: cover;
+  border-radius: 50%;
+  margin: 0.5rem 1rem;
+}
+
+.clintName {
+  font-family: Verdana, sans-serif;
+  font-size: xx-large;
+  font-weight: 100;
+}
+
+.profileInfo {
+  margin: 0.8rem 1rem;
+  font-weight: 600;
+}
+
+.displayGridManual6_4 {
+  display: grid;
+  grid-template-columns: minmax(39%, auto) minmax(60%, auto);
+  grid-gap: 1%;
+  margin: 10px 0;
+}
+
+.displayGridHorizontalFill5_5 {
+  display: grid;
+  grid-template-columns: minmax(50%, auto) minmax(50%, auto);
+}
+
+.displayGridVertical5_5 {
+  display: grid;
+  grid-template-rows: minmax(48%, auto) minmax(48%, auto);
+  grid-gap: 4%;
+}
+
+.clintSetting {
+  height: 100vh;
+}
+
+.manualLable {
+  display: flex;
+  justify-content: end;
+  color: rgb(131, 131, 131);
+}
+
+.profileSidebar {
+  background-color: aqua;
+}
+
+.profileOptions {
+  padding: 0 0.5rem;
+  color: #5e5d5d !important;
+}
+
+.profileOptions {
+  font-size: 18px;
+  margin-right: 15px;
+  margin-top: -1px;
+  color: rgb(131, 131, 131);
+}
+
+.options_name {
+  display: flex;
+  align-self: flex-end;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.defaultProfile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 1rem 0px;
+}
+
+.profileAgree {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 1.1rem;
+  font-weight: 500;
+  gap: 1rem 0px;
+  margin-bottom: 1.5rem;
+  color: rgb(187, 187, 187);
+}
+
+.submitButton {
+  display: flex;
+  align-items: center;
+  column-gap: 8px;
+  font-size: 1.1rem;
+}
+
+.profileDetails {
+  font-size: 1rem;
+  padding: 0.1rem;
+  margin-bottom: 0.2rem;
+  font-weight: 600;
+}
+
+.reportHeader {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.reportAccordion ::after {
+  width: 0px !important;
+}
+
+.reportAction {
+  cursor: context-menu;
+}
+
+.reportName {
+  font-size: 18px;
+  font-weight: 600;
+  width: 90%;
+}

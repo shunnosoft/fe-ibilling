@@ -46,26 +46,24 @@ const SSLCommerz = ({ ispOwner }) => {
   });
 
   const sslCommerzHandler = (values) => {
-    if (role === "admin") {
-      let postBody = {
-        ...ispOwner,
-        bpSettings: {
-          ...ispOwner.bpSettings,
-          paymentGateway: {
-            ...ispOwner.bpSettings.paymentGateway,
-            gatewayType: "sslCommerz",
-            sslCommerz: {
-              storeId: values.storeId,
-              storePassword: values.storePassword,
-              ipn: values.ipn,
-            },
+    let postBody = {
+      ...ispOwner,
+      bpSettings: {
+        ...ispOwner.bpSettings,
+        paymentGateway: {
+          ...ispOwner.bpSettings.paymentGateway,
+          gatewayType: "sslCommerz",
+          sslCommerz: {
+            storeId: values.storeId,
+            storePassword: values.storePassword,
+            ipn: values.ipn,
           },
-          hasPG: values.hasPG,
         },
-      };
+        hasPG: values.hasPG,
+      },
+    };
 
-      updateOwner(ispOwner.id, postBody, setIsLoading, dispatch);
-    }
+    updateOwner(ispOwner.id, postBody, setIsLoading, dispatch);
   };
 
   return (

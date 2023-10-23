@@ -239,8 +239,8 @@ const StaticActiveCustomer = () => {
                   aria-expanded="false"
                 />
 
-                {/* <ul className="dropdown-menu" aria-labelledby="areaDropdown">
-                  {(role === "ispOwner" || role === "manager") &&
+                <ul className="dropdown-menu" aria-labelledby="areaDropdown">
+                  {/* {(role === "ispOwner" || role === "manager") &&
                     bpSettings?.hasMikrotik && (
                       <li onClick={() => macBindingCall(original)}>
                         <div className="dropdown-item">
@@ -250,8 +250,8 @@ const StaticActiveCustomer = () => {
                           </div>
                         </div>
                       </li>
-                    )}
-                </ul> */}
+                    )} */}
+                </ul>
               </div>
             </div>
           );
