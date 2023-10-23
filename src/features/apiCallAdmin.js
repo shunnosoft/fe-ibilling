@@ -434,12 +434,15 @@ export const getBulletinPermission = async (dispatch) => {
 };
 
 // get reseller bulletin
-export const getCreateCsutomerLoginCredential = async (mobile) => {
+export const getCreateCsutomerLoginCredential = async (
+  mobile,
+  setCustomerCredential
+) => {
   try {
     const res = await apiLink.get(
       `admin/createCustomerLoginCredential?mobile=${mobile}`
     );
-    console.log(res);
+    setCustomerCredential(res);
   } catch (error) {
     console.log(error.response.data);
   }

@@ -92,6 +92,9 @@ export default function Home() {
   // Owner id
   const [ispOwnerId, setIspOwnerId] = useState("");
 
+  // Customer login Credential state
+  const [customerCredential, setCustomerCredential] = useState("");
+
   // filter options state
   const [filterOptions, setFilterOptions] = useState({
     status: "",
@@ -243,10 +246,9 @@ export default function Home() {
     }
   };
 
-  const createCustomerLoginCredential = (value) => {
-    const ispOwner = ispOwners?.find((val) => val.id === value.id);
-    if (ispOwner.bpSettings?.hasPG) {
-      getCreateCsutomerLoginCredential(ispOwner?.mobile);
+  const createCustomerLoginCredential = (ispOwner) => {
+    if (ispOwner?.bpSettings?.hasPG) {
+      getCreateCsutomerLoginCredential(ispOwner?.mobile, setCustomerCredential);
     } else {
       alert("Payment getway not found!");
     }
@@ -301,6 +303,12 @@ export default function Home() {
       alert(resellerBillCycleData.msg);
     }
   }, [resellerBillCycleData]);
+
+  useEffect(() => {
+    if (customerCredential) {
+      alert(customerCredential.data?.msg);
+    }
+  }, [customerCredential]);
 
   // table column
   const columns = React.useMemo(
