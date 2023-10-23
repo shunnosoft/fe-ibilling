@@ -24,6 +24,7 @@ import {
   TrashFill,
 } from "react-bootstrap-icons";
 import {
+  getCreateCsutomerLoginCredential,
   getIspOwner,
   getIspOwners,
   getReseller,
@@ -151,10 +152,8 @@ export default function Home() {
       startDate,
       endDate,
     } = filterOptions;
-    console.log(filterOptions);
 
     let tempClint = [...ispOwners];
-    console.log(tempClint);
 
     // payment filter
     if (paymentStatus && paymentStatus !== "") {
@@ -162,8 +161,6 @@ export default function Home() {
         (value) => value.bpSettings.paymentStatus === paymentStatus
       );
     }
-
-    console.log(tempClint);
 
     if (status && status !== "") {
       tempClint = tempClint.filter((item) => item.status === status);
@@ -182,7 +179,6 @@ export default function Home() {
         (value) => value.bpSettings.executeBillingCycle === billCycle
       );
     }
-    console.log(tempClint);
 
     // ispOwner queue type filter
     if (queueType && queueType !== "") {
@@ -197,7 +193,6 @@ export default function Home() {
         value.bpSettings?.customerType.includes(customerType)
       );
     }
-    console.log(tempClint);
 
     // mikrotik filter
     if (mikrotik && mikrotik !== "") {
@@ -212,25 +207,21 @@ export default function Home() {
         (value) => value.bpSettings.hasMikrotik === mtkStatus
       );
     }
-    console.log(tempClint);
 
     //divisional area filter
     if (district && district !== "") {
       const districtName = getName(districts, district)?.name;
       tempClint = tempClint.filter((item) => item.district === districtName);
     }
-    console.log(tempClint);
 
     // create date filter
-    tempClint = tempClint.filter(
-      (item) =>
-        new Date(moment(item.createdAt).format("YYYY-MM-DD")).getTime() >=
-          new Date(moment(startDate).format("YYYY-MM-DD")).getTime() &&
-        new Date(moment(item.createdAt).format("YYYY-MM-DD")).getTime() <=
-          new Date(moment(endDate).format("YYYY-MM-DD")).getTime()
-    );
-
-    console.log(tempClint);
+    // tempClint = tempClint?.filter(
+    //   (item) =>
+    //     new Date(moment(item.createdAt).format("YYYY-MM-DD")).getTime() >=
+    //       new Date(moment(startDate).format("YYYY-MM-DD")).getTime() &&
+    //     new Date(moment(item.createdAt).format("YYYY-MM-DD")).getTime() <=
+    //       new Date(moment(endDate).format("YYYY-MM-DD")).getTime()
+    // );
 
     setClintData(tempClint);
   };
@@ -249,6 +240,15 @@ export default function Home() {
     let confirm = window.confirm("Reseller wants to continue billing cycle");
     if (confirm) {
       getReseller(ispOwner, setResellerBillCycleData);
+    }
+  };
+
+  const createCustomerLoginCredential = (value) => {
+    const ispOwner = ispOwners?.find((val) => val.id === value.id);
+    if (ispOwner.bpSettings?.hasPG) {
+      getCreateCsutomerLoginCredential(ispOwner?.mobile);
+    } else {
+      alert("Payment getway not found!");
     }
   };
 
@@ -643,6 +643,21 @@ export default function Home() {
                       <div className="customerAction">
                         <i class="fa-solid fa-money-bill-wave"></i>
                         <p className="actionP">Reseller Billing Cycle</p>
+                      </div>
+                    </div>
+                  </li>
+
+                  <li
+                    onClick={() => {
+                      createCustomerLoginCredential(original);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <i class="fa-solid fa-money-bill-wave"></i>
+                        <p className="actionP">
+                          Create Customer Login Credential
+                        </p>
                       </div>
                     </div>
                   </li>
