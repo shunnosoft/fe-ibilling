@@ -66,6 +66,7 @@ export default function AddStaticCustomer({ show, setShow }) {
   const ppPackage = useSelector((state) => state?.package?.packages);
 
   const [packageRate, setPackageRate] = useState({ rate: 0 });
+  console.log(packageRate);
   const [isLoading, setIsloading] = useState(false);
   const [singleMikrotik, setSingleMikrotik] = useState("");
   const [mikrotikPackage, setMikrotikPackage] = useState("");
@@ -77,6 +78,7 @@ export default function AddStaticCustomer({ show, setShow }) {
   const [billDate, setBillDate] = useState(new Date());
   const [connectionDate, setConnectionDate] = useState(new Date());
   const [maxUpLimit, setUpMaxLimit] = useState("");
+  console.log(maxUpLimit);
   const [maxDownLimit, setDownMaxLimit] = useState("");
   const [monthlyFee, setMonthlyFee] = useState(packageRate?.rate || 0);
 
@@ -171,6 +173,7 @@ export default function AddStaticCustomer({ show, setShow }) {
 
   // select Mikrotik Package
   const selectMikrotikPackage = ({ target }) => {
+    console.log(target.value);
     if (target.value === "0") {
       setPackageRate({ rate: 0 });
     } else {
@@ -179,6 +182,8 @@ export default function AddStaticCustomer({ show, setShow }) {
         const temp = ppPackage.find((val) => val.id === target.value);
         setPackageRate(temp);
         setMonthlyFee(temp.rate);
+        const getLimit = setPackageLimit(target.value, false);
+        getLimit && setUpMaxLimit(getLimit);
       }
 
       if (target.name === "corePackage") {
@@ -260,6 +265,9 @@ export default function AddStaticCustomer({ show, setShow }) {
         address: ipAddress,
         list: "allow_ip",
       };
+      if (maxUpLimit) {
+        sendingData.queue.maxLimit = `${maxUpLimit}/${maxUpLimit}`;
+      }
     }
 
     if (userType === "core-queue") {
@@ -298,6 +306,7 @@ export default function AddStaticCustomer({ show, setShow }) {
       delete sendingData.poleBox;
     }
 
+    console.log(sendingData);
     addStaticCustomerApi(
       dispatch,
       sendingData,

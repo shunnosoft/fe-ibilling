@@ -40,6 +40,7 @@ export default function StaticCustomerEdit({ show, setShow, single }) {
   const customer = useSelector((state) =>
     state?.customer?.staticCustomer.find((item) => item.id === single)
   );
+  console.log(customer);
   const bpSettings = useSelector(
     (state) => state.persistedReducer.auth?.userData?.bpSettings
   );
@@ -87,6 +88,7 @@ export default function StaticCustomerEdit({ show, setShow, single }) {
 
   const [billDate, setBillDate] = useState(null);
   const [maxUpLimit, setUpMaxLimit] = useState("");
+  console.log(maxUpLimit);
   const [maxDownLimit, setDownMaxLimit] = useState("");
   const [monthlyFee, setMonthlyFee] = useState();
   const [qDisable, setQdisable] = useState();
@@ -132,6 +134,20 @@ export default function StaticCustomerEdit({ show, setShow, single }) {
       setUpMaxLimit(customer?.queue?.maxLimit?.split("/")[0]);
       setDownMaxLimit(customer?.queue?.maxLimit?.split("/")[1]);
     }
+
+    if (
+      userType === "firewall-queue" &&
+      customer?.queue.type === "firewall-queue"
+    ) {
+      if (customer?.queue?.maxLimit) {
+        setUpMaxLimit(customer?.queue?.maxLimit);
+      } else {
+        console.log(customer?.mikrotikPackage);
+        const limit = setPackageLimit(customer?.mikrotikPackage, false);
+        limit && setUpMaxLimit(`${limit} / ${limit}`);
+      }
+    }
+    console.log(customer);
     setQdisable(customer?.queue.disabled);
 
     let temp;
@@ -290,6 +306,8 @@ export default function StaticCustomerEdit({ show, setShow, single }) {
         const temp = ppPackage.find((val) => val.id === target.value);
         setPackageRate(temp);
         setMonthlyFee(temp.rate);
+        const getLimit = setPackageLimit(target.value, false);
+        getLimit && setUpMaxLimit(getLimit);
       }
 
       if (target.name === "upPackage") {
@@ -342,8 +360,15 @@ export default function StaticCustomerEdit({ show, setShow, single }) {
 
   // sending data to backed
   const customerHandler = async (data, resetForm) => {
-    const { customerId, ipAddress, queueName, target, srcAddress, ...rest } =
-      data;
+    const {
+      customerId,
+      ipAddress,
+      queueName,
+      target,
+      srcAddress,
+      name,
+      ...rest
+    } = data;
     if (!bpSettings.genCustomerId) {
       if (!customerId) {
         return alert(t("writeCustomerId"));
@@ -413,7 +438,11 @@ export default function StaticCustomerEdit({ show, setShow, single }) {
         address: ipAddress,
         list: "allow_ip",
         disabled: qDisable,
+        name: name,
       };
+      if (maxUpLimit) {
+        sendingData.queue.maxLimit = `${maxUpLimit}/${maxUpLimit}`;
+      }
     }
 
     if (userType === "core-queue") {
@@ -458,6 +487,7 @@ export default function StaticCustomerEdit({ show, setShow, single }) {
     if (!poleBoxId) {
       delete sendingData.poleBox;
     }
+    console.log({ sendingData });
 
     // return;
     updateStaticCustomerApi(
