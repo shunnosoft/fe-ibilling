@@ -40,7 +40,7 @@ export default function StaticCustomerEdit({ show, setShow, single }) {
   const customer = useSelector((state) =>
     state?.customer?.staticCustomer.find((item) => item.id === single)
   );
-  console.log(customer);
+
   const bpSettings = useSelector(
     (state) => state.persistedReducer.auth?.userData?.bpSettings
   );
@@ -88,7 +88,6 @@ export default function StaticCustomerEdit({ show, setShow, single }) {
 
   const [billDate, setBillDate] = useState(null);
   const [maxUpLimit, setUpMaxLimit] = useState("");
-  console.log(maxUpLimit);
   const [maxDownLimit, setDownMaxLimit] = useState("");
   const [monthlyFee, setMonthlyFee] = useState();
   const [qDisable, setQdisable] = useState();
@@ -144,10 +143,9 @@ export default function StaticCustomerEdit({ show, setShow, single }) {
       } else {
         console.log(customer?.mikrotikPackage);
         const limit = setPackageLimit(customer?.mikrotikPackage, false);
-        limit && setUpMaxLimit(`${limit} / ${limit}`);
+        limit && setUpMaxLimit(`${limit}/${limit}`);
       }
     }
-    console.log(customer);
     setQdisable(customer?.queue.disabled);
 
     let temp;
@@ -307,7 +305,7 @@ export default function StaticCustomerEdit({ show, setShow, single }) {
         setPackageRate(temp);
         setMonthlyFee(temp.rate);
         const getLimit = setPackageLimit(target.value, false);
-        getLimit && setUpMaxLimit(getLimit);
+        getLimit && setUpMaxLimit(`${getLimit}/${getLimit}`);
       }
 
       if (target.name === "upPackage") {
@@ -441,7 +439,7 @@ export default function StaticCustomerEdit({ show, setShow, single }) {
         name: name,
       };
       if (maxUpLimit) {
-        sendingData.queue.maxLimit = `${maxUpLimit}/${maxUpLimit}`;
+        sendingData.queue.maxLimit = maxUpLimit;
       }
     }
 
@@ -487,7 +485,6 @@ export default function StaticCustomerEdit({ show, setShow, single }) {
     if (!poleBoxId) {
       delete sendingData.poleBox;
     }
-    console.log({ sendingData });
 
     // return;
     updateStaticCustomerApi(
