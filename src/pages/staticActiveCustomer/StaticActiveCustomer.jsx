@@ -6,6 +6,7 @@ import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchMikrotik,
+  getArea,
   getStaticActiveCustomer,
   staticMACBinding,
 } from "../../features/apiCalls";
@@ -35,6 +36,7 @@ import { getBulletinPermission } from "../../features/apiCallAdmin";
 import ReactToPrint from "react-to-print";
 import ActiveCustomerPDF from "../Customer/ActiveCustomerPrint";
 import ActiveCustomerPrint from "../Customer/ActiveCustomerPrint";
+import { getSubAreasApi } from "../../features/actions/customerApiCall";
 
 const StaticActiveCustomer = () => {
   const { t } = useTranslation();
@@ -59,11 +61,9 @@ const StaticActiveCustomer = () => {
 
   // get all mikrotik from redux
   const mikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
-  console.log(mikrotik);
 
   // set initial mikrotik id
   const [mikrotikId, setMikrotikId] = useState(mikrotik[0]?.id);
-  console.log(mikrotikId);
 
   // get all static customer
   let staticActiveCustomer = useSelector(
@@ -85,14 +85,33 @@ const StaticActiveCustomer = () => {
     (state) => state.adminNetFeeSupport?.bulletinPermission
   );
 
+  //get all areas
+  const areas = useSelector((state) => state.area?.area);
+
+  // get all subarea
+  const subAreas = useSelector((state) => state.area?.subArea);
+
   // static customer state
   const [staticCustomers, setStaticCustomers] = useState([]);
 
   // inactive customer state
   const [inactiveCustomers, setInactiveCustomers] = useState([]);
 
+  // area & subarea name
+  const [areaName, setAreaName] = useState("");
+  const [subareaName, setSubareaName] = useState("");
+
+  // subArea ids state
+  const [subareaIds, setSubareaIds] = useState([]);
+
   // api call for get update static customer
   useEffect(() => {
+    // get area api
+    if (areas.length === 0) getArea(dispatch, ispOwnerId, setIsloading);
+
+    // get sub area api
+    if (subAreas.length === 0) getSubAreasApi(dispatch, ispOwnerId);
+
     mikrotik.length === 0 && fetchMikrotik(dispatch, ispOwnerId, setMtkLoading);
     Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
   }, []);
@@ -135,6 +154,54 @@ const StaticActiveCustomer = () => {
     }
 
     setStaticCustomers(temp);
+  };
+
+  // area subarea handler
+  const areaSubareaHandler = (e) => {
+    setAreaName(e.target.name);
+    let tempCustomers = staticActiveCustomer.reduce((acc, c) => {
+      // find area all subareas
+      let allSub = [];
+      if (e.target.value !== "") {
+        allSub = subAreas.filter((val) => val.area === e.target.value);
+      }
+      setSubareaIds(allSub);
+
+      const condition = {
+        area:
+          e.target.value !== ""
+            ? allSub.some((sub) => sub.id === c.subArea)
+            : true,
+      };
+
+      let isPass = false;
+      isPass = condition["area"];
+      if (!isPass) return acc;
+
+      if (isPass) acc.push(c);
+      return acc;
+    }, []);
+
+    setStaticCustomers(tempCustomers);
+  };
+
+  // subarea handle
+  const subAreasHandler = (e) => {
+    setSubareaName(e.target.name);
+    let subAreaCustomers = staticActiveCustomer.reduce((acc, c) => {
+      const condition = {
+        subArea: e.target.value !== "" ? c.subArea === e.target.value : true,
+      };
+
+      let isPass = false;
+      isPass = condition["subArea"];
+      if (!isPass) return acc;
+
+      if (isPass) acc.push(c);
+      return acc;
+    }, []);
+
+    setStaticCustomers(subAreaCustomers);
   };
 
   // inactive customer filter handler
@@ -367,6 +434,32 @@ const StaticActiveCustomer = () => {
                           >
                             {mikrotik.map((item) => (
                               <option value={item.id}>{item.name}</option>
+                            ))}
+                          </select>
+
+                          <select
+                            id="selectMikrotikOption"
+                            className="form-select mt-0"
+                            onChange={areaSubareaHandler}
+                          >
+                            <option value="">{t("allArea")}</option>
+                            {areas.map((item) => (
+                              <option name={item.name} value={item.id}>
+                                {item.name}
+                              </option>
+                            ))}
+                          </select>
+
+                          <select
+                            id="selectMikrotikOption"
+                            className="form-select mt-0"
+                            onChange={subAreasHandler}
+                          >
+                            <option value="">{t("subArea")}</option>
+                            {subareaIds.map((item) => (
+                              <option name={item.name} value={item.id}>
+                                {item.name}
+                              </option>
                             ))}
                           </select>
 
