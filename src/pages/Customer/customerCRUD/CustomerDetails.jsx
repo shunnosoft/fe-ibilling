@@ -1,90 +1,48 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import moment from "moment";
 import { useSelector, useDispatch } from "react-redux";
-import "../customer.css";
-import FormatNumber from "../../../components/common/NumberFormat";
-import { badge } from "../../../components/common/Utils";
 import { useTranslation } from "react-i18next";
-import { useEffect } from "react";
-import DatePicker from "react-datepicker";
-import { getOwnerUsers } from "../../../features/getIspOwnerUsersApi";
-import {
-  Card,
-  CloseButton,
-  InputGroup,
-  Modal,
-  ModalBody,
-  ModalHeader,
-} from "react-bootstrap";
+import { Card, CloseButton, Modal, ModalBody } from "react-bootstrap";
 import {
   Cash,
   Collection,
   Envelope,
+  Geo,
   GeoAltFill,
-  Globe,
   PencilSquare,
   Person,
   PersonVcard,
   TelephoneFill,
   Trash3Fill,
 } from "react-bootstrap-icons";
-import { ErrorMessage, Field, Form, Formik } from "formik";
-import * as Yup from "yup";
-import SelectField from "../../../components/common/SelectField";
-import { TextField } from "../../../components/common/HorizontalTextField";
+
+// internal import
+import "../customer.css";
+import { badge } from "../../../components/common/Utils";
 import CustomerEdit from "./CustomerEdit";
 import { FontColor } from "../../../assets/js/theme";
 import CustomerBillCollect from "./CustomerBillCollect";
 import ProfileDelete from "../ProfileDelete";
 import CustomerMessage from "./CustomerMessage";
-import { ToastContainer } from "react-toastify";
 import CustomerBillReport from "./CustomerBillReport";
+import { editCustomer } from "../../../features/apiCalls";
 
 export default function CustomerDetails({ show, setShow, customerId }) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-
-  // customer validator
-  const customerValidator = Yup.object({
-    // customerId: Yup.string().required(t("writeCustomerId")),
-    name: Yup.string().required(t("writeCustomerName")),
-    mobile: Yup.string()
-      // .matches(/^(01){1}[3456789]{1}(\d){8}$/, "মোবাইল নম্বর সঠিক নয়")
-      .min(11, t("write11DigitMobileNumber"))
-      .max(11, t("over11DigitMobileNumber")),
-    address: Yup.string(),
-    email: Yup.string().email(t("incorrectEmail")),
-    nid: Yup.string(),
-    monthlyFee: Yup.number()
-      .integer()
-      .min(0, t("minimumPackageRate"))
-      .required(t("enterPackageRate")),
-    Pname: Yup.string().required(t("writePPPoEName")),
-    Ppassword: Yup.string().required(t("writePPPoEPassword")),
-    Pcomment: Yup.string(),
-    customerBillingType: Yup.string().required(t("select billing type")),
-
-    // balance: Yup.number().integer(),
-  });
-
-  // get all role
-  const role = useSelector((state) => state.persistedReducer.auth?.role);
-
-  // get isp owner data
-  const userData = useSelector((state) => state.persistedReducer.auth.userData);
-
-  // get user permission
-  const permission = useSelector(
-    (state) => state.persistedReducer.auth.userData.permissions
-  );
 
   // get isp owner id
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
 
-  // get owner users
-  const ownerUsers = useSelector((state) => state?.ownerUsers?.ownerUser);
+  // get bpSettings
+  const bpSettings = useSelector(
+    (state) => state.persistedReducer.auth?.userData?.bpSettings
+  );
+
+  // get mikrotiks
+  const mikrotiks = useSelector((state) => state?.mikrotik?.mikrotik);
 
   // get all customer
   const customer = useSelector((state) => state?.customer?.customer);
@@ -92,13 +50,14 @@ export default function CustomerDetails({ show, setShow, customerId }) {
   // find single customer data
   const data = customer.find((item) => item.id === customerId);
 
-  // get bpSettings
-  const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.bpSettings
-  );
+  //get all areas
+  const areas = useSelector((state) => state.area?.area);
 
-  // find performer
-  const performer = ownerUsers.find((item) => item[data?.createdBy]);
+  // get all subarea
+  const subAreas = useSelector((state) => state.area?.subArea);
+
+  // loading state
+  const [loading, setLoading] = useState(false);
 
   // modal handle state
   const [modalStatus, setModalStatus] = useState("");
@@ -107,18 +66,52 @@ export default function CustomerDetails({ show, setShow, customerId }) {
   // profile option state
   const [profileOption, setProfileOption] = useState("profileEdit");
 
-  // profile details status update sclect options
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    getOwnerUsers(dispatch, ispOwnerId);
-  }, []);
-
   // modal close handler
   const handleClose = () => {
     setShow(false);
-    setProfileOption("");
+    setProfileOption("profileEdit");
   };
+
+  // mikrotik find
+  const getMikrotik = (id) => {
+    const mikrotik = mikrotiks.find((val) => val?.id === id);
+    return mikrotik;
+  };
+
+  // customer status & auto connection update hadnle
+  const statusAutoConnectionUpdateHandler = (value, e, update) => {
+    let data;
+
+    // status update data
+    if (update === "status" && e?.detail == 2) {
+      data = {
+        ...value,
+        singleCustomerID: value?.id,
+        status: value?.status === "active" ? "inactive" : "active",
+      };
+    }
+
+    // auto connection update data
+    if (update === "auto") {
+      data = {
+        ...value,
+        singleCustomerID: value?.id,
+        autoDisable: !value?.autoDisable,
+      };
+    }
+    editCustomer(dispatch, data, setLoading, "", update);
+  };
+
+  // customer area subarea find
+  const customerAreaSubareaFind = useMemo(() => {
+    // customer area find
+    const findArea = areas.find((val) => val.id === data.area);
+
+    // customer subArea find
+    const findSubarea = subAreas.find((val) => val.id === data.subArea);
+
+    return { findArea, findSubarea };
+  }, [areas, subAreas, data]);
 
   return (
     <>
@@ -145,7 +138,6 @@ export default function CustomerDetails({ show, setShow, customerId }) {
           <CloseButton onClick={handleClose} />
         </div>
         <ModalBody>
-          <ToastContainer position="top-right" theme="colored" />
           <div className="container">
             <Card className="clintProfile shadow-sm mb-4 bg-white rounded">
               <Card.Title className="clintTitle">
@@ -184,10 +176,13 @@ export default function CustomerDetails({ show, setShow, customerId }) {
                 <div className="d-flex gap-3">
                   <p class="vr ms-2" />
 
-                  <div className="">
+                  <div>
                     <div className="d-flex gap-3">
-                      <Globe />
-                      <p>{`${userData?.upazila},${userData?.district},${userData?.division}`}</p>
+                      <Geo />
+                      <p>
+                        {customerAreaSubareaFind.findArea?.name},
+                        {customerAreaSubareaFind.findSubarea?.name}
+                      </p>
                     </div>
 
                     <div className="d-flex gap-3">
@@ -302,25 +297,28 @@ export default function CustomerDetails({ show, setShow, customerId }) {
                     <FontColor>
                       <div>
                         <div className="displayGridHorizontalFill5_5 profileDetails">
+                          <p>{t("mikrotik")}</p>
+                          <p>{data && getMikrotik(data.mikrotik)?.name}</p>
+                        </div>
+
+                        <div className="displayGridHorizontalFill5_5 profileDetails">
                           <p>{t("status")}</p>
-                          <div className="d-flex justify-content-between">
-                            {visible ? (
-                              <select
-                                className="form-select mw-100 mt-0"
-                                aria-label="Default select example"
-                                // value={item.value}
-                              >
-                                <option value="active">{t("active")}</option>
-                                <option value="inactive">
-                                  {t("inactive")}
-                                </option>
-                                <option value="expired">{t("expired")}</option>
-                              </select>
-                            ) : (
-                              badge(data?.status)
-                            )}
-                            <PencilSquare onClick={() => setVisible(true)} />
-                          </div>
+                          {data?.status !== "expired" ? (
+                            <p
+                              onClick={(e) =>
+                                statusAutoConnectionUpdateHandler(
+                                  data,
+                                  e,
+                                  "status"
+                                )
+                              }
+                              style={{ cursor: "pointer" }}
+                            >
+                              {badge(data?.status)}
+                            </p>
+                          ) : (
+                            <p>{badge(data?.status)}</p>
+                          )}
                         </div>
 
                         <div className="displayGridHorizontalFill5_5 profileDetails">
@@ -353,7 +351,13 @@ export default function CustomerDetails({ show, setShow, customerId }) {
                                 role="switch"
                                 id={data?.id}
                                 checked={data?.autoDisable}
-                                // onChange={(e) => supportOnlineHandle(e.target)}
+                                onClick={(e) =>
+                                  statusAutoConnectionUpdateHandler(
+                                    data,
+                                    e,
+                                    "auto"
+                                  )
+                                }
                               />
                             </div>
                           </div>
@@ -415,7 +419,10 @@ export default function CustomerDetails({ show, setShow, customerId }) {
                     customerData={data}
                   />
                 ) : profileOption === "report" ? (
-                  <CustomerBillReport customerId={customerId} />
+                  <CustomerBillReport
+                    customerId={customerId}
+                    setModalState={setShow}
+                  />
                 ) : (
                   <CustomerMessage customerId={customerId} page={"customer"} />
                 )}

@@ -889,5 +889,8 @@
   "profileDetail": "প্রোফাইল ডিটেল",
   "autoConnection": "অটোমেটিক সংযোগ",
   "billingDate": "বিলিং ডেট",
-  "createDate": "ক্রিয়েট ডেট"
+  "createDate": "ক্রিয়েট ডেট",
+  "selctMonth": "আপনার বিলের মাস নির্বাচন করুন",
+  "printOptions": "প্রিন্ট অপশন নির্বাচন করুন",
+  "defaultSetup": "ডিফল্ট সেটআপ"
 }

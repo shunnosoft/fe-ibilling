@@ -23,6 +23,7 @@ import {
   ModalTitle,
 } from "react-bootstrap";
 import { CashStack } from "react-bootstrap-icons";
+import { toast } from "react-toastify";
 
 export default function CustomerBillCollect({
   show,
@@ -34,6 +35,7 @@ export default function CustomerBillCollect({
   const dispatch = useDispatch();
   const rechargePrint = useRef();
 
+  // twelve month options
   const options = [
     { value: "January", label: t("january") },
     { value: "February", label: t("february") },
@@ -85,6 +87,7 @@ export default function CustomerBillCollect({
     (state) => state.persistedReducer.auth?.userData?.id
   );
 
+  // loading state
   const [isLoading, setLoading] = useState(false);
 
   //billing date
@@ -178,12 +181,12 @@ export default function CustomerBillCollect({
     } else if (data?.balance === 0 && data?.paymentStatus === "paid") {
       temp.push(options[dataMonth + 1]);
 
-      if (dataMonth + 1 > 11) setSelectedMonth([]);
+      if (dataMonth + 1 > 11) temp.push(options[0]);
     } else if (data?.balance > 0 && data?.paymentStatus === "paid") {
       const modVal = Math.floor(data?.balance / data?.monthlyFee);
       temp.push(options[dataMonth + modVal + 1]);
 
-      if (dataMonth + modVal + 1 > 11) setSelectedMonth([]);
+      if (dataMonth + modVal + 1 > 11) temp.push(options[0]);
     } else if (data?.balance < 0 && data?.paymentStatus === "unpaid") {
       const modVal = Math.floor(Math.abs(data?.balance / data?.monthlyFee));
       let diff = dataMonth - modVal;
@@ -245,7 +248,10 @@ export default function CustomerBillCollect({
       sendingData.end = endDate.toISOString();
     }
 
-    if (selectedMonth?.length > 0) {
+    if (selectedMonth?.length === 0) {
+      setLoading(false);
+      return toast.warn(t("selctMonth"));
+    } else {
       const monthValues = selectedMonth.map((item) => {
         return item.value;
       });
@@ -258,8 +264,7 @@ export default function CustomerBillCollect({
       setLoading,
       resetForm,
       setResponseData,
-      setTest,
-      setShow
+      setTest
     );
 
     setAmount(data.amount);
@@ -292,8 +297,8 @@ export default function CustomerBillCollect({
             <Form onChange={handleFormValue}>
               <div className="monthlyBill">
                 <span className="text-secondary">{data?.name}</span>&nbsp;
-                <span className="text-secondary">{t("monthlyFee")} ৳</span>
-                <span className="text-primary">{data?.monthlyFee} </span>
+                <span className="text-secondary">{t("totalAmount")} ৳</span>
+                <span className="text-primary">{totalAmount} </span>
               </div>
               <div className="displayGrid">
                 <div className="displayGrid2">

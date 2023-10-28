@@ -883,5 +883,8 @@
   "profileDetail": "Profile Detail",
   "autoConnection": "Auto Connection",
   "billingDate": "Billing Date",
-  "createDate": "Create Date"
+  "createDate": "Create Date",
+  "selctMonth": "Select Your Bill Month",
+  "printOptions": "Select Print Options",
+  "defaultSetup": "Default Setup"
 }

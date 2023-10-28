@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
-import { ExclamationOctagonFill } from "react-bootstrap-icons";
 import { Card } from "react-bootstrap";
 import { smsCount } from "../../../components/common/UtilityMethods";
 import apiLink from "../../../api/apiLink";
 import Loader from "../../../components/common/Loader";
+import { Send } from "react-bootstrap-icons";
 
 const CustomerMessage = ({ customerId, page }) => {
   const { t } = useTranslation();
@@ -159,12 +159,46 @@ const CustomerMessage = ({ customerId, page }) => {
       <Card.Body>
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
-            <div className="d-flex justify-content-between">
+            <div className="d-flex justify-content-between align-items-center mb-3">
               <div className="smsCount mt-0">
                 <span className="smsLength">
                   {t("letter")} {messageLength.length}
                 </span>
                 <span>SMS: {smsAmount}</span>
+              </div>
+
+              <div className="d-flex justify-content-center align-items-center">
+                <div className="me-2">
+                  <input
+                    name="messageSendingType"
+                    type="radio"
+                    checked={sendingType === "nonMasking"}
+                    value={"nonMasking"}
+                    onChange={(event) => setSendingType(event.target.value)}
+                  />
+                  &nbsp;
+                  {t("nonMasking")}
+                </div>
+                <div className="me-2">
+                  <input
+                    name="messageSendingType"
+                    type="radio"
+                    value={"masking"}
+                    onChange={(event) => setSendingType(event.target.value)}
+                  />
+                  &nbsp;
+                  {t("masking")}
+                </div>
+                <div>
+                  <input
+                    name="messageSendingType"
+                    type="radio"
+                    value={"fixedNumber"}
+                    onChange={(event) => setSendingType(event.target.value)}
+                  />
+                  &nbsp;
+                  {t("fixedNumber")}
+                </div>
               </div>
             </div>
             <textarea
@@ -178,51 +212,17 @@ const CustomerMessage = ({ customerId, page }) => {
             <div id="emailHelp" className="form-text text-danger">
               {errMsg}
             </div>
-            <div
-              className="message-sending-type mt-3"
-              style={{ fontWeight: "normal" }}
-            >
-              <h4 className="mb-0"> {t("sendingMessageType")} </h4>
-              <input
-                name="messageSendingType"
-                type="radio"
-                checked={sendingType === "nonMasking"}
-                value={"nonMasking"}
-                onChange={(event) => setSendingType(event.target.value)}
-              />{" "}
-              {t("nonMasking")}&nbsp; &nbsp;
-              <input
-                name="messageSendingType"
-                type="radio"
-                value={"masking"}
-                onChange={(event) => setSendingType(event.target.value)}
-              />{" "}
-              {t("masking")}&nbsp; &nbsp;
-              <input
-                name="messageSendingType"
-                size={20}
-                type="radio"
-                value={"fixedNumber"}
-                onChange={(event) => setSendingType(event.target.value)}
-              />{" "}
-              {t("fixedNumber")}
-            </div>
           </div>
-          <div className="modal-footer" style={{ border: "none" }}>
-            <button
-              type="button"
-              className="btn btn-secondary"
-              data-bs-dismiss="modal"
-              disabled={isLoading}
-            >
-              {t("cancel")}
-            </button>
-            <button
-              type="submit"
-              className="btn btn-success"
-              disabled={isLoading || !data?.mobile}
-            >
-              {isLoading ? <Loader /> : t("sendMessage")}
+          <div className="d-flex justify-content-end mt-5">
+            <button type="submit" className="btn btn-outline-success">
+              {isLoading ? (
+                <Loader />
+              ) : (
+                <span className="submitButton">
+                  {t("send")}
+                  <Send />
+                </span>
+              )}
             </button>
           </div>
         </form>

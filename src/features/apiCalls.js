@@ -101,6 +101,7 @@ import {
   getDepositReportSuccess,
   updateDepositReportSuccess,
   getCustomerBillReport,
+  deleteCustomerBillReport,
 } from "./paymentSlice";
 import { getChartSuccess, getCardDataSuccess } from "./chartsSlice";
 import {
@@ -1138,6 +1139,7 @@ export const addCustomer = async (
   }
 };
 
+// customer profile update api
 export const editCustomer = async (
   dispatch,
   data,
@@ -1146,6 +1148,7 @@ export const editCustomer = async (
   status
 ) => {
   const { singleCustomerID, ispOwner, ...sendingData } = data;
+  setIsloading(true);
   try {
     const res = await apiLink.patch(
       `/ispOwner/customer/${ispOwner}/${singleCustomerID}`,
@@ -1156,14 +1159,18 @@ export const editCustomer = async (
     } else {
       dispatch(editCustomerSuccess(res.data));
     }
-    setIsloading(false);
-    setShow(false);
 
-    if (status) {
+    if (status === "auto") {
       langMessage(
         "success",
         "কাস্টমার আটো ডিজেবল আপডেট সফল হয়েছে",
         "Customer Auto Disable Updated Successfully"
+      );
+    } else if (status === "status") {
+      langMessage(
+        "success",
+        "কাস্টমার স্টাটাস আপডেট সফল হয়েছে",
+        "Customer Status Updated Successfully"
       );
     } else {
       langMessage(
@@ -1172,12 +1179,13 @@ export const editCustomer = async (
         "Customer Updated Successfully"
       );
     }
+    setShow(false);
   } catch (err) {
     if (err.response) {
-      setIsloading(false);
       toast.error(err.response.data.message);
     }
   }
+  setIsloading(false);
 };
 
 export const deleteACustomer = async (
@@ -2222,12 +2230,13 @@ export const billCollect = async (
       setResponseData(res.data);
       setTest(true);
     }
-    setShow(false);
+
     langMessage(
       "success",
       `${res.data.billType} বিল গ্রহণ সফল হয়েছে।`,
       `${res.data.billType} Acceptance is Successful.`
     );
+    setShow(false);
     resetForm();
   } catch (error) {
     toast.error(error.response?.data.message);
@@ -3730,6 +3739,7 @@ export const getPPPoEPackage = async (dispatch, ispOwner, setIsloading) => {
   setIsloading(false);
 };
 
+// get single cusomer bill report
 export const getCustoemrReport = async (dispatch, customerId, setIsLoading) => {
   setIsLoading(true);
   try {
@@ -3739,4 +3749,18 @@ export const getCustoemrReport = async (dispatch, customerId, setIsLoading) => {
     toast.error("Error to get report: ", err);
   }
   setIsLoading(false);
+};
+
+//delete single cusomer bill report
+export const deleteCustomerReport = async (dispatch, reportId) => {
+  try {
+    const res = await apiLink.delete(`/bill/monthlyBill/${reportId}`);
+
+    dispatch(deleteCustomerBillReport(res.data));
+    dispatch(editCustomerSuccess(res.data.customer));
+
+    langMessage("success", "বিল ডিলিট সফল হয়েছে", "Bill Delete SuccessFully");
+  } catch (error) {
+    toast.error(error.response?.data?.message);
+  }
 };

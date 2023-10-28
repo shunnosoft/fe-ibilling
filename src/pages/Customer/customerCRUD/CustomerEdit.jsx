@@ -377,7 +377,7 @@ export default function CustomerEdit({ customerId, setProfileOption }) {
     if (!poleBoxIds) {
       delete mainData.poleBox;
     }
-    editCustomer(dispatch, mainData, setIsloading);
+    editCustomer(dispatch, mainData, setIsloading, "", "update");
   };
 
   const selectedSubArea = (e) => {
@@ -471,25 +471,6 @@ export default function CustomerEdit({ customerId, setProfileOption }) {
           {() => (
             <Form id="customerEdit">
               <div>
-                {/* {bpSettings?.hasMikrotik && (
-                  <div>
-                    <label className="form-control-label manualLable">
-                      {t("selectMikrotik")}
-                      <span className="text-danger">*</span>
-                    </label>
-                    <select
-                      className="form-select mw-100 mt-0"
-                      aria-label="Default select example"
-                      disabled
-                      value={data?.mikrotik || ""}
-                    >
-                      <option value={mikrotikName?.id || ""}>
-                        {mikrotikName?.name || ""}
-                      </option>
-                    </select>
-                  </div>
-                )} */}
-
                 {!bpSettings.genCustomerId && (
                   <TextField
                     type="text"
@@ -830,69 +811,15 @@ export default function CustomerEdit({ customerId, setProfileOption }) {
                     {t("customerBillType")}
                   </label>
 
-                  <select
-                    className="form-select mw-100 mt-0"
+                  <SelectField
+                    id="exampleSelect"
                     name="customerBillingType"
+                    className="form-select mw-100 mt-0"
                   >
                     <option value="">{t("customerBillType")}</option>
                     <option value="prepaid">{t("prepaid")}</option>
                     <option value="postpaid">{t("postPaid")}</option>
-                  </select>
-                </div>
-
-                <div>
-                  <p>{t("status")}</p>
-                  <div className="form-check form-check-inline mt-0">
-                    <input
-                      className="form-check-input"
-                      type="radio"
-                      name="staus"
-                      value={"active"}
-                      disabled={
-                        !permission?.customerActivate && role !== "ispOwner"
-                      }
-                      onChange={(e) => setStatus(e.target.value)}
-                      checked={status === "active"}
-                    />
-                    <label className="form-check-label" htmlFor="inlineRadio1">
-                      {t("active")}
-                    </label>
-                  </div>
-
-                  <div className="form-check form-check-inline">
-                    <input
-                      className="form-check-input"
-                      type="radio"
-                      id="inlineRadio2"
-                      value={"inactive"}
-                      disabled={
-                        !permission?.customerDeactivate && role !== "ispOwner"
-                      }
-                      onChange={(e) => setStatus(e.target.value)}
-                      checked={status === "inactive"}
-                    />
-                    <label className="form-check-label" htmlFor="inlineRadio2">
-                      {t("in active")}
-                    </label>
-                  </div>
-
-                  {data?.status === "expired" && (
-                    <div className="form-check form-check-inline">
-                      <input
-                        className="form-check-input"
-                        type="radio"
-                        id="inlineRadio2"
-                        disabled
-                        checked={status === "expired"}
-                      />
-                      <label
-                        className="form-check-label"
-                        htmlFor="inlineRadio2"
-                      >
-                        {t("expired")}
-                      </label>
-                    </div>
-                  )}
+                  </SelectField>
                 </div>
               </div>
 

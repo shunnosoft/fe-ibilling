@@ -1,10 +1,4 @@
-import React, {
-  useEffect,
-  useMemo,
-  useState,
-  useRef,
-  useCallback,
-} from "react";
+import React, { useEffect, useMemo, useState, useRef } from "react";
 import {
   ArchiveFill,
   ArrowClockwise,
@@ -30,15 +24,18 @@ import {
   PencilSquare,
   XCircle,
 } from "react-bootstrap-icons";
-import Table from "../../components/table/Table";
-
 import { CSVLink } from "react-csv";
 import moment from "moment";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
+import { ToastContainer } from "react-toastify";
+import DatePicker from "react-datepicker";
+import { Accordion, Card, Collapse } from "react-bootstrap";
+
+// internal import
+import Table from "../../components/table/Table";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { badge } from "../../components/common/Utils";
-import ReactToPrint from "react-to-print";
 import IndeterminateCheckbox from "../../components/table/bulkCheckbox";
 import {
   getPoleBoxApi,
@@ -54,14 +51,11 @@ import {
   getPPPoEPackage,
   getPackagewithoutmikrotik,
 } from "../../features/apiCalls";
-import { ToastContainer } from "react-toastify";
 import useDash from "../../assets/css/dash.module.css";
 import { FontColor, FourGround } from "../../assets/js/theme";
 import Loader from "../../components/common/Loader";
 import CustomerPost from "./customerCRUD/CustomerPost";
 import CustomerDetails from "./customerCRUD/CustomerDetails";
-import CustomerBillCollect from "./customerCRUD/CustomerBillCollect";
-import CustomerEdit from "./customerCRUD/CustomerEdit";
 import CustomerReport from "./customerCRUD/showCustomerReport";
 import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
 import TransferToReseller from "./customerCRUD/TransferToReseller";
@@ -73,13 +67,7 @@ import BulkCustomerDelete from "./customerCRUD/bulkOpration/BulkdeleteModal";
 import BulkAutoConnectionEdit from "./customerCRUD/bulkOpration/bulkAutoConnectionEdit";
 import BulkCustomerTransfer from "./customerCRUD/bulkOpration/bulkCustomerTransfer";
 import CustomerDelete from "./customerCRUD/CustomerDelete";
-import {
-  printOptionDataBangla,
-  printOptionDataEng,
-} from "./customerCRUD/printOptionData";
-import DatePicker from "react-datepicker";
-import PrintCustomer from "./customerPDF";
-import { Accordion, Button, Card, Collapse, Modal } from "react-bootstrap";
+import { printOptionData } from "./customerCRUD/printOptionData";
 import FormatNumber from "../../components/common/NumberFormat";
 import BulkPromiseDateEdit from "./customerCRUD/bulkOpration/BulkPromiseDateEdit";
 import Footer from "../../components/admin/footer/Footer";
@@ -94,17 +82,16 @@ import CustomersNumber from "./CustomersNumber";
 import "./client.css";
 import BulkPaymentStatusEdit from "./customerCRUD/bulkOpration/BulkPaymentStatusEdit";
 import CreateInvoice from "./customerCRUD/CreateInvoice";
-import WithValue from "../../components/modals/passwordReset/WithValue";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
 import BulkCustomerMessage from "./customerCRUD/bulkOpration/BulkCustomerMessage";
 import EditPPPoECustomer from "./customerCRUD/temp/EditPPPoECustomer";
 import RechargeCustomer from "./customerCRUD/temp/RechargeCustomer";
+import PrintOptions from "../../components/common/PrintOptions";
 
 const PPPOECustomer = () => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
-  const componentRef = useRef();
 
   // get all customer
   const customers = useSelector((state) => state.customer.customer);
@@ -300,14 +287,9 @@ const PPPOECustomer = () => {
       getPoleBoxApi(dispatch, ispOwner, setIsLoadingPole);
 
     // set initial state for print oprions
-    const lang = localStorage.getItem("netFee:lang");
-    if (lang === "en") {
-      setPrintOptions(printOptionDataEng);
-      return;
-    }
+    setPrintOptions(printOptionData);
 
-    setPrintOptions(printOptionDataBangla);
-
+    // bulletin get api
     Object.keys(bulletinPagePermission)?.length === 0 &&
       getBulletinPermission(dispatch);
   }, []);
@@ -590,25 +572,6 @@ const PPPOECustomer = () => {
     </div>
   );
 
-  //print option controller
-  const printOptionsController = ({ target }) => {
-    if (target.value === "default" && target.checked) {
-      setPrintOptions(
-        printOption.map((item) => {
-          return { ...item, checked: true };
-        })
-      );
-    } else {
-      const updatedState = printOption.map((item) => {
-        if (item.value === target.value) {
-          item.checked = target.checked;
-        }
-        return item;
-      });
-      setPrintOptions(updatedState);
-    }
-  };
-
   //print modal controller
   const printModalController = (customerID) => {
     setModalShow(true);
@@ -622,7 +585,7 @@ const PPPOECustomer = () => {
         singleCustomerID: value?.id,
         autoDisable: !value?.autoDisable,
       };
-      editCustomer(dispatch, data, setLoading, setShow, "page");
+      editCustomer(dispatch, data, setLoading, setShow, "auto");
     }
   };
 
@@ -737,7 +700,7 @@ const PPPOECustomer = () => {
                 aria-expanded="false"
               />
               <ul className="dropdown-menu" aria-labelledby="customerDrop">
-                {/* <li
+                <li
                   data-bs-toggle="modal"
                   data-bs-target="#showCustomerDetails"
                   onClick={() => {
@@ -752,7 +715,7 @@ const PPPOECustomer = () => {
                       <p className="actionP">{t("profile")}</p>
                     </div>
                   </div>
-                </li> */}
+                </li>
                 {(permission?.billPosting || role === "ispOwner") && (
                   <li
                     onClick={() => {
@@ -965,9 +928,6 @@ const PPPOECustomer = () => {
           connectivity: "Dedicated",
           createdAt: moment(customer.createdAt).format("MM/DD/YYYY"),
           package: customer?.pppoe?.profile,
-          // ip: "",
-          // road: ispOwnerData.address,
-          // area: ispOwnerData?.fullAddress?.area || "",
           division: customer?.division || "",
           district: customer?.district || "",
           thana: customer?.thana || "",
@@ -988,7 +948,6 @@ const PPPOECustomer = () => {
     { label: "connectivity_type", key: "connectivity" },
     { label: "activation_date", key: "createdAt" },
     { label: "bandwidth_allocation", key: "package" },
-    // { label: "allowcated_ip", key: "ip" },
     { label: "division", key: "division" },
     { label: "district", key: "district" },
     { label: "thana", key: "thana" },
@@ -996,9 +955,6 @@ const PPPOECustomer = () => {
     { label: "client_mobile", key: "mobile" },
     { label: "client_email", key: "email" },
     { label: "selling_bandwidthBDT (Excluding VAT).", key: "monthlyFee" },
-    // { label: "name_operator", key: "companyName" },
-    // { label: "house_no", key: "address" },
-    // { label: "area", key: "area" },
   ];
 
   //export customer data
@@ -1020,10 +976,6 @@ const PPPOECustomer = () => {
           monthlyFee: customer.monthlyFee,
           balance: customer.balance,
           billingCycle: moment(customer.billingCycle).format("MMM-DD-YYYY"),
-          // ip: "",
-          // division: customer.division || "",
-          // district: customer.district || "",
-          // thana: customer.thana || "",
         };
       }),
     [pppoeCustomers]
@@ -1044,10 +996,6 @@ const PPPOECustomer = () => {
     { label: "email", key: "email" },
     { label: "balance", key: "balance" },
     { label: "billing_cycle", key: "billingCycle" },
-    // { label: "allowcated_ip", key: "ip" },
-    // { label: "division", key: "division" },
-    // { label: "district", key: "district" },
-    // { label: "thana", key: "thana" },
     { label: "selling_bandwidthBDT (Excluding VAT).", key: "monthlyFee" },
   ];
 
@@ -1112,6 +1060,7 @@ const PPPOECustomer = () => {
     }
   };
 
+  //manual filter options
   const filterInputs = [
     {
       name: "area",
@@ -1575,18 +1524,7 @@ const PPPOECustomer = () => {
                   </div>
                 )}
 
-                {/* print component table  */}
-                {modalShow && (
-                  <div style={{ display: "none" }}>
-                    <PrintCustomer
-                      filterData={filterData}
-                      currentCustomers={tableData}
-                      ref={componentRef}
-                      printOptions={printOption}
-                    />
-                  </div>
-                )}
-
+                {/* bulletin modal */}
                 {(bulletinPagePermission?.customer ||
                   bulletinPagePermission?.allPage) && <NetFeeBulletin />}
               </FourGround>
@@ -1658,9 +1596,6 @@ const PPPOECustomer = () => {
           userId={userId}
         />
       )}
-
-      {/* <PasswordReset resetCustomerId={userId} /> */}
-      {/* <WithValue resetCustomerId={userId} /> */}
 
       {/* create temp invoice */}
       <CreateInvoice single={customerId} customerData={customerData} />
@@ -2184,67 +2119,15 @@ const PPPOECustomer = () => {
           </div>
         </div>
       )}
+
       {/* print option modal */}
-      <Modal
+      <PrintOptions
         show={modalShow}
-        onHide={() => setModalShow(false)}
-        aria-labelledby="customerBandWidth"
-      >
-        <Modal.Header closeButton>
-          <Modal.Title id="customerBandWidth"></Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <div className="container d-flex align-items-center justify-content-between">
-            <div className="select-options">
-              {printOption.map((item) => (
-                <div className="form-check">
-                  <input
-                    type="checkbox"
-                    className="form-check-input"
-                    id={item.id}
-                    value={item.value}
-                    checked={item.checked}
-                    onChange={printOptionsController}
-                  />
-                  <label htmlFor={item.id} className="form-check-label">
-                    {item.label}
-                  </label>
-                </div>
-              ))}
-            </div>
-            <div className="default-option">
-              <div className="form-check d-3">
-                <input
-                  type="checkbox"
-                  className="form-check-input"
-                  id="default-print-option"
-                  value="default"
-                  onChange={printOptionsController}
-                  checked={printOption.every((item) => item.checked)}
-                />
-                <label
-                  htmlFor="default-print-option"
-                  className="form-check-label"
-                >
-                  Set Default
-                </label>
-              </div>
-            </div>
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button onClick={() => setModalShow(false)}>Close</Button>
-          <ReactToPrint
-            documentTitle="গ্রাহক লিস্ট"
-            trigger={() => (
-              <Button onClick={() => setModalShow(false)} variant="primary">
-                Print
-              </Button>
-            )}
-            content={() => componentRef.current}
-          />
-        </Modal.Footer>
-      </Modal>
+        setShow={setModalShow}
+        printOptions={printOption}
+        tableData={tableData}
+        page={"customer"}
+      />
     </>
   );
 };

@@ -5,9 +5,17 @@ const SelectField = ({ label, validation, ...props }) => {
   const [field, meta] = useField(props);
   return (
     <div>
-      <label className="changeLabelFontColor" htmlFor={props.id || props.name}>
-        {label} {validation && <span className="text-danger">*</span>}
-      </label>
+      {label ? (
+        <label
+          className="changeLabelFontColor"
+          htmlFor={props.id || props.name}
+        >
+          {label} {validation && <span className="text-danger">*</span>}
+        </label>
+      ) : (
+        ""
+      )}
+
       <select
         style={{ display: "inline-block" }}
         className={`form-control shadow-none ${

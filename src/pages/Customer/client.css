@@ -134,19 +134,17 @@ ul.client_service_list2 li:last-child:hover {
   height: 2.3rem;
   width: 100%;
   padding: 1rem;
-  margin: 1.5rem 0;
+  margin: 1.3rem 0px 0px 0px;
   display: flex;
   justify-content: end;
   align-items: center;
-  box-shadow: 10px 0px 5px #96969689;
-  background-color: #4498ecd6;
 }
 
 .profileDelete {
   display: flex;
   align-items: center;
   gap: 0.3rem;
-  color: #fff;
+  color: #000000;
   font-size: 1.1rem;
   cursor: pointer;
   margin-right: 2rem;
@@ -164,7 +162,7 @@ ul.client_service_list2 li:last-child:hover {
   margin: 0rem 0rem 0.6rem 0rem;
   font-weight: 600;
   background-color: #1276a705;
-  border-radius: 0.4rem;
+  border-radius: 0.2rem;
 }
 
 .clintTitle {
@@ -276,22 +274,47 @@ ul.client_service_list2 li:last-child:hover {
 }
 
 .reportHeader {
-  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.reportAccordion ::after {
+.reportAccordion.accordion-button::after {
   width: 0px !important;
 }
 
+.reportAccordion.accordion-button:not(.collapsed) {
+  background-color: #fff !important;
+}
+
 .reportAction {
-  cursor: context-menu;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-right: 0.6rem;
 }
 
 .reportName {
   font-size: 18px;
   font-weight: 600;
-  width: 90%;
+}
+
+.reportCollect {
+  padding: 0.5rem 0.5rem;
+  font-size: 16px;
+  font-weight: 600;
+  background-color: #b1b1b11b;
+  border-top-left-radius: 0.4rem;
+  border-top-right-radius: 0.4rem;
+}
+
+.collectReport {
+  padding: 0.5rem 0.5rem;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.reportOptions > p {
+  display: grid;
+  grid-template-columns: minmax(50%, auto) minmax(50%, auto);
 }

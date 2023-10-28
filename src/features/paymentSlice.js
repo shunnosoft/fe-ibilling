@@ -95,6 +95,12 @@ const paymentSlice = createSlice({
     getCustomerBillReport: (state, action) => {
       state.billReport = action.payload;
     },
+
+    deleteCustomerBillReport: (state, action) => {
+      state.billReport = state.billReport.filter(
+        (item) => item.id !== action.payload?.monthlyBill.id
+      );
+    },
   },
 });
 
@@ -116,5 +122,6 @@ export const {
   getDepositReportSuccess,
   updateDepositReportSuccess,
   getCustomerBillReport,
+  deleteCustomerBillReport,
 } = paymentSlice.actions;
 export default paymentSlice.reducer;

@@ -1,140 +1,104 @@
 //warning: don't change the object order and value name
 
-export const printOptionDataEng = [
+export const printOptionData = [
   {
     id: 5000,
     value: "id",
-    label: "ID",
-    checked: true,
+    label: "id",
+    checked: false,
   },
   {
     id: 5001,
     value: "name",
-    label: "Name",
+    label: "name",
     checked: true,
   },
   {
     id: 5002,
-    value: "address",
-    label: "Address",
-    checked: true,
+    value: "pppoe",
+    label: "pppoe",
+    checked: false,
   },
   {
     id: 5003,
     value: "mobile",
-    label: "Mobile",
+    label: "mobile",
     checked: true,
   },
   {
     id: 5004,
-    value: "pppoe",
-    label: "PPPOE",
+    value: "address",
+    label: "address",
     checked: true,
   },
-
   {
     id: 5005,
-    value: "status",
-    label: "Status",
+    value: "package",
+    label: "package",
     checked: true,
   },
   {
     id: 5006,
-    value: "paymentStatus",
-    label: "Payment",
-    checked: true,
-  },
-  {
-    id: 5007,
-    value: "package",
-    label: "Package",
-    checked: true,
-  },
-  {
-    id: 5008,
     value: "month",
-    label: "Monthly Fee",
-    checked: true,
-  },
-  {
-    id: 5009,
-    value: "balance",
-    label: "Balance",
-    checked: true,
-  },
-  {
-    id: 5010,
-    value: "billingCycle",
-    label: "Billing Cycle",
-    checked: true,
-  },
-];
-export const printOptionDataBangla = [
-  {
-    id: 5000,
-    value: "ID",
-    label: "আইডি",
-    checked: true,
-  },
-  {
-    id: 5001,
-    value: "name",
-    label: "নাম",
-    checked: true,
-  },
-  {
-    id: 5002,
-    value: "address",
-    label: "ঠিকানা",
-    checked: true,
-  },
-  {
-    id: 5003,
-    value: "mobile",
-    label: "মোবাইল",
-    checked: true,
-  },
-  {
-    id: 5004,
-    value: "pppoe",
-    label: "PPPOE",
-    checked: true,
-  },
-
-  {
-    id: 5005,
-    value: "status",
-    label: "স্টাটাস",
-    checked: true,
-  },
-  {
-    id: 5006,
-    value: "paymentStatus",
-    label: "পেমেন্ট",
+    label: "monthlyFee",
     checked: true,
   },
   {
     id: 5007,
-    value: "package",
-    label: "প্যাকেজ",
-    checked: true,
+    value: "amount",
+    label: "amount",
+    checked: false,
   },
   {
     id: 5008,
-    value: "monthlyFee",
-    label: "মাসিক ফি",
-    checked: true,
+    value: "balance",
+    label: "balance",
+    checked: false,
   },
   {
     id: 5009,
-    value: "balance",
-    label: "ব্যলেন্স",
-    checked: true,
+    value: "due",
+    label: "due",
+    checked: false,
   },
   {
     id: 5010,
+    value: "discount",
+    label: "discount",
+    checked: false,
+  },
+  {
+    id: 5011,
+    value: "medium",
+    label: "medium",
+    checked: false,
+  },
+  {
+    id: 5012,
+    value: "status",
+    label: "status",
+    checked: false,
+  },
+  {
+    id: 5013,
+    value: "paymentStatus",
+    label: "paymentStatus",
+    checked: false,
+  },
+  {
+    id: 5014,
     value: "billingCycle",
-    label: "বিলিং সাইকেল",
+    label: "billingCycle",
     checked: true,
   },
+  {
+    id: 5015,
+    value: "createDate",
+    label: "createDate",
+    checked: false,
+  },
+
+  // bill report page create option ids
+  // { id: 5016 },
+  // { id: 5017 },
 ];

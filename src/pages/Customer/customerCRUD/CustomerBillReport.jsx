@@ -1,105 +1,71 @@
 import moment from "moment";
-import React, { useEffect, useRef, useState } from "react";
-import apiLink from "../../../api/apiLink";
+import React, { useEffect, useState } from "react";
 import TdLoader from "../../../components/common/TdLoader";
 import "../customer.css";
-import FormatNumber from "../../../components/common/NumberFormat";
 import { toast } from "react-toastify";
 import { PrinterFill, TrashFill } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
-import { editCustomerSuccess } from "../../../features/customerSlice";
-import ReactToPrint from "react-to-print";
-import BillCollectInvoiceWithNote from "./customerBillCollectInvoicePDF";
-import BillCollectInvoiceWithoutNote from "./customerBillReportPDFwithNote";
 import { useTranslation } from "react-i18next";
 import { Accordion, Card } from "react-bootstrap";
-import { getCustoemrReport } from "../../../features/apiCalls";
+import {
+  deleteCustomerReport,
+  getCustoemrReport,
+} from "../../../features/apiCalls";
+import { FontColor } from "../../../assets/js/theme";
+import PrintOptions from "../../../components/common/PrintOptions";
 
 export default function CustomerBillReport({ customerId }) {
   const dispatch = useDispatch();
-
   const { t } = useTranslation();
-  const billRefwithNote = useRef();
-  const billRefwithOutNote = useRef();
 
-  // one year month
-  const month = [
-    { value: "January", name: "january" },
-    { value: "February", name: "february" },
-    { value: "March", name: "march" },
-    { value: "April", name: "april" },
-    { value: "May", name: "may" },
-    { value: "June", name: "june" },
-    { value: "July", name: "July" },
-    { value: "August", name: "august" },
-    { value: "September", name: "september" },
-    { value: "October", name: "october" },
-    { value: "November", name: "november" },
-    { value: "December", name: "december" },
-  ];
-
-  const [printVal, setPrintVal] = useState({});
-  const [status, setStatus] = useState("");
-
-  const [customerReport, setCustomerReport] = useState([]);
+  // loading state
   const [isLoading, setIsLoading] = useState(false);
-
-  //get isp owner data
-  const ispOwnerData = useSelector(
-    (state) => state.persistedReducer.auth.userData
-  );
-  // get all role
-  const role = useSelector((state) => state.persistedReducer.auth.role);
-
-  // get user permission
-  const permission = useSelector(
-    (state) => state.persistedReducer.auth.userData.permissions
-  );
-
-  // get bp settings
-  const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
-  );
 
   //get customer bill report form state
   const report = useSelector((state) => state.payment?.billReport);
+
+  // loading state
+  const [show, setShow] = useState(false);
+
+  // print report data
+  const [tableData, setTableData] = useState("");
 
   //get specific customer report
   useEffect(() => {
     getCustoemrReport(dispatch, customerId, setIsLoading);
   }, []);
 
-  //delete report
-  const deletReport = async (reportId) => {
+  //customer single report delete handle
+  const singleReportDelete = async (reportId) => {
     const con = window.confirm(t("deleteAlert"));
     if (con) {
-      try {
-        const res = await apiLink.delete(`/bill/monthlyBill/${reportId}`);
-        const updatedState = customerReport.filter(
-          (item) => item.id !== reportId
-        );
-        setCustomerReport(updatedState);
-        dispatch(editCustomerSuccess(res.data.customer));
-        toast.success(t("deleteAlertSuccess"));
-      } catch (error) {
-        toast.error(error.response?.data?.message);
-        console.log(error);
-      }
+      deleteCustomerReport(dispatch, reportId);
     }
   };
 
-  //delaying the print click for 100 ms time
-  const handlePrint = (val, stat) => {
-    setStatus(stat);
-    setPrintVal(val);
-    setTimeout(function () {
-      if (val.note || val.start || val.end || val.month) {
-        document.getElementById("PrintPppoeWithNote").click();
-      } else {
-        document.getElementById("PrintPppoeWithoutNote").click();
-      }
-    }, 100);
+  const printBillReportHandle = (id) => {
+    const billReport = report?.find((val) => val.id === id);
+    if (billReport) {
+      setShow(true);
+      setTableData(billReport);
+    }
   };
+
+  //bill report customer or customer & office copy print options
+  const printOptions = [
+    {
+      id: 5016,
+      value: "customer",
+      label: "customer",
+      checked: true,
+    },
+    {
+      id: 5017,
+      value: "both",
+      label: "office&customer",
+      checked: false,
+    },
+  ];
 
   return (
     <>
@@ -115,36 +81,129 @@ export default function CustomerBillReport({ customerId }) {
             return (
               <Accordion className="my-1">
                 <Accordion.Item eventKey={val?.user}>
-                  <Accordion.Header className="reportAccordion">
-                    <div className="reportHeader">
-                      <p className="reportName">{val?.month}</p>
-                      <div className="reportAction">
-                        <ReactToPrint
-                          documentTitle={t("billReport")}
-                          trigger={() => (
-                            <PrinterFill
-                              title={t("print")}
-                              size={19}
-                              className="text-success"
-                            />
-                          )}
-                          content={() => billRefwithNote.current}
-                        />
-                        <TrashFill
-                          size={19}
-                          className="text-danger ms-2"
-                          title={t("delete")}
-                        />
-                      </div>
+                  <div className="reportHeader">
+                    <Accordion.Button className="reportAccordion">
+                      <p className="reportName">
+                        {val?.month} &nbsp;
+                        {new Date(val?.createdAt).getFullYear()}
+                      </p>
+                    </Accordion.Button>
+                    <div className="reportAction" style={{ cursor: "pointer" }}>
+                      <PrinterFill
+                        title={t("print")}
+                        size={19}
+                        className="text-primary"
+                        onClick={() => printBillReportHandle(val?.id)}
+                      />
+
+                      <TrashFill
+                        size={19}
+                        className="text-danger ms-2"
+                        title={t("delete")}
+                        onClick={() => singleReportDelete(val?.id)}
+                      />
                     </div>
-                  </Accordion.Header>
-                  <Accordion.Body></Accordion.Body>
+                  </div>
+
+                  <Accordion.Body className="p-0">
+                    <div className="shadow-sm bg-white rounded">
+                      <h5 className="reportCollect">{val?.name}</h5>
+
+                      <FontColor>
+                        <div className="displayGridHorizontalFill5_5 collectReport">
+                          <div className="reportOptions">
+                            <p>
+                              {t("createDate")}
+                              <b>
+                                {moment(val.createdAt).format(
+                                  "MMM DD YYYY hh:mm A"
+                                )}
+                              </b>
+                            </p>
+                            <p>
+                              {t("billType")} <b>{val?.billType}</b>
+                            </p>
+                            <p>
+                              {t("medium")} <b>{val?.medium}</b>
+                            </p>
+                            <p>
+                              {t("discount")} <b>{val?.discount}</b>
+                            </p>
+                            <p>
+                              {t("due")} <b>{val?.due}</b>
+                            </p>
+                            <p>
+                              {t("previousBalance")}
+                              <b>{val?.prevState?.balance}</b>
+                            </p>
+                            <p>
+                              {t("currentBalance")}
+                              <b>{val?.currentState?.balance}</b>
+                            </p>
+                          </div>
+
+                          <div className="reportOptions">
+                            {/* customer previous billing & promise date state */}
+                            <p className="clintTitle border border-1 ps-1">
+                              {t("previousState")}
+                            </p>
+                            <p className="mt-1">
+                              {t("billDate")}
+                              <b className="text-secondary">
+                                {moment(val.prevState?.billingCycle).format(
+                                  "MMM DD YYYY hh:mm A"
+                                )}
+                              </b>
+                            </p>
+                            <p>
+                              {t("promiseDate")}
+                              <b className="text-secondary">
+                                {moment(val.prevState?.promiseDate).format(
+                                  "MMM DD YYYY hh:mm A"
+                                )}
+                              </b>
+                            </p>
+
+                            {/* customer current billing & promise date state */}
+                            <p className="clintTitle border border-1 ps-1 mt-1">
+                              {t("currentState")}
+                            </p>
+                            <p className="mt-1">
+                              {t("billDate")}
+                              <b className="text-secondary">
+                                {moment(val.currentState?.billingCycle).format(
+                                  "MMM DD YYYY hh:mm A"
+                                )}
+                              </b>
+                            </p>
+                            <p>
+                              {t("promiseDate")}
+                              <b className="text-secondary">
+                                {moment(val.currentState?.promiseDate).format(
+                                  "MMM DD YYYY hh:mm A"
+                                )}
+                              </b>
+                            </p>
+                          </div>
+                        </div>
+                      </FontColor>
+                    </div>
+                  </Accordion.Body>
                 </Accordion.Item>
               </Accordion>
             );
           })
         )}
       </Card.Body>
+
+      {/* customer single report print option */}
+      <PrintOptions
+        show={show}
+        setShow={setShow}
+        printOptions={printOptions}
+        tableData={tableData}
+        page={"billReport"}
+      />
     </>
   );
 }
