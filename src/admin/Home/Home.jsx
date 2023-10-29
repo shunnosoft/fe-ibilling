@@ -215,14 +215,15 @@ export default function Home() {
     }
 
     // create date filter
-    // tempClint = tempClint?.filter(
-    //   (item) =>
-    //     new Date(moment(item.createdAt).format("YYYY-MM-DD")).getTime() >=
-    //       new Date(moment(startDate).format("YYYY-MM-DD")).getTime() &&
-    //     new Date(moment(item.createdAt).format("YYYY-MM-DD")).getTime() <=
-    //       new Date(moment(endDate).format("YYYY-MM-DD")).getTime()
-    // );
-
+    if (startDate && endDate) {
+      tempClint = tempClint.filter(
+        (item) =>
+          new Date(moment(item.createdAt).format("YYYY-MM-DD")).getTime() >=
+            new Date(moment(startDate).format("YYYY-MM-DD")).getTime() &&
+          new Date(moment(item.createdAt).format("YYYY-MM-DD")).getTime() <=
+            new Date(moment(endDate).format("YYYY-MM-DD")).getTime()
+      );
+    }
     setClintData(tempClint);
   };
 
