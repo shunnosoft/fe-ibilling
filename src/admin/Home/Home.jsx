@@ -247,16 +247,9 @@ export default function Home() {
     }
   };
 
-<<<<<<< HEAD
   const createCustomerLoginCredential = (ispOwner) => {
     if (ispOwner?.bpSettings?.hasPG) {
       getCreateCsutomerLoginCredential(ispOwner?.mobile, setCustomerCredential);
-=======
-  const createCustomerLoginCredential = (value) => {
-    const ispOwner = ispOwners?.find((val) => val.id === value.id);
-    if (ispOwner.bpSettings?.hasPG) {
-      getCreateCsutomerLoginCredential(ispOwner?.mobile);
->>>>>>> 24134d17 (Create Customer Login Credential done)
     } else {
       alert("Payment getway not found!");
     }
