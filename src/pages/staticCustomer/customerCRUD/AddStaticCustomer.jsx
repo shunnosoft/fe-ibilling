@@ -270,9 +270,9 @@ export default function AddStaticCustomer({ show, setShow }) {
         address: ipAddress,
         list: "allow_ip",
       };
-      // if (maxUpLimit) {
-      //   sendingData.queue.maxLimit = `${maxUpLimit}/${maxUpLimit}`;
-      // }
+      if (maxUpLimit) {
+        sendingData.queue.maxLimit = `${maxUpLimit}/${maxUpLimit}`;
+      }
     }
 
     if (userType === "core-queue") {
