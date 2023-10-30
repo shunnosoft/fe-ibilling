@@ -57,7 +57,9 @@ export const updateStaticCustomerApi = async (
   dispatch,
   data,
   setIsloading,
-  setShow
+  resetForm,
+  setShow,
+  status
 ) => {
   setIsloading(true);
   try {
@@ -66,12 +68,28 @@ export const updateStaticCustomerApi = async (
       data
     );
     dispatch(editStaticCustomerSuccess(res.data.customer));
+
+    if (status === "auto") {
+      langMessage(
+        "success",
+        "কাস্টমার আটো ডিজেবল আপডেট সফল হয়েছে",
+        "Customer Auto Disable Updated Successfully"
+      );
+    } else if (status === "status") {
+      langMessage(
+        "success",
+        "কাস্টমার স্টাটাস আপডেট সফল হয়েছে",
+        "Customer Status Updated Successfully"
+      );
+    } else {
+      langMessage(
+        "success",
+        "কাস্টমার এডিট সফল হয়েছে",
+        "Customer Updated Successfully"
+      );
+    }
     setShow(false);
-    langMessage(
-      "success",
-      "কাস্টমার আপডেট সফল হয়েছে",
-      "Customer Updated Successfully"
-    );
+    resetForm();
   } catch (error) {
     toast.error(error.response?.data?.message);
     console.log(error.response?.data?.message);

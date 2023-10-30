@@ -167,7 +167,8 @@ ul.client_service_list2 li:last-child:hover {
 
 .clintTitle {
   display: flex;
-  align-items: center;
+  justify-content: space-between;
+  /* align-items: center; */
   background-color: #b1b1b11b;
 }
 

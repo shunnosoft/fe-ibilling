@@ -2,32 +2,62 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 const useISPowner = () => {
-  const ispOwner = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerData
+  // get user from redux
+  const user = useSelector((state) => state.persistedReducer.auth);
+
+  // user role
+  const [role, setRole] = useState(user?.role);
+
+  // ispOwner data
+  const [ispOwnerId, setIspOwnerId] = useState(user?.ispOwnerData.id);
+  const [companyName, setCompanyName] = useState(user?.ispOwnerData?.company);
+
+  // ispOwner bpSettings data
+  const [bpSetting, setBpSetting] = useState(user?.ispOwnerData?.bpSettings);
+  const [userType, setUserType] = useState(
+    user?.ispOwnerData?.bpSettings?.queueType
   );
-  const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
+  const [hasMikrotik, setHasMikrotik] = useState(
+    user?.ispOwnerData?.bpSettings?.hasMikrotik
   );
-  const [ispOwnerId, setIspOwnerId] = useState(ispOwner.id);
-  const [hasMikrotik, setHasMikrotik] = useState(bpSettings?.hasMikrotik);
-  const [hasReseller, setHasReseller] = useState(bpSettings?.hasReseller);
-  const [companyName, setCompanyName] = useState(ispOwner?.company);
+  const [hasReseller, setHasReseller] = useState(
+    user?.ispOwnerData?.bpSettings?.hasReseller
+  );
 
+  // manager,reseller & collector permissions
+  const [permissions, setPermissions] = useState(user?.userData.permissions);
+
+  // ispOwner data set
   useEffect(() => {
-    if (ispOwner) {
-      setIspOwnerId(ispOwner.id);
-      setCompanyName(ispOwner.company);
-    }
-  }, [ispOwner]);
+    if (user?.role) setRole(user?.role);
 
-  useEffect(() => {
-    if (bpSettings) {
-      setHasMikrotik(bpSettings?.hasMikrotik);
-      setHasReseller(bpSettings?.hasReseller);
+    if (user?.ispOwnerData) {
+      setIspOwnerId(user?.ispOwnerData.id);
+      setCompanyName(user?.ispOwnerData.company);
     }
-  }, [bpSettings]);
 
-  return { ispOwnerId, hasMikrotik, hasReseller, companyName };
+    // ispOwner bpSettings data set
+    if (user?.ispOwnerData?.bpSettings) {
+      setBpSetting(user?.ispOwnerData?.bpSettings);
+      setUserType(user?.ispOwnerData?.bpSettings?.queueType);
+      setHasMikrotik(user?.ispOwnerData?.bpSettings?.hasMikrotik);
+      setHasReseller(user?.ispOwnerData?.bpSettings?.hasReseller);
+    }
+
+    // ipsOwner staff permission
+    if (user?.userData.permissions) setPermissions(user?.userData.permissions);
+  }, [user]);
+
+  return {
+    role,
+    ispOwnerId,
+    bpSetting,
+    userType,
+    hasMikrotik,
+    hasReseller,
+    companyName,
+    permissions,
+  };
 };
 
 export default useISPowner;

@@ -1,39 +1,25 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { Form, Formik } from "formik";
 import { useSelector } from "react-redux";
 import * as Yup from "yup";
-//internal imports
-import { FtextField } from "../../../components/common/FtextField";
-import "../../Customer/customer.css";
 import { useDispatch } from "react-redux";
-import { billCollect } from "../../../features/apiCalls";
-import Loader from "../../../components/common/Loader";
 import DatePicker from "react-datepicker";
 import Select from "react-select";
 import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
-import ReactToPrint from "react-to-print";
-import RechargePrintInvoice from "./bulkOpration/RechargePrintInvoice";
-import {
-  Card,
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
-  ModalTitle,
-} from "react-bootstrap";
+import { Card } from "react-bootstrap";
 import { CashStack } from "react-bootstrap-icons";
 import { toast } from "react-toastify";
 
-export default function CustomerBillCollect({
-  show,
-  setShow,
-  single,
-  customerData,
-}) {
+//internal imports
+import "../../Customer/customer.css";
+import { FtextField } from "../../../components/common/FtextField";
+import { billCollect } from "../../../features/apiCalls";
+import Loader from "../../../components/common/Loader";
+
+const CustomerBillCollect = ({ single, status }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const rechargePrint = useRef();
 
   // twelve month options
   const options = [
@@ -52,10 +38,11 @@ export default function CustomerBillCollect({
   ];
 
   // get all customer
-  const customer = useSelector((state) => state?.customer?.customer);
-
-  // find editable data
-  const data = customer.find((item) => item.id === single);
+  const customer = useSelector((state) =>
+    status === "pppoe"
+      ? state?.customer?.customer
+      : state?.customer?.staticCustomer
+  );
 
   // get all role
   const role = useSelector((state) => state.persistedReducer.auth.role);
@@ -87,43 +74,39 @@ export default function CustomerBillCollect({
     (state) => state.persistedReducer.auth?.userData?.id
   );
 
+  // find editable data
+  const data = customer.find((item) => item.id === single);
+
   // loading state
   const [isLoading, setLoading] = useState(false);
 
-  //billing date
-  const [startDate, setStartDate] = useState(false);
-  const [endDate, setEndDate] = useState(false);
+  // customer bill type
+  const [billType, setBillType] = useState("bill");
+
+  // customer bill medium
   const [medium, setMedium] = useState("cash");
-  const [noteCheck, setNoteCheck] = useState(false);
-  const [note, setNote] = useState("");
+
+  // customer biill date month set is requerd
   const [selectedMonth, setSelectedMonth] = useState(null);
   const [billAmount, setBillAmount] = useState();
+
+  // note check & note
+  const [noteCheck, setNoteCheck] = useState(false);
+  const [note, setNote] = useState("");
+
+  //set customer billing date
+  const [startDate, setStartDate] = useState(false);
+  const [endDate, setEndDate] = useState(false);
+
+  //calculation total bill due & amount
   const [balanceDue, setBalanceDue] = useState();
-  const [billType, setBillType] = useState("bill");
   const [amount, setAmount] = useState(null);
+
+  // calculation
   const totalAmount = Number(billAmount) + Number(balanceDue);
   const maxDiscount = totalAmount;
 
-  //response data after API call after payment
-  const [responseData, setResponseData] = useState({});
-  const [test, setTest] = useState(false);
-
-  //print button is clicked after successful response
-  useEffect(() => {
-    if (test) {
-      if (
-        (role === "ispOwner" && bpSettings?.instantRechargeBillPrint) ||
-        ((role === "manager" || role === "collector") &&
-          permission?.instantRechargeBillPrint &&
-          bpSettings?.instantRechargeBillPrint)
-      ) {
-        document.getElementById("printButton").click();
-        setTest(!test);
-      }
-    }
-  }, [test]);
-
-  //Validation
+  //bill colleciton validation
   const BillValidatoin = Yup.object({
     amount: Yup.number()
       .min(0, t("billNotAcceptable"))
@@ -140,11 +123,6 @@ export default function CustomerBillCollect({
       .max(maxDiscount, t("discountNotAcceptable"))
       .integer(t("decimalNumberNotAcceptable")),
   });
-
-  //modal show handler
-  const handleClose = () => {
-    setShow(false);
-  };
 
   //form resetFunction
   const resetForm = () => {
@@ -258,14 +236,7 @@ export default function CustomerBillCollect({
       sendingData.month = monthValues.join(",");
     }
 
-    billCollect(
-      dispatch,
-      sendingData,
-      setLoading,
-      resetForm,
-      setResponseData,
-      setTest
-    );
+    billCollect(dispatch, sendingData, setLoading, resetForm);
 
     setAmount(data.amount);
   };
@@ -448,40 +419,7 @@ export default function CustomerBillCollect({
                   </>
                 )}
               </div>
-              {/* Invoice Printer Page Component with button and they are hidden*/}
-              <>
-                {((role === "ispOwner" &&
-                  bpSettings?.instantRechargeBillPrint) ||
-                  ((role === "manager" || role === "collector") &&
-                    permission?.instantRechargeBillPrint &&
-                    bpSettings?.instantRechargeBillPrint)) && (
-                  <div className="d-none">
-                    <RechargePrintInvoice
-                      ref={rechargePrint}
-                      customerData={customerData}
-                      billingData={responseData}
-                      ispOwnerData={userData}
-                    />
-                  </div>
-                )}
 
-                <div className="d-none">
-                  <ReactToPrint
-                    documentTitle={t("billInvoice")}
-                    trigger={() => (
-                      <div
-                        title={t("printInvoiceBill")}
-                        style={{ cursor: "pointer" }}
-                      >
-                        <button type="button" id="printButton">
-                          Print
-                        </button>
-                      </div>
-                    )}
-                    content={() => rechargePrint.current}
-                  />
-                </div>
-              </>
               <div className="d-flex justify-content-end mt-5">
                 <button type="submit" className="btn btn-outline-success">
                   {isLoading ? (
@@ -500,4 +438,6 @@ export default function CustomerBillCollect({
       </Card.Body>
     </>
   );
-}
+};
+
+export default CustomerBillCollect;

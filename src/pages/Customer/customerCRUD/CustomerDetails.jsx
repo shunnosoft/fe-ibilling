@@ -7,8 +7,8 @@ import {
   Cash,
   Collection,
   Envelope,
-  Geo,
   GeoAltFill,
+  GeoFill,
   PencilSquare,
   Person,
   PersonVcard,
@@ -122,32 +122,35 @@ export default function CustomerDetails({ show, setShow, customerId }) {
         keyboard={false}
         size="xl"
       >
-        <div className="profile_header">
-          <div
-            className="profileDelete"
-            onClick={() => {
-              setModalStatus("profileDelete");
-              setModalShow(true);
-              setShow(false);
-            }}
-          >
-            <Trash3Fill />
-            <p>{t("deleteProfile")}</p>
-          </div>
-
-          <CloseButton onClick={handleClose} />
-        </div>
         <ModalBody>
           <div className="container">
             <Card className="clintProfile shadow-sm mb-4 bg-white rounded">
               <Card.Title className="clintTitle">
-                <img
-                  src="./assets/img/noAvater.jpg"
-                  alt=""
-                  className="clintPotos"
-                />
+                <div className="d-flex align-items-center">
+                  <img
+                    src="./assets/img/noAvater.jpg"
+                    alt=""
+                    className="clintPotos"
+                  />
 
-                <p className="clintName">{data?.name}</p>
+                  <p className="clintName">{data?.name}</p>
+                </div>
+
+                <div className="d-flex justify-content-center align-items-center p-3">
+                  <div
+                    className="profileDelete"
+                    onClick={() => {
+                      setModalStatus("profileDelete");
+                      setModalShow(true);
+                      setShow(false);
+                    }}
+                  >
+                    <Trash3Fill />
+                    <p>{t("deleteProfile")}</p>
+                  </div>
+
+                  <CloseButton onClick={handleClose} />
+                </div>
               </Card.Title>
               <Card.Body
                 className="displayGrid3 text-secondary"
@@ -178,17 +181,19 @@ export default function CustomerDetails({ show, setShow, customerId }) {
 
                   <div>
                     <div className="d-flex gap-3">
-                      <Geo />
+                      <GeoFill />
                       <p>
-                        {customerAreaSubareaFind.findArea?.name},
+                        {customerAreaSubareaFind.findArea?.name},&nbsp;
                         {customerAreaSubareaFind.findSubarea?.name}
                       </p>
                     </div>
 
-                    <div className="d-flex gap-3">
-                      <GeoAltFill />
-                      <p>{data?.address}</p>
-                    </div>
+                    {data?.address && (
+                      <div className="d-flex gap-3">
+                        <GeoAltFill />
+                        <p>{data?.address}</p>
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -414,10 +419,7 @@ export default function CustomerDetails({ show, setShow, customerId }) {
                     setProfileOption={setProfileOption}
                   />
                 ) : profileOption === "recharge" ? (
-                  <CustomerBillCollect
-                    single={customerId}
-                    customerData={data}
-                  />
+                  <CustomerBillCollect single={customerId} status="pppoe" />
                 ) : profileOption === "report" ? (
                   <CustomerBillReport
                     customerId={customerId}
@@ -428,107 +430,6 @@ export default function CustomerDetails({ show, setShow, customerId }) {
                 )}
               </Card>
             </div>
-
-            {/* <div className="profileMain">
-              <div>
-                <h5> {t("customer")}</h5>
-                <hr />
-                <h6>
-                  {t("customerId")} : {data?.customerId}
-                </h6>
-                <h6>
-                  {t("name")} : {data?.name}
-                </h6>
-                <h6>
-                  {t("mobile")} : {data?.mobile}
-                </h6>
-                <h6>
-                  {t("address")} : {data?.address}
-                </h6>
-                <h6>
-                  {t("email")} : {data?.email}
-                </h6>
-                <h6>
-                  {t("createdAt")} :{" "}
-                  {moment(data?.createdAt).format("MMM DD YYYY hh:mm A")}
-                </h6>
-                <h6>
-                  {t("NIDno")} : {data?.nid}
-                </h6>
-                <h6>
-                  {t("status")} : {badge(data?.status)}
-                </h6>
-                <h6>
-                  {t("payment")} : {badge(data?.paymentStatus)}
-                </h6>
-                <h6>
-                  {t("monthFee")} : {FormatNumber(data?.monthlyFee)}
-                </h6>
-                <h6>
-                  {t("connectionFee")} : {FormatNumber(data?.connectionFee)}
-                </h6>
-                <h6>
-                  {t("balance")} : {FormatNumber(data?.balance)}
-                </h6>
-                <h6>
-                  {t("billingCycle")} :{" "}
-                  {moment(data?.billingCycle).format("MMM DD YYYY hh:mm A")}
-                </h6>
-                <h6>
-                  {t("promiseDate")} :{" "}
-                  {moment(data?.promiseDate).format("MMM DD YYYY hh:mm A")}
-                </h6>
-                <h6>
-                  {t("connectionDate")} :{" "}
-                  {data?.connectionDate &&
-                    moment(data?.connectionDate).format("MMM DD YYYY hh:mm A")}
-                </h6>
-                {bpSettings?.hasMikrotik && (
-                  <h6>
-                    {t("automaticConnectionOff")} :{" "}
-                    {data?.autoDisable ? "YES" : "NO"}
-                  </h6>
-                )}
-              </div>
-              <div>
-                <div className="pppoe">
-                  <h5>PPPoE</h5>
-                  <hr />
-                  <h6>
-                    {t("userName")} : {data?.pppoe?.name}
-                  </h6>
-                  <h6>
-                    {t("password")} : {data?.pppoe?.password}
-                    <br />
-                    {t("profile")} : {data?.pppoe?.profile}
-                  </h6>
-                  <h6>
-                    {t("service")} : {data?.pppoe?.service}
-                  </h6>
-                  <h6>
-                    {t("comment")} : {data?.pppoe?.comment}
-                  </h6>
-                  <hr />
-                </div>
-                <div className="reference">
-                  <h5>{t("reference")}</h5>
-                  <hr />
-                  <h6>
-                    {t("referenceName")} : {data?.referenceName}
-                  </h6>
-                  <h6>
-                    {t("referenceMobile")} : {data?.referenceMobile}
-                  </h6>
-                  <h6>
-                    {t("createdBy")} :{" "}
-                    {performer && performer[data?.createdBy].name}
-                  </h6>
-                  <h6>
-                    {t("role")} : {performer && performer[data?.createdBy].role}
-                  </h6>
-                </div>
-              </div>
-            </div> */}
           </div>
         </ModalBody>
       </Modal>

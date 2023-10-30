@@ -2214,8 +2214,6 @@ export const billCollect = async (
   billData,
   setLoading,
   resetForm = null,
-  setResponseData,
-  setTest,
   setShow
 ) => {
   setLoading(true);
@@ -2223,12 +2221,8 @@ export const billCollect = async (
     const res = await apiLink.post("/bill/monthlyBill", billData);
     if (billData.userType === "pppoe") {
       dispatch(updateBalance(res.data));
-      setResponseData(res.data);
-      setTest(true);
     } else {
       dispatch(updateBalanceStaticCustomer(res.data));
-      setResponseData(res.data);
-      setTest(true);
     }
 
     langMessage(

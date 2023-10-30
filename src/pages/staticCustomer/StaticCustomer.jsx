@@ -94,6 +94,7 @@ import { Accordion, Card, Collapse } from "react-bootstrap";
 import BulkPaymentStatusEdit from "../Customer/customerCRUD/bulkOpration/BulkPaymentStatusEdit";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
+import EditStaticCustomer from "./customerCRUD/temp/EditStaticCustomer";
 
 export default function Customer() {
   //call hooks
@@ -119,6 +120,7 @@ export default function Customer() {
   const bpSettings = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
   );
+
   const permission = useSelector(
     (state) => state.persistedReducer.auth?.userData.permissions
   );
@@ -368,12 +370,15 @@ export default function Customer() {
       (role === "manager" || role === "ispOwner")
     ) {
       getPackagewithoutmikrotik(ispOwner, dispatch, setIsloading);
-    } else {
-      allPackages.length === 0 &&
-        getAllPackages(dispatch, ispOwner, setIsloading);
-      packages.length === 0 &&
-        getQueuePackageByIspOwnerId(ispOwner, dispatch, setIsloading);
     }
+
+    // ispOwner pppoe all package get api
+    if (allPackages.length === 0)
+      getAllPackages(dispatch, ispOwner, setIsloading);
+
+    //ispOwner queue all package get api
+    if (packages.length === 0)
+      getQueuePackageByIspOwnerId(ispOwner, dispatch, setIsloading);
 
     if (cus.length === 0)
       getStaticCustomer(dispatch, ispOwner, setCustomerLoading);
@@ -809,13 +814,7 @@ export default function Customer() {
         id: "option",
 
         Cell: ({ row: { original } }) => (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
+          <div className="d-flex justify-content-center align-items-center">
             <div className="dropdown">
               <ThreeDots
                 className="dropdown-toggle ActionDots"
@@ -830,6 +829,8 @@ export default function Customer() {
                   data-bs-target="#showCustomerDetails"
                   onClick={() => {
                     getSpecificCustomer(original.id);
+                    setModalStatus("profile");
+                    setShow(true);
                   }}
                 >
                   <div className="dropdown-item">
@@ -1676,6 +1677,15 @@ export default function Customer() {
 
               {/* Model start */}
 
+              {/* customer profile details modal */}
+              {modalStatus === "profile" && (
+                <CustomerDetails
+                  show={show}
+                  setShow={setShow}
+                  customerId={singleCustomer}
+                />
+              )}
+
               {/* customer create modal */}
               {modalStatus === "customerPost" && (
                 <AddStaticCustomer show={show} setShow={setShow} />
@@ -1683,7 +1693,7 @@ export default function Customer() {
 
               {/* single customer update */}
               {modalStatus === "customerEdit" && (
-                <StaticCustomerEdit
+                <EditStaticCustomer
                   show={show}
                   setShow={setShow}
                   single={singleCustomer}
@@ -1700,7 +1710,6 @@ export default function Customer() {
                 />
               )}
 
-              <CustomerDetails single={singleCustomer} />
               <CustomerReport single={customerReportData} />
               {/* customer note modal */}
               <CustomerNote

@@ -48,6 +48,27 @@ export default function CustomerEdit({ customerId, setProfileOption }) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
+  // customer validator
+  const customerValidator = Yup.object({
+    // customerId: Yup.string().required(t("writeCustomerId")),
+    name: Yup.string().required(t("writeCustomerName")),
+    mobile: Yup.string()
+      .matches(/^(01){1}[3456789]{1}(\d){8}$/, t("incorrectMobile"))
+      .min(11, t("write11DigitMobileNumber"))
+      .max(11, t("over11DigitMobileNumber")),
+    address: Yup.string(),
+    email: Yup.string().email(t("incorrectEmail")),
+    nid: Yup.string(),
+    monthlyFee: Yup.number()
+      .integer()
+      .min(0, t("minimumPackageRate"))
+      .required(t("enterPackageRate")),
+    Pname: Yup.string().required(t("writePPPoEName")),
+    Ppassword: Yup.string().required(t("writePPPoEPassword")),
+    Pcomment: Yup.string(),
+    customerBillingType: Yup.string().required(t("select billing type")),
+  });
+
   //calling custom hook here
   const { ispOwnerId, hasMikrotik } = useISPowner();
 
@@ -215,29 +236,6 @@ export default function CustomerEdit({ customerId, setProfileOption }) {
     getPoleBoxApi(dispatch, ispOwnerId, setIsLoadingPole);
   }, []);
 
-  // customer validator
-  const customerValidator = Yup.object({
-    // customerId: Yup.string().required(t("writeCustomerId")),
-    name: Yup.string().required(t("writeCustomerName")),
-    mobile: Yup.string()
-      // .matches(/^(01){1}[3456789]{1}(\d){8}$/, "মোবাইল নম্বর সঠিক নয়")
-      .min(11, t("write11DigitMobileNumber"))
-      .max(11, t("over11DigitMobileNumber")),
-    address: Yup.string(),
-    email: Yup.string().email(t("incorrectEmail")),
-    nid: Yup.string(),
-    monthlyFee: Yup.number()
-      .integer()
-      .min(0, t("minimumPackageRate"))
-      .required(t("enterPackageRate")),
-    Pname: Yup.string().required(t("writePPPoEName")),
-    Ppassword: Yup.string().required(t("writePPPoEPassword")),
-    Pcomment: Yup.string(),
-    customerBillingType: Yup.string().required(t("select billing type")),
-
-    // balance: Yup.number().integer(),
-  });
-
   // select Mikrotik Package
   useEffect(() => {
     const mikrotikPackageId = data?.mikrotikPackage;
@@ -270,16 +268,6 @@ export default function CustomerEdit({ customerId, setProfileOption }) {
   // sending data to backed
   const customerHandler = async (formValue) => {
     setIsloading(true);
-    const subArea2 = document.getElementById("subAreaIdFromEdit").value;
-    if (subArea2 === "") {
-      setIsloading(false);
-      return alert(t("selectSubArea"));
-    }
-
-    if (!billDate) {
-      setIsloading(false);
-      return alert(t("selectBillDate"));
-    }
 
     const {
       customerId,
@@ -290,6 +278,17 @@ export default function CustomerEdit({ customerId, setProfileOption }) {
       customerBillingType,
       ...rest
     } = formValue;
+
+    const subArea2 = document.getElementById("subAreaIdFromEdit").value;
+    if (subArea2 === "") {
+      setIsloading(false);
+      return alert(t("selectSubArea"));
+    }
+
+    if (!billDate) {
+      setIsloading(false);
+      return alert(t("selectBillDate"));
+    }
 
     if (!bpSettings.genCustomerId) {
       if (customerId === "") {
@@ -469,7 +468,7 @@ export default function CustomerEdit({ customerId, setProfileOption }) {
           enableReinitialize
         >
           {() => (
-            <Form id="customerEdit">
+            <Form>
               <div>
                 {!bpSettings.genCustomerId && (
                   <TextField
@@ -521,7 +520,7 @@ export default function CustomerEdit({ customerId, setProfileOption }) {
                         type="number"
                         min={0}
                         name="monthlyFee"
-                        validation={"true"}
+                        validation={true}
                       />
                       {data?.monthlyFee > 0 && (
                         <InputGroup.Text
@@ -580,6 +579,7 @@ export default function CustomerEdit({ customerId, setProfileOption }) {
                         className="form-control shadow-none"
                         type="text"
                         name="mobile"
+                        validation={true}
                         disabled={
                           !permission?.customerMobileEdit &&
                           role === "collector"
@@ -648,7 +648,7 @@ export default function CustomerEdit({ customerId, setProfileOption }) {
 
                 <div className="displayGridManual6_4">
                   <label className="form-control-label manualLable">
-                    {t("area")}
+                    {t("selectArea")}
                     <span className="text-danger">*</span>
                   </label>
 
@@ -673,7 +673,7 @@ export default function CustomerEdit({ customerId, setProfileOption }) {
 
                 <div className="displayGridManual6_4">
                   <label className="form-control-label manualLable">
-                    {t("SubArea")}
+                    {t("selectSubArea")}
                     <span className="text-danger">*</span>
                   </label>
 

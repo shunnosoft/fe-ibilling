@@ -245,6 +245,14 @@ export default function AddStaticCustomer({ show, setShow }) {
       ...rest,
       monthlyFee,
     };
+
+    if (bpSettings.addCustomerWithMobile) {
+      if (data.mobile === "") {
+        setIsloading(false);
+        return alert(t("writeMobileNumber"));
+      }
+    }
+
     if (!bpSettings.hasMikrotik) {
       delete mainData.mikrotik;
       delete mainData.autoDisable;

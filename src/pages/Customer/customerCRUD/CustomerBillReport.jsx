@@ -1,12 +1,13 @@
 import moment from "moment";
 import React, { useEffect, useState } from "react";
-import TdLoader from "../../../components/common/TdLoader";
-import "../customer.css";
-import { toast } from "react-toastify";
 import { PrinterFill, TrashFill } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { Accordion, Card } from "react-bootstrap";
+
+//internal import
+import "../customer.css";
+import TdLoader from "../../../components/common/TdLoader";
 import {
   deleteCustomerReport,
   getCustoemrReport,
@@ -14,7 +15,7 @@ import {
 import { FontColor } from "../../../assets/js/theme";
 import PrintOptions from "../../../components/common/PrintOptions";
 
-export default function CustomerBillReport({ customerId }) {
+const CustomerBillReport = ({ customerId }) => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
@@ -75,7 +76,9 @@ export default function CustomerBillReport({ customerId }) {
 
       <Card.Body>
         {isLoading ? (
-          <TdLoader colspan={5} />
+          <div className="d-flex justify-content-center align-items-center">
+            <TdLoader colspan={5} />
+          </div>
         ) : (
           report?.map((val) => {
             return (
@@ -206,4 +209,6 @@ export default function CustomerBillReport({ customerId }) {
       />
     </>
   );
-}
+};
+
+export default CustomerBillReport;

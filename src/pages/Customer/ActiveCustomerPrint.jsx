@@ -82,7 +82,7 @@ const ActiveCustomerPrint = forwardRef((props, ref) => {
         <tbody>
           {currentCustomers.map((val, key) => (
             <tr key={key} id={val.id}>
-              <td className="prin_td">{key + 1}</td>
+              <td className="prin_td">{val.customerId}</td>
               {status === "pppoe" ? (
                 <td className="prin_td">
                   <div>
