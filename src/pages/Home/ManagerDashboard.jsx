@@ -45,18 +45,14 @@ import Active from "./dataComponent/Active";
 import AllCollector from "./dataComponent/AllCollector";
 import Discount from "./dataComponent/Discount";
 import { getHotspotPackage } from "../../features/hotspotApi";
+import useISPowner from "../../hooks/useISPOwner";
 
 export default function ManagerDashboard() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
-  //get all roles
-  const role = useSelector((state) => state.persistedReducer.auth.role);
-
-  //get ispOwner Id
-  const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerId
-  );
+  // get user & current user data form useISPOwner
+  const { role, ispOwnerId, bpSetting, permissions } = useISPowner();
 
   //get ispOwner data for logged in user
   const ispOwnerData = useSelector(
@@ -66,11 +62,6 @@ export default function ManagerDashboard() {
   //get ispOwner data from any component
   const ispOwner = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerData
-  );
-
-  // get user permission
-  const permissions = useSelector(
-    (state) => state.persistedReducer.auth.currentUser.manager.permissions
   );
 
   // get userdata
@@ -218,6 +209,21 @@ export default function ManagerDashboard() {
     registration: t("register"),
   };
 
+  // probability amount calculation ispOwner permission wise
+  const probabilityAmountCalculation = () => {
+    if (bpSetting?.dashboardProbabilityAmountWithNewCustomer) {
+      return (
+        customerStat.totalProbableAmount -
+        customerStat.totalInactiveAmount -
+        customerStat.newCustomerBillCount
+      );
+    } else {
+      return (
+        customerStat.totalProbableAmount - customerStat.totalInactiveAmount
+      );
+    }
+  };
+
   //percantage calculation
   const collectionPercentage = customerStat
     ? Math.round(
@@ -293,11 +299,9 @@ export default function ManagerDashboard() {
                   <div className="row">
                     <div className="col-md-3 d-flex justify-content-end align-items-center">
                       <h2>
-                        {t("possibleCollection")} <br /> ৳ &nbsp;
-                        {FormatNumber(
-                          customerStat?.totalProbableAmount -
-                            customerStat?.totalInactiveAmount
-                        )}
+                        {t("possibleCollection")}
+                        <br /> ৳ &nbsp;
+                        {FormatNumber(probabilityAmountCalculation())}{" "}
                       </h2>
                     </div>
                     <div className="col-md-6">
@@ -445,9 +449,16 @@ export default function ManagerDashboard() {
                     <h2>{FormatNumber(customerStat?.customers)}</h2>
 
                     <Link to={"/other/customer"}>
-                      <p className="dashboardData">
-                        {t("new customer")}
-                        {FormatNumber(customerStat?.newCustomer)}
+                      <p
+                        className="dashboardData"
+                        style={{ fontSize: "15px", marginBottom: "0px" }}
+                      >
+                        {t("newCustomer")}:&nbsp;
+                        {FormatNumber(customerStat.newCustomer)}
+                        &nbsp;
+                        <span className="text-info">
+                          ৳ {FormatNumber(customerStat.newCustomerBillCount)}
+                        </span>
                       </p>
                     </Link>
                   </div>

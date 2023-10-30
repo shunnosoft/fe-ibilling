@@ -349,60 +349,58 @@ export default function IspOwnerDashboard() {
               )}
 
               <div className="col-md-12 mb-3">
-                {role === "ispOwner" && (
-                  <div className="row">
-                    <div className="col-md-3 d-flex justify-content-end align-items-center">
-                      <h2>
-                        {t("possibleCollection")}
-                        <br /> ৳ &nbsp;
-                        {FormatNumber(probabilityAmountCalculation())}{" "}
-                      </h2>
-                    </div>
-                    <div className="col-md-6">
-                      <div
-                        style={{
-                          width: 200,
-                          height: 200,
-                          margin: "0 auto",
-                        }}
+                <div className="row">
+                  <div className="col-md-3 d-flex justify-content-end align-items-center">
+                    <h2>
+                      {t("possibleCollection")}
+                      <br /> ৳ &nbsp;
+                      {FormatNumber(probabilityAmountCalculation())}{" "}
+                    </h2>
+                  </div>
+                  <div className="col-md-6">
+                    <div
+                      style={{
+                        width: 200,
+                        height: 200,
+                        margin: "0 auto",
+                      }}
+                    >
+                      {/* Percantage circular bar part*/}
+                      <AnimatedProgressProvider
+                        valueStart={0}
+                        valueEnd={Math.floor(collectionPercentage)}
+                        duration={1}
+                        easingFunction={easeQuadIn}
                       >
-                        {/* Percantage circular bar part*/}
-                        <AnimatedProgressProvider
-                          valueStart={0}
-                          valueEnd={Math.floor(collectionPercentage)}
-                          duration={1}
-                          easingFunction={easeQuadIn}
-                        >
-                          {(value) => {
-                            const roundedValue = isNaN(value)
-                              ? collectionPercentage
-                              : Math.floor(value);
-                            return (
-                              <CircularProgressbar
-                                value={roundedValue}
-                                text={`${
-                                  isNaN(roundedValue) ? 0 : roundedValue
-                                }%`}
-                                styles={buildStyles({
-                                  pathTransition: "none",
-                                })}
-                              />
-                            );
-                          }}
-                        </AnimatedProgressProvider>
-                      </div>
-                    </div>
-                    <div className="col-md-3 d-flex justify-content-start align-items-center">
-                      <h2>
-                        {t("totalCollection")} <br /> ৳ &nbsp;
-                        {FormatNumber(
-                          customerStat.totalBillCollection -
-                            customerStat.totalMonthlyDiscount
-                        )}
-                      </h2>
+                        {(value) => {
+                          const roundedValue = isNaN(value)
+                            ? collectionPercentage
+                            : Math.floor(value);
+                          return (
+                            <CircularProgressbar
+                              value={roundedValue}
+                              text={`${
+                                isNaN(roundedValue) ? 0 : roundedValue
+                              }%`}
+                              styles={buildStyles({
+                                pathTransition: "none",
+                              })}
+                            />
+                          );
+                        }}
+                      </AnimatedProgressProvider>
                     </div>
                   </div>
-                )}
+                  <div className="col-md-3 d-flex justify-content-start align-items-center">
+                    <h2>
+                      {t("totalCollection")} <br /> ৳ &nbsp;
+                      {FormatNumber(
+                        customerStat.totalBillCollection -
+                          customerStat.totalMonthlyDiscount
+                      )}
+                    </h2>
+                  </div>
+                </div>
 
                 <div className="d-flex justify-content-between d_calculation_section">
                   <div
@@ -512,14 +510,12 @@ export default function IspOwnerDashboard() {
                         className="dashboardData"
                         style={{ fontSize: "15px", marginBottom: "0px" }}
                       >
-                        {t("new customer")}
+                        {t("newCustomer")}:&nbsp;
                         {FormatNumber(customerStat.newCustomer)}
                         &nbsp;
-                        {role === "ispOwner" && (
-                          <span className="text-info">
-                            ৳ {FormatNumber(customerStat.newCustomerBillCount)}
-                          </span>
-                        )}
+                        <span className="text-info">
+                          ৳ {FormatNumber(customerStat.newCustomerBillCount)}
+                        </span>
                       </p>
                     </Link>
                   </div>

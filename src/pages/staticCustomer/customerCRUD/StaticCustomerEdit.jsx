@@ -337,7 +337,7 @@ const StaticCustomerEdit = ({ customerId, setProfileOption }) => {
       ...rest
     } = data;
 
-    if (!bpSettings.genCustomerId) {
+    if (!bpSetting.genCustomerId) {
       if (!customerId) {
         return alert(t("writeCustomerId"));
       }

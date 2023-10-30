@@ -42,15 +42,14 @@ import Paid from "./dataComponent/Paid";
 import Unpaid from "./dataComponent/Unpaid";
 import Active from "./dataComponent/Active";
 import { getHotspotPackageSuccess } from "../../features/packageSlice";
+import useISPowner from "../../hooks/useISPOwner";
 
 export default function CollectorDashboard() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
-  //get ispOwnerId
-  const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerId
-  );
+  // get user & current user data form useISPOwner
+  const { ispOwnerId, bpSetting, permissions } = useISPowner();
 
   //get ispOwner data when logged in
   const ispOwnerData = useSelector(
@@ -60,11 +59,6 @@ export default function CollectorDashboard() {
   //get ispOwner Info
   const ispOwner = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerData
-  );
-
-  // get user permission
-  const permissions = useSelector(
-    (state) => state.persistedReducer.auth.currentUser.collector.permissions
   );
 
   // get collectorId
@@ -190,6 +184,21 @@ export default function CollectorDashboard() {
     registration: t("register"),
   };
 
+  // probability amount calculation ispOwner permission wise
+  const probabilityAmountCalculation = () => {
+    if (bpSetting?.dashboardProbabilityAmountWithNewCustomer) {
+      return (
+        customerStat.totalProbableAmount -
+        customerStat.totalInactiveAmount -
+        customerStat.newCustomerBillCount
+      );
+    } else {
+      return (
+        customerStat.totalProbableAmount - customerStat.totalInactiveAmount
+      );
+    }
+  };
+
   //percantage calculation
   const collectionPercentage = customerStat
     ? Math.round(
@@ -265,11 +274,9 @@ export default function CollectorDashboard() {
                   <div className="row">
                     <div className="col-md-3 d-flex justify-content-end align-items-center">
                       <h2>
-                        {t("possibleCollection")} <br /> <CurrencyDollar />
-                        {FormatNumber(
-                          customerStat?.totalProbableAmount -
-                            customerStat?.totalInactiveAmount
-                        )}
+                        {t("possibleCollection")}
+                        <br /> ৳ &nbsp;
+                        {FormatNumber(probabilityAmountCalculation())}{" "}
                       </h2>
                     </div>
                     <div className="col-md-6">
@@ -414,9 +421,16 @@ export default function CollectorDashboard() {
                     <h2>{FormatNumber(customerStat?.customers)}</h2>
 
                     <Link to={"/other/customer"}>
-                      <p className="dashboardData">
-                        {t("new customer")}
-                        {FormatNumber(customerStat?.newCustomer)}
+                      <p
+                        className="dashboardData"
+                        style={{ fontSize: "15px", marginBottom: "0px" }}
+                      >
+                        {t("newCustomer")}:&nbsp;
+                        {FormatNumber(customerStat.newCustomer)}
+                        &nbsp;
+                        <span className="text-info">
+                          ৳ {FormatNumber(customerStat.newCustomerBillCount)}
+                        </span>
                       </p>
                     </Link>
                   </div>

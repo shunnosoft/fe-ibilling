@@ -42,6 +42,7 @@ export default function Diposit() {
 
   // get all deposit form redux
   const allDeposit = useSelector((state) => state?.payment?.allDeposit);
+  console.log(allDeposit);
 
   // get manager from redux
   const manager = useSelector((state) => state?.manager?.manager);
@@ -224,7 +225,7 @@ export default function Diposit() {
         width: "15%",
         Header: t("receivedBy"),
         Cell: ({ row: { original } }) => {
-          const performer = manager.find(
+          const performer = manager?.find(
             (item) => item.id === original.manager
           );
 
@@ -338,7 +339,7 @@ export default function Diposit() {
         },
       },
     ],
-    [t, ownerUsers]
+    [t, ownerUsers, manager]
   );
 
   // total deposit calculation
