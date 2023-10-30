@@ -124,6 +124,19 @@ const StaticCustomerEdit = ({ customerId, setProfileOption }) => {
       setUpMaxLimit(customer?.queue?.maxLimit?.split("/")[0]);
       setDownMaxLimit(customer?.queue?.maxLimit?.split("/")[1]);
     }
+
+    if (
+      userType === "firewall-queue" &&
+      customer?.queue.type === "firewall-queue"
+    ) {
+      if (customer?.queue?.maxLimit) {
+        setUpMaxLimit(customer?.queue?.maxLimit);
+      } else {
+        console.log(customer?.mikrotikPackage);
+        const limit = setPackageLimit(customer?.mikrotikPackage, false);
+        limit && setUpMaxLimit(`${limit}/${limit}`);
+      }
+    }
     setQdisable(customer?.queue.disabled);
 
     let temp;
@@ -260,6 +273,8 @@ const StaticCustomerEdit = ({ customerId, setProfileOption }) => {
         const temp = ppPackage.find((val) => val.id === target.value);
         setPackageRate(temp);
         setMonthlyFee(temp.rate);
+        const getLimit = setPackageLimit(target.value, false);
+        getLimit && setUpMaxLimit(`${getLimit}/${getLimit}`);
       }
 
       if (target.name === "upPackage") {
@@ -312,10 +327,17 @@ const StaticCustomerEdit = ({ customerId, setProfileOption }) => {
 
   // sending data to backed
   const customerHandler = async (data, resetForm) => {
-    const { customerId, ipAddress, queueName, target, srcAddress, ...rest } =
-      data;
+    const {
+      customerId,
+      ipAddress,
+      queueName,
+      target,
+      srcAddress,
+      name,
+      ...rest
+    } = data;
 
-    if (!bpSetting.genCustomerId) {
+    if (!bpSettings.genCustomerId) {
       if (!customerId) {
         return alert(t("writeCustomerId"));
       }
@@ -393,7 +415,11 @@ const StaticCustomerEdit = ({ customerId, setProfileOption }) => {
         address: ipAddress,
         list: "allow_ip",
         disabled: qDisable,
+        name: name,
       };
+      if (maxUpLimit) {
+        sendingData.queue.maxLimit = maxUpLimit;
+      }
     }
 
     if (userType === "core-queue") {

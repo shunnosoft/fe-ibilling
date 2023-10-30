@@ -179,6 +179,8 @@ export default function AddStaticCustomer({ show, setShow }) {
         const temp = ppPackage.find((val) => val.id === target.value);
         setPackageRate(temp);
         setMonthlyFee(temp.rate);
+        const getLimit = setPackageLimit(target.value, false);
+        getLimit && setUpMaxLimit(getLimit);
       }
 
       if (target.name === "corePackage") {
@@ -268,6 +270,9 @@ export default function AddStaticCustomer({ show, setShow }) {
         address: ipAddress,
         list: "allow_ip",
       };
+      // if (maxUpLimit) {
+      //   sendingData.queue.maxLimit = `${maxUpLimit}/${maxUpLimit}`;
+      // }
     }
 
     if (userType === "core-queue") {
