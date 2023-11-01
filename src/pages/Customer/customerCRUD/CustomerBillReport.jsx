@@ -79,7 +79,7 @@ const CustomerBillReport = ({ customerId }) => {
           <div className="d-flex justify-content-center align-items-center">
             <TdLoader colspan={5} />
           </div>
-        ) : (
+        ) : report.length > 0 ? (
           report?.map((val) => {
             return (
               <Accordion className="my-1">
@@ -110,18 +110,14 @@ const CustomerBillReport = ({ customerId }) => {
 
                   <Accordion.Body className="p-0">
                     <div className="shadow-sm bg-white rounded">
-                      <h5 className="reportCollect">{val?.name}</h5>
+                      <h5 className="reportCollect mb-0">{val?.name}</h5>
 
                       <FontColor>
                         <div className="displayGridHorizontalFill5_5 collectReport">
-                          <div className="reportOptions">
+                          <div className="reportOptions row gt-1">
                             <p>
-                              {t("createDate")}
-                              <b>
-                                {moment(val.createdAt).format(
-                                  "MMM DD YYYY hh:mm A"
-                                )}
-                              </b>
+                              {t("amount")}
+                              <b>{val?.amount}</b>
                             </p>
                             <p>
                               {t("billType")} <b>{val?.billType}</b>
@@ -146,6 +142,15 @@ const CustomerBillReport = ({ customerId }) => {
                           </div>
 
                           <div className="reportOptions">
+                            {/* customer bill report create date */}
+                            <p>
+                              {t("createDate")}
+                              <b>
+                                {moment(val.createdAt).format(
+                                  "MMM DD YYYY hh:mm A"
+                                )}
+                              </b>
+                            </p>
                             {/* customer previous billing & promise date state */}
                             <p className="clintTitle border border-1 ps-1">
                               {t("previousState")}
@@ -196,6 +201,8 @@ const CustomerBillReport = ({ customerId }) => {
               </Accordion>
             );
           })
+        ) : (
+          <h5 className="text-center"> {t("noDataFound")} </h5>
         )}
       </Card.Body>
 

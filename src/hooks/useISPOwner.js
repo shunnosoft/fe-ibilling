@@ -4,12 +4,13 @@ import { useSelector } from "react-redux";
 const useISPowner = () => {
   // get user from redux
   const user = useSelector((state) => state.persistedReducer.auth);
+  console.log(user);
 
   // user role
   const [role, setRole] = useState(user?.role);
 
-  // ispOwner data
-  const [ispOwnerId, setIspOwnerId] = useState(user?.ispOwnerData.id);
+  // ispOwner id && ispOwner data
+  const [ispOwnerId, setIspOwnerId] = useState(user?.ispOwnerId);
   const [companyName, setCompanyName] = useState(user?.ispOwnerData?.company);
 
   // ispOwner bpSettings data
@@ -32,7 +33,7 @@ const useISPowner = () => {
     if (user?.role) setRole(user?.role);
 
     if (user?.ispOwnerData) {
-      setIspOwnerId(user?.ispOwnerData.id);
+      setIspOwnerId(user?.ispOwnerId);
       setCompanyName(user?.ispOwnerData.company);
     }
 

@@ -294,17 +294,19 @@ export default function CustomerDetails({ show, setShow, customerId }) {
                 {/* customer details view start */}
 
                 <div className="clintProfile shadow-sm rounded overflow-auto">
-                  <Card.Title className="clintTitle">
+                  <Card.Title className="clintTitle mb-0">
                     <h5 className="profileInfo">{t("profileDetail")}</h5>
                   </Card.Title>
 
                   <Card.Body>
                     <FontColor>
                       <div>
-                        <div className="displayGridHorizontalFill5_5 profileDetails">
-                          <p>{t("mikrotik")}</p>
-                          <p>{data && getMikrotik(data.mikrotik)?.name}</p>
-                        </div>
+                        {bpSettings?.hasMikrotik && (
+                          <div className="displayGridHorizontalFill5_5 profileDetails">
+                            <p>{t("mikrotik")}</p>
+                            <p>{data && getMikrotik(data.mikrotik)?.name}</p>
+                          </div>
+                        )}
 
                         <div className="displayGridHorizontalFill5_5 profileDetails">
                           <p>{t("status")}</p>
@@ -328,7 +330,7 @@ export default function CustomerDetails({ show, setShow, customerId }) {
 
                         <div className="displayGridHorizontalFill5_5 profileDetails">
                           <p>{t("paymentStatus")}</p>
-                          <p>{data?.paymentStatus}</p>
+                          <p>{badge(data?.paymentStatus)}</p>
                         </div>
 
                         <div className="displayGridHorizontalFill5_5 profileDetails">

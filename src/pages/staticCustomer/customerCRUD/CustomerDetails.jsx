@@ -20,22 +20,20 @@ import {
 import "../customer.css";
 import { badge } from "../../../components/common/Utils";
 import { FontColor } from "../../../assets/js/theme";
-import { editCustomer } from "../../../features/apiCalls";
 import CustomerBillReport from "../../Customer/customerCRUD/CustomerBillReport";
 import CustomerMessage from "../../Customer/customerCRUD/CustomerMessage";
 import ProfileDelete from "../../Customer/ProfileDelete";
 import CustomerBillCollect from "../../Customer/customerCRUD/CustomerBillCollect";
 import StaticCustomerEdit from "./StaticCustomerEdit";
 import { updateStaticCustomerApi } from "../../../features/staticCustomerApi";
+import useISPowner from "../../../hooks/useISPOwner";
 
 export default function CustomerDetails({ show, setShow, customerId }) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
-  // get ispOwner bpSettings
-  const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.bpSettings
-  );
+  // get user & current user data form useISPOwner
+  const { bpSetting } = useISPowner();
 
   // get mikrotiks
   const mikrotiks = useSelector((state) => state?.mikrotik?.mikrotik);
@@ -312,17 +310,19 @@ export default function CustomerDetails({ show, setShow, customerId }) {
                 {/* customer details view start */}
 
                 <div className="clintProfile shadow-sm rounded overflow-auto">
-                  <Card.Title className="clintTitle">
+                  <Card.Title className="clintTitle mb-0">
                     <h5 className="profileInfo">{t("profileDetail")}</h5>
                   </Card.Title>
 
                   <Card.Body>
                     <FontColor>
                       <div>
-                        <div className="displayGridHorizontalFill5_5 profileDetails">
-                          <p>{t("mikrotik")}</p>
-                          <p>{data && getMikrotik(data.mikrotik)?.name}</p>
-                        </div>
+                        {bpSetting?.hasMikrotik && (
+                          <div className="displayGridHorizontalFill5_5 profileDetails">
+                            <p>{t("mikrotik")}</p>
+                            <p>{data && getMikrotik(data.mikrotik)?.name}</p>
+                          </div>
+                        )}
 
                         <div className="displayGridHorizontalFill5_5 profileDetails">
                           <p>{t("status")}</p>
@@ -346,7 +346,7 @@ export default function CustomerDetails({ show, setShow, customerId }) {
 
                         <div className="displayGridHorizontalFill5_5 profileDetails">
                           <p>{t("paymentStatus")}</p>
-                          <p>{data?.paymentStatus}</p>
+                          <p>{badge(data?.paymentStatus)}</p>
                         </div>
 
                         <div className="displayGridHorizontalFill5_5 profileDetails">
@@ -365,7 +365,7 @@ export default function CustomerDetails({ show, setShow, customerId }) {
                             customerPackageFind(data?.mikrotikPackage)?.name}
                         </div>
 
-                        {bpSettings?.hasMikrotik && (
+                        {bpSetting?.hasMikrotik && (
                           <div className="displayGridHorizontalFill5_5 profileDetails">
                             <p>{t("autoConnection")}</p>
                             <div className="form-check form-switch">
