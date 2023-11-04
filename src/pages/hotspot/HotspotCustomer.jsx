@@ -9,9 +9,13 @@ import {
   FiletypeCsv,
   FilterCircle,
   GearFill,
+  GeoAlt,
   PenFill,
   PencilSquare,
+  PersonFill,
   PersonPlusFill,
+  Phone,
+  PhoneFill,
   PrinterFill,
   ThreeDots,
 } from "react-bootstrap-icons";
@@ -44,7 +48,6 @@ import CustomersNumber from "../Customer/CustomersNumber";
 import IndeterminateCheckbox from "../../components/table/bulkCheckbox";
 import Loader from "../../components/common/Loader";
 import HotspotPdf from "./customerOperation/HotspotPdf";
-import BulkStatusEdit from "../Customer/customerCRUD/bulkOpration/bulkStatusEdit";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { fetchMikrotik, getArea } from "../../features/apiCalls";
@@ -54,11 +57,15 @@ import BulkCustomerDelete from "../Customer/customerCRUD/bulkOpration/Bulkdelete
 import BulkPaymentStatusEdit from "../Customer/customerCRUD/bulkOpration/BulkPaymentStatusEdit";
 import BulkCustomerMessage from "../Customer/customerCRUD/bulkOpration/BulkCustomerMessage";
 import HotspotCustomerReport from "./hotspotBulkOperation/modal/HotspotCustomerReport";
+import CustomerDetails from "./customerOperation/CustomerDetails";
 
 const HotspotCustomer = () => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const componentRef = useRef();
+
+  // current date
+  const date = new Date();
 
   // get user permission
   const permission = useSelector(
@@ -487,10 +494,31 @@ const HotspotCustomer = () => {
     subarea: subAreaName ? subAreaName : t("allSubArea"),
   };
 
+  // customer day left filtering in current date
+  const getCustomerDayLeft = (billDate) => {
+    //current day
+    const currentDay = new Date(
+      new Date(moment(date).format("YYYY-MM-DD"))
+    ).getTime();
+
+    // // billing day
+    const billDay = new Date(
+      new Date(moment(billDate).format("YYYY-MM-DD"))
+    ).getTime();
+
+    const diffInMs = billDay - currentDay;
+
+    // // bill day left
+    const dayLeft = Math.round(diffInMs / (1000 * 60 * 60 * 24));
+
+    return dayLeft;
+  };
+
   //column for table
   const columns = useMemo(
     () => [
       {
+        width: "2%",
         id: "selection",
         Header: ({ getToggleAllPageRowsSelectedProps }) => (
           <IndeterminateCheckbox
@@ -503,7 +531,6 @@ const HotspotCustomer = () => {
             <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
           </div>
         ),
-        width: "2%",
       },
       {
         width: "6%",
@@ -511,55 +538,58 @@ const HotspotCustomer = () => {
         accessor: "customerId",
       },
       {
-        width: "9%",
-        Header: t("name"),
-        accessor: "name",
+        width: "13%",
+        Header: t("nameHp"),
+        accessor: (data) => `${data?.name} ${data.hotspot?.name}`,
+        Cell: ({ row: { original } }) => (
+          <div>
+            <p>{original?.name}</p>
+            <p>{original.hotspot?.name}</p>
+          </div>
+        ),
       },
       {
-        width: "9%",
-        Header: t("hotspotName"),
-        accessor: "hotspot.name",
+        width: "18%",
+        Header: t("mobileAddress"),
+        accessor: (data) => `${data?.mobile} ${data?.address}`,
+        Cell: ({ row: { original } }) => (
+          <div>
+            <p style={{ fontWeight: "500" }}>
+              <Phone className="text-info" />
+              {original?.mobile}
+            </p>
+            <p>
+              <GeoAlt />
+              {original?.address || "N/A"}
+            </p>
+          </div>
+        ),
       },
       {
-        width: "12%",
-        Header: t("mobile"),
-        accessor: "mobile",
-      },
-
-      {
-        width: "8%",
-        Header: t("status"),
-        accessor: "status",
-        Cell: ({ cell: { value } }) => {
-          return badge(value);
-        },
-      },
-      {
-        width: "9%",
-        Header: t("paymentStatus"),
-        accessor: "paymentStatus",
-        Cell: ({ cell: { value } }) => {
-          return badge(value);
-        },
-      },
-      {
-        width: "9%",
+        width: "13%",
         Header: t("package"),
         accessor: "hotspot.profile",
       },
       {
-        width: "8%",
-        Header: t("monthly"),
-        accessor: "monthlyFee",
-      },
-      {
-        width: "9%",
-        Header: t("balance"),
-        accessor: "balance",
-      },
-      {
         width: "11%",
-        Header: t("bill"),
+        Header: t("billBalance"),
+        accessor: (data) => `${data?.monthlyFee} ${data?.balance}`,
+        Cell: ({ row: { original } }) => (
+          <div style={{ fontWeight: "500" }}>
+            <p>৳{original?.monthlyFee}</p>
+            <p
+              className={`text-${
+                original?.balance > -1 ? "success" : "danger"
+              }`}
+            >
+              ৳{original?.balance}
+            </p>
+          </div>
+        ),
+      },
+      {
+        width: "18%",
+        Header: t("billDate"),
         accessor: "billingCycle",
         Cell: ({ cell: { value } }) => {
           return moment(value).format("YYYY/MM/DD hh:mm A");
@@ -567,9 +597,41 @@ const HotspotCustomer = () => {
       },
       {
         width: "6%",
+        Header: t("day"),
+        accessor: (data) => `${new Date(data?.billingCycle).getDay()}`,
+        Cell: ({ row: { original } }) => (
+          <div className="text-center p-1">
+            <p
+              className={`${
+                getCustomerDayLeft(original?.billingCycle) >= 20
+                  ? "border border-2 border-success"
+                  : getCustomerDayLeft(original?.billingCycle) >= 10
+                  ? "border border-2 border-primary"
+                  : getCustomerDayLeft(original?.billingCycle) >= 0
+                  ? "magantaColor"
+                  : "bg-danger text-white"
+              }`}
+            >
+              {getCustomerDayLeft(original?.billingCycle)}
+            </p>
+          </div>
+        ),
+      },
+      {
+        width: "8%",
+        Header: t("status"),
+        accessor: (data) => `${data?.paymentStatus} ${data?.status}`,
+        Cell: ({ row: { original } }) => (
+          <div className="text-center">
+            <p>{badge(original?.paymentStatus)}</p>
+            <p>{badge(original?.status)}</p>
+          </div>
+        ),
+      },
+      {
+        width: "5%",
         Header: () => <div className="text-center">{t("action")}</div>,
         id: "option",
-
         Cell: ({ row: { original } }) => (
           <div className="d-flex align-items-center justify-content-center">
             <div className="dropdown">
@@ -581,6 +643,21 @@ const HotspotCustomer = () => {
                 aria-expanded="false"
               />
               <ul className="dropdown-menu" aria-labelledby="customerDrop">
+                <li
+                  onClick={() => {
+                    setCustomerId(original.id);
+                    setModalStatus("profile");
+                    setShow(true);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <PersonFill />
+                      <p className="actionP">{t("profile")}</p>
+                    </div>
+                  </div>
+                </li>
+
                 {(permission?.billPosting || role === "ispOwner") && (
                   <li
                     data-bs-toggle="modal"
@@ -872,27 +949,24 @@ const HotspotCustomer = () => {
                     </Accordion>
 
                     <div className="collectorWrapper pb-2">
-                      <div className="addCollector">
-                        <div style={{ display: "none" }}>
-                          <HotspotPdf
-                            filterData={filterData}
-                            currentCustomers={hotspotCustomers}
-                            ref={componentRef}
-                          />
-                        </div>
-                        <div className="table-section">
-                          <Table
-                            isLoading={getCustomerLoading}
-                            customComponent={customComponent}
-                            columns={columns}
-                            data={hotspotCustomers}
-                            bulkState={{
-                              setBulkCustomer,
-                            }}
-                            bulkLength={bulkCustomers?.length}
-                          ></Table>
-                        </div>
+                      <div style={{ display: "none" }}>
+                        <HotspotPdf
+                          filterData={filterData}
+                          currentCustomers={hotspotCustomers}
+                          ref={componentRef}
+                        />
                       </div>
+
+                      <Table
+                        isLoading={getCustomerLoading}
+                        customComponent={customComponent}
+                        columns={columns}
+                        data={hotspotCustomers}
+                        bulkState={{
+                          setBulkCustomer,
+                        }}
+                        bulkLength={bulkCustomers?.length}
+                      ></Table>
                     </div>
                   </div>
                 )}
@@ -908,6 +982,15 @@ const HotspotCustomer = () => {
       </div>
 
       {/* modal start */}
+
+      {modalStatus === "profile" && (
+        <CustomerDetails
+          show={show}
+          setShow={setShow}
+          customerId={customerId}
+        />
+      )}
+
       {/* hotspot customer post modal */}
       {modalStatus === "customerPost" && (
         <AddCustomer show={show} setShow={setShow} />

@@ -31,14 +31,15 @@ const DeleteCustomer = ({ customerId, mikrotikCheck, setMikrotikCheck }) => {
       checkCondition = window.confirm(t("deleteMikrotik"));
     }
 
+    // sentding data
+    const data = {
+      customerID: customerId,
+      mikrotik: mikrotikCheck,
+    };
+
     // api call
     if (checkCondition) {
-      deleteHotspotCustomer(
-        dispatch,
-        customerId,
-        mikrotikCheck,
-        setDeleteLoading
-      );
+      deleteHotspotCustomer(dispatch, data, setDeleteLoading);
     }
   };
 

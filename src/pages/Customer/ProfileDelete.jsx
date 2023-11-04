@@ -8,12 +8,14 @@ import useISPowner from "../../hooks/useISPOwner";
 import { deleteACustomer } from "../../features/apiCalls";
 import { useDispatch } from "react-redux";
 import Loader from "../../components/common/Loader";
+import { deleteHotspotCustomer } from "../../features/hotspotApi";
 
 const ProfileDelete = ({
   modalShow,
   setModalShow,
   customerId,
   setShow,
+  status,
   page,
 }) => {
   const { t } = useTranslation();
@@ -47,8 +49,12 @@ const ProfileDelete = ({
     // };
 
     // api call
-    if (page !== "reseller") {
-      deleteACustomer(dispatch, data, setIsLoading, setShow);
+    if (status !== "reseller") {
+      if (page === "hotspot") {
+        deleteHotspotCustomer(dispatch, data, setIsLoading, setShow);
+      } else {
+        deleteACustomer(dispatch, data, setIsLoading, setShow);
+      }
     } else {
       // deleteResellerCustomer(dispatch, resellerCusData, setIsLoading);
     }

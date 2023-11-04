@@ -8,7 +8,10 @@ import "../../collector/collector.css";
 import "../customer.css";
 import { FtextField } from "../../../components/common/FtextField";
 import Loader from "../../../components/common/Loader";
-import { fetchPackagefromDatabase } from "../../../features/apiCalls";
+import {
+  fetchPackagefromDatabase,
+  getQueuePackageByIspOwnerId,
+} from "../../../features/apiCalls";
 import { updateStaticCustomerApi } from "../../../features/staticCustomerApi";
 import { useTranslation } from "react-i18next";
 import DatePicker from "react-datepicker";
@@ -65,7 +68,7 @@ const StaticCustomerEdit = ({ customerId, setProfileOption }) => {
   //get all pole Box
   const storePoleBox = useSelector((state) => state.area?.poleBox);
 
-  const ppPackage = useSelector((state) => state?.package?.packages);
+  const packages = useSelector((state) => state?.package?.packages);
 
   const [packageRate, setPackageRate] = useState({ rate: 0 });
   const [isLoading, setIsloading] = useState(false);
@@ -132,7 +135,6 @@ const StaticCustomerEdit = ({ customerId, setProfileOption }) => {
       if (customer?.queue?.maxLimit) {
         setUpMaxLimit(customer?.queue?.maxLimit);
       } else {
-        console.log(customer?.mikrotikPackage);
         const limit = setPackageLimit(customer?.mikrotikPackage, false);
         limit && setUpMaxLimit(`${limit}/${limit}`);
       }
@@ -188,13 +190,9 @@ const StaticCustomerEdit = ({ customerId, setProfileOption }) => {
   }, [customer]);
 
   useEffect(() => {
-    const IDs = {
-      ispOwner: ispOwnerId,
-      mikrotikId: customer?.mikrotik,
-    };
-    if (bpSetting?.hasMikrotik) {
-      fetchPackagefromDatabase(dispatch, IDs, setIsloading);
-    }
+    //ispOwner queue all package get api
+    if (bpSetting.hasMikrotik && packages.length === 0)
+      getQueuePackageByIspOwnerId(ispOwnerId, dispatch, setIsloading);
   }, [customer?.mikrotik]);
 
   useEffect(() => {
@@ -206,21 +204,6 @@ const StaticCustomerEdit = ({ customerId, setProfileOption }) => {
       );
     }
   }, [customer]);
-
-  const selectMikrotik = (e) => {
-    const id = e.target.value;
-    if (id && ispOwnerId) {
-      const IDs = {
-        ispOwner: ispOwnerId,
-        mikrotikId: id,
-      };
-      //ToDo
-      if (bpSetting?.hasMikrotik) {
-        fetchPackagefromDatabase(dispatch, IDs);
-      }
-    }
-    setSingleMikrotik(id);
-  };
 
   // select subArea
   const selectSubArea = (data) => {
@@ -246,7 +229,7 @@ const StaticCustomerEdit = ({ customerId, setProfileOption }) => {
   //function for set 0
   const setPackageLimit = (value, isDown) => {
     setMikrotikPackage(value);
-    const temp = ppPackage.find((val) => val.id === value);
+    const temp = packages.find((val) => val.id === value);
     if (isDown) {
       setPackageRate(temp);
       setMonthlyFee(temp.rate);
@@ -270,7 +253,7 @@ const StaticCustomerEdit = ({ customerId, setProfileOption }) => {
     } else {
       if (target.name === "firewallPackage") {
         setMikrotikPackage(target.value);
-        const temp = ppPackage.find((val) => val.id === target.value);
+        const temp = packages.find((val) => val.id === target.value);
         setPackageRate(temp);
         setMonthlyFee(temp.rate);
         const getLimit = setPackageLimit(target.value, false);
@@ -526,8 +509,8 @@ const StaticCustomerEdit = ({ customerId, setProfileOption }) => {
                       aria-label="Default select example"
                       onChange={selectMikrotikPackage}
                     >
-                      {ppPackage &&
-                        ppPackage?.map(
+                      {packages &&
+                        packages?.map(
                           (val, key) =>
                             val.packageType === "queue" && (
                               <option
@@ -556,8 +539,8 @@ const StaticCustomerEdit = ({ customerId, setProfileOption }) => {
                       aria-label="Default select example"
                       onChange={selectMikrotikPackage}
                     >
-                      {ppPackage &&
-                        ppPackage?.map(
+                      {packages &&
+                        packages?.map(
                           (val, key) =>
                             val.packageType === "queue" && (
                               <option
@@ -586,8 +569,8 @@ const StaticCustomerEdit = ({ customerId, setProfileOption }) => {
                       aria-label="Default select example"
                       onChange={selectMikrotikPackage}
                     >
-                      {ppPackage &&
-                        ppPackage?.map(
+                      {packages &&
+                        packages?.map(
                           (val, key) =>
                             val.packageType === "queue" && (
                               <option
@@ -615,8 +598,8 @@ const StaticCustomerEdit = ({ customerId, setProfileOption }) => {
                       aria-label="Default select example"
                       onChange={selectMikrotikPackage}
                     >
-                      {ppPackage &&
-                        ppPackage?.map(
+                      {packages &&
+                        packages?.map(
                           (val, key) =>
                             val.packageType === "queue" && (
                               <option
@@ -645,8 +628,8 @@ const StaticCustomerEdit = ({ customerId, setProfileOption }) => {
                       aria-label="Default select example"
                       onChange={selectMikrotikPackage}
                     >
-                      {ppPackage &&
-                        ppPackage?.map((val, key) => (
+                      {packages &&
+                        packages?.map((val, key) => (
                           <option
                             selected={val.id === customer?.mikrotikPackage}
                             key={key}

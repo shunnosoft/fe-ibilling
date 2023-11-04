@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import moment from "moment";
 import { useSelector, useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
@@ -12,7 +12,7 @@ import {
   PencilSquare,
   Person,
   PersonVcard,
-  TelephoneFill,
+  PhoneFill,
   Trash3Fill,
 } from "react-bootstrap-icons";
 
@@ -27,13 +27,14 @@ import CustomerBillCollect from "../../Customer/customerCRUD/CustomerBillCollect
 import StaticCustomerEdit from "./StaticCustomerEdit";
 import { updateStaticCustomerApi } from "../../../features/staticCustomerApi";
 import useISPowner from "../../../hooks/useISPOwner";
+import { getStaticCustomer } from "../../../features/apiCalls";
 
 export default function CustomerDetails({ show, setShow, customerId }) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
   // get user & current user data form useISPOwner
-  const { bpSetting } = useISPowner();
+  const { ispOwnerId, bpSetting } = useISPowner();
 
   // get mikrotiks
   const mikrotiks = useSelector((state) => state?.mikrotik?.mikrotik);
@@ -62,6 +63,11 @@ export default function CustomerDetails({ show, setShow, customerId }) {
 
   // profile option state
   const [profileOption, setProfileOption] = useState("profileEdit");
+
+  useEffect(() => {
+    customer.length === 0 &&
+      getStaticCustomer(dispatch, ispOwnerId, setLoading);
+  }, [customerId]);
 
   // modal close handler
   const handleClose = () => {
@@ -108,11 +114,11 @@ export default function CustomerDetails({ show, setShow, customerId }) {
 
   // customer area subarea find
   const customerAreaSubareaFind = useMemo(() => {
-    // customer area find
-    const findArea = areas.find((val) => val.id === data.area);
-
     // customer subArea find
-    const findSubarea = subAreas.find((val) => val.id === data.subArea);
+    const findSubarea = subAreas?.find((val) => val.id === data?.subArea);
+
+    // customer area find
+    const findArea = areas?.find((val) => val.id === findSubarea?.area);
 
     return { findArea, findSubarea };
   }, [areas, subAreas, data]);
@@ -183,11 +189,11 @@ export default function CustomerDetails({ show, setShow, customerId }) {
                       title={t("customerId")}
                     />
                     <p>
-                      {data.userType === "firewall-queue"
-                        ? data.queue.address
-                        : data.userType === "core-queue"
-                        ? data.queue.srcAddress
-                        : data.queue.target}
+                      {data?.userType === "firewall-queue"
+                        ? data?.queue.address
+                        : data?.userType === "core-queue"
+                        ? data?.queue.srcAddress
+                        : data?.queue.target}
                     </p>
                   </div>
                 </div>
@@ -218,7 +224,7 @@ export default function CustomerDetails({ show, setShow, customerId }) {
 
                   <div className="row gy-2">
                     <div className="d-flex gap-3">
-                      <TelephoneFill />
+                      <PhoneFill />
                       <p>{data?.mobile}</p>
                     </div>
 
@@ -460,7 +466,8 @@ export default function CustomerDetails({ show, setShow, customerId }) {
           setModalShow={setModalShow}
           customerId={customerId}
           setShow={setShow}
-          page="ispOwner"
+          status="ispOwner"
+          page="static"
         />
       )}
     </>

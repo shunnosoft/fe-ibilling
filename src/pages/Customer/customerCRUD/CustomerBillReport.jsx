@@ -14,16 +14,20 @@ import {
 } from "../../../features/apiCalls";
 import { FontColor } from "../../../assets/js/theme";
 import PrintOptions from "../../../components/common/PrintOptions";
+import useISPowner from "../../../hooks/useISPOwner";
 
 const CustomerBillReport = ({ customerId }) => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
-  // loading state
-  const [isLoading, setIsLoading] = useState(false);
+  // get user & current user data form useISPOwner
+  const { role, bpSetting, permissions } = useISPowner();
 
   //get customer bill report form state
   const report = useSelector((state) => state.payment?.billReport);
+
+  // loading state
+  const [isLoading, setIsLoading] = useState(false);
 
   // loading state
   const [show, setShow] = useState(false);
@@ -99,12 +103,18 @@ const CustomerBillReport = ({ customerId }) => {
                         onClick={() => printBillReportHandle(val?.id)}
                       />
 
-                      <TrashFill
-                        size={19}
-                        className="text-danger ms-2"
-                        title={t("delete")}
-                        onClick={() => singleReportDelete(val?.id)}
-                      />
+                      {((role === "ispOwner" && bpSetting?.reportDelete) ||
+                        (role === "manager" && permissions?.reportDelete) ||
+                        (role === "collector" &&
+                          bpSetting?.reportDelete &&
+                          permissions?.billDelete)) && (
+                        <TrashFill
+                          size={19}
+                          className="text-danger ms-2"
+                          title={t("delete")}
+                          onClick={() => singleReportDelete(val?.id)}
+                        />
+                      )}
                     </div>
                   </div>
 

@@ -850,7 +850,7 @@
   "notEnoughOnlineBalance": "আপনার যথেষ্ট অনলাইন ব্যালেন্স নেই!",
   "controlPanel": "কন্ট্রোল প্যানেল",
   "customerReport": "গ্রাহক রিপোর্ট",
-  "pppoeIp": "পিপি/আইপি/এইচপি",
+  "pppoeIp": "নাম/পিপি/আইপি/এইচপি",
   "PPPoECustomer": "পিপিওই গ্রাহক",
   "StaticCustomer": "স্ট্যাটিক গ্রাহক",
   "minusBalanceCustomer": "টি মাইনাস ব্যালেন্স গ্রাহকের স্টাটাস আপডেট করা হবে না",
@@ -892,5 +892,12 @@
   "createDate": "ক্রিয়েট ডেট",
   "selctMonth": "আপনার বিলের মাস নির্বাচন করুন",
   "printOptions": "প্রিন্ট অপশন নির্বাচন করুন",
-  "defaultSetup": "ডিফল্ট সেটআপ"
+  "defaultSetup": "ডিফল্ট সেটআপ",
+  "day": "দিন বাকি",
+  "namePPPoE": "নাম/পিপিওই",
+  "nameIP": "নাম/আইপি",
+  "nameHp": "নাম/এইচপি",
+  "mobileAddress": "মোবাইল/এড্রেস",
+  "billBalance": "বিল/ব্যালেন্স",
+  "billPromise": "বিল/প্রমিজ ডেট"
 }

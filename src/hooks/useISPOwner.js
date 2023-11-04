@@ -4,7 +4,6 @@ import { useSelector } from "react-redux";
 const useISPowner = () => {
   // get user from redux
   const user = useSelector((state) => state.persistedReducer.auth);
-  console.log(user);
 
   // user role
   const [role, setRole] = useState(user?.role);
@@ -25,8 +24,12 @@ const useISPowner = () => {
     user?.ispOwnerData?.bpSettings?.hasReseller
   );
 
-  // manager,reseller & collector permissions
+  // manager,reseller & collector user data
+  const [userData, setUserData] = useState(user?.userData);
   const [permissions, setPermissions] = useState(user?.userData.permissions);
+
+  // current user data
+  const [currentUser, setCurrentUser] = useState(user?.currentUser);
 
   // ispOwner data set
   useEffect(() => {
@@ -46,7 +49,15 @@ const useISPowner = () => {
     }
 
     // ipsOwner staff permission
-    if (user?.userData.permissions) setPermissions(user?.userData.permissions);
+    if (user?.userData) {
+      setUserData(user?.userData);
+      setPermissions(user?.userData.permissions);
+    }
+
+    //current user data
+    if (user?.currentUser) {
+      setCurrentUser(user?.currentUser);
+    }
   }, [user]);
 
   return {
@@ -57,7 +68,9 @@ const useISPowner = () => {
     hasMikrotik,
     hasReseller,
     companyName,
+    userData,
     permissions,
+    currentUser,
   };
 };
 

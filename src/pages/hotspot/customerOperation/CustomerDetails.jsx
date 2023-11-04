@@ -1,8 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
-import moment from "moment";
-import { useSelector, useDispatch } from "react-redux";
-import { useTranslation } from "react-i18next";
 import { Card, CloseButton, Modal, ModalBody } from "react-bootstrap";
+import { useTranslation } from "react-i18next";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Cash,
   Collection,
@@ -15,34 +14,34 @@ import {
   PhoneFill,
   Trash3Fill,
 } from "react-bootstrap-icons";
+import moment from "moment";
 
 // internal import
-import "../customer.css";
-import { badge } from "../../../components/common/Utils";
-import CustomerEdit from "./CustomerEdit";
-import { FontColor } from "../../../assets/js/theme";
-import CustomerBillCollect from "./CustomerBillCollect";
-import ProfileDelete from "../ProfileDelete";
-import CustomerMessage from "./CustomerMessage";
-import CustomerBillReport from "./CustomerBillReport";
-import { editCustomer, getCustomer } from "../../../features/apiCalls";
 import useISPowner from "../../../hooks/useISPOwner";
+import HotspotCustomerRecharge from "./HotspotCustomerRecharge";
+import { FontColor } from "../../../assets/js/theme";
+import { badge } from "../../../components/common/Utils";
+import ProfileDelete from "../../Customer/ProfileDelete";
+import CustomerBillReport from "../../Customer/customerCRUD/CustomerBillReport";
+import CustomerMessage from "../../Customer/customerCRUD/CustomerMessage";
+import HotspotCustomerEdit from "./HotspotCustomerEdit";
+import {
+  editHotspotCustomer,
+  getHotspotCustomer,
+} from "../../../features/hotspotApi";
 
-export default function CustomerDetails({ show, setShow, customerId }) {
+const CustomerDetails = ({ show, setShow, customerId }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
   // get user & current user data form useISPOwner
   const { ispOwnerId, bpSetting } = useISPowner();
 
-  // get mikrotiks
+  //get mikrotik
   const mikrotiks = useSelector((state) => state?.mikrotik?.mikrotik);
 
-  // get all customer
-  const customer = useSelector((state) => state?.customer?.customer);
-
-  // find single customer data
-  const data = customer.find((item) => item.id === customerId);
+  // get hotspot customer
+  const customer = useSelector((state) => state.hotspot.customer);
 
   //get all areas
   const areas = useSelector((state) => state.area?.area);
@@ -50,8 +49,11 @@ export default function CustomerDetails({ show, setShow, customerId }) {
   // get all subarea
   const subAreas = useSelector((state) => state.area?.subArea);
 
-  // loading state
-  const [loading, setLoading] = useState(false);
+  // single customer find form all hotspot customers
+  const data = customer.find((val) => val.id === customerId);
+
+  //loading state
+  const [isLoading, setIsLoading] = useState(false);
 
   // modal handle state
   const [modalStatus, setModalStatus] = useState("");
@@ -60,16 +62,27 @@ export default function CustomerDetails({ show, setShow, customerId }) {
   // profile option state
   const [profileOption, setProfileOption] = useState("profileEdit");
 
-  // get api calls
   useEffect(() => {
-    if (customer.length === 0) getCustomer(dispatch, ispOwnerId, setLoading);
+    customer.length === 0 &&
+      getHotspotCustomer(dispatch, ispOwnerId, setIsLoading);
   }, [customerId]);
 
-  // modal close handler
+  // modal close handle
   const handleClose = () => {
     setShow(false);
     setProfileOption("profileEdit");
   };
+
+  // customer area subarea find
+  const customerAreaSubareaFind = useMemo(() => {
+    // customer subArea find
+    const findSubarea = subAreas.find((val) => val.id === data?.subArea);
+
+    // customer area find
+    const findArea = areas.find((val) => val.id === findSubarea?.area);
+
+    return { findArea, findSubarea };
+  }, [areas, subAreas, customer]);
 
   // mikrotik find
   const getMikrotik = (id) => {
@@ -77,40 +90,22 @@ export default function CustomerDetails({ show, setShow, customerId }) {
     return mikrotik;
   };
 
-  // customer status & auto connection update hadnle
-  const statusAutoConnectionUpdateHandler = (value, e, update) => {
+  // customer status update handler
+  const statusUpdateHandler = (value, e, update) => {
     let data;
 
     // status update data
     if (update === "status" && e?.detail == 2) {
       data = {
         ...value,
-        singleCustomerID: value?.id,
         status: value?.status === "active" ? "inactive" : "active",
       };
     }
 
-    // auto connection update data
-    if (update === "auto") {
-      data = {
-        ...value,
-        singleCustomerID: value?.id,
-        autoDisable: !value?.autoDisable,
-      };
-    }
-    editCustomer(dispatch, data, setLoading, "", update);
+    //customer update api
+    data &&
+      editHotspotCustomer(dispatch, data, value?.id, setIsLoading, "", update);
   };
-
-  // customer area subarea find
-  const customerAreaSubareaFind = useMemo(() => {
-    // customer subArea find
-    const findSubarea = subAreas?.find((val) => val.id === data?.subArea);
-
-    // customer area find
-    const findArea = areas?.find((val) => val.id === findSubarea?.area);
-
-    return { findArea, findSubarea };
-  }, [areas, subAreas, data]);
 
   return (
     <>
@@ -171,7 +166,7 @@ export default function CustomerDetails({ show, setShow, customerId }) {
                       className="text-primary"
                       title={t("customerId")}
                     />
-                    <p>{data?.pppoe?.name}</p>
+                    <p>{data?.hotspot?.name}</p>
                   </div>
                 </div>
 
@@ -303,7 +298,9 @@ export default function CustomerDetails({ show, setShow, customerId }) {
                         {bpSetting?.hasMikrotik && (
                           <div className="displayGridHorizontalFill5_5 profileDetails">
                             <p>{t("mikrotik")}</p>
-                            <p>{data && getMikrotik(data.mikrotik)?.name}</p>
+                            <p>
+                              {customer && getMikrotik(data?.mikrotik)?.name}
+                            </p>
                           </div>
                         )}
 
@@ -312,11 +309,7 @@ export default function CustomerDetails({ show, setShow, customerId }) {
                           {data?.status !== "expired" ? (
                             <p
                               onClick={(e) =>
-                                statusAutoConnectionUpdateHandler(
-                                  data,
-                                  e,
-                                  "status"
-                                )
+                                statusUpdateHandler(data, e, "status")
                               }
                               style={{ cursor: "pointer" }}
                             >
@@ -344,30 +337,8 @@ export default function CustomerDetails({ show, setShow, customerId }) {
 
                         <div className="displayGridHorizontalFill5_5 profileDetails">
                           <p>{t("package")}</p>
-                          <p>{data?.pppoe?.profile}</p>
+                          <p>{data?.hotspot?.profile}</p>
                         </div>
-
-                        {bpSetting?.hasMikrotik && (
-                          <div className="displayGridHorizontalFill5_5 profileDetails">
-                            <p>{t("autoConnection")}</p>
-                            <div className="form-check form-switch">
-                              <input
-                                className="form-check-input"
-                                type="checkbox"
-                                role="switch"
-                                id={data?.id}
-                                checked={data?.autoDisable}
-                                onClick={(e) =>
-                                  statusAutoConnectionUpdateHandler(
-                                    data,
-                                    e,
-                                    "auto"
-                                  )
-                                }
-                              />
-                            </div>
-                          </div>
-                        )}
 
                         <div className="displayGridHorizontalFill5_5 profileDetails">
                           <p>{t("billingDate")}</p>
@@ -415,19 +386,19 @@ export default function CustomerDetails({ show, setShow, customerId }) {
               {/* customer profile update,recharge,report and message modal card */}
               <Card className="border border-2 shadow-none mb-4 overflow-auto">
                 {profileOption === "profileEdit" ? (
-                  <CustomerEdit
+                  <HotspotCustomerEdit
                     customerId={customerId}
                     setProfileOption={setProfileOption}
                   />
                 ) : profileOption === "recharge" ? (
-                  <CustomerBillCollect single={customerId} status="pppoe" />
+                  <HotspotCustomerRecharge customerId={customerId} />
                 ) : profileOption === "report" ? (
                   <CustomerBillReport
                     customerId={customerId}
                     setModalState={setShow}
                   />
                 ) : (
-                  <CustomerMessage customerId={customerId} page={"customer"} />
+                  <CustomerMessage customerId={customerId} page="customer" />
                 )}
               </Card>
             </div>
@@ -443,9 +414,11 @@ export default function CustomerDetails({ show, setShow, customerId }) {
           customerId={customerId}
           setShow={setShow}
           status="ispOwner"
-          page="pppoe"
+          page="hotspot"
         />
       )}
     </>
   );
-}
+};
+
+export default CustomerDetails;

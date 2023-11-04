@@ -22,7 +22,9 @@ import InactiveCustomer from "../inactiveCustomer/InactiveCustomer";
 import Footer from "../../components/admin/footer/Footer";
 import Loader from "../../components/common/Loader";
 import {
+  fetchMikrotik,
   getAllPackages,
+  getArea,
   getDueCustomer,
   getInactiveCustomer,
   getNewCustomer,
@@ -31,6 +33,7 @@ import DueCustomer from "../dueCustomer/DueCustomer";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
 import { getHotspotPackage } from "../../features/hotspotApi";
+import { getSubAreasApi } from "../../features/actions/customerApiCall";
 
 const OtherCustomer = () => {
   const { t } = useTranslation();
@@ -94,11 +97,20 @@ const OtherCustomer = () => {
   };
 
   useEffect(() => {
+    // fatch mikrotik
+    fetchMikrotik(dispatch, ispOwner, setPackageLoading);
+
     // get all package
     getAllPackages(dispatch, ispOwner, setPackageLoading);
 
     // get hotspot package api call
     getHotspotPackage(dispatch, ispOwner, setPackageLoading);
+
+    // get area api
+    getArea(dispatch, ispOwner, setPackageLoading);
+
+    // get sub area api
+    getSubAreasApi(dispatch, ispOwner);
 
     Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
   }, []);

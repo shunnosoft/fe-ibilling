@@ -119,18 +119,30 @@ export const editHotspotCustomer = async (
   data,
   customerId,
   setIsLoading,
-  setShow
+  setShow,
+  status
 ) => {
   setIsLoading(true);
   try {
     const res = await apiLink.patch(`hotspot/${customerId}`, data);
+
     dispatch(editCustomerSuccess(res.data.customer));
+
+    if (status === "status") {
+      langMessage(
+        "success",
+        "কাস্টমার স্টাটাস আপডেট সফল হয়েছে",
+        "Customer Status Updated Successfully"
+      );
+    } else {
+      langMessage(
+        "success",
+        "গ্রাহক এডিট সফল হয়েছে!",
+        "Customer Edited Successfully"
+      );
+    }
+
     setShow(false);
-    langMessage(
-      "success",
-      "গ্রাহক এডিট সফল হয়েছে!",
-      "Customer Edited Successfully"
-    );
   } catch (err) {
     toast.error(err.response?.data?.message);
   }
@@ -140,17 +152,19 @@ export const editHotspotCustomer = async (
 // delete hotspot customer
 export const deleteHotspotCustomer = async (
   dispatch,
-  customerId,
-  mikrotikCheck,
-  setDeleteLoading
+  data,
+  setDeleteLoading,
+  setShow
 ) => {
   setDeleteLoading(true);
   try {
     await apiLink.delete(
-      `hotspot/${customerId}?removeFromMikrotik=${mikrotikCheck}`
+      `hotspot/${data?.customerID}?removeFromMikrotik=${data?.mikrotik}`
     );
-    dispatch(deleteCustomerSuccess(customerId));
+    dispatch(deleteCustomerSuccess(data?.customerID));
     document.querySelector("#hotsportCustomerDelete").click();
+
+    setShow(false);
 
     langMessage(
       "success",

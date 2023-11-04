@@ -23,6 +23,11 @@ import {
   Check2Circle,
   PencilSquare,
   XCircle,
+  PhoneFill,
+  Phone,
+  GeoAlt,
+  Dot,
+  CircleFill,
 } from "react-bootstrap-icons";
 import { CSVLink } from "react-csv";
 import moment from "moment";
@@ -92,6 +97,9 @@ import PrintOptions from "../../components/common/PrintOptions";
 const PPPOECustomer = () => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
+
+  // current date
+  const date = new Date();
 
   // get all customer
   const customers = useSelector((state) => state.customer.customer);
@@ -577,6 +585,12 @@ const PPPOECustomer = () => {
     setModalShow(true);
   };
 
+  //find customer subArea name
+  const getCustomerSubArea = (subId) => {
+    const findSubArea = subAreas.find((val) => val.id === subId);
+    return findSubArea;
+  };
+
   // atuomatic connection on off doble clicked handle
   const autoDisableHandle = (value, e) => {
     if (e?.detail == 2 && value) {
@@ -589,10 +603,48 @@ const PPPOECustomer = () => {
     }
   };
 
+  //find customer billing date before and after promise date
+  const getCustomerPromiseDate = (data) => {
+    const billDate = moment(data?.billingCycle).format("YYYY/MM/DD hh:mm A");
+
+    const promiseDate = moment(data?.promiseDate).format("YYYY/MM/DD hh:mm A");
+
+    var promiseDateChange;
+
+    if (billDate < promiseDate) {
+      promiseDateChange = "danger";
+    } else if (billDate > promiseDate) {
+      promiseDateChange = "warning";
+    }
+
+    return { billDate, promiseDate, promiseDateChange };
+  };
+
+  // customer day left filtering in current date
+  const getCustomerDayLeft = (billDate) => {
+    //current day
+    const currentDay = new Date(
+      new Date(moment(date).format("YYYY-MM-DD"))
+    ).getTime();
+
+    // // billing day
+    const billDay = new Date(
+      new Date(moment(billDate).format("YYYY-MM-DD"))
+    ).getTime();
+
+    const diffInMs = billDay - currentDay;
+
+    // // bill day left
+    const dayLeft = Math.round(diffInMs / (1000 * 60 * 60 * 24));
+
+    return dayLeft;
+  };
+
   //column for table
   const columns = useMemo(
     () => [
       {
+        width: "2%",
         id: "selection",
         Header: ({ getToggleAllPageRowsSelectedProps }) => (
           <IndeterminateCheckbox
@@ -605,88 +657,130 @@ const PPPOECustomer = () => {
             <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
           </div>
         ),
-        width: "2%",
       },
       {
         width: "6%",
         Header: t("id"),
         accessor: "customerId",
-      },
-      {
-        width: "8%",
-        Header: t("Auto/C"),
-        accessor: "autoDisable",
         Cell: ({ row: { original } }) => (
           <div
             onClick={(e) => autoDisableHandle(original, e)}
             style={{ cursor: "pointer" }}
           >
             {original?.autoDisable ? (
-              <Check2Circle className="text-success" />
+              <p className="text-success">{original?.customerId}</p>
             ) : (
-              <XCircle className="text-danger" />
+              <p className="text-danger">{original?.customerId}</p>
             )}
           </div>
         ),
       },
       {
-        width: "8%",
-        Header: t("name"),
-        accessor: "name",
+        width: "13%",
+        Header: t("namePPPoE"),
+        accessor: (data) => `${data?.name} ${data.pppoe?.name}`,
+        Cell: ({ row: { original } }) => (
+          <div>
+            <p>{original?.name}</p>
+            <p>{original.pppoe?.name}</p>
+          </div>
+        ),
       },
       {
-        width: "8%",
-        Header: t("PPPoE"),
-        accessor: "pppoe.name",
+        width: "18%",
+        Header: t("mobileAddress"),
+        accessor: (data) => `${data?.mobile} ${data?.address}`,
+        Cell: ({ row: { original } }) => (
+          <div>
+            <p style={{ fontWeight: "500" }}>
+              <Phone className="text-info" /> {original?.mobile || "N/A"}
+            </p>
+            <p>
+              <GeoAlt />
+              {original?.address || "N/A"}
+            </p>
+          </div>
+        ),
       },
       {
-        width: "8%",
-        Header: t("mobile"),
-        accessor: "mobile",
-      },
-
-      {
-        width: "8%",
-        Header: t("status"),
-        accessor: "status",
-        Cell: ({ cell: { value } }) => {
-          return badge(value);
-        },
-      },
-      {
-        width: "9%",
-        Header: t("paymentStatus"),
-        accessor: "paymentStatus",
-        Cell: ({ cell: { value } }) => {
-          return badge(value);
-        },
-      },
-      {
-        width: "10%",
+        width: "13%",
         Header: t("package"),
         accessor: "pppoe.profile",
       },
       {
-        width: "9%",
-        Header: t("monthly"),
-        accessor: "monthlyFee",
+        width: "11%",
+        Header: t("billBalance"),
+        accessor: (data) => `${data?.monthlyFee} ${data?.balance}`,
+        Cell: ({ row: { original } }) => (
+          <div style={{ fontWeight: "500" }}>
+            <p>৳{original?.monthlyFee}</p>
+            <p
+              className={`text-${
+                original?.balance > -1 ? "success" : "danger"
+              }`}
+            >
+              ৳{original?.balance}
+            </p>
+          </div>
+        ),
       },
       {
-        width: "9%",
-        Header: t("balance"),
-        accessor: "balance",
+        width: "18%",
+        Header: t("billPromise"),
+        accessor: (data) =>
+          `${moment(data?.billingCycle).format("YYYY/MM/DD hh:mm A")} 
+          ${moment(data?.promiseDate).format("YYYY/MM/DD hh:mm A")}`,
+        Cell: ({ row: { original } }) => (
+          <div className="d-flex">
+            <div>
+              <p>{getCustomerPromiseDate(original)?.billDate}</p>
+
+              <p
+                className={`d-flex align-self-end text-${
+                  getCustomerPromiseDate(original)?.promiseDateChange
+                }`}
+              >
+                {getCustomerPromiseDate(original)?.promiseDate}
+              </p>
+            </div>
+          </div>
+        ),
+      },
+      {
+        width: "6%",
+        Header: t("day"),
+        accessor: (data) => `${new Date(data?.billingCycle).getDay()}`,
+        Cell: ({ row: { original } }) => (
+          <div className="text-center p-1">
+            <p
+              className={`${
+                getCustomerDayLeft(original?.billingCycle) >= 20
+                  ? "border border-2 border-success"
+                  : getCustomerDayLeft(original?.billingCycle) >= 10
+                  ? "border border-2 border-primary"
+                  : getCustomerDayLeft(original?.billingCycle) >= 0
+                  ? "magantaColor"
+                  : "bg-danger text-white"
+              }`}
+            >
+              {getCustomerDayLeft(original?.billingCycle)}
+            </p>
+          </div>
+        ),
       },
       {
         width: "8%",
-        Header: t("bill"),
-        accessor: "billingCycle",
-        Cell: ({ cell: { value } }) => {
-          return moment(value).format("YYYY/MM/DD hh:mm A");
-        },
+        Header: t("status"),
+        accessor: (data) => `${data?.paymentStatus} ${data?.status}`,
+        Cell: ({ row: { original } }) => (
+          <div className="text-center">
+            <p>{badge(original?.paymentStatus)}</p>
+            <p>{badge(original?.status)}</p>
+          </div>
+        ),
       },
-
       {
-        width: "6%",
+        width: "5%",
         Header: t("action"),
         id: "option",
         Cell: ({ row: { original } }) => (
@@ -701,8 +795,6 @@ const PPPOECustomer = () => {
               />
               <ul className="dropdown-menu" aria-labelledby="customerDrop">
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#showCustomerDetails"
                   onClick={() => {
                     getSpecificCustomer(original.id);
                     setModalStatus("profile");
@@ -966,16 +1058,17 @@ const PPPOECustomer = () => {
           name: customer.name,
           pppoeName: customer.pppoe?.name,
           customerAddress: customer.address,
-          createdAt: moment(customer.createdAt).format("MM/DD/YYYY"),
+          createdAt: moment(customer.createdAt).format("YYYY-MM-DD"),
           package: customer?.pppoe?.profile,
           password: customer?.pppoe?.password,
           mobile: customer?.mobile || "",
           status: customer.status,
           paymentStatus: customer.paymentStatus,
+          subArea: getCustomerSubArea(customer?.subArea)?.name,
           email: customer.email || "",
           monthlyFee: customer.monthlyFee,
           balance: customer.balance,
-          billingCycle: moment(customer.billingCycle).format("MMM-DD-YYYY"),
+          billingCycle: moment(customer.billingCycle).format("YYYY-MM-DD"),
         };
       }),
     [pppoeCustomers]
@@ -993,6 +1086,7 @@ const PPPOECustomer = () => {
     { label: "client_phone", key: "mobile" },
     { label: "status", key: "status" },
     { label: "payment Status", key: "paymentStatus" },
+    { label: "subArea", key: "subArea" },
     { label: "email", key: "email" },
     { label: "balance", key: "balance" },
     { label: "billing_cycle", key: "billingCycle" },
@@ -1508,18 +1602,16 @@ const PPPOECustomer = () => {
                       </Accordion.Item>
                     </Accordion>
                     <div className="collectorWrapper pb-2">
-                      <div className="table-section">
-                        <Table
-                          customComponent={customComponent}
-                          bulkLength={bulkCustomers?.length}
-                          isLoading={customerLoading}
-                          columns={columns}
-                          data={tableData}
-                          bulkState={{
-                            setBulkCustomer,
-                          }}
-                        />
-                      </div>
+                      <Table
+                        customComponent={customComponent}
+                        bulkLength={bulkCustomers?.length}
+                        isLoading={customerLoading}
+                        columns={columns}
+                        data={tableData}
+                        bulkState={{
+                          setBulkCustomer,
+                        }}
+                      />
                     </div>
                   </div>
                 )}

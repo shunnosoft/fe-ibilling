@@ -361,6 +361,7 @@ const EditCustomer = ({ show, setShow, customerId }) => {
                         className="form-select mw-100 mt-0"
                         aria-label="Default select example"
                         onChange={(event) => setMikrotikId(event.target.value)}
+                        disabled
                       >
                         <option value="">...</option>
                         {mikrotik.length &&

@@ -19,6 +19,7 @@ import { FourGround, FontColor } from "../../assets/js/theme";
 import {
   fetchReseller,
   getAllPackages,
+  getArea,
   getCollector,
   getIspOwnerData,
   getManger,
@@ -51,6 +52,7 @@ import Discount from "./dataComponent/Discount";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
 import { getHotspotPackage } from "../../features/hotspotApi";
+import { getSubAreasApi } from "../../features/actions/customerApiCall";
 
 export default function IspOwnerDashboard() {
   const { t } = useTranslation();
@@ -162,6 +164,12 @@ export default function IspOwnerDashboard() {
 
     //get card data
     getIspOwnerDashboardCardData(dispatch, setLoadingDashboardData, ispOwnerId);
+
+    // get area api
+    getArea(dispatch, ispOwnerId, setPackageLoading);
+
+    // get sub area api
+    getSubAreasApi(dispatch, ispOwnerId);
 
     //get all customer package
     getAllPackages(dispatch, ispOwnerId, setPackageLoading);
@@ -657,6 +665,11 @@ export default function IspOwnerDashboard() {
                       <>
                         {role === "ispOwner" && (
                           <>
+                            <p className="pb-0" style={{ fontSize: "13px" }}>
+                              {t("withoutDiscount")}:
+                              {FormatNumber(customerStat.totalBillCollection)}
+                            </p>
+
                             <p
                               className="dashboardCollection pb-0"
                               style={{ fontSize: "15px" }}
@@ -667,11 +680,6 @@ export default function IspOwnerDashboard() {
                             >
                               {t("discount")}:&nbsp;
                               {FormatNumber(customerStat.totalMonthlyDiscount)}
-                            </p>
-
-                            <p className="pb-0" style={{ fontSize: "13px" }}>
-                              {t("withoutDiscount")}:
-                              {FormatNumber(customerStat.totalBillCollection)}
                             </p>
 
                             <p className="fs-6">

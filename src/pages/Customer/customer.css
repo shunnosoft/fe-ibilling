@@ -269,3 +269,7 @@ span.button_title {
   justify-content: space-between;
   align-items: center;
 }
+
+.magantaColor {
+  border: solid 2px #85150d;
+}

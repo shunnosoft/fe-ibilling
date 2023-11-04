@@ -30,6 +30,9 @@ const CustomerMessage = ({ customerId, page }) => {
     (state) => state?.customer?.staticCustomer
   );
 
+  // get hotspot customer
+  const hotspot = useSelector((state) => state.hotspot.customer);
+
   //initial data variable
   let data;
 
@@ -41,6 +44,11 @@ const CustomerMessage = ({ customerId, page }) => {
   // find single static customer
   if (page === "staticCustomer") {
     data = staticCustomer.find((item) => item.id === customerId);
+  }
+
+  // find single hotspot customer
+  if (page === "hotspot") {
+    data = hotspot.find((item) => item.id === customerId);
   }
 
   // loading state

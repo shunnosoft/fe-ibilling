@@ -1,29 +1,47 @@
-import { useState } from "react";
 import { Form, Formik } from "formik";
-import { useSelector } from "react-redux";
-import * as Yup from "yup";
-import { useDispatch } from "react-redux";
-import DatePicker from "react-datepicker";
-import Select from "react-select";
-import { useTranslation } from "react-i18next";
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Card } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
+import Select from "react-select";
+import DatePicker from "react-datepicker";
+import * as Yup from "yup";
 import { CashStack } from "react-bootstrap-icons";
 import { toast } from "react-toastify";
 
-//internal imports
-import "../../Customer/customer.css";
+// internal import
 import { FtextField } from "../../../components/common/FtextField";
-import { billCollect } from "../../../features/apiCalls";
+import useISPowner from "../../../hooks/useISPOwner";
 import Loader from "../../../components/common/Loader";
+import { billCollect } from "../../../features/hotspotApi";
 
-const CustomerBillCollect = ({ single, status }) => {
+const HotspotCustomerRecharge = ({ customerId }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
-  // current month date
-  const date = new Date();
-  const monthDate = date.getMonth();
+  //curent date
+  const today = new Date();
+
+  // current month
+  const monthDate = today.getMonth();
+
+  //   current month day
+  const monthDay = new Date(
+    today.getFullYear(),
+    today.getMonth() + 1,
+    0
+  ).getDate();
+
+  // get user & current user data form useISPOwner
+  const { role, ispOwnerId, userData, permissions, currentUser } =
+    useISPowner();
+
+  // customer bill recharge validation
+  const BillValidatoin = Yup.object({
+    amount: Yup.number()
+      .min(0, t("billNotAcceptable"))
+      .integer(t("decimalNumberNotAcceptable")),
+  });
 
   // twelve month options
   const options = [
@@ -41,119 +59,38 @@ const CustomerBillCollect = ({ single, status }) => {
     { value: "December", label: t("december") },
   ];
 
-  // get all customer
-  const customer = useSelector((state) =>
-    status === "pppoe"
-      ? state?.customer?.customer
-      : state?.customer?.staticCustomer
-  );
+  // get hotspot customer
+  const customer = useSelector((state) => state.hotspot.customer);
 
-  // get all role
-  const role = useSelector((state) => state.persistedReducer.auth.role);
+  // single customer find
+  const data = customer.find((val) => val.id === customerId);
 
-  // get user permission
-  const permission = useSelector(
-    (state) => state.persistedReducer.auth.userData.permissions
-  );
+  //loading state
+  const [isLoading, setIsLoading] = useState(false);
 
-  // get bpSettings
-  const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
-  );
-  // get ispOwner info
-  const ispOwner = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerId
-  );
-
-  // get userData
-  const userData = useSelector((state) => state.persistedReducer.auth.userData);
-
-  // get currentUser
-  const currentUser = useSelector(
-    (state) => state.persistedReducer.auth?.currentUser
-  );
-
-  // get currentUserId
-  const currentUserId = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.id
-  );
-
-  // find editable data
-  const data = customer.find((item) => item.id === single);
-
-  // loading state
-  const [isLoading, setLoading] = useState(false);
-
-  // customer bill type
+  // bil type state
   const [billType, setBillType] = useState("bill");
 
-  // customer bill medium
+  // medium state
   const [medium, setMedium] = useState("cash");
 
   // customer biill date month set is requerd
   const [selectedMonth, setSelectedMonth] = useState(null);
-  const [billAmount, setBillAmount] = useState();
 
   // note check & note
   const [noteCheck, setNoteCheck] = useState(false);
-  const [note, setNote] = useState("");
 
-  //set customer billing date
+  // note state
+  const [note, setNote] = useState();
+
+  // start date state
   const [startDate, setStartDate] = useState(false);
+
+  // end date state
   const [endDate, setEndDate] = useState(false);
 
-  //calculation total bill due & amount
-  const [balanceDue, setBalanceDue] = useState();
-  const [amount, setAmount] = useState(null);
-
-  // calculation
-  const totalAmount = Number(billAmount) + Number(balanceDue);
-  const maxDiscount = totalAmount;
-
-  //bill colleciton validation
-  const BillValidatoin = Yup.object({
-    amount: Yup.number()
-      .min(0, t("billNotAcceptable"))
-      .integer(t("decimalNumberNotAcceptable")),
-    due: Yup.number()
-      .min(0, t("dueNotAcceptable"))
-      .max(
-        data?.balance < 0 ? Math.abs(data?.balance) : 0,
-        t("dueNotAcceptable")
-      )
-      .integer(t("decimalNumberNotAcceptable")),
-    discount: Yup.number()
-      .min(0, t("discountNotAcceptable"))
-      .max(maxDiscount, t("discountNotAcceptable"))
-      .integer(t("decimalNumberNotAcceptable")),
-  });
-
-  //form resetFunction
-  const resetForm = () => {
-    setStartDate(false);
-    setEndDate(false);
-    setNote("");
-    setNoteCheck(false);
-    setSelectedMonth(null);
-    setBillAmount(
-      data?.balance > 0 && data?.balance <= data?.monthlyFee
-        ? data?.monthlyFee - data?.balance
-        : data?.balance > data?.monthlyFee
-        ? 0
-        : data?.monthlyFee
-    );
-  };
-
+  // Month select according to customer billing cycle
   useEffect(() => {
-    setBalanceDue(data?.balance < 0 ? Math.abs(data?.balance) : 0);
-    setBillAmount(
-      data?.balance > 0 && data?.balance <= data?.monthlyFee
-        ? data?.monthlyFee - data?.balance
-        : data?.balance > data?.monthlyFee
-        ? 0
-        : data?.monthlyFee
-    );
-
     let temp = [];
 
     // customer billing date
@@ -238,44 +175,21 @@ const CustomerBillCollect = ({ single, status }) => {
     setSelectedMonth(temp);
   }, [data]);
 
-  const handleFormValue = (event) => {
-    if (event.target.name === "amount") {
-      setBillAmount(event.target.value);
-    }
-    if (event.target.name === "due") {
-      setBalanceDue(event.target.value);
-    }
-  };
-
-  // bill amount
+  // bill collect according to customer daily length
   const customerBillHandler = (formValue) => {
-    if (balanceDue > (data?.balance < 0 ? Math.abs(data?.balance) : 0)) {
-      setLoading(false);
-      return alert(t("dueNotAcceptable"));
-    }
-
-    if (balanceDue < 0) {
-      setLoading(false);
-      return alert(t("dueNotAcceptable"));
-    }
-    if (maxDiscount < formValue.discount) {
-      setLoading(false);
-      return alert(t("discountNotAcceptable"));
-    }
-
     const sendingData = {
-      amount: formValue.amount + formValue.due,
-      discount: formValue.discount,
+      amount: formValue.amount,
       name: userData.name,
       collectedBy: currentUser?.user.role,
       billType: billType,
+      hotspotCustomer: data?.id,
       customer: data?.id,
-      ispOwner: ispOwner,
+      ispOwner: ispOwnerId,
       user: currentUser?.user.id,
-      collectorId: currentUserId, //when collector is logged in
+      collectorId: userData.id, //when collector is logged in
       userType: data?.userType,
       medium,
-      package: data?.pppoe.profile,
+      package: data.hotspot.profile,
     };
 
     if (note) sendingData.note = note;
@@ -285,19 +199,35 @@ const CustomerBillCollect = ({ single, status }) => {
       sendingData.end = endDate.toISOString();
     }
 
-    if (selectedMonth?.length === 0) {
-      setLoading(false);
-      return toast.warn(t("selctMonth"));
+    //  there will be loginc according to customer day length
+    if (
+      data?.dayLength === 30 ||
+      data?.dayLength === 31 ||
+      data?.dayLength === monthDay
+    ) {
+      if (selectedMonth?.length === 0) {
+        setIsLoading(false);
+        return toast.warn(t("selctMonth"));
+      } else {
+        const monthValues = selectedMonth?.map((item) => {
+          return item.value;
+        });
+        sendingData.month = monthValues?.join(",");
+      }
     } else {
-      const monthValues = selectedMonth.map((item) => {
-        return item.value;
-      });
-      sendingData.month = monthValues.join(",");
+      sendingData.month = `${data?.dayLength}days`;
     }
+    // recharge api call
+    billCollect(dispatch, sendingData, setIsLoading, resetForm);
+  };
 
-    billCollect(dispatch, sendingData, setLoading, resetForm);
-
-    setAmount(data.amount);
+  //form resetFunction
+  const resetForm = () => {
+    setStartDate(false);
+    setEndDate(false);
+    setNote("");
+    setNoteCheck(false);
+    setSelectedMonth(null);
   };
 
   return (
@@ -309,13 +239,10 @@ const CustomerBillCollect = ({ single, status }) => {
         <Formik
           initialValues={{
             amount:
-              data?.balance > 0 && data?.balance <= data?.monthlyFee
+              data?.balance < data?.monthlyFee
                 ? data?.monthlyFee - data?.balance
-                : data?.balance > data?.monthlyFee
-                ? 0
                 : data?.monthlyFee,
-            due: data?.balance < 0 ? Math.abs(data?.balance) : 0,
-            discount: 0,
+            dayLength: data?.dayLength,
           }}
           validationSchema={BillValidatoin}
           onSubmit={(values) => {
@@ -324,24 +251,25 @@ const CustomerBillCollect = ({ single, status }) => {
           enableReinitialize
         >
           {() => (
-            <Form onChange={handleFormValue}>
+            <Form>
               <div className="monthlyBill">
-                <span className="text-secondary">{data?.name}</span>&nbsp;
+                <span className="text-secondary">{data?.name}</span>
+                &nbsp;
                 <span className="text-secondary">{t("totalAmount")} ৳</span>
-                <span className="text-primary">{totalAmount} </span>
+                <span className="text-primary">{data?.monthlyFee} </span>
               </div>
-
               <div className="displayGrid">
                 <div className="displayGrid2">
+                  <FtextField type="number" name="amount" label={t("amount")} />
+
                   <FtextField
                     type="number"
-                    name="amount"
-                    label={t("amount")}
-                    value={billAmount}
+                    name="dayLength"
+                    label={t("dayLength")}
+                    disabled
                   />
-
-                  <FtextField type="number" name="due" label={t("due")} />
                 </div>
+
                 <div className="displayGrid2">
                   <div>
                     <label className="form-control-label changeLabelFontColor">
@@ -352,7 +280,7 @@ const CustomerBillCollect = ({ single, status }) => {
                       onChange={(e) => setBillType(e.target.value)}
                     >
                       <option value="bill"> {t("bill")} </option>
-                      {permission?.connectionFee ||
+                      {permissions?.connectionFee ||
                         (role !== "collector" && (
                           <option value="connectionFee">
                             {t("connectionFee")}
@@ -387,52 +315,45 @@ const CustomerBillCollect = ({ single, status }) => {
                   </div>
                 </div>
 
-                <div className="month">
-                  <label
-                    className="form-check-label changeLabelFontColor"
-                    htmlFor="selectMonth"
-                  >
-                    {t("selectMonth")}
-                  </label>
-
-                  <Select
-                    className="mt-0"
-                    value={selectedMonth}
-                    onChange={(data) => setSelectedMonth(data)}
-                    options={options}
-                    isMulti={true}
-                    placeholder={t("selectMonth")}
-                    isSearchable
-                    id="selectMonth"
-                  />
-                </div>
-
-                <div className="displayGrid2">
-                  {(role === "ispOwner" || permission.billDiscount) && (
-                    <div>
-                      <FtextField
-                        type="number"
-                        name="discount"
-                        label={t("discount")}
-                      />
-                    </div>
-                  )}
-
-                  <div className="d-flex align-self-end">
-                    <input
-                      type="checkbox"
-                      className="form-check-input me-1"
-                      id="addnote"
-                      checked={noteCheck}
-                      onChange={(e) => setNoteCheck(e.target.checked)}
-                    />
+                {/* there will be options according to customer day length */}
+                {(data?.dayLength === 30 ||
+                  data?.dayLength === 31 ||
+                  data?.dayLength === monthDay) && (
+                  <div className="month">
                     <label
                       className="form-check-label changeLabelFontColor"
-                      htmlFor="addnote"
+                      htmlFor="selectMonth"
                     >
-                      {t("noteAndDate")}
+                      {t("selectMonth")}
                     </label>
+
+                    <Select
+                      className="mt-0"
+                      value={selectedMonth}
+                      onChange={(data) => setSelectedMonth(data)}
+                      options={options}
+                      isMulti={true}
+                      placeholder={t("selectMonth")}
+                      isSearchable
+                      id="selectMonth"
+                    />
                   </div>
+                )}
+
+                <div className="d-flex justify-content-end">
+                  <input
+                    type="checkbox"
+                    className="form-check-input me-1"
+                    id="addnote"
+                    checked={noteCheck}
+                    onChange={(e) => setNoteCheck(e.target.checked)}
+                  />
+                  <label
+                    className="form-check-label changeLabelFontColor"
+                    htmlFor="addnote"
+                  >
+                    {t("noteAndDate")}
+                  </label>
                 </div>
 
                 {noteCheck && (
@@ -500,4 +421,4 @@ const CustomerBillCollect = ({ single, status }) => {
   );
 };
 
-export default CustomerBillCollect;
+export default HotspotCustomerRecharge;

@@ -32,6 +32,8 @@ import {
   ReceiptCutoff,
   PencilSquare,
   Router,
+  Phone,
+  GeoAlt,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -95,11 +97,15 @@ import BulkPaymentStatusEdit from "../Customer/customerCRUD/bulkOpration/BulkPay
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
 import EditStaticCustomer from "./customerCRUD/temp/EditStaticCustomer";
+import { updateStaticCustomerApi } from "../../features/staticCustomerApi";
 
 export default function Customer() {
   //call hooks
   const { t } = useTranslation();
   const dispatch = useDispatch();
+
+  // current date
+  const date = new Date();
 
   //get data from redux store
   const mikrotiks = useSelector((state) => state?.mikrotik?.mikrotik);
@@ -377,7 +383,7 @@ export default function Customer() {
       getAllPackages(dispatch, ispOwner, setIsloading);
 
     //ispOwner queue all package get api
-    if (packages.length === 0)
+    if (bpSettings.hasMikrotik && packages.length === 0)
       getQueuePackageByIspOwnerId(ispOwner, dispatch, setIsloading);
 
     if (cus.length === 0)
@@ -706,6 +712,64 @@ export default function Customer() {
     }
   };
 
+  // atuomatic connection on off doble clicked handle
+  const autoDisableHandle = (value, e) => {
+    if (e?.detail == 2 && value) {
+      let data = {
+        ...value,
+
+        autoDisable: !value?.autoDisable,
+      };
+
+      updateStaticCustomerApi(
+        value.id,
+        dispatch,
+        data,
+        setIsLoadingPole,
+        "",
+        "",
+        "auto"
+      );
+    }
+  };
+
+  //find customer billing date before and after promise date
+  const getCustomerPromiseDate = (data) => {
+    const billDate = moment(data?.billingCycle).format("YYYY/MM/DD hh:mm A");
+
+    const promiseDate = moment(data?.promiseDate).format("YYYY/MM/DD hh:mm A");
+
+    var promiseDateChange;
+
+    if (billDate < promiseDate) {
+      promiseDateChange = "danger";
+    } else if (billDate > promiseDate) {
+      promiseDateChange = "warning";
+    }
+
+    return { billDate, promiseDate, promiseDateChange };
+  };
+
+  // customer day left filtering in current date
+  const getCustomerDayLeft = (billDate) => {
+    //current day
+    const currentDay = new Date(
+      new Date(moment(date).format("YYYY-MM-DD"))
+    ).getTime();
+
+    // // billing day
+    const billDay = new Date(
+      new Date(moment(billDate).format("YYYY-MM-DD"))
+    ).getTime();
+
+    const diffInMs = billDay - currentDay;
+
+    // // bill day left
+    const dayLeft = Math.round(diffInMs / (1000 * 60 * 60 * 24));
+
+    return dayLeft;
+  };
+
   const columns = React.useMemo(
     () => [
       {
@@ -724,90 +788,138 @@ export default function Customer() {
         ),
       },
       {
-        width: "5%",
+        width: "6%",
         Header: t("id"),
         accessor: "customerId",
-      },
-      // {
-      //   width: "8%",
-      //   Header: t("Auto/C"),
-      //   accessor: "autoDisable",
-      //   Cell: ({ row: { original } }) => (
-      //     <div>
-      //       {original?.autoDisable ? (
-      //         <Check2Circle className="text-success" />
-      //       ) : (
-      //         <Check2Circle className="text-danger" />
-      //       )}
-      //     </div>
-      //   ),
-      // },
-      {
-        width: "5%",
-        Header: t("name"),
-        accessor: "name",
-      },
-      {
-        width: "5%",
-        Header: t("ip"),
-        accessor: (field) =>
-          field.userType === "firewall-queue"
-            ? field.queue.address
-            : field.userType === "core-queue"
-            ? field.queue.srcAddress
-            : field.queue.target,
-      },
-
-      {
-        width: "9%",
-        Header: t("mobile"),
-        accessor: "mobile",
-      },
-
-      {
-        width: "8%",
-        Header: t("status"),
-        accessor: "status",
-        Cell: ({ cell: { value } }) => {
-          return badge(value);
-        },
-      },
-
-      {
-        width: "10%",
-        Header: t("paymentStatus"),
-        accessor: "paymentStatus",
-        Cell: ({ cell: { value } }) => {
-          return badge(value);
-        },
-      },
-      {
-        width: "10%",
-        Header: t("package"),
-        accessor: "mikrotikPackage",
-        Cell: ({ cell: { value } }) => (
-          <div>{cus && customerPackageFind(value)?.name}</div>
+        Cell: ({ row: { original } }) => (
+          <div
+            onClick={(e) => autoDisableHandle(original, e)}
+            style={{ cursor: "pointer" }}
+          >
+            {original?.autoDisable ? (
+              <p className="text-success">{original?.customerId}</p>
+            ) : (
+              <p className="text-danger">{original?.customerId}</p>
+            )}
+          </div>
         ),
       },
       {
-        width: "10%",
-        Header: t("monthly"),
-        accessor: "monthlyFee",
+        width: "13%",
+        Header: t("nameIP"),
+        accessor: (data) =>
+          `${data?.name} ${data?.queue.address} ${data?.queue.srcAddress} ${data?.queue.target}`,
+        Cell: ({ row: { original } }) => (
+          <div>
+            <p>{original?.name}</p>
+            <p>
+              {original.userType === "firewall-queue"
+                ? original.queue.address
+                : original.userType === "core-queue"
+                ? original.queue.srcAddress
+                : original.queue.target}
+            </p>
+          </div>
+        ),
       },
       {
-        width: "10%",
-        Header: t("balance"),
-        accessor: "balance",
+        width: "18%",
+        Header: t("mobileAddress"),
+        accessor: (data) => `${data?.mobile} ${data?.address}`,
+        Cell: ({ row: { original } }) => (
+          <div>
+            <p style={{ fontWeight: "500" }}>
+              <Phone className="text-info" /> {original?.mobile || "N/A"}
+            </p>
+            <p>
+              <GeoAlt />
+              {original?.address || "N/A"}
+            </p>
+          </div>
+        ),
+      },
+      {
+        width: "13%",
+        Header: t("package"),
+        accessor: (data) => customerPackageFind(data?.mikrotikPackage)?.name,
+        Cell: ({ row: { original } }) => (
+          <div>
+            {cus && customerPackageFind(original?.mikrotikPackage)?.name}
+          </div>
+        ),
+      },
+      {
+        width: "11%",
+        Header: t("billBalance"),
+        accessor: (data) => `${data?.monthlyFee} ${data?.balance}`,
+        Cell: ({ row: { original } }) => (
+          <div style={{ fontWeight: "500" }}>
+            <p>৳{original?.monthlyFee}</p>
+            <p
+              className={`text-${
+                original?.balance > -1 ? "success" : "danger"
+              }`}
+            >
+              ৳{original?.balance}
+            </p>
+          </div>
+        ),
+      },
+      {
+        width: "18%",
+        Header: t("billPromise"),
+        accessor: (data) =>
+          `${moment(data?.billingCycle).format("YYYY/MM/DD hh:mm A")} 
+          ${moment(data?.promiseDate).format("YYYY/MM/DD hh:mm A")}`,
+        Cell: ({ row: { original } }) => (
+          <div className="d-flex">
+            <div>
+              <p>{getCustomerPromiseDate(original)?.billDate}</p>
+
+              <p
+                className={`d-flex align-self-end text-${
+                  getCustomerPromiseDate(original)?.promiseDateChange
+                }`}
+              >
+                {getCustomerPromiseDate(original)?.promiseDate}
+              </p>
+            </div>
+          </div>
+        ),
       },
       {
         width: "6%",
-        Header: t("bill"),
-        accessor: "billingCycle",
-        Cell: ({ cell: { value } }) => {
-          return moment(value).format("YYYY/MM/DD hh:mm A");
-        },
+        Header: t("day"),
+        accessor: (data) => `${new Date(data?.billingCycle).getDay()}`,
+        Cell: ({ row: { original } }) => (
+          <div className="text-center p-1">
+            <p
+              className={`${
+                getCustomerDayLeft(original?.billingCycle) >= 20
+                  ? "border border-2 border-success"
+                  : getCustomerDayLeft(original?.billingCycle) >= 10
+                  ? "border border-2 border-primary"
+                  : getCustomerDayLeft(original?.billingCycle) >= 0
+                  ? "magantaColor"
+                  : "bg-danger text-white"
+              }`}
+            >
+              {getCustomerDayLeft(original?.billingCycle)}
+            </p>
+          </div>
+        ),
       },
-
+      {
+        width: "8%",
+        Header: t("status"),
+        accessor: (data) => `${data?.paymentStatus} ${data?.status}`,
+        Cell: ({ row: { original } }) => (
+          <div className="text-center">
+            <p>{badge(original?.paymentStatus)}</p>
+            <p>{badge(original?.status)}</p>
+          </div>
+        ),
+      },
       {
         width: "5%",
         Header: () => <div className="text-center">{t("action")}</div>,
@@ -1652,18 +1764,16 @@ export default function Customer() {
                         />
                       </div>
 
-                      <div className="table-section">
-                        <Table
-                          isLoading={customerLoading}
-                          customComponent={customComponent}
-                          bulkLength={bulkCustomer?.length}
-                          columns={columns}
-                          data={Customers1}
-                          bulkState={{
-                            setBulkCustomer,
-                          }}
-                        ></Table>
-                      </div>
+                      <Table
+                        isLoading={customerLoading}
+                        customComponent={customComponent}
+                        bulkLength={bulkCustomer?.length}
+                        columns={columns}
+                        data={Customers1}
+                        bulkState={{
+                          setBulkCustomer,
+                        }}
+                      ></Table>
                     </div>
                   </div>
                 ) : (

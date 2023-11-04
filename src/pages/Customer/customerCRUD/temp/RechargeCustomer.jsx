@@ -183,8 +183,6 @@ export default function RechargeCustomer({
     } else if (data?.balance === 0 && data?.paymentStatus === "paid") {
       // month to monthly bill
       temp.push(options[dataMonth]);
-
-      if (dataMonth + 1 > 11) temp.push(options[0]);
     } else if (
       data?.balance >= data?.monthlyFee &&
       data?.paymentStatus === "paid"

@@ -5,12 +5,16 @@ import moment from "moment";
 import { CSVLink } from "react-csv";
 import { Accordion } from "react-bootstrap";
 import DatePicker from "react-datepicker";
+import { GeoAlt, Person, Phone } from "react-bootstrap-icons";
 
 // internal import
 import { getInactiveCustomer } from "../../features/apiCalls";
 import Table from "../../components/table/Table";
 import { badge } from "../../components/common/Utils";
 import OtherCustomerPrint from "../newCustomer/customerPrint/OtherCustomerPrint";
+import PPPoECustomerDetails from "../Customer/customerCRUD/CustomerDetails";
+import HotspotCustomerDetails from "../hotspot/customerOperation/CustomerDetails";
+import StaticCustomerDetails from "../staticCustomer/customerCRUD/CustomerDetails";
 
 const InactiveCustomer = ({
   isInactiveLoading,
@@ -55,6 +59,13 @@ const InactiveCustomer = ({
 
   //customer type state
   const [customerType, setCustomerType] = useState("");
+
+  // view customer id
+  const [customerId, setCustomerId] = useState("");
+
+  // modal change state
+  const [modalStatus, setModalStatus] = useState("");
+  const [show, setShow] = useState(false);
 
   //filter state
   const [filterDate, setFilterDate] = useState(firstDate);
@@ -133,6 +144,43 @@ const InactiveCustomer = ({
     }
   };
 
+  //find customer billing date before and after promise date
+  const getCustomerPromiseDate = (data) => {
+    const billDate = moment(data?.billingCycle).format("YYYY/MM/DD hh:mm A");
+
+    const promiseDate = moment(data?.promiseDate).format("YYYY/MM/DD hh:mm A");
+
+    var promiseDateChange;
+
+    if (billDate < promiseDate) {
+      promiseDateChange = "danger";
+    } else if (billDate > promiseDate) {
+      promiseDateChange = "warning";
+    }
+
+    return { billDate, promiseDate, promiseDateChange };
+  };
+
+  // customer day left filtering in current date
+  const getCustomerDayLeft = (billDate) => {
+    //current day
+    const currentDay = new Date(
+      new Date(moment(today).format("YYYY-MM-DD"))
+    ).getTime();
+
+    // // billing day
+    const billDay = new Date(
+      new Date(moment(billDate).format("YYYY-MM-DD"))
+    ).getTime();
+
+    const diffInMs = billDay - currentDay;
+
+    // // bill day left
+    const dayLeft = Math.round(diffInMs / (1000 * 60 * 60 * 24));
+
+    return dayLeft;
+  };
+
   // inactive customer csv table header
   const customerForCsVTableInfoHeader = [
     { label: "customer_id", key: "customerId" },
@@ -185,62 +233,65 @@ const InactiveCustomer = ({
   };
 
   //inactive customer
-  const columns = useMemo(
+  const columns = React.useMemo(
     () => [
       {
-        width: "8%",
+        width: "6%",
         Header: t("id"),
         accessor: "customerId",
       },
       {
-        width: "8%",
-        Header: t("name"),
+        width: "5%",
+        Header: t("type"),
+        accessor: "userType",
         Cell: ({ row: { original } }) => (
-          <div
-            style={{ cursor: "move" }}
-            data-toggle="tooltip"
-            data-placement="top"
-            title={original.address}
-          >
-            {original.name}
+          <div>
+            {original?.userType === "pppoe"
+              ? "PPPoE"
+              : original?.userType === "hotspot"
+              ? "Hotspot"
+              : "Static"}
           </div>
         ),
       },
       {
-        width: "9%",
+        width: "14%",
         Header: t("pppoeIp"),
-        accessor: (field) =>
-          field?.userType === "pppoe"
-            ? field?.pppoe.name
-            : field?.userType === "firewall-queue"
-            ? field?.queue.address
-            : field?.userType === "core-queue"
-            ? field?.queue.srcAddress
-            : field?.userType === "simple-queue"
-            ? field?.queue.target
-            : field?.hotspot.name,
+        accessor: (data) =>
+          `${data?.name} ${data.pppoe?.name} ${data.queue?.address}
+           ${data.queue?.srcAddress} ${data.queue?.target} ${data.hotspot?.name}`,
+        Cell: ({ row: { original } }) => (
+          <div>
+            <p>{original?.name}</p>
+            <p>
+              {original?.userType === "pppoe"
+                ? original?.pppoe.name
+                : original?.userType === "firewall-queue"
+                ? original?.queue.address
+                : original?.userType === "core-queue"
+                ? original?.queue.srcAddress
+                : original?.userType === "simple-queue"
+                ? original?.queue.target
+                : original?.hotspot.name}
+            </p>
+          </div>
+        ),
       },
       {
-        width: "10%",
-        Header: t("mobile"),
-        accessor: "mobile",
-      },
-
-      {
-        width: "9%",
-        Header: t("status"),
-        accessor: "status",
-        Cell: ({ cell: { value } }) => {
-          return badge(value);
-        },
-      },
-      {
-        width: "10%",
-        Header: t("paymentStatus"),
-        accessor: "paymentStatus",
-        Cell: ({ cell: { value } }) => {
-          return badge(value);
-        },
+        width: "18%",
+        Header: t("mobileAddress"),
+        accessor: (data) => `${data?.mobile} ${data?.address}`,
+        Cell: ({ row: { original } }) => (
+          <div>
+            <p style={{ fontWeight: "500" }}>
+              <Phone className="text-info" /> {original?.mobile || "N/A"}
+            </p>
+            <p>
+              <GeoAlt />
+              {original?.address || "N/A"}
+            </p>
+          </div>
+        ),
       },
       {
         width: "10%",
@@ -251,29 +302,97 @@ const InactiveCustomer = ({
       },
       {
         width: "10%",
-        Header: t("mountly"),
-        accessor: "monthlyFee",
+        Header: t("billBalance"),
+        accessor: (data) => `${data?.monthlyFee} ${data?.balance}`,
+        Cell: ({ row: { original } }) => (
+          <div style={{ fontWeight: "500" }}>
+            <p>৳{original?.monthlyFee}</p>
+            <p
+              className={`text-${
+                original?.balance > -1 ? "success" : "danger"
+              }`}
+            >
+              ৳{original?.balance}
+            </p>
+          </div>
+        ),
       },
       {
-        width: "10%",
-        Header: t("balance"),
-        accessor: "balance",
+        width: "18%",
+        Header: t("billPromise"),
+        accessor: (data) =>
+          `${moment(data?.billingCycle).format("YYYY/MM/DD hh:mm A")} 
+          ${moment(data?.promiseDate).format("YYYY/MM/DD hh:mm A")}`,
+        Cell: ({ row: { original } }) => (
+          <div className="d-flex">
+            <div>
+              <p>{getCustomerPromiseDate(original)?.billDate}</p>
+
+              <p
+                className={`d-flex align-self-end text-${
+                  getCustomerPromiseDate(original)?.promiseDateChange
+                }`}
+              >
+                {original?.userType !== "hotspot" &&
+                  getCustomerPromiseDate(original)?.promiseDate}
+              </p>
+            </div>
+          </div>
+        ),
+      },
+      {
+        width: "6%",
+        Header: t("day"),
+        accessor: (data) => `${new Date(data?.billingCycle).getDay()}`,
+        Cell: ({ row: { original } }) => (
+          <div className="text-center p-1">
+            <p
+              className={`${
+                getCustomerDayLeft(original?.billingCycle) >= 20
+                  ? "border border-2 border-success"
+                  : getCustomerDayLeft(original?.billingCycle) >= 10
+                  ? "border border-2 border-primary"
+                  : getCustomerDayLeft(original?.billingCycle) >= 0
+                  ? "magantaColor"
+                  : "bg-danger text-white"
+              }`}
+            >
+              {getCustomerDayLeft(original?.billingCycle)}
+            </p>
+          </div>
+        ),
       },
       {
         width: "8%",
-        Header: t("bill"),
-        accessor: "billingCycle",
-        Cell: ({ cell: { value } }) => {
-          return moment(value).format("YYYY/MM/DD hh:mm A");
-        },
+        Header: t("status"),
+        accessor: (data) => `${data?.paymentStatus} ${data?.status}`,
+        Cell: ({ row: { original } }) => (
+          <div className="text-center">
+            <p>{badge(original?.paymentStatus)}</p>
+            <p>{badge(original?.status)}</p>
+          </div>
+        ),
       },
       {
-        width: "8%",
-        Header: t("createdAt"),
-        accessor: "createdAt",
-        Cell: ({ cell: { value } }) => {
-          return moment(value).format("YYYY/MM/DD hh:mm A");
-        },
+        width: "5%",
+        Header: t("action"),
+        id: "option",
+        Cell: ({ row: { original } }) => (
+          <div className="d-flex justify-content-center align-items-center">
+            {/* customer profile details by user type */}
+            <button
+              className="btn btn-sm btn-outline-primary"
+              title={t("profile")}
+              onClick={() => {
+                setModalStatus(original?.userType);
+                setCustomerId(original?.id);
+                setShow(true);
+              }}
+            >
+              <Person size={22} />
+            </button>
+          </div>
+        ),
       },
     ],
     [t, allPackages, hotsPackage]
@@ -376,15 +495,35 @@ const InactiveCustomer = ({
             ></CSVLink>
           </div>
 
-          <div className="table-section">
-            <Table
-              isLoading={isInactiveLoading}
-              columns={columns}
-              data={inactiveCustomers}
-            ></Table>
-          </div>
+          <Table
+            isLoading={isInactiveLoading}
+            columns={columns}
+            data={inactiveCustomers}
+          ></Table>
         </div>
       </div>
+
+      {/* customer details modal by user type  */}
+
+      {modalStatus === "pppoe" ? (
+        <PPPoECustomerDetails
+          show={show}
+          setShow={setShow}
+          customerId={customerId}
+        />
+      ) : modalStatus === "hotspot" ? (
+        <HotspotCustomerDetails
+          show={show}
+          setShow={setShow}
+          customerId={customerId}
+        />
+      ) : (
+        <StaticCustomerDetails
+          show={show}
+          setShow={setShow}
+          customerId={customerId}
+        />
+      )}
     </>
   );
 };
