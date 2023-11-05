@@ -257,7 +257,7 @@ const Unpaid = ({ ispOwnerId, month, year, status }) => {
           <div className="d-flex justify-content-center align-items-center">
             {/* customer profile details by user type */}
             <button
-              className="btn btn-sm btn-outline-primary"
+              className="btn btn-sm btn-outline-primary p-1"
               title={t("profile")}
               onClick={() => {
                 setModalStatus(original?.userType);
@@ -265,7 +265,7 @@ const Unpaid = ({ ispOwnerId, month, year, status }) => {
                 setShow(true);
               }}
             >
-              <Person size={22} />
+              <Person size={19} />
             </button>
           </div>
         ),

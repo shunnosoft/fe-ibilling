@@ -37,7 +37,7 @@ const CollectorSupportTicket = () => {
   );
 
   const collectorId = useSelector(
-    (state) => state.persistedReducer.auth.currentUser.collector.id
+    (state) => state.persistedReducer.auth.currentUser.collector?.user
   );
 
   // declare state
