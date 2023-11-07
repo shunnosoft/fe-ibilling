@@ -98,6 +98,7 @@ import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
 import EditStaticCustomer from "./customerCRUD/temp/EditStaticCustomer";
 import { updateStaticCustomerApi } from "../../features/staticCustomerApi";
+import PrintOptions from "../../components/common/PrintOptions";
 
 export default function Customer() {
   //call hooks
@@ -1262,20 +1263,18 @@ export default function Customer() {
                               </div>
                             )}
                             {role === "ispOwner" &&
-                            (bpSettings?.queueType === "simple-queue" ||
-                              bpSettings?.queueType === "core-queue") &&
-                            bpSettings?.hasMikrotik ? (
-                              <div
-                                className="addAndSettingIcon"
-                                title={t("fireWallFilterIpDrop")}
-                                data-bs-toggle="modal"
-                                data-bs-target="#fireWallFilterIpDropControl"
-                              >
-                                <ReceiptCutoff className="addcutmButton" />
-                              </div>
-                            ) : (
-                              ""
-                            )}
+                              (bpSettings?.queueType === "simple-queue" ||
+                                bpSettings?.queueType === "core-queue") &&
+                              bpSettings?.hasMikrotik && (
+                                <div
+                                  className="addAndSettingIcon"
+                                  title={t("fireWallFilterIpDrop")}
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#fireWallFilterIpDropControl"
+                                >
+                                  <ReceiptCutoff className="addcutmButton" />
+                                </div>
+                              )}
 
                             {((role === "manager" &&
                               permission?.customerEdit) ||
@@ -1294,8 +1293,8 @@ export default function Customer() {
                               </div>
                             )}
 
-                            {permission?.viewCustomerList ||
-                            role !== "collector" ? (
+                            {(permission?.viewCustomerList ||
+                              role === "ispOwner") && (
                               <>
                                 <div className="addAndSettingIcon">
                                   <CSVLink
@@ -1307,6 +1306,7 @@ export default function Customer() {
                                     <FiletypeCsv className="addcutmButton" />
                                   </CSVLink>
                                 </div>
+
                                 <div className="addAndSettingIcon">
                                   <CSVLink
                                     data={customerForCsV}
@@ -1317,21 +1317,18 @@ export default function Customer() {
                                     <FileExcelFill className="addcutmButton" />
                                   </CSVLink>
                                 </div>
+
                                 <div className="addAndSettingIcon">
-                                  <ReactToPrint
-                                    documentTitle={t("CustomerList")}
-                                    trigger={() => (
-                                      <PrinterFill
-                                        title={t("print")}
-                                        className="addcutmButton"
-                                      />
-                                    )}
-                                    content={() => componentRef.current}
+                                  <PrinterFill
+                                    title={t("print")}
+                                    className="addcutmButton"
+                                    onClick={() => {
+                                      setModalStatus("print");
+                                      setShow(true);
+                                    }}
                                   />
                                 </div>
                               </>
-                            ) : (
-                              ""
                             )}
                           </div>
                         </Card>
@@ -1756,14 +1753,6 @@ export default function Customer() {
                     </Accordion>
 
                     <div className="collectorWrapper pb-2">
-                      <div style={{ display: "none" }}>
-                        <PrintCustomer
-                          filterData={filterData}
-                          currentCustomers={Customers1}
-                          ref={componentRef}
-                        />
-                      </div>
-
                       <Table
                         isLoading={customerLoading}
                         customComponent={customComponent}
@@ -1842,6 +1831,17 @@ export default function Customer() {
               {/* password reset modal */}
               {modalStatus === "password" && (
                 <PasswordReset show={show} setShow={setShow} userId={userId} />
+              )}
+
+              {/* print option modal */}
+              {modalStatus === "print" && (
+                <PrintOptions
+                  show={show}
+                  setShow={setShow}
+                  filterData={filterData}
+                  tableData={Customers1}
+                  page="customer"
+                />
               )}
 
               {/* bulk Modal */}

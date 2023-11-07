@@ -23,6 +23,7 @@ import {
   getCollectorDashboardCardData,
   getCollectorDashboardCharts,
   getIspOwnerData,
+  getPPPoEPackage,
 } from "../../features/apiCalls";
 import { useDispatch, useSelector } from "react-redux";
 import { showModal } from "../../features/uiSlice";
@@ -43,6 +44,8 @@ import Unpaid from "./dataComponent/Unpaid";
 import Active from "./dataComponent/Active";
 import { getHotspotPackageSuccess } from "../../features/packageSlice";
 import useISPowner from "../../hooks/useISPOwner";
+import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
+import { getBulletinPermission } from "../../features/apiCallAdmin";
 
 export default function CollectorDashboard() {
   const { t } = useTranslation();
@@ -75,6 +78,11 @@ export default function CollectorDashboard() {
   //get graph data
   const ChartsData = useSelector((state) => state.chart.charts);
 
+  // get bulletin permission
+  const butPermission = useSelector(
+    (state) => state.adminNetFeeSupport?.bulletinPermission
+  );
+
   //all internal states
   const [isLoading, setIsLoading] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -83,7 +91,10 @@ export default function CollectorDashboard() {
   const [label, setLabel] = useState([]);
   const [collection, setCollection] = useState([]);
   const [count, setCount] = useState([]);
+
+  // choose modal handle
   const [status, setStatus] = useState("");
+  const [show, setShow] = useState(false);
 
   //all dates states
   const date = new Date();
@@ -110,8 +121,14 @@ export default function CollectorDashboard() {
     //get all customer package
     getAllPackages(dispatch, ispOwnerId, setIsLoading);
 
+    // get pppoe package api call
+    getPPPoEPackage(dispatch, ispOwnerId, setIsLoading);
+
     // get hotspot package api call
     getHotspotPackageSuccess(dispatch, ispOwnerId, setIsLoading);
+
+    // get netFee bulletin api call
+    Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
   }, []);
 
   //graph data calculation
@@ -328,10 +345,11 @@ export default function CollectorDashboard() {
                     <div className="d-flex justify-content-between align-items-center">
                       <p
                         className="fw-700 me-3"
-                        data-bs-toggle="modal"
-                        data-bs-target="#activeCustomer"
                         style={{ fontSize: "20px", cursor: "pointer" }}
-                        onClick={() => setStatus("active")}
+                        onClick={() => {
+                          setStatus("active");
+                          setShow(true);
+                        }}
                       >
                         {t("active")} &nbsp;
                         <span className="text-secondary fw-bold">
@@ -341,10 +359,11 @@ export default function CollectorDashboard() {
 
                       <p
                         className="fw-700"
-                        data-bs-toggle="modal"
-                        data-bs-target="#expiredCustomer"
                         style={{ fontSize: "20px", cursor: "pointer" }}
-                        onClick={() => setStatus("expired")}
+                        onClick={() => {
+                          setStatus("expired");
+                          setShow(true);
+                        }}
                       >
                         {t("expired")} &nbsp;
                         <span className="text-secondary fw-bold">
@@ -446,10 +465,11 @@ export default function CollectorDashboard() {
                   <div className="chartSection">
                     <p
                       className="dashboardActive pb-0"
-                      data-bs-toggle="modal"
-                      data-bs-target="#activeCustomer"
                       style={{ fontSize: "16px" }}
-                      onClick={() => setStatus("active")}
+                      onClick={() => {
+                        setStatus("active");
+                        setShow(true);
+                      }}
                     >
                       {t("active")}
                       <h4>{FormatNumber(customerStat?.active)}</h4>
@@ -458,10 +478,11 @@ export default function CollectorDashboard() {
                     {permissions?.dashboardCollectionData && (
                       <p
                         className="dashboardActive pb-0"
-                        data-bs-toggle="modal"
-                        data-bs-target="#activeCustomer"
                         style={{ fontSize: "15px", marginTop: "0px" }}
-                        onClick={() => setStatus("active")}
+                        onClick={() => {
+                          setStatus("active");
+                          setShow(true);
+                        }}
                       >
                         {t("active")}
                         &nbsp;
@@ -472,10 +493,11 @@ export default function CollectorDashboard() {
                     )}
                     <p
                       className="dashboardActive pb-1"
-                      data-bs-toggle="modal"
-                      data-bs-target="#inactiveCustomer"
                       style={{ fontSize: "15px", marginBottom: "0px" }}
-                      onClick={() => setStatus("inactive")}
+                      onClick={() => {
+                        setStatus("inactive");
+                        setShow(true);
+                      }}
                     >
                       {t("in active")}: {FormatNumber(customerStat?.inactive)}
                       &nbsp;
@@ -487,10 +509,11 @@ export default function CollectorDashboard() {
                     </p>
                     <p
                       className="dashboardActive pb-1"
-                      data-bs-toggle="modal"
-                      data-bs-target="#expiredCustomer"
                       style={{ fontSize: "15px", marginBottom: "0px" }}
-                      onClick={() => setStatus("expired")}
+                      onClick={() => {
+                        setStatus("expired");
+                        setShow(true);
+                      }}
                     >
                       {t("expired")}: {FormatNumber(customerStat?.expired)}
                       &nbsp;
@@ -513,10 +536,11 @@ export default function CollectorDashboard() {
                   <div className="chartSection">
                     <p
                       className="dashboardActive pb-1"
-                      data-bs-toggle="modal"
-                      data-bs-target="#paid"
                       style={{ fontSize: "16px" }}
-                      onClick={() => setStatus("paid")}
+                      onClick={() => {
+                        setStatus("paid");
+                        setShow(true);
+                      }}
                     >
                       {t("paid")}
                       <h4>{FormatNumber(customerStat?.paid)}</h4>
@@ -524,23 +548,25 @@ export default function CollectorDashboard() {
 
                     <p
                       className="dashboardActive pb-1"
-                      data-bs-toggle="modal"
-                      data-bs-target="#unPaid"
                       style={{ fontSize: "15px", paddingTop: "10px" }}
-                      onClick={() => setStatus("unpaid")}
+                      onClick={() => {
+                        setStatus("unpaid");
+                        setShow(true);
+                      }}
                     >
                       {t("unpaid")}: {FormatNumber(customerStat?.unpaid)}
                     </p>
 
                     <p
                       className="dashboardUnpaid pb-1"
-                      data-bs-toggle="modal"
-                      data-bs-target="#freeCustomer"
                       style={{
                         fontSize: "15px",
                         paddingTop: "0px",
                       }}
-                      onClick={() => setStatus("freeCustomer")}
+                      onClick={() => {
+                        setStatus("freeCustomer");
+                        setShow(true);
+                      }}
                     >
                       {t("freeCustomer")}:
                       {FormatNumber(customerStat?.freeCustomer)}
@@ -661,42 +687,84 @@ export default function CollectorDashboard() {
         </FontColor>
       </div>
 
-      <Inactive
-        status={status}
-        ispOwnerId={ispOwnerId}
-        year={filterDate.getFullYear()}
-        month={filterDate.getMonth() + 1}
-      />
-      <Expired
-        status={status}
-        ispOwnerId={ispOwnerId}
-        year={filterDate.getFullYear()}
-        month={filterDate.getMonth() + 1}
-      />
-      <FreeCustomer
-        status={status}
-        ispOwnerId={ispOwnerId}
-        year={filterDate.getFullYear()}
-        month={filterDate.getMonth() + 1}
-      />
-      <Paid
-        status={status}
-        ispOwnerId={ispOwnerId}
-        year={filterDate.getFullYear()}
-        month={filterDate.getMonth() + 1}
-      />
-      <Unpaid
-        status={status}
-        ispOwnerId={ispOwnerId}
-        year={filterDate.getFullYear()}
-        month={filterDate.getMonth() + 1}
-      />
-      <Active
-        status={status}
-        ispOwnerId={ispOwnerId}
-        year={filterDate.getFullYear()}
-        month={filterDate.getMonth() + 1}
-      />
+      {/* dashboard modal */}
+
+      {/* all active customers modal */}
+      {status === "active" && (
+        <Active
+          status={status}
+          modalShow={show}
+          setModalShow={setShow}
+          ispOwnerId={ispOwnerId}
+          year={filterDate.getFullYear()}
+          month={filterDate.getMonth() + 1}
+        />
+      )}
+
+      {/* all active customers modal */}
+      {status === "inactive" && (
+        <Inactive
+          status={status}
+          modalShow={show}
+          setModalShow={setShow}
+          ispOwnerId={ispOwnerId}
+          year={filterDate.getFullYear()}
+          month={filterDate.getMonth() + 1}
+        />
+      )}
+
+      {/* all expired customers modal */}
+      {status === "expired" && (
+        <Expired
+          status={status}
+          modalShow={show}
+          setModalShow={setShow}
+          ispOwnerId={ispOwnerId}
+          year={filterDate.getFullYear()}
+          month={filterDate.getMonth() + 1}
+        />
+      )}
+
+      {/* all paid customers modal */}
+      {status === "paid" && (
+        <Paid
+          status={status}
+          modalShow={show}
+          setModalShow={setShow}
+          ispOwnerId={ispOwnerId}
+          year={filterDate.getFullYear()}
+          month={filterDate.getMonth() + 1}
+        />
+      )}
+
+      {/* all unpaid customers modal */}
+      {status === "unpaid" && (
+        <Unpaid
+          status={status}
+          modalShow={show}
+          setModalShow={setShow}
+          ispOwnerId={ispOwnerId}
+          year={filterDate.getFullYear()}
+          month={filterDate.getMonth() + 1}
+        />
+      )}
+
+      {/* owner free customer modal */}
+      {status === "freeCustomer" && (
+        <FreeCustomer
+          status={status}
+          modalShow={show}
+          setModalShow={setShow}
+          ispOwnerId={ispOwnerId}
+          year={filterDate.getFullYear()}
+          month={filterDate.getMonth() + 1}
+        />
+      )}
+
+      {/* dashboard netFee bulletin added */}
+      {(butPermission?.dashboard || butPermission?.allPage) && (
+        <NetFeeBulletin />
+      )}
     </>
   );
 }

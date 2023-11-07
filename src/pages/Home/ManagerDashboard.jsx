@@ -20,9 +20,11 @@ import { FourGround, FontColor } from "../../assets/js/theme";
 import { monthsName } from "./homeData";
 import {
   getAllPackages,
+  getArea,
   getIspOwnerData,
   getManagerDashboardCardData,
   getManagerDashboardCharts,
+  getPPPoEPackage,
 } from "../../features/apiCalls";
 import { useDispatch, useSelector } from "react-redux";
 import { managerFetchSuccess } from "../../features/managerSlice";
@@ -46,6 +48,9 @@ import AllCollector from "./dataComponent/AllCollector";
 import Discount from "./dataComponent/Discount";
 import { getHotspotPackage } from "../../features/hotspotApi";
 import useISPowner from "../../hooks/useISPOwner";
+import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
+import { getBulletinPermission } from "../../features/apiCallAdmin";
+import { getSubAreasApi } from "../../features/actions/customerApiCall";
 
 export default function ManagerDashboard() {
   const { t } = useTranslation();
@@ -83,6 +88,11 @@ export default function ManagerDashboard() {
   //get graph data
   const ChartsData = useSelector((state) => state.chart.charts);
 
+  // get bulletin permission
+  const butPermission = useSelector(
+    (state) => state.adminNetFeeSupport?.bulletinPermission
+  );
+
   //all internal states
   const [isLoading, setIsloading] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -93,8 +103,11 @@ export default function ManagerDashboard() {
   const [label, setLabel] = useState([]);
   const [collection, setCollection] = useState([]);
   const [count, setCount] = useState([]);
-  const [status, setStatus] = useState("");
   const [currentCollector, setCurrentCollector] = useState("");
+
+  // choose modal handle
+  const [status, setStatus] = useState("");
+  const [show, setShow] = useState(false);
 
   //all dates states
   const date = new Date();
@@ -126,10 +139,23 @@ export default function ManagerDashboard() {
     //get card data
     getManagerDashboardCardData(dispatch, setLoadingDashboardData, managerId);
 
+    // get area api
+    getArea(dispatch, ispOwnerId, setPackageLoading);
+
+    // get sub area api
+    getSubAreasApi(dispatch, ispOwnerId);
+
+    //get all customer package
     getAllPackages(dispatch, ispOwnerId, setPackageLoading);
+
+    // get pppoe package api call
+    getPPPoEPackage(dispatch, ispOwnerId, setPackageLoading);
 
     // get hotspot package api call
     getHotspotPackage(dispatch, ispOwnerId, setPackageLoading);
+
+    // get netFee bulletin api call
+    Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
   }, []);
 
   //graph data calculation
@@ -355,9 +381,10 @@ export default function ManagerDashboard() {
                     <div className="d-flex justify-content-between align-items-center">
                       <p
                         className="fw-700 me-3"
-                        data-bs-toggle="modal"
-                        data-bs-target="#activeCustomer"
-                        onClick={() => setStatus("active")}
+                        onClick={() => {
+                          setStatus("active");
+                          setShow(true);
+                        }}
                         style={{ fontSize: "20px", cursor: "pointer" }}
                       >
                         {t("active")} &nbsp;
@@ -368,9 +395,10 @@ export default function ManagerDashboard() {
 
                       <p
                         className="fw-700"
-                        data-bs-toggle="modal"
-                        data-bs-target="#expiredCustomer"
-                        onClick={() => setStatus("expired")}
+                        onClick={() => {
+                          setStatus("expired");
+                          setShow(true);
+                        }}
                         style={{ fontSize: "20px", cursor: "pointer" }}
                       >
                         {t("expired")} &nbsp;
@@ -474,10 +502,11 @@ export default function ManagerDashboard() {
                   <div className="chartSection">
                     <p
                       className="dashboardActive pb-0"
-                      data-bs-toggle="modal"
-                      data-bs-target="#activeCustomer"
                       style={{ fontSize: "16px" }}
-                      onClick={() => setStatus("active")}
+                      onClick={() => {
+                        setStatus("active");
+                        setShow(true);
+                      }}
                     >
                       {t("active")}
                       <h4>{FormatNumber(customerStat.active)}</h4>
@@ -486,10 +515,11 @@ export default function ManagerDashboard() {
                     {permissions?.dashboardCollectionData && (
                       <p
                         className="dashboardActive pb-1"
-                        data-bs-toggle="modal"
-                        data-bs-target="#activeCustomer"
                         style={{ fontSize: "15px" }}
-                        onClick={() => setStatus("active")}
+                        onClick={() => {
+                          setStatus("active");
+                          setShow(true);
+                        }}
                       >
                         {t("active")}
                         &nbsp;
@@ -500,9 +530,10 @@ export default function ManagerDashboard() {
                     )}
                     <p
                       className="dashboardData pb-1 pt-0"
-                      data-bs-toggle="modal"
-                      data-bs-target="#inactiveCustomer"
-                      onClick={() => setStatus("inactive")}
+                      onClick={() => {
+                        setStatus("inactive");
+                        setShow(true);
+                      }}
                       style={{ fontSize: "15px", marginBottom: "0px" }}
                     >
                       {t("in active")}: {FormatNumber(customerStat?.inactive)}
@@ -515,9 +546,10 @@ export default function ManagerDashboard() {
                     </p>
                     <p
                       className="dashboardData pb-1"
-                      data-bs-toggle="modal"
-                      data-bs-target="#expiredCustomer"
-                      onClick={() => setStatus("expired")}
+                      onClick={() => {
+                        setStatus("expired");
+                        setShow(true);
+                      }}
                       style={{ fontSize: "15px", paddingTop: "0px" }}
                     >
                       {t("expired")}: {FormatNumber(customerStat?.expired)}
@@ -541,9 +573,10 @@ export default function ManagerDashboard() {
                   <div className="chartSection">
                     <p
                       className="dashboardUnpaid pb-0"
-                      data-bs-toggle="modal"
-                      onClick={() => setStatus("paid")}
-                      data-bs-target="#paid"
+                      onClick={() => {
+                        setStatus("paid");
+                        setShow(true);
+                      }}
                       style={{ fontSize: "16px" }}
                     >
                       {t("paid")}
@@ -552,9 +585,10 @@ export default function ManagerDashboard() {
 
                     <p
                       className="dashboardUnpaid pb-1"
-                      data-bs-toggle="modal"
-                      data-bs-target="#unPaid"
-                      onClick={() => setStatus("unpaid")}
+                      onClick={() => {
+                        setStatus("unpaid");
+                        setShow(true);
+                      }}
                       style={{ fontSize: "15px", paddingTop: "10px" }}
                     >
                       {t("unpaid")}: {FormatNumber(customerStat?.unpaid)}
@@ -562,9 +596,10 @@ export default function ManagerDashboard() {
 
                     <p
                       className="dashboardUnpaid pb-1"
-                      data-bs-toggle="modal"
-                      data-bs-target="#freeCustomer"
-                      onClick={() => setStatus("freeCustomer")}
+                      onClick={() => {
+                        setStatus("freeCustomer");
+                        setShow(true);
+                      }}
                       style={{
                         fontSize: "15px",
                         paddingTop: "0px",
@@ -882,42 +917,90 @@ export default function ManagerDashboard() {
         </FontColor>
       </div>
 
-      <Inactive
-        status={status}
-        ispOwnerId={ispOwnerId}
-        year={filterDate.getFullYear()}
-        month={filterDate.getMonth() + 1}
-      />
-      <Expired
-        status={status}
-        ispOwnerId={ispOwnerId}
-        year={filterDate.getFullYear()}
-        month={filterDate.getMonth() + 1}
-      />
-      <FreeCustomer
-        status={status}
-        ispOwnerId={ispOwnerId}
-        year={filterDate.getFullYear()}
-        month={filterDate.getMonth() + 1}
-      />
-      <Paid
-        status={status}
-        ispOwnerId={ispOwnerId}
-        year={filterDate.getFullYear()}
-        month={filterDate.getMonth() + 1}
-      />
-      <Unpaid
-        status={status}
-        ispOwnerId={ispOwnerId}
-        year={filterDate.getFullYear()}
-        month={filterDate.getMonth() + 1}
-      />
-      <Active
-        status={status}
-        ispOwnerId={ispOwnerId}
-        year={filterDate.getFullYear()}
-        month={filterDate.getMonth() + 1}
-      />
+      {/* dashboard modal */}
+
+      {/* all active customers modal */}
+      {status === "active" && (
+        <Active
+          status={status}
+          modalShow={show}
+          setModalShow={setShow}
+          ispOwnerId={ispOwnerId}
+          year={filterDate.getFullYear()}
+          month={filterDate.getMonth() + 1}
+        />
+      )}
+
+      {/* all active customers modal */}
+      {status === "inactive" && (
+        <Inactive
+          status={status}
+          modalShow={show}
+          setModalShow={setShow}
+          ispOwnerId={ispOwnerId}
+          year={filterDate.getFullYear()}
+          month={filterDate.getMonth() + 1}
+        />
+      )}
+
+      {/* all expired customers modal */}
+      {status === "expired" && (
+        <Expired
+          status={status}
+          modalShow={show}
+          setModalShow={setShow}
+          ispOwnerId={ispOwnerId}
+          year={filterDate.getFullYear()}
+          month={filterDate.getMonth() + 1}
+        />
+      )}
+
+      {/* all paid customers modal */}
+      {status === "paid" && (
+        <Paid
+          status={status}
+          modalShow={show}
+          setModalShow={setShow}
+          ispOwnerId={ispOwnerId}
+          year={filterDate.getFullYear()}
+          month={filterDate.getMonth() + 1}
+        />
+      )}
+
+      {/* all unpaid customers modal */}
+      {status === "unpaid" && (
+        <Unpaid
+          status={status}
+          modalShow={show}
+          setModalShow={setShow}
+          ispOwnerId={ispOwnerId}
+          year={filterDate.getFullYear()}
+          month={filterDate.getMonth() + 1}
+        />
+      )}
+
+      {/* owner free customer modal */}
+      {status === "freeCustomer" && (
+        <FreeCustomer
+          status={status}
+          modalShow={show}
+          setModalShow={setShow}
+          ispOwnerId={ispOwnerId}
+          year={filterDate.getFullYear()}
+          month={filterDate.getMonth() + 1}
+        />
+      )}
+      {status === "discount" && (
+        <Discount
+          status={status}
+          modalShow={show}
+          setModalShow={setShow}
+          ispOwnerId={ispOwnerId}
+          year={filterDate.getFullYear()}
+          month={filterDate.getMonth() + 1}
+        />
+      )}
+
       <AllCollector
         status={status}
         ispOwnerId={ispOwnerId}
@@ -925,14 +1008,10 @@ export default function ManagerDashboard() {
         month={filterDate.getMonth() + 1}
       />
 
-      <Discount
-        show={discountShow}
-        setShow={setDiscountShow}
-        ispOwnerId={ispOwnerId}
-        year={filterDate.getFullYear()}
-        month={filterDate.getMonth() + 1}
-        status={status}
-      />
+      {/* dashboard netFee bulletin added */}
+      {(butPermission?.dashboard || butPermission?.allPage) && (
+        <NetFeeBulletin />
+      )}
     </>
   );
 }

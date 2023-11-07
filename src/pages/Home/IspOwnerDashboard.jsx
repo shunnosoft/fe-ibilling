@@ -13,6 +13,13 @@ import {
   ChatSquareDots,
 } from "react-bootstrap-icons";
 import moment from "moment";
+import { useTranslation } from "react-i18next";
+import { useDispatch, useSelector } from "react-redux";
+import ReactDatePicker from "react-datepicker";
+import { easeQuadIn } from "d3-ease";
+import { Accordion } from "react-bootstrap";
+import { Link } from "react-router-dom";
+
 // internal imports
 import "./home.css";
 import { FourGround, FontColor } from "../../assets/js/theme";
@@ -23,22 +30,16 @@ import {
   getCollector,
   getIspOwnerData,
   getManger,
+  getPPPoEPackage,
 } from "../../features/apiCalls";
 import {
   getIspOwnerCharts,
   getIspOwnerDashboardCardData,
 } from "../../features/apiCalls";
-import { useDispatch, useSelector } from "react-redux";
 import { showModal } from "../../features/uiSlice";
 import FormatNumber from "../../components/common/NumberFormat";
-// the hook
-import { useTranslation } from "react-i18next";
 import AnimatedProgressProvider from "../../components/common/AnimationProgressProvider";
-import { easeQuadIn } from "d3-ease";
-import ReactDatePicker from "react-datepicker";
 import Loader from "../../components/common/Loader";
-import { Accordion } from "react-bootstrap";
-import { Link } from "react-router-dom";
 import Footer from "../../components/admin/footer/Footer";
 import Inactive from "./dataComponent/Inactive";
 import Expired from "./dataComponent/Expired";
@@ -53,18 +54,14 @@ import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
 import { getHotspotPackage } from "../../features/hotspotApi";
 import { getSubAreasApi } from "../../features/actions/customerApiCall";
+import useISPowner from "../../hooks/useISPOwner";
 
 export default function IspOwnerDashboard() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
-  //get login user role
-  const role = useSelector((state) => state.persistedReducer.auth.role);
-
-  //get ispOwnerId
-  const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerId
-  );
+  // get user & current user data form useISPOwner
+  const { role, ispOwnerId } = useISPowner();
 
   //get ispOwner data when logged in
   const ispOwnerData = useSelector(
@@ -113,8 +110,11 @@ export default function IspOwnerDashboard() {
   const [collectors, setCollectors] = useState([]);
   const [collection, setCollection] = useState([]);
   const [count, setCount] = useState([]);
-  const [status, setStatus] = useState("");
   const [currentCollector, setCurrentCollector] = useState("");
+
+  // choose modal handle
+  const [status, setStatus] = useState("");
+  const [show, setShow] = useState(false);
 
   //all dates states
   const date = new Date();
@@ -125,9 +125,6 @@ export default function IspOwnerDashboard() {
 
   const minMonth = new Date(ispOwnerData?.createdAt);
   minMonth.setDate(1);
-
-  // discount modal state
-  const [discountShow, setDiscountShow] = useState(false);
 
   // collectors and managers for graph filter
   useEffect(() => {
@@ -153,6 +150,7 @@ export default function IspOwnerDashboard() {
       getIspOwnerData(dispatch, ispOwnerId, setIsloading);
 
     Object.keys(manager)?.length === 0 && getManger(dispatch, ispOwnerId);
+
     reseller?.reseller.length === 0 &&
       fetchReseller(dispatch, ispOwnerId, setIsloading);
 
@@ -174,9 +172,13 @@ export default function IspOwnerDashboard() {
     //get all customer package
     getAllPackages(dispatch, ispOwnerId, setPackageLoading);
 
+    // get pppoe package api call
+    getPPPoEPackage(dispatch, ispOwnerId, setPackageLoading);
+
     // get hotspot package api call
     getHotspotPackage(dispatch, ispOwnerId, setPackageLoading);
 
+    // get netFee bulletin api call
     Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
   }, []);
 
@@ -417,10 +419,11 @@ export default function IspOwnerDashboard() {
                   >
                     <p
                       className="fw-700 me-3"
-                      data-bs-toggle="modal"
-                      data-bs-target="#activeCustomer"
                       style={{ fontSize: "20px", cursor: "pointer" }}
-                      onClick={() => setStatus("active")}
+                      onClick={() => {
+                        setStatus("active");
+                        setShow(true);
+                      }}
                     >
                       {t("active")} &nbsp;
                       <span className="text-secondary fw-bold">
@@ -430,10 +433,11 @@ export default function IspOwnerDashboard() {
 
                     <p
                       className="fw-700"
-                      data-bs-toggle="modal"
-                      data-bs-target="#expiredCustomer"
                       style={{ fontSize: "20px", cursor: "pointer" }}
-                      onClick={() => setStatus("expired")}
+                      onClick={() => {
+                        setStatus("expired");
+                        setShow(true);
+                      }}
                     >
                       {t("expired")} &nbsp;
                       <span className="text-secondary fw-bold">
@@ -539,10 +543,11 @@ export default function IspOwnerDashboard() {
                   <div className="chartSection">
                     <p
                       className="dashboardActive pb-0"
-                      data-bs-toggle="modal"
-                      data-bs-target="#activeCustomer"
                       style={{ fontSize: "16px" }}
-                      onClick={() => setStatus("active")}
+                      onClick={() => {
+                        setStatus("active");
+                        setShow(true);
+                      }}
                     >
                       {t("active")}
                       <h4>{FormatNumber(customerStat.active)}</h4>
@@ -551,10 +556,11 @@ export default function IspOwnerDashboard() {
                     {role === "ispOwner" && (
                       <p
                         className="dashboardActive pb-1"
-                        data-bs-toggle="modal"
-                        data-bs-target="#activeCustomer"
                         style={{ fontSize: "15px" }}
-                        onClick={() => setStatus("active")}
+                        onClick={() => {
+                          setStatus("active");
+                          setShow(true);
+                        }}
                       >
                         {t("active")}
                         &nbsp;
@@ -565,10 +571,11 @@ export default function IspOwnerDashboard() {
                     )}
                     <p
                       className="dashboardData pb-1 pt-0"
-                      data-bs-toggle="modal"
-                      data-bs-target="#inactiveCustomer"
                       style={{ fontSize: "15px", marginBottom: "0px" }}
-                      onClick={() => setStatus("inactive")}
+                      onClick={() => {
+                        setStatus("inactive");
+                        setShow(true);
+                      }}
                     >
                       {t("in active")}: {FormatNumber(customerStat.inactive)}{" "}
                       &nbsp;
@@ -580,10 +587,11 @@ export default function IspOwnerDashboard() {
                     </p>
                     <p
                       className="dashboardData pb-1"
-                      data-bs-toggle="modal"
-                      data-bs-target="#expiredCustomer"
                       style={{ fontSize: "15px", paddingTop: "0px" }}
-                      onClick={() => setStatus("expired")}
+                      onClick={() => {
+                        setStatus("expired");
+                        setShow(true);
+                      }}
                     >
                       {t("expired")}: {FormatNumber(customerStat.expired)}{" "}
                       &nbsp;
@@ -606,10 +614,11 @@ export default function IspOwnerDashboard() {
                   <div className="chartSection">
                     <p
                       className="dashboardUnpaid pb-0"
-                      data-bs-toggle="modal"
-                      data-bs-target="#paid"
                       style={{ fontSize: "16px" }}
-                      onClick={() => setStatus("paid")}
+                      onClick={() => {
+                        setStatus("paid");
+                        setShow(true);
+                      }}
                     >
                       {t("paid")}
                       <h4>{FormatNumber(customerStat.paid)}</h4>
@@ -617,23 +626,25 @@ export default function IspOwnerDashboard() {
 
                     <p
                       className="dashboardUnpaid pb-1"
-                      data-bs-toggle="modal"
-                      data-bs-target="#unPaid"
                       style={{ fontSize: "15px" }}
-                      onClick={() => setStatus("unpaid")}
+                      onClick={() => {
+                        setStatus("unpaid");
+                        setShow(true);
+                      }}
                     >
                       {t("unpaid")}: {FormatNumber(customerStat.unpaid)}
                     </p>
 
                     <p
                       className="dashboardUnpaid pb-1"
-                      data-bs-toggle="modal"
-                      data-bs-target="#freeCustomer"
                       style={{
                         fontSize: "15px",
                         paddingTop: "0px",
                       }}
-                      onClick={() => setStatus("freeCustomer")}
+                      onClick={() => {
+                        setStatus("freeCustomer");
+                        setShow(true);
+                      }}
                     >
                       {t("freeCustomer")}:
                       {FormatNumber(customerStat.freeCustomer)}
@@ -674,8 +685,8 @@ export default function IspOwnerDashboard() {
                               className="dashboardCollection pb-0"
                               style={{ fontSize: "15px" }}
                               onClick={() => {
-                                setDiscountShow(true);
                                 setStatus("discount");
+                                setShow(true);
                               }}
                             >
                               {t("discount")}:&nbsp;
@@ -1234,42 +1245,89 @@ export default function IspOwnerDashboard() {
         </FontColor>
       </div>
 
-      <Inactive
-        status={status}
-        ispOwnerId={ispOwnerId}
-        year={filterDate.getFullYear()}
-        month={filterDate.getMonth() + 1}
-      />
-      <Expired
-        status={status}
-        ispOwnerId={ispOwnerId}
-        year={filterDate.getFullYear()}
-        month={filterDate.getMonth() + 1}
-      />
-      <FreeCustomer
-        status={status}
-        ispOwnerId={ispOwnerId}
-        year={filterDate.getFullYear()}
-        month={filterDate.getMonth() + 1}
-      />
-      <Paid
-        status={status}
-        ispOwnerId={ispOwnerId}
-        year={filterDate.getFullYear()}
-        month={filterDate.getMonth() + 1}
-      />
-      <Unpaid
-        status={status}
-        ispOwnerId={ispOwnerId}
-        year={filterDate.getFullYear()}
-        month={filterDate.getMonth() + 1}
-      />
-      <Active
-        status={status}
-        ispOwnerId={ispOwnerId}
-        year={filterDate.getFullYear()}
-        month={filterDate.getMonth() + 1}
-      />
+      {/* dashboard modal */}
+
+      {/* all active customers modal */}
+      {status === "active" && (
+        <Active
+          status={status}
+          modalShow={show}
+          setModalShow={setShow}
+          ispOwnerId={ispOwnerId}
+          year={filterDate.getFullYear()}
+          month={filterDate.getMonth() + 1}
+        />
+      )}
+
+      {/* all active customers modal */}
+      {status === "inactive" && (
+        <Inactive
+          status={status}
+          modalShow={show}
+          setModalShow={setShow}
+          ispOwnerId={ispOwnerId}
+          year={filterDate.getFullYear()}
+          month={filterDate.getMonth() + 1}
+        />
+      )}
+
+      {/* all expired customers modal */}
+      {status === "expired" && (
+        <Expired
+          status={status}
+          modalShow={show}
+          setModalShow={setShow}
+          ispOwnerId={ispOwnerId}
+          year={filterDate.getFullYear()}
+          month={filterDate.getMonth() + 1}
+        />
+      )}
+
+      {/* all paid customers modal */}
+      {status === "paid" && (
+        <Paid
+          status={status}
+          modalShow={show}
+          setModalShow={setShow}
+          ispOwnerId={ispOwnerId}
+          year={filterDate.getFullYear()}
+          month={filterDate.getMonth() + 1}
+        />
+      )}
+
+      {/* all unpaid customers modal */}
+      {status === "unpaid" && (
+        <Unpaid
+          status={status}
+          modalShow={show}
+          setModalShow={setShow}
+          ispOwnerId={ispOwnerId}
+          year={filterDate.getFullYear()}
+          month={filterDate.getMonth() + 1}
+        />
+      )}
+
+      {/* owner free customer modal */}
+      {status === "freeCustomer" && (
+        <FreeCustomer
+          status={status}
+          modalShow={show}
+          setModalShow={setShow}
+          ispOwnerId={ispOwnerId}
+          year={filterDate.getFullYear()}
+          month={filterDate.getMonth() + 1}
+        />
+      )}
+      {status === "discount" && (
+        <Discount
+          status={status}
+          modalShow={show}
+          setModalShow={setShow}
+          ispOwnerId={ispOwnerId}
+          year={filterDate.getFullYear()}
+          month={filterDate.getMonth() + 1}
+        />
+      )}
 
       <AllCollector
         status={status}
@@ -1282,15 +1340,6 @@ export default function IspOwnerDashboard() {
         ispOwnerId={ispOwnerId}
         year={filterDate.getFullYear()}
         month={filterDate.getMonth() + 1}
-      />
-
-      <Discount
-        show={discountShow}
-        setShow={setDiscountShow}
-        ispOwnerId={ispOwnerId}
-        year={filterDate.getFullYear()}
-        month={filterDate.getMonth() + 1}
-        status={status}
       />
 
       {/* dashboard netFee bulletin added */}

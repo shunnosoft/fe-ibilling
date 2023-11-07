@@ -1,36 +1,37 @@
 import moment from "moment";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { GeoAlt, Person, Phone, PrinterFill } from "react-bootstrap-icons";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
-import ReactToPrint from "react-to-print";
+import {
+  Badge,
+  Modal,
+  ModalBody,
+  ModalHeader,
+  ModalTitle,
+} from "react-bootstrap";
 
 //internal import
 import FormatNumber from "../../../components/common/NumberFormat";
 import { badge } from "../../../components/common/Utils";
 import Table from "../../../components/table/Table";
 import { getPaidCustomer } from "../../../features/apiCalls";
-import CustomerPdf from "../homePdf/CustomerPdf";
 import PPPoECustomerDetails from "../../Customer/customerCRUD/CustomerDetails";
 import HotspotCustomerDetails from "../../hotspot/customerOperation/CustomerDetails";
 import StaticCustomerDetails from "../../staticCustomer/customerCRUD/CustomerDetails";
-import { Badge } from "react-bootstrap";
+import useISPowner from "../../../hooks/useISPOwner";
+import {
+  getCustomerDayLeft,
+  getCustomerPromiseDate,
+} from "../../Customer/customerCRUD/customerBillDayPromiseDate";
+import PrintOptions from "../../../components/common/PrintOptions";
 
-const Paid = ({ ispOwnerId, month, year, status }) => {
+const Paid = ({ modalShow, setModalShow, status, ispOwnerId, month, year }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const componentRef = useRef();
 
-  // current date
-  const date = new Date();
-
-  // get user role
-  const role = useSelector((state) => state.persistedReducer.auth.role);
-
-  // get user permission
-  const permissions = useSelector(
-    (state) => state.persistedReducer.auth.userData.permissions
-  );
+  // get user & current user data form useISPOwner
+  const { role, permissions } = useISPowner();
 
   // get all packages
   const allPackages = useSelector((state) => state.package.allPackages);
@@ -53,6 +54,14 @@ const Paid = ({ ispOwnerId, month, year, status }) => {
   const [modalStatus, setModalStatus] = useState("");
   const [show, setShow] = useState(false);
 
+  useEffect(() => {
+    status === "paid" &&
+      getPaidCustomer(dispatch, ispOwnerId, year, month, setIsLoading);
+  }, [month, status, year]);
+
+  // modal close handler
+  const closeHandler = () => setModalShow(false);
+
   // customer current package find
   const getCustomerPackage = (value) => {
     if (value?.userType === "hotspot") {
@@ -68,44 +77,40 @@ const Paid = ({ ispOwnerId, month, year, status }) => {
     }
   };
 
-  //find customer billing date before and after promise date
-  const getCustomerPromiseDate = (data) => {
-    const billDate = moment(data?.billingCycle).format("YYYY/MM/DD hh:mm A");
+  // all monthlyFee count
+  const allBill = useMemo(() => {
+    let count = 0;
+    let balanceSum = 0;
+    customer.forEach((item) => {
+      count = count + item.monthlyFee;
+      balanceSum += item.balance;
+    });
+    return { count, balanceSum };
+  }, [customer]);
 
-    const promiseDate = moment(data?.promiseDate).format("YYYY/MM/DD hh:mm A");
+  // custom component monthlyFee tk show
+  const customComponent = (
+    <div
+      className="text-center"
+      style={{ fontSize: "18px", fontWeight: "500", display: "flex" }}
+    >
+      {allBill.count > 0 && (
+        <div>
+          {t("totalBill")}-৳
+          {FormatNumber(allBill.count)}
+        </div>
+      )}
+      &nbsp;&nbsp;
+      {allBill.balanceSum > 0 && (
+        <div>
+          {t("totalBalance")}:-৳
+          {FormatNumber(allBill.balanceSum)}
+        </div>
+      )}
+    </div>
+  );
 
-    var promiseDateChange;
-
-    if (billDate < promiseDate) {
-      promiseDateChange = "danger";
-    } else if (billDate > promiseDate) {
-      promiseDateChange = "warning";
-    }
-
-    return { billDate, promiseDate, promiseDateChange };
-  };
-
-  // customer day left filtering in current date
-  const getCustomerDayLeft = (billDate) => {
-    //current day
-    const currentDay = new Date(
-      new Date(moment(date).format("YYYY-MM-DD"))
-    ).getTime();
-
-    // // billing day
-    const billDay = new Date(
-      new Date(moment(billDate).format("YYYY-MM-DD"))
-    ).getTime();
-
-    const diffInMs = billDay - currentDay;
-
-    // // bill day left
-    const dayLeft = Math.round(diffInMs / (1000 * 60 * 60 * 24));
-
-    return dayLeft;
-  };
-
-  const column = React.useMemo(
+  const column = useMemo(
     () => [
       {
         width: "6%",
@@ -268,60 +273,13 @@ const Paid = ({ ispOwnerId, month, year, status }) => {
     [t, allPackages, hotsPackage]
   );
 
-  useEffect(() => {
-    status === "paid" &&
-      getPaidCustomer(dispatch, ispOwnerId, year, month, setIsLoading);
-  }, [month, status, year]);
-
-  // all monthlyFee count
-  const allBill = useMemo(() => {
-    let count = 0;
-    let balanceSum = 0;
-    customer.forEach((item) => {
-      count = count + item.monthlyFee;
-      balanceSum += item.balance;
-    });
-    return { count, balanceSum };
-  }, [customer]);
-
-  // custom component monthlyFee tk show
-  const customComponent = (
-    <div
-      className="text-center"
-      style={{ fontSize: "18px", fontWeight: "500", display: "flex" }}
-    >
-      {allBill.count > 0 && (
-        <div>
-          {t("totalBill")}-৳
-          {FormatNumber(allBill.count)}
-        </div>
-      )}
-      &nbsp;&nbsp;
-      {allBill.balanceSum > 0 && (
-        <div>
-          {t("totalBalance")}:-৳
-          {FormatNumber(allBill.balanceSum)}
-        </div>
-      )}
-    </div>
-  );
-
   return (
     <>
-      <div
-        className="modal fade"
-        id="paid"
-        tabIndex="-1"
-        aria-labelledby="customerModalDetails"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog modal-dialog-scrollable modal-xl">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLabel">
-                {t("paidCustomer")}
-              </h5>
-
+      <Modal show={modalShow} onHide={closeHandler} keyboard={false} size="xl">
+        <ModalHeader closeButton>
+          <ModalTitle>
+            <div className="d-flex align-items-center">
+              <h5 className="text-secondary">{t("paidCustomer")}</h5>
               <div className="collectorWrapper pt-0">
                 <div
                   className="addAndSettingIcon"
@@ -330,67 +288,66 @@ const Paid = ({ ispOwnerId, month, year, status }) => {
                     textAlign: "end",
                   }}
                 >
-                  <ReactToPrint
-                    documentTitle="Customer Overview"
-                    trigger={() => (
-                      <PrinterFill
-                        // title={t("print")}
-                        className="addcutmButton"
-                        style={{ background: "#0EB96A", color: "white" }}
-                      />
-                    )}
-                    content={() => componentRef.current}
+                  <PrinterFill
+                    title={t("print")}
+                    className="addcutmButton"
+                    style={{ background: "#0EB96A", color: "white" }}
+                    onClick={() => {
+                      setModalStatus("print");
+                      setShow(true);
+                    }}
                   />
                 </div>
               </div>
-
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
             </div>
-            <div className="modal-body">
-              {customer && (
-                <>
-                  <Table
-                    isLoading={isLoading}
-                    customComponent={
-                      role === "ispOwner" ||
-                      permissions?.dashboardCollectionData
-                        ? customComponent
-                        : ""
-                    }
-                    columns={column}
-                    data={customer}
-                  ></Table>
+          </ModalTitle>
+        </ModalHeader>
+        <ModalBody>
+          {customer && (
+            <Table
+              isLoading={isLoading}
+              customComponent={
+                role === "ispOwner" || permissions?.dashboardCollectionData
+                  ? customComponent
+                  : ""
+              }
+              columns={column}
+              data={customer}
+            ></Table>
+          )}
+        </ModalBody>
+      </Modal>
 
-                  <div className="d-none">
-                    <CustomerPdf customerData={customer} ref={componentRef} />
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* paid customer modals */}
+
+      {/* all customer print option modal */}
+      {modalStatus === "print" && (
+        <PrintOptions
+          show={show}
+          setShow={setShow}
+          tableData={customer}
+          page={"customer"}
+        />
+      )}
 
       {/* customer details modal by user type  */}
-
-      {modalStatus === "pppoe" ? (
+      {modalStatus === "pppoe" && (
         <PPPoECustomerDetails
           show={show}
           setShow={setShow}
           customerId={customerId}
         />
-      ) : modalStatus === "hotspot" ? (
+      )}
+      {modalStatus === "hotspot" && (
         <HotspotCustomerDetails
           show={show}
           setShow={setShow}
           customerId={customerId}
         />
-      ) : (
+      )}
+      {(modalStatus === "simple-queue" ||
+        modalStatus === "firewall-queue" ||
+        modalStatus === "core-queue") && (
         <StaticCustomerDetails
           show={show}
           setShow={setShow}

@@ -295,7 +295,14 @@ const CustomerBillCollect = ({ single, status }) => {
       sendingData.month = monthValues.join(",");
     }
 
-    billCollect(dispatch, sendingData, setLoading, resetForm);
+    billCollect(
+      dispatch,
+      sendingData,
+      setLoading,
+      resetForm,
+      "setResponseData",
+      "setTest"
+    );
 
     setAmount(data.amount);
   };

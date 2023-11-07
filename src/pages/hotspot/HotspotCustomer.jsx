@@ -15,7 +15,6 @@ import {
   PersonFill,
   PersonPlusFill,
   Phone,
-  PhoneFill,
   PrinterFill,
   ThreeDots,
 } from "react-bootstrap-icons";
@@ -25,7 +24,6 @@ import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import { Accordion, Card, Collapse } from "react-bootstrap";
 import { CSVLink } from "react-csv";
-import ReactToPrint from "react-to-print";
 import DatePicker from "react-datepicker";
 
 // internal import
@@ -47,7 +45,6 @@ import RechargeCustomer from "./customerOperation/RechargeCustomer";
 import CustomersNumber from "../Customer/CustomersNumber";
 import IndeterminateCheckbox from "../../components/table/bulkCheckbox";
 import Loader from "../../components/common/Loader";
-import HotspotPdf from "./customerOperation/HotspotPdf";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { fetchMikrotik, getArea } from "../../features/apiCalls";
@@ -58,6 +55,7 @@ import BulkPaymentStatusEdit from "../Customer/customerCRUD/bulkOpration/BulkPay
 import BulkCustomerMessage from "../Customer/customerCRUD/bulkOpration/BulkCustomerMessage";
 import HotspotCustomerReport from "./hotspotBulkOperation/modal/HotspotCustomerReport";
 import CustomerDetails from "./customerOperation/CustomerDetails";
+import PrintOptions from "../../components/common/PrintOptions";
 
 const HotspotCustomer = () => {
   const dispatch = useDispatch();
@@ -828,8 +826,7 @@ const HotspotCustomer = () => {
                               </div>
                             )}
 
-                            {((permission?.viewCustomerList &&
-                              role === "manager") ||
+                            {(permission?.viewCustomerList ||
                               role === "ispOwner") && (
                               <>
                                 <CSVLink
@@ -841,16 +838,16 @@ const HotspotCustomer = () => {
                                   <FiletypeCsv className="addcutmButton" />
                                 </CSVLink>
 
-                                <ReactToPrint
-                                  documentTitle={t("customerReport")}
-                                  trigger={() => (
-                                    <PrinterFill
-                                      title={t("print")}
-                                      className="addcutmButton"
-                                    />
-                                  )}
-                                  content={() => componentRef.current}
-                                />
+                                <div className="addAndSettingIcon">
+                                  <PrinterFill
+                                    title={t("print")}
+                                    className="addcutmButton"
+                                    onClick={() => {
+                                      setModalStatus("print");
+                                      setShow(true);
+                                    }}
+                                  />
+                                </div>
                               </>
                             )}
                           </div>
@@ -858,7 +855,7 @@ const HotspotCustomer = () => {
                       </div>
                     </Collapse>
 
-                    {!open && role !== "collector" && (
+                    {!open && (
                       <ArrowBarLeft
                         className="ms-1"
                         size={34}
@@ -869,7 +866,7 @@ const HotspotCustomer = () => {
                       />
                     )}
 
-                    {open && role !== "collector" && (
+                    {open && (
                       <ArrowBarRight
                         className="ms-1"
                         size={34}
@@ -949,14 +946,6 @@ const HotspotCustomer = () => {
                     </Accordion>
 
                     <div className="collectorWrapper pb-2">
-                      <div style={{ display: "none" }}>
-                        <HotspotPdf
-                          filterData={filterData}
-                          currentCustomers={hotspotCustomers}
-                          ref={componentRef}
-                        />
-                      </div>
-
                       <Table
                         isLoading={getCustomerLoading}
                         customComponent={customComponent}
@@ -1020,6 +1009,17 @@ const HotspotCustomer = () => {
           show={show}
           setShow={setShow}
           customerData={customerData}
+        />
+      )}
+
+      {/* print option modal */}
+      {modalStatus === "print" && (
+        <PrintOptions
+          show={show}
+          setShow={setShow}
+          filterData={filterData}
+          tableData={tableData}
+          page={"customer"}
         />
       )}
 

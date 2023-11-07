@@ -1443,32 +1443,30 @@ const PPPOECustomer = () => {
                               </div>
                             )}
 
-                            {((permission?.viewCustomerList &&
-                              role === "manager") ||
+                            {(permission?.viewCustomerList ||
                               role === "ispOwner") && (
                               <>
-                                <>
-                                  <div className="addAndSettingIcon">
-                                    <CSVLink
-                                      data={customerForCsVTableInfo}
-                                      filename={ispOwnerData.company}
-                                      headers={customerForCsVTableInfoHeader}
-                                      title="Customer Report"
-                                    >
-                                      <FiletypeCsv className="addcutmButton" />
-                                    </CSVLink>
-                                  </div>
-                                  <div className="addAndSettingIcon">
-                                    <CSVLink
-                                      data={customerForCsV}
-                                      filename={ispOwnerData.company}
-                                      headers={headers}
-                                      title={t("downloadBTRCreport")}
-                                    >
-                                      <FileExcelFill className="addcutmButton" />
-                                    </CSVLink>
-                                  </div>
-                                </>
+                                <div className="addAndSettingIcon">
+                                  <CSVLink
+                                    data={customerForCsVTableInfo}
+                                    filename={ispOwnerData.company}
+                                    headers={customerForCsVTableInfoHeader}
+                                    title="Customer Report"
+                                  >
+                                    <FiletypeCsv className="addcutmButton" />
+                                  </CSVLink>
+                                </div>
+                                
+                                <div className="addAndSettingIcon">
+                                  <CSVLink
+                                    data={customerForCsV}
+                                    filename={ispOwnerData.company}
+                                    headers={headers}
+                                    title={t("downloadBTRCreport")}
+                                  >
+                                    <FileExcelFill className="addcutmButton" />
+                                  </CSVLink>
+                                </div>
 
                                 <div className="addAndSettingIcon">
                                   <PrinterFill
@@ -1484,7 +1482,7 @@ const PPPOECustomer = () => {
                       </div>
                     </Collapse>
 
-                    {!open && role !== "collector" && (
+                    {!open && (
                       <ArrowBarLeft
                         className="ms-1"
                         size={34}
@@ -1495,7 +1493,7 @@ const PPPOECustomer = () => {
                       />
                     )}
 
-                    {open && role !== "collector" && (
+                    {open && (
                       <ArrowBarRight
                         className="ms-1"
                         size={34}
@@ -2216,7 +2214,7 @@ const PPPOECustomer = () => {
       <PrintOptions
         show={modalShow}
         setShow={setModalShow}
-        printOptions={printOption}
+        filterData={filterData}
         tableData={tableData}
         page={"customer"}
       />

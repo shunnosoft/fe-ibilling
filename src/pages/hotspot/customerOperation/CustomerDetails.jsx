@@ -110,7 +110,7 @@ const CustomerDetails = ({ show, setShow, customerId }) => {
   return (
     <>
       <Modal
-        show={show}
+        show={data && show}
         onHide={handleClose}
         backdrop="static"
         keyboard={false}

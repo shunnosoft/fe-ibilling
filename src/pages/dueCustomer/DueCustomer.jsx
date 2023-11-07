@@ -12,17 +12,18 @@ import { GeoAlt, Person, Phone } from "react-bootstrap-icons";
 import { getDueCustomer } from "../../features/apiCalls";
 import Table from "../../components/table/Table";
 import { badge } from "../../components/common/Utils";
-import OtherCustomerPrint from "../newCustomer/customerPrint/OtherCustomerPrint";
 import PPPoECustomerDetails from "../Customer/customerCRUD/CustomerDetails";
 import HotspotCustomerDetails from "../hotspot/customerOperation/CustomerDetails";
 import StaticCustomerDetails from "../staticCustomer/customerCRUD/CustomerDetails";
+import PrintOptions from "../../components/common/PrintOptions";
 
 const DueCustomer = ({
   isDueLoading,
   setIsDueLoading,
   activeKeys,
   csvLinkDown,
-  componentRef,
+  modal,
+  setModal,
 }) => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
@@ -417,21 +418,24 @@ const DueCustomer = ({
 
         <div className="addCollector">
           <div style={{ display: "none" }}>
-            <OtherCustomerPrint
+            <PrintOptions
+              show={modal}
+              setShow={setModal}
               filterData={filterData}
-              currentCustomers={customers}
-              ref={componentRef}
+              tableData={customers}
+              page={"customer"}
             />
-          </div>
-          <div style={{ display: "none" }}>
-            <CSVLink
-              filename={ispOwnerData.company}
-              headers={customerForCsVTableInfoHeader}
-              data={customerForCsVTableInfo}
-              title={t("customerReport")}
-              ref={csvLinkDown}
-              target="_blank"
-            ></CSVLink>
+
+            <div>
+              <CSVLink
+                filename={ispOwnerData.company}
+                headers={customerForCsVTableInfoHeader}
+                data={customerForCsVTableInfo}
+                title={t("customerReport")}
+                ref={csvLinkDown}
+                target="_blank"
+              ></CSVLink>
+            </div>
           </div>
 
           <Table

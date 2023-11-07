@@ -14,7 +14,14 @@ import ReactToPrint from "react-to-print";
 import { printOptionData } from "../../pages/Customer/customerCRUD/printOptionData";
 import PrintCustomer from "../../pages/Customer/customerPDF";
 
-const PrintOptions = ({ show, setShow, printOptions, tableData, page }) => {
+const PrintOptions = ({
+  show,
+  setShow,
+  filterData,
+  tableData,
+  page,
+  printOptions,
+}) => {
   const { t } = useTranslation();
   const componentRef = useRef();
 
@@ -27,12 +34,14 @@ const PrintOptions = ({ show, setShow, printOptions, tableData, page }) => {
   // set customer print options in state
   useEffect(() => {
     if (page === "customer") {
-      const option = [...printOptionData, ...printOptions];
-      setPrintOption(option);
+      setPrintOption(printOptionData?.customer);
     } else {
-      setPrintOption(printOptionData);
+      setPrintOption(printOptionData?.report);
     }
   }, [page]);
+
+  //modal close handle
+  const closeHandler = () => setShow(false);
 
   //print option controller handler
   const printOptionsController = ({ target }) => {
@@ -54,7 +63,7 @@ const PrintOptions = ({ show, setShow, printOptions, tableData, page }) => {
     <>
       <Modal
         show={show}
-        onHide={() => setShow(false)}
+        onHide={closeHandler}
         backdrop="static"
         keyboard={false}
         size="md"
@@ -67,7 +76,7 @@ const PrintOptions = ({ show, setShow, printOptions, tableData, page }) => {
         </ModalHeader>
         <ModalBody>
           {/* all report option checked */}
-          <div className="container displayGrid3">
+          <div className="displayGrid3">
             {printOption?.map((item) => (
               <div className="form-check">
                 <input
@@ -114,15 +123,13 @@ const PrintOptions = ({ show, setShow, printOptions, tableData, page }) => {
           )}
 
           {/* onclick report print handle */}
-          <ReactToPrint
-            documentTitle={t("billReport")}
-            trigger={() => (
-              <Button onClick={() => setShow(false)} variant="primary">
-                {t("print")}
-              </Button>
-            )}
-            content={() => componentRef.current}
-          />
+          <div onClick={closeHandler}>
+            <ReactToPrint
+              documentTitle={t("print")}
+              trigger={() => <Button variant="primary">{t("print")}</Button>}
+              content={() => componentRef.current}
+            />
+          </div>
         </ModalFooter>
       </Modal>
 
@@ -132,6 +139,7 @@ const PrintOptions = ({ show, setShow, printOptions, tableData, page }) => {
             ref={componentRef}
             page={page}
             printCopy={printCopy}
+            filterData={filterData}
             currentCustomers={tableData}
             printOptions={printOption}
           />

@@ -28,6 +28,7 @@ import {
   getDueCustomer,
   getInactiveCustomer,
   getNewCustomer,
+  getPPPoEPackage,
 } from "../../features/apiCalls";
 import DueCustomer from "../dueCustomer/DueCustomer";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
@@ -66,6 +67,9 @@ const OtherCustomer = () => {
   const [open, setOpen] = useState(false);
   const [packageLoading, setPackageLoading] = useState(false);
 
+  // modal handler
+  const [show, setShow] = useState(false);
+
   // filter Accordion handle state
   const [activeKeys, setActiveKeys] = useState("");
 
@@ -100,8 +104,11 @@ const OtherCustomer = () => {
     // fatch mikrotik
     fetchMikrotik(dispatch, ispOwner, setPackageLoading);
 
-    // get all package
+    //get all customer package
     getAllPackages(dispatch, ispOwner, setPackageLoading);
+
+    // get pppoe package api call
+    getPPPoEPackage(dispatch, ispOwner, setPackageLoading);
 
     // get hotspot package api call
     getHotspotPackage(dispatch, ispOwner, setPackageLoading);
@@ -168,15 +175,10 @@ const OtherCustomer = () => {
                             </div>
 
                             <div className="addAndSettingIcon">
-                              <ReactToPrint
-                                documentTitle="report"
-                                trigger={() => (
-                                  <PrinterFill
-                                    title={t("print")}
-                                    className="addcutmButton"
-                                  />
-                                )}
-                                content={() => componentRef.current}
+                              <PrinterFill
+                                title={t("print")}
+                                className="addcutmButton"
+                                onClick={() => setShow(true)}
                               />
                             </div>
                           </div>
@@ -184,7 +186,7 @@ const OtherCustomer = () => {
                       </div>
                     </Collapse>
 
-                    {!open && role !== "collector" && (
+                    {!open && (
                       <ArrowBarLeft
                         className="ms-1"
                         size={34}
@@ -195,7 +197,7 @@ const OtherCustomer = () => {
                       />
                     )}
 
-                    {open && role !== "collector" && (
+                    {open && (
                       <ArrowBarRight
                         className="ms-1"
                         size={34}
@@ -221,7 +223,8 @@ const OtherCustomer = () => {
                         setIsNewLoading={setIsNewLoading}
                         activeKeys={activeKeys}
                         csvLinkDown={csvLink}
-                        componentRef={componentRef}
+                        modal={show}
+                        setModal={setShow}
                       />
                     )}
                   </Tab>
@@ -235,7 +238,8 @@ const OtherCustomer = () => {
                         setIsInactiveLoading={setIsInactiveLoading}
                         activeKeys={activeKeys}
                         csvLinkDown={csvLink}
-                        componentRef={componentRef}
+                        modal={show}
+                        setModal={setShow}
                       />
                     )}
                   </Tab>
@@ -246,7 +250,8 @@ const OtherCustomer = () => {
                         setIsDueLoading={setIsDueLoading}
                         activeKeys={activeKeys}
                         csvLinkDown={csvLink}
-                        componentRef={componentRef}
+                        modal={show}
+                        setModal={setShow}
                       />
                     )}
                   </Tab>

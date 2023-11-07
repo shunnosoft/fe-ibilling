@@ -5,25 +5,26 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import DatePicker from "react-datepicker";
-import { Accordion, Badge } from "react-bootstrap";
+import { Accordion } from "react-bootstrap";
 import { CSVLink } from "react-csv";
-import { GeoAlt, Person, Phone } from "react-bootstrap-icons";
+import { GeoAlt, Person, PersonFillCheck, Phone } from "react-bootstrap-icons";
 
 // internal import
 import { getNewCustomer } from "../../features/apiCalls";
 import Table from "../../components/table/Table";
 import { badge } from "../../components/common/Utils";
-import OtherCustomerPrint from "./customerPrint/OtherCustomerPrint";
 import PPPoECustomerDetails from "../Customer/customerCRUD/CustomerDetails";
 import HotspotCustomerDetails from "../hotspot/customerOperation/CustomerDetails";
 import StaticCustomerDetails from "../staticCustomer/customerCRUD/CustomerDetails";
+import PrintOptions from "../../components/common/PrintOptions";
 
 const NewCustomer = ({
   isNewLoading,
   setIsNewLoading,
   activeKeys,
   csvLinkDown,
-  componentRef,
+  modal,
+  setModal,
 }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -520,10 +521,12 @@ const NewCustomer = ({
 
         <div className="addCollector">
           <div style={{ display: "none" }}>
-            <OtherCustomerPrint
+            <PrintOptions
+              show={modal}
+              setShow={setModal}
               filterData={filterData}
-              currentCustomers={tableData}
-              ref={componentRef}
+              tableData={tableData}
+              page={"customer"}
             />
 
             <div>

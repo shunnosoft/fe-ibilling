@@ -1,11 +1,12 @@
-import React, { useMemo } from "react";
+import React, { forwardRef, useMemo } from "react";
 import moment from "moment";
 import FormatNumber from "../../components/common/NumberFormat";
 import { badge } from "../../components/common/Utils";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
+import { GeoAlt, Phone } from "react-bootstrap-icons";
 
-const PrintCustomer = React.forwardRef((props, ref) => {
+const PrintCustomer = forwardRef((props, ref) => {
   const { t } = useTranslation();
   const { page, printCopy, currentCustomers, filterData, printOptions } = props;
 
@@ -18,6 +19,16 @@ const PrintCustomer = React.forwardRef((props, ref) => {
       ? state.persistedReducer.auth.ispOwnerData
       : state.persistedReducer.auth.userData
   );
+
+  // get all packages
+  const allPackages = useSelector((state) => state.package.allPackages);
+
+  //get pppoe package
+  const ppoePackage = useSelector((state) => state?.package?.pppoePackages);
+
+  // get hotspot package
+  const hotsPackage = useSelector((state) => state.hotspot?.package);
+
   //total monthly fee and due calculation
   const monthlyFee = useMemo(() => {
     let totalMonthlyFee = 0;
@@ -30,6 +41,26 @@ const PrintCustomer = React.forwardRef((props, ref) => {
 
     return { totalMonthlyFee };
   }, [page, currentCustomers]);
+
+  // customer current package find
+  const getCustomerPackage = (value) => {
+    if (value?.userType === "hotspot") {
+      const findPack = hotsPackage.find((item) =>
+        item.id.includes(value?.hotspotPackage)
+      );
+      return findPack;
+    } else if (value?.userType === "pppoe") {
+      const findPack = ppoePackage.find((item) =>
+        item.id.includes(value?.mikrotikPackage)
+      );
+      return findPack;
+    } else {
+      const findPack = allPackages.find((item) =>
+        item.id.includes(value?.mikrotikPackage)
+      );
+      return findPack;
+    }
+  };
 
   return (
     <div ref={ref}>
@@ -53,20 +84,48 @@ const PrintCustomer = React.forwardRef((props, ref) => {
               )}
             </div>
           </div>
-          <ul className="d-flex justify-content-evenly filter_list">
-            <li>
-              {t("area")} : {filterData?.area}
-            </li>
-            <li>
-              {t("subArea")} : {filterData?.subArea}
-            </li>
-            <li>
-              {t("status")} : {filterData?.status}
-            </li>
-            <li>
-              {t("paymentStatus")} : {filterData?.payment}
-            </li>
-          </ul>
+          {filterData && (
+            <ul className="d-flex justify-content-evenly filter_list">
+              {filterData?.area && (
+                <li>
+                  {t("area")} : {filterData?.area}
+                </li>
+              )}
+              {filterData?.subArea && (
+                <li>
+                  {t("subArea")} : {filterData?.subArea}
+                </li>
+              )}
+              {filterData?.status && (
+                <li>
+                  {t("status")} : {filterData?.status}
+                </li>
+              )}
+              {filterData?.payment && (
+                <li>
+                  {t("paymentStatus")} : {filterData?.payment}
+                </li>
+              )}
+              {filterData?.startDate && (
+                <li>
+                  {t("startDate")} :
+                  {moment(filterData?.startDate).format("DD-MM-YYYY")}
+                </li>
+              )}
+              {filterData?.endDate && (
+                <li>
+                  {t("endDate")} :
+                  {moment(filterData?.endDate).format("DD-MM-YYYY")}
+                </li>
+              )}
+              {filterData?.customerType && (
+                <li>
+                  {t("customerType")} : {filterData?.customerType}
+                </li>
+              )}
+            </ul>
+          )}
+
           <ul className="d-flex justify-content-evenly filter_list">
             <li>
               {t("totalCustomer")} : {currentCustomers.length}
@@ -93,47 +152,76 @@ const PrintCustomer = React.forwardRef((props, ref) => {
               {page === "customer" &&
                 currentCustomers?.map(
                   (val, key) =>
-                    printOptions.length > 0 && (
+                    printOptions?.length > 0 && (
                       <tr key={key} id={val.id}>
                         {printOptions[0].checked && (
-                          <td className="prin_td">{val.customerId}</td>
+                          <td className="prin_td">{val?.customerId}</td>
                         )}
                         {printOptions[1].checked && (
-                          <td className="prin_td">{val.name}</td>
+                          <>
+                            <td className="prin_td">
+                              <p>{val.name}</p>
+                              <p>
+                                {val?.userType === "pppoe"
+                                  ? val?.pppoe?.name
+                                  : val?.userType === "firewall-queue"
+                                  ? val?.queue?.address
+                                  : val?.userType === "core-queue"
+                                  ? val?.queue?.srcAddress
+                                  : val?.userType === "simple-queue"
+                                  ? val?.queue?.target
+                                  : val?.hotspot?.name}
+                              </p>
+                            </td>
+                          </>
                         )}
                         {printOptions[2].checked && (
-                          <td className="prin_td">{val.address}</td>
+                          <td className="prin_td">
+                            <p>
+                              <Phone className="text-info" />
+                              {val?.mobile ? val?.mobile : "N/A"}
+                            </p>
+
+                            <p>
+                              <GeoAlt /> {val?.address ? val?.address : "N/A"}
+                            </p>
+                          </td>
                         )}
                         {printOptions[3].checked && (
-                          <td className="prin_td">{val.mobile}</td>
+                          <td className="prin_td">
+                            {val && getCustomerPackage(val)?.name}
+                          </td>
                         )}
                         {printOptions[4].checked && (
-                          <td className="prin_td">{val.pppoe.name}</td>
+                          <td className="prin_td">
+                            <p>{val.monthlyFee}</p>
+                            <p
+                              className={`text-${
+                                val?.balance > -1 ? "success" : "danger"
+                              }`}
+                            >
+                              {val?.balance}
+                            </p>
+                          </td>
                         )}
                         {printOptions[5].checked && (
-                          <td className="prin_td">{badge(val.status)}</td>
+                          <td className="prin_td">
+                            {moment(val?.billingCycle).format(
+                              "DD-MM-YYYY hh:mm A"
+                            )}
+                          </td>
                         )}
                         {printOptions[6].checked && (
                           <td className="prin_td">
-                            {badge(val.paymentStatus)}
+                            <p>{badge(val?.paymentStatus)}</p>
+                            <p>{badge(val?.status)}</p>
                           </td>
                         )}
                         {printOptions[7].checked && (
-                          <td className="prin_td">{val.pppoe.profile}</td>
-                        )}
-                        {printOptions[8].checked && (
                           <td className="prin_td">
-                            {FormatNumber(val.monthlyFee)}
-                          </td>
-                        )}
-                        {printOptions[9].checked && (
-                          <td className="prin_td">
-                            <strong>{FormatNumber(val.balance)}</strong>
-                          </td>
-                        )}
-                        {printOptions[10].checked && (
-                          <td className="prin_td">
-                            {moment(val.billingCycle).format("DD-MM-YYYY")}
+                            {moment(val?.createdAt).format(
+                              "DD-MM-YYYY hh:mm A"
+                            )}
                           </td>
                         )}
                       </tr>
