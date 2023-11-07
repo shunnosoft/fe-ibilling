@@ -157,6 +157,13 @@ export const resellerPermissions = (permission, bpSettings) => {
       isChecked: permission?.customerDelete,
       disabled: false,
     },
+    {
+      id: 23,
+      label: "Daily Reseller Customer Auto Connection",
+      value: "dailyResellerCustomerAutoConnection",
+      isChecked: permission?.dailyResellerCustomerAutoConnection,
+      disabled: false,
+    },
   ];
 
   const permissionBn = [
@@ -316,6 +323,13 @@ export const resellerPermissions = (permission, bpSettings) => {
       label: "কাস্টমার ডিলিট",
       value: "customerDelete",
       isChecked: permission?.customerDelete,
+      disabled: false,
+    },
+    {
+      id: 23,
+      label: "দৈনিক রিসেলার কাস্টমার অটো কানেকশন",
+      value: "dailyResellerCustomerAutoConnection",
+      isChecked: permission?.dailyResellerCustomerAutoConnection,
       disabled: false,
     },
   ];
