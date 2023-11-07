@@ -43,11 +43,11 @@ const ResellerCollection = () => {
   const dispatch = useDispatch();
   const componentRef = useRef();
 
-  // current date set
-  let lastDate = new Date();
-  let firstDate = new Date(lastDate.getFullYear(), lastDate.getMonth(), 1);
-  firstDate.setHours(0, 0, 0, 0);
-  lastDate.setHours(23, 59, 59, 999);
+  var today = new Date();
+  var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+
+  firstDay.setHours(0, 0, 0, 0);
+  today.setHours(23, 59, 59, 999);
 
   // get isp owner id
   const ispOwnerId = useSelector(
@@ -76,13 +76,13 @@ const ResellerCollection = () => {
   const [packageLoading, setPackageLoading] = useState(false);
 
   //reseller id state
-  const [resellerId, setResellerId] = useState("");
+  const [resellerId, setResellerId] = useState(reseller[0]?.id);
 
   // filter Accordion handle state
   const [activeKeys, setActiveKeys] = useState("");
 
   // reseller customer collection main data state
-  const [currentData, setCurrentData] = useState(collectionReport);
+  const [currentData, setCurrentData] = useState([]);
 
   //payment type state
   const [paymentType, setPaymentType] = useState("");
@@ -94,10 +94,66 @@ const ResellerCollection = () => {
   // note state
   const [note, setNote] = useState("");
 
-  // set date state
-  const [startDate, setStartDate] = useState(firstDate);
-  const [endDate, setEndDate] = useState(lastDate);
+  // table card handle
   const [open, setOpen] = useState(false);
+
+  // filter date state
+  const [filterDate, setFilterDate] = useState(firstDay);
+
+  // curr & priv date state
+  const [startDate, setStartDate] = useState(firstDay);
+  const [endDate, setEndDate] = useState(new Date());
+
+  var selectDate = new Date(filterDate.getFullYear(), filterDate.getMonth(), 1);
+  var lastDate = new Date(
+    filterDate.getFullYear(),
+    filterDate.getMonth() + 1,
+    0
+  );
+
+  useEffect(() => {
+    fetchReseller(dispatch, ispOwnerId, setDataLoader);
+    getAllPackages(dispatch, ispOwnerId, setPackageLoading);
+  }, []);
+
+  useEffect(() => {
+    setResellerId(reseller[0]?.id);
+  }, [reseller]);
+
+  useEffect(() => {
+    setStartDate(selectDate);
+
+    if (lastDate.getMonth() + 1 === today.getMonth() + 1) {
+      setEndDate(today);
+    } else {
+      setEndDate(lastDate);
+    }
+
+    if (filterDate.getMonth() + 1 && resellerId) {
+      resellerCustomerReport(
+        dispatch,
+        resellerId,
+        filterDate.getFullYear(),
+        filterDate.getMonth() + 1,
+        setIsLoading
+      );
+    }
+  }, [filterDate, resellerId]);
+
+  useEffect(() => {
+    setCurrentData(collectionReport);
+  }, [collectionReport]);
+
+  //reload handler
+  const reloadHandler = () => {
+    resellerCustomerReport(
+      dispatch,
+      resellerId,
+      filterDate.getFullYear(),
+      filterDate.getMonth() + 1,
+      setIsLoading
+    );
+  };
 
   //filter handler
   const filterHandler = () => {
@@ -287,47 +343,6 @@ const ResellerCollection = () => {
     [t, allPackages]
   );
 
-  //reload handler
-  const reloadHandler = () => {
-    resellerCustomerReport(dispatch, setIsLoading, resellerId);
-  };
-
-  useEffect(() => {
-    setResellerId(reseller[0]?.id);
-  }, [reseller]);
-
-  useEffect(() => {
-    fetchReseller(dispatch, ispOwnerId, setDataLoader);
-    getAllPackages(dispatch, ispOwnerId, setPackageLoading);
-  }, []);
-
-  useEffect(() => {
-    if (resellerId) {
-      resellerCustomerReport(dispatch, setIsLoading, resellerId);
-    }
-  }, [resellerId]);
-
-  useEffect(() => {
-    var initialToday = new Date();
-    var initialFirst = new Date(
-      initialToday.getFullYear(),
-      initialToday.getMonth(),
-      1
-    );
-    initialToday.setHours(0, 0, 0, 0);
-    initialFirst.setHours(23, 59, 59, 999);
-
-    setCurrentData(
-      collectionReport.filter(
-        (item) =>
-          new Date(moment(item.createdAt).format("YYYY-MM-DD")).getTime() >=
-            new Date(moment(initialFirst).format("YYYY-MM-DD")).getTime() &&
-          new Date(moment(item.createdAt).format("YYYY-MM-DD")).getTime() <=
-            new Date(moment(initialToday).format("YYYY-MM-DD")).getTime()
-      )
-    );
-  }, [collectionReport]);
-
   // set csv header
   const resellerCollectionCsVTableInfoHeader = [
     { label: "Name", key: "name" },
@@ -410,7 +425,6 @@ const ResellerCollection = () => {
       <div>
         {t("ispOwnerCommission")}:
         <span className="fw-bold">
-          {" "}
           ৳ {FormatNumber(totalSum().ispOwnerCommission)}
         </span>
       </div>
@@ -453,7 +467,7 @@ const ResellerCollection = () => {
                         <ArrowClockwise
                           className="arrowClock"
                           title={t("refresh")}
-                          onClick={() => reloadHandler()}
+                          onClick={reloadHandler}
                         />
                       )}
                     </div>
@@ -520,8 +534,21 @@ const ResellerCollection = () => {
                   <Accordion alwaysOpen activeKey={activeKeys}>
                     <Accordion.Item eventKey="filter">
                       <Accordion.Body>
-                        <div className="d-flex justify-content-center">
-                          <div className="col-md-2 form-group mx-2">
+                        <div className="displayGrid6">
+                          <div>
+                            <DatePicker
+                              className="form-control mw-100 mt-0"
+                              selected={filterDate}
+                              onChange={(date) => setFilterDate(date)}
+                              dateFormat="MMM-yyyy"
+                              showMonthYearPicker
+                              showFullMonthYearPicker
+                              maxDate={new Date()}
+                              minDate={new Date(ispOwnerData?.createdAt)}
+                            />
+                          </div>
+
+                          <div>
                             <select
                               className="form-select mt-0 mw-100"
                               id="resellerCollection"
@@ -532,7 +559,8 @@ const ResellerCollection = () => {
                               ))}
                             </select>
                           </div>
-                          <div className="col-md-2 form-group">
+
+                          <div>
                             <select
                               className="form-select mt-0 mw-100"
                               onChange={(e) => setPaymentType(e.target.value)}
@@ -552,18 +580,19 @@ const ResellerCollection = () => {
                             </select>
                           </div>
 
-                          <div className="ms-2 ">
+                          <div>
                             <DatePicker
-                              className="form-control w-140 mt-0"
+                              className="form-control mt-0"
                               selected={startDate}
                               onChange={(date) => setStartDate(date)}
                               dateFormat="MMM dd yyyy"
                               placeholderText={t("selectBillDate")}
                             />
                           </div>
-                          <div className="mx-2 ">
+
+                          <div>
                             <DatePicker
-                              className="form-control w-140 mt-0"
+                              className="form-control mt-0"
                               selected={endDate}
                               onChange={(date) => setEndDate(date)}
                               dateFormat="MMM dd yyyy"
