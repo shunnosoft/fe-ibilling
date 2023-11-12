@@ -26,7 +26,7 @@ const HotspotUser = ({ ispInfo }) => {
       billType: "bill",
       customer: hotspotUser?.id,
       ispOwner: hotspotUser?.ispOwner,
-      user: hotspotUser?.id,
+      user: hotspotUser?.user,
       userType: hotspotUser?.userType,
       medium: ispInfo?.bpSettings?.paymentGateway?.gatewayType,
       paymentStatus: "pending",
@@ -64,7 +64,7 @@ const HotspotUser = ({ ispInfo }) => {
           name: hotspotUser?.name,
           billType: "bill",
           customer: hotspotUser?.id,
-          user: hotspotUser?.id,
+          user: hotspotUser?.user,
           userType: hotspotUser?.userType,
           medium: ispInfo?.bpSettings?.paymentGateway?.gatewayType,
           paymentStatus: "pending",
@@ -99,7 +99,7 @@ const HotspotUser = ({ ispInfo }) => {
             billType: "bill",
             customer: hotspotUser?.id,
             ispOwner: hotspotUser?.ispOwner,
-            user: hotspotUser?.id,
+            user: hotspotUser?.user,
             userType: hotspotUser?.userType,
             medium: ispInfo?.bpSettings?.paymentGateway?.gatewayType,
             paymentStatus: "pending",
@@ -110,7 +110,7 @@ const HotspotUser = ({ ispInfo }) => {
               `${URL.execute}?paymentID=${paymentID}`,
               billData
             );
-            console.log(data);
+
             if (data.bill.paymentStatus === "paid") {
               window.location.href = "/payment/success";
             } else {
@@ -120,12 +120,13 @@ const HotspotUser = ({ ispInfo }) => {
           } catch (error) {
             bKash.execute().onError();
             window.location.href = "/payment/failed";
-            console.log(error);
           }
         },
       });
     }
   }, [hotspotUser]);
+
+  const gatewayType = ispInfo?.bpSettings?.paymentGateway?.gatewayType;
 
   return (
     <>
@@ -211,13 +212,18 @@ const HotspotUser = ({ ispInfo }) => {
             </div>
           )}
 
-          <div className="paymentOption" title="Payment">
-            <img
-              className="bkashPg"
-              src={bkashImg}
-              onClick={billPaymentController}
-            />
-          </div>
+          {ispInfo?.bpSettings?.hasPG && (
+            <div className="paymentOption" title="Payment">
+              <img
+                className="bkashPg"
+                id={gatewayType === "bKashPG" ? "bKash_button" : ""}
+                src={bkashImg}
+                onClick={
+                  gatewayType !== "bKashPG" ? billPaymentController : () => {}
+                }
+              />
+            </div>
+          )}
         </div>
       </Card.Body>
     </>

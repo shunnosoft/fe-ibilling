@@ -1202,7 +1202,6 @@ export const deleteACustomer = async (
     );
     dispatch(deleteCustomerSuccess(data.customerID));
     isResellerCustomer && dispatch(deleteReCustomer(data.customerID));
-    setShow(false);
     document.querySelector("#customerDelete").click();
     setIsLoading(false);
     langMessage(
@@ -1210,6 +1209,7 @@ export const deleteACustomer = async (
       "কাস্টমার ডিলিট সফল হয়েছে",
       "Customer Deleted Successfully"
     );
+    setShow(false);
   } catch (err) {
     if (err.response) {
       setIsLoading(false);

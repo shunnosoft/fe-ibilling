@@ -51,9 +51,9 @@ const ProfileDelete = ({
     // api call
     if (status !== "reseller") {
       if (page === "hotspot") {
-        deleteHotspotCustomer(dispatch, data, setIsLoading, setShow);
+        deleteHotspotCustomer(dispatch, data, setIsLoading, setModalShow);
       } else {
-        deleteACustomer(dispatch, data, setIsLoading, setShow);
+        deleteACustomer(dispatch, data, setIsLoading, setModalShow);
       }
     } else {
       // deleteResellerCustomer(dispatch, resellerCusData, setIsLoading);

@@ -9,12 +9,11 @@ import { toast } from "react-toastify";
 //internal import
 import QrCodePdf from "./QrCodePdf";
 
-const HotspotQrCodeScan = ({ show, setShow, ispData }) => {
+const PublicHotspotCustomer = ({ show, setShow, ispData }) => {
   const componentRef = useRef();
 
   // IspOwner hotspot custome create url
-  // const codeUrl = `https://netfeebd.com/isp/hotspot/${ispData.netFeeId}`;
-  const codeUrl = `http://10.0.0.241:3000/isp/hotspot/${ispData.netFeeId}`;
+  const codeUrl = `https://netfeebd.com/isp/hotspot/${ispData.netFeeId}`;
 
   // IspOwner hotspot custome create url copy handler
   const companyLinkCopyHandler = () => {
@@ -76,4 +75,4 @@ const HotspotQrCodeScan = ({ show, setShow, ispData }) => {
   );
 };
 
-export default HotspotQrCodeScan;
+export default PublicHotspotCustomer;

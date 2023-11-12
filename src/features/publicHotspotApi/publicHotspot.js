@@ -29,7 +29,8 @@ export const hotspotUserCreate = async (
   dispatch,
   ispOwner,
   data,
-  setIsLoading
+  setIsLoading,
+  setModalStatus
 ) => {
   setIsLoading(true);
   try {
@@ -39,8 +40,10 @@ export const hotspotUserCreate = async (
       },
     });
     dispatch(getCreateUser(res.data));
-  } catch (error) {
-    toast.error(error.data.message);
+    toast.success("User Created successfully.");
+    setModalStatus("");
+  } catch (err) {
+    toast.error(err.response?.data?.message);
   }
   setIsLoading(false);
 };
@@ -62,8 +65,8 @@ export const hotspotUserFind = async (
       }
     );
     dispatch(getCreateUser(res.data));
-  } catch (error) {
-    toast.error(error.data.message);
+  } catch (err) {
+    toast.error(err.response?.data?.message);
   }
   setIsLoading(false);
 };

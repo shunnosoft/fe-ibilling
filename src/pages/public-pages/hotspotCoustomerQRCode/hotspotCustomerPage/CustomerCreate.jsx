@@ -110,8 +110,13 @@ const CustomerCreate = ({ setModalStatus, ispInfo }) => {
       hotspotPackage: packageId,
       billingCycle: new Date(),
     };
-    hotspotUserCreate(dispatch, ispInfo?.id, sendingData, setIsLoading);
-    setModalStatus("");
+    hotspotUserCreate(
+      dispatch,
+      ispInfo?.id,
+      sendingData,
+      setIsLoading,
+      setModalStatus
+    );
   };
 
   return (

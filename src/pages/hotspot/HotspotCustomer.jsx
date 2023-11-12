@@ -58,7 +58,7 @@ import BulkCustomerMessage from "../Customer/customerCRUD/bulkOpration/BulkCusto
 import HotspotCustomerReport from "./hotspotBulkOperation/modal/HotspotCustomerReport";
 import CustomerDetails from "./customerOperation/CustomerDetails";
 import PrintOptions from "../../components/common/PrintOptions";
-import HotspotQrCodeScan from "./customerOperation/HotspotQrCodeScan";
+import PublicHotspotCustomer from "./customerOperation/PublicHotspotCustomer";
 
 const HotspotCustomer = () => {
   const dispatch = useDispatch();
@@ -1028,7 +1028,11 @@ const HotspotCustomer = () => {
 
       {/* customer Qr Code scanning can be done in hotspot account */}
       {modalStatus === "codeScan" && (
-        <HotspotQrCodeScan show={show} setShow={setShow} ispData={ispOwnerData} />
+        <PublicHotspotCustomer
+          show={show}
+          setShow={setShow}
+          ispData={ispOwnerData}
+        />
       )}
 
       {/* print option modal */}
