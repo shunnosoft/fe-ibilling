@@ -893,5 +893,9 @@
   "nameHp": "Name/Hp",
   "mobileAddress": "Mobile/Address",
   "billBalance": "Bill/Balance",
-  "billPromise": "Bill/Promise Date"
+  "billPromise": "Bill/Promise Date",
+  "codeScan": "Code Scan",
+  "download": "Download",
+  "copyLink": "Copy Link",
+  "hotspotCustomerUrl": "Hotspot Customer URL"
 }

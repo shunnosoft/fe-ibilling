@@ -20,7 +20,7 @@ export const FtextField = ({ label, validation, ...props }) => {
       <ErrorMessage
         component="div"
         name={field.name}
-        className="errorMessage text-danger"
+        className="errorMessage text-danger mb-0"
       />
     </div>
   );

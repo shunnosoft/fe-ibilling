@@ -76,7 +76,7 @@ const ResellerCollection = () => {
   const [packageLoading, setPackageLoading] = useState(false);
 
   //reseller id state
-  const [resellerId, setResellerId] = useState(reseller[0]?.id);
+  const [resellerId, setResellerId] = useState("");
 
   // filter Accordion handle state
   const [activeKeys, setActiveKeys] = useState("");
@@ -117,10 +117,6 @@ const ResellerCollection = () => {
   }, []);
 
   useEffect(() => {
-    setResellerId(reseller[0]?.id);
-  }, [reseller]);
-
-  useEffect(() => {
     setStartDate(selectDate);
 
     if (lastDate.getMonth() + 1 === today.getMonth() + 1) {
@@ -129,16 +125,16 @@ const ResellerCollection = () => {
       setEndDate(lastDate);
     }
 
-    if (filterDate.getMonth() + 1 && resellerId) {
+    if (filterDate.getMonth() + 1 && ispOwnerId) {
       resellerCustomerReport(
         dispatch,
-        resellerId,
+        ispOwnerId,
         filterDate.getFullYear(),
         filterDate.getMonth() + 1,
         setIsLoading
       );
     }
-  }, [filterDate, resellerId]);
+  }, [filterDate, ispOwnerId]);
 
   useEffect(() => {
     setCurrentData(collectionReport);
@@ -148,7 +144,7 @@ const ResellerCollection = () => {
   const reloadHandler = () => {
     resellerCustomerReport(
       dispatch,
-      resellerId,
+      ispOwnerId,
       filterDate.getFullYear(),
       filterDate.getMonth() + 1,
       setIsLoading
@@ -158,6 +154,8 @@ const ResellerCollection = () => {
   //filter handler
   const filterHandler = () => {
     let mainData = [...collectionReport];
+
+    mainData = mainData.filter((val) => val.reseller === resellerId);
 
     if (paymentType) {
       if (paymentType === "onlinePayment") {
@@ -582,20 +580,32 @@ const ResellerCollection = () => {
 
                           <div>
                             <DatePicker
-                              className="form-control mt-0"
+                              className="form-control"
                               selected={startDate}
                               onChange={(date) => setStartDate(date)}
                               dateFormat="MMM dd yyyy"
+                              minDate={selectDate}
+                              maxDate={
+                                lastDate.getMonth() + 1 === today.getMonth() + 1
+                                  ? today
+                                  : lastDate
+                              }
                               placeholderText={t("selectBillDate")}
                             />
                           </div>
 
                           <div>
                             <DatePicker
-                              className="form-control mt-0"
+                              className="form-control"
                               selected={endDate}
                               onChange={(date) => setEndDate(date)}
                               dateFormat="MMM dd yyyy"
+                              minDate={selectDate}
+                              maxDate={
+                                lastDate.getMonth() + 1 === today.getMonth() + 1
+                                  ? today
+                                  : lastDate
+                              }
                               placeholderText={t("selectBillDate")}
                             />
                           </div>
@@ -623,7 +633,7 @@ const ResellerCollection = () => {
 
                     <div className="table-section">
                       <Table
-                        isLoading={isLoading || dataLoader}
+                        isLoading={isLoading}
                         customComponent={customComponent}
                         columns={columns}
                         data={currentData}

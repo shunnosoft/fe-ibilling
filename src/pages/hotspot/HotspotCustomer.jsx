@@ -16,6 +16,7 @@ import {
   PersonPlusFill,
   Phone,
   PrinterFill,
+  QrCodeScan,
   ThreeDots,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
@@ -27,6 +28,7 @@ import { CSVLink } from "react-csv";
 import DatePicker from "react-datepicker";
 
 // internal import
+import "./hotspot.css";
 import { FontColor, FourGround } from "../../assets/js/theme";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import useDash from "../../assets/css/dash.module.css";
@@ -56,6 +58,7 @@ import BulkCustomerMessage from "../Customer/customerCRUD/bulkOpration/BulkCusto
 import HotspotCustomerReport from "./hotspotBulkOperation/modal/HotspotCustomerReport";
 import CustomerDetails from "./customerOperation/CustomerDetails";
 import PrintOptions from "../../components/common/PrintOptions";
+import HotspotQrCodeScan from "./customerOperation/HotspotQrCodeScan";
 
 const HotspotCustomer = () => {
   const dispatch = useDispatch();
@@ -805,6 +808,17 @@ const HotspotCustomer = () => {
                       )}
                     </div>
 
+                    <div className="addAndSettingIcon">
+                      <QrCodeScan
+                        className="addcutmButton"
+                        title={t("codeScan")}
+                        onClick={() => {
+                          setModalStatus("codeScan");
+                          setShow(true);
+                        }}
+                      />
+                    </div>
+
                     <Collapse in={open} dimension="width">
                       <div id="example-collapse-text">
                         <Card className="cardCollapse border-0">
@@ -1010,6 +1024,11 @@ const HotspotCustomer = () => {
           setShow={setShow}
           customerData={customerData}
         />
+      )}
+
+      {/* customer Qr Code scanning can be done in hotspot account */}
+      {modalStatus === "codeScan" && (
+        <HotspotQrCodeScan show={show} setShow={setShow} ispData={ispOwnerData} />
       )}
 
       {/* print option modal */}

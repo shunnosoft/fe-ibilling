@@ -3120,7 +3120,7 @@ export const ispOwnerInvoiceCreate = async (
 //get reseller coustomer collection report data
 export const resellerCustomerReport = async (
   dispatch,
-  resellerId,
+  ispOwnerId,
   year,
   month,
   setIsLoading
@@ -3128,7 +3128,7 @@ export const resellerCustomerReport = async (
   setIsLoading(true);
   try {
     const res = await apiLink.get(
-      `bill/reseller/${resellerId}?year=${year}&month=${month}`
+      `bill/resellers/${ispOwnerId}?year=${year}&month=${month}`
     );
     dispatch(getResellerCollectionReport(res.data));
   } catch (error) {

@@ -121,6 +121,7 @@ import ManagerDeposit from "./pages/diposit/ManagerDeposit";
 import CollectorDeposit from "./pages/diposit/CollectorDeposit";
 import SupportCall from "./pages/netFeeSupport/supportOpration/SupportCall";
 import MobilePayment from "./pages/public-pages/MobilePayment/MobilePayment";
+import QrCodeHotspotCustomer from "./pages/public-pages/hotspotCoustomerQRCode/QrCodeHotspotCustomer";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
@@ -416,6 +417,10 @@ function App() {
             <Route path="/terms-conditions" element={<Terms></Terms>} />
             <Route path="/isp/:ispId" element={<QRCodePay />} />
             <Route path="/bkash-payment" element={<MobilePayment />} />
+            <Route
+              path="/isp/hotspot/:ispId"
+              element={<QrCodeHotspotCustomer />}
+            />
             <Route
               path="/return-and-refund-policy"
               element={<Refund></Refund>}

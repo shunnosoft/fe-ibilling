@@ -41,6 +41,7 @@ import resellerSupportSlice from "../features/resellerSupportSlice";
 import dashboardInformationSlice from "../features/dashboardInformationSlice";
 import resellerProfileSlice from "../features/resellerProfileSlice";
 import resellerPaymentSlice from "../features/resellerPaymentSlice";
+import publicSlice from "../features/publicHotspotApi/publicSlice";
 
 // import persistCombineReducers from "redux-persist/es/persistCombineReducers";
 const persistConfig = {
@@ -94,6 +95,7 @@ const store = configureStore({
     resellerProfile: resellerProfileSlice,
     crossCustomer: customerCrossCheckSlice,
     resellerPayment: resellerPaymentSlice,
+    publicSlice: publicSlice,
   },
 
   middleware: (getDefaultMiddleware) =>

@@ -1,0 +1,88 @@
+.createUserPage {
+  background: #f1f0f0;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.userTitle {
+  background-color: #fff;
+  border-bottom: 1px solid rgb(126 126 126 / 10%);
+  box-shadow: 0px 0px 10px rgb(0 0 0 / 23%);
+}
+
+.company {
+  font-family: "Roboto";
+  color: #2d86de;
+}
+
+.userName {
+  font-family: Verdana, sans-serif;
+  font-size: 1.2rem;
+  font-weight: 100;
+  color: #2d86de;
+}
+
+.userLogo {
+  width: 3rem;
+  height: 3rem;
+  object-fit: cover;
+  border-radius: 50%;
+  margin: 0.5rem 1rem;
+}
+
+.package {
+  border: none;
+  cursor: pointer;
+  background-color: #fff;
+  color: #2d86de;
+  padding: 1rem;
+}
+
+.package:hover {
+  background-color: #fafcfd;
+  color: #2d86de;
+}
+
+.tableHader {
+  background-color: #b1b1b11b;
+  margin: 0px 0px 1rem 0px;
+  height: fit-content;
+  border-radius: 0.4rem;
+  padding: 1rem;
+}
+
+.mainPage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.paymentOption {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 3rem;
+  cursor: pointer;
+}
+
+.bkashPg {
+  height: 7rem;
+  width: 13rem;
+  border: 2px solid #f7f7f7;
+}
+
+@media only screen and (max-width: 577px) {
+  .mainPage {
+    display: block !important;
+  }
+
+  .packagePage {
+    padding: 0 !important;
+  }
+
+  .package {
+    padding: 0.6rem;
+  }
+}

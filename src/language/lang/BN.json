@@ -899,5 +899,9 @@
   "nameHp": "নাম/এইচপি",
   "mobileAddress": "মোবাইল/এড্রেস",
   "billBalance": "বিল/ব্যালেন্স",
-  "billPromise": "বিল/প্রমিজ ডেট"
+  "billPromise": "বিল/প্রমিজ ডেট",
+  "codeScan": "কোড স্ক্যান",
+  "download": "ডাউনলোড",
+  "copyLink": "কপি লিংক",
+  "hotspotCustomerUrl": "হটস্পট গ্রাহক URL"
 }

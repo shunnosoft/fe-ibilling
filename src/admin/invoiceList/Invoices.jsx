@@ -155,31 +155,32 @@ const Invoices = ({ ownerId, companyName, isOpen, setIsOpen }) => {
           </div>
         ),
       },
-
       {
-        width: "10%",
-        Header: () => <div className="text-center">Action</div>,
+        width: role === "superadmin" ? "10%" : "0%",
+        Header: () =>
+          role === "superadmin" && <div className="text-center">Action</div>,
         id: "option",
 
-        Cell: ({ row: { original } }) => (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <>
-              <button
-                className="btn btn-sm btn-outline-primary"
-                onClick={() => {
-                  setInvoiceEditId(original.id);
-                }}
-              >
-                <PencilSquare />
-              </button>
+        Cell: ({ row: { original } }) =>
+          role === "superadmin" && (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <>
+                <button
+                  className="btn btn-sm btn-outline-primary"
+                  onClick={() => {
+                    setInvoiceEditId(original.id);
+                  }}
+                >
+                  <PencilSquare />
+                </button>
 
-              {/* <ThreeDots
+                {/* <ThreeDots
                 className="dropdown-toggle ActionDots"
                 id="areaDropdown"
                 type="button"
@@ -202,9 +203,9 @@ const Invoices = ({ ownerId, companyName, isOpen, setIsOpen }) => {
                   </div>
                 </li>
               </ul> */}
-            </>
-          </div>
-        ),
+              </>
+            </div>
+          ),
       },
     ],
     []
@@ -264,8 +265,8 @@ const Invoices = ({ ownerId, companyName, isOpen, setIsOpen }) => {
                 >
                   {() => (
                     <Form>
-                      <div className="displayGrid5">
-                        {role === "superadmin" && (
+                      {role === "superadmin" && (
+                        <div className="displayGrid5">
                           <>
                             <FtextField
                               type="number"
@@ -283,30 +284,30 @@ const Invoices = ({ ownerId, companyName, isOpen, setIsOpen }) => {
                               <option value="unpaid">Unpaid</option>
                             </SelectField>
                           </>
-                        )}
 
-                        <FtextField type="date" name="dueDate" label="Date" />
+                          <FtextField type="date" name="dueDate" label="Date" />
 
-                        <FtextField type="time" name="time" label="Time" />
+                          <FtextField type="time" name="time" label="Time" />
 
-                        <div className="invoiceAction">
-                          <button
-                            type="submit"
-                            className="btn btn-outline-success"
-                            disabled={loadingState}
-                          >
-                            {loadingState ? <Loader /> : "Submit"}
-                          </button>
-                          <button
-                            type="button"
-                            className="btn btn-outline-secondary"
-                            disabled={loadingState}
-                            onClick={cancelHandle}
-                          >
-                            Cancel
-                          </button>
+                          <div className="invoiceAction">
+                            <button
+                              type="submit"
+                              className="btn btn-outline-success"
+                              disabled={loadingState}
+                            >
+                              {loadingState ? <Loader /> : "Submit"}
+                            </button>
+                            <button
+                              type="button"
+                              className="btn btn-outline-secondary"
+                              disabled={loadingState}
+                              onClick={cancelHandle}
+                            >
+                              Cancel
+                            </button>
+                          </div>
                         </div>
-                      </div>
+                      )}
                     </Form>
                   )}
                 </Formik>
