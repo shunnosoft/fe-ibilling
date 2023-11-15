@@ -59,12 +59,9 @@
   align-items: center;
 }
 
-.paymentOption {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 3rem;
-  cursor: pointer;
+.bkashPic {
+  height: 2.5rem;
+  width: 3.3rem;
 }
 
 .bkashPg {

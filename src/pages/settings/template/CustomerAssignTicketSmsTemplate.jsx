@@ -58,7 +58,7 @@ const CustomerAssignTicketSmsTemplate = () => {
   };
 
   useEffect(() => {
-    setAssignTicketStatus(settings.sms.assignTicket);
+    setAssignTicketStatus(settings?.sms?.assignTicket);
     setSendingType(settings?.sms?.assignTicketSendBy);
     setTicketSub(assignTicketMsg ? assignTicketMsg : "");
   }, [settings]);
@@ -69,25 +69,33 @@ const CustomerAssignTicketSmsTemplate = () => {
         <div className="messageStatus d-flex justify-content-between">
           <div className="sending-status">
             <h4> {t("assingTicketTemplate")} </h4>
-            <input
-              id="rechareRadioOn"
-              name="assignTicket"
-              type="radio"
-              checked={assignTicketStatus}
-              onChange={() => setAssignTicketStatus(true)}
-            />
-            &nbsp;
-            {t("on")} {"              "}
-            <input
-              id="rechargeRadioOff"
-              name="assignTicket"
-              type="radio"
-              checked={!assignTicketStatus}
-              onChange={() => setAssignTicketStatus(false)}
-            />
-            &nbsp;
-            {t("off")} {"              "}
+
+            {/* customer ticket staff assing template switch */}
+            <div className="d-flex">
+              <div>
+                <input
+                  id="assingTicketOn"
+                  type="radio"
+                  checked={assignTicketStatus}
+                  onChange={() => setAssignTicketStatus(true)}
+                />
+                &nbsp;
+                <label htmlFor="assingTicketOn">{t("on")}</label>
+              </div>
+
+              <div>
+                <input
+                  id="assingTicketOff"
+                  type="radio"
+                  checked={!assignTicketStatus}
+                  onChange={() => setAssignTicketStatus(false)}
+                />
+                &nbsp;
+                <label htmlFor="assingTicketOff">{t("off")}</label>
+              </div>
+            </div>
           </div>
+
           <div className="message-sending-type">
             <h4> {t("sendingMessageType")} </h4>
             <input
@@ -95,22 +103,22 @@ const CustomerAssignTicketSmsTemplate = () => {
               checked={sendingType === "nonMasking"}
               value={"nonMasking"}
               onChange={(event) => setSendingType(event.target.value)}
-            />{" "}
-            {t("nonMasking")} {"              "}
+            />
+            {t("nonMasking")}
             <input
               type="radio"
               checked={sendingType === "masking"}
               value={"masking"}
               onChange={(event) => setSendingType(event.target.value)}
-            />{" "}
-            {t("masking")} {"              "}
+            />
+            {t("masking")}
             <input
               type="radio"
               checked={sendingType === "fixedNumber"}
               value={"fixedNumber"}
               onChange={(event) => setSendingType(event.target.value)}
-            />{" "}
-            {t("fixedNumber")} {"              "}
+            />
+            {t("fixedNumber")}
           </div>
         </div>
 

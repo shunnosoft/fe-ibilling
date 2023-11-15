@@ -13,7 +13,7 @@ const PublicHotspotCustomer = ({ show, setShow, ispData }) => {
   const componentRef = useRef();
 
   // IspOwner hotspot custome create url
-  const codeUrl = `https://netfeebd.com/isp/hotspot/${ispData.netFeeId}`;
+  const codeUrl = `localhost:3000/isp/hotspot/${ispData.netFeeId}`;
 
   // IspOwner hotspot custome create url copy handler
   const companyLinkCopyHandler = () => {

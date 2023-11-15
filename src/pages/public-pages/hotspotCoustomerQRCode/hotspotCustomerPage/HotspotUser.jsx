@@ -6,7 +6,7 @@ import moment from "moment";
 //internal import
 import { badge } from "../../../../components/common/Utils";
 import { getCustomerDayLeft } from "../../../Customer/customerCRUD/customerBillDayPromiseDate";
-import bkashImg from "../../../../assets/img/bkash.jpg";
+import bkashImg from "../../../../assets/img/BKash-Icon-Logo.wine.png";
 import apiLink, { publicRequest } from "../../../../api/apiLink";
 import { billPayment } from "../../../../features/getIspOwnerUsersApi";
 
@@ -213,15 +213,20 @@ const HotspotUser = ({ ispInfo }) => {
           )}
 
           {ispInfo?.bpSettings?.hasPG && (
-            <div className="paymentOption" title="Payment">
-              <img
-                className="bkashPg"
+            <div
+              className="d-flex justify-content-center aling-items-center mt-4"
+              title="Payment"
+            >
+              <button
+                className="btn border border-2"
                 id={gatewayType === "bKashPG" ? "bKash_button" : ""}
-                src={bkashImg}
                 onClick={
                   gatewayType !== "bKashPG" ? billPaymentController : () => {}
                 }
-              />
+              >
+                <span className="fs-5">Payment</span>
+                <img className="bkashPic" src={bkashImg}></img>
+              </button>
             </div>
           )}
         </div>

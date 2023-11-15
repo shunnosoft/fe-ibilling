@@ -12,7 +12,6 @@ const CustomerTicketSmsTemplate = ({ otherTabs }) => {
   const settings = useSelector(
     (state) => state.persistedReducer.auth.userData?.settings
   );
-  console.log(settings);
 
   // get message from redux
   let customerTicketMsg = settings.sms?.template?.customerTicket;
@@ -90,24 +89,33 @@ const CustomerTicketSmsTemplate = ({ otherTabs }) => {
         <div className="messageStatus d-flex justify-content-between">
           <div className="sending-status">
             <h4> {t("customerTicketTemplate")} </h4>
-            <input
-              id="rechareRadioOn"
-              name="customerTicket"
-              type="radio"
-              checked={customerTicketStatus}
-              onChange={() => setCustomerTicketStatus(true)}
-            />
-            &nbsp;
-            {t("on")} {"              "}
-            <input
-              id="rechargeRadioOff"
-              name="customerTicket"
-              type="radio"
-              checked={!customerTicketStatus}
-              onChange={() => setCustomerTicketStatus(false)}
-            />
-            &nbsp;
-            {t("off")} {"              "}
+
+            {/* customer create ticket template switch */}
+            <div className="d-flex">
+              <div>
+                <input
+                  id="customerTicketOn"
+                  name="customerTicket"
+                  type="radio"
+                  checked={customerTicketStatus}
+                  onChange={() => setCustomerTicketStatus(true)}
+                />
+                &nbsp;
+                <label htmlFor="customerTicketOn"> {t("on")}</label>
+              </div>
+
+              <div>
+                <input
+                  id="customerTicketOff"
+                  name="customerTicket"
+                  type="radio"
+                  checked={!customerTicketStatus}
+                  onChange={() => setCustomerTicketStatus(false)}
+                />
+                &nbsp;
+                <label htmlFor="customerTicketOff"> {t("off")}</label>{" "}
+              </div>
+            </div>
           </div>
           <div className="message-sending-type">
             <h4> {t("sendingMessageType")} </h4>
