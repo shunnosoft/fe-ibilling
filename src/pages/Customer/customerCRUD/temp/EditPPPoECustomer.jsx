@@ -36,6 +36,7 @@ import {
   editCustomer,
   fetchMikrotik,
   fetchPackagefromDatabase,
+  getConnectionFee,
 } from "../../../../features/apiCalls";
 
 const divisions = divisionsJSON.divisions;
@@ -111,6 +112,9 @@ export default function EditPPPoECustomer({ show, setShow, single }) {
   const [packageId, setPackageId] = useState("");
   //component states
   const [_loading, setLoading] = useState(false);
+
+  // customer due connection fee state
+  const [paidConnectionFee, setPaidConnectionFee] = useState(null);
 
   const [divisionalArea, setDivisionalArea] = useState({
     division: "",
@@ -208,6 +212,7 @@ export default function EditPPPoECustomer({ show, setShow, single }) {
   // get subarea poleBox
   useEffect(() => {
     getPoleBoxApi(dispatch, ispOwnerId, setIsLoadingPole);
+    getConnectionFee(single, setPaidConnectionFee);
   }, []);
 
   // customer validator
@@ -470,6 +475,7 @@ export default function EditPPPoECustomer({ show, setShow, single }) {
               Ppassword: data?.pppoe?.password || "",
               status: status || "",
               balance: data?.balance || "",
+              connectionFee: data?.monthlyFee - paidConnectionFee || "",
               customerBillingType: data?.customerBillingType || "",
             }}
             validationSchema={customerValidator}
@@ -736,6 +742,13 @@ export default function EditPPPoECustomer({ show, setShow, single }) {
                       placeholderText={t("selectDate")}
                     />
                   </div>
+
+                  <FtextField
+                    type="number"
+                    name="connectionFee"
+                    label={t("connectionFeeDue")}
+                    disabled
+                  />
 
                   <SelectField
                     label={t("customerBillType")}

@@ -6,10 +6,7 @@ export const TextField = ({ label, validation, ...props }) => {
 
   return (
     <div className="displayGridManual6_4">
-      <label
-        htmlFor={field.name}
-        className="changeLabelFontColor d-flex justify-content-end"
-      >
+      <label htmlFor={field.name} className="changeLabelFontColor manualLable">
         {label} {validation && <span className="text-danger">*</span>}
       </label>
 

@@ -8,6 +8,7 @@ import {
   Envelope,
   GeoAltFill,
   GeoFill,
+  Key,
   PencilSquare,
   Person,
   PersonVcard,
@@ -29,6 +30,8 @@ import {
   editHotspotCustomer,
   getHotspotCustomer,
 } from "../../../features/hotspotApi";
+import { getConnectionFee } from "../../../features/apiCalls";
+import PasswordReset from "../../../components/modals/passwordReset/PasswordReset";
 
 const CustomerDetails = ({ show, setShow, customerId }) => {
   const { t } = useTranslation();
@@ -36,6 +39,9 @@ const CustomerDetails = ({ show, setShow, customerId }) => {
 
   // get user & current user data form useISPOwner
   const { ispOwnerId, bpSetting } = useISPowner();
+
+  // get owner users
+  const ownerUsers = useSelector((state) => state?.ownerUsers?.ownerUser);
 
   //get mikrotik
   const mikrotiks = useSelector((state) => state?.mikrotik?.mikrotik);
@@ -62,9 +68,17 @@ const CustomerDetails = ({ show, setShow, customerId }) => {
   // profile option state
   const [profileOption, setProfileOption] = useState("profileEdit");
 
+  // user id state
+  const [userId, setUserId] = useState("");
+
+  // customer due connection fee state
+  const [paidConnectionFee, setPaidConnectionFee] = useState(null);
+
   useEffect(() => {
     customer.length === 0 &&
       getHotspotCustomer(dispatch, ispOwnerId, setIsLoading);
+
+    getConnectionFee(customerId, setPaidConnectionFee);
   }, [customerId]);
 
   // modal close handle
@@ -107,6 +121,12 @@ const CustomerDetails = ({ show, setShow, customerId }) => {
       editHotspotCustomer(dispatch, data, value?.id, setIsLoading, "", update);
   };
 
+  // customer creator find
+  const getCustomerCreatedBy = (userId) => {
+    const findCreator = ownerUsers.find((id) => id[userId]);
+    return findCreator[userId];
+  };
+
   return (
     <>
       <Modal
@@ -117,8 +137,8 @@ const CustomerDetails = ({ show, setShow, customerId }) => {
         size="xl"
       >
         <ModalBody>
-          <div className="container">
-            <Card className="clintProfile shadow-sm mb-4 bg-white rounded">
+          <div>
+            <Card className="clintSetting shadow-sm mb-3 bg-white rounded">
               <Card.Title className="clintTitle">
                 <div className="d-flex align-items-center">
                   <img
@@ -139,11 +159,11 @@ const CustomerDetails = ({ show, setShow, customerId }) => {
                       setShow(false);
                     }}
                   >
-                    <Trash3Fill />
-                    <p>{t("deleteProfile")}</p>
+                    <Trash3Fill title={t("deleteProfile")} />
+                    <p id="delete_profile">{t("deleteProfile")}</p>
                   </div>
 
-                  <CloseButton onClick={handleClose} />
+                  <CloseButton onClick={handleClose} className="close_Btn" />
                 </div>
               </Card.Title>
               <Card.Body
@@ -171,7 +191,7 @@ const CustomerDetails = ({ show, setShow, customerId }) => {
                 </div>
 
                 <div className="d-flex gap-3">
-                  <p class="vr ms-2" />
+                  <p class="vr_line vr ms-2" />
 
                   <div>
                     <div className="d-flex gap-3">
@@ -192,7 +212,7 @@ const CustomerDetails = ({ show, setShow, customerId }) => {
                 </div>
 
                 <div className="d-flex gap-3">
-                  <p class="vr ms-2" />
+                  <p class="vr_line vr ms-2" />
 
                   <div>
                     <div className="d-flex gap-3">
@@ -212,22 +232,24 @@ const CustomerDetails = ({ show, setShow, customerId }) => {
                 </div>
               </Card.Body>
             </Card>
-            <div className="displayGridManual6_4 clintSetting">
-              <Card className="displayGridVertical5_5 border border-2 shadow-none mb-4">
+            <div className="displayGridManual6_4 setting_details m-0">
+              <Card className="displayGridVertical5_5 details_setting border border-2 shadow-none">
                 {/* customer profile setting start  */}
 
-                <div className="clintProfile shadow-sm rounded">
-                  <Card.Title className="clintTitle">
+                <div className="shadow-sm rounded">
+                  <Card.Title className="clintTitle clint_profile_setting">
                     <h5 className="profileInfo">{t("profileSetting")}</h5>
                   </Card.Title>
 
                   <Card.Body>
-                    <FontColor>
+                    <FontColor id="clintSetting">
                       {/* customer profile update */}
                       <li
-                        className="sidebarItems"
+                        className="profileSetting"
                         onClick={() => setProfileOption("profileEdit")}
-                        id={profileOption === "profileEdit" ? "active" : ""}
+                        id={
+                          profileOption === "profileEdit" ? "activeSetting" : ""
+                        }
                       >
                         <div className="profileOptions">
                           <PencilSquare size={22} />
@@ -241,9 +263,13 @@ const CustomerDetails = ({ show, setShow, customerId }) => {
                         <>
                           {/* customer bill colleciton */}
                           <li
-                            className="sidebarItems"
+                            className="profileSetting"
                             onClick={() => setProfileOption("recharge")}
-                            id={profileOption === "recharge" ? "active" : ""}
+                            id={
+                              profileOption === "recharge"
+                                ? "activeSetting"
+                                : ""
+                            }
                           >
                             <div className="profileOptions">
                               <Cash size={22} />
@@ -255,9 +281,11 @@ const CustomerDetails = ({ show, setShow, customerId }) => {
 
                           {/* customer bill collection report */}
                           <li
-                            className="sidebarItems"
+                            className="profileSetting"
                             onClick={() => setProfileOption("report")}
-                            id={profileOption === "report" ? "active" : ""}
+                            id={
+                              profileOption === "report" ? "activeSetting" : ""
+                            }
                           >
                             <div className="profileOptions">
                               <Collection size={22} />
@@ -270,9 +298,11 @@ const CustomerDetails = ({ show, setShow, customerId }) => {
                       {/* customer single message  */}
                       {data?.mobile && (
                         <li
-                          className="sidebarItems"
+                          className="profileSetting"
                           onClick={() => setProfileOption("message")}
-                          id={profileOption === "message" ? "active" : ""}
+                          id={
+                            profileOption === "message" ? "activeSetting" : ""
+                          }
                         >
                           <div className="profileOptions">
                             <Envelope size={22} />
@@ -280,6 +310,24 @@ const CustomerDetails = ({ show, setShow, customerId }) => {
                           <span className="options_name">{t("message")}</span>
                         </li>
                       )}
+
+                      {/* customer login password reset */}
+                      <li
+                        className="profileSetting"
+                        onClick={() => {
+                          setModalStatus("passwordReset");
+                          setUserId(data?.user);
+                          setModalShow(true);
+                        }}
+                        id={modalShow && "activeSetting"}
+                      >
+                        <div className="profileOptions">
+                          <Key size={22} />
+                        </div>
+                        <span className="options_name">
+                          {t("passwordReset")}
+                        </span>
+                      </li>
                     </FontColor>
                   </Card.Body>
                 </div>
@@ -287,7 +335,7 @@ const CustomerDetails = ({ show, setShow, customerId }) => {
                 {/* customer profile setting end  */}
                 {/* customer details view start */}
 
-                <div className="clintProfile shadow-sm rounded overflow-auto">
+                <div className="clintProfile profile_details client_details shadow-sm rounded overflow-auto">
                   <Card.Title className="clintTitle mb-0">
                     <h5 className="profileInfo">{t("profileDetail")}</h5>
                   </Card.Title>
@@ -375,6 +423,17 @@ const CustomerDetails = ({ show, setShow, customerId }) => {
                             )}
                           </p>
                         </div>
+
+                        {data?.createdBy && (
+                          <div className="displayGridHorizontalFill5_5 profileDetails">
+                            <p>{t("createdBy")}</p>
+                            <p>{`${
+                              getCustomerCreatedBy(data?.createdBy)?.name
+                            } (${
+                              getCustomerCreatedBy(data?.createdBy)?.role
+                            })`}</p>
+                          </div>
+                        )}
                       </div>
                     </FontColor>
                   </Card.Body>
@@ -384,7 +443,7 @@ const CustomerDetails = ({ show, setShow, customerId }) => {
               </Card>
 
               {/* customer profile update,recharge,report and message modal card */}
-              <Card className="border border-2 shadow-none mb-4 overflow-auto">
+              <Card className="border border-2 shadow-none overflow-auto">
                 {profileOption === "profileEdit" ? (
                   <HotspotCustomerEdit
                     customerId={customerId}
@@ -415,6 +474,15 @@ const CustomerDetails = ({ show, setShow, customerId }) => {
           setShow={setShow}
           status="ispOwner"
           page="hotspot"
+        />
+      )}
+
+      {/* password reset modal */}
+      {modalStatus === "passwordReset" && (
+        <PasswordReset
+          show={modalShow}
+          setShow={setModalShow}
+          userId={userId}
         />
       )}
     </>

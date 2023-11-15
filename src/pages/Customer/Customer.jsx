@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState, useRef } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   ArchiveFill,
   ArrowClockwise,
@@ -20,14 +20,9 @@ import {
   ThreeDots,
   ArrowBarLeft,
   ArrowBarRight,
-  Check2Circle,
   PencilSquare,
-  XCircle,
-  PhoneFill,
   Phone,
   GeoAlt,
-  Dot,
-  CircleFill,
 } from "react-bootstrap-icons";
 import { CSVLink } from "react-csv";
 import moment from "moment";
@@ -93,19 +88,22 @@ import BulkCustomerMessage from "./customerCRUD/bulkOpration/BulkCustomerMessage
 import EditPPPoECustomer from "./customerCRUD/temp/EditPPPoECustomer";
 import RechargeCustomer from "./customerCRUD/temp/RechargeCustomer";
 import PrintOptions from "../../components/common/PrintOptions";
+import {
+  getCustomerDayLeft,
+  getCustomerPromiseDate,
+} from "./customerCRUD/customerBillDayPromiseDate";
+import useISPowner from "../../hooks/useISPOwner";
+import { getOwnerUsers } from "../../features/getIspOwnerUsersApi";
 
 const PPPOECustomer = () => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
-  // current date
-  const date = new Date();
+  // get user & current user data form useISPOwner
+  const { role, ispOwnerId, bpSettings, permissions } = useISPowner();
 
   // get all customer
   const customers = useSelector((state) => state.customer.customer);
-
-  // get all role
-  const role = useSelector((state) => state.persistedReducer.auth.role);
 
   // get collector
   const collectors = useSelector((state) => state?.collector?.collector);
@@ -113,24 +111,9 @@ const PPPOECustomer = () => {
   // get manager
   const manager = useSelector((state) => state.manager?.manager);
 
-  // get isp owner id
-  const ispOwner = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerId
-  );
-
   // get isp owner data
   const ispOwnerData = useSelector(
     (state) => state.persistedReducer.auth.userData
-  );
-
-  // get user permission
-  const permission = useSelector(
-    (state) => state.persistedReducer.auth.userData.permissions
-  );
-
-  // get bp settings
-  const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
   );
 
   //get all areas
@@ -266,36 +249,40 @@ const PPPOECustomer = () => {
   useEffect(() => {
     // get mikrotik api without mikrotik / has mikrotik
     if (!bpSettings?.hasMikrotik) {
-      getPackagewithoutmikrotik(ispOwner, dispatch, setLoading);
+      getPackagewithoutmikrotik(ispOwnerId, dispatch, setLoading);
     } else {
-      if (mikrotiks.length === 0) fetchMikrotik(dispatch, ispOwner, setLoading);
+      if (mikrotiks.length === 0)
+        fetchMikrotik(dispatch, ispOwnerId, setLoading);
     }
 
     // get area api
-    if (areas.length === 0) getArea(dispatch, ispOwner, setLoading);
+    if (areas.length === 0) getArea(dispatch, ispOwnerId, setLoading);
 
     // get sub area api
-    if (subAreas.length === 0) getSubAreasApi(dispatch, ispOwner);
+    if (subAreas.length === 0) getSubAreasApi(dispatch, ispOwnerId);
 
     // get customer api
     if (customers.length === 0)
-      getCustomer(dispatch, ispOwner, setCustomerLoading);
+      getCustomer(dispatch, ispOwnerId, setCustomerLoading);
 
     // get package list api
     if (packages.length === 0)
-      getPPPoEPackage(dispatch, ispOwner, setIsLoadingPole);
+      getPPPoEPackage(dispatch, ispOwnerId, setIsLoadingPole);
 
     if (role !== "collector") {
       if (collectors.length === 0)
-        getCollector(dispatch, ispOwner, setCollectorLoading);
-      role === "ispOwner" && getManger(dispatch, ispOwner);
+        getCollector(dispatch, ispOwnerId, setCollectorLoading);
+      role === "ispOwner" && getManger(dispatch, ispOwnerId);
     }
 
     if (poleBox.length === 0)
-      getPoleBoxApi(dispatch, ispOwner, setIsLoadingPole);
+      getPoleBoxApi(dispatch, ispOwnerId, setIsLoadingPole);
 
     // set initial state for print oprions
     setPrintOptions(printOptionData);
+
+    // get ispOwner all staffs
+    getOwnerUsers(dispatch, ispOwnerId);
 
     // bulletin get api
     Object.keys(bulletinPagePermission)?.length === 0 &&
@@ -349,7 +336,7 @@ const PPPOECustomer = () => {
 
   // reload handler
   const reloadHandler = () => {
-    getCustomer(dispatch, ispOwner, setCustomerLoading);
+    getCustomer(dispatch, ispOwnerId, setCustomerLoading);
   };
 
   // filter and filter reset
@@ -603,43 +590,6 @@ const PPPOECustomer = () => {
     }
   };
 
-  //find customer billing date before and after promise date
-  const getCustomerPromiseDate = (data) => {
-    const billDate = moment(data?.billingCycle).format("YYYY/MM/DD hh:mm A");
-
-    const promiseDate = moment(data?.promiseDate).format("YYYY/MM/DD hh:mm A");
-
-    var promiseDateChange;
-
-    if (billDate < promiseDate) {
-      promiseDateChange = "danger";
-    } else if (billDate > promiseDate) {
-      promiseDateChange = "warning";
-    }
-
-    return { billDate, promiseDate, promiseDateChange };
-  };
-
-  // customer day left filtering in current date
-  const getCustomerDayLeft = (billDate) => {
-    //current day
-    const currentDay = new Date(
-      new Date(moment(date).format("YYYY-MM-DD"))
-    ).getTime();
-
-    // // billing day
-    const billDay = new Date(
-      new Date(moment(billDate).format("YYYY-MM-DD"))
-    ).getTime();
-
-    const diffInMs = billDay - currentDay;
-
-    // // bill day left
-    const dayLeft = Math.round(diffInMs / (1000 * 60 * 60 * 24));
-
-    return dayLeft;
-  };
-
   //column for table
   const columns = useMemo(
     () => [
@@ -808,7 +758,7 @@ const PPPOECustomer = () => {
                     </div>
                   </div>
                 </li>
-                {(permission?.billPosting || role === "ispOwner") && (
+                {(permissions?.billPosting || role === "ispOwner") && (
                   <li
                     onClick={() => {
                       setCustomerId(original.id);
@@ -826,7 +776,7 @@ const PPPOECustomer = () => {
                   </li>
                 )}
 
-                {(permission?.customerEdit || role === "ispOwner") && (
+                {(permissions?.customerEdit || role === "ispOwner") && (
                   <li
                     onClick={() => {
                       setCustomerId(original.id);
@@ -873,7 +823,7 @@ const PPPOECustomer = () => {
                   </div>
                 </li>
 
-                {(permission?.customerDelete || role === "ispOwner") && (
+                {(permissions?.customerDelete || role === "ispOwner") && (
                   <li
                     data-bs-toggle="modal"
                     data-bs-target="#customerDelete"
@@ -890,7 +840,7 @@ const PPPOECustomer = () => {
                   </li>
                 )}
 
-                {permission?.sendSMS || role !== "collector" ? (
+                {permissions?.sendSMS || role !== "collector" ? (
                   <li
                     data-bs-toggle="modal"
                     data-bs-target="#customerMessageModal"
@@ -967,7 +917,7 @@ const PPPOECustomer = () => {
                   </li>
                 )}
                 {(role === "ispOwner" && bpSettings?.customerInvoice) ||
-                (role === "manager" && permission?.customerInvoice) ? (
+                (role === "manager" && permissions?.customerInvoice) ? (
                   <li
                     data-bs-toggle="modal"
                     data-bs-target="#createInvoiceModal"
@@ -1408,7 +1358,7 @@ const PPPOECustomer = () => {
                     </div>
 
                     <div>
-                      {(permission?.customerAdd || role === "ispOwner") && (
+                      {(permissions?.customerAdd || role === "ispOwner") && (
                         <div className="addAndSettingIcon">
                           <PersonPlusFill
                             className="addcutmButton"
@@ -1427,7 +1377,7 @@ const PPPOECustomer = () => {
                         <Card className="cardCollapse border-0">
                           <div className="d-flex align-items-center">
                             {((role === "manager" &&
-                              permission?.customerEdit) ||
+                              permissions?.customerEdit) ||
                               role === "ispOwner") && (
                               <div
                                 className="addAndSettingIcon"
@@ -1443,7 +1393,7 @@ const PPPOECustomer = () => {
                               </div>
                             )}
 
-                            {(permission?.viewCustomerList ||
+                            {(permissions?.viewCustomerList ||
                               role === "ispOwner") && (
                               <>
                                 <div className="addAndSettingIcon">
@@ -1456,7 +1406,7 @@ const PPPOECustomer = () => {
                                     <FiletypeCsv className="addcutmButton" />
                                   </CSVLink>
                                 </div>
-                                
+
                                 <div className="addAndSettingIcon">
                                   <CSVLink
                                     data={customerForCsV}
@@ -1508,7 +1458,7 @@ const PPPOECustomer = () => {
               </FourGround>
 
               <FourGround>
-                {(permission?.viewCustomerList || role !== "collector") && (
+                {(permissions?.viewCustomerList || role !== "collector") && (
                   <div className="mt-2">
                     <Accordion alwaysOpen activeKey={activeKeys}>
                       <Accordion.Item eventKey="filter">
@@ -1699,7 +1649,7 @@ const PPPOECustomer = () => {
         collectors={collectors}
         manager={manager}
         customer={singleCustomer}
-        ispOwner={ispOwner}
+        ispOwner={ispOwnerId}
         reseller=""
       />
 
@@ -1708,7 +1658,7 @@ const PPPOECustomer = () => {
 
       {/* bulk Modal */}
       {((role === "ispOwner" && bpSettings?.bulkAreaEdit) ||
-        permission?.bulkAreaEdit) &&
+        permissions?.bulkAreaEdit) &&
         bulkStatus === "customerBulkEdit" && (
           <BulkSubAreaEdit
             bulkCustomer={bulkCustomers}
@@ -1828,7 +1778,7 @@ const PPPOECustomer = () => {
             <ul className="client_service_list2 ps-0">
               {((role === "ispOwner" && bpSettings?.bulkAreaEdit) ||
                 (bpSettings?.bulkAreaEdit &&
-                  permission?.bulkAreaEdit &&
+                  permissions?.bulkAreaEdit &&
                   role !== "collector")) && (
                 <li
                   type="button"
@@ -1854,7 +1804,7 @@ const PPPOECustomer = () => {
               <hr className="mt-0 mb-0" />
               {((role === "ispOwner" && bpSettings?.updateCustomerBalance) ||
                 (bpSettings?.updateCustomerBalance &&
-                  permission?.updateCustomerBalance &&
+                  permissions?.updateCustomerBalance &&
                   role === "manager")) && (
                 <li
                   type="button"
@@ -1880,11 +1830,11 @@ const PPPOECustomer = () => {
               <hr className="mt-0 mb-0" />
               {((role === "ispOwner" && bpSettings?.bulkStatusEdit) ||
                 (bpSettings?.bulkStatusEdit &&
-                  permission?.bulkStatusEdit &&
+                  permissions?.bulkStatusEdit &&
                   role === "manager") ||
                 (role === "collector" &&
                   bpSettings.bulkStatusEdit &&
-                  permission.bulkStatusEdit)) && (
+                  permissions.bulkStatusEdit)) && (
                 <li
                   type="button"
                   className="p-1"
@@ -1909,11 +1859,11 @@ const PPPOECustomer = () => {
               <hr className="mt-0 mb-0" />
               {((role === "ispOwner" && bpSettings?.bulkPaymentStatusEdit) ||
                 (bpSettings?.bulkPaymentStatusEdit &&
-                  permission?.bulkPaymentStatusEdit &&
+                  permissions?.bulkPaymentStatusEdit &&
                   role === "manager") ||
                 (role === "collector" &&
                   bpSettings.bulkPaymentStatusEdit &&
-                  permission.bulkPaymentStatusEdit)) && (
+                  permissions.bulkPaymentStatusEdit)) && (
                 <li
                   type="button"
                   className="p-1"
@@ -1940,7 +1890,7 @@ const PPPOECustomer = () => {
               <hr className="mt-0 mb-0" />
               {((role === "ispOwner" && bpSettings?.bulkBillingCycleEdit) ||
                 (bpSettings?.bulkBillingCycleEdit &&
-                  permission?.bulkBillingCycleEdit &&
+                  permissions?.bulkBillingCycleEdit &&
                   role === "manager")) && (
                 <li
                   type="button"
@@ -1968,7 +1918,7 @@ const PPPOECustomer = () => {
               <hr className="mt-0 mb-0" />
               {((role === "ispOwner" && bpSettings?.bulkPromiseDateEdit) ||
                 (bpSettings?.bulkPromiseDateEdit &&
-                  permission?.bulkPromiseDateEdit &&
+                  permissions?.bulkPromiseDateEdit &&
                   role === "manager")) && (
                 <li
                   type="button"
@@ -1997,7 +1947,7 @@ const PPPOECustomer = () => {
 
               {((role === "ispOwner" && bpSettings?.bulkMessage) ||
                 (bpSettings?.bulkMessage &&
-                  permission?.bulkMessage &&
+                  permissions?.bulkMessage &&
                   role === "manager")) && (
                 <li
                   type="button"
@@ -2025,7 +1975,7 @@ const PPPOECustomer = () => {
               {bpSettings?.hasMikrotik &&
                 ((role === "ispOwner" && bpSettings?.bulkAutoDisableEdit) ||
                   (bpSettings?.bulkAutoDisableEdit &&
-                    permission?.bulkAutoDisableEdit &&
+                    permissions?.bulkAutoDisableEdit &&
                     role === "manager")) && (
                   <li
                     type="button"
@@ -2057,7 +2007,7 @@ const PPPOECustomer = () => {
                 ((role === "ispOwner" &&
                   bpSettings?.bulkCustomerMikrotikUpdate) ||
                   (bpSettings?.bulkCustomerMikrotikUpdate &&
-                    permission?.bulkCustomerMikrotikUpdate &&
+                    permissions?.bulkCustomerMikrotikUpdate &&
                     role === "manager")) && (
                   <li
                     type="button"
@@ -2086,7 +2036,7 @@ const PPPOECustomer = () => {
               {bpSettings.hasMikrotik &&
                 ((role === "ispOwner" && bpSettings?.bulkPackageEdit) ||
                   (bpSettings?.bulkPackageEdit &&
-                    permission?.bulkPackageEdit &&
+                    permissions?.bulkPackageEdit &&
                     role === "manager")) && (
                   <li
                     type="button"
@@ -2115,7 +2065,7 @@ const PPPOECustomer = () => {
               {bpSettings.hasMikrotik &&
                 ((role === "ispOwner" && bpSettings?.bulkCustomerRecharge) ||
                   (bpSettings?.bulkCustomerRecharge &&
-                    permission?.bulkCustomerRecharge &&
+                    permissions?.bulkCustomerRecharge &&
                     role === "manager")) && (
                   <li
                     type="button"
@@ -2143,7 +2093,7 @@ const PPPOECustomer = () => {
               <hr className="mt-0 mb-0" />
               {((role === "ispOwner" && bpSettings?.bulkTransferToReseller) ||
                 (bpSettings?.bulkTransferToReseller &&
-                  permission?.bulkTransferToReseller &&
+                  permissions?.bulkTransferToReseller &&
                   role === "manager")) && (
                 <li
                   type="button"
@@ -2172,7 +2122,7 @@ const PPPOECustomer = () => {
 
               {((role === "ispOwner" && bpSettings?.bulkCustomerDelete) ||
                 (bpSettings?.bulkCustomerDelete &&
-                  permission?.bulkCustomerDelete &&
+                  permissions?.bulkCustomerDelete &&
                   role === "manager")) && (
                 <li
                   type="button"

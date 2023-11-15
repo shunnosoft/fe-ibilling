@@ -1017,6 +1017,16 @@ export const getCustomer = async (dispatch, ispOwner, setIsloading) => {
   setIsloading(false);
 };
 
+//customer connection fee api
+export const getConnectionFee = async (customerId, setPaidConnectionFee) => {
+  try {
+    const res = await apiLink.get(`/ispOwner/connection-fee/${customerId}`);
+    setPaidConnectionFee(res.data.amount);
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
 export const getNewCustomer = async (
   dispatch,
   ispOwner,
@@ -1195,28 +1205,27 @@ export const deleteACustomer = async (
   isResellerCustomer = false,
   setShow
 ) => {
+  setIsLoading(true);
   try {
-    setIsLoading(true);
     await apiLink.delete(
       `/ispOwner/customer/${data.ispID}/${data.customerID}?mikrotik=${data.mikrotik}`
     );
     dispatch(deleteCustomerSuccess(data.customerID));
     isResellerCustomer && dispatch(deleteReCustomer(data.customerID));
-    document.querySelector("#customerDelete").click();
-    setIsLoading(false);
+
+    setShow(false);
     langMessage(
       "success",
       "কাস্টমার ডিলিট সফল হয়েছে",
       "Customer Deleted Successfully"
     );
-    setShow(false);
+    document.querySelector("#customerDelete").click();
   } catch (err) {
     if (err.response) {
-      setIsLoading(false);
-      document.querySelector("#customerDelete").click();
       toast.error(err.response.data.message);
     }
   }
+  setIsLoading(false);
 };
 
 export const deleteStaticCustomerApi = async (

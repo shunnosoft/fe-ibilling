@@ -668,7 +668,7 @@
   "paidCustomer": "পেইড কাস্টমার",
   "unpaidCustomer": "বকেয়া কাস্টমার",
   "allCollector": "মোট কালেক্টর",
-  "totalBillAmount": "মোট বিলের পরিমানঃ ",
+  "totalBillAmount": "মোট বিলের পরিমানঃ বকেয়া",
   "dueNotAcceptable": "বকেয়া গ্রহণ যোগ্য নয়",
   "discountNotAcceptable": "ডিসকাউন্ট গ্রহণ যোগ্য নয়",
   "staffSalary": "স্টাফের বেতন",
@@ -903,5 +903,6 @@
   "codeScan": "কোড স্ক্যান",
   "download": "ডাউনলোড",
   "copyLink": "কপি লিংক",
-  "hotspotCustomerUrl": "হটস্পট গ্রাহক URL"
+  "hotspotCustomerUrl": "হটস্পট গ্রাহক URL",
+  "connectionFeeDue": "সংযোগ ফি বকেয়া"
 }

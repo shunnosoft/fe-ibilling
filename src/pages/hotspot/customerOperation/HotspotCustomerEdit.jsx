@@ -357,7 +357,7 @@ const HotspotCustomerEdit = ({ customerId, setProfileOption }) => {
 
                 <div className="displayGridManual6_4">
                   <label
-                    class="form-control-label text-secondary d-flex justify-content-end"
+                    class="form-control-label manualLable"
                     htmlFor="manuallyPassword"
                   >
                     {t("packageRate")}
@@ -417,7 +417,7 @@ const HotspotCustomerEdit = ({ customerId, setProfileOption }) => {
 
                 <div className="displayGridManual6_4">
                   <label
-                    class="form-control-label text-secondary d-flex justify-content-end"
+                    class="form-control-label manualLable"
                     htmlFor="manuallyPassword"
                   >
                     {t("mobile")}
@@ -455,7 +455,7 @@ const HotspotCustomerEdit = ({ customerId, setProfileOption }) => {
 
                 <div className="displayGridManual6_4">
                   <label
-                    class="form-control-label text-secondary d-flex justify-content-end"
+                    class="form-control-label manualLable"
                     htmlFor="manuallyPassword"
                   >
                     {t("password")}

@@ -162,14 +162,14 @@ export const deleteHotspotCustomer = async (
       `hotspot/${data?.customerID}?removeFromMikrotik=${data?.mikrotik}`
     );
     dispatch(deleteCustomerSuccess(data?.customerID));
-    document.querySelector("#hotsportCustomerDelete").click();
+    setShow(false);
 
     langMessage(
       "success",
       "গ্রাহক ডিলিট সফল হয়েছে!",
       "Customer Deleted Successfully"
     );
-    setShow(false);
+    document.querySelector("#hotsportCustomerDelete").click();
   } catch (err) {
     console.log(err.response?.data);
     toast.error(err.response?.data?.message);

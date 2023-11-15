@@ -123,7 +123,7 @@ const CustomerBillReport = ({ customerId }) => {
                       <h5 className="reportCollect mb-0">{val?.name}</h5>
 
                       <FontColor>
-                        <div className="displayGridHorizontalFill5_5 collectReport">
+                        <div className="report5_5 collectReport">
                           <div className="reportOptions row gt-1">
                             <p>
                               {t("amount")}

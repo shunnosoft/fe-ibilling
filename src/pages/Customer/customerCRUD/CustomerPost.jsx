@@ -2,6 +2,15 @@ import React, { useEffect, useState } from "react";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
+import { useTranslation } from "react-i18next";
+import DatePicker from "react-datepicker";
+import {
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  ModalTitle,
+} from "react-bootstrap";
 
 // internal imports
 import "../../collector/collector.css";
@@ -12,8 +21,6 @@ import {
   addCustomer,
   fetchPackagefromDatabase,
 } from "../../../features/apiCalls";
-import { useTranslation } from "react-i18next";
-import DatePicker from "react-datepicker";
 import getName from "../../../utils/getLocationName";
 import useISPowner from "../../../hooks/useISPOwner";
 
@@ -25,15 +32,7 @@ import thanaJSON from "../../../bdAddress/bd-upazilas.json";
 //formik select
 import SelectField from "../../../components/common/SelectField";
 import useCurrentUser from "../../../hooks/useCurrentUser";
-import { useId } from "react";
 import { getPoleBoxApi } from "../../../features/actions/customerApiCall";
-import {
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
-  ModalTitle,
-} from "react-bootstrap";
 
 const divisions = divisionsJSON.divisions;
 const districts = districtsJSON.districts;
@@ -41,40 +40,33 @@ const thana = thanaJSON.thana;
 
 export default function CustomerModal({ show, setShow }) {
   const { t } = useTranslation();
-  const { hasMikrotik, ispOwnerId } = useISPowner();
+  const { hasMikrotik, ispOwnerId, bpSettings } = useISPowner();
   const { userRole, userId } = useCurrentUser();
 
-  const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
-  );
-
-  // get isp owner id
-  const ispOwner = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerId
-  );
-
-  // const packages= useSelector(state=>state.package.packages)
-  // const ispOwnerId = useSelector(
-  //   (state) => state.persistedReducer.auth?.ispOwnerId
-  // );
+  // all areas form redux
   const area = useSelector((state) => state?.area?.area);
+
+  // areas subArea form redux
   const storeSubArea = useSelector((state) => state.area?.subArea);
+
+  // ispOwner all mikrotiks in redux
   const Getmikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
 
+  // ispOwner mikrotik & withOut mikrotik packages in redux
   const ppPackage = useSelector((state) =>
     hasMikrotik
       ? state?.mikrotik?.packagefromDatabase
       : state?.package?.packages
   );
 
-  // get all poleBox
+  // areas all poleBox form redux
   const poleBox = useSelector((state) => state.area?.poleBox);
 
   // Loading state
   const [isLoadingPole, setIsLoadingPole] = useState(false);
+  const [isLoading, setIsloading] = useState(false);
 
   const [packageRate, setPackageRate] = useState({ rate: 0 });
-  const [isLoading, setIsloading] = useState(false);
   const [singleMikrotik, setSingleMikrotik] = useState("");
   const [mikrotikPackage, setMikrotikPackage] = useState("");
   const [autoDisable, setAutoDisable] = useState(
@@ -128,7 +120,7 @@ export default function CustomerModal({ show, setShow }) {
 
   // get subarea poleBox
   useEffect(() => {
-    getPoleBoxApi(dispatch, ispOwner, setIsLoadingPole);
+    getPoleBoxApi(dispatch, ispOwnerId, setIsLoadingPole);
   }, []);
 
   //modal show handler
@@ -349,6 +341,7 @@ export default function CustomerModal({ show, setShow }) {
               Ppassword: "",
               Pcomment: "",
               balance: "",
+              connectionFee: "",
               referenceName: "",
               referenceMobile: "",
               customerBillingType: "prepaid",
@@ -617,6 +610,13 @@ export default function CustomerModal({ show, setShow }) {
                   </div>
 
                   <FtextField
+                    type="number"
+                    name="connectionFee"
+                    label={t("connectionFee")}
+                    disabled={!mikrotikPackage}
+                  />
+
+                  <FtextField
                     type="text"
                     label={t("referenceName")}
                     name="referenceName"
@@ -629,6 +629,7 @@ export default function CustomerModal({ show, setShow }) {
                     name="referenceMobile"
                     disabled={!mikrotikPackage}
                   />
+
                   {!bpSettings.genCustomerId && (
                     <FtextField
                       type="text"
@@ -649,51 +650,6 @@ export default function CustomerModal({ show, setShow }) {
                       />
                     </div>
                   )}
-                  {/* <div className="autoDisable">
-                        <label htmlFor="checkConnectionFee">
-                          {t("WantToChargeConnectionFee")}
-                        </label>
-                        <input
-                          id="checkConnectionFee"
-                          type="checkBox"
-                          checked={connectionFee}
-                          onChange={(e) => setConnectionFee(e.target.checked)}
-                        />
-                      </div> */}
-
-                  {/* {connectionFee && (
-                      <div className="displayGrid3">
-                        <FtextField
-                          type="number"
-                          name="amount"
-                          label={t("amount")}
-                        />
-                        <div className="d-inline mb-3">
-                          <label
-                            htmlFor="receiver_type"
-                            className="form-control-label changeLabelFontColor"
-                          >
-                            {t("medium")}
-                          </label>
-
-                          <select
-                            as="select"
-                            id="receiver_type"
-                            className="form-select mt-0 mw-100"
-                            aria-label="Default select example"
-                            onChange={(e) => setMedium(e.target.value)}
-                          >
-                            <option value="cash" selected>
-                              {t("handCash")}
-                            </option>
-                            <option value="bKash"> {t("bKash")} </option>
-                            <option value="rocket"> {t("rocket")} </option>
-                            <option value="nagad"> {t("nagad")} </option>
-                            <option value="others"> {t("others")} </option>
-                          </select>
-                        </div>
-                      </div>
-                    )} */}
                 </div>
               </Form>
             )}

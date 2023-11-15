@@ -13,7 +13,7 @@ const useISPowner = () => {
   const [companyName, setCompanyName] = useState(user?.ispOwnerData?.company);
 
   // ispOwner bpSettings data
-  const [bpSetting, setBpSetting] = useState(user?.ispOwnerData?.bpSettings);
+  const [bpSettings, setBpSettings] = useState(user?.ispOwnerData?.bpSettings);
   const [userType, setUserType] = useState(
     user?.ispOwnerData?.bpSettings?.queueType
   );
@@ -42,7 +42,7 @@ const useISPowner = () => {
 
     // ispOwner bpSettings data set
     if (user?.ispOwnerData?.bpSettings) {
-      setBpSetting(user?.ispOwnerData?.bpSettings);
+      setBpSettings(user?.ispOwnerData?.bpSettings);
       setUserType(user?.ispOwnerData?.bpSettings?.queueType);
       setHasMikrotik(user?.ispOwnerData?.bpSettings?.hasMikrotik);
       setHasReseller(user?.ispOwnerData?.bpSettings?.hasReseller);
@@ -63,7 +63,7 @@ const useISPowner = () => {
   return {
     role,
     ispOwnerId,
-    bpSetting,
+    bpSettings,
     userType,
     hasMikrotik,
     hasReseller,

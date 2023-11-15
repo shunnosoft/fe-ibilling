@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useMemo } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import "../collector/collector.css";
 import moment from "moment";
 import { CSVLink } from "react-csv";
@@ -26,25 +26,24 @@ import {
   FilterCircle,
   BoxSeam,
   FiletypeCsv,
-  Check2Circle,
   ArrowBarLeft,
   ArrowBarRight,
   ReceiptCutoff,
   PencilSquare,
-  Router,
   Phone,
   GeoAlt,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
-import ReactToPrint from "react-to-print";
+import { Accordion, Card, Collapse } from "react-bootstrap";
+import { useTranslation } from "react-i18next";
+import DatePicker from "react-datepicker";
 
 // internal imports
 import Footer from "../../components/admin/footer/Footer";
 import { FontColor, FourGround } from "../../assets/js/theme";
 import CustomerDetails from "./customerCRUD/CustomerDetails";
 import CustomerBillCollect from "./customerCRUD/CustomerBillCollect";
-import StaticCustomerEdit from "./customerCRUD/StaticCustomerEdit";
 import {
   getStaticCustomer,
   getPackagewithoutmikrotik,
@@ -52,27 +51,22 @@ import {
   getArea,
   getCollector,
   getManger,
-  fetchPackagefromDatabase,
   getAllPackages,
   staticMACBinding,
   getQueuePackageByIspOwnerId,
 } from "../../features/apiCalls";
 import CustomerReport from "./customerCRUD/showCustomerReport";
 import { badge } from "../../components/common/Utils";
-import PrintCustomer from "./customerPDF";
 import Table from "../../components/table/Table";
 import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
 import CustomerDelete from "./customerCRUD/StaticCustomerDelete";
 import AddStaticCustomer from "./customerCRUD/AddStaticCustomer";
-import apiLink from "../../api/apiLink";
 import BulkSubAreaEdit from "../Customer/customerCRUD/bulkOpration/bulkSubAreaEdit";
 import BulkBillingCycleEdit from "../Customer/customerCRUD/bulkOpration/bulkBillingCycleEdit";
 import BulkPromiseDateEdit from "../Customer/customerCRUD/bulkOpration/BulkPromiseDateEdit";
 import BulkStatusEdit from "../Customer/customerCRUD/bulkOpration/bulkStatusEdit";
 import BulkCustomerDelete from "../Customer/customerCRUD/bulkOpration/BulkdeleteModal";
 import IndeterminateCheckbox from "../../components/table/bulkCheckbox";
-import { useTranslation } from "react-i18next";
-import DatePicker from "react-datepicker";
 import BulkAutoConnectionEdit from "../Customer/customerCRUD/bulkOpration/bulkAutoConnectionEdit";
 import Loader from "../../components/common/Loader";
 import FormatNumber from "../../components/common/NumberFormat";
@@ -92,57 +86,51 @@ import BulkBalanceEdit from "../Customer/customerCRUD/bulkOpration/BulkBalanceEd
 import BulkPackageEdit from "../Customer/customerCRUD/bulkOpration/bulkPackageEdit";
 import BulkRecharge from "../Customer/customerCRUD/bulkOpration/BulkRecharge";
 import StaticCreateInvoice from "./StaticCreateInvoice";
-import { Accordion, Card, Collapse } from "react-bootstrap";
 import BulkPaymentStatusEdit from "../Customer/customerCRUD/bulkOpration/BulkPaymentStatusEdit";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
 import EditStaticCustomer from "./customerCRUD/temp/EditStaticCustomer";
 import { updateStaticCustomerApi } from "../../features/staticCustomerApi";
 import PrintOptions from "../../components/common/PrintOptions";
+import {
+  getCustomerDayLeft,
+  getCustomerPromiseDate,
+} from "../Customer/customerCRUD/customerBillDayPromiseDate";
+import useISPowner from "../../hooks/useISPOwner";
+import { getOwnerUsers } from "../../features/getIspOwnerUsersApi";
 
 export default function Customer() {
   //call hooks
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
-  // current date
-  const date = new Date();
+  // get user & current user data form useISPOwner
+  const { role, ispOwnerId, bpSettings, permissions } = useISPowner();
 
-  //get data from redux store
-  const mikrotiks = useSelector((state) => state?.mikrotik?.mikrotik);
-  // user id state
-  const [userId, setUserId] = useState();
-  const componentRef = useRef(); //reference of pdf export component
-  const cus = useSelector((state) => state?.customer?.staticCustomer);
-  const collectors = useSelector((state) => state?.collector?.collector);
-  const manager = useSelector((state) => state.manager?.manager);
-
-  const role = useSelector((state) => state.persistedReducer.auth?.role);
-  const ispOwner = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerId
-  );
+  // get ispOwner data form store
   const ispOwnerData = useSelector(
     (state) => state.persistedReducer.auth?.userData
   );
-  const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
-  );
 
-  const permission = useSelector(
-    (state) => state.persistedReducer.auth?.userData.permissions
-  );
-  const allareas = useSelector((state) => state?.area?.area);
+  //get data from redux store
+  const mikrotiks = useSelector((state) => state?.mikrotik?.mikrotik);
+
+  //get ispOwner all manager & collector form redux store
+  const manager = useSelector((state) => state.manager?.manager);
+  const collectors = useSelector((state) => state?.collector?.collector);
+
+  // get static customer form redux store
+  const cus = useSelector((state) => state?.customer?.staticCustomer);
+
+  // ispOwner collector area
   const collectorArea = useSelector((state) =>
     role === "collector"
       ? state.persistedReducer.auth?.currentUser?.collector?.areas
       : []
   );
 
-  // get all package list
-  let packages = useSelector((state) => state?.package?.packages);
-
-  // get all packages
-  const allPackages = useSelector((state) => state.package.allPackages);
+  //get ispOwner areas form redux
+  const allareas = useSelector((state) => state?.area?.area);
 
   // get all subAreas
   const storeSubArea = useSelector((state) => state.area?.subArea);
@@ -150,15 +138,24 @@ export default function Customer() {
   //get all pole Box
   const poleBox = useSelector((state) => state.area?.poleBox);
 
+  // get all package list
+  let packages = useSelector((state) => state?.package?.packages);
+
+  // get all packages
+  const allPackages = useSelector((state) => state.package.allPackages);
+
   // get bulletin permission
   const butPermission = useSelector(
     (state) => state.adminNetFeeSupport?.bulletinPermission
   );
 
-  //declare local state
+  //loading state
   const [isLoading, setIsloading] = useState(false);
   const [customerLoading, setCustomerLoading] = useState(false);
   const [isShow, setIsShow] = useState(false);
+
+  //user id
+  const [userId, setUserId] = useState();
 
   // filter Accordion handle state
   const [activeKeys, setActiveKeys] = useState("");
@@ -365,10 +362,10 @@ export default function Customer() {
       !bpSettings?.hasMikrotik &&
       (role === "manager" || role === "ispOwner")
     ) {
-      getPackagewithoutmikrotik(ispOwner, dispatch, setIsloading);
+      getPackagewithoutmikrotik(ispOwnerId, dispatch, setIsloading);
     }
 
-    getStaticCustomer(dispatch, ispOwner, setCustomerLoading);
+    getStaticCustomer(dispatch, ispOwnerId, setCustomerLoading);
   };
 
   useEffect(() => {
@@ -376,20 +373,20 @@ export default function Customer() {
       !bpSettings?.hasMikrotik &&
       (role === "manager" || role === "ispOwner")
     ) {
-      getPackagewithoutmikrotik(ispOwner, dispatch, setIsloading);
+      getPackagewithoutmikrotik(ispOwnerId, dispatch, setIsloading);
     }
 
     // ispOwner pppoe all package get api
     if (allPackages.length === 0)
-      getAllPackages(dispatch, ispOwner, setIsloading);
+      getAllPackages(dispatch, ispOwnerId, setIsloading);
 
     //ispOwner queue all package get api
     if (bpSettings.hasMikrotik && packages.length === 0)
-      getQueuePackageByIspOwnerId(ispOwner, dispatch, setIsloading);
+      getQueuePackageByIspOwnerId(ispOwnerId, dispatch, setIsloading);
 
     if (cus.length === 0)
-      getStaticCustomer(dispatch, ispOwner, setCustomerLoading);
-  }, [dispatch, ispOwner, role, bpSettings]);
+      getStaticCustomer(dispatch, ispOwnerId, setCustomerLoading);
+  }, [dispatch, ispOwnerId, role, bpSettings]);
 
   const [subAreaIds, setSubArea] = useState([]);
   const [singleArea, setArea] = useState({});
@@ -457,19 +454,23 @@ export default function Customer() {
   }, [cus, subAreaIds]);
 
   useEffect(() => {
-    if (mikrotiks.length === 0) fetchMikrotik(dispatch, ispOwner, setIsloading);
-    if (allArea.length === 0) getArea(dispatch, ispOwner, setIsloading);
+    if (mikrotiks.length === 0)
+      fetchMikrotik(dispatch, ispOwnerId, setIsloading);
+    if (allArea.length === 0) getArea(dispatch, ispOwnerId, setIsloading);
     // get sub area api
-    getSubAreasApi(dispatch, ispOwner);
+    getSubAreasApi(dispatch, ispOwnerId);
     if (poleBox.length === 0)
-      getPoleBoxApi(dispatch, ispOwner, setIsLoadingPole);
+      getPoleBoxApi(dispatch, ispOwnerId, setIsLoadingPole);
 
     if (role !== "collector") {
       if (collectors.length === 0)
-        getCollector(dispatch, ispOwner, setIsloading);
+        getCollector(dispatch, ispOwnerId, setIsloading);
 
-      role === "ispOwner" && getManger(dispatch, ispOwner);
+      role === "ispOwner" && getManger(dispatch, ispOwnerId);
     }
+
+    // get ispOwner all staffs
+    getOwnerUsers(dispatch, ispOwnerId);
 
     Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
   }, []);
@@ -734,43 +735,6 @@ export default function Customer() {
     }
   };
 
-  //find customer billing date before and after promise date
-  const getCustomerPromiseDate = (data) => {
-    const billDate = moment(data?.billingCycle).format("YYYY/MM/DD hh:mm A");
-
-    const promiseDate = moment(data?.promiseDate).format("YYYY/MM/DD hh:mm A");
-
-    var promiseDateChange;
-
-    if (billDate < promiseDate) {
-      promiseDateChange = "danger";
-    } else if (billDate > promiseDate) {
-      promiseDateChange = "warning";
-    }
-
-    return { billDate, promiseDate, promiseDateChange };
-  };
-
-  // customer day left filtering in current date
-  const getCustomerDayLeft = (billDate) => {
-    //current day
-    const currentDay = new Date(
-      new Date(moment(date).format("YYYY-MM-DD"))
-    ).getTime();
-
-    // // billing day
-    const billDay = new Date(
-      new Date(moment(billDate).format("YYYY-MM-DD"))
-    ).getTime();
-
-    const diffInMs = billDay - currentDay;
-
-    // // bill day left
-    const dayLeft = Math.round(diffInMs / (1000 * 60 * 60 * 24));
-
-    return dayLeft;
-  };
-
   const columns = React.useMemo(
     () => [
       {
@@ -953,7 +917,7 @@ export default function Customer() {
                     </div>
                   </div>
                 </li>
-                {(permission?.billPosting || role === "ispOwner") && (
+                {(permissions?.billPosting || role === "ispOwner") && (
                   <li
                     data-bs-toggle="modal"
                     data-bs-target="#collectCustomerBillModal"
@@ -972,7 +936,7 @@ export default function Customer() {
                     </div>
                   </li>
                 )}
-                {(role === "ispOwner" || permission.customerEdit) && (
+                {(role === "ispOwner" || permissions.customerEdit) && (
                   <li
                     onClick={() => {
                       setSingleCustomer(original.id);
@@ -1020,7 +984,7 @@ export default function Customer() {
                   </div>
                 </li>
 
-                {(role === "ispOwner" || permission.customerDelete) && (
+                {(role === "ispOwner" || permissions.customerDelete) && (
                   <li
                     data-bs-toggle="modal"
                     data-bs-target="#staticCustomerDelete"
@@ -1037,7 +1001,7 @@ export default function Customer() {
                   </li>
                 )}
 
-                {(role === "ispOwner" || permission.sendSMS) && (
+                {(role === "ispOwner" || permissions.sendSMS) && (
                   <li
                     data-bs-toggle="modal"
                     data-bs-target="#customerMessageModal"
@@ -1106,7 +1070,7 @@ export default function Customer() {
                 )}
 
                 {((role === "ispOwner" && bpSettings?.customerInvoice) ||
-                  (role === "manager" && permission?.customerInvoice)) &&
+                  (role === "manager" && permissions?.customerInvoice)) &&
                 (!(original?.monthlyFee <= original?.balance) ||
                   original?.paymentStatus !== "paid") ? (
                   <li
@@ -1236,7 +1200,7 @@ export default function Customer() {
                     </div>
 
                     <div>
-                      {(role === "ispOwner" || permission.customerAdd) && (
+                      {(role === "ispOwner" || permissions.customerAdd) && (
                         <PersonPlusFill
                           title={t("addStaticCustomer")}
                           className="addcutmButton"
@@ -1277,7 +1241,7 @@ export default function Customer() {
                               )}
 
                             {((role === "manager" &&
-                              permission?.customerEdit) ||
+                              permissions?.customerEdit) ||
                               role === "ispOwner") && (
                               <div
                                 className="addAndSettingIcon"
@@ -1293,7 +1257,7 @@ export default function Customer() {
                               </div>
                             )}
 
-                            {(permission?.viewCustomerList ||
+                            {(permissions?.viewCustomerList ||
                               role === "ispOwner") && (
                               <>
                                 <div className="addAndSettingIcon">
@@ -1361,7 +1325,7 @@ export default function Customer() {
               </FourGround>
 
               <FourGround>
-                {permission?.viewCustomerList || role !== "collector" ? (
+                {permissions?.viewCustomerList || role !== "collector" ? (
                   <div className="mt-2">
                     <Accordion alwaysOpen activeKey={activeKeys}>
                       <Accordion.Item eventKey="filter">
@@ -1962,7 +1926,7 @@ export default function Customer() {
                 collectors={collectors}
                 manager={manager}
                 customer={singleCustomer}
-                ispOwner={ispOwner}
+                ispOwner={ispOwnerId}
                 reseller=""
               />
 
@@ -1988,7 +1952,7 @@ export default function Customer() {
             <ul className="client_service_list2 ps-0">
               {((role === "ispOwner" && bpSettings?.bulkAreaEdit) ||
                 (bpSettings?.bulkAreaEdit &&
-                  permission?.bulkAreaEdit &&
+                  permissions?.bulkAreaEdit &&
                   role !== "manager")) && (
                 <li
                   type="button"
@@ -2016,7 +1980,7 @@ export default function Customer() {
               {bpSettings?.hasMikrotik &&
                 ((role === "ispOwner" && bpSettings?.bulkStatusEdit) ||
                   (bpSettings?.bulkStatusEdit &&
-                    permission?.bulkStatusEdit &&
+                    permissions?.bulkStatusEdit &&
                     role === "manager")) && (
                   <li
                     type="button"
@@ -2044,7 +2008,7 @@ export default function Customer() {
               {bpSettings?.hasMikrotik &&
                 ((role === "ispOwner" && bpSettings?.bulkPaymentStatusEdit) ||
                   (bpSettings?.bulkPaymentStatusEdit &&
-                    permission?.bulkPaymentStatusEdit &&
+                    permissions?.bulkPaymentStatusEdit &&
                     role === "manager")) && (
                   <li
                     type="button"
@@ -2073,7 +2037,7 @@ export default function Customer() {
 
               {((role === "ispOwner" && bpSettings?.bulkBillingCycleEdit) ||
                 (bpSettings?.bulkBillingCycleEdit &&
-                  permission?.bulkBillingCycleEdit &&
+                  permissions?.bulkBillingCycleEdit &&
                   role === "manager")) && (
                 <li
                   type="button"
@@ -2103,7 +2067,7 @@ export default function Customer() {
 
               {((role === "ispOwner" && bpSettings?.bulkPromiseDateEdit) ||
                 (bpSettings?.bulkPromiseDateEdit &&
-                  permission?.bulkPromiseDateEdit &&
+                  permissions?.bulkPromiseDateEdit &&
                   role === "manager")) && (
                 <li
                   type="button"
@@ -2132,7 +2096,7 @@ export default function Customer() {
               <hr className="mt-0 mb-0" />
               {((role === "ispOwner" && bpSettings?.updateCustomerBalance) ||
                 (bpSettings?.updateCustomerBalance &&
-                  permission?.updateCustomerBalance &&
+                  permissions?.updateCustomerBalance &&
                   role === "manager")) && (
                 <li
                   type="button"
@@ -2160,7 +2124,7 @@ export default function Customer() {
                 ((role === "ispOwner" &&
                   bpSettings?.bulkCustomerMikrotikUpdate) ||
                   (bpSettings?.bulkCustomerMikrotikUpdate &&
-                    permission?.bulkCustomerMikrotikUpdate &&
+                    permissions?.bulkCustomerMikrotikUpdate &&
                     role === "manager")) && (
                   <li
                     type="button"
@@ -2189,7 +2153,7 @@ export default function Customer() {
               {bpSettings.hasMikrotik &&
                 ((role === "ispOwner" && bpSettings?.bulkPackageEdit) ||
                   (bpSettings?.bulkPackageEdit &&
-                    permission?.bulkPackageEdit &&
+                    permissions?.bulkPackageEdit &&
                     role === "manager")) && (
                   <li
                     type="button"
@@ -2218,7 +2182,7 @@ export default function Customer() {
               {bpSettings.hasMikrotik &&
                 ((role === "ispOwner" && bpSettings?.bulkCustomerRecharge) ||
                   (bpSettings?.bulkCustomerRecharge &&
-                    permission?.bulkCustomerRecharge &&
+                    permissions?.bulkCustomerRecharge &&
                     role === "manager")) && (
                   <li
                     type="button"
@@ -2247,7 +2211,7 @@ export default function Customer() {
 
               {((role === "ispOwner" && bpSettings?.bulkAutoDisableEdit) ||
                 (bpSettings?.bulkAutoDisableEdit &&
-                  permission?.bulkAutoDisableEdit &&
+                  permissions?.bulkAutoDisableEdit &&
                   role === "manager")) && (
                 <li
                   type="button"
@@ -2279,7 +2243,7 @@ export default function Customer() {
 
               {((role === "ispOwner" && bpSettings?.bulkTransferToReseller) ||
                 (bpSettings?.bulkTransferToReseller &&
-                  permission?.bulkTransferToReseller &&
+                  permissions?.bulkTransferToReseller &&
                   role === "collector")) && (
                 <li
                   type="button"
@@ -2309,7 +2273,7 @@ export default function Customer() {
 
               {((role === "ispOwner" && bpSettings?.bulkCustomerDelete) ||
                 (bpSettings?.bulkCustomerDelete &&
-                  permission?.bulkCustomerDelete &&
+                  permissions?.bulkCustomerDelete &&
                   role === "collector")) && (
                 <li
                   type="button"

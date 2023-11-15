@@ -52,7 +52,7 @@ const StaticCustomerEdit = ({ customerId, setProfileOption }) => {
   });
 
   // get user & current user data form useISPOwner
-  const { role, ispOwnerId, bpSetting, userType, permissions } = useISPowner();
+  const { role, ispOwnerId, bpSettings, userType, permissions } = useISPowner();
 
   // get static customer form redux
   const customer = useSelector((state) =>
@@ -191,7 +191,7 @@ const StaticCustomerEdit = ({ customerId, setProfileOption }) => {
 
   useEffect(() => {
     //ispOwner queue all package get api
-    if (bpSetting.hasMikrotik && packages.length === 0)
+    if (bpSettings?.hasMikrotik && packages.length === 0)
       getQueuePackageByIspOwnerId(ispOwnerId, dispatch, setIsloading);
   }, [customer?.mikrotik]);
 
@@ -320,7 +320,7 @@ const StaticCustomerEdit = ({ customerId, setProfileOption }) => {
       ...rest
     } = data;
 
-    if (!bpSetting.genCustomerId) {
+    if (!bpSettings.genCustomerId) {
       if (!customerId) {
         return alert(t("writeCustomerId"));
       }
@@ -331,7 +331,7 @@ const StaticCustomerEdit = ({ customerId, setProfileOption }) => {
       return alert(t("selectDownloadPackage"));
     }
 
-    if (bpSetting.addCustomerWithMobile) {
+    if (bpSettings.addCustomerWithMobile) {
       if (data.mobile === "") {
         setIsloading(false);
         return toast.warn(t("writeMobileNumber"));
@@ -341,7 +341,7 @@ const StaticCustomerEdit = ({ customerId, setProfileOption }) => {
     const subArea2 = document.getElementById("subAreaIdEditStatic").value;
 
     let poleBoxId;
-    if (bpSetting?.poleBox) {
+    if (bpSettings?.poleBox) {
       poleBoxId = document.getElementById("poleBoxEdit").value;
     }
 
@@ -382,11 +382,11 @@ const StaticCustomerEdit = ({ customerId, setProfileOption }) => {
       delete mainData.balance;
     }
 
-    if (!bpSetting.hasMikrotik) {
+    if (!bpSettings.hasMikrotik) {
       delete mainData.mikrotik;
       delete mainData.autoDisable;
     }
-    if (!bpSetting.genCustomerId) {
+    if (!bpSettings.genCustomerId) {
       mainData.customerId = customerId;
     }
 
@@ -487,7 +487,7 @@ const StaticCustomerEdit = ({ customerId, setProfileOption }) => {
           {() => (
             <Form>
               <div>
-                {!bpSetting?.genCustomerId && (
+                {!bpSettings?.genCustomerId && (
                   <TextField
                     type="text"
                     label="Customer Id"
@@ -496,9 +496,9 @@ const StaticCustomerEdit = ({ customerId, setProfileOption }) => {
                   />
                 )}
 
-                {bpSetting?.hasMikrotik && userType === "firewall-queue" && (
+                {bpSettings?.hasMikrotik && userType === "firewall-queue" && (
                   <div className="displayGridManual6_4">
-                    <label className="form-control-label text-secondary d-flex justify-content-end">
+                    <label className="form-control-label manualLable">
                       {t("selectPackage")}
                       <span className="text-danger">*</span>
                     </label>
@@ -526,9 +526,9 @@ const StaticCustomerEdit = ({ customerId, setProfileOption }) => {
                   </div>
                 )}
 
-                {bpSetting?.hasMikrotik && userType === "core-queue" && (
+                {bpSettings?.hasMikrotik && userType === "core-queue" && (
                   <div className="displayGridManual6_4">
-                    <label className="form-control-label text-secondary d-flex justify-content-end">
+                    <label className="form-control-label manualLable">
                       {t("selectPackage")}
                       <span className="text-danger">*</span>
                     </label>
@@ -556,9 +556,9 @@ const StaticCustomerEdit = ({ customerId, setProfileOption }) => {
                   </div>
                 )}
 
-                {bpSetting?.hasMikrotik && userType === "simple-queue" && (
+                {bpSettings?.hasMikrotik && userType === "simple-queue" && (
                   <div className="displayGridManual6_4">
-                    <label className="form-control-label text-secondary d-flex justify-content-end">
+                    <label className="form-control-label manualLable">
                       {t("uploadPackge")}
                       <span className="text-danger">*</span>
                     </label>
@@ -586,9 +586,9 @@ const StaticCustomerEdit = ({ customerId, setProfileOption }) => {
                   </div>
                 )}
 
-                {bpSetting?.hasMikrotik && userType === "simple-queue" && (
+                {bpSettings?.hasMikrotik && userType === "simple-queue" && (
                   <div className="displayGridManual6_4">
-                    <label className="form-control-label text-secondary d-flex justify-content-end">
+                    <label className="form-control-label manualLable">
                       {t("downloadPackge")}
                       <span className="text-danger">*</span>
                     </label>
@@ -615,9 +615,9 @@ const StaticCustomerEdit = ({ customerId, setProfileOption }) => {
                   </div>
                 )}
 
-                {!bpSetting?.hasMikrotik && (
+                {!bpSettings?.hasMikrotik && (
                   <div className="displayGridManual6_4">
-                    <label className="form-control-label text-secondary d-flex justify-content-end">
+                    <label className="form-control-label manualLable">
                       {t("downloadPackge")}
                       <span className="text-danger">*</span>
                     </label>
@@ -644,7 +644,7 @@ const StaticCustomerEdit = ({ customerId, setProfileOption }) => {
 
                 <div className="displayGridManual6_4">
                   <label
-                    class="form-control-label text-secondary d-flex justify-content-end"
+                    class="form-control-label manualLable"
                     htmlFor="manuallyPassword"
                   >
                     {t("monthlyFee")}
@@ -724,11 +724,11 @@ const StaticCustomerEdit = ({ customerId, setProfileOption }) => {
 
                 <div className="displayGridManual6_4">
                   <label
-                    class="form-control-label text-secondary d-flex justify-content-end"
+                    class="form-control-label manualLable"
                     htmlFor="manuallyPassword"
                   >
                     {t("mobile")}
-                    {bpSetting?.addCustomerWithMobile && (
+                    {bpSettings?.addCustomerWithMobile && (
                       <span className="text-danger">*</span>
                     )}
                   </label>
@@ -763,7 +763,7 @@ const StaticCustomerEdit = ({ customerId, setProfileOption }) => {
                   </div>
                 </div>
 
-                {!bpSetting?.hasMikrotik && (
+                {!bpSettings?.hasMikrotik && (
                   <TextField
                     type="number"
                     label={t("prevDue")}
@@ -772,7 +772,7 @@ const StaticCustomerEdit = ({ customerId, setProfileOption }) => {
                 )}
 
                 <div className="displayGridManual6_4">
-                  <label className="form-control-label text-secondary d-flex justify-content-end">
+                  <label className="form-control-label manualLable">
                     {t("selectArea")} <span className="text-danger">*</span>
                   </label>
 
@@ -797,7 +797,7 @@ const StaticCustomerEdit = ({ customerId, setProfileOption }) => {
                 </div>
 
                 <div className="displayGridManual6_4">
-                  <label className="form-control-label text-secondary d-flex justify-content-end">
+                  <label className="form-control-label manualLable">
                     {t("selectSubArea")} <span className="text-danger">*</span>
                   </label>
 
@@ -827,9 +827,9 @@ const StaticCustomerEdit = ({ customerId, setProfileOption }) => {
                   </select>
                 </div>
 
-                {bpSetting?.poleBox && (
+                {bpSettings?.poleBox && (
                   <div className="displayGridManual6_4">
-                    <label className="form-control-label text-secondary d-flex justify-content-end">
+                    <label className="form-control-label manualLable">
                       {t("selectPoleBox")}
                     </label>
                     <select
@@ -855,7 +855,7 @@ const StaticCustomerEdit = ({ customerId, setProfileOption }) => {
                 )}
 
                 <div className="displayGridManual6_4">
-                  <label className="form-control-label text-secondary d-flex justify-content-end">
+                  <label className="form-control-label manualLable">
                     {t("billingCycle")}
                     <span className="text-danger">*</span>
                   </label>
@@ -870,10 +870,10 @@ const StaticCustomerEdit = ({ customerId, setProfileOption }) => {
                   />
                 </div>
 
-                {bpSetting?.promiseDate &&
+                {bpSettings?.promiseDate &&
                   (role === "manager" || role === "ispOwner") && (
                     <div className="displayGridManual6_4">
-                      <label className="form-control-label text-secondary d-flex justify-content-end">
+                      <label className="form-control-label manualLable">
                         {t("promiseDate")}
                       </label>
 
@@ -895,7 +895,7 @@ const StaticCustomerEdit = ({ customerId, setProfileOption }) => {
 
                 {divisionalAreaFormData.map((item) => (
                   <div className="displayGridManual6_4">
-                    <label className="form-control-label text-secondary d-flex justify-content-end">
+                    <label className="form-control-label manualLable">
                       {item.text}
                     </label>
 
@@ -920,7 +920,7 @@ const StaticCustomerEdit = ({ customerId, setProfileOption }) => {
                 <TextField type="text" label={t("email")} name="email" />
 
                 <div className="displayGridManual6_4">
-                  <label className="form-control-label text-secondary d-flex justify-content-end">
+                  <label className="form-control-label manualLable">
                     {t("connectionDate")}
                   </label>
 
@@ -934,7 +934,7 @@ const StaticCustomerEdit = ({ customerId, setProfileOption }) => {
                 </div>
 
                 <div className="displayGridManual6_4">
-                  <label className="form-control-label text-secondary d-flex justify-content-end">
+                  <label className="form-control-label manualLable">
                     {t("customerBillType")}
                   </label>
 

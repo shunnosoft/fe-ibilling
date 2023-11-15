@@ -232,6 +232,12 @@ p {
   grid-gap: 10px;
 }
 
+.displayGrid3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 10px;
+}
+
 @media only screen and (max-width: 438px) {
   /* #global_name_options {
     flex-direction: column;
@@ -304,7 +310,7 @@ p {
   cursor: pointer;
 } */
 
-@media only screen and (max-width: 576px) {
+@media only screen and (max-width: 575px) {
   #toggle_selection {
     display: none !important;
   }
@@ -346,7 +352,7 @@ p {
   }
 }
 
-@media only screen and (min-width: 576px) and (max-width: 768px) {
+@media only screen and (min-width: 576px) and (max-width: 767px) {
   #custom_component_data {
     display: none !important;
   }

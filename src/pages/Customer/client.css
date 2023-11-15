@@ -150,12 +150,6 @@ ul.client_service_list2 li:last-child:hover {
   margin-right: 2rem;
 }
 
-.clintProfile {
-  width: auto;
-  height: 100%;
-  border: none !important;
-}
-
 .monthlyBill {
   font-size: 1.2rem;
   padding: 0.4rem 0.3rem;
@@ -191,6 +185,27 @@ ul.client_service_list2 li:last-child:hover {
   font-weight: 600;
 }
 
+.profileSetting {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  padding: 10px 38px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.profileSetting:hover {
+  filter: contrast(5) !important;
+  background-color: #1276a705;
+}
+
+#activeSetting {
+  box-shadow: 6px 0px 0px #297fd4 inset;
+  filter: contrast(5);
+  color: #297fd4;
+}
+
 .displayGridManual6_4 {
   display: grid;
   grid-template-columns: minmax(39%, auto) minmax(60%, auto);
@@ -198,6 +213,7 @@ ul.client_service_list2 li:last-child:hover {
   margin: 10px 0;
 }
 
+.report5_5,
 .displayGridHorizontalFill5_5 {
   display: grid;
   grid-template-columns: minmax(50%, auto) minmax(50%, auto);
@@ -209,8 +225,16 @@ ul.client_service_list2 li:last-child:hover {
   grid-gap: 4%;
 }
 
-.clintSetting {
+.profile_details {
+  height: 21.3rem;
+}
+
+.setting_details {
   height: 100vh;
+}
+
+.clintSetting {
+  border: none !important;
 }
 
 .manualLable {
@@ -219,20 +243,30 @@ ul.client_service_list2 li:last-child:hover {
   color: rgb(131, 131, 131);
 }
 
-.profileSidebar {
-  background-color: aqua;
+.forgetPassword {
+  display: flex;
+  justify-content: start;
+  color: #2e87e0;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  margin-top: 2px;
 }
 
-.profileOptions {
-  padding: 0 0.5rem;
-  color: #5e5d5d !important;
+.forgetPassword:hover {
+  text-decoration: underline;
+}
+
+.profileSidebar {
+  background-color: aqua;
 }
 
 .profileOptions {
   font-size: 18px;
   margin-right: 15px;
   margin-top: -1px;
-  color: rgb(131, 131, 131);
+  padding: 0 0.5rem;
+  color: #5e5d5d !important;
 }
 
 .options_name {
@@ -318,4 +352,311 @@ ul.client_service_list2 li:last-child:hover {
 .reportOptions > p {
   display: grid;
   grid-template-columns: minmax(50%, auto) minmax(50%, auto);
+}
+
+.smsLength_smsType {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.smsLengthCount {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 20px;
+  font-weight: bold;
+}
+
+.smsType {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@media only screen and (max-width: 515px) {
+  #delete_profile {
+    display: none;
+  }
+
+  #activeSetting {
+    box-shadow: 0px 0px 6px #297fd4 inset;
+  }
+
+  #clintSetting {
+    display: flex;
+  }
+
+  .manualLable {
+    justify-content: start;
+  }
+
+  .vr_line {
+    display: none !important;
+  }
+
+  .clintPotos {
+    width: 3rem;
+    height: 3rem;
+    margin-right: 0.5rem;
+  }
+
+  .clintName {
+    font-family: Verdana, sans-serif;
+    font-size: 1.2rem;
+    font-weight: 300;
+  }
+
+  .profileDelete {
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+    margin-right: 5px !important;
+  }
+
+  .close_Btn {
+    font-size: 1rem;
+  }
+
+  .displayGridManual6_4 {
+    display: block;
+  }
+
+  .report5_5 {
+    display: block;
+  }
+
+  .options_name {
+    display: none;
+  }
+
+  .clint_profile_setting {
+    display: none !important;
+  }
+
+  .profileSetting {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    justify-content: center;
+    padding: 5px 0.6rem;
+  }
+
+  .profileOptions {
+    margin-right: 0px;
+  }
+
+  .setting_details {
+    height: fit-content;
+  }
+
+  .client_details {
+    height: 15rem !important;
+  }
+
+  .smsLengthCount {
+    display: block;
+  }
+
+  .smsType,
+  .smsLength_smsType {
+    display: block;
+    justify-content: start;
+    grid-gap: 10px;
+  }
+
+  .details_setting {
+    margin-bottom: 1rem;
+  }
+}
+
+@media only screen and (min-width: 516px) and (max-width: 767px) {
+  #delete_profile {
+    display: none;
+  }
+
+  #activeSetting {
+    box-shadow: 0px 0px 6px #297fd4 inset;
+  }
+
+  #clintSetting {
+    display: flex;
+  }
+
+  .manualLable {
+    justify-content: start;
+  }
+
+  .vr_line {
+    display: none !important;
+  }
+
+  .clintPotos {
+    width: 3.3rem;
+    height: 3.3rem;
+  }
+
+  .clintName {
+    font-family: Verdana, sans-serif;
+    font-size: larger;
+    font-weight: 100;
+  }
+
+  .profileDelete {
+    display: flex;
+    align-items: center;
+    font-size: inherit;
+    margin-right: 5px !important;
+  }
+
+  .close_Btn {
+    font-size: 1.1rem;
+  }
+
+  .displayGridManual6_4 {
+    display: block;
+  }
+
+  .options_name {
+    display: none;
+  }
+
+  .clint_profile_setting {
+    display: none !important;
+  }
+
+  .profileSetting {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    justify-content: center;
+    padding: 5px 1.3rem;
+  }
+
+  .profileOptions {
+    margin-right: 0px;
+  }
+
+  .setting_details {
+    height: fit-content;
+  }
+
+  .smsLengthCount {
+    display: block;
+  }
+
+  .smsType,
+  .smsLength_smsType {
+    display: block;
+    justify-content: start;
+    grid-gap: 10px;
+  }
+
+  .details_setting {
+    margin-bottom: 1rem;
+  }
+}
+
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+  #delete_profile {
+    display: none;
+  }
+
+  #activeSetting {
+    box-shadow: 0px 0px 6px #297fd4 inset;
+  }
+
+  #clintSetting {
+    display: flex;
+  }
+
+  .manualLable {
+    justify-content: start;
+  }
+
+  .vr_line {
+    display: none !important;
+  }
+
+  .clintPotos {
+    width: 3.8rem;
+    height: 3.8rem;
+    object-fit: cover;
+    border-radius: 50%;
+    margin: 0.5rem 1rem;
+  }
+
+  .clintName {
+    font-family: Verdana, sans-serif;
+    font-size: larger;
+    font-weight: 100;
+  }
+
+  .profileDelete {
+    display: flex;
+    align-items: center;
+    font-size: inherit;
+    margin-right: 5px !important;
+  }
+
+  .close_Btn {
+    font-size: 1.1rem;
+  }
+
+  .displayGridManual6_4 {
+    display: block;
+  }
+
+  .options_name {
+    display: none;
+  }
+
+  .clint_profile_setting {
+    display: none !important;
+  }
+
+  .profileSetting {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    justify-content: center;
+    padding: 5px 1.5rem;
+  }
+
+  .profileOptions {
+    margin-right: 0px;
+  }
+
+  .setting_details {
+    height: fit-content;
+  }
+
+  .smsLengthCount {
+    display: block;
+  }
+
+  .smsType,
+  .smsLength_smsType {
+    display: block;
+    justify-content: start;
+    grid-gap: 10px;
+  }
+
+  .details_setting {
+    margin-bottom: 1rem;
+  }
+}
+
+@media only screen and (min-width: 992px) and (max-width: 1200px) {
+  .vr_line {
+    display: none !important;
+  }
+
+  .smsLengthCount {
+    display: block;
+  }
+
+  .smsType,
+  .smsLength_smsType {
+    display: block;
+    justify-content: start;
+    grid-gap: 10px;
+  }
 }

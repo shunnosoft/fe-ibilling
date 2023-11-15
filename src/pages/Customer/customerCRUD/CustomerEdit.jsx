@@ -28,15 +28,7 @@ import SelectField from "../../../components/common/SelectField";
 import { getPoleBoxApi } from "../../../features/actions/customerApiCall";
 import { toast } from "react-toastify";
 import moment from "moment";
-import {
-  Card,
-  InputGroup,
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
-  ModalTitle,
-} from "react-bootstrap";
+import { Card, InputGroup } from "react-bootstrap";
 import { TextField } from "../../../components/common/HorizontalTextField";
 import { Cash, Envelope, Eye, EyeSlash } from "react-bootstrap-icons";
 
@@ -506,7 +498,7 @@ export default function CustomerEdit({ customerId, setProfileOption }) {
 
                 <div className="displayGridManual6_4">
                   <label
-                    class="form-control-label text-secondary d-flex justify-content-end"
+                    class="form-control-label manualLable"
                     htmlFor="manuallyPassword"
                   >
                     {t("monthlyFee")}
@@ -564,7 +556,7 @@ export default function CustomerEdit({ customerId, setProfileOption }) {
 
                 <div className="displayGridManual6_4">
                   <label
-                    class="form-control-label text-secondary d-flex justify-content-end"
+                    class="form-control-label manualLable"
                     htmlFor="manuallyPassword"
                   >
                     {t("mobile")}
@@ -605,7 +597,7 @@ export default function CustomerEdit({ customerId, setProfileOption }) {
 
                 <div className="displayGridManual6_4">
                   <label
-                    class="form-control-label text-secondary d-flex justify-content-end"
+                    class="form-control-label manualLable"
                     htmlFor="manuallyPassword"
                   >
                     {t("password")}

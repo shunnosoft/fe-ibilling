@@ -167,15 +167,15 @@ const CustomerMessage = ({ customerId, page }) => {
       <Card.Body>
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
-            <div className="d-flex justify-content-between align-items-center mb-3">
-              <div className="smsCount mt-0">
+            <div className="smsLength_smsType mb-3">
+              <div className="smsLengthCount mt-0">
                 <span className="smsLength">
                   {t("letter")} {messageLength.length}
                 </span>
                 <span>SMS: {smsAmount}</span>
               </div>
 
-              <div className="d-flex justify-content-center align-items-center">
+              <div className="smsType">
                 <div className="me-2">
                   <input
                     name="messageSendingType"

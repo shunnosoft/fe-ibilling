@@ -53,7 +53,7 @@ const ProfileDelete = ({
       if (page === "hotspot") {
         deleteHotspotCustomer(dispatch, data, setIsLoading, setModalShow);
       } else {
-        deleteACustomer(dispatch, data, setIsLoading, setModalShow);
+        deleteACustomer(dispatch, data, setIsLoading, "", setModalShow);
       }
     } else {
       // deleteResellerCustomer(dispatch, resellerCusData, setIsLoading);
