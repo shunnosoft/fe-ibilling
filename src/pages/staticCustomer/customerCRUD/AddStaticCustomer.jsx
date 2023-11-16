@@ -101,11 +101,6 @@ export default function AddStaticCustomer({ show, setShow }) {
     email: Yup.string().email(t("incorrectEmail")),
     nid: Yup.string(),
     customerBillingType: Yup.string().required(t("select billing type")),
-
-    // monthlyFee: Yup.number()
-    //   .integer()
-    //   .min(0, "সর্বনিম্ন প্যাকেজ রেট 0")
-    //   .required("প্যাকেজ রেট দিন"),
   });
 
   //modal show handler
@@ -390,6 +385,7 @@ export default function AddStaticCustomer({ show, setShow }) {
               referenceName: "",
               referenceMobile: "",
               customerId: "",
+              connectionFee: "",
               customerBillingType: "prepaid",
             }}
             validationSchema={customerValidator}
@@ -744,6 +740,14 @@ export default function AddStaticCustomer({ show, setShow }) {
                       disabled={!mikrotikPackage}
                     />
                   </div>
+
+                  <FtextField
+                    type="number"
+                    name="connectionFee"
+                    label={t("connectionFee")}
+                    disabled={!mikrotikPackage}
+                  />
+
                   <div>
                     <SelectField
                       label={t("customerBillType")}

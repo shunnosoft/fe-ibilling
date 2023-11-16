@@ -74,7 +74,7 @@ export default function CustomerDetails({ show, setShow, customerId }) {
   const [userId, setUserId] = useState("");
 
   // customer due connection fee state
-  const [paidConnectionFee, setPaidConnectionFee] = useState(null);
+  const [paidConnectionFee, setPaidConnectionFee] = useState(0);
 
   // get api calls
   useEffect(() => {
@@ -444,17 +444,16 @@ export default function CustomerDetails({ show, setShow, customerId }) {
                           <p>৳{data?.connectionFee}</p>
                         </div>
 
-                        {paidConnectionFee !== data?.monthlyFee && (
-                          <div className="displayGridHorizontalFill5_5 profileDetails">
-                            <p>{t("connectionFeeDue")}</p>
-                            <p>
-                              ৳
-                              {FormatNumber(
-                                data?.connectionFee - paidConnectionFee
-                              )}
-                            </p>
-                          </div>
-                        )}
+                        <div className="displayGridHorizontalFill5_5 profileDetails">
+                          <p>{t("connectionFeeDue")}</p>
+                          <p>
+                            ৳
+                            {FormatNumber(
+                              data?.connectionFee - paidConnectionFee &&
+                                paidConnectionFee
+                            )}
+                          </p>
+                        </div>
 
                         <div className="displayGridHorizontalFill5_5 profileDetails">
                           <p>{t("connectionDate")}</p>
@@ -484,6 +483,25 @@ export default function CustomerDetails({ show, setShow, customerId }) {
                             })`}</p>
                           </div>
                         )}
+
+                        {data?.referenceName && (
+                          <div className="displayGridHorizontalFill5_5 profileDetails">
+                            <p>{t("referenceName")}</p>
+                            <p>{data?.referenceName}</p>
+                          </div>
+                        )}
+
+                        {data?.referenceMobile && (
+                          <div className="displayGridHorizontalFill5_5 profileDetails">
+                            <p>{t("referenceMobile")}</p>
+                            <p>{data?.referenceMobile}</p>
+                          </div>
+                        )}
+
+                        <div className="displayGridHorizontalFill5_5 profileDetails">
+                          <p>{t("queueType")}</p>
+                          <p>{data?.queue?.type}</p>
+                        </div>
                       </div>
                     </FontColor>
                   </Card.Body>

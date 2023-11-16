@@ -295,14 +295,11 @@ const CustomerBillCollect = ({ single, status }) => {
       sendingData.month = monthValues.join(",");
     }
 
-    billCollect(
-      dispatch,
-      sendingData,
-      setLoading,
-      resetForm,
-      "setResponseData",
-      "setTest"
-    );
+    if (billType === "connectionFee") {
+      sendingData.month = "Connection Fee";
+    }
+
+    billCollect(dispatch, sendingData, setLoading, resetForm, "", "", "");
 
     setAmount(data.amount);
   };
@@ -394,25 +391,27 @@ const CustomerBillCollect = ({ single, status }) => {
                   </div>
                 </div>
 
-                <div className="month">
-                  <label
-                    className="form-check-label changeLabelFontColor"
-                    htmlFor="selectMonth"
-                  >
-                    {t("selectMonth")}
-                  </label>
+                {billType === "bill" && (
+                  <div className="month">
+                    <label
+                      className="form-check-label changeLabelFontColor"
+                      htmlFor="selectMonth"
+                    >
+                      {t("selectMonth")}
+                    </label>
 
-                  <Select
-                    className="mt-0"
-                    value={selectedMonth}
-                    onChange={(data) => setSelectedMonth(data)}
-                    options={options}
-                    isMulti={true}
-                    placeholder={t("selectMonth")}
-                    isSearchable
-                    id="selectMonth"
-                  />
-                </div>
+                    <Select
+                      className="mt-0"
+                      value={selectedMonth}
+                      onChange={(data) => setSelectedMonth(data)}
+                      options={options}
+                      isMulti={true}
+                      placeholder={t("selectMonth")}
+                      isSearchable
+                      id="selectMonth"
+                    />
+                  </div>
+                )}
 
                 <div className="displayGrid2">
                   {(role === "ispOwner" || permission.billDiscount) && (

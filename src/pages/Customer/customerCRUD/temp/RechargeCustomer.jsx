@@ -14,13 +14,7 @@ import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
 import ReactToPrint from "react-to-print";
 import RechargePrintInvoice from "../bulkOpration/RechargePrintInvoice";
-import {
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
-  ModalTitle,
-} from "react-bootstrap";
+import { Modal, ModalBody, ModalHeader, ModalTitle } from "react-bootstrap";
 import { toast } from "react-toastify";
 
 export default function RechargeCustomer({
@@ -312,6 +306,10 @@ export default function RechargeCustomer({
       sendingData.month = monthValues.join(",");
     }
 
+    if (billType === "connectionFee") {
+      sendingData.month = "Connection Fee";
+    }
+
     billCollect(
       dispatch,
       sendingData,
@@ -464,24 +462,27 @@ export default function RechargeCustomer({
                     </select>
                   </div>
                 </div>
-                <div className="month mb-2">
-                  <label
-                    className="form-check-label changeLabelFontColor"
-                    htmlFor="selectMonth"
-                  >
-                    {t("selectMonth")}
-                  </label>
-                  <Select
-                    className="mt-1"
-                    value={selectedMonth}
-                    onChange={(data) => setSelectedMonth(data)}
-                    options={options}
-                    isMulti={true}
-                    placeholder={t("selectMonth")}
-                    isSearchable
-                    id="selectMonth"
-                  />
-                </div>
+
+                {billType === "bill" && (
+                  <div className="month mb-2">
+                    <label
+                      className="form-check-label changeLabelFontColor"
+                      htmlFor="selectMonth"
+                    >
+                      {t("selectMonth")}
+                    </label>
+                    <Select
+                      className="mt-1"
+                      value={selectedMonth}
+                      onChange={(data) => setSelectedMonth(data)}
+                      options={options}
+                      isMulti={true}
+                      placeholder={t("selectMonth")}
+                      isSearchable
+                      id="selectMonth"
+                    />
+                  </div>
+                )}
 
                 <div className="d-flex justify-content-between align-items-center">
                   {(role === "ispOwner" || permission.billDiscount) && (

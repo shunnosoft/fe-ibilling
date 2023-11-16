@@ -21,7 +21,7 @@ const CustomerBillReport = ({ customerId }) => {
   const { t } = useTranslation();
 
   // get user & current user data form useISPOwner
-  const { role, bpSetting, permissions } = useISPowner();
+  const { role, bpSettings, permissions } = useISPowner();
 
   //get customer bill report form state
   const report = useSelector((state) => state.payment?.billReport);
@@ -103,10 +103,10 @@ const CustomerBillReport = ({ customerId }) => {
                         onClick={() => printBillReportHandle(val?.id)}
                       />
 
-                      {((role === "ispOwner" && bpSetting?.reportDelete) ||
+                      {((role === "ispOwner" && bpSettings?.reportDelete) ||
                         (role === "manager" && permissions?.reportDelete) ||
                         (role === "collector" &&
-                          bpSetting?.reportDelete &&
+                          bpSettings?.reportDelete &&
                           permissions?.billDelete)) && (
                         <TrashFill
                           size={19}
