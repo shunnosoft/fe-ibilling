@@ -27,11 +27,6 @@ import ResellerPost from "./resellerModals/ResellerPost";
 import ResellerEdit from "./resellerModals/ResellerEdit";
 import Loader from "../../components/common/Loader";
 import { getMikrotikPackages } from "../../features/apiCallReseller";
-// import {
-//   fetchReseller,
-//   getReseller,
-//   deleteReseller,
-// } from "../../features/resellerSlice";
 
 import ResellerDetails from "./resellerModals/ResellerDetails";
 import {
@@ -43,7 +38,6 @@ import Recharge from "./resellerModals/recharge";
 import Table from "../../components/table/Table";
 import { Link } from "react-router-dom";
 import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
-// import { getResellerCustomer } from "../../features/resellerCustomerAdminApi";
 import { useTranslation } from "react-i18next";
 import EditResellerBalance from "./smsRecharge/modal/editResellerBalance";
 import PasswordReset from "../../components/modals/passwordReset/PasswordReset";
@@ -232,10 +226,10 @@ export default function Reseller() {
                   </div>
                 </li>
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#resellerModalEdit"
                   onClick={() => {
                     getSpecificReseller(original.id);
+                    setModalStatus("resellerEdit");
+                    setShow(true);
                   }}
                 >
                   <div className="dropdown-item">
@@ -411,7 +405,7 @@ export default function Reseller() {
       style={{ fontSize: "18px", fontWeight: "500", display: "flex" }}
     >
       <div className="me-3">
-        {t("totalCustomer")}:{" "}
+        {t("totalCustomer")}:
         <span className="fw-bold">{FormatNumber(totalSum().customer)}</span>
       </div>
       <div>
@@ -431,9 +425,8 @@ export default function Reseller() {
             <FontColor>
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-4">
-                  <div className="d-flex">
-                    <div>{t("reseller")}</div>
-                  </div>
+                  <div>{t("reseller")}</div>
+
                   {role === "ispOwner" && (
                     <div className="d-flex justify-content-center align-items-center">
                       <div className="reloadBtn">
@@ -456,8 +449,10 @@ export default function Reseller() {
 
                       <div
                         title={t("addReseller")}
-                        data-bs-toggle="modal"
-                        data-bs-target="#resellerModal"
+                        onClick={() => {
+                          setModalStatus("resellerPost");
+                          setShow(true);
+                        }}
                       >
                         <PersonPlusFill className="addcutmButton" />
                       </div>
@@ -487,11 +482,16 @@ export default function Reseller() {
       </div>
 
       {/* start modals section */}
+
       {/* add reseller modal */}
-      <ResellerPost />
+      {modalStatus === "resellerPost" && (
+        <ResellerPost show={show} setShow={setShow} />
+      )}
 
       {/* reseller edit modal */}
-      <ResellerEdit resellerId={resellerId} />
+      {modalStatus === "resellerEdit" && (
+        <ResellerEdit show={show} setShow={setShow} resellerId={resellerId} />
+      )}
 
       {/* reseller details modal */}
       <ResellerDetails resellerId={resellerId} />

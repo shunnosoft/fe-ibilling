@@ -3,12 +3,6 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import { FontColor, FourGround } from "../../../assets/js/theme";
-import Sidebar from "../../../components/admin/sidebar/Sidebar";
-import { badge } from "../../../components/common/Utils";
-import { getResellerCustomer } from "../../../features/resellerCustomerAdminApi";
-import useDash from "../../../assets/css/dash.module.css";
-import Table from "../../../components/table/Table";
 import {
   ArchiveFill,
   ArrowBarLeft,
@@ -24,25 +18,31 @@ import {
   PersonFill,
   PrinterFill,
   ThreeDots,
+  Phone,
+  GeoAlt,
 } from "react-bootstrap-icons";
+import { useTranslation } from "react-i18next";
+import { CSVLink } from "react-csv";
+import ReactToPrint from "react-to-print";
+import { Accordion, Badge, Card, Collapse } from "react-bootstrap";
+
+// internal import
+import { FontColor, FourGround } from "../../../assets/js/theme";
+import Sidebar from "../../../components/admin/sidebar/Sidebar";
+import { getResellerCustomer } from "../../../features/resellerCustomerAdminApi";
+import useDash from "../../../assets/css/dash.module.css";
+import Table from "../../../components/table/Table";
 import ResellerCustomerDetails from "../resellerModals/resellerCustomerModal";
 import CustomerReport from "../../Customer/customerCRUD/showCustomerReport";
 import Loader from "../../../components/common/Loader";
 import ResellerCustomerEdit from "../resellerModals/ResellerCustomerEdit";
-import { useTranslation } from "react-i18next";
 import CustomerDelete from "../resellerModals/CustomerDelete";
 import IndeterminateCheckbox from "../../../components/table/bulkCheckbox";
 import BulkCustomerReturn from "../resellerModals/BulkCustomerReturn";
-import { CSVLink } from "react-csv";
-import ReactToPrint from "react-to-print";
 import PrintCustomer from "./customerPDF";
 import BulkBillingCycleEdit from "../resellerModals/bulkBillingCycleEdit";
 import FormatNumber from "../../../components/common/NumberFormat";
-import {
-  fetchMikrotik,
-  getAllPackages,
-  getArea,
-} from "../../../features/apiCalls";
+import { getArea } from "../../../features/apiCalls";
 import BulkStatusEdit from "../resellerModals/bulkStatusEdit";
 import BulkCustomerTransfer from "../resellerModals/bulkCustomerTransfer";
 import BulkPromiseDateEdit from "../../Customer/customerCRUD/bulkOpration/BulkPromiseDateEdit";
@@ -50,10 +50,13 @@ import BulkSubAreaEdit from "../../Customer/customerCRUD/bulkOpration/bulkSubAre
 import BulkPaymentStatusEdit from "../../Customer/customerCRUD/bulkOpration/BulkPaymentStatusEdit";
 import BulkAutoConnectionEdit from "../../Customer/customerCRUD/bulkOpration/bulkAutoConnectionEdit";
 import { getSubAreasApi } from "../../../features/actions/customerApiCall";
-import { Accordion, Card, Collapse } from "react-bootstrap";
 import BulkCustomerDelete from "../../Customer/customerCRUD/bulkOpration/BulkdeleteModal";
-
-// get specific customer
+import {
+  getCustomerDayLeft,
+  getCustomerPromiseDate,
+} from "../../Customer/customerCRUD/customerBillDayPromiseDate";
+import { badge } from "../../../components/common/Utils";
+import { getMikrotikPackages } from "../../../features/apiCallReseller";
 
 const ResellerCustomer = () => {
   const { t } = useTranslation();
@@ -92,7 +95,11 @@ const ResellerCustomer = () => {
   );
 
   // get all packages
-  const allPackages = useSelector((state) => state.package.allPackages);
+  // const allPackages = useSelector((state) => state.package.allPackages);
+
+  const packages = useSelector(
+    (state) => state.reseller.allMikrotikPakages?.packages
+  );
 
   // customer state
   const [customer, setCustomer] = useState([]);
@@ -153,7 +160,8 @@ const ResellerCustomer = () => {
     getArea(dispatch, ispOwnerId, setAreaLoading);
     getSubAreasApi(dispatch, ispOwnerId);
 
-    getAllPackages(dispatch, ispOwnerId, setPackageLoading);
+    // get ispOwner mikrotiks and packages in redux store
+    getMikrotikPackages(dispatch, ispOwnerId);
   }, []);
 
   // set customer at state
@@ -211,8 +219,10 @@ const ResellerCustomer = () => {
   };
 
   // customer current package find
-  const getCustomerPackage = (pack) => {
-    const findPack = allPackages.find((item) => item.id.includes(pack));
+  const getCustomerPackage = (value) => {
+    const findPack = packages.find((item) =>
+      item.id.includes(value?.mikrotikPackage)
+    );
     return findPack;
   };
 
@@ -323,85 +333,153 @@ const ResellerCustomer = () => {
         width: "2%",
       },
       {
+        width: "6%",
         Header: t("id"),
         accessor: "customerId",
-        width: "8%",
+        Cell: ({ row: { original } }) => (
+          <div>
+            {original?.autoDisable ? (
+              <p className="text-success">{original?.customerId}</p>
+            ) : (
+              <p className="text-danger">{original?.customerId}</p>
+            )}
+          </div>
+        ),
       },
       {
-        Header: t("name"),
-        accessor: "name",
-        width: "9%",
-      },
-      {
-        width: "9%",
-        Header: t("pppoeIp"),
-        accessor: (field) =>
-          field?.userType === "pppoe"
-            ? field?.pppoe.name
-            : field?.userType === "firewall-queue"
-            ? field?.queue.address
-            : field?.userType === "core-queue"
-            ? field?.queue.srcAddress
-            : field?.userType === "simple-queue"
-            ? field?.queue.target
-            : "",
-      },
-      {
-        width: "9%",
-        Header: t("userType"),
+        width: "5%",
+        Header: t("type"),
         accessor: "userType",
+        Cell: ({ row: { original } }) => (
+          <Badge bg="info">
+            {original?.userType === "pppoe"
+              ? "PPPoE"
+              : original?.userType === "hotspot"
+              ? "Hotspot"
+              : "Static"}
+          </Badge>
+        ),
       },
       {
-        Header: t("mobile"),
-        accessor: "mobile",
-        width: "11%",
+        width: "12%",
+        Header: t("namePPPoE"),
+        accessor: (
+          data
+        ) => `${data?.name} ${data.pppoe?.name} ${data.queue?.address}
+         ${data.queue?.srcAddress} ${data.queue?.target}`,
+        Cell: ({ row: { original } }) => (
+          <div>
+            <p>{original?.name}</p>
+            <p>
+              {original?.userType === "pppoe"
+                ? original?.pppoe.name
+                : original?.userType === "firewall-queue"
+                ? original?.queue.address
+                : original?.userType === "core-queue"
+                ? original?.queue.srcAddress
+                : original?.queue.target}
+            </p>
+          </div>
+        ),
       },
-
       {
-        width: "8%",
-        Header: t("status"),
-        accessor: "status",
-        Cell: ({ cell: { value } }) => {
-          return badge(value);
-        },
-      },
-      {
-        width: "9%",
-        Header: t("paymentStatus"),
-        accessor: "paymentStatus",
-        Cell: ({ cell: { value } }) => {
-          return badge(value);
-        },
+        width: "18%",
+        Header: t("mobileAddress"),
+        accessor: (data) => `${data?.mobile} ${data?.address}`,
+        Cell: ({ row: { original } }) => (
+          <div>
+            <p style={{ fontWeight: "500" }}>
+              <Phone className="text-info" /> {original?.mobile || "N/A"}
+            </p>
+            <p>
+              <GeoAlt />
+              {original?.address || "N/A"}
+            </p>
+          </div>
+        ),
       },
       {
         width: "10%",
         Header: t("package"),
-        accessor: "mikrotikPackage",
-        Cell: ({ cell: { value } }) => (
-          <div>{customer && getCustomerPackage(value)?.name}</div>
+        Cell: ({ row: { original } }) => (
+          <div>{original && getCustomerPackage(original)?.name}</div>
+        ),
+      },
+      {
+        width: "10%",
+        Header: t("billBalance"),
+        accessor: (data) => `${data?.monthlyFee} ${data?.balance}`,
+        Cell: ({ row: { original } }) => (
+          <div style={{ fontWeight: "500" }}>
+            <p>৳{original?.monthlyFee}</p>
+            <p
+              className={`text-${
+                original?.balance > -1 ? "success" : "danger"
+              }`}
+            >
+              ৳{original?.balance}
+            </p>
+          </div>
+        ),
+      },
+      {
+        width: "18%",
+        Header: t("billPromise"),
+        accessor: (data) =>
+          `${moment(data?.billingCycle).format("YYYY/MM/DD hh:mm A")} 
+          ${moment(data?.promiseDate).format("YYYY/MM/DD hh:mm A")}`,
+        Cell: ({ row: { original } }) => (
+          <div className="d-flex">
+            <div>
+              <p>{getCustomerPromiseDate(original)?.billDate}</p>
+
+              <p
+                className={`d-flex align-self-end text-${
+                  getCustomerPromiseDate(original)?.promiseDateChange
+                }`}
+              >
+                {original?.userType !== "hotspot" &&
+                  getCustomerPromiseDate(original)?.promiseDate}
+              </p>
+            </div>
+          </div>
+        ),
+      },
+      {
+        width: "6%",
+        Header: t("day"),
+        accessor: (data) => `${new Date(data?.billingCycle).getDay()}`,
+        Cell: ({ row: { original } }) => (
+          <div className="text-center p-1">
+            <p
+              className={`${
+                getCustomerDayLeft(original?.billingCycle) >= 20
+                  ? "border border-2 border-success"
+                  : getCustomerDayLeft(original?.billingCycle) >= 10
+                  ? "border border-2 border-primary"
+                  : getCustomerDayLeft(original?.billingCycle) >= 0
+                  ? "magantaColor"
+                  : "bg-danger text-white"
+              }`}
+            >
+              {getCustomerDayLeft(original?.billingCycle)}
+            </p>
+          </div>
         ),
       },
       {
         width: "8%",
-        Header: t("month"),
-        accessor: "monthlyFee",
+        Header: t("status"),
+        accessor: (data) => `${data?.paymentStatus} ${data?.status}`,
+        Cell: ({ row: { original } }) => (
+          <div className="text-center">
+            <p>{badge(original?.paymentStatus)}</p>
+            <p>{badge(original?.status)}</p>
+          </div>
+        ),
       },
       {
-        width: "9%",
-        Header: t("balance"),
-        accessor: "balance",
-      },
-      {
-        width: "10%",
-        Header: t("date"),
-        accessor: "billingCycle",
-        Cell: ({ cell: { value } }) => {
-          return moment(value).format("MMM DD YYYY hh:mm a");
-        },
-      },
-
-      {
-        width: "6%",
+        width: "5%",
         Header: () => <div className="text-center">{t("action")}</div>,
         id: "option",
         Cell: ({ row: { original } }) => (
@@ -486,7 +564,7 @@ const ResellerCustomer = () => {
         ),
       },
     ],
-    [t, customer, allPackages]
+    [t, customer, packages]
   );
 
   //total monthly fee and due calculation
@@ -707,29 +785,24 @@ const ResellerCustomer = () => {
                     </Accordion.Item>
                   </Accordion>
                   <div className="collectorWrapper pb-2">
-                    <div className="addCollector">
-                      <div style={{ display: "none" }}>
-                        <PrintCustomer
-                          filterData={filterData}
-                          currentCustomers={customer}
-                          ref={componentRef}
-                        />
-                      </div>
-
-                      {/* call table component */}
-                      <div className="table-section">
-                        <Table
-                          isLoading={isLoading}
-                          bulkLength={bulkCustomer?.length}
-                          customComponent={customComponent}
-                          columns={columns}
-                          data={customer}
-                          bulkState={{
-                            setBulkCustomer,
-                          }}
-                        />
-                      </div>
+                    <div style={{ display: "none" }}>
+                      <PrintCustomer
+                        filterData={filterData}
+                        currentCustomers={customer}
+                        ref={componentRef}
+                      />
                     </div>
+
+                    <Table
+                      isLoading={isLoading}
+                      bulkLength={bulkCustomer?.length}
+                      customComponent={customComponent}
+                      columns={columns}
+                      data={customer}
+                      bulkState={{
+                        setBulkCustomer,
+                      }}
+                    />
                   </div>
                 </div>
               </FourGround>

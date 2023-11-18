@@ -1941,7 +1941,13 @@ export const fetchReseller = async (dispatch, ispOwner, setDataLoader) => {
 };
 
 // add reseller
-export const postReseller = async (dispatch, data, setIsLoading, resetForm) => {
+export const postReseller = async (
+  dispatch,
+  data,
+  setIsLoading,
+  resetForm,
+  setShow
+) => {
   setIsLoading(true);
   await apiLink({
     url: "/ispOwner/reseller",
@@ -1954,7 +1960,7 @@ export const postReseller = async (dispatch, data, setIsLoading, resetForm) => {
     .then((res) => {
       dispatch(addResellerSuccess(res.data));
       setIsLoading(false);
-      document.querySelector("#resellerModal").click();
+      setShow(false);
       langMessage(
         "success",
         "রিসেলার এড সফল হয়েছে !",

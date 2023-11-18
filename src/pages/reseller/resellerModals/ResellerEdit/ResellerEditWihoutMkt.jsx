@@ -8,7 +8,7 @@ const GlobalPackageEditWithOutMkt = ({
   return (
     <>
       {packages.map((p) => (
-        <div key={p.id} className="w-75">
+        <div key={p.id} className="form-check w-75">
           <PackageSelect
             id={p.id + "input009"}
             onChangeHandler={handelMikrotikPakages}
@@ -44,7 +44,7 @@ export const PackageBasedEditWithOutMkt = ({
         }, "");
 
         return (
-          <div key={p.id} className="w-75">
+          <div key={p.id} className="form-check w-75">
             <PackageSelect
               id={p.id + "input009"}
               onChangeHandler={handelMikrotikPakages}

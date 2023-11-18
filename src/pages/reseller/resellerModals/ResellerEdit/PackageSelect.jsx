@@ -14,7 +14,7 @@ const PackageSelect = ({
         onChange={onChangeHandler}
         disabled={isDisabled}
         checked={isChecked}
-        className="me-2"
+        className="form-check-input me-2"
       />
       <label className="form-check-label" htmlFor={id}>
         {packageInfo.name}
