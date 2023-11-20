@@ -1280,40 +1280,6 @@ export default function Sidebar() {
                             </FontColor>
                           </NavLink>
 
-                          {/* {userRole !== "collector" && (
-                            <NavLink
-                              key={12}
-                              to={
-                                userRole === "reseller"
-                                  ? "/reseller/netFee/support"
-                                  : "/netFee/support"
-                              }
-                              className={(navInfo) =>
-                                navInfo.isActive ? activeClass.active : ""
-                              }
-                            >
-                              <FontColor>
-                                <li
-                                  className="sidebarItems"
-                                  id={
-                                    window.location.pathname ===
-                                    (userRole === "reseller" &&
-                                    userRole !== "collector"
-                                      ? "/reseller/netFee/support"
-                                      : "/netFee/support")
-                                      ? "active"
-                                      : ""
-                                  }
-                                >
-                                  <div className="sidebarIcon">{<Award />}</div>
-                                  <span className="sidebarLinksName">
-                                    {t("netFeeSupport")}
-                                  </span>
-                                </li>
-                              </FontColor>
-                            </NavLink>
-                          )} */}
-
                           {userRole === "ispOwner" && (
                             <NavLink
                               key={13}
@@ -1382,7 +1348,7 @@ export default function Sidebar() {
                       </Accordion.Item>
                     </>
                     {/* )} */}
-                    {userRole !== "collector" && (
+                    {(userRole === "ispOwner" || userRole === "manager") && (
                       <>
                         <Accordion.Item eventKey="8">
                           <Accordion.Header
