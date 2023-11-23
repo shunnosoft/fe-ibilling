@@ -163,6 +163,11 @@ export default function IspOwnerDashboard() {
     //get card data
     getIspOwnerDashboardCardData(dispatch, setLoadingDashboardData, ispOwnerId);
 
+    // get netFee bulletin api call
+    Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
+  }, []);
+
+  useEffect(() => {
     // get area api
     getArea(dispatch, ispOwnerId, setPackageLoading);
 
@@ -177,10 +182,7 @@ export default function IspOwnerDashboard() {
 
     // get hotspot package api call
     getHotspotPackage(dispatch, ispOwnerId, setPackageLoading);
-
-    // get netFee bulletin api call
-    Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
-  }, []);
+  }, [status]);
 
   //graph data calculation
   useEffect(() => {
@@ -331,7 +333,20 @@ export default function IspOwnerDashboard() {
   return (
     <>
       <div className="container homeWrapper">
-        <div className={`Loader ${loadingDashboardData && "d-block"}`}></div>
+        {loadingDashboardData && (
+          <div
+            className={`d-flex justify-content-center align-items-center Loader ${
+              loadingDashboardData && "d-block"
+            }`}
+          >
+            <div class="d-flex justify-content-center align-items-center spinner-square">
+              <div class="square-1 square"></div>
+              <div class="square-2 square"></div>
+              <div class="square-3 square"></div>
+            </div>
+          </div>
+        )}
+
         <ToastContainer position="top-right" theme="colored" />
         <FontColor>
           <div className="home">

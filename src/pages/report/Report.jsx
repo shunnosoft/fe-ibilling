@@ -731,7 +731,7 @@ export default function Report() {
                               showMonthYearPicker
                               showFullMonthYearPicker
                               maxDate={new Date()}
-                              minDate={new Date(userData?.createdAt)}
+                              minDate={new Date(userData.ispOwner?.createdAt)}
                             />
                           </div>
 

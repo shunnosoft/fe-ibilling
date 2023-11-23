@@ -341,8 +341,8 @@ export const getIspOwnerDashboardCardData = async (
   let year = filterData.year || new Date().getFullYear(),
     month = filterData.month || new Date().getMonth() + 1;
 
+  setIsloading(true);
   try {
-    setIsloading(true);
     const res = await apiLink(
       `/dashboard/ispOwner/${ispOwnerId}?year=${year}&month=${month}`
     );
