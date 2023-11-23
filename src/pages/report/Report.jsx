@@ -128,7 +128,7 @@ export default function Report() {
 
   // curr & priv date state
   const [dateStart, setStartDate] = useState(firstDay);
-  const [dateEnd, setEndDate] = useState(new Date());
+  const [dateEnd, setEndDate] = useState(today);
 
   var selectDate = new Date(filterDate.getFullYear(), filterDate.getMonth(), 1);
   var lastDate = new Date(
@@ -337,10 +337,8 @@ export default function Report() {
     }
     arr = arr.filter(
       (item) =>
-        new Date(moment(item.createdAt).format("YYYY-MM-DD")).getTime() >=
-          new Date(moment(dateStart).format("YYYY-MM-DD")).getTime() &&
-        new Date(moment(item.createdAt).format("YYYY-MM-DD")).getTime() <=
-          new Date(moment(dateEnd).format("YYYY-MM-DD")).getTime()
+        new Date(item.createdAt) >= new Date(dateStart).setHours(0, 0, 0, 0) &&
+        new Date(item.createdAt) <= new Date(dateEnd).setHours(23, 59, 59, 999)
     );
 
     setMainData(arr);

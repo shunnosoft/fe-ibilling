@@ -1,8 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
-import moment from "moment";
-import { useSelector, useDispatch } from "react-redux";
-import { useTranslation } from "react-i18next";
 import { Card, CloseButton, Modal, ModalBody } from "react-bootstrap";
+import { useTranslation } from "react-i18next";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Cash,
   Collection,
@@ -16,32 +15,38 @@ import {
   PhoneFill,
   Trash3Fill,
 } from "react-bootstrap-icons";
+import moment from "moment";
 
-// internal import
-import "../customer.css";
-import { badge } from "../../../components/common/Utils";
-import { FontColor } from "../../../assets/js/theme";
-import CustomerBillReport from "../../Customer/customerCRUD/CustomerBillReport";
-import CustomerMessage from "../../Customer/customerCRUD/CustomerMessage";
-import ProfileDelete from "../../Customer/ProfileDelete";
-import CustomerBillCollect from "../../Customer/customerCRUD/CustomerBillCollect";
-import StaticCustomerEdit from "./StaticCustomerEdit";
-import { updateStaticCustomerApi } from "../../../features/staticCustomerApi";
+//internal import
 import useISPowner from "../../../hooks/useISPOwner";
 import {
-  getConnectionFee,
-  getStaticCustomer,
-} from "../../../features/apiCalls";
+  getStaticCustomerApi,
+  updateResellerStaticCustomer,
+} from "../../../features/apiCallReseller";
+import { FontColor } from "../../../assets/js/theme";
+import { badge } from "../../../components/common/Utils";
 import FormatNumber from "../../../components/common/NumberFormat";
+import { getConnectionFee } from "../../../features/apiCalls";
+import StaticCustomerEdit from "./CustomerEdit";
+import CustomerBillCollect from "./CustomerBillCollect";
+import CustomerBillReport from "../../Customer/customerCRUD/CustomerBillReport";
+import CustomerMessage from "../../../pages/Customer/customerCRUD/CustomerMessage";
+import ProfileDelete from "../../../pages/Customer/ProfileDelete";
 import PasswordReset from "../../../components/modals/passwordReset/PasswordReset";
-import { getOwnerUsers } from "../../../features/getIspOwnerUsersApi";
 
-export default function CustomerDetails({ show, setShow, customerId }) {
+const CustomerDetails = ({ show, setShow, customerId }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
   // get user & current user data form useISPOwner
-  const { ispOwnerId, bpSettings } = useISPowner();
+  const {
+    role,
+    bpSettings,
+    resellerData,
+    permission,
+    permissions,
+    currentUser,
+  } = useISPowner();
 
   // get mikrotiks
   const mikrotiks = useSelector((state) => state?.mikrotik?.mikrotik);
@@ -49,23 +54,20 @@ export default function CustomerDetails({ show, setShow, customerId }) {
   // get owner users
   const ownerUsers = useSelector((state) => state?.ownerUsers?.ownerUser);
 
-  // get all customer
+  // get reseller static customer form redux store
   const customer = useSelector((state) => state?.customer?.staticCustomer);
 
-  //get all areas
-  const areas = useSelector((state) => state.area?.area);
-
-  // get all subarea
-  const subAreas = useSelector((state) => state.area?.subArea);
+  //get customer subareas form redux
+  const subAreas = useSelector((state) => state?.area?.area);
 
   // get all packages
   const allPackages = useSelector((state) => state.package.allPackages);
 
-  // find single customer data
-  const data = customer.find((item) => item.id === customerId);
+  // find single static customer
+  const data = customer.find((val) => val.id === customerId);
 
-  // loading state
-  const [loading, setLoading] = useState(false);
+  //loading state
+  const [isLoading, setIsLoading] = useState(false);
 
   // modal handle state
   const [modalStatus, setModalStatus] = useState("");
@@ -74,32 +76,58 @@ export default function CustomerDetails({ show, setShow, customerId }) {
   // profile option state
   const [profileOption, setProfileOption] = useState("profileEdit");
 
-  // user id state
-  const [userId, setUserId] = useState("");
-
   // customer due connection fee state
   const [paidConnectionFee, setPaidConnectionFee] = useState(0);
 
+  // user id state
+  const [userId, setUserId] = useState("");
+
+  // get customer api call
   useEffect(() => {
-    customer.length === 0 &&
-      getStaticCustomer(dispatch, ispOwnerId, setLoading);
+    if (role === "reseller") {
+      customer.length === 0 &&
+        getStaticCustomerApi(dispatch, currentUser.reseller?.id, setIsLoading);
+    }
+    if (role === "collector") {
+      customer.length === 0 &&
+        getStaticCustomerApi(
+          dispatch,
+          currentUser.collector?.reseller,
+          setIsLoading
+        );
+    }
 
-    // get ispOwner all staffs
-    getOwnerUsers(dispatch, ispOwnerId);
-
+    //get customer paid connection fee
     getConnectionFee(customerId, setPaidConnectionFee);
   }, [customerId]);
 
-  // modal close handler
-  const handleClose = () => {
-    setShow(false);
-    setProfileOption("profileEdit");
-  };
+  //modal close handler
+  const handleClose = () => setShow(false);
+
+  // customer area subarea find
+  const customerAreaSubareaFind = useMemo(() => {
+    // customer subArea find
+    const findSubarea = subAreas?.find((val) => val.id === data?.subArea);
+
+    return { findSubarea };
+  }, [subAreas, data]);
 
   // mikrotik find
   const getMikrotik = (id) => {
     const mikrotik = mikrotiks.find((val) => val?.id === id);
     return mikrotik;
+  };
+
+  // customer current package find
+  const customerPackageFind = (pack) => {
+    const findPack = allPackages.find((item) => item.id.includes(pack));
+    return findPack;
+  };
+
+  // customer creator find
+  const getCustomerCreatedBy = (userId) => {
+    const findCreator = ownerUsers.find((id) => id[userId]);
+    return findCreator[userId];
   };
 
   // customer status & auto connection update hadnle
@@ -122,38 +150,16 @@ export default function CustomerDetails({ show, setShow, customerId }) {
         autoDisable: !value?.autoDisable,
       };
     }
-    updateStaticCustomerApi(
-      value.id,
-      dispatch,
-      data,
-      setLoading,
-      "",
-      "",
-      update
-    );
-  };
 
-  // customer area subarea find
-  const customerAreaSubareaFind = useMemo(() => {
-    // customer subArea find
-    const findSubarea = subAreas?.find((val) => val.id === data?.subArea);
-
-    // customer area find
-    const findArea = areas?.find((val) => val.id === findSubarea?.area);
-
-    return { findArea, findSubarea };
-  }, [areas, subAreas, data]);
-
-  // customer current package find
-  const customerPackageFind = (pack) => {
-    const findPack = allPackages.find((item) => item.id.includes(pack));
-    return findPack;
-  };
-
-  // customer creator find
-  const getCustomerCreatedBy = (userId) => {
-    const findCreator = ownerUsers.find((user) => user[userId]);
-    return findCreator && findCreator[userId];
+    data &&
+      updateResellerStaticCustomer(
+        value?.id,
+        value?.reseller,
+        dispatch,
+        data,
+        setIsLoading,
+        update
+      );
   };
 
   return (
@@ -167,6 +173,8 @@ export default function CustomerDetails({ show, setShow, customerId }) {
       >
         <ModalBody>
           <div>
+            {/* customer profile information title start */}
+
             <Card className="clintSetting shadow-sm mb-3 bg-white rounded">
               <Card.Title className="clintTitle">
                 <div className="d-flex align-items-center">
@@ -180,17 +188,19 @@ export default function CustomerDetails({ show, setShow, customerId }) {
                 </div>
 
                 <div className="d-flex justify-content-center align-items-center p-3">
-                  <div
-                    className="profileDelete"
-                    onClick={() => {
-                      setModalStatus("profileDelete");
-                      setModalShow(true);
-                      setShow(false);
-                    }}
-                  >
-                    <Trash3Fill title={t("deleteProfile")} />
-                    <p id="delete_profile">{t("deleteProfile")}</p>
-                  </div>
+                  {role === "reseller" && permission.customerDelete && (
+                    <div
+                      className="profileDelete"
+                      onClick={() => {
+                        setModalStatus("profileDelete");
+                        setModalShow(true);
+                        setShow(false);
+                      }}
+                    >
+                      <Trash3Fill title={t("deleteProfile")} />
+                      <p id="delete_profile">{t("deleteProfile")}</p>
+                    </div>
+                  )}
 
                   <CloseButton onClick={handleClose} className="close_Btn" />
                 </div>
@@ -231,10 +241,7 @@ export default function CustomerDetails({ show, setShow, customerId }) {
                   <div className="row gy-2">
                     <div className="d-flex gap-3">
                       <GeoFill />
-                      <p>
-                        {customerAreaSubareaFind.findArea?.name},&nbsp;
-                        {customerAreaSubareaFind.findSubarea?.name}
-                      </p>
+                      <p>{customerAreaSubareaFind.findSubarea?.name}</p>
                     </div>
 
                     {data?.address && (
@@ -250,12 +257,10 @@ export default function CustomerDetails({ show, setShow, customerId }) {
                   <p class="vr_line vr ms-2" />
 
                   <div className="row gy-2">
-                    {data?.mobile && (
-                      <div className="d-flex gap-3">
-                        <PhoneFill />
-                        <p>{data?.mobile}</p>
-                      </div>
-                    )}
+                    <div className="d-flex gap-3">
+                      <PhoneFill />
+                      <p>{data?.mobile}</p>
+                    </div>
 
                     <div className="d-flex gap-3">
                       <Cash />
@@ -269,6 +274,10 @@ export default function CustomerDetails({ show, setShow, customerId }) {
                 </div>
               </Card.Body>
             </Card>
+
+            {/* customer profile information title end */}
+            {/* customer profile settings start */}
+
             <div className="displayGridManual6_4 setting_details m-0">
               <Card className="displayGridVertical5_5 details_setting border border-2 shadow-none">
                 {/* customer profile setting start  */}
@@ -281,72 +290,87 @@ export default function CustomerDetails({ show, setShow, customerId }) {
                   <Card.Body>
                     <FontColor id="clintSetting">
                       {/* customer profile update */}
-                      <li
-                        className="profileSetting"
-                        onClick={() => setProfileOption("profileEdit")}
-                        id={
-                          profileOption === "profileEdit" ? "activeSetting" : ""
-                        }
-                      >
-                        <div className="profileOptions">
-                          <PencilSquare size={22} />
-                        </div>
-                        <span className="options_name">
-                          {t("updateProfile")}
-                        </span>
-                      </li>
+                      {(permission?.customerEdit ||
+                        permissions?.customerEdit) && (
+                        <li
+                          className="profileSetting"
+                          onClick={() => setProfileOption("profileEdit")}
+                          id={
+                            profileOption === "profileEdit"
+                              ? "activeSetting"
+                              : ""
+                          }
+                        >
+                          <div className="profileOptions">
+                            <PencilSquare size={22} />
+                          </div>
+                          <span className="options_name">
+                            {t("updateProfile")}
+                          </span>
+                        </li>
+                      )}
 
                       {data?.monthlyFee > 0 && (
                         <>
                           {/* customer bill colleciton */}
-                          <li
-                            className="profileSetting"
-                            onClick={() => setProfileOption("recharge")}
-                            id={
-                              profileOption === "recharge"
-                                ? "activeSetting"
-                                : ""
-                            }
-                          >
-                            <div className="profileOptions">
-                              <Cash size={22} />
-                            </div>
-                            <span className="options_name">
-                              {t("recharge")}
-                            </span>
-                          </li>
+                          {(role === "reseller" ||
+                            permissions?.billPosting) && (
+                            <li
+                              className="profileSetting"
+                              onClick={() => setProfileOption("recharge")}
+                              id={
+                                profileOption === "recharge"
+                                  ? "activeSetting"
+                                  : ""
+                              }
+                            >
+                              <div className="profileOptions">
+                                <Cash size={22} />
+                              </div>
+                              <span className="options_name">
+                                {t("recharge")}
+                              </span>
+                            </li>
+                          )}
 
                           {/* customer bill collection report */}
-                          <li
-                            className="profileSetting"
-                            onClick={() => setProfileOption("report")}
-                            id={
-                              profileOption === "report" ? "activeSetting" : ""
-                            }
-                          >
-                            <div className="profileOptions">
-                              <Collection size={22} />
-                            </div>
-                            <span className="options_name">{t("report")}</span>
-                          </li>
+                          {role !== "collector" && (
+                            <li
+                              className="profileSetting"
+                              onClick={() => setProfileOption("report")}
+                              id={
+                                profileOption === "report"
+                                  ? "activeSetting"
+                                  : ""
+                              }
+                            >
+                              <div className="profileOptions">
+                                <Collection size={22} />
+                              </div>
+                              <span className="options_name">
+                                {t("report")}
+                              </span>
+                            </li>
+                          )}
                         </>
                       )}
 
                       {/* customer single message  */}
-                      {data?.mobile && (
-                        <li
-                          className="profileSetting"
-                          onClick={() => setProfileOption("message")}
-                          id={
-                            profileOption === "message" ? "activeSetting" : ""
-                          }
-                        >
-                          <div className="profileOptions">
-                            <Envelope size={22} />
-                          </div>
-                          <span className="options_name">{t("message")}</span>
-                        </li>
-                      )}
+                      {data?.mobile &&
+                        (role === "reseller" || permissions?.sendSMS) && (
+                          <li
+                            className="profileSetting"
+                            onClick={() => setProfileOption("message")}
+                            id={
+                              profileOption === "message" ? "activeSetting" : ""
+                            }
+                          >
+                            <div className="profileOptions">
+                              <Envelope size={22} />
+                            </div>
+                            <span className="options_name">{t("message")}</span>
+                          </li>
+                        )}
 
                       {/* customer login password reset */}
                       <li
@@ -390,18 +414,41 @@ export default function CustomerDetails({ show, setShow, customerId }) {
                         <div className="displayGridHorizontalFill5_5 profileDetails">
                           <p>{t("status")}</p>
                           {data?.status !== "expired" ? (
-                            <p
-                              onClick={(e) =>
-                                statusAutoConnectionUpdateHandler(
-                                  data,
-                                  e,
-                                  "status"
-                                )
-                              }
-                              style={{ cursor: "pointer" }}
-                            >
-                              {badge(data?.status)}
-                            </p>
+                            <div>
+                              {role === "reseller" ||
+                              (data?.status === "active" &&
+                                permissions?.customerDeactivate) ? (
+                                <p
+                                  onClick={(e) =>
+                                    statusAutoConnectionUpdateHandler(
+                                      data,
+                                      e,
+                                      "status"
+                                    )
+                                  }
+                                  style={{ cursor: "pointer" }}
+                                >
+                                  {badge(data?.status)}
+                                </p>
+                              ) : role === "reseller" ||
+                                (data?.status === "inactive" &&
+                                  permissions?.customerActivate) ? (
+                                <p
+                                  onClick={(e) =>
+                                    statusAutoConnectionUpdateHandler(
+                                      data,
+                                      e,
+                                      "status"
+                                    )
+                                  }
+                                  style={{ cursor: "pointer" }}
+                                >
+                                  {badge(data?.status)}
+                                </p>
+                              ) : (
+                                <p>{badge(data?.status)}</p>
+                              )}
+                            </div>
                           ) : (
                             <p>{badge(data?.status)}</p>
                           )}
@@ -439,6 +486,9 @@ export default function CustomerDetails({ show, setShow, customerId }) {
                                 id={data?.id}
                                 checked={data?.autoDisable}
                                 onClick={(e) =>
+                                  (permission?.customerAutoDisableEdit ||
+                                    resellerData.permission
+                                      ?.customerAutoDisableEdit) &&
                                   statusAutoConnectionUpdateHandler(
                                     data,
                                     e,
@@ -547,7 +597,11 @@ export default function CustomerDetails({ show, setShow, customerId }) {
                     setProfileOption={setProfileOption}
                   />
                 ) : profileOption === "recharge" ? (
-                  <CustomerBillCollect single={customerId} status="static" />
+                  <CustomerBillCollect
+                    customerId={customerId}
+                    customerData={data}
+                    status="static"
+                  />
                 ) : profileOption === "report" ? (
                   <CustomerBillReport
                     customerId={customerId}
@@ -558,6 +612,8 @@ export default function CustomerDetails({ show, setShow, customerId }) {
                 )}
               </Card>
             </div>
+
+            {/* customer profile settings end */}
           </div>
         </ModalBody>
       </Modal>
@@ -569,7 +625,7 @@ export default function CustomerDetails({ show, setShow, customerId }) {
           setModalShow={setModalShow}
           customerId={customerId}
           setShow={setShow}
-          status="ispOwner"
+          status="reseller"
           page="static"
         />
       )}
@@ -584,4 +640,6 @@ export default function CustomerDetails({ show, setShow, customerId }) {
       )}
     </>
   );
-}
+};
+
+export default CustomerDetails;

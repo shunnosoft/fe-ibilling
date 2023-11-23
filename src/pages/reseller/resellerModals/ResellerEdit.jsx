@@ -44,7 +44,6 @@ const ResellerEdit = ({ show, setShow, resellerId }) => {
   const reseller = allReseller.find((val) => {
     return val.id === resellerId;
   });
-  console.log(reseller);
 
   //get ispOwner Info
   const ispOwnerId = useSelector(
@@ -99,7 +98,7 @@ const ResellerEdit = ({ show, setShow, resellerId }) => {
       setPackageCommission(reseller.resellerPackageRates);
       setClonePackageCommission(reseller.resellerPackageRates);
       setIspCommission(reseller?.commissionRate?.isp);
-      // setCustomerType(reseller?.customerType);
+      setCustomerType(reseller?.customerType);
 
       const perms = resellerPermissions(reseller.permission, bpSettings);
       const filterdPermission = perms.filter((p) => p.disabled === false);
@@ -245,7 +244,13 @@ const ResellerEdit = ({ show, setShow, resellerId }) => {
         toast.error("Please select a package");
         return;
       }
-      editReseller(dispatch, sendingData, setIsLoading);
+
+      if (!customerType.length) {
+        alert(t("pleaseSelectCustomerType"));
+        return;
+      }
+
+      editReseller(dispatch, sendingData, setIsLoading, setShow);
     }
   };
 

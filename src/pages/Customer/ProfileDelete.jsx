@@ -9,6 +9,7 @@ import { deleteACustomer } from "../../features/apiCalls";
 import { useDispatch } from "react-redux";
 import Loader from "../../components/common/Loader";
 import { deleteHotspotCustomer } from "../../features/hotspotApi";
+import { deleteResellerCustomer } from "../../features/apiCallReseller";
 
 const ProfileDelete = ({
   modalShow,
@@ -42,11 +43,11 @@ const ProfileDelete = ({
       mikrotik: mikrotikCheck,
     };
 
-    // const resellerCusData = {
-    //   reseller: singleData.reseller,
-    //   customerID: customerId,
-    //   mikrotik: mikrotikCheck,
-    // };
+    const resellerCusData = {
+      reseller: ispOwner.currentUser.reseller?.id,
+      customerID: customerId,
+      mikrotik: mikrotikCheck,
+    };
 
     // api call
     if (status !== "reseller") {
@@ -56,7 +57,12 @@ const ProfileDelete = ({
         deleteACustomer(dispatch, data, setIsLoading, "", setModalShow);
       }
     } else {
-      // deleteResellerCustomer(dispatch, resellerCusData, setIsLoading);
+      deleteResellerCustomer(
+        dispatch,
+        resellerCusData,
+        setIsLoading,
+        setModalShow
+      );
     }
   };
   return (

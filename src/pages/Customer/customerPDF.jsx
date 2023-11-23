@@ -308,7 +308,7 @@ const PrintCustomer = forwardRef((props, ref) => {
                         </span>
                       )}
                     </p>
-                    {printOptions[15].checked && (
+                    {printOptions[15]?.checked && (
                       <p>
                         {t("paidDate")}:
                         <strong style={{ marginLeft: ".7rem" }}>

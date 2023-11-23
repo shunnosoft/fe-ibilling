@@ -21,6 +21,8 @@ import {
   ArrowBarLeft,
   ArrowBarRight,
   ArchiveFill,
+  Phone,
+  GeoAlt,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -34,12 +36,8 @@ import Footer from "../../components/admin/footer/Footer";
 import { FontColor, FourGround } from "../../assets/js/theme";
 import CustomerPost from "./customerCRUD/CustomerPost";
 import CustomerDetails from "./customerCRUD/CustomerDetails";
-import CustomerBillCollect from "./customerCRUD/CustomerBillCollect";
-import CustomerEdit from "./customerCRUD/CustomerEdit";
 import Loader from "../../components/common/Loader";
-
 import {
-  deleteACustomer,
   getCustomer,
   getMikrotik,
   getSubAreas,
@@ -64,11 +62,22 @@ import CustomersNumber from "../../pages/Customer/CustomersNumber";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
 import CustomerDelete from "../../pages/Customer/customerCRUD/CustomerDelete";
+import {
+  getCustomerDayLeft,
+  getCustomerPromiseDate,
+} from "../../pages/Customer/customerCRUD/customerBillDayPromiseDate";
+import PPPoECustomerEdit from "./actionComponent/PPPoECustomerEdit";
+import { getOwnerUsers } from "../../features/getIspOwnerUsersApi";
+import useISPowner from "../../hooks/useISPOwner";
+import RechargeCustomer from "./actionComponent/RechargeCustomer";
 
 export default function Customer() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const componentRef = useRef(); //reference of pdf export component
+
+  // get user & current user data form useISPOwner
+  const { ispOwnerId } = useISPowner();
 
   // get ispOwner data from redux
   const ispOwnerData = useSelector(
@@ -98,7 +107,7 @@ export default function Customer() {
   // customer get form redux
   const allCustomer = useSelector((state) => state?.customer?.customer);
 
-  // const currentCustomers = Customers
+  // get reseller subAreas form reseller data
   const subAreas = useSelector((state) => state?.area?.area);
 
   // get collector permission in redux
@@ -188,6 +197,9 @@ export default function Customer() {
       if (allCustomer.length === 0)
         getCustomer(dispatch, userData?.collector?.reseller, setIsLoading);
     }
+
+    // get ispOwner & staffs
+    getOwnerUsers(dispatch, ispOwnerId);
 
     // bulletin permission get api
     Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
@@ -494,6 +506,7 @@ export default function Customer() {
     () => [
       {
         id: "selection",
+        width: "2%",
         Header: ({ getToggleAllPageRowsSelectedProps }) => (
           <IndeterminateCheckbox
             customeStyle={true}
@@ -505,71 +518,130 @@ export default function Customer() {
             <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
           </div>
         ),
-        width: "2%",
       },
       {
-        width: "8%",
+        width: "6%",
         Header: t("id"),
         accessor: "customerId",
+        Cell: ({ row: { original } }) => (
+          <div
+            // onClick={(e) => autoDisableHandle(original, e)}
+            style={{ cursor: "pointer" }}
+          >
+            {original?.autoDisable ? (
+              <p className="text-success">{original?.customerId}</p>
+            ) : (
+              <p className="text-danger">{original?.customerId}</p>
+            )}
+          </div>
+        ),
       },
       {
-        width: "9%",
-        Header: t("name"),
-        accessor: "name",
+        width: "13%",
+        Header: t("namePPPoE"),
+        accessor: (data) => `${data?.name} ${data.pppoe?.name}`,
+        Cell: ({ row: { original } }) => (
+          <div>
+            <p>{original?.name}</p>
+            <p>{original.pppoe?.name}</p>
+          </div>
+        ),
       },
       {
-        width: "9%",
-        Header: "PPPoE",
-        accessor: "pppoe.name",
+        width: "18%",
+        Header: t("mobileAddress"),
+        accessor: (data) => `${data?.mobile} ${data?.address}`,
+        Cell: ({ row: { original } }) => (
+          <div>
+            <p style={{ fontWeight: "500" }}>
+              <Phone className="text-info" /> {original?.mobile || "N/A"}
+            </p>
+            <p>
+              <GeoAlt />
+              {original?.address || "N/A"}
+            </p>
+          </div>
+        ),
       },
       {
-        width: "12%",
-        Header: t("mobile"),
-        accessor: "mobile",
-      },
-
-      {
-        width: "8%",
-        Header: t("status"),
-        accessor: "status",
-        Cell: ({ cell: { value } }) => {
-          return badge(value);
-        },
-      },
-      {
-        width: "10%",
-        Header: t("paymentStatus"),
-        accessor: "paymentStatus",
-        Cell: ({ cell: { value } }) => {
-          return badge(value);
-        },
-      },
-      {
-        width: "9%",
+        width: "13%",
         Header: t("package"),
         accessor: "pppoe.profile",
       },
       {
-        width: "10%",
-        Header: t("month"),
-        accessor: "monthlyFee",
+        width: "11%",
+        Header: t("billBalance"),
+        accessor: (data) => `${data?.monthlyFee} ${data?.balance}`,
+        Cell: ({ row: { original } }) => (
+          <div style={{ fontWeight: "500" }}>
+            <p>৳{original?.monthlyFee}</p>
+            <p
+              className={`text-${
+                original?.balance > -1 ? "success" : "danger"
+              }`}
+            >
+              ৳{original?.balance}
+            </p>
+          </div>
+        ),
       },
       {
-        width: "9%",
-        Header: t("balance"),
-        accessor: "balance",
-      },
-      {
-        width: "10%",
-        Header: t("date"),
-        accessor: "billingCycle",
-        Cell: ({ cell: { value } }) => {
-          return moment(value).format("YYYY/MM/DD hh:mm A");
-        },
-      },
+        width: "18%",
+        Header: t("billPromise"),
+        accessor: (data) =>
+          `${moment(data?.billingCycle).format("YYYY/MM/DD hh:mm A")} 
+          ${moment(data?.promiseDate).format("YYYY/MM/DD hh:mm A")}`,
+        Cell: ({ row: { original } }) => (
+          <div className="d-flex">
+            <div>
+              <p>{getCustomerPromiseDate(original)?.billDate}</p>
 
+              <p
+                className={`d-flex align-self-end text-${
+                  getCustomerPromiseDate(original)?.promiseDateChange
+                }`}
+              >
+                {getCustomerPromiseDate(original)?.promiseDate}
+              </p>
+            </div>
+          </div>
+        ),
+      },
       {
-        width: "7%",
+        width: "6%",
+        Header: t("day"),
+        accessor: (data) => `${new Date(data?.billingCycle).getDay()}`,
+        Cell: ({ row: { original } }) => (
+          <div className="text-center p-1">
+            <p
+              className={`${
+                getCustomerDayLeft(original?.billingCycle) >= 20
+                  ? "border border-2 border-success"
+                  : getCustomerDayLeft(original?.billingCycle) >= 10
+                  ? "border border-2 border-primary"
+                  : getCustomerDayLeft(original?.billingCycle) >= 0
+                  ? "magantaColor"
+                  : "bg-danger text-white"
+              }`}
+            >
+              {getCustomerDayLeft(original?.billingCycle)}
+            </p>
+          </div>
+        ),
+      },
+      {
+        width: "8%",
+        Header: t("status"),
+        accessor: (data) => `${data?.paymentStatus} ${data?.status}`,
+        Cell: ({ row: { original } }) => (
+          <div className="text-center">
+            <p>{badge(original?.paymentStatus)}</p>
+            <p>{badge(original?.status)}</p>
+          </div>
+        ),
+      },
+      {
+        width: "5%",
         Header: () => <div className="text-center">{t("action")}</div>,
         id: "option",
 
@@ -589,6 +661,8 @@ export default function Customer() {
                   data-bs-target="#showCustomerDetails"
                   onClick={() => {
                     getSpecificCustomer(original.id);
+                    setModalStatus("profile");
+                    setShow(true);
                   }}
                 >
                   <div className="dropdown-item">
@@ -892,18 +966,16 @@ export default function Customer() {
                         />
                       </div>
 
-                      <div className="table-section">
-                        <Table
-                          customComponent={customComponent}
-                          bulkLength={bulkCustomer?.length}
-                          isLoading={isLoading}
-                          columns={columns}
-                          data={Customers}
-                          bulkState={{
-                            setBulkCustomer,
-                          }}
-                        ></Table>
-                      </div>
+                      <Table
+                        customComponent={customComponent}
+                        bulkLength={bulkCustomer?.length}
+                        isLoading={isLoading}
+                        columns={columns}
+                        data={Customers}
+                        bulkState={{
+                          setBulkCustomer,
+                        }}
+                      ></Table>
                     </div>
                   </div>
 
@@ -922,6 +994,15 @@ export default function Customer() {
 
       {/* Model start */}
 
+      {/* customer profile details modal */}
+      {modalStatus === "profile" && (
+        <CustomerDetails
+          show={show}
+          setShow={setShow}
+          customerId={singleCustomer}
+        />
+      )}
+
       {/* new customer create */}
       {modalStatus === "customerPost" && (
         <CustomerPost show={show} setShow={setShow} />
@@ -929,12 +1010,16 @@ export default function Customer() {
 
       {/* create customer information update */}
       {modalStatus === "customerEdit" && (
-        <CustomerEdit show={show} setShow={setShow} single={singleCustomer} />
+        <PPPoECustomerEdit
+          show={show}
+          setShow={setShow}
+          single={singleCustomer}
+        />
       )}
 
       {/* customer bill collection */}
       {modalStatus === "billCollect" && (
-        <CustomerBillCollect
+        <RechargeCustomer
           show={show}
           setShow={setShow}
           single={singleCustomer}
@@ -942,7 +1027,6 @@ export default function Customer() {
         />
       )}
 
-      <CustomerDetails single={singleCustomer} />
       <CustomerReport single={customerReportData} />
       <SingleMessage single={singleCustomer} sendCustomer="customer" />
 

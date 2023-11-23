@@ -5,6 +5,7 @@ const resellerCustomerSlice = createSlice({
   initialState: {
     resellerCustomer: [],
     allResellerCustomer: [],
+    resellerCustomerBillReport: [],
   },
   reducers: {
     getAllResellerCustomerSuccess: (state, actions) => {
@@ -107,6 +108,11 @@ const resellerCustomerSlice = createSlice({
         state.resellerCustomer = [...updatedCustomer];
       }
     },
+
+    // reseller single customer bill report action
+    getResellerCustomerBillReportSuccess: (state, actions) => {
+      state.resellerCustomerBillReport = actions.payload;
+    },
   },
 });
 
@@ -119,5 +125,6 @@ export const {
   bulkCustomerReturn,
   bulkUpdate,
   bulkResellerDelete,
+  getResellerCustomerBillReportSuccess,
 } = resellerCustomerSlice.actions;
 export default resellerCustomerSlice.reducer;

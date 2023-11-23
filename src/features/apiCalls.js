@@ -1977,7 +1977,7 @@ export const postReseller = async (
 };
 
 // Edit reseller
-export const editReseller = async (dispatch, data, setIsLoading) => {
+export const editReseller = async (dispatch, data, setIsLoading, setShow) => {
   setIsLoading(true);
   const { ispId, resellerId, ...rest } = data;
   await apiLink({
@@ -1991,7 +1991,7 @@ export const editReseller = async (dispatch, data, setIsLoading) => {
     .then((res) => {
       dispatch(editResellerSuccess(res.data));
       setIsLoading(false);
-      document.querySelector("#resellerModalEdit").click();
+      setShow(false);
       langMessage(
         "success",
         "রিসেলার আপডেট সফল হয়েছে ",

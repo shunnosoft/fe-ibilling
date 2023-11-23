@@ -14,6 +14,7 @@ import {
   addCustomerSuccess,
   addStaticCustomerSuccess,
   deleteCustomerSuccess,
+  deleteStaticCustomerSuccess,
   editCustomerSuccess,
   editStaticCustomerSuccess,
   getCustomerSuccess,
@@ -208,7 +209,13 @@ export const addCustomer = async (
   }
 };
 
-export const editCustomer = async (dispatch, data, setIsloading, setShow) => {
+export const editCustomer = async (
+  dispatch,
+  data,
+  setIsloading,
+  setShow,
+  status
+) => {
   setIsloading(true);
   const { singleCustomerID, reseller, ...sendingData } = data;
   try {
@@ -217,12 +224,27 @@ export const editCustomer = async (dispatch, data, setIsloading, setShow) => {
       sendingData
     );
     dispatch(editCustomerSuccess(res.data));
+
+    if (status === "auto") {
+      langMessage(
+        "success",
+        "কাস্টমার আটো ডিজেবল আপডেট সফল হয়েছে",
+        "Customer Auto Disable Updated Successfully"
+      );
+    } else if (status === "status") {
+      langMessage(
+        "success",
+        "কাস্টমার স্টাটাস আপডেট সফল হয়েছে",
+        "Customer Status Updated Successfully"
+      );
+    } else {
+      langMessage(
+        "success",
+        "কাস্টমার এডিট সফল হয়েছে",
+        "Customer Updated Successfully"
+      );
+    }
     setShow(false);
-    langMessage(
-      "success",
-      "কাস্টমার এডিট সফল হয়েছে!",
-      "Customer Updated Successfully"
-    );
   } catch (err) {
     if (err.response) {
       toast.error(err.response.data.message);
@@ -231,19 +253,25 @@ export const editCustomer = async (dispatch, data, setIsloading, setShow) => {
   setIsloading(false);
 };
 
-export const deleteResellerCustomer = async (dispatch, data, setIsLoading) => {
+export const deleteResellerCustomer = async (
+  dispatch,
+  data,
+  setIsLoading,
+  setModalShow
+) => {
   setIsLoading(true);
   try {
     await apiLink.delete(
       `/reseller/customer/${data.reseller}/${data.customerID}?removeFromMikrotik=${data.mikrotik}`
     );
-    dispatch(deleteCustomerSuccess(data.customerId));
+    dispatch(deleteStaticCustomerSuccess(data.customerID));
     document.querySelector("#customerDelete").click();
     langMessage(
       "success",
       "কাস্টমার ডিলিট সফল হয়েছে!",
       "Customer Deleted Successfully"
     );
+    setModalShow(false);
   } catch (err) {
     if (err.response) {
       toast.error(err.response.data.message);
@@ -281,7 +309,8 @@ export const updateResellerStaticCustomer = async (
   resellerId,
   dispatch,
   data,
-  setIsloading
+  setIsloading,
+  status
 ) => {
   setIsloading(true);
   try {
@@ -290,12 +319,28 @@ export const updateResellerStaticCustomer = async (
       data
     );
     dispatch(editStaticCustomerSuccess(res.data.customer));
+
+    if (status === "auto") {
+      langMessage(
+        "success",
+        "কাস্টমার আটো ডিজেবল আপডেট সফল হয়েছে",
+        "Customer Auto Disable Updated Successfully"
+      );
+    } else if (status === "status") {
+      langMessage(
+        "success",
+        "কাস্টমার স্টাটাস আপডেট সফল হয়েছে",
+        "Customer Status Updated Successfully"
+      );
+    } else {
+      langMessage(
+        "success",
+        "কাস্টমার এডিট সফল হয়েছে",
+        "Customer Updated Successfully"
+      );
+    }
+
     document.getElementById("resellerCustomerEdit").click();
-    langMessage(
-      "success",
-      "কাস্টমার আপডেট সফল হয়েছে",
-      "Customer Updated Successfully"
-    );
   } catch (error) {
     toast.error(error.response?.data?.message);
   }
@@ -412,13 +457,13 @@ export const billCollect = async (
     }
     setResponseData(res.data);
     setTest(true);
-    setShow(false);
     langMessage(
       "success",
       "রিচার্জ সফল হয়েছে",
       "Bill Acceptance is Successful."
     );
 
+    setShow(false);
     resetForm();
   } catch (error) {
     toast.error(error.response?.data.message);
@@ -634,7 +679,6 @@ export const getStaticCustomerApi = async (
   try {
     const res = await apiLink.get(`/reseller/static/customer/${reseller}`);
     dispatch(getStaticCustomerSuccess(res.data));
-    setIsloading(false);
   } catch (error) {
     console.log(error.message);
   }

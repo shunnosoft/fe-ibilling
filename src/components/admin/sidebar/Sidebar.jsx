@@ -443,7 +443,7 @@ export default function Sidebar() {
                         {(userRole === "ispOwner" ||
                           userRole === "manager" ||
                           (userRole === "collector" &&
-                            user.collector.ispOwner)) &&
+                            !user.collector?.reseller)) &&
                           bpSettings?.hasMikrotik &&
                           hasCustomerType.includes("hotspot") && (
                             <NavLink
@@ -502,7 +502,7 @@ export default function Sidebar() {
                         {(userRole === "ispOwner" ||
                           userRole === "manager" ||
                           (userRole === "collector" &&
-                            user.collector.ispOwner)) && (
+                            !user.collector?.reseller)) && (
                           <NavLink
                             key={126}
                             to={"/other/customer"}

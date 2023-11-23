@@ -6,6 +6,7 @@ import {
   editAllResellerCustomerSuccess,
   editResellerCustomerSuccess,
   getAllResellerCustomerSuccess,
+  getResellerCustomerBillReportSuccess,
   getResellerCustomerSuccess,
 } from "./resellerCustomerAdminSlice";
 
@@ -153,4 +154,20 @@ export const deleteACustomer = async (dispatch, data, setIsLoading) => {
       toast.error(err.response.data.message);
     }
   }
+};
+
+// get single cusomer bill report
+export const getResellerCustomerReport = async (
+  dispatch,
+  customerId,
+  setIsLoading
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink(`/reseller/bills/customer/${customerId}`);
+    dispatch(getResellerCustomerBillReportSuccess(res.data));
+  } catch (err) {
+    toast.error("Error to get report: ", err);
+  }
+  setIsLoading(false);
 };

@@ -34,13 +34,14 @@ import {
 import useISPowner from "../../../hooks/useISPOwner";
 import FormatNumber from "../../../components/common/NumberFormat";
 import PasswordReset from "../../../components/modals/passwordReset/PasswordReset";
+import { getOwnerUsers } from "../../../features/getIspOwnerUsersApi";
 
 export default function CustomerDetails({ show, setShow, customerId }) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
   // get user & current user data form useISPOwner
-  const { ispOwnerId, bpSetting } = useISPowner();
+  const { ispOwnerId, bpSettings } = useISPowner();
 
   // get mikrotiks
   const mikrotiks = useSelector((state) => state?.mikrotik?.mikrotik);
@@ -79,6 +80,9 @@ export default function CustomerDetails({ show, setShow, customerId }) {
   // get api calls
   useEffect(() => {
     if (customer.length === 0) getCustomer(dispatch, ispOwnerId, setLoading);
+
+    // get ispOwner all staffs
+    getOwnerUsers(dispatch, ispOwnerId);
 
     getConnectionFee(customerId, setPaidConnectionFee);
   }, [customerId]);
@@ -245,7 +249,7 @@ export default function CustomerDetails({ show, setShow, customerId }) {
               <Card className="displayGridVertical5_5 details_setting border border-2 shadow-none">
                 {/* customer profile setting start  */}
 
-                <div className="shadow-sm rounded">
+                <div className="clintProfile profile_details client_details shadow-sm rounded">
                   <Card.Title className="clintTitle clint_profile_setting">
                     <h5 className="profileInfo">{t("profileSetting")}</h5>
                   </Card.Title>
@@ -352,7 +356,7 @@ export default function CustomerDetails({ show, setShow, customerId }) {
                   <Card.Body>
                     <FontColor>
                       <div>
-                        {bpSetting?.hasMikrotik && (
+                        {bpSettings?.hasMikrotik && (
                           <div className="displayGridHorizontalFill5_5 profileDetails">
                             <p>{t("mikrotik")}</p>
                             <p>{data && getMikrotik(data.mikrotik)?.name}</p>
@@ -399,7 +403,7 @@ export default function CustomerDetails({ show, setShow, customerId }) {
                           <p>{data?.pppoe?.profile}</p>
                         </div>
 
-                        {bpSetting?.hasMikrotik && (
+                        {bpSettings?.hasMikrotik && (
                           <div className="displayGridHorizontalFill5_5 profileDetails">
                             <p>{t("autoConnection")}</p>
                             <div className="form-check form-switch">

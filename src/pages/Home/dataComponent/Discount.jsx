@@ -40,7 +40,6 @@ const Discount = ({
   const discountCustomer = useSelector(
     (state) => state.dashboardInformation?.discountCustomer
   );
-  console.log(discountCustomer);
 
   // get all packages
   const allPackages = useSelector((state) => state.package.allPackages);
@@ -114,9 +113,9 @@ const Discount = ({
           <div>
             <p className="text-center">{original.customer?.customerId}</p>
             <Badge bg="primary">
-              {original?.userType === "pppoe"
+              {original.customer?.userType === "pppoe"
                 ? "PPPoE"
-                : original?.userType === "hotspot"
+                : original.customer?.userType === "hotspot"
                 ? "Hotspot"
                 : "Static"}
             </Badge>
@@ -131,7 +130,7 @@ const Discount = ({
            ${data.customer.queue?.srcAddress} ${data.customer.queue?.target} ${data.customer.hotspot?.name}`,
         Cell: ({ row: { original } }) => (
           <div>
-            <p>{original?.name}</p>
+            <p>{original.customer?.name}</p>
             <p>
               {original.customer?.userType === "pppoe"
                 ? original.customer?.pppoe.name
@@ -153,11 +152,12 @@ const Discount = ({
         Cell: ({ row: { original } }) => (
           <div>
             <p style={{ fontWeight: "500" }}>
-              <Phone className="text-info" /> {original?.mobile || "N/A"}
+              <Phone className="text-info" />{" "}
+              {original.customer?.mobile || "N/A"}
             </p>
             <p>
               <GeoAlt />
-              {original?.address || "N/A"}
+              {original.customer?.address || "N/A"}
             </p>
           </div>
         ),
@@ -237,8 +237,8 @@ const Discount = ({
         accessor: (data) => `${data?.paymentStatus} ${data?.status}`,
         Cell: ({ row: { original } }) => (
           <div className="text-center">
-            <p>{badge(original?.paymentStatus)}</p>
-            <p>{badge(original?.status)}</p>
+            <p>{badge(original.customer?.paymentStatus)}</p>
+            <p>{badge(original.customer?.status)}</p>
           </div>
         ),
       },

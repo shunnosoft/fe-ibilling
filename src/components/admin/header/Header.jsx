@@ -149,7 +149,7 @@ export default function Header(props) {
             </div>
 
             <div className="headerLinks">
-              {userRole !== "admin" && userRole !== "superadmin" ? (
+              {(userRole === "ispOwner" || userRole === "manager") && (
                 <div
                   style={{ cursor: "pointer", width: "190px" }}
                   className="me-1 phone_view_none"
@@ -163,8 +163,6 @@ export default function Header(props) {
                     {t("supportTicket")}
                   </a>
                 </div>
-              ) : (
-                ""
               )}
 
               {currentUser && userRole === "ispOwner" ? (

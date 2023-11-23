@@ -16,17 +16,20 @@ import {
   ArrowBarLeft,
   ArrowBarRight,
   ArchiveFill,
+  Phone,
+  GeoAlt,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
+import { useTranslation } from "react-i18next";
+import ReactToPrint from "react-to-print";
+import { Accordion, Card, Collapse } from "react-bootstrap";
 
 // internal imports
 import Footer from "../../components/admin/footer/Footer";
 import { FontColor, FourGround } from "../../assets/js/theme";
 import Loader from "../../components/common/Loader";
-
 import {
-  deleteACustomer,
   getCustomer,
   getMikrotik,
   getStaticCustomerApi,
@@ -34,63 +37,58 @@ import {
 } from "../../features/apiCallReseller";
 import { badge } from "../../components/common/Utils";
 import Table from "../../components/table/Table";
-import CustomerBillCollect from "./staticCustomerCrud/CustomerBillCollect";
 import AddStaticCustomer from "./staticCustomerCrud/StaticCustomerPost";
-import CustomerDetails from "../../pages/staticCustomer/customerCRUD/CustomerDetails";
-import { useTranslation } from "react-i18next";
-import ReactToPrint from "react-to-print";
 import PrintCustomer from "./customerPDF";
 import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
 import FormatNumber from "../../components/common/NumberFormat";
-import CustomerEdit from "./staticCustomerCrud/CustomerEdit";
 import {
   fetchPackagefromDatabase,
   getAllPackages,
 } from "../../features/apiCalls";
-import { Accordion, Card, Collapse } from "react-bootstrap";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
 import CustomerDelete from "../../pages/Customer/customerCRUD/CustomerDelete";
+import useISPowner from "../../hooks/useISPOwner";
+import {
+  getCustomerDayLeft,
+  getCustomerPromiseDate,
+} from "../../pages/Customer/customerCRUD/customerBillDayPromiseDate";
+import CustomerDetails from "./staticCustomerCrud/CustomerDetails";
+import { getOwnerUsers } from "../../features/getIspOwnerUsersApi";
+import StaticCustomerEdit from "./actionComponent/StaticCustomerEdit";
+import RechargeCustomer from "../Customer/actionComponent/RechargeCustomer";
 
 export default function RstaticCustomer() {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
   const componentRef = useRef(); //reference of pdf export component
 
+  // get user & current user data form useISPOwner hook
+  const {
+    role,
+    ispOwnerId,
+    bpSettings,
+    userData,
+    permissions,
+    permission,
+    currentUser,
+  } = useISPowner();
+
+  //get reseller areas customer form redux store
   const cus = useSelector((state) => state?.customer?.staticCustomer);
+
+  // get reseller mikrotiks form store
   const Getmikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
 
-  const reseller = useSelector(
-    (state) => state.persistedReducer.auth?.userData
-  );
-
-  // get user data form redux
-  const userData = useSelector(
-    (state) => state.persistedReducer.auth?.currentUser
-  );
-
-  const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
-  );
-
+  // get mikrotik & with out mikrotik packages
   const ppPackage = useSelector((state) =>
     bpSettings?.hasMikrotik
       ? state?.mikrotik?.packagefromDatabase
       : state?.package?.packages
   );
 
-  // get Isp owner id
-  const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerId
-  );
-
   // get all packages
   const allPackages = useSelector((state) => state.package.allPackages);
-
-  const role = useSelector((state) => state.persistedReducer.auth?.role);
-  const dispatch = useDispatch();
-  const resellerId = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.id
-  );
 
   //get customer subareas form redux
   const subAreas = useSelector((state) => state?.area?.area);
@@ -102,22 +100,15 @@ export default function RstaticCustomer() {
 
   // loading state
   const [isLoading, setIsloading] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [packLoading, setPackLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [show, setShow] = useState(false);
 
   // check uncheck mikrotik state when delete customer
   const [checkMikrotik, setMikrotikCheck] = useState(false);
 
-  const permission = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.permission
-  );
-
-  const collectorPermission = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.permissions
-  );
-
   const [Customers, setCustomers] = useState(cus);
+
   // get specific customer
   const [singleCustomer, setSingleCustomer] = useState("");
 
@@ -138,72 +129,45 @@ export default function RstaticCustomer() {
   // filter Accordion handle state
   const [activeKeys, setActiveKeys] = useState("");
 
-  const selectMikrotik = (e) => {
-    const id = e.target.value;
-    if (id && ispOwnerId) {
-      const IDs = {
-        ispOwner: ispOwnerId,
-        mikrotikId: id,
-      };
-      //ToDo
-      if (bpSettings?.hasMikrotik) {
-        fetchPackagefromDatabase(dispatch, IDs, setIsloading);
-      }
+  // api calls
+  useEffect(() => {
+    if (role === "reseller") {
+      // get reseller mikrotik
+      getMikrotik(dispatch, userData?.id);
+
+      // get reseller areas
+      getSubAreas(dispatch, userData?.id);
+
+      // get reseller areas static customer
+      if (cus.length === 0)
+        getStaticCustomerApi(dispatch, currentUser.reseller?.id, setIsloading);
     }
-    setSingleMikrotik(id);
-  };
 
-  //function for set 0
-  const setPackageLimit = (value, isDown) => {
-    setMikrotikPackage(value);
-    const temp = ppPackage.find((val) => val.id === value);
-    if (isDown) {
-      setPackageRate(temp);
+    if (role === "collector") {
+      // get reseller mikrotik
+      getMikrotik(dispatch, currentUser.collector?.reseller);
+
+      // get reseller areas
+      getSubAreas(dispatch, currentUser.collector?.reseller);
+
+      // get collector areas static customer
+      if (cus.length === 0)
+        getStaticCustomerApi(
+          dispatch,
+          currentUser.collector?.reseller,
+          setIsloading
+        );
     }
-    if (value === "unlimited") return "0";
-    const getLetter = temp.name.toLowerCase();
-    if (getLetter.indexOf("m") !== -1) {
-      const setZero = getLetter.replace("m", "000000");
-      return setZero;
-    }
-    if (getLetter.indexOf("k") !== -1) {
-      const setZero = getLetter.replace("k", "000");
-      return setZero;
-    }
-  };
 
-  // select Mikrotik Package
-  const selectMikrotikPackage = ({ target }) => {
-    if (target.name === "downPackage") {
-      const getLimit = setPackageLimit(target.value, true);
-      getLimit && setDownMaxLimit(getLimit);
-    }
-  };
+    // get ispOwner all packages api
+    getAllPackages(dispatch, ispOwnerId, setPackLoading);
 
-  // customer current package find
-  const customerPackageFind = (pack) => {
-    const findPack = allPackages.find((item) => item.id.includes(pack));
-    return findPack;
-  };
+    // get ispOwner & staffs api
+    getOwnerUsers(dispatch, ispOwnerId);
 
-  // customer delete controller
-  const customerDelete = (customerID) => {
-    setMikrotikCheck(false);
-    setCustomerId(customerID);
-  };
-
-  //   filter
-  const handleSubAreaChange = (id) => {
-    setSubAreaId(id);
-  };
-
-  const handlePaymentChange = (e) => {
-    setPaymentStatus(e.target.value);
-  };
-
-  const handleStatusChange = (e) => {
-    setStatus(e.target.value);
-  };
+    // netFee bulletin api
+    Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
+  }, [role]);
 
   useEffect(() => {
     let tempCustomers = cus;
@@ -280,6 +244,158 @@ export default function RstaticCustomer() {
     setCustomers(tempCustomers);
   }, [cus, paymentStatus, status, subAreaId, singleMikrotik, mikrotikPackage]);
 
+  useEffect(() => {
+    let tempCustomers = cus;
+
+    if (singleMikrotik) {
+      tempCustomers = tempCustomers.filter(
+        (customer) => customer.mikrotik === singleMikrotik
+      );
+    }
+
+    if (mikrotikPackage) {
+      tempCustomers = tempCustomers.filter(
+        (customer) => customer.mikrotikPackage === mikrotikPackage
+      );
+    }
+
+    if (subAreaId) {
+      tempCustomers = tempCustomers.filter(
+        (customer) => customer.subArea === subAreaId
+      );
+    }
+
+    if (status) {
+      tempCustomers = tempCustomers.filter(
+        (customer) => customer.status === status
+      );
+    }
+
+    if (paymentStatus) {
+      tempCustomers = tempCustomers.filter((customer) => {
+        if (customer.paymentStatus && paymentStatus === "free") {
+          if (customer.monthlyFee === parseInt("0")) {
+            return customer;
+          }
+        } else if (
+          customer.paymentStatus === "paid" &&
+          paymentStatus === "paid"
+        ) {
+          return customer;
+        } else if (
+          customer.paymentStatus === "unpaid" &&
+          paymentStatus === "unpaid" &&
+          customer.balance == 0
+        ) {
+          return customer;
+        } else if (
+          customer.paymentStatus === "unpaid" &&
+          paymentStatus === "partial"
+        ) {
+          if (
+            customer.monthlyFee > customer.balance &&
+            customer.balance > parseInt("0")
+          ) {
+            return customer;
+          }
+        } else if (
+          customer.paymentStatus === "paid" &&
+          paymentStatus === "advance"
+        ) {
+          if (2 * customer.monthlyFee < customer.balance) {
+            return customer;
+          }
+        } else if (
+          customer.paymentStatus === "unpaid" &&
+          paymentStatus === "overdue"
+        ) {
+          if (customer.balance < parseInt("0")) {
+            return customer;
+          }
+        }
+      });
+    }
+
+    setCustomers(tempCustomers);
+  }, [cus, paymentStatus, status, subAreaId, singleMikrotik, mikrotikPackage]);
+
+  // reload handler
+  const reloadHandler = () => {
+    if (role === "reseller") {
+      getStaticCustomerApi(dispatch, currentUser?.reseller.id, setIsloading);
+    }
+    if (role === "collector") {
+      getCustomer(dispatch, currentUser?.collector?.reseller, setIsloading);
+    }
+  };
+
+  const selectMikrotik = (e) => {
+    const id = e.target.value;
+    if (id && ispOwnerId) {
+      const IDs = {
+        ispOwner: ispOwnerId,
+        mikrotikId: id,
+      };
+      //ToDo
+      if (bpSettings?.hasMikrotik) {
+        fetchPackagefromDatabase(dispatch, IDs, setPackLoading);
+      }
+    }
+    setSingleMikrotik(id);
+  };
+
+  //function for set 0
+  const setPackageLimit = (value, isDown) => {
+    setMikrotikPackage(value);
+    const temp = ppPackage.find((val) => val.id === value);
+    if (isDown) {
+      setPackageRate(temp);
+    }
+    if (value === "unlimited") return "0";
+    const getLetter = temp.name.toLowerCase();
+    if (getLetter.indexOf("m") !== -1) {
+      const setZero = getLetter.replace("m", "000000");
+      return setZero;
+    }
+    if (getLetter.indexOf("k") !== -1) {
+      const setZero = getLetter.replace("k", "000");
+      return setZero;
+    }
+  };
+
+  // select Mikrotik Package
+  const selectMikrotikPackage = ({ target }) => {
+    if (target.name === "downPackage") {
+      const getLimit = setPackageLimit(target.value, true);
+      getLimit && setDownMaxLimit(getLimit);
+    }
+  };
+
+  // customer current package find
+  const customerPackageFind = (pack) => {
+    const findPack = allPackages.find((item) => item.id.includes(pack));
+    return findPack;
+  };
+
+  // customer delete controller
+  const customerDelete = (customerID) => {
+    setMikrotikCheck(false);
+    setCustomerId(customerID);
+  };
+
+  //   filter
+  const handleSubAreaChange = (id) => {
+    setSubAreaId(id);
+  };
+
+  const handlePaymentChange = (e) => {
+    setPaymentStatus(e.target.value);
+  };
+
+  const handleStatusChange = (e) => {
+    setStatus(e.target.value);
+  };
+
   // find area name
   const areaName = subAreas.find((item) => item.id === subAreaId);
 
@@ -300,48 +416,6 @@ export default function RstaticCustomer() {
   const getSpecificCustomerReport = (reportData) => {
     setId(reportData);
   };
-
-  // reload handler
-  const reloadHandler = () => {
-    if (role === "reseller") {
-      getStaticCustomerApi(dispatch, userData?.reseller.id, setIsloading);
-    } else if (role === "collector") {
-      getCustomer(dispatch, userData?.collector?.reseller, setIsloading);
-    }
-  };
-
-  useEffect(() => {
-    if (role === "collector") {
-      getMikrotik(dispatch, userData.collector.reseller);
-    }
-    if (role === "reseller") {
-      getMikrotik(dispatch, resellerId);
-      if (cus.length === 0)
-        getStaticCustomerApi(dispatch, userData?.reseller.id, setIsloading);
-      getSubAreas(dispatch, resellerId);
-    } else if (role === "collector") {
-      getSubAreas(dispatch, userData?.collector?.reseller);
-      if (cus.length === 0)
-        getStaticCustomerApi(
-          dispatch,
-          userData?.collector?.reseller,
-          setIsloading
-        );
-    }
-
-    Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
-    getAllPackages(dispatch, ispOwnerId, setIsloading);
-  }, [dispatch, resellerId, userData, role]);
-
-  const [subAreaIds, setSubArea] = useState([]);
-
-  useEffect(() => {
-    if (subAreaIds.length) {
-      setCustomers(cus.filter((c) => subAreaIds.includes(c.subArea)));
-    } else {
-      setCustomers(cus);
-    }
-  }, [cus, subAreaIds]);
 
   //total monthly fee and due calculation
   const dueMonthlyFee = useMemo(() => {
@@ -381,43 +455,52 @@ export default function RstaticCustomer() {
         width: "8%",
         Header: t("id"),
         accessor: "customerId",
+        Cell: ({ row: { original } }) => (
+          <div
+            // onClick={(e) => autoDisableHandle(original, e)}
+            style={{ cursor: "pointer" }}
+          >
+            {original?.autoDisable ? (
+              <p className="text-success">{original?.customerId}</p>
+            ) : (
+              <p className="text-danger">{original?.customerId}</p>
+            )}
+          </div>
+        ),
       },
       {
-        width: "10%",
-        Header: t("name"),
-        accessor: "name",
+        width: "13%",
+        Header: t("nameIP"),
+        accessor: (data) =>
+          `${data?.name} ${data?.queue.address} ${data?.queue.srcAddress} ${data?.queue.target}`,
+        Cell: ({ row: { original } }) => (
+          <div>
+            <p>{original?.name}</p>
+            <p>
+              {original.userType === "firewall-queue"
+                ? original.queue.address
+                : original.userType === "core-queue"
+                ? original.queue.srcAddress
+                : original.queue.target}
+            </p>
+          </div>
+        ),
       },
       {
-        width: "12%",
-        Header: "IP",
-        accessor: (field) =>
-          field.userType === "firewall-queue"
-            ? field.queue.address
-            : field.userType === "core-queue"
-            ? field?.queue.srcAddress
-            : field.queue.target,
-      },
-      {
-        width: "12%",
-        Header: t("mobile"),
-        accessor: "mobile",
-      },
-
-      {
-        width: "9%",
-        Header: t("status"),
-        accessor: "status",
-        Cell: ({ cell: { value } }) => {
-          return badge(value);
-        },
-      },
-      {
-        width: "9%",
-        Header: t("paymentStatus"),
-        accessor: "paymentStatus",
-        Cell: ({ cell: { value } }) => {
-          return badge(value);
-        },
+        width: "18%",
+        Header: t("mobileAddress"),
+        accessor: (data) => `${data?.mobile} ${data?.address}`,
+        Cell: ({ row: { original } }) => (
+          <div>
+            <p style={{ fontWeight: "500" }}>
+              <Phone className="text-info" /> {original?.mobile || "N/A"}
+            </p>
+            <p>
+              <GeoAlt />
+              {original?.address || "N/A"}
+            </p>
+          </div>
+        ),
       },
       {
         width: "11%",
@@ -428,24 +511,77 @@ export default function RstaticCustomer() {
         ),
       },
       {
-        width: "10%",
-        Header: t("month"),
-        accessor: "monthlyFee",
+        width: "11%",
+        Header: t("billBalance"),
+        accessor: (data) => `${data?.monthlyFee} ${data?.balance}`,
+        Cell: ({ row: { original } }) => (
+          <div style={{ fontWeight: "500" }}>
+            <p>৳{original?.monthlyFee}</p>
+            <p
+              className={`text-${
+                original?.balance > -1 ? "success" : "danger"
+              }`}
+            >
+              ৳{original?.balance}
+            </p>
+          </div>
+        ),
       },
       {
-        width: "9%",
-        Header: t("balance"),
-        accessor: "balance",
-      },
-      {
-        width: "12%",
-        Header: t("bill"),
-        accessor: "billingCycle",
-        Cell: ({ cell: { value } }) => {
-          return moment(value).format("YYYY/MM/DD hh:mm A");
-        },
-      },
+        width: "18%",
+        Header: t("billPromise"),
+        accessor: (data) =>
+          `${moment(data?.billingCycle).format("YYYY/MM/DD hh:mm A")} 
+          ${moment(data?.promiseDate).format("YYYY/MM/DD hh:mm A")}`,
+        Cell: ({ row: { original } }) => (
+          <div className="d-flex">
+            <div>
+              <p>{getCustomerPromiseDate(original)?.billDate}</p>
 
+              <p
+                className={`d-flex align-self-end text-${
+                  getCustomerPromiseDate(original)?.promiseDateChange
+                }`}
+              >
+                {getCustomerPromiseDate(original)?.promiseDate}
+              </p>
+            </div>
+          </div>
+        ),
+      },
+      {
+        width: "6%",
+        Header: t("day"),
+        accessor: (data) => `${new Date(data?.billingCycle).getDay()}`,
+        Cell: ({ row: { original } }) => (
+          <div className="text-center p-1">
+            <p
+              className={`${
+                getCustomerDayLeft(original?.billingCycle) >= 20
+                  ? "border border-2 border-success"
+                  : getCustomerDayLeft(original?.billingCycle) >= 10
+                  ? "border border-2 border-primary"
+                  : getCustomerDayLeft(original?.billingCycle) >= 0
+                  ? "magantaColor"
+                  : "bg-danger text-white"
+              }`}
+            >
+              {getCustomerDayLeft(original?.billingCycle)}
+            </p>
+          </div>
+        ),
+      },
+      {
+        width: "8%",
+        Header: t("status"),
+        accessor: (data) => `${data?.paymentStatus} ${data?.status}`,
+        Cell: ({ row: { original } }) => (
+          <div className="text-center">
+            <p>{badge(original?.paymentStatus)}</p>
+            <p>{badge(original?.status)}</p>
+          </div>
+        ),
+      },
       {
         width: "7%",
         Header: () => <div className="text-center"> {t("action")} </div>,
@@ -469,10 +605,10 @@ export default function RstaticCustomer() {
               />
               <ul className="dropdown-menu" aria-labelledby="customerDrop">
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#showCustomerDetails"
                   onClick={() => {
                     getSpecificCustomer(original.id);
+                    setModalStatus("profile");
+                    setShow(true);
                   }}
                 >
                   <div className="dropdown-item">
@@ -483,8 +619,7 @@ export default function RstaticCustomer() {
                   </div>
                 </li>
 
-                {(permission?.customerEdit ||
-                  collectorPermission?.customerEdit) && (
+                {(permission?.customerEdit || permissions?.customerEdit) && (
                   <li
                     data-bs-toggle="modal"
                     data-bs-target="#resellerCustomerEdit"
@@ -602,7 +737,7 @@ export default function RstaticCustomer() {
 
                     <div>
                       {(permission?.customerAdd ||
-                        collectorPermission?.customerAdd) && (
+                        permissions?.customerAdd) && (
                         <PersonPlusFill
                           className="addcutmButton"
                           onClick={() => {
@@ -677,7 +812,7 @@ export default function RstaticCustomer() {
                               {Getmikrotik?.length === undefined
                                 ? ""
                                 : Getmikrotik?.map((val, key) =>
-                                    reseller.mikrotiks?.map(
+                                    userData.mikrotiks?.map(
                                       (item) =>
                                         val.id === item && (
                                           <option key={key} value={val.id}>
@@ -766,24 +901,12 @@ export default function RstaticCustomer() {
                   </Accordion>
 
                   <div className="collectorWrapper pb-2">
-                    <div className="addCollector">
-                      {isDeleting ? (
-                        <div className="deletingAction">
-                          <Loader /> <b>Deleting...</b>
-                        </div>
-                      ) : (
-                        ""
-                      )}
-                    </div>
-
-                    <div className="table-section">
-                      <Table
-                        customComponent={customComponent}
-                        isLoading={isLoading}
-                        columns={columns}
-                        data={Customers}
-                      ></Table>
-                    </div>
+                    <Table
+                      customComponent={customComponent}
+                      isLoading={isLoading}
+                      columns={columns}
+                      data={Customers}
+                    ></Table>
                   </div>
                 </div>
 
@@ -799,6 +922,15 @@ export default function RstaticCustomer() {
 
       {/* Model start */}
 
+      {/* single customer profile details */}
+      {modalStatus === "profile" && (
+        <CustomerDetails
+          show={show}
+          setShow={setShow}
+          customerId={singleCustomer}
+        />
+      )}
+
       {/* new customer added */}
       {modalStatus === "customerPost" && (
         <AddStaticCustomer show={show} setShow={setShow} />
@@ -806,7 +938,7 @@ export default function RstaticCustomer() {
 
       {/* customer bill collection */}
       {modalStatus === "billCollect" && (
-        <CustomerBillCollect
+        <RechargeCustomer
           show={show}
           setShow={setShow}
           single={singleCustomer}
@@ -815,10 +947,7 @@ export default function RstaticCustomer() {
       )}
 
       {/* single customer update */}
-      <CustomerEdit single={singleCustomer} />
-
-      {/* single customer profile details */}
-      <CustomerDetails single={singleCustomer} />
+      <StaticCustomerEdit single={singleCustomer} />
 
       {/* single customer message */}
       <SingleMessage single={singleCustomer} sendCustomer="staticCustomer" />

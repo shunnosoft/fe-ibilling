@@ -7,18 +7,19 @@ import { smsCount } from "../../../components/common/UtilityMethods";
 import apiLink from "../../../api/apiLink";
 import Loader from "../../../components/common/Loader";
 import { Send } from "react-bootstrap-icons";
+import useISPowner from "../../../hooks/useISPOwner";
 
 const CustomerMessage = ({ customerId, page }) => {
   const { t } = useTranslation();
-  //get role from redux
-  const currentUser = useSelector(
-    (state) => state.persistedReducer.auth?.currentUser
-  );
 
+  // get user & current user data form useISPOwner
+  const { currentUser, role } = useISPowner();
+
+  // current user
   let cureentAuth;
-  if (currentUser?.user?.role === "ispOwner") {
+  if (role === "ispOwner") {
     cureentAuth = currentUser?.ispOwner;
-  } else if (currentUser?.user?.role === "reseller") {
+  } else if (role === "reseller") {
     cureentAuth = currentUser?.reseller;
   }
 
@@ -85,6 +86,7 @@ const CustomerMessage = ({ customerId, page }) => {
   // handle submit
   const handleSubmit = async (event) => {
     event.preventDefault();
+
     if (messageLength) {
       // send data for api body
       const sendingData = {
@@ -104,13 +106,13 @@ const CustomerMessage = ({ customerId, page }) => {
 
       try {
         let owner;
-        if (currentUser?.user?.role === "ispOwner") {
+        if (role === "ispOwner") {
           owner = await apiLink.get(`/ispOwner/${cureentAuth?.id}`);
-        } else if (currentUser?.user?.role === "manager") {
+        } else if (role === "manager") {
           owner = await apiLink.get(
             `/ispOwner/${currentUser?.manager?.ispOwner}`
           );
-        } else if (currentUser?.user?.role === "reseller") {
+        } else if (role === "reseller") {
           owner = await apiLink.get(
             `/reseller/recharge/balance/${cureentAuth?.id}`
           );
@@ -126,17 +128,17 @@ const CustomerMessage = ({ customerId, page }) => {
             setIsloading(true);
 
             let res;
-            if (currentUser?.user?.role === "ispOwner") {
+            if (role === "ispOwner") {
               res = await apiLink.post(
                 `sms/bulk/${cureentAuth.id}`,
                 sendingData
               );
-            } else if (currentUser?.user?.role === "manager") {
+            } else if (role === "manager") {
               res = await apiLink.post(
                 `sms/bulk/${currentUser?.manager?.ispOwner}`,
                 sendingData
               );
-            } else if (currentUser?.user?.role === "reseller") {
+            } else if (role === "reseller") {
               res = await apiLink.post(
                 `sms/reseller/bulk/${cureentAuth.id}`,
                 sendingData
@@ -145,7 +147,6 @@ const CustomerMessage = ({ customerId, page }) => {
 
             setIsloading(false);
             if (res.data.status) {
-              document.querySelector("#customerMessageModal").click();
               toast.success(t("successAlertSMS"));
             } else {
               toast.error(t("sendingProblem"));
@@ -172,7 +173,9 @@ const CustomerMessage = ({ customerId, page }) => {
                 <span className="smsLength">
                   {t("letter")} {messageLength.length}
                 </span>
-                <span>SMS: {smsAmount}</span>
+                <span>
+                  {t("SMS")}: {smsAmount}
+                </span>
               </div>
 
               <div className="smsType">
@@ -221,6 +224,7 @@ const CustomerMessage = ({ customerId, page }) => {
               {errMsg}
             </div>
           </div>
+
           <div className="d-flex justify-content-end mt-5">
             <button type="submit" className="btn btn-outline-success">
               {isLoading ? (
