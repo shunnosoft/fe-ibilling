@@ -164,6 +164,13 @@ export const resellerPermissions = (permission, bpSettings) => {
       isChecked: permission?.dailyResellerCustomerAutoConnection,
       disabled: false,
     },
+    {
+      id: 24,
+      label: "Customer Recharge",
+      value: "customerRecharge",
+      isChecked: permission?.customerRecharge,
+      disabled: false,
+    },
   ];
 
   const permissionBn = [
@@ -330,6 +337,13 @@ export const resellerPermissions = (permission, bpSettings) => {
       label: "দৈনিক রিসেলার কাস্টমার অটো কানেকশন",
       value: "dailyResellerCustomerAutoConnection",
       isChecked: permission?.dailyResellerCustomerAutoConnection,
+      disabled: false,
+    },
+    {
+      id: 24,
+      label: "গ্রাহক রিচার্জ",
+      value: "customerRecharge",
+      isChecked: permission?.customerRecharge,
       disabled: false,
     },
   ];

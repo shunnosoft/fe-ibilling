@@ -66,7 +66,9 @@ const CustomerDetails = ({ show, setShow, customerId }) => {
 
   // profile option state
   const [profileOption, setProfileOption] = useState(
-    permissions?.customerEdit ? "profileEdit" : "recharge"
+    permission?.customerEdit || permissions?.customerEdit
+      ? "profileEdit"
+      : "recharge"
   );
 
   // modal handle state
@@ -278,8 +280,11 @@ const CustomerDetails = ({ show, setShow, customerId }) => {
                       {data?.monthlyFee > 0 && (
                         <>
                           {/* customer bill colleciton */}
-                          {(role === "reseller" ||
-                            permissions?.billPosting) && (
+                          {((role === "reseller" &&
+                            permission?.customerRecharge) ||
+                            (role === "collector" &&
+                              resellerData.permission?.customerRecharge &&
+                              permissions?.billPosting)) && (
                             <li
                               className="profileSetting"
                               onClick={() => setProfileOption("recharge")}

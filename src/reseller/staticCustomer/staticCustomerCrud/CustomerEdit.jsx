@@ -41,16 +41,19 @@ const StaticCustomerEdit = ({ customerId, setProfileOption }) => {
   lastTime.setMinutes("00");
 
   // get user & current user data form useISPOwner
-  const { role, ispOwnerId, bpSettings, resellerData, permission } =
-    useISPowner();
+  const {
+    role,
+    ispOwnerId,
+    bpSettings,
+    resellerData,
+    permission,
+    permissions,
+  } = useISPowner();
 
   // get User Type
   const userType = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings.queueType
   );
-
-  // get all mikrotik
-  const Getmikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
 
   //find reseller id form user data
   const resellerId = useSelector((state) =>
@@ -550,14 +553,19 @@ const StaticCustomerEdit = ({ customerId, setProfileOption }) => {
                         validation={true}
                         onChange={(e) => setMonthlyFee(e.target.value)}
                       />
-                      {customer?.monthlyFee > 0 && (
-                        <InputGroup.Text
-                          style={{ cursor: "pointer" }}
-                          onClick={() => setProfileOption("recharge")}
-                        >
-                          <Cash size={22} title={t("recharge")} />
-                        </InputGroup.Text>
-                      )}
+                      {customer?.monthlyFee > 0 &&
+                        ((role === "reseller" &&
+                          permission?.customerRecharge) ||
+                          (role === "collector" &&
+                            resellerData.permission?.customerRecharge &&
+                            permissions?.billPosting)) && (
+                          <InputGroup.Text
+                            style={{ cursor: "pointer" }}
+                            onClick={() => setProfileOption("recharge")}
+                          >
+                            <Cash size={22} title={t("recharge")} />
+                          </InputGroup.Text>
+                        )}
                     </InputGroup>
 
                     <ErrorMessage name="monthlyFee" component="div">

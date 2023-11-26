@@ -77,20 +77,19 @@ export default function Customer() {
   const componentRef = useRef(); //reference of pdf export component
 
   // get user & current user data form useISPOwner
-  const { ispOwnerId } = useISPowner();
+  const {
+    role,
+    ispOwnerId,
+    resellerData,
+    permission,
+    permissions,
+    currentUser,
+  } = useISPowner();
 
   // get ispOwner data from redux
   const ispOwnerData = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerData
   );
-
-  // user data get form redux
-  const userData = useSelector(
-    (state) => state.persistedReducer.auth?.currentUser
-  );
-
-  // get user role form redux
-  const role = useSelector((state) => state.persistedReducer.auth?.role);
 
   // get reseller & collector id
   const resellerId = useSelector((state) =>
@@ -99,21 +98,11 @@ export default function Customer() {
       : state.persistedReducer.auth?.userData?.reseller
   );
 
-  // get permission form redux
-  const permission = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.permission
-  );
-
   // customer get form redux
   const allCustomer = useSelector((state) => state?.customer?.customer);
 
   // get reseller subAreas form reseller data
   const subAreas = useSelector((state) => state?.area?.area);
-
-  // get collector permission in redux
-  const collectorPermission = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.permissions
-  );
 
   // get ispOwner mikrotik form redux
   const mikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
@@ -185,17 +174,17 @@ export default function Customer() {
     getSubAreas(dispatch, resellerId);
 
     if (role === "collector") {
-      getMikrotik(dispatch, userData.collector.reseller);
+      getMikrotik(dispatch, currentUser.collector.reseller);
       resellerInfo(resellerId, dispatch);
     }
 
     if (role === "reseller") {
       getMikrotik(dispatch, resellerId);
       if (allCustomer.length === 0)
-        getCustomer(dispatch, userData?.reseller.id, setIsLoading);
+        getCustomer(dispatch, currentUser?.reseller.id, setIsLoading);
     } else if (role === "collector") {
       if (allCustomer.length === 0)
-        getCustomer(dispatch, userData?.collector?.reseller, setIsLoading);
+        getCustomer(dispatch, currentUser?.collector?.reseller, setIsLoading);
     }
 
     // get ispOwner & staffs
@@ -203,19 +192,21 @@ export default function Customer() {
 
     // bulletin permission get api
     Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
-  }, [userData, role]);
+  }, [currentUser, role]);
 
   // set state api call data
   useEffect(() => {
     setCustomers(allCustomer);
+
+    Object.values(filterOptions) && cusInfoFilterHandler();
   }, [allCustomer]);
 
   // reload handler
   const reloadHandler = () => {
     if (role === "reseller") {
-      getCustomer(dispatch, userData?.reseller.id, setIsLoading);
+      getCustomer(dispatch, currentUser?.reseller.id, setIsLoading);
     } else if (role === "collector") {
-      getCustomer(dispatch, userData?.collector?.reseller, setIsLoading);
+      getCustomer(dispatch, currentUser?.collector?.reseller, setIsLoading);
     }
   };
 
@@ -672,7 +663,10 @@ export default function Customer() {
                     </div>
                   </div>
                 </li>
-                {(role === "reseller" || collectorPermission?.billPosting) && (
+                {((role === "reseller" && permission?.customerRecharge) ||
+                  (role === "collector" &&
+                    resellerData.permission?.customerRecharge &&
+                    permissions?.billPosting)) && (
                   <li
                     onClick={() => {
                       getSpecificCustomer(original.id);
@@ -689,8 +683,7 @@ export default function Customer() {
                     </div>
                   </li>
                 )}
-                {(permission?.customerEdit ||
-                  collectorPermission?.customerEdit) && (
+                {(permission?.customerEdit || permissions?.customerEdit) && (
                   <li
                     onClick={() => {
                       getSpecificCustomer(original.id);
@@ -739,7 +732,7 @@ export default function Customer() {
                   </li>
                 )}
                 {original.mobile &&
-                  (collectorPermission?.sendSMS || role !== "collector") && (
+                  (permissions?.sendSMS || role !== "collector") && (
                     <li
                       data-bs-toggle="modal"
                       data-bs-target="#customerMessageModal"
@@ -817,8 +810,7 @@ export default function Customer() {
                       )}
                     </div>
 
-                    {(permission?.customerAdd ||
-                      collectorPermission?.customerAdd) && (
+                    {(permission?.customerAdd || permissions?.customerAdd) && (
                       <div>
                         <PersonPlusFill
                           className="addcutmButton"
@@ -902,7 +894,7 @@ export default function Customer() {
                 </div>
               </FourGround>
 
-              {role === "reseller" || collectorPermission?.viewCustomerList ? (
+              {role === "reseller" || permissions?.viewCustomerList ? (
                 <FourGround>
                   <div className="mt-2">
                     <Accordion alwaysOpen activeKey={activeKeys}>

@@ -313,8 +313,11 @@ const CustomerDetails = ({ show, setShow, customerId }) => {
                       {data?.monthlyFee > 0 && (
                         <>
                           {/* customer bill colleciton */}
-                          {(role === "reseller" ||
-                            permissions?.billPosting) && (
+                          {((role === "reseller" &&
+                            permission?.customerRecharge) ||
+                            (role === "collector" &&
+                              resellerData.permission?.customerRecharge &&
+                              permissions?.billPosting)) && (
                             <li
                               className="profileSetting"
                               onClick={() => setProfileOption("recharge")}
@@ -334,7 +337,11 @@ const CustomerDetails = ({ show, setShow, customerId }) => {
                           )}
 
                           {/* customer bill collection report */}
-                          {role !== "collector" && (
+                          {((role === "reseller" &&
+                            permission?.customerRecharge) ||
+                            (role === "collector" &&
+                              resellerData.permission?.customerRecharge &&
+                              permissions?.billPosting)) && (
                             <li
                               className="profileSetting"
                               onClick={() => setProfileOption("report")}

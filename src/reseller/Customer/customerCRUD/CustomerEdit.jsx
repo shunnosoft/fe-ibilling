@@ -53,8 +53,14 @@ const CustomerEdit = ({ customerId, setProfileOption }) => {
   });
 
   // get user & current user data form useISPOwner
-  const { role, ispOwnerId, bpSettings, resellerData, permission } =
-    useISPowner();
+  const {
+    role,
+    ispOwnerId,
+    bpSettings,
+    resellerData,
+    permission,
+    permissions,
+  } = useISPowner();
 
   //get reseller all customer
   const customer = useSelector((state) => state?.customer?.customer);
@@ -392,14 +398,19 @@ const CustomerEdit = ({ customerId, setProfileOption }) => {
                         disabled={!permission?.monthlyFeeEdit}
                         validation={true}
                       />
-                      {data?.monthlyFee > 0 && (
-                        <InputGroup.Text
-                          style={{ cursor: "pointer" }}
-                          onClick={() => setProfileOption("recharge")}
-                        >
-                          <Cash size={22} title={t("recharge")} />
-                        </InputGroup.Text>
-                      )}
+                      {data?.monthlyFee > 0 &&
+                        ((role === "reseller" &&
+                          permission?.customerRecharge) ||
+                          (role === "collector" &&
+                            resellerData.permission?.customerRecharge &&
+                            permissions?.billPosting)) && (
+                          <InputGroup.Text
+                            style={{ cursor: "pointer" }}
+                            onClick={() => setProfileOption("recharge")}
+                          >
+                            <Cash size={22} title={t("recharge")} />
+                          </InputGroup.Text>
+                        )}
                     </InputGroup>
 
                     <ErrorMessage name="monthlyFee" component="div">

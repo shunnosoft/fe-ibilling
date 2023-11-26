@@ -69,6 +69,7 @@ export default function RstaticCustomer() {
     ispOwnerId,
     bpSettings,
     userData,
+    resellerData,
     permissions,
     permission,
     currentUser,
@@ -636,7 +637,10 @@ export default function RstaticCustomer() {
                   </li>
                 )}
 
-                {(role === "reseller" || role === "collector") && (
+                {((role === "reseller" && permission?.customerRecharge) ||
+                  (role === "collector" &&
+                    resellerData.permission?.customerRecharge &&
+                    permissions?.billPosting)) && (
                   <li
                     onClick={() => {
                       getSpecificCustomer(original.id);
