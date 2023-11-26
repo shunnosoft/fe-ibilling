@@ -33,7 +33,12 @@ const divisions = divisionsJSON.divisions;
 const districts = districtsJSON.districts;
 const thana = thanaJSON.thana;
 
-export default function EditStaticCustomer({ show, setShow, single }) {
+export default function EditStaticCustomer({
+  show,
+  setShow,
+  single,
+  handleActiveFilter,
+}) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
@@ -466,7 +471,9 @@ export default function EditStaticCustomer({ show, setShow, single }) {
       sendingData,
       setIsloading,
       "",
-      setShow
+      setShow,
+      "",
+      handleActiveFilter
     );
   };
   return (

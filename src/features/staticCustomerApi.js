@@ -59,7 +59,8 @@ export const updateStaticCustomerApi = async (
   setIsloading,
   resetForm,
   setShow,
-  status
+  status,
+  handleActiveFilter
 ) => {
   setIsloading(true);
   try {
@@ -88,6 +89,7 @@ export const updateStaticCustomerApi = async (
         "Customer Updated Successfully"
       );
     }
+    handleActiveFilter();
     setShow(false);
     resetForm();
   } catch (error) {

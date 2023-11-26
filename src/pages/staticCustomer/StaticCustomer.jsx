@@ -173,30 +173,27 @@ export default function Customer() {
   // set customer name state
   const [customerName, setCustomerName] = useState("");
 
-  const [filterOptions, setFilterOption] = useState({
-    status: "",
-    paymentStatus: "",
-    area: "",
-    subArea: "",
-    poleBox: "",
-    package: "",
-    mikrotik: "",
-    freeUser: "",
-    startDate: "",
-    endDate: "",
-    dayFilter: "",
-    changedPromiseDate: "",
-    connection: "",
-  });
-
-  const [Customers, setCustomers] = useState(cus);
-
   // get specific customer
   const [singleCustomer, setSingleCustomer] = useState("");
   const [singleData, setSingleData] = useState();
   const [customerData, setCustomerData] = useState({});
 
   const [allArea, setAreas] = useState([]);
+
+  const [subAreaIds, setSubArea] = useState([]);
+  const [singleArea, setArea] = useState({});
+  const [subAreas, setSubAreas] = useState([]);
+
+  // get specific customer Report
+  const [customerReportData, setId] = useState([]);
+
+  // check mikrotik checkbox
+  const [mikrotikCheck, setMikrotikCheck] = useState(false);
+
+  //bulk menu show and hide
+  const [isMenuOpen, setMenuOpen] = useState(false);
+
+  const [open, setOpen] = useState(false);
 
   // optional modal state
   const [modalStatus, setModalStatus] = useState("");
@@ -214,6 +211,106 @@ export default function Customer() {
   // bulk modal handle state
   const [bulkStatus, setBulkStatus] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+
+  const [filterOptions, setFilterOption] = useState({
+    status: "",
+    paymentStatus: "",
+    area: "",
+    subArea: "",
+    poleBox: "",
+    package: "",
+    mikrotik: "",
+    freeUser: "",
+    startDate: "",
+    endDate: "",
+    dayFilter: "",
+    changedPromiseDate: "",
+    connection: "",
+  });
+
+  useEffect(() => {
+    // ispOwner queue customers get api
+    if (cus.length === 0)
+      getStaticCustomer(dispatch, ispOwnerId, setCustomerLoading);
+
+    //ispOwner queue all package get api
+    if (bpSettings.hasMikrotik && packages.length === 0)
+      getQueuePackageByIspOwnerId(ispOwnerId, dispatch, setIsloading);
+
+    // with out mikrotik queue packages get api
+    if (
+      !bpSettings?.hasMikrotik &&
+      (role === "manager" || role === "ispOwner")
+    ) {
+      packages.length === 0 &&
+        getPackagewithoutmikrotik(ispOwnerId, dispatch, setIsloading);
+    }
+
+    // ispOwner pppoe all package get api
+    if (allPackages.length === 0)
+      getAllPackages(dispatch, ispOwnerId, setIsloading);
+
+    //ispOwner mikrotiks get api call
+    if (mikrotiks.length === 0)
+      fetchMikrotik(dispatch, ispOwnerId, setIsloading);
+
+    //get ispOwner areas
+    if (allArea.length === 0) getArea(dispatch, ispOwnerId, setIsloading);
+
+    // get sub area api
+    getSubAreasApi(dispatch, ispOwnerId);
+
+    // get subareas pole boxs
+    if (poleBox.length === 0)
+      getPoleBoxApi(dispatch, ispOwnerId, setIsLoadingPole);
+
+    //get ispOwner staffs
+    if (role !== "collector") {
+      if (collectors.length === 0)
+        getCollector(dispatch, ispOwnerId, setIsloading);
+
+      role === "ispOwner" && getManger(dispatch, ispOwnerId);
+    }
+
+    // get ispOwner all staffs
+    getOwnerUsers(dispatch, ispOwnerId);
+
+    // netFee bulletin get api call
+    Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
+  }, []);
+
+  useEffect(() => {
+    let temp = [];
+
+    if (cus) {
+      cus.map((customer) => {
+        let areaFound = false;
+        allareas?.map((area) => {
+          area.subAreas.map((sub) => {
+            if (customer.subArea === sub) {
+              areaFound = true;
+              temp.push({
+                ...customer,
+                area: area.id,
+                profile: customer.pppoe.profile,
+              });
+            }
+          });
+        });
+
+        if (!areaFound) {
+          temp.push({
+            ...customer,
+            area: "noArea",
+            profile: customer.pppoe?.profile,
+          });
+        }
+      });
+    }
+
+    setCustomers1(temp);
+    setCustomers2(temp);
+  }, [cus]);
 
   useEffect(() => {
     if (role === "collector") {
@@ -249,20 +346,10 @@ export default function Customer() {
   const getSpecificCustomer = (id) => {
     setSingleCustomer(id);
   };
-  // get specific customer Report
-  const [customerReportData, setId] = useState([]);
 
   const getSpecificCustomerReport = (reportData) => {
     setId(reportData);
   };
-
-  // check mikrotik checkbox
-  const [mikrotikCheck, setMikrotikCheck] = useState(false);
-
-  //bulk menu show and hide
-  const [isMenuOpen, setMenuOpen] = useState(false);
-
-  const [open, setOpen] = useState(false);
 
   // cutomer delete
   const customerDelete = (customerId) => {
@@ -270,86 +357,6 @@ export default function Customer() {
     // const singleData = cus?.find((item) => item.id === customerId);
     setSingleData(customerId);
   };
-
-  let customerForCsV = Customers1.map((customer) => {
-    return {
-      companyName: ispOwnerData.company,
-      home: "Home",
-      companyAddress: ispOwnerData.address,
-      name: customer.name,
-      customerAddress: customer.address,
-      connectionType: "Wired",
-      connectivity: "Dedicated",
-      createdAt: moment(customer.createdAt).format("YYYY/MM/DD"),
-      package: customer?.pppoe?.profile,
-      ip: "",
-      road: ispOwnerData.address,
-      address: ispOwnerData.address,
-      area: ispOwnerData?.fullAddress?.area || "",
-      district: ispOwnerData?.fullAddress?.district || "",
-      thana: ispOwnerData?.fullAddress?.thana || "",
-      mobile: customer?.mobile.slice(1) || "",
-      email: customer.email || "",
-      monthlyFee: customer.monthlyFee,
-    };
-  });
-
-  const headers = [
-    { label: "name_operator", key: "companyName" },
-    { label: "type_of_client", key: "home" },
-    { label: "distribution Location point", key: "companyAddress" },
-    { label: "name_of_client", key: "name" },
-    { label: "address_of_client", key: "customerAddress" },
-    { label: "type_of_connection", key: "connectionType" },
-    { label: "type_of_connectivity", key: "connectivity" },
-    { label: "activation_date", key: "createdAt" },
-    { label: "bandwidth_allocation MB", key: "package" },
-    { label: "allowcated_ip", key: "ip" },
-    { label: "house_no", key: "address" },
-    { label: "road_no", key: "road" },
-    { label: "area", key: "area" },
-    { label: "district", key: "district" },
-    { label: "thana", key: "thana" },
-    { label: "client_phone", key: "mobile" },
-    { label: "mail", key: "email" },
-    { label: "selling_bandwidthBDT (Excluding VAT).", key: "monthlyFee" },
-  ];
-
-  //export customer data
-  let customerForCsVTableInfo = Customers1.map((customer) => {
-    return {
-      name: customer.name,
-      ip:
-        customer.userType === "firewall-queue"
-          ? customer.queue.address
-          : customer.queue.target,
-      customerAddress: customer.address,
-      createdAt: moment(customer.createdAt).format("YYYY/MM/DD"),
-      package: customer?.pppoe?.profile,
-      mobile: customer?.mobile || "",
-      status: customer.status,
-      paymentStatus: customer.paymentStatus,
-      email: customer.email || "",
-      monthlyFee: customer.monthlyFee,
-      balance: customer.balance,
-      billingCycle: moment(customer.billingCycle).format("YYYY/MM/DD"),
-    };
-  });
-
-  const customerForCsVTableInfoHeader = [
-    { label: "name_of_client", key: "name" },
-    { label: "address_of_client", key: "customerAddress" },
-    { label: "activation_date", key: "createdAt" },
-    { label: "customer_ip", key: "ip" },
-    { label: "bandwidth_allocation MB", key: "package" },
-    { label: "client_phone", key: "mobile" },
-    { label: "status", key: "status" },
-    { label: "payment Status", key: "paymentStatus" },
-    { label: "email", key: "email" },
-    { label: "monthly_fee", key: "monthlyFee" },
-    { label: "balance", key: "balance" },
-    { label: "billing_cycle", key: "billingCycle" },
-  ];
 
   //mac-binding handler
   const macBindingCall = (customerId) => {
@@ -367,30 +374,6 @@ export default function Customer() {
 
     getStaticCustomer(dispatch, ispOwnerId, setCustomerLoading);
   };
-
-  useEffect(() => {
-    if (
-      !bpSettings?.hasMikrotik &&
-      (role === "manager" || role === "ispOwner")
-    ) {
-      getPackagewithoutmikrotik(ispOwnerId, dispatch, setIsloading);
-    }
-
-    // ispOwner pppoe all package get api
-    if (allPackages.length === 0)
-      getAllPackages(dispatch, ispOwnerId, setIsloading);
-
-    //ispOwner queue all package get api
-    if (bpSettings.hasMikrotik && packages.length === 0)
-      getQueuePackageByIspOwnerId(ispOwnerId, dispatch, setIsloading);
-
-    if (cus.length === 0)
-      getStaticCustomer(dispatch, ispOwnerId, setCustomerLoading);
-  }, [dispatch, ispOwnerId, role, bpSettings]);
-
-  const [subAreaIds, setSubArea] = useState([]);
-  const [singleArea, setArea] = useState({});
-  const [subAreas, setSubAreas] = useState([]);
 
   const onChangeArea = (param) => {
     let area = JSON.parse(param);
@@ -411,69 +394,6 @@ export default function Customer() {
       setSubArea(subAreaIds);
     }
   };
-
-  useEffect(() => {
-    const temp = [];
-    cus.map((customer) => {
-      let areaFound = false;
-      allareas.map((area) => {
-        area.subAreas.map((sub) => {
-          if (customer.subArea === sub) {
-            areaFound = true;
-            // if (!temp.find((item) => item.id === customer.id)) {
-            temp.push({
-              ...customer,
-              area: area.id,
-              profile: customer.pppoe.profile,
-            });
-            // }
-          }
-        });
-      });
-
-      if (!areaFound) {
-        temp.push({
-          ...customer,
-          area: "noArea",
-          profile: customer.pppoe?.profile,
-        });
-      }
-    });
-
-    setCustomers(temp);
-    setCustomers1(temp);
-    setCustomers2(temp);
-  }, [allareas, cus]);
-
-  useEffect(() => {
-    if (subAreaIds.length) {
-      setCustomers(cus.filter((c) => subAreaIds.includes(c.subArea)));
-    } else {
-      setCustomers(cus);
-    }
-  }, [cus, subAreaIds]);
-
-  useEffect(() => {
-    if (mikrotiks.length === 0)
-      fetchMikrotik(dispatch, ispOwnerId, setIsloading);
-    if (allArea.length === 0) getArea(dispatch, ispOwnerId, setIsloading);
-    // get sub area api
-    getSubAreasApi(dispatch, ispOwnerId);
-    if (poleBox.length === 0)
-      getPoleBoxApi(dispatch, ispOwnerId, setIsLoadingPole);
-
-    if (role !== "collector") {
-      if (collectors.length === 0)
-        getCollector(dispatch, ispOwnerId, setIsloading);
-
-      role === "ispOwner" && getManger(dispatch, ispOwnerId);
-    }
-
-    // get ispOwner all staffs
-    getOwnerUsers(dispatch, ispOwnerId);
-
-    Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
-  }, []);
 
   const handleActiveFilter = () => {
     let tempCustomers = Customers2.reduce((acc, c) => {
@@ -644,6 +564,7 @@ export default function Customer() {
     });
     setCustomers1(cus);
   };
+
   const onChangeSubArea = (id) => {
     const subAreaPoleBox = poleBox?.filter((val) => val.subArea === id);
     setCurrentPoleBox(subAreaPoleBox);
@@ -679,6 +600,7 @@ export default function Customer() {
     status: customerStatus ? customerStatus : t("allCustomer"),
     payment: customerPaymentStatus ? customerPaymentStatus : t("allCustomer"),
   };
+
   const mikrotikHandler = async (id) => {
     setFilterOption({
       ...filterOptions,
@@ -734,6 +656,86 @@ export default function Customer() {
       );
     }
   };
+
+  let customerForCsV = Customers1.map((customer) => {
+    return {
+      companyName: ispOwnerData.company,
+      home: "Home",
+      companyAddress: ispOwnerData.address,
+      name: customer.name,
+      customerAddress: customer.address,
+      connectionType: "Wired",
+      connectivity: "Dedicated",
+      createdAt: moment(customer.createdAt).format("YYYY/MM/DD"),
+      package: customer?.pppoe?.profile,
+      ip: "",
+      road: ispOwnerData.address,
+      address: ispOwnerData.address,
+      area: ispOwnerData?.fullAddress?.area || "",
+      district: ispOwnerData?.fullAddress?.district || "",
+      thana: ispOwnerData?.fullAddress?.thana || "",
+      mobile: customer?.mobile.slice(1) || "",
+      email: customer.email || "",
+      monthlyFee: customer.monthlyFee,
+    };
+  });
+
+  const headers = [
+    { label: "name_operator", key: "companyName" },
+    { label: "type_of_client", key: "home" },
+    { label: "distribution Location point", key: "companyAddress" },
+    { label: "name_of_client", key: "name" },
+    { label: "address_of_client", key: "customerAddress" },
+    { label: "type_of_connection", key: "connectionType" },
+    { label: "type_of_connectivity", key: "connectivity" },
+    { label: "activation_date", key: "createdAt" },
+    { label: "bandwidth_allocation MB", key: "package" },
+    { label: "allowcated_ip", key: "ip" },
+    { label: "house_no", key: "address" },
+    { label: "road_no", key: "road" },
+    { label: "area", key: "area" },
+    { label: "district", key: "district" },
+    { label: "thana", key: "thana" },
+    { label: "client_phone", key: "mobile" },
+    { label: "mail", key: "email" },
+    { label: "selling_bandwidthBDT (Excluding VAT).", key: "monthlyFee" },
+  ];
+
+  //export customer data
+  let customerForCsVTableInfo = Customers1.map((customer) => {
+    return {
+      name: customer.name,
+      ip:
+        customer.userType === "firewall-queue"
+          ? customer.queue.address
+          : customer.queue.target,
+      customerAddress: customer.address,
+      createdAt: moment(customer.createdAt).format("YYYY/MM/DD"),
+      package: customer?.pppoe?.profile,
+      mobile: customer?.mobile || "",
+      status: customer.status,
+      paymentStatus: customer.paymentStatus,
+      email: customer.email || "",
+      monthlyFee: customer.monthlyFee,
+      balance: customer.balance,
+      billingCycle: moment(customer.billingCycle).format("YYYY/MM/DD"),
+    };
+  });
+
+  const customerForCsVTableInfoHeader = [
+    { label: "name_of_client", key: "name" },
+    { label: "address_of_client", key: "customerAddress" },
+    { label: "activation_date", key: "createdAt" },
+    { label: "customer_ip", key: "ip" },
+    { label: "bandwidth_allocation MB", key: "package" },
+    { label: "client_phone", key: "mobile" },
+    { label: "status", key: "status" },
+    { label: "payment Status", key: "paymentStatus" },
+    { label: "email", key: "email" },
+    { label: "monthly_fee", key: "monthlyFee" },
+    { label: "balance", key: "balance" },
+    { label: "billing_cycle", key: "billingCycle" },
+  ];
 
   const columns = React.useMemo(
     () => [
@@ -1352,6 +1354,7 @@ export default function Customer() {
                               >
                                 {t("allArea")}
                               </option>
+
                               {Customers2.some((c) => c.area === "noArea") && (
                                 <option
                                   value={JSON.stringify({
@@ -1364,6 +1367,7 @@ export default function Customer() {
                                   {t("customerWithoutArea")}
                                 </option>
                               )}
+
                               {(role === "collector" ? allArea : allareas)?.map(
                                 (area, key) => {
                                   return (
@@ -1760,6 +1764,7 @@ export default function Customer() {
                   show={show}
                   setShow={setShow}
                   single={singleCustomer}
+                  handleActiveFilter={handleActiveFilter}
                 />
               )}
 

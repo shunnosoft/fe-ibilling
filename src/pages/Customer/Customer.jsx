@@ -292,6 +292,8 @@ const PPPOECustomer = () => {
   // set all customer in state
   useEffect(() => {
     setPPPoeCustomers(customers);
+
+    Object.values(filterOptions) && handleActiveFilter();
   }, [customers]);
 
   //collector area state update
