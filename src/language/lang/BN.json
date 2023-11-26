@@ -904,5 +904,6 @@
   "download": "ডাউনলোড",
   "copyLink": "কপি লিংক",
   "hotspotCustomerUrl": "হটস্পট গ্রাহক URL",
-  "connectionFeeDue": "সংযোগ ফি বকেয়া"
+  "connectionFeeDue": "সংযোগ ফি বকেয়া",
+  "connDate": "সংযোগ.ডেট"
 }

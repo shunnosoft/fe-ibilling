@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Form, Formik } from "formik";
 import { useSelector } from "react-redux";
 import * as Yup from "yup";
@@ -16,10 +16,14 @@ import "../../Customer/customer.css";
 import { FtextField } from "../../../components/common/FtextField";
 import { billCollect } from "../../../features/apiCalls";
 import Loader from "../../../components/common/Loader";
+import RechargePrintInvoice from "./bulkOpration/RechargePrintInvoice";
+import ReactToPrint from "react-to-print";
+import useISPowner from "../../../hooks/useISPOwner";
 
 const CustomerBillCollect = ({ single, status }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const rechargePrint = useRef();
 
   // current month date
   const date = new Date();
@@ -41,28 +45,14 @@ const CustomerBillCollect = ({ single, status }) => {
     { value: "December", label: t("december") },
   ];
 
+  // get user & current user data form useISPOwner
+  const { role, ispOwnerId, bpSettings, permission } = useISPowner();
+
   // get all customer
   const customer = useSelector((state) =>
     status === "pppoe"
       ? state?.customer?.customer
       : state?.customer?.staticCustomer
-  );
-
-  // get all role
-  const role = useSelector((state) => state.persistedReducer.auth.role);
-
-  // get user permission
-  const permission = useSelector(
-    (state) => state.persistedReducer.auth.userData.permissions
-  );
-
-  // get bpSettings
-  const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
-  );
-  // get ispOwner info
-  const ispOwner = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerId
   );
 
   // get userData
@@ -105,6 +95,10 @@ const CustomerBillCollect = ({ single, status }) => {
   //calculation total bill due & amount
   const [balanceDue, setBalanceDue] = useState();
   const [amount, setAmount] = useState(null);
+
+  //response data after API call after payment
+  const [responseData, setResponseData] = useState();
+  const [test, setTest] = useState(false);
 
   // calculation
   const totalAmount = Number(billAmount) + Number(balanceDue);
@@ -238,6 +232,21 @@ const CustomerBillCollect = ({ single, status }) => {
     setSelectedMonth(temp);
   }, [data]);
 
+  //print button is clicked after successful response
+  useEffect(() => {
+    if (test) {
+      if (
+        (role === "ispOwner" && bpSettings?.instantRechargeBillPrint) ||
+        ((role === "manager" || role === "collector") &&
+          permission?.instantRechargeBillPrint &&
+          bpSettings?.instantRechargeBillPrint)
+      ) {
+        document.getElementById("printButton").click();
+        setTest(!test);
+      }
+    }
+  }, [test]);
+
   const handleFormValue = (event) => {
     if (event.target.name === "amount") {
       setBillAmount(event.target.value);
@@ -270,7 +279,7 @@ const CustomerBillCollect = ({ single, status }) => {
       collectedBy: currentUser?.user.role,
       billType: billType,
       customer: data?.id,
-      ispOwner: ispOwner,
+      ispOwner: ispOwnerId,
       user: currentUser?.user.id,
       collectorId: currentUserId, //when collector is logged in
       userType: data?.userType,
@@ -299,7 +308,15 @@ const CustomerBillCollect = ({ single, status }) => {
       sendingData.month = "Connection Fee";
     }
 
-    billCollect(dispatch, sendingData, setLoading, resetForm, "", "", "");
+    billCollect(
+      dispatch,
+      sendingData,
+      setLoading,
+      resetForm,
+      setResponseData,
+      setTest,
+      ""
+    );
 
     setAmount(data.amount);
   };
@@ -485,6 +502,41 @@ const CustomerBillCollect = ({ single, status }) => {
                   </>
                 )}
               </div>
+
+              {/* Invoice Printer Page Component with button and they are hidden*/}
+              <>
+                {((role === "ispOwner" &&
+                  bpSettings?.instantRechargeBillPrint) ||
+                  ((role === "manager" || role === "collector") &&
+                    permission?.instantRechargeBillPrint &&
+                    bpSettings?.instantRechargeBillPrint)) && (
+                  <div className="d-none">
+                    <RechargePrintInvoice
+                      ref={rechargePrint}
+                      customerData={data}
+                      billingData={responseData}
+                      ispOwnerData={userData}
+                    />
+                  </div>
+                )}
+
+                <div className="d-none">
+                  <ReactToPrint
+                    documentTitle={t("billInvoice")}
+                    trigger={() => (
+                      <div
+                        title={t("printInvoiceBill")}
+                        style={{ cursor: "pointer" }}
+                      >
+                        <button type="button" id="printButton">
+                          Print
+                        </button>
+                      </div>
+                    )}
+                    content={() => rechargePrint.current}
+                  />
+                </div>
+              </>
 
               <div className="d-flex justify-content-end mt-5">
                 <button type="submit" className="btn btn-outline-success">

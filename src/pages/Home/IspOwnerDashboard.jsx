@@ -379,7 +379,7 @@ export default function IspOwnerDashboard() {
                     <h2>
                       {t("possibleCollection")}
                       <br /> ৳ &nbsp;
-                      {FormatNumber(probabilityAmountCalculation())}{" "}
+                      {FormatNumber(probabilityAmountCalculation())}
                     </h2>
                   </div>
                   <div className="col-md-6">
@@ -592,7 +592,7 @@ export default function IspOwnerDashboard() {
                         setShow(true);
                       }}
                     >
-                      {t("in active")}: {FormatNumber(customerStat.inactive)}{" "}
+                      {t("in active")}: {FormatNumber(customerStat.inactive)}
                       &nbsp;
                       {role === "ispOwner" && (
                         <span className="text-info">
@@ -608,7 +608,7 @@ export default function IspOwnerDashboard() {
                         setShow(true);
                       }}
                     >
-                      {t("expired")}: {FormatNumber(customerStat.expired)}{" "}
+                      {t("expired")}: {FormatNumber(customerStat.expired)}
                       &nbsp;
                       {role === "ispOwner" && (
                         <span className="text-info">
@@ -709,7 +709,7 @@ export default function IspOwnerDashboard() {
                             </p>
 
                             <p className="fs-6">
-                              {t("today collection")}{" "}
+                              {t("today collection")}
                               {FormatNumber(customerStat.todayBillCollection)}
                             </p>
                           </>
@@ -827,7 +827,7 @@ export default function IspOwnerDashboard() {
                             {t("totalCollection")}
                           </p>
                           <h2>
-                            ৳{" "}
+                            ৳
                             {FormatNumber(
                               customerStat?.ispOwner?.billCollection -
                                 customerStat?.ispOwner?.monthlyDiscount
@@ -835,7 +835,7 @@ export default function IspOwnerDashboard() {
                           </h2>
 
                           <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                            {t("today")}:{" "}
+                            {t("today")}:
                             {FormatNumber(
                               customerStat?.ispOwner?.billCollectionToday
                             )}
@@ -852,7 +852,7 @@ export default function IspOwnerDashboard() {
                             {t("connectionFee")}
                           </p>
                           <h2>
-                            ৳{" "}
+                            ৳
                             {FormatNumber(
                               customerStat?.ispOwner?.monthlyConnectionFee
                             )}
@@ -867,8 +867,7 @@ export default function IspOwnerDashboard() {
                         <div className="chartSection">
                           <p style={{ fontSize: "16px" }}>{t("ownCost")}</p>
                           <h2>
-                            ৳{" "}
-                            {FormatNumber(customerStat?.ispOwner?.expenditure)}
+                            ৳{FormatNumber(customerStat?.ispOwner?.expenditure)}
                           </h2>
                         </div>
                       </div>
@@ -886,7 +885,7 @@ export default function IspOwnerDashboard() {
                           </h2>
 
                           <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                            {t("todayTotalExpenditure")}:{" "}
+                            {t("todayTotalExpenditure")}:
                             {FormatNumber(customerStat?.todayExpenditure)}
                           </p>
                         </div>
@@ -938,11 +937,11 @@ export default function IspOwnerDashboard() {
                           <p style={{ fontSize: "16px" }}>{t("nonMasking")}</p>
                           <h2> {FormatNumber(ispOwnerData.smsBalance)}</h2>
                           <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                            {t("masking")}:{" "}
+                            {t("masking")}:
                             {FormatNumber(ispOwnerData.maskingSmsBalance)}
                           </p>
                           <p style={{ fontSize: "15px" }}>
-                            {t("fixedNumber")}:{" "}
+                            {t("fixedNumber")}:
                             {FormatNumber(ispOwnerData.fixedNumberSmsBalance)}
                           </p>
                         </div>
@@ -974,7 +973,7 @@ export default function IspOwnerDashboard() {
                             )}
                           </h2>
                           <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                            {t("todayTotalCollectionByManager")}:{" "}
+                            {t("todayTotalCollectionByManager")}:
                             {FormatNumber(
                               customerStat?.manager?.todayBillCollection
                             )}
@@ -991,7 +990,7 @@ export default function IspOwnerDashboard() {
                             {t("connectionFee")}
                           </p>
                           <h2>
-                            ৳{" "}
+                            ৳
                             {FormatNumber(customerStat?.manager?.connectionFee)}
                           </h2>
                         </div>
@@ -1006,7 +1005,7 @@ export default function IspOwnerDashboard() {
                             {t("depositCollection")}
                           </p>
                           <h2>
-                            ৳{" "}
+                            ৳
                             {FormatNumber(
                               customerStat?.manager?.collectionDeposit
                             )}
@@ -1023,14 +1022,21 @@ export default function IspOwnerDashboard() {
                             {t("totalMonthlyCollection")}
                           </p>
                           <h2>
-                            ৳{" "}
+                            ৳
                             {FormatNumber(
                               customerStat?.manager?.totalBillCollection
                             )}
                           </h2>
 
                           <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                            {t("todayTotalCollectionByManager")}:{" "}
+                            {t("discount")}: ৳
+                            {FormatNumber(
+                              customerStat?.manager?.totalBillDiscount
+                            )}
+                          </p>
+
+                          <p style={{ fontSize: "15px", paddingTop: "10px" }}>
+                            {t("todayTotalCollectionByManager")}:
                             {FormatNumber(
                               customerStat?.manager?.totalBillCollectionToday
                             )}
@@ -1053,7 +1059,7 @@ export default function IspOwnerDashboard() {
                           </h2>
 
                           <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                            {t("todayTotalManagerDeposite")}:{" "}
+                            {t("todayTotalManagerDeposite")}:
                             {FormatNumber(customerStat?.manager?.todayDeposit)}
                           </p>
                         </div>
@@ -1092,7 +1098,6 @@ export default function IspOwnerDashboard() {
                             {t("managersBalance")}
                           </p>
                           <h2>
-                            {" "}
                             ৳ {FormatNumber(customerStat?.manager?.balance)}
                           </h2>
                         </div>
@@ -1126,21 +1131,20 @@ export default function IspOwnerDashboard() {
                                 {t("allCollector")}
                               </p>
                               <h2>
-                                {" "}
                                 {FormatNumber(
                                   customerStat?.collector?.collectors
                                 )}
                               </h2>
 
                               <p style={{ fontSize: "15px" }}>
-                                {t("totalCollection")}:{" "}
+                                {t("totalCollection")}:
                                 {FormatNumber(
                                   customerStat?.collector?.billCollection
                                 )}
                               </p>
 
                               <p style={{ fontSize: "15px" }}>
-                                {t("todayTotalCollectionByCollector")}:{" "}
+                                {t("todayTotalCollectionByCollector")}:
                                 {FormatNumber(
                                   customerStat?.collector?.todayBillCollection
                                 )}
@@ -1157,7 +1161,7 @@ export default function IspOwnerDashboard() {
                                 {t("connectionFee")}
                               </p>
                               <h2>
-                                ৳{" "}
+                                ৳
                                 {FormatNumber(
                                   customerStat?.collector?.connectionFee
                                 )}
@@ -1176,7 +1180,7 @@ export default function IspOwnerDashboard() {
                                 {t("totalManagerDeposite")}
                               </p>
                               <h2>
-                                ৳{" "}
+                                ৳
                                 {FormatNumber(customerStat?.collector?.deposit)}
                               </h2>
                             </div>
@@ -1191,7 +1195,7 @@ export default function IspOwnerDashboard() {
                                 {t("managersBalance")}
                               </p>
                               <h2>
-                                ৳{" "}
+                                ৳
                                 {FormatNumber(customerStat?.collector?.balance)}
                               </h2>
                             </div>
@@ -1226,7 +1230,6 @@ export default function IspOwnerDashboard() {
                                   {t("reseller")}
                                 </p>
                                 <h2>
-                                  {" "}
                                   {FormatNumber(
                                     customerStat?.reseller?.resellers
                                   )}
@@ -1238,7 +1241,7 @@ export default function IspOwnerDashboard() {
                                     paddingTop: "10px",
                                   }}
                                 >
-                                  {t("totalMonthlyBillCollect")}:{" "}
+                                  {t("totalMonthlyBillCollect")}:
                                   {FormatNumber(
                                     customerStat?.reseller?.billCollection
                                   )}

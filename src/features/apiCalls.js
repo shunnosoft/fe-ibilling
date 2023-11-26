@@ -2236,6 +2236,7 @@ export const billCollect = async (
   setLoading(true);
   try {
     const res = await apiLink.post("/bill/monthlyBill", billData);
+
     if (billData.userType === "pppoe") {
       dispatch(updateBalance(res.data));
       setResponseData(res.data);
@@ -2251,6 +2252,7 @@ export const billCollect = async (
       `${res.data.billType} বিল গ্রহণ সফল হয়েছে।`,
       `${res.data.billType} Acceptance is Successful.`
     );
+
     setShow(false);
     resetForm();
   } catch (error) {

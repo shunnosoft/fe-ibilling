@@ -473,14 +473,14 @@ const HotspotCustomerEdit = ({ customerId, setProfileOption }) => {
                       <InputGroup.Text style={{ cursor: "pointer" }}>
                         <div>
                           {passType === "password" ? (
-                            <EyeSlash
-                              size={22}
-                              onClick={(e) => setPassType("text")}
-                            />
-                          ) : (
                             <Eye
                               size={22}
                               onClick={(e) => setPassType("password")}
+                            />
+                          ) : (
+                            <EyeSlash
+                              size={22}
+                              onClick={(e) => setPassType("text")}
                             />
                           )}
                         </div>

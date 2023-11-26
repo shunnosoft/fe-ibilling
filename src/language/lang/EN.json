@@ -898,5 +898,6 @@
   "download": "Download",
   "copyLink": "Copy Link",
   "hotspotCustomerUrl": "Hotspot Customer URL",
-  "connectionFeeDue": "Connection Fee Due"
+  "connectionFeeDue": "Connection Fee Due",
+  "connDate": "Conn.Date"
 }

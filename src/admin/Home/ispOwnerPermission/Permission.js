@@ -117,7 +117,7 @@ export const ispOwnerPermission = (perm) => {
     {
       id: 20,
       value: "inActiveCustomerDelete",
-      label: "In-Active Customer Delete",
+      label: "In-Active/Offlie Customer Delete",
       isChecked: perm?.inActiveCustomerDelete,
     },
     {

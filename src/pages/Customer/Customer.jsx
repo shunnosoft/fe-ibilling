@@ -612,18 +612,26 @@ const PPPOECustomer = () => {
         width: "6%",
         Header: t("id"),
         accessor: "customerId",
-        Cell: ({ row: { original } }) => (
-          <div
-            onClick={(e) => autoDisableHandle(original, e)}
-            style={{ cursor: "pointer" }}
-          >
-            {original?.autoDisable ? (
-              <p className="text-success">{original?.customerId}</p>
-            ) : (
-              <p className="text-danger">{original?.customerId}</p>
-            )}
-          </div>
-        ),
+        Cell: ({ row: { original } }) => {
+          return (
+            <>
+              {bpSettings.hasMikrotik && (
+                <div
+                  onClick={(e) => autoDisableHandle(original, e)}
+                  style={{ cursor: "pointer" }}
+                >
+                  {original?.autoDisable ? (
+                    <p className="text-success">{original?.customerId}</p>
+                  ) : (
+                    <p className="text-danger">{original?.customerId}</p>
+                  )}
+                </div>
+              )}
+
+              {!bpSettings.hasMikrotik && <p>{original?.customerId}</p>}
+            </>
+          );
+        },
       },
       {
         width: "13%",

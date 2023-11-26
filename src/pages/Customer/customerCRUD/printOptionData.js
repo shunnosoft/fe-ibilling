@@ -40,6 +40,12 @@ export const printOptionData = {
       label: "createDate",
       checked: false,
     },
+    {
+      id: 1018,
+      value: "connDate",
+      label: "connDate",
+      checked: false,
+    },
   ],
 
   report: [

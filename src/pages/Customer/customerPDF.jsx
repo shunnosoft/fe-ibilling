@@ -224,6 +224,13 @@ const PrintCustomer = forwardRef((props, ref) => {
                             )}
                           </td>
                         )}
+                        {printOptions[8].checked && (
+                          <td className="prin_td">
+                            {moment(val?.createdAt).format(
+                              "DD-MM-YYYY hh:mm A"
+                            )}
+                          </td>
+                        )}
                       </tr>
                     )
                 )}

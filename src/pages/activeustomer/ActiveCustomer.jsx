@@ -144,6 +144,7 @@ export default function ConfigMikrotik() {
   const [subareaIds, setSubareaIds] = useState([]);
 
   // modal show state
+  const [modalStatus, setModalStatus] = useState("");
   const [show, setShow] = useState(false);
 
   // find single mikrotik details
@@ -767,15 +768,17 @@ export default function ConfigMikrotik() {
         <>
           <div className="bulkActionButton">
             {bpSettings?.inActiveCustomerDelete &&
-              status &&
+              status !== "online" &&
               (role === "ispOwner" || role === "manager") && (
                 <button
                   className="bulk_action_button"
                   title={t("bulkDeleteCustomer")}
-                  data-bs-toggle="modal"
-                  data-bs-target="#bulkDeleteCustomer"
                   type="button"
                   class="btn btn-danger btn-floating btn-sm"
+                  onClick={() => {
+                    setModalStatus("customerDelete");
+                    setShow(true);
+                  }}
                 >
                   <ArchiveFill />
                   <span className="button_title"> {t("customerDelete")} </span>
@@ -789,6 +792,7 @@ export default function ConfigMikrotik() {
                   className="bulk_action_button"
                   title={t("bulkMessage")}
                   onClick={() => {
+                    setModalStatus("bulkMessage");
                     setShow(true);
                   }}
                   type="button"
@@ -803,10 +807,24 @@ export default function ConfigMikrotik() {
       )}
 
       {/*bulk customer delete modal  */}
-      <BulkCustomerDelete
-        bulkCustomer={bulkCustomers}
-        modalId="bulkDeleteCustomer"
-      />
+
+      {/* inactive & offline customer bulk delete modal */}
+      {modalStatus === "customerDelete" && (
+        <BulkCustomerDelete
+          bulkCustomer={bulkCustomers}
+          show={show}
+          setShow={setShow}
+        />
+      )}
+
+      {/* offline customer bulk message modal */}
+      {modalStatus === "bulkMessage" && (
+        <BulkCustomerMessage
+          bulkCustomer={bulkCustomers}
+          show={show}
+          setShow={setShow}
+        />
+      )}
 
       <CustomerDelete
         single={customerDeleteId}
@@ -819,12 +837,6 @@ export default function ConfigMikrotik() {
         setModalShow={setBandWidthModal}
         modalShow={bandWidthModal}
         customerId={bandWidthCustomerId}
-      />
-
-      <BulkCustomerMessage
-        bulkCustomer={bulkCustomers}
-        show={show}
-        setShow={setShow}
       />
     </>
   );

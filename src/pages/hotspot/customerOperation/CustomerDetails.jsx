@@ -38,7 +38,7 @@ const CustomerDetails = ({ show, setShow, customerId }) => {
   const dispatch = useDispatch();
 
   // get user & current user data form useISPOwner
-  const { ispOwnerId, bpSetting } = useISPowner();
+  const { ispOwnerId, bpSettings } = useISPowner();
 
   // get owner users
   const ownerUsers = useSelector((state) => state?.ownerUsers?.ownerUser);
@@ -343,7 +343,7 @@ const CustomerDetails = ({ show, setShow, customerId }) => {
                   <Card.Body>
                     <FontColor>
                       <div>
-                        {bpSetting?.hasMikrotik && (
+                        {bpSettings?.hasMikrotik && (
                           <div className="displayGridHorizontalFill5_5 profileDetails">
                             <p>{t("mikrotik")}</p>
                             <p>
