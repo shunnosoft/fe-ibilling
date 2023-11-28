@@ -49,11 +49,15 @@ import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
 import ActiveCustomerPDF from "../Customer/ActiveCustomerPrint";
 import ReactToPrint from "react-to-print";
+import useISPowner from "../../hooks/useISPOwner";
 
 export default function ConfigMikrotik() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const componentRef = useRef();
+
+  //calling custom hook here
+  const { role, ispOwnerId, bpSettings, userData } = useISPowner();
 
   // get all mikrotik from redux
   const mikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
@@ -61,32 +65,11 @@ export default function ConfigMikrotik() {
   // get all static customer
   let allMikrotikUsers = useSelector((state) => state?.mikrotik?.pppoeUser);
 
-  // get isp owner id
-  const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerId
-  );
-
   //get all areas
   const areas = useSelector((state) => state.area?.area);
 
   // get all subarea
   const subAreas = useSelector((state) => state.area?.subArea);
-
-  // bulk customer state
-  const [bulkCustomers, setBulkCustomer] = useState([]);
-
-  // get all role
-  const role = useSelector((state) => state.persistedReducer.auth.role);
-
-  // get bp settings
-  const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
-  );
-
-  // get isp owner data
-  const ispOwnerData = useSelector(
-    (state) => state.persistedReducer.auth.userData
-  );
 
   // get bulletin permission
   const butPermission = useSelector(
@@ -96,6 +79,9 @@ export default function ConfigMikrotik() {
   // loading state
   const [loading, setIsloading] = useState(false);
   const [open, setOpen] = useState(false);
+
+  // bulk customer state
+  const [bulkCustomers, setBulkCustomer] = useState([]);
 
   // customer loading state
   const [mtkLoading, setMtkLoading] = useState(false);
@@ -109,12 +95,6 @@ export default function ConfigMikrotik() {
   // customer state
   let [allUsers, setAllUsers] = useState(allMikrotikUsers);
 
-  //set status for inactive offline customer
-  let [status, setStatus] = useState(false);
-
-  //set status  offline customer
-  let [offlineStatus, setOfflineStatus] = useState(false);
-
   // customer id state
   const [customerDeleteId, setCustomerDeleteId] = useState("");
 
@@ -127,75 +107,63 @@ export default function ConfigMikrotik() {
   // check uncheck mikrotik state when delete customer
   const [checkMikrotik, setMikrotikCheck] = useState(false);
 
-  // customer filter state
-  const [customerIt, setCustomerIt] = useState("");
-
-  // offline customer state
-  const [customerItData, setCustomerItData] = useState("");
-
   // area & subarea name
   const [areaName, setAreaName] = useState("");
   const [subareaName, setSubareaName] = useState("");
-
-  // customer type
-  const [customerType, setCustomerType] = useState("");
-
-  // subArea ids state
-  const [subareaIds, setSubareaIds] = useState([]);
 
   // modal show state
   const [modalStatus, setModalStatus] = useState("");
   const [show, setShow] = useState(false);
 
+  //active customer filter options state
+  const [filterOptions, setFilterOptions] = useState({
+    mikrotik: "",
+    area: "",
+    subArea: "",
+    customer: "",
+    status: "",
+  });
+
+  // select area id state
+  const [areaId, setAreaId] = useState();
+
+  //set customer type bulk oparation
+  const [customerType, setCustomerType] = useState();
+
   // find single mikrotik details
   const singleMik = mikrotik.find((item) => item.id === mikrotikId);
 
+  useEffect(() => {
+    // get area api
+    if (areas.length === 0) getArea(dispatch, ispOwnerId, setIsloading);
+
+    // get sub area api
+    if (subAreas.length === 0) getSubAreasApi(dispatch, ispOwnerId);
+
+    Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
+  }, []);
+
+  // api call for get update static customer
+  useEffect(() => {
+    !mikrotik.length && fetchMikrotik(dispatch, ispOwnerId, setIsloading);
+    if (mikrotikId) {
+      fetchpppoeUser(dispatch, IDs, singleMik?.name, setMtkLoading, "user");
+    }
+  }, [mikrotikId]);
+
+  // set mikrotik and customer into state
+  useEffect(() => {
+    setAllUsers(allMikrotikUsers);
+    !mikrotikId && setMikrotikId(mikrotik[0]?.id);
+  }, [allMikrotikUsers, mikrotik]);
+
   // select mikrotik handler
-  const mikrotiSelectionHandler = (event) => {
-    setMikrotikId(event.target.value);
-  };
-
-  // customer filter state
-  const filterIt = (e) => {
-    let temp;
-    setOfflineStatus(false);
-    if (e.target.value === "allCustomer") {
-      setAllUsers(allMikrotikUsers);
-      setCustomerIt("");
-    } else if (e.target.value === "online") {
-      temp = allMikrotikUsers.filter((item) => item.running == true);
-      setAllUsers(temp);
-      setCustomerIt("");
-    } else if (e.target.value === "offline") {
-      temp = allMikrotikUsers.filter((item) => item.running != true);
-      setAllUsers(temp);
-      setCustomerIt("offline");
-      setOfflineStatus(true);
-    }
-
-    setCustomerItData(temp);
-    setStatus(false);
-  };
-
-  // customer online offline filter handler
-  const customerItFilter = (e) => {
-    setCustomerType(e.target.value);
-    let customer;
-    setStatus(false);
-    if (e.target.value === "All") {
-      setAllUsers(customerItData);
-    } else if (e.target.value === "activeOffline") {
-      customer = customerItData.filter((item) => item.status == "active");
-      setAllUsers(customer);
-    } else if (e.target.value === "inactiveOffline") {
-      customer = customerItData.filter((item) => item.status === "inactive");
-      setAllUsers(customer);
-      setStatus(true);
-    } else if (e.target.value === "expiredOffline") {
-      customer = customerItData.filter((item) => item.status === "expired");
-      setAllUsers(customer);
-      setStatus(true);
-    }
+  const mikrotiSelectionHandler = (mikrotikId) => {
+    setFilterOptions({
+      ...filterOptions,
+      mikrotik: mikrotikId,
+    });
+    setMikrotikId(mikrotikId);
   };
 
   // customer delete controller
@@ -222,76 +190,68 @@ export default function ConfigMikrotik() {
     fetchMikrotik(dispatch, ispOwnerId, setIsloading);
   };
 
-  useEffect(() => {
-    // get area api
-    if (areas.length === 0) getArea(dispatch, ispOwnerId, setIsloading);
-
-    // get sub area api
-    if (subAreas.length === 0) getSubAreasApi(dispatch, ispOwnerId);
-
-    Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
-  }, []);
-
-  // api call for get update static customer
-  useEffect(() => {
-    !mikrotik.length && fetchMikrotik(dispatch, ispOwnerId, setIsloading);
-    if (mikrotikId) {
-      fetchpppoeUser(dispatch, IDs, singleMik?.name, setMtkLoading, "user");
-    }
-  }, [mikrotikId]);
-
-  // set mikrotik and customer into state
-  useEffect(() => {
-    setAllUsers(allMikrotikUsers);
-    !mikrotikId && setMikrotikId(mikrotik[0]?.id);
-  }, [allMikrotikUsers, mikrotik]);
-
   // area subarea handler
-  const areaSubareaHandler = (e) => {
-    setAreaName(e.target.name);
+  const handleActiveFilter = () => {
     let tempCustomers = allMikrotikUsers.reduce((acc, c) => {
+      // inport filter option state name
+      const { area, subArea, customer, status } = filterOptions;
+
       // find area all subareas
-      let allSub = [];
-      if (e.target.value !== "") {
-        allSub = subAreas.filter((val) => val.area === e.target.value);
+      let allSubarea = [];
+      if (area) {
+        allSubarea = subAreas.filter((val) => val.area === area);
       }
-      setSubareaIds(allSub);
+
+      // set customer type
+      setCustomerType(customer);
+
+      // make possible conditions objects if the filter value not selected thats return true
+      //if filter value exist then compare
 
       const condition = {
-        area:
-          e.target.value !== ""
-            ? allSub.some((sub) => sub.id === c.subArea)
-            : true,
+        area: area ? allSubarea.some((sub) => sub.id === c.subArea) : true,
+        subArea: subArea ? subArea === c.subArea : true,
+        online: customer === "online" ? c.running === true : true,
+        ofline: customer === "ofline" ? c.running !== true : true,
+        status: status ? status === c.status : true,
       };
 
+      //check if condition pass got for next step or is fail stop operation
+      //if specific filter option value not exist it will return true
+
       let isPass = false;
+
       isPass = condition["area"];
       if (!isPass) return acc;
 
-      if (isPass) acc.push(c);
-      return acc;
-    }, []);
-
-    setAllUsers(tempCustomers);
-  };
-
-  // subarea handle
-  const subAreasHandler = (e) => {
-    setSubareaName(e.target.name);
-    let subAreaCustomers = allMikrotikUsers.reduce((acc, c) => {
-      const condition = {
-        subArea: e.target.value !== "" ? c.subArea === e.target.value : true,
-      };
-
-      let isPass = false;
       isPass = condition["subArea"];
+      if (!isPass) return acc;
+
+      if (customer) {
+        isPass = condition[customer];
+        if (!isPass) return acc;
+      }
+
+      isPass = condition["status"];
       if (!isPass) return acc;
 
       if (isPass) acc.push(c);
       return acc;
     }, []);
 
-    setAllUsers(subAreaCustomers);
+    // set filter customer in customer state
+    setAllUsers(tempCustomers);
+  };
+
+  // filter reset controller
+  const handleFilterReset = () => {
+    setFilterOptions({
+      area: "",
+      subArea: "",
+      customer: "",
+      status: "",
+    });
+    setAllUsers(allMikrotikUsers);
   };
 
   const sortingCustomer = useMemo(() => {
@@ -562,8 +522,106 @@ export default function ConfigMikrotik() {
     mikrotik: mikrotikName?.name,
     area: areaName,
     subarea: subareaName,
-    customer: customerType,
+    customer: filterOptions.customer,
   };
+
+  // manual filter options
+  const filterInput = [
+    {
+      type: "select",
+      name: "mikrotik",
+      id: "mikrotik",
+      value: filterOptions.mikrotik,
+      isVisible: true,
+      disabled: false,
+      onChange: (e) => mikrotiSelectionHandler(e.target.value),
+      options: mikrotik,
+      textAccessor: "name",
+      valueAccessor: "id",
+    },
+    {
+      type: "select",
+      name: "area",
+      id: "area",
+      value: filterOptions.area,
+      isVisible: true,
+      disabled: false,
+      onChange: (e) => {
+        setAreaId(e.target.value);
+        setAreaName(e.target.name);
+        setFilterOptions({
+          ...filterOptions,
+          area: e.target.value,
+        });
+      },
+      options: areas,
+      firstOptions: t("allArea"),
+      textAccessor: "name",
+      valueAccessor: "id",
+    },
+    {
+      type: "select",
+      name: "subArea",
+      id: "subArea",
+      value: filterOptions.subArea,
+      isVisible: true,
+      disabled: false,
+      onChange: (e) => {
+        setSubareaName(e.target.name);
+        setFilterOptions({
+          ...filterOptions,
+          subArea: e.target.value,
+        });
+      },
+      options: subAreas.filter((sub) => sub.area === areaId),
+      firstOptions: t("subArea"),
+      textAccessor: "name",
+      valueAccessor: "id",
+    },
+    {
+      type: "select",
+      name: "customer",
+      id: "customer",
+      value: filterOptions.customer,
+      isVisible: true,
+      disabled: false,
+      onChange: (e) => {
+        setFilterOptions({
+          ...filterOptions,
+          customer: e.target.value,
+        });
+      },
+      options: [
+        { text: t("online"), value: "online" },
+        { text: t("ofline"), value: "ofline" },
+      ],
+      firstOptions: t("sokolCustomer"),
+      textAccessor: "text",
+      valueAccessor: "value",
+    },
+    {
+      type: "select",
+      name: "status",
+      id: "status",
+      value: filterOptions.status,
+      isVisible: true,
+      disabled: filterOptions.customer !== "ofline",
+      onChange: (e) => {
+        setFilterOptions({
+          ...filterOptions,
+          status: e.target.value,
+        });
+      },
+      options: [
+        { text: t("activeOffline"), value: "active" },
+        { text: t("inactiveOffline"), value: "inactive" },
+        { text: t("expiredOffline"), value: "expired" },
+      ],
+      firstOptions: t("status"),
+      textAccessor: "text",
+      valueAccessor: "value",
+    },
+  ];
 
   return (
     <>
@@ -612,7 +670,7 @@ export default function ConfigMikrotik() {
                           <div className="d-flex align-items-center">
                             <CSVLink
                               data={customerForCsVTableInfo}
-                              filename={ispOwnerData.company}
+                              filename={userData.company}
                               headers={customerForCsVTableInfoHeader}
                               title="Customer BTRC Report New"
                             >
@@ -664,75 +722,47 @@ export default function ConfigMikrotik() {
                   <Accordion alwaysOpen activeKey={activeKeys}>
                     <Accordion.Item eventKey="filter">
                       <Accordion.Body>
-                        <div className="active_filter displayGrid6">
-                          <select
-                            id="selectMikrotikOption"
-                            onChange={mikrotiSelectionHandler}
-                            className="form-select mt-0"
-                          >
-                            {mikrotik.map((item) => (
-                              <option value={item.id}>{item.name}</option>
-                            ))}
-                          </select>
+                        <div className="displayGrid6">
+                          {filterInput?.map(
+                            (item) =>
+                              item.isVisible && (
+                                <select
+                                  className="form-select shadow-none mt-0"
+                                  onChange={item.onChange}
+                                  value={item.value}
+                                  disabled={item.disabled}
+                                >
+                                  {item?.firstOptions && (
+                                    <option value="">
+                                      {item?.firstOptions}
+                                    </option>
+                                  )}
 
-                          <select
-                            id="selectMikrotikOption"
-                            className="form-select mt-0"
-                            onChange={areaSubareaHandler}
-                          >
-                            <option value="">{t("allArea")}</option>
-                            {areas.map((item) => (
-                              <option name={item.name} value={item.id}>
-                                {item.name}
-                              </option>
-                            ))}
-                          </select>
-
-                          <select
-                            id="selectMikrotikOption"
-                            className="form-select mt-0"
-                            onChange={subAreasHandler}
-                          >
-                            <option value="">{t("subArea")}</option>
-                            {subareaIds.map((item) => (
-                              <option name={item.name} value={item.id}>
-                                {item.name}
-                              </option>
-                            ))}
-                          </select>
-
-                          <select
-                            id="selectMikrotikOption"
-                            onChange={filterIt}
-                            className="form-select mt-0"
-                          >
-                            <option value="allCustomer">
-                              {t("sokolCustomer")}
-                            </option>
-                            <option value="online">{t("online")}</option>
-                            <option value="offline">{t("ofline")}</option>
-                          </select>
-
-                          {customerIt && customerIt === "offline" ? (
-                            <select
-                              id="selectMikrotikOption"
-                              className="form-select mt-0"
-                              onChange={customerItFilter}
-                            >
-                              <option value="All">{t("status")}</option>
-                              <option value="activeOffline">
-                                {t("activeOffline")}
-                              </option>
-                              <option value="inactiveOffline">
-                                {t("inactiveOffline")}
-                              </option>
-                              <option value="expiredOffline">
-                                {t("expiredOffline")}
-                              </option>
-                            </select>
-                          ) : (
-                            ""
+                                  {item.options?.map((option) => (
+                                    <option value={option[item.valueAccessor]}>
+                                      {option[item.textAccessor]}
+                                    </option>
+                                  ))}
+                                </select>
+                              )
                           )}
+
+                          <div className="displayGrid1 mt-0">
+                            <button
+                              className="btn btn-outline-primary"
+                              type="button"
+                              onClick={handleActiveFilter}
+                            >
+                              {t("filter")}
+                            </button>
+                            <button
+                              className="btn btn-outline-secondary"
+                              type="button"
+                              onClick={handleFilterReset}
+                            >
+                              {t("reset")}
+                            </button>
+                          </div>
                         </div>
                       </Accordion.Body>
                     </Accordion.Item>
@@ -774,7 +804,7 @@ export default function ConfigMikrotik() {
         <>
           <div className="bulkActionButton">
             {bpSettings?.inActiveCustomerDelete &&
-              status &&
+              customerType === "ofline" &&
               (role === "ispOwner" || role === "manager") && (
                 <button
                   className="bulk_action_button"
@@ -792,7 +822,7 @@ export default function ConfigMikrotik() {
               )}
 
             {bpSettings?.unpaidCustomerBulkSms &&
-              offlineStatus &&
+              customerType === "ofline" &&
               (role === "ispOwner" || role === "manager") && (
                 <button
                   className="bulk_action_button"
