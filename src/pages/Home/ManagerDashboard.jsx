@@ -485,7 +485,7 @@ export default function ManagerDashboard() {
                         {FormatNumber(customerStat.newCustomer)}
                         &nbsp;
                         <span className="text-info">
-                          ৳ {FormatNumber(customerStat.newCustomerBillCount)}
+                          ৳{FormatNumber(customerStat.newCustomerBillCount)}
                         </span>
                       </p>
                     </Link>
@@ -524,7 +524,7 @@ export default function ManagerDashboard() {
                         {t("active")}
                         &nbsp;
                         <span className="text-info">
-                          ৳ {FormatNumber(customerStat?.totalActiveAmount)}
+                          ৳{FormatNumber(customerStat?.totalActiveAmount)}
                         </span>
                       </p>
                     )}
@@ -540,7 +540,7 @@ export default function ManagerDashboard() {
                       &nbsp;
                       {permissions?.dashboardCollectionData && (
                         <span className="text-info">
-                          ৳ {FormatNumber(customerStat?.totalInactiveAmount)}
+                          ৳{FormatNumber(customerStat?.totalInactiveAmount)}
                         </span>
                       )}
                     </p>
@@ -622,7 +622,7 @@ export default function ManagerDashboard() {
                         <p style={{ fontSize: "16px", paddingTop: "10px" }}>
                           {t("total collection")}
                           <h4>
-                            ৳
+                            ৳&nbsp;
                             {FormatNumber(
                               customerStat?.totalMonthlyBillCollection -
                                 customerStat?.totalMonthlyBillDiscount
@@ -642,12 +642,12 @@ export default function ManagerDashboard() {
                           //   setStatus("discount");
                           // }}
                         >
-                          {t("discount")}:&nbsp;
+                          {t("discount")}:&nbsp;৳
                           {FormatNumber(customerStat?.totalMonthlyBillDiscount)}
                         </p>
 
                         <p style={{ fontSize: "13px", paddingBottom: "0px" }}>
-                          {t("withoutDiscount")}:
+                          {t("withoutDiscount")}:&nbsp;৳
                           {FormatNumber(
                             customerStat?.totalMonthlyBillCollection
                           )}
@@ -660,7 +660,7 @@ export default function ManagerDashboard() {
                         !permissions?.dashboardCollectionData ? "fs-6" : "fs-13"
                       }
                     >
-                      {t("today collection")}
+                      {t("today collection")}&nbsp;৳
                       {FormatNumber(customerStat?.billCollectionToday)}
                     </p>
                   </div>
@@ -773,7 +773,7 @@ export default function ManagerDashboard() {
                             {t("totalMonthlyCollection")}
                           </p>
                           <h2>
-                            ৳
+                            ৳&nbsp;
                             {FormatNumber(
                               customerStat?.totalMonthlyBillCollection -
                                 customerStat?.totalMonthlyBillDiscount
@@ -783,7 +783,7 @@ export default function ManagerDashboard() {
                       )}
 
                       <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                        {t("todayTotalCollectionByManager")}:
+                        {t("todayTotalCollectionByManager")}:&nbsp;৳
                         {FormatNumber(customerStat?.billCollectionToday)}
                       </p>
                     </div>
@@ -803,7 +803,7 @@ export default function ManagerDashboard() {
                       </h2>
 
                       <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                        {t("todayTotalCollectionByManager")}:
+                        {t("todayTotalCollectionByManager")}:&nbsp;৳
                         {FormatNumber(customerStat?.totalOwnCollectionToday)}
                       </p>
                     </div>
@@ -825,7 +825,7 @@ export default function ManagerDashboard() {
                       </h2>
 
                       <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                        {t("todayTotalCollectionByManager")}:
+                        {t("todayTotalCollectionByManager")}:&nbsp;৳
                         {FormatNumber(customerStat?.todayManagerDeposit)}
                       </p>
                     </div>
@@ -901,7 +901,7 @@ export default function ManagerDashboard() {
 
                       {permissions?.dashboardCollectionData && (
                         <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                          {t("totalCollection")}:
+                          {t("totalCollection")}:&nbsp;৳
                           {FormatNumber(customerStat?.collectorsBillCollection)}
                         </p>
                       )}

@@ -230,10 +230,12 @@ export default function CustomerDetails({ show, setShow, customerId }) {
                   <p class="vr_line vr ms-2" />
 
                   <div>
-                    <div className="d-flex gap-3">
-                      <PhoneFill />
-                      <p>{data?.mobile}</p>
-                    </div>
+                    {data?.mobile && (
+                      <div className="d-flex gap-3">
+                        <PhoneFill />
+                        <p>{data?.mobile}</p>
+                      </div>
+                    )}
 
                     <div className="d-flex gap-3">
                       <Cash />

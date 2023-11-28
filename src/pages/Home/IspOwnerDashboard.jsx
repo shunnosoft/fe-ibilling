@@ -692,7 +692,7 @@ export default function IspOwnerDashboard() {
                         {role === "ispOwner" && (
                           <>
                             <p className="pb-0" style={{ fontSize: "13px" }}>
-                              {t("withoutDiscount")}:
+                              {t("withoutDiscount")}:&nbsp; ৳
                               {FormatNumber(customerStat.totalBillCollection)}
                             </p>
 
@@ -704,12 +704,12 @@ export default function IspOwnerDashboard() {
                                 setShow(true);
                               }}
                             >
-                              {t("discount")}:&nbsp;
+                              {t("discount")}:&nbsp; ৳
                               {FormatNumber(customerStat.totalMonthlyDiscount)}
                             </p>
 
                             <p className="fs-6">
-                              {t("today collection")}
+                              {t("today collection")}&nbsp;৳
                               {FormatNumber(customerStat.todayBillCollection)}
                             </p>
                           </>
@@ -973,7 +973,7 @@ export default function IspOwnerDashboard() {
                             )}
                           </h2>
                           <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                            {t("todayTotalCollectionByManager")}:
+                            {t("todayTotalCollectionByManager")}:&nbsp;৳
                             {FormatNumber(
                               customerStat?.manager?.todayBillCollection
                             )}
@@ -1036,7 +1036,7 @@ export default function IspOwnerDashboard() {
                           </p>
 
                           <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                            {t("todayTotalCollectionByManager")}:
+                            {t("todayTotalCollectionByManager")}:&nbsp;৳
                             {FormatNumber(
                               customerStat?.manager?.totalBillCollectionToday
                             )}
@@ -1059,7 +1059,7 @@ export default function IspOwnerDashboard() {
                           </h2>
 
                           <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                            {t("todayTotalManagerDeposite")}:
+                            {t("todayTotalManagerDeposite")}:&nbsp;৳
                             {FormatNumber(customerStat?.manager?.todayDeposit)}
                           </p>
                         </div>
@@ -1137,14 +1137,14 @@ export default function IspOwnerDashboard() {
                               </h2>
 
                               <p style={{ fontSize: "15px" }}>
-                                {t("totalCollection")}:
+                                {t("totalCollection")}:&nbsp;৳
                                 {FormatNumber(
                                   customerStat?.collector?.billCollection
                                 )}
                               </p>
 
                               <p style={{ fontSize: "15px" }}>
-                                {t("todayTotalCollectionByCollector")}:
+                                {t("todayTotalCollectionByCollector")}:&nbsp;৳
                                 {FormatNumber(
                                   customerStat?.collector?.todayBillCollection
                                 )}
@@ -1241,7 +1241,7 @@ export default function IspOwnerDashboard() {
                                     paddingTop: "10px",
                                   }}
                                 >
-                                  {t("totalMonthlyBillCollect")}:
+                                  {t("totalMonthlyBillCollect")}:&nbsp;৳
                                   {FormatNumber(
                                     customerStat?.reseller?.billCollection
                                   )}

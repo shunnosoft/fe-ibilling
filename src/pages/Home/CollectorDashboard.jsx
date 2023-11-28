@@ -332,8 +332,8 @@ export default function CollectorDashboard() {
                     </div>
                     <div className="col-md-3 d-flex justify-content-start align-items-center">
                       <h2>
-                        {t("totalCollection")} <br />
-                        <CurrencyDollar />
+                        {t("totalCollection")}
+                        <br /> ৳ &nbsp;
                         {FormatNumber(customerStat?.totalOwnCollection)}
                       </h2>
                     </div>
@@ -448,7 +448,7 @@ export default function CollectorDashboard() {
                         {FormatNumber(customerStat.newCustomer)}
                         &nbsp;
                         <span className="text-info">
-                          ৳ {FormatNumber(customerStat.newCustomerBillCount)}
+                          ৳{FormatNumber(customerStat.newCustomerBillCount)}
                         </span>
                       </p>
                     </Link>
@@ -487,7 +487,7 @@ export default function CollectorDashboard() {
                         {t("active")}
                         &nbsp;
                         <span className="text-info">
-                          ৳ {FormatNumber(customerStat?.totalActiveAmount)}
+                          ৳{FormatNumber(customerStat?.totalActiveAmount)}
                         </span>
                       </p>
                     )}
@@ -503,7 +503,7 @@ export default function CollectorDashboard() {
                       &nbsp;
                       {permissions?.dashboardCollectionData && (
                         <span className="text-info">
-                          ৳ {FormatNumber(customerStat?.totalInactiveAmount)}
+                          ৳{FormatNumber(customerStat?.totalInactiveAmount)}
                         </span>
                       )}
                     </p>
@@ -598,7 +598,7 @@ export default function CollectorDashboard() {
                         !permissions?.dashboardCollectionData ? "fs-6" : "fs-13"
                       }
                     >
-                      {t("today collection")}
+                      {t("today collection")} &nbsp;৳
                       {FormatNumber(customerStat?.totalOwnCollectionToday)}
                     </p>
                   </div>
