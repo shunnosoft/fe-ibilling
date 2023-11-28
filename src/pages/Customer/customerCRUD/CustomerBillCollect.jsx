@@ -46,7 +46,8 @@ const CustomerBillCollect = ({ single, status }) => {
   ];
 
   // get user & current user data form useISPOwner
-  const { role, ispOwnerId, bpSettings, permission } = useISPowner();
+  const { role, ispOwnerId, bpSettings, permissions, permission } =
+    useISPowner();
 
   // get all customer
   const customer = useSelector((state) =>
@@ -431,7 +432,7 @@ const CustomerBillCollect = ({ single, status }) => {
                 )}
 
                 <div className="displayGrid2">
-                  {(role === "ispOwner" || permission.billDiscount) && (
+                  {(role === "ispOwner" || permissions.billDiscount) && (
                     <div>
                       <FtextField
                         type="number"

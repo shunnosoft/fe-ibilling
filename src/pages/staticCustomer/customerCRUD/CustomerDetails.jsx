@@ -41,7 +41,7 @@ export default function CustomerDetails({ show, setShow, customerId }) {
   const dispatch = useDispatch();
 
   // get user & current user data form useISPOwner
-  const { ispOwnerId, bpSettings } = useISPowner();
+  const { role, ispOwnerId, bpSettings, permissions } = useISPowner();
 
   // get mikrotiks
   const mikrotiks = useSelector((state) => state?.mikrotik?.mikrotik);
@@ -180,17 +180,19 @@ export default function CustomerDetails({ show, setShow, customerId }) {
                 </div>
 
                 <div className="d-flex justify-content-center align-items-center p-3">
-                  <div
-                    className="profileDelete"
-                    onClick={() => {
-                      setModalStatus("profileDelete");
-                      setModalShow(true);
-                      setShow(false);
-                    }}
-                  >
-                    <Trash3Fill title={t("deleteProfile")} />
-                    <p id="delete_profile">{t("deleteProfile")}</p>
-                  </div>
+                  {(role === "ispOwner" || permissions?.customerDelete) && (
+                    <div
+                      className="profileDelete"
+                      onClick={() => {
+                        setModalStatus("profileDelete");
+                        setModalShow(true);
+                        setShow(false);
+                      }}
+                    >
+                      <Trash3Fill title={t("deleteProfile")} />
+                      <p id="delete_profile">{t("deleteProfile")}</p>
+                    </div>
+                  )}
 
                   <CloseButton onClick={handleClose} className="close_Btn" />
                 </div>
@@ -273,7 +275,10 @@ export default function CustomerDetails({ show, setShow, customerId }) {
               <Card className="displayGridVertical5_5 details_setting border border-2 shadow-none">
                 {/* customer profile setting start  */}
 
-                <div className="clintProfile profile_details client_details shadow-sm rounded">
+                <div
+                  className="clintProfile profile_details client_details shadow-sm rounded"
+                  id="profile_setting"
+                >
                   <Card.Title className="clintTitle clint_profile_setting">
                     <h5 className="profileInfo">{t("profileSetting")}</h5>
                   </Card.Title>
@@ -299,22 +304,25 @@ export default function CustomerDetails({ show, setShow, customerId }) {
                       {data?.monthlyFee > 0 && (
                         <>
                           {/* customer bill colleciton */}
-                          <li
-                            className="profileSetting"
-                            onClick={() => setProfileOption("recharge")}
-                            id={
-                              profileOption === "recharge"
-                                ? "activeSetting"
-                                : ""
-                            }
-                          >
-                            <div className="profileOptions">
-                              <Cash size={22} />
-                            </div>
-                            <span className="options_name">
-                              {t("recharge")}
-                            </span>
-                          </li>
+                          {(permissions?.billPosting ||
+                            role === "ispOwner") && (
+                            <li
+                              className="profileSetting"
+                              onClick={() => setProfileOption("recharge")}
+                              id={
+                                profileOption === "recharge"
+                                  ? "activeSetting"
+                                  : ""
+                              }
+                            >
+                              <div className="profileOptions">
+                                <Cash size={22} />
+                              </div>
+                              <span className="options_name">
+                                {t("recharge")}
+                              </span>
+                            </li>
+                          )}
 
                           {/* customer bill collection report */}
                           <li
@@ -333,20 +341,21 @@ export default function CustomerDetails({ show, setShow, customerId }) {
                       )}
 
                       {/* customer single message  */}
-                      {data?.mobile && (
-                        <li
-                          className="profileSetting"
-                          onClick={() => setProfileOption("message")}
-                          id={
-                            profileOption === "message" ? "activeSetting" : ""
-                          }
-                        >
-                          <div className="profileOptions">
-                            <Envelope size={22} />
-                          </div>
-                          <span className="options_name">{t("message")}</span>
-                        </li>
-                      )}
+                      {data?.mobile &&
+                        (permissions?.sendSMS || role !== "collector") && (
+                          <li
+                            className="profileSetting"
+                            onClick={() => setProfileOption("message")}
+                            id={
+                              profileOption === "message" ? "activeSetting" : ""
+                            }
+                          >
+                            <div className="profileOptions">
+                              <Envelope size={22} />
+                            </div>
+                            <span className="options_name">{t("message")}</span>
+                          </li>
+                        )}
 
                       {/* customer login password reset */}
                       <li
@@ -390,18 +399,41 @@ export default function CustomerDetails({ show, setShow, customerId }) {
                         <div className="displayGridHorizontalFill5_5 profileDetails">
                           <p>{t("status")}</p>
                           {data?.status !== "expired" ? (
-                            <p
-                              onClick={(e) =>
-                                statusAutoConnectionUpdateHandler(
-                                  data,
-                                  e,
-                                  "status"
-                                )
-                              }
-                              style={{ cursor: "pointer" }}
-                            >
-                              {badge(data?.status)}
-                            </p>
+                            <div>
+                              {role === "ispOwner" ||
+                              (data?.status === "active" &&
+                                permissions?.customerDeactivate) ? (
+                                <p
+                                  onClick={(e) =>
+                                    statusAutoConnectionUpdateHandler(
+                                      data,
+                                      e,
+                                      "status"
+                                    )
+                                  }
+                                  style={{ cursor: "pointer" }}
+                                >
+                                  {badge(data?.status)}
+                                </p>
+                              ) : role === "ispOwner" ||
+                                (data?.status === "inactive" &&
+                                  permissions?.customerActivate) ? (
+                                <p
+                                  onClick={(e) =>
+                                    statusAutoConnectionUpdateHandler(
+                                      data,
+                                      e,
+                                      "status"
+                                    )
+                                  }
+                                  style={{ cursor: "pointer" }}
+                                >
+                                  {badge(data?.status)}
+                                </p>
+                              ) : (
+                                <p>{badge(data?.status)}</p>
+                              )}
+                            </div>
                           ) : (
                             <p>{badge(data?.status)}</p>
                           )}

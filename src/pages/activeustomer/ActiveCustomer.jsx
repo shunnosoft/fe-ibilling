@@ -407,7 +407,13 @@ export default function ConfigMikrotik() {
       {
         width: "10%",
         Header: t("ip"),
-        accessor: "ip",
+        Cell: ({ row: { original } }) => (
+          <div>
+            <p className={`text-${original?.macBinding && "success"} fw-700`}>
+              {original?.ip}
+            </p>
+          </div>
+        ),
       },
       {
         width: "10%",
@@ -768,7 +774,7 @@ export default function ConfigMikrotik() {
         <>
           <div className="bulkActionButton">
             {bpSettings?.inActiveCustomerDelete &&
-              status !== "online" &&
+              status &&
               (role === "ispOwner" || role === "manager") && (
                 <button
                   className="bulk_action_button"

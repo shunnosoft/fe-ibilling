@@ -506,22 +506,24 @@ const StaticCustomerEdit = ({ customerId, setProfileOption }) => {
                     <select
                       name="firewallPackage"
                       className="form-select mw-100 mt-0"
-                      aria-label="Default select example"
                       onChange={selectMikrotikPackage}
                     >
-                      {packages &&
-                        packages?.map(
-                          (val, key) =>
-                            val.packageType === "queue" && (
-                              <option
-                                selected={val.id === customer?.mikrotikPackage}
-                                key={key}
-                                value={val.id}
-                              >
-                                {val.name}
-                              </option>
-                            )
-                        )}
+                      {packages?.map(
+                        (val, key) =>
+                          val.packageType === "queue" && (
+                            <option
+                              selected={
+                                customer?.mikrotikPackage === val?.id
+                                  ? customer?.mikrotikPackage === val?.id
+                                  : customer.pppoe?.profile === val.name
+                              }
+                              key={key}
+                              value={val.id}
+                            >
+                              {val.name}
+                            </option>
+                          )
+                      )}
                     </select>
                   </div>
                 )}
@@ -662,14 +664,15 @@ const StaticCustomerEdit = ({ customerId, setProfileOption }) => {
                         validation={true}
                         onChange={(e) => setMonthlyFee(e.target.value)}
                       />
-                      {customer?.monthlyFee > 0 && (
-                        <InputGroup.Text
-                          style={{ cursor: "pointer" }}
-                          onClick={() => setProfileOption("recharge")}
-                        >
-                          <Cash size={22} title={t("recharge")} />
-                        </InputGroup.Text>
-                      )}
+                      {customer?.monthlyFee > 0 &&
+                        (permissions?.billPosting || role === "ispOwner") && (
+                          <InputGroup.Text
+                            style={{ cursor: "pointer" }}
+                            onClick={() => setProfileOption("recharge")}
+                          >
+                            <Cash size={22} title={t("recharge")} />
+                          </InputGroup.Text>
+                        )}
                     </InputGroup>
 
                     <ErrorMessage name="monthlyFee" component="div">
@@ -745,14 +748,15 @@ const StaticCustomerEdit = ({ customerId, setProfileOption }) => {
                           role === "collector"
                         }
                       />
-                      {customer?.mobile && (
-                        <InputGroup.Text
-                          style={{ cursor: "pointer" }}
-                          onClick={() => setProfileOption("message")}
-                        >
-                          <Envelope size={22} title={t("message")} />
-                        </InputGroup.Text>
-                      )}
+                      {customer?.mobile &&
+                        (permissions?.sendSMS || role !== "collector") && (
+                          <InputGroup.Text
+                            style={{ cursor: "pointer" }}
+                            onClick={() => setProfileOption("message")}
+                          >
+                            <Envelope size={22} title={t("message")} />
+                          </InputGroup.Text>
+                        )}
                     </InputGroup>
 
                     <ErrorMessage name="mobile" component="div">

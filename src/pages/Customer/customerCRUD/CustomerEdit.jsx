@@ -36,7 +36,7 @@ const divisions = divisionsJSON.divisions;
 const districts = districtsJSON.districts;
 const thana = thanaJSON.thana;
 
-export default function CustomerEdit({ customerId, setProfileOption }) {
+const CustomerEdit = ({ customerId, setProfileOption }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
@@ -62,13 +62,10 @@ export default function CustomerEdit({ customerId, setProfileOption }) {
   });
 
   //calling custom hook here
-  const { ispOwnerId, hasMikrotik } = useISPowner();
+  const { ispOwnerId, hasMikrotik, permissions } = useISPowner();
 
   // get all customer
   const customer = useSelector((state) => state?.customer?.customer);
-
-  // find editable data
-  const data = customer.find((item) => item.id === customerId);
 
   // get all area
   const area = useSelector((state) => state?.area?.area);
@@ -101,6 +98,9 @@ export default function CustomerEdit({ customerId, setProfileOption }) {
 
   // get subarea poleBox
   const poleBox = useSelector((state) => state.area?.poleBox);
+
+  // find editable data
+  const data = customer.find((item) => item.id === customerId);
 
   const [packageRate, setPackageRate] = useState("");
   const [isLoading, setIsloading] = useState(false);
@@ -228,13 +228,13 @@ export default function CustomerEdit({ customerId, setProfileOption }) {
     getPoleBoxApi(dispatch, ispOwnerId, setIsLoadingPole);
   }, []);
 
-  // select Mikrotik Package
+  //customer Mikrotik Package find
   useEffect(() => {
-    const mikrotikPackageId = data?.mikrotikPackage;
-    setMikrotikPackage(mikrotikPackageId);
-    const temp = ppPackage.find((val) => val.name === mikrotikPackageId);
+    const customerPackageId = data?.mikrotikPackage;
+    setMikrotikPackage(customerPackageId);
+    const temp = ppPackage.find((pack) => pack.id === customerPackageId);
     setPackageRate(temp);
-  }, [data, ppPackage]);
+  }, [data]);
 
   const selectMikrotikPackage = (e) => {
     const mikrotikPackageId = e.target.value;
@@ -447,7 +447,7 @@ export default function CustomerEdit({ customerId, setProfileOption }) {
             Pcomment: data?.pppoe?.comment || "",
             monthlyFee: packageRate?.rate || data?.monthlyFee || 0,
             Pname: data?.pppoe?.name || "",
-            Pprofile: packageRate?.name || data?.pppoe?.profile || "",
+            Pprofile: packageRate?.name || data?.pppoe?.profile,
             Ppassword: data?.pppoe?.password || "",
             status: status || "",
             balance: data?.balance || "",
@@ -479,14 +479,16 @@ export default function CustomerEdit({ customerId, setProfileOption }) {
 
                   <select
                     className="form-select mw-100 mt-0"
-                    aria-label="Default select example"
                     onChange={selectMikrotikPackage}
-                    value={mikrotikPackage}
                     disabled={role === "collector"}
                   >
                     {ppPackage?.map((val, key) => (
                       <option
-                        selected={data?.mikrotikPackage === val?.id}
+                        selected={
+                          data?.mikrotikPackage === val?.id
+                            ? data?.mikrotikPackage === val?.id
+                            : data.pppoe?.profile === val.name
+                        }
                         key={key}
                         value={val.id}
                       >
@@ -514,14 +516,15 @@ export default function CustomerEdit({ customerId, setProfileOption }) {
                         name="monthlyFee"
                         validation={true}
                       />
-                      {data?.monthlyFee > 0 && (
-                        <InputGroup.Text
-                          style={{ cursor: "pointer" }}
-                          onClick={() => setProfileOption("recharge")}
-                        >
-                          <Cash size={22} title={t("recharge")} />
-                        </InputGroup.Text>
-                      )}
+                      {data?.monthlyFee > 0 &&
+                        (permissions?.billPosting || role === "ispOwner") && (
+                          <InputGroup.Text
+                            style={{ cursor: "pointer" }}
+                            onClick={() => setProfileOption("recharge")}
+                          >
+                            <Cash size={22} title={t("recharge")} />
+                          </InputGroup.Text>
+                        )}
                     </InputGroup>
 
                     <ErrorMessage name="monthlyFee" component="div">
@@ -577,14 +580,15 @@ export default function CustomerEdit({ customerId, setProfileOption }) {
                           role === "collector"
                         }
                       />
-                      {data?.mobile && (
-                        <InputGroup.Text
-                          style={{ cursor: "pointer" }}
-                          onClick={() => setProfileOption("message")}
-                        >
-                          <Envelope size={22} title={t("message")} />
-                        </InputGroup.Text>
-                      )}
+                      {data?.mobile &&
+                        (permissions?.sendSMS || role !== "collector") && (
+                          <InputGroup.Text
+                            style={{ cursor: "pointer" }}
+                            onClick={() => setProfileOption("message")}
+                          >
+                            <Envelope size={22} title={t("message")} />
+                          </InputGroup.Text>
+                        )}
                     </InputGroup>
 
                     <ErrorMessage name="mobile" component="div">
@@ -767,7 +771,6 @@ export default function CustomerEdit({ customerId, setProfileOption }) {
                       aria-label="Default select example"
                       name={item.name}
                       id={item.id}
-                      disabled={!mikrotikPackage}
                       onChange={onDivisionalAreaChange}
                       value={item.value}
                     >
@@ -826,4 +829,5 @@ export default function CustomerEdit({ customerId, setProfileOption }) {
       </Card.Body>
     </>
   );
-}
+};
+export default CustomerEdit;
