@@ -425,7 +425,7 @@ const ResellerEdit = ({ show, setShow, resellerId }) => {
                           />
                         ))}
 
-                        <div>
+                        {/* <div>
                           <p className="radioTitle">{t("customerType")}</p>
                           <div className="d-inline-flex">
                             <div className="form-check me-3">
@@ -477,7 +477,7 @@ const ResellerEdit = ({ show, setShow, resellerId }) => {
                               </label>
                             </div>
                           </div>
-                        </div>
+                        </div> */}
 
                         <div>
                           <p className="radioTitle">{t("status")}</p>

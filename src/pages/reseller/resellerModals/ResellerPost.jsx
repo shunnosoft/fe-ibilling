@@ -304,7 +304,7 @@ const ResellerPost = ({ show, setShow }) => {
                           />
                         ))}
 
-                        <div>
+                        {/* <div>
                           <p className="radioTitle">{t("customerType")}</p>
                           <div className="d-inline-flex">
                             <div className="form-check me-3">
@@ -356,7 +356,7 @@ const ResellerPost = ({ show, setShow }) => {
                               </label>
                             </div>
                           </div>
-                        </div>
+                        </div> */}
 
                         <div>
                           <p className="radioTitle">{t("status")}</p>
