@@ -49,24 +49,29 @@ function SalarySMSTemplate() {
           <div className="messageStatus d-flex justify-content-between">
             <div className="sending-status">
               <h4> {t("SalarySMSTemplate")} </h4>
-              <input
-                id="salaryRadioOn"
-                name="salarySMS"
-                type="radio"
-                checked={salarySMS}
-                onChange={() => setSalarySMS(true)}
-              />
-              &nbsp;
-              {t("on")} {"              "}
-              <input
-                id="salaryRadioOff"
-                name="salarySMS"
-                type="radio"
-                checked={!salarySMS}
-                onChange={() => setSalarySMS(false)}
-              />
-              &nbsp;
-              {t("off")} {"              "}
+              <div className="displayGrid1">
+                <div className="message_radio">
+                  <input
+                    type="radio"
+                    name="salarySMS"
+                    id="onTemplate"
+                    checked={salarySMS}
+                    onChange={() => setSalarySMS(true)}
+                  />
+                  <label htmlFor="onTemplate">{t("ON")}</label>
+                </div>
+
+                <div className="message_radio">
+                  <input
+                    type="radio"
+                    name="salarySMS"
+                    id="offTemplate"
+                    checked={!salarySMS}
+                    onChange={() => setSalarySMS(false)}
+                  />
+                  <label htmlFor="offTemplate">{t("OFF")}</label>
+                </div>
+              </div>
             </div>
             <div className="message-sending-type">
               <h4> {t("sendingMessageType")} </h4>

@@ -60,24 +60,29 @@ const ResellerRechargeSmsTemplate = () => {
         <div className="messageStatus d-flex justify-content-between">
           <div className="sending-status">
             <h4> {t("resellerRechargeTemplate")} </h4>
-            <input
-              id="rechareRadioOn"
-              name="rechargeSMS"
-              type="radio"
-              checked={rechargeSMS}
-              onChange={() => setRechargeSMS(true)}
-            />
-            &nbsp;
-            {t("on")} {"              "}
-            <input
-              id="rechargeRadioOff"
-              name="rechargeSMS"
-              type="radio"
-              checked={!rechargeSMS}
-              onChange={() => setRechargeSMS(false)}
-            />
-            &nbsp;
-            {t("off")} {"              "}
+            <div className="displayGrid1">
+              <div className="message_radio">
+                <input
+                  type="radio"
+                  name="rechargeSMS"
+                  id="onTemplate"
+                  checked={rechargeSMS}
+                  onChange={() => setRechargeSMS(true)}
+                />
+                <label htmlFor="onTemplate">{t("ON")}</label>
+              </div>
+
+              <div className="message_radio">
+                <input
+                  type="radio"
+                  name="rechargeSMS"
+                  id="offTemplate"
+                  checked={!rechargeSMS}
+                  onChange={() => setRechargeSMS(false)}
+                />
+                <label htmlFor="offTemplate">{t("OFF")}</label>
+              </div>
+            </div>
           </div>
           <div className="message-sending-type">
             <h4> {t("sendingMessageType")} </h4>

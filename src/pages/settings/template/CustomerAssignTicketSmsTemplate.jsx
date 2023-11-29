@@ -69,29 +69,25 @@ const CustomerAssignTicketSmsTemplate = () => {
         <div className="messageStatus d-flex justify-content-between">
           <div className="sending-status">
             <h4> {t("assingTicketTemplate")} </h4>
-
-            {/* customer ticket staff assing template switch */}
-            <div className="d-flex">
-              <div>
+            <div className="displayGrid1 mb-3">
+              <div className="message_radio">
                 <input
-                  id="assingTicketOn"
                   type="radio"
+                  id="onTemplate"
                   checked={assignTicketStatus}
                   onChange={() => setAssignTicketStatus(true)}
                 />
-                &nbsp;
-                <label htmlFor="assingTicketOn">{t("on")}</label>
+                <label htmlFor="onTemplate">{t("ON")}</label>
               </div>
 
-              <div>
+              <div className="message_radio">
                 <input
-                  id="assingTicketOff"
                   type="radio"
+                  id="offTemplate"
                   checked={!assignTicketStatus}
                   onChange={() => setAssignTicketStatus(false)}
                 />
-                &nbsp;
-                <label htmlFor="assingTicketOff">{t("off")}</label>
+                <label htmlFor="offTemplate">{t("OFF")}</label>
               </div>
             </div>
           </div>

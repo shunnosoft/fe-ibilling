@@ -89,31 +89,27 @@ const CustomerTicketSmsTemplate = ({ otherTabs }) => {
         <div className="messageStatus d-flex justify-content-between">
           <div className="sending-status">
             <h4> {t("customerTicketTemplate")} </h4>
-
-            {/* customer create ticket template switch */}
-            <div className="d-flex">
-              <div>
+            <div className="displayGrid1">
+              <div className="message_radio">
                 <input
-                  id="customerTicketOn"
-                  name="customerTicket"
                   type="radio"
+                  name="customerTicket"
+                  id="onTemplate"
                   checked={customerTicketStatus}
                   onChange={() => setCustomerTicketStatus(true)}
                 />
-                &nbsp;
-                <label htmlFor="customerTicketOn"> {t("on")}</label>
+                <label htmlFor="onTemplate">{t("ON")}</label>
               </div>
 
-              <div>
+              <div className="message_radio">
                 <input
-                  id="customerTicketOff"
-                  name="customerTicket"
                   type="radio"
+                  name="customerTicket"
+                  id="offTemplate"
                   checked={!customerTicketStatus}
                   onChange={() => setCustomerTicketStatus(false)}
                 />
-                &nbsp;
-                <label htmlFor="customerTicketOff"> {t("off")}</label>{" "}
+                <label htmlFor="offTemplate">{t("OFF")}</label>
               </div>
             </div>
           </div>

@@ -254,23 +254,33 @@ function AlertSmsTemplate() {
           <div className="messageStatus d-flex justify-content-between">
             <div className="sending-status">
               <h4> {t("alertSMStemplate")} </h4>
-              <input
-                name="billConfirmation"
-                type="radio"
-                checked={billConfirmation === "on"}
-                value={"on"}
-                onChange={radioCheckHandler}
-              />{" "}
-              {t("on")} {"              "}
-              <input
-                name="billConfirmation"
-                type="radio"
-                checked={billConfirmation === "off"}
-                value={"off"}
-                onChange={radioCheckHandler}
-              />{" "}
-              {t("off")}
+              <div className="displayGrid1">
+                <div className="message_radio">
+                  <input
+                    type="radio"
+                    name="billConfirmation"
+                    id="onTemplate"
+                    value={"on"}
+                    checked={billConfirmation === "on"}
+                    onChange={radioCheckHandler}
+                  />
+                  <label htmlFor="onTemplate">{t("ON")}</label>
+                </div>
+
+                <div className="message_radio">
+                  <input
+                    type="radio"
+                    name="billConfirmation"
+                    id="offTemplate"
+                    value={"off"}
+                    checked={billConfirmation === "off"}
+                    onChange={radioCheckHandler}
+                  />
+                  <label htmlFor="offTemplate">{t("OFF")}</label>
+                </div>
+              </div>
             </div>
+
             <div className="message-sending-type">
               <h4> {t("sendingMessageType")} </h4>
               <input
@@ -279,29 +289,29 @@ function AlertSmsTemplate() {
                 checked={sendingType === "nonMasking"}
                 value={"nonMasking"}
                 onChange={(event) => setSendingType(event.target.value)}
-              />{" "}
-              {t("nonMasking")} {"              "}
+              />
+              {t("nonMasking")}
               <input
                 name="messageSendingType"
                 type="radio"
                 checked={sendingType === "masking"}
                 value={"masking"}
                 onChange={(event) => setSendingType(event.target.value)}
-              />{" "}
-              {t("masking")} {"              "}
+              />
+              {t("masking")}
               <input
                 name="messageSendingType"
                 type="radio"
                 checked={sendingType === "fixedNumber"}
                 value={"fixedNumber"}
                 onChange={(event) => setSendingType(event.target.value)}
-              />{" "}
-              {t("fixedNumber")} {"              "}
+              />
+              {t("fixedNumber")}
             </div>
           </div>
 
           <div className="billconfirm">
-            <div className="showthesequence">
+            <div className="showthesequence ">
               <p className="endingText">{fontValue}</p>
               {smsTemplet.map((item, key) => {
                 return <p key={key}>{item}</p>;
@@ -310,109 +320,93 @@ function AlertSmsTemplate() {
               <p className="endingtext">{bottomText}</p>
             </div>
 
-            <div
-              style={{
-                display: "flex",
-
-                justifyContent: "space-between",
-                flexDirection: "row",
-                width: "100%",
-                marginTop: "10px",
-              }}
-              className="displayFlexx"
-            >
-              <div>
-                <div className="radioselect">
-                  <input
-                    id="1"
-                    type="checkbox"
-                    className="getValueUsingClass"
-                    value={"USER: USERNAME"}
-                    checked={smsTemplet.includes("USER: USERNAME")}
-                    onChange={(e) => {
-                      itemSettingHandler(e.target.value);
-                    }}
-                  />
-                  <label className="templatelabel" htmlFor="1">
-                    {"USER: USERNAME"}
-                  </label>
-                </div>
-                <div className="radioselect">
-                  <input
-                    id="2"
-                    type="checkbox"
-                    className="getValueUsingClass"
-                    checked={smsTemplet.includes("ID: CUSTOMER_ID")}
-                    value={"ID: CUSTOMER_ID"}
-                    onChange={(e) => {
-                      itemSettingHandler(e.target.value);
-                    }}
-                  />
-                  <label className="templatelabel" htmlFor="2">
-                    {"ID: CUSTOMER_ID"}
-                  </label>
-                </div>
-                <div className="radioselect">
-                  <input
-                    id="3"
-                    type="checkbox"
-                    className="getValueUsingClass"
-                    checked={smsTemplet.includes("NAME: CUSTOMER_NAME")}
-                    value={"NAME: CUSTOMER_NAME"}
-                    onChange={(e) => {
-                      itemSettingHandler(e.target.value);
-                    }}
-                  />
-                  <label className="templatelabel" htmlFor="3">
-                    {"NAME: CUSTOMER_NAME"}
-                  </label>
-                </div>
-                <div className="radioselect">
-                  <input
-                    id="4"
-                    type="checkbox"
-                    className="getValueUsingClass"
-                    checked={smsTemplet.includes("BILL: AMOUNT")}
-                    value={"BILL: AMOUNT"}
-                    onChange={(e) => {
-                      itemSettingHandler(e.target.value);
-                    }}
-                  />
-                  <label className="templatelabel" htmlFor="4">
-                    {"BILL: AMOUNT"}
-                  </label>
-                </div>
-                <div className="radioselect">
-                  <input
-                    id="5"
-                    type="checkbox"
-                    className="getValueUsingClass"
-                    checked={smsTemplet.includes("LAST DATE: BILL_DATE")}
-                    value={"LAST DATE: BILL_DATE"}
-                    onChange={(e) => {
-                      itemSettingHandler(e.target.value);
-                    }}
-                  />
-                  <label className="templatelabel" htmlFor="5">
-                    {"LAST DATE: BILL_DATE"}
-                  </label>
-                </div>
+            <div className="displayGrid">
+              <div className="radioselect">
+                <input
+                  id="USERNAME"
+                  type="checkbox"
+                  className="getValueUsingClass"
+                  value={"USER: USERNAME"}
+                  checked={smsTemplet.includes("USER: USERNAME")}
+                  onChange={(e) => {
+                    itemSettingHandler(e.target.value);
+                  }}
+                />
+                <label className="templatelabel" htmlFor="USERNAME">
+                  {"USER: USERNAME"}
+                </label>
               </div>
 
-              {/* //working */}
+              <div className="radioselect">
+                <input
+                  id="CUSTOMER_ID"
+                  type="checkbox"
+                  className="getValueUsingClass"
+                  checked={smsTemplet.includes("ID: CUSTOMER_ID")}
+                  value={"ID: CUSTOMER_ID"}
+                  onChange={(e) => {
+                    itemSettingHandler(e.target.value);
+                  }}
+                />
+                <label className="templatelabel" htmlFor="CUSTOMER_ID">
+                  {"ID: CUSTOMER_ID"}
+                </label>
+              </div>
+
+              <div className="radioselect">
+                <input
+                  id="CUSTOMER_NAME"
+                  type="checkbox"
+                  className="getValueUsingClass"
+                  checked={smsTemplet.includes("NAME: CUSTOMER_NAME")}
+                  value={"NAME: CUSTOMER_NAME"}
+                  onChange={(e) => {
+                    itemSettingHandler(e.target.value);
+                  }}
+                />
+                <label className="templatelabel" htmlFor="CUSTOMER_NAME">
+                  {"NAME: CUSTOMER_NAME"}
+                </label>
+              </div>
+
+              <div className="radioselect">
+                <input
+                  id="AMOUNT"
+                  type="checkbox"
+                  className="getValueUsingClass"
+                  checked={smsTemplet.includes("BILL: AMOUNT")}
+                  value={"BILL: AMOUNT"}
+                  onChange={(e) => {
+                    itemSettingHandler(e.target.value);
+                  }}
+                />
+                <label className="templatelabel" htmlFor="AMOUNT">
+                  {"BILL: AMOUNT"}
+                </label>
+              </div>
+
+              <div className="radioselect">
+                <input
+                  id="BILL_DATE"
+                  type="checkbox"
+                  className="getValueUsingClass"
+                  checked={smsTemplet.includes("LAST DATE: BILL_DATE")}
+                  value={"LAST DATE: BILL_DATE"}
+                  onChange={(e) => {
+                    itemSettingHandler(e.target.value);
+                  }}
+                />
+                <label className="templatelabel" htmlFor="BILL_DATE">
+                  {"LAST DATE: BILL_DATE"}
+                </label>
+              </div>
             </div>
-            <div className="templateSelect">
+
+            <div className="displayGrid">
               <select
-                style={{
-                  width: "150px",
-                  border: "2px solid grey",
-                  fontWeight: "600",
-                  borderRadius: "5px",
-                  marginTop: "25px",
-                }}
+                className="form-select mw-100 mt-0"
                 onChange={(e) => dayTempletHandler(e)}
-                name=""
-                id=""
+                style={{ backgroundColor: "#dcdcdc" }}
               >
                 <option value=""> {t("selectTemplate")} </option>
                 {smstempletDay
@@ -426,90 +420,116 @@ function AlertSmsTemplate() {
                   })}
               </select>
 
-              <div className="mt-3">
+              <input
+                value={fontValue}
+                onChange={(event) => setFontValue(event.target.value)}
+                class="form-control"
+                type="text"
+                placeholder={t("title")}
+                maxLength={40}
+              />
+            </div>
+
+            <div className="displayGrid d-flex mb-3">
+              <div className="day_checkbox">
                 <input
-                  value={fontValue}
-                  onChange={(event) => setFontValue(event.target.value)}
-                  class="form-control"
-                  type="text"
-                  placeholder={t("title")}
-                  maxLength={40}
+                  type="checkbox"
+                  className="getValueUsingClass"
+                  id="OneDay"
+                  value={"1"}
+                  checked={days.includes(1)}
+                  onChange={(e) => {
+                    daySettingHandler(e.target.value);
+                  }}
                 />
+                <label htmlFor="OneDay">{t("billDueOneDay")}</label>
+              </div>
+
+              <div className="day_checkbox">
+                <input
+                  type="checkbox"
+                  className="getValueUsingClass"
+                  id="TwoDay"
+                  value={"2"}
+                  checked={days.includes(2)}
+                  onChange={(e) => {
+                    daySettingHandler(e.target.value);
+                  }}
+                />
+                <label htmlFor="TwoDay">{t("billDueTwoDay")}</label>
+              </div>
+
+              <div className="day_checkbox">
+                <input
+                  type="checkbox"
+                  className="getValueUsingClass"
+                  id="ThreeDay"
+                  value={"3"}
+                  checked={days.includes(3)}
+                  onChange={(e) => {
+                    daySettingHandler(e.target.value);
+                  }}
+                />
+                <label htmlFor="ThreeDay">{t("billDueThreeDay")}</label>
+              </div>
+
+              <div className="day_checkbox">
+                <input
+                  type="checkbox"
+                  className="getValueUsingClass"
+                  id="FourDay"
+                  value={"4"}
+                  checked={days.includes(4)}
+                  onChange={(e) => {
+                    daySettingHandler(e.target.value);
+                  }}
+                />
+                <label htmlFor="FourDay">{t("billDueFourDay")}</label>
+              </div>
+
+              <div className="day_checkbox">
+                <input
+                  type="checkbox"
+                  className="getValueUsingClass"
+                  id="FiveDay"
+                  value={"5"}
+                  checked={days.includes(5)}
+                  onChange={(e) => {
+                    daySettingHandler(e.target.value);
+                  }}
+                />
+                <label htmlFor="FiveDay">{t("billDueFiveDay")}</label>
+              </div>
+
+              <div className="day_checkbox">
+                <input
+                  type="checkbox"
+                  className="getValueUsingClass"
+                  id="SixDay"
+                  value={"6"}
+                  checked={days.includes(6)}
+                  onChange={(e) => {
+                    daySettingHandler(e.target.value);
+                  }}
+                />
+                <label htmlFor="SixDay">{t("billDueSixDay")}</label>
+              </div>
+
+              <div className="day_checkbox">
+                <input
+                  type="checkbox"
+                  className="getValueUsingClass"
+                  id="SevenDay"
+                  value={"7"}
+                  checked={days.includes(7)}
+                  onChange={(e) => {
+                    daySettingHandler(e.target.value);
+                  }}
+                />
+                <label htmlFor="SevenDay">{t("billDueSevenDay")}</label>
               </div>
             </div>
-            <div style={{ marginBotton: "20px" }} className="displayFlex">
-              <input
-                type="checkbox"
-                className="getValueUsingClass"
-                value={"1"}
-                checked={days.includes(1)}
-                onChange={(e) => {
-                  daySettingHandler(e.target.value);
-                }}
-              />
-              <label className="mx-3">{t("billDueOneDay")}</label>
-              <input
-                type="checkbox"
-                className="getValueUsingClass"
-                value={"2"}
-                checked={days.includes(2)}
-                onChange={(e) => {
-                  daySettingHandler(e.target.value);
-                }}
-              />
-              <label className="mx-3">{t("billDueTwoDay")}</label>
-              <input
-                type="checkbox"
-                className="getValueUsingClass"
-                value={"3"}
-                checked={days.includes(3)}
-                onChange={(e) => {
-                  daySettingHandler(e.target.value);
-                }}
-              />
-              <label className="mx-3">{t("billDueThreeDay")}</label>
-              <input
-                type="checkbox"
-                className="getValueUsingClass"
-                value={"4"}
-                checked={days.includes(4)}
-                onChange={(e) => {
-                  daySettingHandler(e.target.value);
-                }}
-              />
-              <label className="mx-3">{t("billDueFourDay")}</label>
-              <input
-                type="checkbox"
-                className="getValueUsingClass"
-                value={"5"}
-                checked={days.includes(5)}
-                onChange={(e) => {
-                  daySettingHandler(e.target.value);
-                }}
-              />
-              <label className="mx-3">{t("billDueFiveDay")}</label>
-              <input
-                type="checkbox"
-                className="getValueUsingClass"
-                value={"6"}
-                checked={days.includes(6)}
-                onChange={(e) => {
-                  daySettingHandler(e.target.value);
-                }}
-              />
-              <label className="mx-3">{t("billDueSixDay")}</label>
-              <input
-                type="checkbox"
-                className="getValueUsingClass"
-                value={"7"}
-                checked={days.includes(7)}
-                onChange={(e) => {
-                  daySettingHandler(e.target.value);
-                }}
-              />
-              <label className="mx-3">{t("billDueSevenDay")}</label>
-            </div>
-            <p style={{ marginTop: "20px" }}> {t("dueToFinishBillCycle")} </p>
+            <p className="h6 mt-3"> {t("dueToFinishBillCycle")} </p>
           </div>
 
           <div className="smsCount">
@@ -529,9 +549,7 @@ function AlertSmsTemplate() {
             // onClick={insertMyText}
             maxLength={335 - upperText.length}
             onChange={(e) => setBottomText(e.target.value)}
-          >
-            {" "}
-          </textarea>
+          ></textarea>
           <hr />
           <button
             type="submit"

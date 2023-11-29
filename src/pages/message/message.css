@@ -187,6 +187,26 @@
   cursor: pointer;
 }
 
+.message_radio {
+  gap: 5px;
+  display: flex;
+  align-items: center;
+}
+.message_radio > input {
+  width: 17px;
+  height: 17px;
+}
+
+.day_checkbox {
+  gap: 5px;
+  display: flex;
+  align-items: center;
+}
+.day_checkbox > input {
+  width: 17px;
+  height: 17px;
+}
+
 .billconfirm {
   display: flex;
   align-items: flex-start;

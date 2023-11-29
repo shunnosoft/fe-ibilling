@@ -181,22 +181,32 @@ function BillConfirmationSmsTemplate() {
           <div className="messageStatus d-flex justify-content-between">
             <div className="sending-status">
               <h4> {t("billConfirmSMStemplate")} </h4>
-              <input
-                name="billConfirmation"
-                type="radio"
-                checked={billConfirmation === "on"}
-                value={"on"}
-                onChange={radioCheckHandler}
-              />{" "}
-              {t("on")} {"              "}
-              <input
-                name="billConfirmation"
-                type="radio"
-                checked={billConfirmation === "off"}
-                value={"off"}
-                onChange={radioCheckHandler}
-              />{" "}
-              {t("off")}
+              <div className="displayGrid1 mb-3">
+                <div className="message_radio">
+                  <input
+                    type="radio"
+                    name="billConfirmation"
+                    id="onTemplate"
+                    value={"on"}
+                    checked={billConfirmation === "on"}
+                    onChange={radioCheckHandler}
+                  />
+                  <label htmlFor="onTemplate">{t("ON")}</label>
+                </div>
+
+                <div className="message_radio">
+                  <input
+                    type="radio"
+                    name="billConfirmation"
+                    id="offTemplate"
+                    value={"off"}
+                    checked={billConfirmation === "off"}
+                    onChange={radioCheckHandler}
+                  />
+                  <label htmlFor="offTemplate">{t("OFF")}</label>
+                </div>
+              </div>
+
               <div className="">
                 {/* <label className="templatelabel" htmlFor="20">
                     {"ID: CUSTOMER_ID"}

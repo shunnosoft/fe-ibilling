@@ -287,28 +287,31 @@ function CalenderAlert() {
           <div className="messageStatus d-flex justify-content-between">
             <div className="sending-status">
               <h4> {t("calenderAlertTemplate")} </h4>
-              <input
-                id="on"
-                name="billConfirmation"
-                type="radio"
-                checked={billConfirmation === "on"}
-                value={"on"}
-                onChange={radioCheckHandler}
-              />
-              <label className="templatelabel" htmlFor="on">
-                {t("on")}
-              </label>
-              <input
-                id="off"
-                name="billConfirmation"
-                type="radio"
-                checked={billConfirmation === "off"}
-                value={"off"}
-                onChange={radioCheckHandler}
-              />
-              <label className="templatelabel" htmlFor="off">
-                {t("off")}
-              </label>
+              <div className="displayGrid1">
+                <div className="message_radio">
+                  <input
+                    type="radio"
+                    name="billConfirmation"
+                    id="onTemplate"
+                    value={"on"}
+                    checked={billConfirmation === "on"}
+                    onChange={radioCheckHandler}
+                  />
+                  <label htmlFor="onTemplate">{t("ON")}</label>
+                </div>
+
+                <div className="message_radio">
+                  <input
+                    type="radio"
+                    name="billConfirmation"
+                    id="offTemplate"
+                    value={"off"}
+                    checked={billConfirmation === "off"}
+                    onChange={radioCheckHandler}
+                  />
+                  <label htmlFor="offTemplate">{t("OFF")}</label>
+                </div>
+              </div>
             </div>
             <div className="message-sending-type">
               <h4> {t("sendingMessageType")} </h4>

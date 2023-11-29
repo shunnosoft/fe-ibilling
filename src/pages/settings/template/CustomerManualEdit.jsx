@@ -58,24 +58,29 @@ const CustomerManualEdit = () => {
         <div className="messageStatus d-flex justify-content-between">
           <div className="sending-status">
             <h4> {t("manualInactive")} </h4>
-            <input
-              id="rechareRadioOn"
-              name="assignTicket"
-              type="radio"
-              checked={manualEditStatus}
-              onChange={() => setManualEditStatus(true)}
-            />
-            &nbsp;
-            {t("on")} {"              "}
-            <input
-              id="rechargeRadioOff"
-              name="assignTicket"
-              type="radio"
-              checked={!manualEditStatus}
-              onChange={() => setManualEditStatus(false)}
-            />
-            &nbsp;
-            {t("off")} {"              "}
+            <div className="displayGrid1">
+              <div className="message_radio">
+                <input
+                  type="radio"
+                  name="assignTicket"
+                  id="onTemplate"
+                  checked={manualEditStatus}
+                  onChange={() => setManualEditStatus(true)}
+                />
+                <label htmlFor="onTemplate">{t("ON")}</label>
+              </div>
+
+              <div className="message_radio">
+                <input
+                  type="radio"
+                  name="assignTicket"
+                  id="offTemplate"
+                  checked={!manualEditStatus}
+                  onChange={() => setManualEditStatus(false)}
+                />
+                <label htmlFor="offTemplate">{t("OFF")}</label>
+              </div>
+            </div>
           </div>
           <div className="message-sending-type">
             <h4> {t("sendingMessageType")} </h4>
