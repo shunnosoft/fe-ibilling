@@ -67,7 +67,6 @@ import BulkCustomerDelete from "./customerCRUD/bulkOpration/BulkdeleteModal";
 import BulkAutoConnectionEdit from "./customerCRUD/bulkOpration/bulkAutoConnectionEdit";
 import BulkCustomerTransfer from "./customerCRUD/bulkOpration/bulkCustomerTransfer";
 import CustomerDelete from "./customerCRUD/CustomerDelete";
-import { printOptionData } from "./customerCRUD/printOptionData";
 import FormatNumber from "../../components/common/NumberFormat";
 import BulkPromiseDateEdit from "./customerCRUD/bulkOpration/BulkPromiseDateEdit";
 import Footer from "../../components/admin/footer/Footer";
@@ -181,9 +180,6 @@ const PPPOECustomer = () => {
   // single customer object state
   const [customerData, setCustomerData] = useState({});
 
-  // state for select print option print
-  const [printOption, setPrintOptions] = useState([]);
-
   // print modal state
   const [modalShow, setModalShow] = useState(false);
 
@@ -278,13 +274,10 @@ const PPPOECustomer = () => {
     if (poleBox.length === 0)
       getPoleBoxApi(dispatch, ispOwnerId, setIsLoadingPole);
 
-    // set initial state for print oprions
-    setPrintOptions(printOptionData);
-
     // get ispOwner all staffs
     getOwnerUsers(dispatch, ispOwnerId);
 
-    // bulletin get api
+    // bulletin get apipppoeCustomerOption
     Object.keys(bulletinPagePermission)?.length === 0 &&
       getBulletinPermission(dispatch);
   }, []);
@@ -545,6 +538,14 @@ const PPPOECustomer = () => {
   const bandwidthModalController = (customerID) => {
     setCustomerId(customerID);
     setBandWidthModal(true);
+  };
+
+  // pppoe customer print option
+  const printData = {
+    id: 1003,
+    value: "pppoe",
+    label: "pppoe",
+    checked: true,
   };
 
   //custom table header component
@@ -2177,6 +2178,7 @@ const PPPOECustomer = () => {
         filterData={filterData}
         tableData={tableData}
         page={"customer"}
+        printData={printData}
       />
     </>
   );

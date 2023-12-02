@@ -19,7 +19,9 @@ const PrintOptions = ({
   setShow,
   filterData,
   tableData,
+  customerData,
   page,
+  printData,
   printOptions,
 }) => {
   const { t } = useTranslation();
@@ -34,7 +36,13 @@ const PrintOptions = ({
   // set customer print options in state
   useEffect(() => {
     if (page === "customer") {
-      setPrintOption(printOptionData?.customer);
+      if (printData) {
+        let pageOption = [...printOptionData?.customer];
+        pageOption.splice(2, 0, printData);
+        setPrintOption(pageOption);
+      } else {
+        setPrintOption(printOptionData?.customer);
+      }
     } else {
       setPrintOption(printOptionData?.report);
     }
@@ -142,6 +150,7 @@ const PrintOptions = ({
             filterData={filterData}
             currentCustomers={tableData}
             printOptions={printOption}
+            customerData={customerData}
           />
         </div>
       )}

@@ -8,7 +8,14 @@ import { GeoAlt, Phone } from "react-bootstrap-icons";
 
 const PrintCustomer = forwardRef((props, ref) => {
   const { t } = useTranslation();
-  const { page, printCopy, currentCustomers, filterData, printOptions } = props;
+  const {
+    page,
+    printCopy,
+    filterData,
+    printOptions,
+    customerData,
+    currentCustomers,
+  } = props;
 
   //user role
   const userRole = useSelector((state) => state.persistedReducer.auth.role);
@@ -66,24 +73,17 @@ const PrintCustomer = forwardRef((props, ref) => {
     <div ref={ref}>
       {page === "customer" && (
         <>
-          <div className="page_header letter_header d-flex justify-content-end align-items-center pb-3 ">
-            {/* <div className="logo_side">
-          <div className="company_logo">
-            <img src="/assets/img/logo.png" alt="Company Logo" />
-          </div>
-          <div className="company_name">{ispOwnerData.company}</div>
-        </div> */}
-            <div className="details_side">
+          <div className="text-center bg-primary text-white fw-bold shadow-sm p-2 mb-5 rounded">
+            <p>
+              {t("companyName")} {userData.company}
+            </p>
+            {userData?.address && (
               <p>
-                {t("companyName")} {userData.company}
+                {t("address")} {userData?.address}
               </p>
-              {userData?.address && (
-                <p>
-                  {t("address")} {userData?.address}
-                </p>
-              )}
-            </div>
+            )}
           </div>
+
           {filterData && (
             <ul className="d-flex justify-content-evenly filter_list">
               {filterData?.area && (
@@ -131,109 +131,234 @@ const PrintCustomer = forwardRef((props, ref) => {
               {t("totalCustomer")} : {currentCustomers.length}
             </li>
             <li>
-              {t("totalMonthlyFee")} :{" "}
-              {FormatNumber(monthlyFee.totalMonthlyFee)}
+              {t("totalMonthlyFee")} :{FormatNumber(monthlyFee.totalMonthlyFee)}
             </li>
           </ul>
           <table className="table table-striped ">
             <thead>
-              <tr className="spetialSortingRow">
-                {printOptions?.map(
-                  (item) =>
-                    item.checked && (
-                      <>
-                        <th scope="col">{t(item.value)}</th>
-                      </>
-                    )
-                )}
-              </tr>
+              {printOptions?.length > 0 && (
+                <tr className="spetialSortingRow">
+                  {printOptions[0]?.checked && (
+                    <th>{t(printOptions[0].value)}</th>
+                  )}
+
+                  {printOptions[1].checked && !printOptions[2].checked ? (
+                    <th>{t(printOptions[1].value)}</th>
+                  ) : !printOptions[1].checked && printOptions[2].checked ? (
+                    <th>{t(printOptions[2].value)}</th>
+                  ) : (
+                    <th>
+                      {t(printOptions[1].value)}/{t(printOptions[2].value)}
+                    </th>
+                  )}
+
+                  {printOptions[3].checked && !printOptions[4].checked ? (
+                    <th>{t(printOptions[3].value)}</th>
+                  ) : !printOptions[3].checked && printOptions[4].checked ? (
+                    <th>{t(printOptions[4].value)}</th>
+                  ) : (
+                    <th>
+                      {t(printOptions[3].value)}/{t(printOptions[4].value)}
+                    </th>
+                  )}
+
+                  {printOptions[5]?.checked && (
+                    <th>{t(printOptions[5].value)}</th>
+                  )}
+
+                  {printOptions[6].checked && !printOptions[7].checked ? (
+                    <th>{t(printOptions[6].value)}</th>
+                  ) : !printOptions[6].checked && printOptions[7].checked ? (
+                    <th>{t(printOptions[7].value)}</th>
+                  ) : (
+                    <th>
+                      {t(printOptions[6].value)}/{t(printOptions[7].value)}
+                    </th>
+                  )}
+
+                  {printOptions[8].checked && !printOptions[9].checked ? (
+                    <th>{t(printOptions[8].value)}</th>
+                  ) : !printOptions[8].checked && printOptions[9].checked ? (
+                    <th>{t(printOptions[9].value)}</th>
+                  ) : (
+                    <th>
+                      {t(printOptions[8].value)}/{t(printOptions[9].value)}
+                    </th>
+                  )}
+
+                  {printOptions[10]?.checked && (
+                    <th>{t(printOptions[10].value)}</th>
+                  )}
+
+                  {printOptions[11]?.checked && (
+                    <th>{t(printOptions[11].value)}</th>
+                  )}
+
+                  {printOptions[12]?.checked && (
+                    <th>{t(printOptions[12].value)}</th>
+                  )}
+
+                  {printOptions[13]?.checked && (
+                    <th>{t(printOptions[13].value)}</th>
+                  )}
+                </tr>
+              )}
             </thead>
             <tbody>
-              {page === "customer" &&
-                currentCustomers?.map(
-                  (val, key) =>
-                    printOptions?.length > 0 && (
-                      <tr key={key} id={val.id}>
-                        {printOptions[0].checked && (
-                          <td className="prin_td">{val?.customerId}</td>
-                        )}
-                        {printOptions[1].checked && (
-                          <>
-                            <td className="prin_td">
-                              <p>{val.name}</p>
-                              <p>
-                                {val?.userType === "pppoe"
-                                  ? val?.pppoe?.name
-                                  : val?.userType === "firewall-queue"
-                                  ? val?.queue?.address
-                                  : val?.userType === "core-queue"
-                                  ? val?.queue?.srcAddress
-                                  : val?.userType === "simple-queue"
-                                  ? val?.queue?.target
-                                  : val?.hotspot?.name}
-                              </p>
-                            </td>
-                          </>
-                        )}
-                        {printOptions[2].checked && (
-                          <td className="prin_td">
-                            <p>
-                              <Phone className="text-info" />
-                              {val?.mobile ? val?.mobile : "N/A"}
-                            </p>
+              {currentCustomers?.map(
+                (val, key) =>
+                  printOptions?.length > 0 && (
+                    <tr key={key} id={val.id}>
+                      {printOptions[0]?.checked && (
+                        <td className="prin_td">{val?.customerId}</td>
+                      )}
 
-                            <p>
-                              <GeoAlt /> {val?.address ? val?.address : "N/A"}
-                            </p>
-                          </td>
-                        )}
-                        {printOptions[3].checked && (
-                          <td className="prin_td">
-                            {val && getCustomerPackage(val)?.name}
-                          </td>
-                        )}
-                        {printOptions[4].checked && (
-                          <td className="prin_td">
-                            <p>{val.monthlyFee}</p>
-                            <p
-                              className={`text-${
-                                val?.balance > -1 ? "success" : "danger"
-                              }`}
-                            >
-                              {val?.balance}
-                            </p>
-                          </td>
-                        )}
-                        {printOptions[5].checked && (
-                          <td className="prin_td">
+                      {printOptions[1]?.checked && !printOptions[2]?.checked ? (
+                        <td className="prin_td">
+                          <p>{val.name}</p>
+                        </td>
+                      ) : printOptions[1]?.checked &&
+                        !printOptions[2]?.checked ? (
+                        <td className="prin_td">
+                          <p>
+                            {val?.userType === "pppoe"
+                              ? val?.pppoe?.name
+                              : val?.userType === "firewall-queue"
+                              ? val?.queue?.address
+                              : val?.userType === "core-queue"
+                              ? val?.queue?.srcAddress
+                              : val?.userType === "simple-queue"
+                              ? val?.queue?.target
+                              : val?.hotspot?.name}
+                          </p>
+                        </td>
+                      ) : (
+                        <td className="prin_td">
+                          <p>{val.name}</p>
+                          <p>
+                            {val?.userType === "pppoe"
+                              ? val?.pppoe?.name
+                              : val?.userType === "firewall-queue"
+                              ? val?.queue?.address
+                              : val?.userType === "core-queue"
+                              ? val?.queue?.srcAddress
+                              : val?.userType === "simple-queue"
+                              ? val?.queue?.target
+                              : val?.hotspot?.name}
+                          </p>
+                        </td>
+                      )}
+
+                      {printOptions[3]?.checked && !printOptions[4]?.checked ? (
+                        <td className="prin_td">
+                          <p>
+                            <Phone className="text-info" />
+                            {val?.mobile ? val?.mobile : "N/A"}
+                          </p>
+                        </td>
+                      ) : !printOptions[3]?.checked &&
+                        printOptions[4]?.checked ? (
+                        <td className="prin_td">
+                          <p>
+                            <GeoAlt /> {val?.address ? val?.address : "N/A"}
+                          </p>
+                        </td>
+                      ) : (
+                        <td className="prin_td">
+                          <p>
+                            <Phone className="text-info" />
+                            {val?.mobile ? val?.mobile : "N/A"}
+                          </p>
+
+                          <p>
+                            <GeoAlt /> {val?.address ? val?.address : "N/A"}
+                          </p>
+                        </td>
+                      )}
+
+                      {printOptions[5]?.checked && (
+                        <td className="prin_td">
+                          {val && getCustomerPackage(val)?.name}
+                        </td>
+                      )}
+
+                      {printOptions[6]?.checked && !printOptions[7]?.checked ? (
+                        <td className="prin_td">
+                          <p>৳{val.monthlyFee}</p>
+                        </td>
+                      ) : !printOptions[6]?.checked &&
+                        printOptions[7]?.checked ? (
+                        <td className="prin_td">
+                          <p
+                            className={`text-${
+                              val?.balance > -1 ? "success" : "danger"
+                            }`}
+                          >
+                            ৳{val?.balance}
+                          </p>
+                        </td>
+                      ) : (
+                        <td className="prin_td">
+                          <p>৳{val.monthlyFee}</p>
+                          <p
+                            className={`text-${
+                              val?.balance > -1 ? "success" : "danger"
+                            }`}
+                          >
+                            ৳{val?.balance}
+                          </p>
+                        </td>
+                      )}
+
+                      {printOptions[8]?.checked && !printOptions[9]?.checked ? (
+                        <td className="prin_td">
+                          {moment(val?.billingCycle).format(
+                            "DD-MM-YYYY hh:mm A"
+                          )}
+                        </td>
+                      ) : !printOptions[8]?.checked &&
+                        printOptions[9]?.checked ? (
+                        <td className="prin_td">
+                          {moment(val?.promiseDate).format(
+                            "DD-MM-YYYY hh:mm A"
+                          )}
+                        </td>
+                      ) : (
+                        <td>
+                          <p>
                             {moment(val?.billingCycle).format(
                               "DD-MM-YYYY hh:mm A"
                             )}
-                          </td>
-                        )}
-                        {printOptions[6].checked && (
-                          <td className="prin_td">
-                            <p>{badge(val?.paymentStatus)}</p>
-                            <p>{badge(val?.status)}</p>
-                          </td>
-                        )}
-                        {printOptions[7].checked && (
-                          <td className="prin_td">
-                            {moment(val?.createdAt).format(
+                          </p>
+                          <p>
+                            {moment(val?.promiseDate).format(
                               "DD-MM-YYYY hh:mm A"
                             )}
-                          </td>
-                        )}
-                        {printOptions[8].checked && (
-                          <td className="prin_td">
-                            {moment(val?.createdAt).format(
-                              "DD-MM-YYYY hh:mm A"
-                            )}
-                          </td>
-                        )}
-                      </tr>
-                    )
-                )}
+                          </p>
+                        </td>
+                      )}
+
+                      {printOptions[10]?.checked && (
+                        <td className="prin_td text-center">
+                          <p>{badge(val?.paymentStatus)}</p>
+                          <p>{badge(val?.status)}</p>
+                        </td>
+                      )}
+
+                      {printOptions[11]?.checked && (
+                        <td className="prin_td">
+                          {moment(val?.createdAt).format("DD-MM-YYYY hh:mm A")}
+                        </td>
+                      )}
+
+                      {printOptions[12]?.checked && (
+                        <td className="prin_td">
+                          {moment(val?.createdAt).format("DD-MM-YYYY hh:mm A")}
+                        </td>
+                      )}
+                    </tr>
+                  )
+              )}
             </tbody>
           </table>
         </>
@@ -257,57 +382,57 @@ const PrintCustomer = forwardRef((props, ref) => {
               </div>
 
               <div className="container">
-                {printOptions.length > 0 && (
+                {printOptions?.length > 0 && (
                   <div className="displayGridHorizontalFill5_5">
-                    {printOptions[1].checked && (
+                    {printOptions[0]?.checked && (
                       <p>
-                        {t("name")} :
+                        {t(printOptions[0]?.value)} :
                         <strong style={{ marginLeft: ".7rem" }}>
-                          {currentCustomers?.name}
+                          {customerData?.name}
                         </strong>
                       </p>
                     )}
-                    {printOptions[2].checked && (
+
+                    {customerData?.mobile && printOptions[1]?.checked ? (
                       <p>
-                        {t("pppoe")} :
+                        {t(printOptions[1]?.value)} :
                         <strong style={{ marginLeft: ".7rem" }}>
-                          {currentCustomers.pppoe?.name}
+                          {customerData?.mobile}
+                        </strong>
+                      </p>
+                    ) : (
+                      ""
+                    )}
+
+                    {printOptions[2]?.checked && (
+                      <p>
+                        {t(printOptions[2]?.value)}:
+                        <strong style={{ marginLeft: ".7rem" }}>
+                          {customerData &&
+                            getCustomerPackage(customerData)?.name}
                         </strong>
                       </p>
                     )}
-                    {printOptions[3].checked && currentCustomers?.mobile && (
+
+                    {printOptions[3]?.checked && (
                       <p>
-                        {t("mobile")} :
+                        {t(printOptions[3]?.value)}:
                         <strong style={{ marginLeft: ".7rem" }}>
-                          {currentCustomers?.mobile}
+                          {customerData?.monthlyFee}
                         </strong>
                       </p>
                     )}
-                    {printOptions[4].checked && currentCustomers?.address && (
+
+                    {customerData?.address && printOptions[4]?.checked ? (
                       <p>
                         <span>
-                          {t("address")} : {currentCustomers?.address}
+                          {t(printOptions[4]?.value)} :{customerData?.address}
                         </span>
                       </p>
+                    ) : (
+                      ""
                     )}
-                    {printOptions[5].checked && (
-                      <p>
-                        {t("package")}:
-                        <strong style={{ marginLeft: ".7rem" }}>
-                          {currentCustomers.customer?.userType === "pppoe"
-                            ? currentCustomers.package
-                            : ""}
-                        </strong>
-                      </p>
-                    )}
-                    {printOptions[6].checked && (
-                      <p>
-                        {t("monthlyFee")}:
-                        <strong style={{ marginLeft: ".7rem" }}>
-                          {currentCustomers.customer?.monthlyFee}
-                        </strong>
-                      </p>
-                    )}
+
                     <p>
                       {currentCustomers?.collectedBy && (
                         <span>
@@ -315,16 +440,15 @@ const PrintCustomer = forwardRef((props, ref) => {
                         </span>
                       )}
                     </p>
-                    {printOptions[15]?.checked && (
-                      <p>
-                        {t("paidDate")}:
-                        <strong style={{ marginLeft: ".7rem" }}>
-                          {moment(currentCustomers?.createdAt).format(
-                            "MMM DD YYYY"
-                          )}
-                        </strong>
-                      </p>
-                    )}
+
+                    <p>
+                      {t("paidDate")}:
+                      <strong style={{ marginLeft: ".7rem" }}>
+                        {moment(currentCustomers?.createdAt).format(
+                          "MMM DD YYYY"
+                        )}
+                      </strong>
+                    </p>
                   </div>
                 )}
 
@@ -372,7 +496,7 @@ const PrintCustomer = forwardRef((props, ref) => {
                           <span>
                             {moment(currentCustomers?.startDate).format(
                               "MMM DD YYYY"
-                            )}{" "}
+                            )}
                             -
                           </span>
                         )}
@@ -431,57 +555,57 @@ const PrintCustomer = forwardRef((props, ref) => {
 
             <div className="container">
               <div className="container">
-                {printOptions.length > 0 && (
+                {printOptions?.length > 0 && (
                   <div className="displayGridHorizontalFill5_5">
-                    {printOptions[1].checked && (
+                    {printOptions[0]?.checked && (
                       <p>
-                        {t("name")} :
+                        {t(printOptions[0]?.value)} :
                         <strong style={{ marginLeft: ".7rem" }}>
-                          {currentCustomers?.name}
+                          {customerData?.name}
                         </strong>
                       </p>
                     )}
-                    {printOptions[2].checked && (
+
+                    {customerData?.mobile && printOptions[1]?.checked ? (
                       <p>
-                        {t("pppoe")} :
+                        {t(printOptions[1]?.value)} :
                         <strong style={{ marginLeft: ".7rem" }}>
-                          {currentCustomers.pppoe?.name}
+                          {customerData?.mobile}
+                        </strong>
+                      </p>
+                    ) : (
+                      ""
+                    )}
+
+                    {printOptions[2]?.checked && (
+                      <p>
+                        {t(printOptions[2]?.value)}:
+                        <strong style={{ marginLeft: ".7rem" }}>
+                          {customerData &&
+                            getCustomerPackage(customerData)?.name}
                         </strong>
                       </p>
                     )}
-                    {printOptions[3].checked && currentCustomers?.mobile && (
+
+                    {printOptions[3]?.checked && (
                       <p>
-                        {t("mobile")} :
+                        {t(printOptions[3]?.value)}:
                         <strong style={{ marginLeft: ".7rem" }}>
-                          {currentCustomers?.mobile}
+                          {customerData?.monthlyFee}
                         </strong>
                       </p>
                     )}
-                    {printOptions[4].checked && currentCustomers?.address && (
+
+                    {customerData?.address && printOptions[4]?.checked ? (
                       <p>
                         <span>
-                          {t("address")} : {currentCustomers?.address}
+                          {t(printOptions[4]?.value)} :{customerData?.address}
                         </span>
                       </p>
+                    ) : (
+                      ""
                     )}
-                    {printOptions[5].checked && (
-                      <p>
-                        {t("package")}:
-                        <strong style={{ marginLeft: ".7rem" }}>
-                          {currentCustomers.customer?.userType === "pppoe"
-                            ? currentCustomers.package
-                            : ""}
-                        </strong>
-                      </p>
-                    )}
-                    {printOptions[6].checked && (
-                      <p>
-                        {t("monthlyFee")}:
-                        <strong style={{ marginLeft: ".7rem" }}>
-                          {currentCustomers.customer?.monthlyFee}
-                        </strong>
-                      </p>
-                    )}
+
                     <p>
                       {currentCustomers?.collectedBy && (
                         <span>
@@ -489,16 +613,15 @@ const PrintCustomer = forwardRef((props, ref) => {
                         </span>
                       )}
                     </p>
-                    {printOptions[15]?.checked && (
-                      <p>
-                        {t("paidDate")}:
-                        <strong style={{ marginLeft: ".7rem" }}>
-                          {moment(currentCustomers?.createdAt).format(
-                            "MMM DD YYYY"
-                          )}
-                        </strong>
-                      </p>
-                    )}
+
+                    <p>
+                      {t("paidDate")}:
+                      <strong style={{ marginLeft: ".7rem" }}>
+                        {moment(currentCustomers?.createdAt).format(
+                          "MMM DD YYYY"
+                        )}
+                      </strong>
+                    </p>
                   </div>
                 )}
 
@@ -546,7 +669,7 @@ const PrintCustomer = forwardRef((props, ref) => {
                           <span>
                             {moment(currentCustomers?.startDate).format(
                               "MMM DD YYYY"
-                            )}{" "}
+                            )}
                             -
                           </span>
                         )}

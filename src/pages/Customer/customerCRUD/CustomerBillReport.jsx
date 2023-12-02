@@ -16,7 +16,7 @@ import { FontColor } from "../../../assets/js/theme";
 import PrintOptions from "../../../components/common/PrintOptions";
 import useISPowner from "../../../hooks/useISPOwner";
 
-const CustomerBillReport = ({ customerId }) => {
+const CustomerBillReport = ({ customerId, customerData }) => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
@@ -222,6 +222,7 @@ const CustomerBillReport = ({ customerId }) => {
         setShow={setShow}
         printOptions={printOptions}
         tableData={tableData}
+        customerData={customerData}
         page={"billReport"}
       />
     </>

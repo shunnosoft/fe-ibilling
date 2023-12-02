@@ -19,7 +19,6 @@ import apiLink from "../../api/apiLink";
 import { isBangla, smsCount } from "../../components/common/UtilityMethods";
 import { useTranslation } from "react-i18next";
 import { getArea } from "../../features/apiCalls";
-import { Button } from "react-bootstrap";
 import SMSPurchase from "./SMSPurchase";
 import MessageAlert from "./MessageAlert";
 import { getSubAreasApi } from "../../features/actions/customerApiCall";
@@ -94,7 +93,6 @@ export default function Message() {
   const storeSubArea = useSelector((state) => state.area?.subArea);
   const [areaIds, setAreaIds] = useState([]);
   const [subAreaIds, setSubAreaIds] = useState([]);
-  console.log(subAreaIds);
   const [title, setTitle] = useState("");
 
   const [days, setDays] = useState([]);
@@ -103,6 +101,8 @@ export default function Message() {
   const [billDate, setBillDate] = useState(new Date());
 
   const [show, setShow] = useState(false);
+
+  const [loading, setIsLoading] = useState(false);
 
   const maskingId = useSelector(
     (state) => state.persistedReducer.auth.currentUser.ispOwner?.maskingId
@@ -165,12 +165,6 @@ export default function Message() {
 
     setDays(days);
   };
-
-  // const customers = useSelector(
-  //   (state) => state.customer.customer
-  // );
-
-  const [loading, setIsLoading] = useState(false);
 
   const handleSendMessage = async () => {
     let messageTemplate = title + upperText + "\n" + bottomText;
@@ -576,8 +570,6 @@ export default function Message() {
                         </div>
                       ) : (
                         <div className="ifNotCheckBox">
-                          {/* area section*/}
-                          {/* <b className="mt-4">এরিয়া সিলেক্ট করুন</b> <br /> */}
                           <div style={{ width: "200px", height: "30px" }}>
                             <input
                               style={{ cursor: "pointer" }}

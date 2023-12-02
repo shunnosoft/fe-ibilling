@@ -560,7 +560,7 @@ export default function CustomerDetails({ show, setShow, customerId }) {
                 ) : profileOption === "report" ? (
                   <CustomerBillReport
                     customerId={customerId}
-                    setModalState={setShow}
+                    customerData={data}
                   />
                 ) : (
                   <CustomerMessage customerId={customerId} page={"customer"} />

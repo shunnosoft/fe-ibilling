@@ -657,6 +657,14 @@ export default function Customer() {
     }
   };
 
+  // static customer print option
+  const printData = {
+    id: 1003,
+    value: "ip",
+    label: "ip",
+    checked: true,
+  };
+
   let customerForCsV = Customers1.map((customer) => {
     return {
       companyName: ispOwnerData.company,
@@ -1810,6 +1818,7 @@ export default function Customer() {
                   filterData={filterData}
                   tableData={Customers1}
                   page="customer"
+                  printData={printData}
                 />
               )}
 
