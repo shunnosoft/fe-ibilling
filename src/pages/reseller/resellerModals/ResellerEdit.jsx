@@ -245,10 +245,10 @@ const ResellerEdit = ({ show, setShow, resellerId }) => {
         return;
       }
 
-      if (!customerType.length) {
-        alert(t("pleaseSelectCustomerType"));
-        return;
-      }
+      // if (!customerType.length) {
+      //   alert(t("pleaseSelectCustomerType"));
+      //   return;
+      // }
 
       editReseller(dispatch, sendingData, setIsLoading, setShow);
     }

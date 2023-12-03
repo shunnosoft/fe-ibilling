@@ -164,10 +164,10 @@ const ResellerPost = ({ show, setShow }) => {
         sendingData.resellerPackageRates = commision;
       }
 
-      if (!customerType.length) {
-        alert(t("pleaseSelectCustomerType"));
-        return;
-      }
+      // if (!customerType.length) {
+      //   alert(t("pleaseSelectCustomerType"));
+      //   return;
+      // }
 
       postReseller(dispatch, sendingData, setIsLoading, resetForm, setShow);
     }
