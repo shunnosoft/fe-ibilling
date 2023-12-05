@@ -1,12 +1,36 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import Select from "react-select";
+
+//internal import
 import Loader from "../components/common/Loader";
 import { billPayment } from "../features/getIspOwnerUsersApi";
 import apiLink from "../api/apiLink";
 import { publicRequest } from "../api/apiLink";
+import { toast } from "react-toastify";
 
 const PaymentModal = (props) => {
+  // current month date
+  const date = new Date();
+  const monthDate = date.getMonth();
+
+  // twelve month options
+  const options = [
+    { value: "January", label: "January" },
+    { value: "February", label: "February" },
+    { value: "March", label: "March" },
+    { value: "April", label: "April" },
+    { value: "May", label: "May" },
+    { value: "June", label: "June" },
+    { value: "July", label: "July" },
+    { value: "August", label: "August" },
+    { value: "September", label: "September" },
+    { value: "October", label: "October" },
+    { value: "November", label: "November" },
+    { value: "December", label: "December" },
+  ];
+
   const customerData = useSelector(
     (state) => state.persistedReducer.auth?.currentUser?.customer
   );
@@ -14,6 +38,9 @@ const PaymentModal = (props) => {
   const [loading, setLoading] = useState(false);
   const [agreement, setAgreement] = useState(false);
   const [userData, setUserData] = useState(null);
+
+  // customer biill date month set is requerd
+  const [selectedMonth, setSelectedMonth] = useState([]);
 
   useEffect(() => {
     if (!props.customerData && customerData) {
@@ -25,7 +52,99 @@ const PaymentModal = (props) => {
       setPaymentAmount(props.customerData.monthlyFee); //handle qr payment
       setUserData(props.customerData);
     }
+
+    selectedMonth.push(options[new Date(userData?.billingCycle).getMonth()]);
   }, [customerData, props.customerData]);
+
+  //select bill month name
+  useEffect(() => {
+    let temp = [];
+
+    // customer billing date
+    const dataMonth = new Date(userData?.billingCycle).getMonth();
+
+    if (userData?.balance === 0 && userData?.paymentStatus === "unpaid") {
+      // month to monthly bill
+      temp.push(options[dataMonth]);
+    } else if (userData?.balance === 0 && userData?.paymentStatus === "paid") {
+      // month to monthly bill
+      temp.push(options[dataMonth]);
+    } else if (
+      userData?.balance >= userData?.monthlyFee &&
+      userData?.paymentStatus === "paid"
+    ) {
+      // customer advance monthly bill
+      const modVal = Math.floor(userData?.balance / userData?.monthlyFee);
+      temp.push(options[dataMonth + modVal]);
+
+      if (dataMonth + modVal > 11) {
+        const totalMonth = dataMonth + modVal - 12;
+        temp.push(options[totalMonth]);
+      }
+    } else if (
+      userData?.balance < 0 &&
+      userData?.paymentStatus === "unpaid" &&
+      (userData?.status === "active" || userData?.status === "expired")
+    ) {
+      // customer privous monthly bill
+      const modVal = Math.floor(
+        Math.abs(userData?.balance / userData?.monthlyFee)
+      );
+
+      // customer privous years total due month
+      const dueMonth = dataMonth - modVal;
+
+      //find customer privous years dou month
+      if (dueMonth < 0) {
+        const totalMonth = 12 - Math.abs(dueMonth);
+
+        for (let i = totalMonth; i <= 11; i++) {
+          temp.push(options[i]);
+        }
+      }
+
+      //find customer current years dou month
+      if (modVal < 11) {
+        for (let i = dueMonth; i <= dataMonth; i++) {
+          if (!(i < 0)) {
+            temp.push(options[i]);
+          }
+        }
+      }
+    } else if (
+      userData?.balance < 0 &&
+      userData?.paymentStatus === "unpaid" &&
+      userData?.status === "inactive"
+    ) {
+      // customer privous monthly bill
+      const modVal = Math.floor(
+        Math.abs(userData?.balance / userData?.monthlyFee)
+      );
+
+      // customer total due month
+      const dueMonth = dataMonth - modVal;
+
+      //find customer privous years dou month
+      if (dueMonth < 0) {
+        const totalMonth = 12 - Math.abs(dueMonth);
+
+        for (let i = totalMonth; i <= 11; i++) {
+          temp.push(options[i]);
+        }
+      }
+
+      //find customer current years dou month
+      if (modVal < 11) {
+        for (let i = dueMonth; i <= monthDate; i++) {
+          if (!(i < 0)) {
+            temp.push(options[i]);
+          }
+        }
+      }
+    }
+
+    setSelectedMonth(temp);
+  }, [userData]);
 
   const billPaymentController = async () => {
     const data = {
@@ -44,6 +163,17 @@ const PaymentModal = (props) => {
     if (paymentAmount < userData.monthlyFee) {
       return alert("You can't pay less than your monthly fee");
     }
+
+    // if (selectedMonth?.length === 0) {
+    //   setLoading(false);
+    //   return toast.warn("Select Bill Month");
+    // } else {
+    //   const monthValues = selectedMonth.map((item) => {
+    //     return item.value;
+    //   });
+    //   data.month = monthValues.join(",");
+    // }
+
     billPayment(data, setLoading);
   };
 
@@ -64,6 +194,18 @@ const PaymentModal = (props) => {
 
   useEffect(() => {
     let paymentID = "";
+    // let monthDate = "";
+
+    // if (selectedMonth?.length === 0) {
+    //   toast.warn("Select Bill Month");
+    //   return;
+    // } else {
+    //   const monthValues = selectedMonth.map((item) => {
+    //     return item.value;
+    //   });
+    //   monthDate = monthValues.join(",");
+    // }
+
     if (userData) {
       bKash.init({
         paymentMode: "checkout", //fixed value ‘checkout’
@@ -78,9 +220,11 @@ const PaymentModal = (props) => {
           user: userData.id,
           userType: userData.userType,
           medium: userData.ispOwner.bpSettings?.paymentGateway?.gatewayType,
+          // month: monthDate,
           paymentStatus: "pending",
           collectedBy: "customer",
         },
+
         createRequest: async function (request) {
           try {
             const { data } = await URL.baseURL.post(URL.create, request);
@@ -89,7 +233,6 @@ const PaymentModal = (props) => {
               sessionStorage.setItem("qrispid", userData.ispOwner.id);
               window.location.href = data?.bkashURL;
             }
-
             if (data?.paymentID) {
               paymentID = data.paymentID;
               bKash.create().onSuccess(data);
@@ -113,15 +256,17 @@ const PaymentModal = (props) => {
             user: userData.id,
             userType: userData.userType,
             medium: userData.ispOwner.bpSettings?.paymentGateway?.gatewayType,
+            // month: monthDate,
             paymentStatus: "pending",
             mikrotikPackage: userData.mikrotikPackage,
           };
+
           try {
             const { data } = await URL.baseURL.post(
               `${URL.execute}?paymentID=${paymentID}`,
               billData
             );
-            console.log(data);
+
             if (data.bill.paymentStatus === "paid") {
               window.location.href = "/payment/success";
             } else {
@@ -154,7 +299,7 @@ const PaymentModal = (props) => {
               aria-label="Close"
             ></button>
           </div>
-          <div className="modal-body">
+          <div className="modal-body displayGrid">
             <input
               onChange={(e) => setPaymentAmount(e.target.value)}
               min={userData?.monthlyFee}
@@ -163,7 +308,23 @@ const PaymentModal = (props) => {
               value={paymentAmount}
             />
 
-            <div class="form-check mt-4">
+            {/* <div>
+              <label className="form-check-label changeLabelFontColor">
+                {"Select Bill Month"}
+              </label>
+
+              <Select
+                className="mt-0 text-dark"
+                value={selectedMonth}
+                onChange={(data) => setSelectedMonth(data)}
+                options={options}
+                isMulti={true}
+                placeholder={"Select Bill Month"}
+                isSearchable
+              />
+            </div> */}
+
+            <div class="form-check mt-2">
               <input
                 onChange={(e) => setAgreement(e.target.checked)}
                 min={userData?.monthlyFee}

@@ -40,6 +40,11 @@ const options = [
 
 const RechargeCustomer = ({ show, setShow, single, customerData }) => {
   const { t } = useTranslation();
+
+  // current month date
+  const date = new Date();
+  const monthDate = date.getMonth();
+
   const customer = useSelector((state) => state?.customer?.customer);
 
   const data = customer.find((item) => item.id === single);

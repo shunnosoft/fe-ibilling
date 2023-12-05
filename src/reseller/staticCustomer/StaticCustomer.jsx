@@ -56,7 +56,7 @@ import {
 import CustomerDetails from "./staticCustomerCrud/CustomerDetails";
 import { getOwnerUsers } from "../../features/getIspOwnerUsersApi";
 import StaticCustomerEdit from "./actionComponent/StaticCustomerEdit";
-import RechargeCustomer from "../Customer/actionComponent/RechargeCustomer";
+import RechargeCustomer from "./actionComponent/RechargeCustomer";
 
 export default function RstaticCustomer() {
   const { t } = useTranslation();
