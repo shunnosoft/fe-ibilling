@@ -60,6 +60,9 @@ export default function Home() {
     (state) => state.adminNetFeeSupport?.bulletinPermission
   );
 
+  // loading state
+  const [loadingDashboardData, setLoadingDashboardData] = useState(false);
+
   const [showGraphData, setShowGraphData] = useState("amount");
   const [label, setLabel] = useState([]);
   const [collection, setCollection] = useState([]);
@@ -132,7 +135,7 @@ export default function Home() {
       Object.keys(customerStat)?.length === 0 &&
         getDashboardCardData(
           dispatch,
-          setIsLoading,
+          setLoadingDashboardData,
           ispOwnerId,
           userData.collector.reseller,
           userData.collector.id
@@ -144,7 +147,7 @@ export default function Home() {
       Object.keys(customerStat)?.length === 0 &&
         getDashboardCardData(
           dispatch,
-          setIsLoading,
+          setLoadingDashboardData,
           ispOwnerId,
           resellerId,
           null,
@@ -221,7 +224,7 @@ export default function Home() {
       );
       getDashboardCardData(
         dispatch,
-        setIsLoading,
+        setLoadingDashboardData,
         ispOwnerId,
         userData.collector.reseller,
         userData.collector.id
@@ -231,7 +234,7 @@ export default function Home() {
       getChartsReseller(dispatch, resellerId, Year, Month);
       getDashboardCardData(
         dispatch,
-        setIsLoading,
+        setLoadingDashboardData,
         ispOwnerId,
         resellerId,
         null,
@@ -242,6 +245,20 @@ export default function Home() {
 
   return (
     <div className="container homeWrapper">
+      {loadingDashboardData && (
+        <div
+          className={`d-flex justify-content-center align-items-center Loader ${
+            loadingDashboardData && "d-block"
+          }`}
+        >
+          <div class="d-flex justify-content-center align-items-center spinner-square">
+            <div class="square-1 square"></div>
+            <div class="square-2 square"></div>
+            <div class="square-3 square"></div>
+          </div>
+        </div>
+      )}
+
       <ToastContainer position="top-right" theme="colored" />
       <FontColor>
         <div className="home">

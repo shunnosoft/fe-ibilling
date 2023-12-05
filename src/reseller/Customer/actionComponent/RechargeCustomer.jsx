@@ -156,32 +156,86 @@ const RechargeCustomer = ({ show, setShow, single, customerData }) => {
 
     let temp = [];
 
+    // customer billing date
     const dataMonth = new Date(data?.billingCycle).getMonth();
 
     if (data?.balance === 0 && data?.paymentStatus === "unpaid") {
-      setSelectedMonth(options[dataMonth]);
+      // month to monthly bill
+      temp.push(options[dataMonth]);
     } else if (data?.balance === 0 && data?.paymentStatus === "paid") {
-      temp.push(options[dataMonth + 1]);
-      if (dataMonth + 1 > 11) setSelectedMonth([]);
-      else setSelectedMonth(temp);
-    } else if (data?.balance > 0 && data?.paymentStatus === "paid") {
+      // month to monthly bill
+      temp.push(options[dataMonth]);
+    } else if (
+      data?.balance >= data?.monthlyFee &&
+      data?.paymentStatus === "paid"
+    ) {
+      // customer advance monthly bill
       const modVal = Math.floor(data?.balance / data?.monthlyFee);
+      temp.push(options[dataMonth + modVal]);
 
-      temp.push(options[dataMonth + modVal + 1]);
-
-      if (dataMonth + modVal + 1 > 11) setSelectedMonth([]);
-      else setSelectedMonth(temp);
-    } else if (data?.balance < 0 && data?.paymentStatus === "unpaid") {
+      if (dataMonth + modVal > 11) {
+        const totalMonth = dataMonth + modVal - 12;
+        temp.push(options[totalMonth]);
+      }
+    } else if (
+      data?.balance < 0 &&
+      data?.paymentStatus === "unpaid" &&
+      (data?.status === "active" || data?.status === "expired")
+    ) {
+      // customer privous monthly bill
       const modVal = Math.floor(Math.abs(data?.balance / data?.monthlyFee));
-      let diff = dataMonth - modVal;
-      if (diff < 0) {
-        diff = 0;
+
+      // customer privous years total due month
+      const dueMonth = dataMonth - modVal;
+
+      //find customer privous years dou month
+      if (dueMonth < 0) {
+        const totalMonth = 12 - Math.abs(dueMonth);
+
+        for (let i = totalMonth; i <= 11; i++) {
+          temp.push(options[i]);
+        }
       }
-      for (let i = diff; i <= dataMonth; i++) {
-        temp.push(options[i]);
+
+      //find customer current years dou month
+      if (modVal < 11) {
+        for (let i = dueMonth; i <= dataMonth; i++) {
+          if (!(i < 0)) {
+            temp.push(options[i]);
+          }
+        }
       }
-      setSelectedMonth(temp);
+    } else if (
+      data?.balance < 0 &&
+      data?.paymentStatus === "unpaid" &&
+      data?.status === "inactive"
+    ) {
+      // customer privous monthly bill
+      const modVal = Math.floor(Math.abs(data?.balance / data?.monthlyFee));
+
+      // customer total due month
+      const dueMonth = dataMonth - modVal;
+
+      //find customer privous years dou month
+      if (dueMonth < 0) {
+        const totalMonth = 12 - Math.abs(dueMonth);
+
+        for (let i = totalMonth; i <= 11; i++) {
+          temp.push(options[i]);
+        }
+      }
+
+      //find customer current years dou month
+      if (modVal < 11) {
+        for (let i = dueMonth; i <= monthDate; i++) {
+          if (!(i < 0)) {
+            temp.push(options[i]);
+          }
+        }
+      }
     }
+
+    setSelectedMonth(temp);
   }, [data]);
 
   //modal show handler
@@ -237,6 +291,7 @@ const RechargeCustomer = ({ show, setShow, single, customerData }) => {
       sendingData.start = startDate.toISOString();
       sendingData.end = endDate.toISOString();
     }
+
     if (selectedMonth?.length > 0) {
       const monthValues = selectedMonth.map((item) => {
         return item.value;

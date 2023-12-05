@@ -104,6 +104,14 @@ const ResellerCollection = () => {
   const [startDate, setStartDate] = useState(firstDay);
   const [endDate, setEndDate] = useState(new Date());
 
+  //filter options state
+  const [filterOption, setFilterOption] = useState({
+    reseller: "",
+    medium: "",
+    startDate: firstDay,
+    endDate: today,
+  });
+
   var selectDate = new Date(filterDate.getFullYear(), filterDate.getMonth(), 1);
   var lastDate = new Date(
     filterDate.getFullYear(),
@@ -153,37 +161,54 @@ const ResellerCollection = () => {
 
   //filter handler
   const filterHandler = () => {
-    let mainData = [...collectionReport];
+    let tempReport = collectionReport.reduce((acc, c) => {
+      const { reseller, medium, startDate, endDate } = filterOption;
 
-    mainData = mainData.filter((val) => val.reseller === resellerId);
+      // make possible conditions objects if the filter value not selected thats return true
+      //if filter value exist then compare
+      const conditions = {
+        reseller: reseller ? reseller === c.reseller : true,
+        medium: medium ? medium === c.medium : true,
+        filterDate:
+          startDate && endDate
+            ? new Date(c.createdAt) >=
+                new Date(startDate).setHours(0, 0, 0, 0) &&
+              new Date(c.createdAt) <=
+                new Date(endDate).setHours(23, 59, 59, 999)
+            : true,
+      };
 
-    if (paymentType) {
-      if (paymentType === "onlinePayment") {
-        mainData = mainData.filter(
-          (paymentStatus) =>
-            paymentStatus.medium === "sslcommerz" ||
-            paymentStatus.medium === "uddoktapay" ||
-            paymentStatus.medium === "sslpay" ||
-            paymentStatus.medium === "bKashPG"
-        );
-      } else {
-        mainData = mainData.filter((item) => item.medium === paymentType);
-      }
-    }
+      //check if condition pass got for next step or is fail stop operation
+      //if specific filter option value not exist it will return true
 
-    mainData = mainData.filter(
-      (item) =>
-        new Date(moment(item.createdAt).format("YYYY-MM-DD")).getTime() >=
-          new Date(moment(startDate).format("YYYY-MM-DD")).getTime() &&
-        new Date(moment(item.createdAt).format("YYYY-MM-DD")).getTime() <=
-          new Date(moment(endDate).format("YYYY-MM-DD")).getTime()
-    );
-    setCurrentData(mainData);
+      let isPass = false;
+
+      isPass = conditions["reseller"];
+      if (!isPass) return acc;
+
+      isPass = conditions["medium"];
+      if (!isPass) return acc;
+
+      isPass = conditions["filterDate"];
+      if (!isPass) return acc;
+
+      if (isPass) acc.push(c);
+      return acc;
+    }, []);
+
+    // set filter customer in customer state
+    setCurrentData(tempReport);
   };
 
-  //reseller customer collection report handler
-  const resellerCollectionReport = (e) => {
-    setResellerId(e.target.value);
+  // filter options reset handler
+  const filterReset = () => {
+    setFilterOption({
+      reseller: "",
+      medium: "",
+      startDate: firstDay,
+      endDate: today,
+    });
+    setCurrentData(collectionReport);
   };
 
   // set Report function
@@ -207,8 +232,8 @@ const ResellerCollection = () => {
       },
       {
         width: "7%",
-        Header: t("name"),
-        accessor: "customer.name",
+        Header: t("PPIPHp"),
+        accessor: "customer.pppoe.name",
       },
       {
         width: "8%",
@@ -550,8 +575,19 @@ const ResellerCollection = () => {
                             <select
                               className="form-select mt-0 mw-100"
                               id="resellerCollection"
-                              onChange={resellerCollectionReport}
+                              onChange={(e) => {
+                                setFilterOption({
+                                  ...filterOption,
+                                  reseller: e.target.value,
+                                });
+                              }}
                             >
+                              <option
+                                value=""
+                                selected={filterOption.reseller == ""}
+                              >
+                                {t("selectReseller")}
+                              </option>
                               {reseller?.map((item) => (
                                 <option value={item.id}>{item.name}</option>
                               ))}
@@ -561,28 +597,41 @@ const ResellerCollection = () => {
                           <div>
                             <select
                               className="form-select mt-0 mw-100"
-                              onChange={(e) => setPaymentType(e.target.value)}
+                              onChange={(e) => {
+                                setFilterOption({
+                                  ...filterOption,
+                                  medium: e.target.value,
+                                });
+                              }}
                             >
-                              <option value="" selected>
+                              <option
+                                value=""
+                                selected={filterOption.medium == ""}
+                              >
                                 {t("medium")}
                               </option>
 
                               <option value="cash">{t("handCash")}</option>
-                              <option value="onlinePayment">
-                                {t("onlinePayment")}
+                              <option value="bKashPG"> {t("bKash")} </option>
+                              <option value="uddoktapay">
+                                {t("uddoktaPay")}
                               </option>
-                              <option value="bKash"> {t("bKash")} </option>
-                              <option value="rocket"> {t("rocket")} </option>
-                              <option value="nagad"> {t("nagad")} </option>
-                              <option value="others"> {t("others")} </option>
+                              <option value="sslcommerz">
+                                {t("sslCommerz")}
+                              </option>
                             </select>
                           </div>
 
                           <div>
                             <DatePicker
                               className="form-control"
-                              selected={startDate}
-                              onChange={(date) => setStartDate(date)}
+                              selected={filterOption.startDate}
+                              onChange={(date) => {
+                                setFilterOption({
+                                  ...filterOption,
+                                  startDate: date,
+                                });
+                              }}
                               dateFormat="MMM dd yyyy"
                               minDate={selectDate}
                               maxDate={
@@ -597,8 +646,13 @@ const ResellerCollection = () => {
                           <div>
                             <DatePicker
                               className="form-control"
-                              selected={endDate}
-                              onChange={(date) => setEndDate(date)}
+                              selected={filterOption.endDate}
+                              onChange={(date) => {
+                                setFilterOption({
+                                  ...filterOption,
+                                  endDate: date,
+                                });
+                              }}
                               dateFormat="MMM dd yyyy"
                               minDate={selectDate}
                               maxDate={
@@ -610,13 +664,22 @@ const ResellerCollection = () => {
                             />
                           </div>
 
-                          <button
-                            className="btn btn-outline-primary w-110"
-                            type="button"
-                            onClick={filterHandler}
-                          >
-                            {t("filter")}
-                          </button>
+                          <div className="displayGrid1 mt-0">
+                            <button
+                              className="btn btn-outline-primary"
+                              type="button"
+                              onClick={filterHandler}
+                            >
+                              {t("filter")}
+                            </button>
+                            <button
+                              className="btn btn-outline-secondary"
+                              type="button"
+                              onClick={filterReset}
+                            >
+                              {t("reset")}
+                            </button>
+                          </div>
                         </div>
                       </Accordion.Body>
                     </Accordion.Item>

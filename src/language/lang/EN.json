@@ -844,6 +844,7 @@
   "notEnoughOnlineBalance": "Your don't have enough online balance!",
   "controlPanel": "Control Panel",
   "customerReport": "Customer Report",
+  "PPIPHp": "PP/IP/Hp",
   "pppoeIp": "Name/PP/IP/Hp",
   "PPPoECustomer": "PPPoE Customer",
   "StaticCustomer": "Static Customer",

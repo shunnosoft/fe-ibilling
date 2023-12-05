@@ -293,7 +293,20 @@ export default function ManagerDashboard() {
   return (
     <>
       <div className="container homeWrapper">
-        <div className={`Loader ${loadingDashboardData && "d-block"}`}></div>
+        {loadingDashboardData && (
+          <div
+            className={`d-flex justify-content-center align-items-center Loader ${
+              loadingDashboardData && "d-block"
+            }`}
+          >
+            <div class="d-flex justify-content-center align-items-center spinner-square">
+              <div class="square-1 square"></div>
+              <div class="square-2 square"></div>
+              <div class="square-3 square"></div>
+            </div>
+          </div>
+        )}
+
         <ToastContainer position="top-right" theme="colored" />
         <FontColor>
           <div className="home">

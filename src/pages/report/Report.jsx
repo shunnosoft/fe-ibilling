@@ -442,7 +442,7 @@ export default function Report() {
       },
       {
         width: "10%",
-        Header: t("pppoeIp"),
+        Header: t("PPIPHp"),
         accessor: (field) =>
           field.customer?.userType === "pppoe"
             ? field.customer?.pppoe.name

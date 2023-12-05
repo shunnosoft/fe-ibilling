@@ -320,9 +320,9 @@ export default function Diposit() {
               {original?.note && original?.note?.slice(0, 70)}
               <span
                 className="text-primary see-more"
-                // data-bs-toggle="modal"
-                // data-bs-target="#dipositNoteDetailsModal"
-                // onClick={() => setMessage(original?.note)}
+                data-bs-toggle="modal"
+                data-bs-target="#dipositNoteDetailsModal"
+                onClick={() => setMessage(original?.note)}
               >
                 {original?.note?.length > 70 ? "...see more" : ""}
               </span>

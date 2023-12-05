@@ -170,6 +170,7 @@ const CustomerCreate = ({ setModalStatus, ispInfo }) => {
                   name="monthlyFee"
                   min={0}
                   validation={"true"}
+                  disabled
                 />
 
                 <FtextField

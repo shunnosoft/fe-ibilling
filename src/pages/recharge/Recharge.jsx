@@ -96,22 +96,22 @@ const Recharge = () => {
     setRechargeData(rechargeHistory);
 
     // initial filter
-    var initialToday = new Date();
-    var initialFirst = new Date(
-      initialToday.getFullYear(),
-      initialToday.getMonth(),
-      1
-    );
+    // var initialToday = new Date();
+    // var initialFirst = new Date(
+    //   initialToday.getFullYear(),
+    //   initialToday.getMonth(),
+    //   1
+    // );
 
-    initialFirst.setHours(0, 0, 0, 0);
-    initialToday.setHours(23, 59, 59, 999);
-    setRechargeData(
-      rechargeHistory.filter(
-        (item) =>
-          Date.parse(item.createdAt) >= Date.parse(initialFirst) &&
-          Date.parse(item.createdAt) <= Date.parse(initialToday)
-      )
-    );
+    // initialFirst.setHours(0, 0, 0, 0);
+    // initialToday.setHours(23, 59, 59, 999);
+    // setRechargeData(
+    //   rechargeHistory.filter(
+    //     (item) =>
+    //       Date.parse(item.createdAt) >= Date.parse(initialFirst) &&
+    //       Date.parse(item.createdAt) <= Date.parse(initialToday)
+    //   )
+    // );
   }, [rechargeHistory]);
 
   useEffect(() => {

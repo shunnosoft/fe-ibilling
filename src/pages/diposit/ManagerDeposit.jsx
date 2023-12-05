@@ -41,6 +41,7 @@ import { getOwnerUsers } from "../../features/getIspOwnerUsersApi";
 import Footer from "../../components/admin/footer/Footer";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
+import NoteDetailsModal from "./NoteDetailsModal";
 
 const ManagerDeposit = () => {
   const { t } = useTranslation();
@@ -125,6 +126,9 @@ const ManagerDeposit = () => {
   // Owner deposit start & end date
   const [ownDepositStart, setOwnDepositStart] = useState(firstDate);
   const [ownDepositEnd, setOwnDepositEnd] = useState(date);
+
+  // deposit note details state
+  const [message, setMessage] = useState();
 
   // current month start & end date
   var selectDate = new Date(filterDate.getFullYear(), filterDate.getMonth(), 1);
@@ -452,7 +456,7 @@ const ManagerDeposit = () => {
                 className="text-primary see-more"
                 data-bs-toggle="modal"
                 data-bs-target="#dipositNoteDetailsModal"
-                // onClick={() => setMessage(original?.note)}
+                onClick={() => setMessage(original?.note)}
               >
                 {original?.note?.length > 70 ? "...see more" : ""}
               </span>
@@ -517,7 +521,7 @@ const ManagerDeposit = () => {
                 className="text-primary see-more"
                 data-bs-toggle="modal"
                 data-bs-target="#dipositNoteDetailsModal"
-                // onClick={() => setMessage(original?.note)}
+                onClick={() => setMessage(original?.note)}
               >
                 {original?.note?.length > 70 ? "...see more" : ""}
               </span>
@@ -852,6 +856,9 @@ const ManagerDeposit = () => {
           </div>
         </div>
       </div>
+
+      {/* deposit comment note details modal */}
+      <NoteDetailsModal message={message} />
     </>
   );
 };
