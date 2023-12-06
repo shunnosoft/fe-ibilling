@@ -43,7 +43,7 @@ const divisions = divisionsJSON.divisions;
 const districts = districtsJSON.districts;
 const thana = thanaJSON.thana;
 
-export default function EditPPPoECustomer({ show, setShow, single }) {
+const EditPPPoECustomer = ({ show, setShow, single }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
@@ -220,7 +220,7 @@ export default function EditPPPoECustomer({ show, setShow, single }) {
     // customerId: Yup.string().required(t("writeCustomerId")),
     name: Yup.string().required(t("writeCustomerName")),
     mobile: Yup.string()
-      // .matches(/^(01){1}[3456789]{1}(\d){8}$/, "মোবাইল নম্বর সঠিক নয়")
+      .matches(/^(01){1}[3456789]{1}(\d){8}$/, t("incorrectMobile"))
       .min(11, t("write11DigitMobileNumber"))
       .max(11, t("over11DigitMobileNumber")),
     address: Yup.string(),
@@ -475,7 +475,7 @@ export default function EditPPPoECustomer({ show, setShow, single }) {
               Ppassword: data?.pppoe?.password || "",
               status: status || "",
               balance: data?.balance || "",
-              connectionFee: data?.monthlyFee - paidConnectionFee || "",
+              connectionFee: data?.connectionFee - paidConnectionFee || 0,
               customerBillingType: data?.customerBillingType || "",
             }}
             validationSchema={customerValidator}
@@ -738,7 +738,8 @@ export default function EditPPPoECustomer({ show, setShow, single }) {
                       className="form-control mw-100"
                       selected={connectionDate}
                       onChange={(date) => setConnectionDate(date)}
-                      dateFormat="dd/MM/yyyy"
+                      dateFormat="MMM dd yyyy hh:mm a"
+                      minDate={new Date(data?.connectionDate)}
                       placeholderText={t("selectDate")}
                     />
                   </div>
@@ -861,4 +862,6 @@ export default function EditPPPoECustomer({ show, setShow, single }) {
       </Modal>
     </>
   );
-}
+};
+
+export default EditPPPoECustomer;

@@ -1210,16 +1210,18 @@ export const deleteACustomer = async (
     await apiLink.delete(
       `/ispOwner/customer/${data.ispID}/${data.customerID}?mikrotik=${data.mikrotik}`
     );
+
     dispatch(deleteCustomerSuccess(data.customerID));
     isResellerCustomer && dispatch(deleteReCustomer(data.customerID));
 
-    setShow(false);
     langMessage(
       "success",
       "কাস্টমার ডিলিট সফল হয়েছে",
       "Customer Deleted Successfully"
     );
+
     document.querySelector("#customerDelete").click();
+    setShow(false);
   } catch (err) {
     if (err.response) {
       toast.error(err.response.data.message);

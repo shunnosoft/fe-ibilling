@@ -22,24 +22,27 @@ import {
   ModalTitle,
 } from "react-bootstrap";
 import SelectField from "../../../components/common/SelectField";
-
-const options = [
-  { value: "January", label: "জানুয়ারী" },
-  { value: "February", label: "ফেব্রুয়ারী" },
-  { value: "March", label: "মার্চ" },
-  { value: "April", label: "এপ্রিল" },
-  { value: "May", label: "মে" },
-  { value: "June", label: "জুন" },
-  { value: "July", label: "জুলাই" },
-  { value: "August", label: "আগস্ট" },
-  { value: "September", label: "সেপ্টেম্বর" },
-  { value: "October", label: "অক্টোবর" },
-  { value: "November", label: "নভেম্বর" },
-  { value: "December", label: "ডিসেম্বর" },
-];
+import { toast } from "react-toastify";
 
 const RechargeCustomer = ({ show, setShow, single, customerData }) => {
   const { t } = useTranslation();
+
+  // twelve month options
+  const options = [
+    { value: "January", label: t("january") },
+    { value: "February", label: t("february") },
+    { value: "March", label: t("march") },
+    { value: "April", label: t("april") },
+    { value: "May", label: t("may") },
+    { value: "June", label: t("june") },
+    { value: "July", label: t("July") },
+    { value: "August", label: t("august") },
+    { value: "September", label: t("september") },
+    { value: "October", label: t("october") },
+    { value: "November", label: t("november") },
+    { value: "December", label: t("december") },
+  ];
+
   const customer = useSelector((state) => state?.customer?.staticCustomer);
 
   const data = customer.find((item) => item.id === single);
@@ -181,16 +184,26 @@ const RechargeCustomer = ({ show, setShow, single, customerData }) => {
       package: data.queue.package,
     };
     if (note) sendingData.note = note;
+
     if (startDate && endDate) {
       sendingData.start = startDate.toISOString();
       sendingData.end = endDate.toISOString();
     }
-    if (selectedMonth?.length > 0) {
-      const monthValues = selectedMonth.map((item) => {
-        return item.value;
-      });
-      sendingData.month = monthValues.join(",");
+
+    if (billType === "connectionFee") {
+      sendingData.month = "Connection Fee";
+    } else {
+      if (selectedMonth?.length === 0) {
+        setLoading(false);
+        return toast.warn(t("selctMonth"));
+      } else {
+        const monthValues = selectedMonth.map((item) => {
+          return item.value;
+        });
+        sendingData.month = monthValues.join(",");
+      }
     }
+
     billCollect(
       dispatch,
       sendingData,
@@ -297,24 +310,26 @@ const RechargeCustomer = ({ show, setShow, single, customerData }) => {
                     </SelectField>
                   </div>
 
-                  <div className="month">
-                    <label
-                      className="form-check-label changeLabelFontColor"
-                      htmlFor="selectMonth"
-                    >
-                      {t("selectMonth")}
-                    </label>
-                    <Select
-                      className="mt-0"
-                      value={selectedMonth}
-                      onChange={(data) => setSelectedMonth(data)}
-                      options={options}
-                      isMulti={true}
-                      placeholder={t("selectMonth")}
-                      isSearchable
-                      id="selectMonth"
-                    />
-                  </div>
+                  {billType === "bill" && (
+                    <div className="month">
+                      <label
+                        className="form-check-label changeLabelFontColor"
+                        htmlFor="selectMonth"
+                      >
+                        {t("selectMonth")}
+                      </label>
+                      <Select
+                        className="mt-0"
+                        value={selectedMonth}
+                        onChange={(data) => setSelectedMonth(data)}
+                        options={options}
+                        isMulti={true}
+                        placeholder={t("selectMonth")}
+                        isSearchable
+                        id="selectMonth"
+                      />
+                    </div>
+                  )}
 
                   <div className="displayGrid2">
                     <div>

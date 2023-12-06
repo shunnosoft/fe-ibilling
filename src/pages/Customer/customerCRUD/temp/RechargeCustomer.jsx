@@ -296,18 +296,18 @@ export default function RechargeCustomer({
       sendingData.end = endDate.toISOString();
     }
 
-    if (selectedMonth?.length === 0) {
-      setLoading(false);
-      return toast.warn(t("selctMonth"));
-    } else {
-      const monthValues = selectedMonth.map((item) => {
-        return item.value;
-      });
-      sendingData.month = monthValues.join(",");
-    }
-
     if (billType === "connectionFee") {
       sendingData.month = "Connection Fee";
+    } else {
+      if (selectedMonth?.length === 0) {
+        setLoading(false);
+        return toast.warn(t("selctMonth"));
+      } else {
+        const monthValues = selectedMonth.map((item) => {
+          return item.value;
+        });
+        sendingData.month = monthValues.join(",");
+      }
     }
 
     billCollect(
