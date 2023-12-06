@@ -273,3 +273,7 @@ span.button_title {
 .magantaColor {
   border: solid 2px #85150d;
 }
+
+.new_badge {
+  padding: 0.05rem 0.4rem !important;
+}

@@ -576,9 +576,12 @@ const PPPOECustomer = () => {
   };
 
   //find customer subArea name
-  const getCustomerSubArea = (subId) => {
-    const findSubArea = subAreas.find((val) => val.id === subId);
-    return findSubArea;
+  const getCustomerSubArea = (value) => {
+    const findSubArea = subAreas.find((val) => val.id === value.subArea);
+
+    const findArea = areas.find((val) => val.id === findSubArea.area);
+
+    return { findSubArea, findArea };
   };
 
   // atuomatic connection on off doble clicked handle
@@ -591,6 +594,12 @@ const PPPOECustomer = () => {
       };
       editCustomer(dispatch, data, setLoading, setShow, "auto");
     }
+  };
+
+  // mikrotik find
+  const getMikrotik = (id) => {
+    const mikrotik = mikrotiks.find((val) => val?.id === id);
+    return mikrotik;
   };
 
   //column for table
@@ -643,7 +652,17 @@ const PPPOECustomer = () => {
         Cell: ({ row: { original } }) => (
           <div>
             <p>{original?.name}</p>
-            <p>{original.pppoe?.name}</p>
+            <p>
+              {original.pppoe?.name}
+              <span className="ms-1">
+                {new Date(original?.createdAt).getMonth() ===
+                  new Date().getMonth() && (
+                  <small className="new_badge badge bg-secondary">
+                    {"new"}
+                  </small>
+                )}
+              </span>
+            </p>
           </div>
         ),
       },
@@ -1020,15 +1039,18 @@ const PPPOECustomer = () => {
           pppoeName: customer.pppoe?.name,
           customerAddress: customer.address,
           createdAt: moment(customer.createdAt).format("YYYY-MM-DD"),
+          mikrotik: getMikrotik(customer.mikrotik)?.name,
           package: customer?.pppoe?.profile,
           password: customer?.pppoe?.password,
           mobile: customer?.mobile || "",
           status: customer.status,
           paymentStatus: customer.paymentStatus,
-          subArea: getCustomerSubArea(customer?.subArea)?.name,
+          subArea: getCustomerSubArea(customer)?.findSubArea.name,
+          area: getCustomerSubArea(customer)?.findArea.name,
           email: customer.email || "",
           monthlyFee: customer.monthlyFee,
           balance: customer.balance,
+          userType: customer?.queue.type,
           billingCycle: moment(customer.billingCycle).format("YYYY-MM-DD"),
         };
       }),
@@ -1042,15 +1064,18 @@ const PPPOECustomer = () => {
     { label: "PPPoE_Name", key: "pppoeName" },
     { label: "address_of_client", key: "customerAddress" },
     { label: "activation_date", key: "createdAt" },
+    { label: "client_mikrotik", key: "mikrotik" },
     { label: "bandwidth_allocation MB", key: "package" },
     { label: "password", key: "password" },
     { label: "client_phone", key: "mobile" },
     { label: "status", key: "status" },
     { label: "payment Status", key: "paymentStatus" },
     { label: "subArea", key: "subArea" },
+    { label: "area", key: "area" },
     { label: "email", key: "email" },
     { label: "balance", key: "balance" },
     { label: "billing_cycle", key: "billingCycle" },
+    { label: "user_type", key: "userType" },
     { label: "selling_bandwidthBDT (Excluding VAT).", key: "monthlyFee" },
   ];
 

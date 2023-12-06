@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Accordion, Tab, Tabs } from "react-bootstrap";
 import { Form, Formik } from "formik";
@@ -29,6 +29,7 @@ import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
 import PrevBalanceDeposit from "./PrevBalanceDeposit";
 import { badge } from "../../components/common/Utils";
+import FormatNumber from "../../components/common/NumberFormat";
 
 const CollectorDeposit = () => {
   const { t } = useTranslation();
@@ -186,6 +187,35 @@ const CollectorDeposit = () => {
 
     setOwnDepositData(ownDeposit);
   };
+
+  //function to calculate total Commissions and other amount
+  let ownDepositCalculation;
+
+  const getTotalOwnDeposit = useCallback(() => {
+    ownDepositCalculation = ownDepositData.filter(
+      (item) => item.status === "accepted"
+    );
+
+    const initialValue = 0;
+
+    const sumWithInitial = ownDepositCalculation.reduce(
+      (previousValue, currentValue) => previousValue + currentValue.amount,
+      initialValue
+    );
+
+    return sumWithInitial.toString();
+  }, [ownDepositData]);
+
+  // send sum own deposits of table
+  const ownDepositSum = (
+    <div style={{ fontSize: "18px", display: "flex", alignItems: "center" }}>
+      {getTotalOwnDeposit() > 0 && (
+        <div>
+          {t("totalDiposit")}: ৳{FormatNumber(getTotalOwnDeposit())}
+        </div>
+      )}
+    </div>
+  );
 
   // own deposit column
   const columns = useMemo(
@@ -501,7 +531,7 @@ const CollectorDeposit = () => {
 
                         <div className="table-section">
                           <Table
-                            // customComponent={ownDepositSum}
+                            customComponent={ownDepositSum}
                             data={ownDepositData}
                             columns={columns}
                             isLoading={isLoading}

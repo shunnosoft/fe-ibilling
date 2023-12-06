@@ -125,12 +125,18 @@ const ResellerCollection = () => {
   }, []);
 
   useEffect(() => {
-    setStartDate(selectDate);
-
     if (lastDate.getMonth() + 1 === today.getMonth() + 1) {
-      setEndDate(today);
+      setFilterOption({
+        ...filterOption,
+        startDate: selectDate,
+        endDate: today,
+      });
     } else {
-      setEndDate(lastDate);
+      setFilterOption({
+        ...filterOption,
+        startDate: selectDate,
+        endDate: lastDate,
+      });
     }
 
     if (filterDate.getMonth() + 1 && ispOwnerId) {
@@ -205,8 +211,9 @@ const ResellerCollection = () => {
     setFilterOption({
       reseller: "",
       medium: "",
-      startDate: firstDay,
-      endDate: today,
+      startDate: selectDate,
+      endDate:
+        lastDate.getMonth() + 1 === today.getMonth() + 1 ? today : lastDate,
     });
     setCurrentData(collectionReport);
   };
