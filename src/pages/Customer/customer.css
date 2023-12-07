@@ -275,7 +275,8 @@ span.button_title {
 }
 
 .new_badge {
-  padding: 0.05rem 0.4rem !important;
+  padding: 0.06rem 0.3rem !important;
+  font-size: 10px !important;
 }
 
 .pdf_new_badge {

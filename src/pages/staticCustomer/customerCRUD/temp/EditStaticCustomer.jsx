@@ -217,11 +217,7 @@ export default function EditStaticCustomer({
     email: Yup.string().email(t("incorrectEmail")),
     nid: Yup.string(),
     customerBillingType: Yup.string().required(t("select billing type")),
-
-    // monthlyFee: Yup.number()
-    //   .integer()
-    //   .min(0, "সর্বনিম্ন প্যাকেজ রেট 0")
-    //   .required("প্যাকেজ রেট দিন"),
+    connectionFee: Yup.number(),
   });
 
   //modal show handler
@@ -505,6 +501,7 @@ export default function EditStaticCustomer({
               srcAddress: customer?.queue.srcAddress || "",
               target: customer?.queue.target || "",
               customerId: customer?.customerId,
+              connectionFee: customer?.connectionFee || 0,
               customerBillingType: customer?.customerBillingType,
             }}
             validationSchema={customerValidator}
@@ -907,6 +904,12 @@ export default function EditStaticCustomer({
                       placeholderText={t("selectDate")}
                     />
                   </div>
+
+                  <FtextField
+                    type="number"
+                    name="connectionFee"
+                    label={t("connectionFeeDue")}
+                  />
 
                   {!bpSettings?.genCustomerId && (
                     <FtextField

@@ -793,6 +793,15 @@ export default function Customer() {
                 : original.userType === "core-queue"
                 ? original.queue.srcAddress
                 : original.queue.target}
+
+              <span className="ms-1">
+                {new Date(original?.createdAt).getMonth() ===
+                  new Date().getMonth() && (
+                  <small className="new_badge badge bg-secondary">
+                    {"new"}
+                  </small>
+                )}
+              </span>
             </p>
           </div>
         ),

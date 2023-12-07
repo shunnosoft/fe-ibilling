@@ -85,7 +85,7 @@ const PrintCustomer = forwardRef((props, ref) => {
           </div>
 
           {filterData && (
-            <ul className="d-flex justify-content-evenly">
+            <ul className="d-flex justify-content-evenly mb-1">
               {filterData?.area && (
                 <li>
                   {t("area")} : {filterData?.area}
@@ -126,7 +126,7 @@ const PrintCustomer = forwardRef((props, ref) => {
             </ul>
           )}
 
-          <ul className="d-flex justify-content-evenly">
+          <ul className="d-flex justify-content-evenly mb-1">
             <li>
               {t("totalCustomer")} : {currentCustomers.length}
             </li>
@@ -363,10 +363,14 @@ const PrintCustomer = forwardRef((props, ref) => {
 
                       {printOptions[10]?.checked &&
                       !printOptions[11]?.checked ? (
-                        <p>{badge(val?.paymentStatus)}</p>
+                        <td>
+                          <p>{badge(val?.paymentStatus)}</p>
+                        </td>
                       ) : !printOptions[10]?.checked &&
                         printOptions[11]?.checked ? (
-                        <p>{badge(val?.status)}</p>
+                        <td>
+                          <p>{badge(val?.status)}</p>
+                        </td>
                       ) : (
                         printOptions[10]?.checked &&
                         printOptions[11]?.checked && (

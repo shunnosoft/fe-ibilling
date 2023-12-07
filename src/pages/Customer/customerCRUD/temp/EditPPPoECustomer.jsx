@@ -36,7 +36,6 @@ import {
   editCustomer,
   fetchMikrotik,
   fetchPackagefromDatabase,
-  getConnectionFee,
 } from "../../../../features/apiCalls";
 
 const divisions = divisionsJSON.divisions;
@@ -112,9 +111,6 @@ const EditPPPoECustomer = ({ show, setShow, single }) => {
   const [packageId, setPackageId] = useState("");
   //component states
   const [_loading, setLoading] = useState(false);
-
-  // customer due connection fee state
-  const [paidConnectionFee, setPaidConnectionFee] = useState(null);
 
   const [divisionalArea, setDivisionalArea] = useState({
     division: "",
@@ -212,7 +208,6 @@ const EditPPPoECustomer = ({ show, setShow, single }) => {
   // get subarea poleBox
   useEffect(() => {
     getPoleBoxApi(dispatch, ispOwnerId, setIsLoadingPole);
-    getConnectionFee(single, setPaidConnectionFee);
   }, []);
 
   // customer validator
@@ -234,6 +229,7 @@ const EditPPPoECustomer = ({ show, setShow, single }) => {
     Ppassword: Yup.string().required(t("writePPPoEPassword")),
     Pcomment: Yup.string(),
     customerBillingType: Yup.string().required(t("select billing type")),
+    connectionFee: Yup.number(),
 
     // balance: Yup.number().integer(),
   });
@@ -475,7 +471,7 @@ const EditPPPoECustomer = ({ show, setShow, single }) => {
               Ppassword: data?.pppoe?.password || "",
               status: status || "",
               balance: data?.balance || "",
-              connectionFee: data?.connectionFee - paidConnectionFee || 0,
+              connectionFee: data?.connectionFee || 0,
               customerBillingType: data?.customerBillingType || "",
             }}
             validationSchema={customerValidator}
@@ -748,7 +744,6 @@ const EditPPPoECustomer = ({ show, setShow, single }) => {
                     type="number"
                     name="connectionFee"
                     label={t("connectionFeeDue")}
-                    disabled
                   />
 
                   <SelectField

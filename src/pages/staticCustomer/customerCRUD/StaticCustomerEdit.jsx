@@ -49,6 +49,7 @@ const StaticCustomerEdit = ({ customerId, setProfileOption }) => {
     email: Yup.string().email(t("incorrectEmail")),
     nid: Yup.string(),
     customerBillingType: Yup.string().required(t("select billing type")),
+    connectionFee: Yup.number(),
   });
 
   // get user & current user data form useISPOwner
@@ -477,6 +478,7 @@ const StaticCustomerEdit = ({ customerId, setProfileOption }) => {
             target: customer?.queue.target || "",
             customerId: customer?.customerId,
             customerBillingType: customer?.customerBillingType,
+            connectionFee: customer?.connectionFee || 0,
           }}
           validationSchema={customerValidator}
           onSubmit={(values, { resetForm }) => {
@@ -936,6 +938,12 @@ const StaticCustomerEdit = ({ customerId, setProfileOption }) => {
                     placeholderText={t("selectDate")}
                   />
                 </div>
+
+                <TextField
+                  type="number"
+                  name="connectionFee"
+                  label={t("connectionFeeDue")}
+                />
 
                 <div className="displayGridManual6_4">
                   <label className="form-control-label manualLable">

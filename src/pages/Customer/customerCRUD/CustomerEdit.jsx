@@ -59,6 +59,7 @@ const CustomerEdit = ({ customerId, setProfileOption }) => {
     Ppassword: Yup.string().required(t("writePPPoEPassword")),
     Pcomment: Yup.string(),
     customerBillingType: Yup.string().required(t("select billing type")),
+    connectionFee: Yup.number(),
   });
 
   //calling custom hook here
@@ -452,6 +453,7 @@ const CustomerEdit = ({ customerId, setProfileOption }) => {
             status: status || "",
             balance: data?.balance || "",
             customerBillingType: data?.customerBillingType || "",
+            connectionFee: data?.connectionFee || 0,
           }}
           validationSchema={customerValidator}
           onSubmit={(values) => {
@@ -800,6 +802,12 @@ const CustomerEdit = ({ customerId, setProfileOption }) => {
                     placeholderText={t("selectDate")}
                   />
                 </div>
+
+                <TextField
+                  type="number"
+                  name="connectionFee"
+                  label={t("connectionFeeDue")}
+                />
 
                 <div className="displayGridManual6_4">
                   <label className="form-control-label manualLable">
