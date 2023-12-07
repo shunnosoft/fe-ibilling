@@ -577,9 +577,9 @@ const PPPOECustomer = () => {
 
   //find customer subArea name
   const getCustomerSubArea = (value) => {
-    const findSubArea = subAreas.find((val) => val.id === value.subArea);
+    const findSubArea = subAreas.find((val) => val.id === value?.subArea);
 
-    const findArea = areas.find((val) => val.id === findSubArea.area);
+    const findArea = areas.find((val) => val.id === findSubArea?.area);
 
     return { findSubArea, findArea };
   };
@@ -1045,8 +1045,8 @@ const PPPOECustomer = () => {
           mobile: customer?.mobile || "",
           status: customer.status,
           paymentStatus: customer.paymentStatus,
-          subArea: getCustomerSubArea(customer)?.findSubArea.name,
-          area: getCustomerSubArea(customer)?.findArea.name,
+          subArea: customer && getCustomerSubArea(customer)?.findSubArea.name,
+          area: customer && getCustomerSubArea(customer)?.findArea.name,
           email: customer.email || "",
           monthlyFee: customer.monthlyFee,
           balance: customer.balance,

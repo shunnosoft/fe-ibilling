@@ -48,12 +48,17 @@ export const printOptionData = {
       checked: false,
     },
     {
+      id: 1024,
+      value: "paymentStatus",
+      label: "paymentStatus",
+      checked: true,
+    },
+    {
       id: 1011,
       value: "status",
       label: "status",
       checked: true,
     },
-
     {
       id: 1012,
       value: "createDate",

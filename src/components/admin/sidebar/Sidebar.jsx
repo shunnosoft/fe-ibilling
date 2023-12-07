@@ -1243,7 +1243,7 @@ export default function Sidebar() {
                           </span>
                         </Accordion.Header>
                         <Accordion.Body>
-                          {/* <NavLink
+                          <NavLink
                             key={11}
                             to={
                               userRole === "reseller" ||
@@ -1278,7 +1278,7 @@ export default function Sidebar() {
                                 </span>
                               </li>
                             </FontColor>
-                          </NavLink> */}
+                          </NavLink>
 
                           {userRole === "ispOwner" && (
                             <NavLink
