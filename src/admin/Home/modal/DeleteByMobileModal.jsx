@@ -76,7 +76,7 @@ const DeleteByMobileModal = () => {
                 </h5>
                 <h5>Name : {customer?.profile?.name}</h5>
                 <h5>Mobile : {customer?.profile?.mobile}</h5>
-                {(currentUserRole === "superAdmin" ||
+                {(currentUserRole === "superadmin" ||
                   (currentUserRole === "admin" &&
                     customer?.user?.role === "customer")) && (
                   <button

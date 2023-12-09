@@ -10,6 +10,7 @@
 }
 .spetialSortingRow > th {
   cursor: pointer;
+  font-size: 14px !important;
 }
 .arrowDownUp {
   padding: 1px;
@@ -222,6 +223,7 @@
   font-size: 10px !important;
   color: black;
   font-weight: 500;
+  padding: 0.4rem !important;
 }
 
 .bulk_operation_button {

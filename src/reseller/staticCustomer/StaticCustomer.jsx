@@ -57,6 +57,7 @@ import CustomerDetails from "./staticCustomerCrud/CustomerDetails";
 import { getOwnerUsers } from "../../features/getIspOwnerUsersApi";
 import StaticCustomerEdit from "./actionComponent/StaticCustomerEdit";
 import RechargeCustomer from "./actionComponent/RechargeCustomer";
+import PrintOptions from "../../components/common/PrintOptions";
 
 export default function RstaticCustomer() {
   const { t } = useTranslation();
@@ -407,6 +408,14 @@ export default function RstaticCustomer() {
     payment: paymentStatus ? paymentStatus : t("sokolCustomer"),
   };
 
+  // static customer print option
+  const printData = {
+    id: 1003,
+    value: "ip",
+    label: "ip",
+    checked: true,
+  };
+
   // get specific customer
   const getSpecificCustomer = (id) => {
     setSingleCustomer(id);
@@ -755,16 +764,14 @@ export default function RstaticCustomer() {
                     <Collapse in={open} dimension="width">
                       <div id="example-collapse-text">
                         <Card className="cardCollapse border-0">
-                          <div className="d-flex align-items-center">
-                            <ReactToPrint
-                              documentTitle="গ্রাহক লিস্ট"
-                              trigger={() => (
-                                <PrinterFill
-                                  title={t("print")}
-                                  className="addcutmButton"
-                                />
-                              )}
-                              content={() => componentRef.current}
+                          <div className="addAndSettingIcon">
+                            <PrinterFill
+                              title={t("print")}
+                              className="addcutmButton"
+                              onClick={() => {
+                                setModalStatus("printOptions");
+                                setShow(true);
+                              }}
                             />
                           </div>
                         </Card>
@@ -963,6 +970,17 @@ export default function RstaticCustomer() {
         setMikrotikCheck={setMikrotikCheck}
         page="reseller"
       />
+
+      {modalStatus === "printOptions" && (
+        <PrintOptions
+          show={show}
+          setShow={setShow}
+          filterData={filterData}
+          tableData={Customers}
+          page={"customer"}
+          printData={printData}
+        />
+      )}
 
       {/* Model finish */}
     </>

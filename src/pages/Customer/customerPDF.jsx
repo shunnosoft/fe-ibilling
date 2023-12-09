@@ -31,7 +31,11 @@ const PrintCustomer = forwardRef((props, ref) => {
   const allPackages = useSelector((state) => state.package.allPackages);
 
   //get pppoe package
-  const ppoePackage = useSelector((state) => state?.package?.pppoePackages);
+  const ppoePackage = useSelector((state) =>
+    userRole === "ispOwner"
+      ? state?.package?.pppoePackages
+      : state?.mikrotik?.pppoePackage
+  );
 
   // get hotspot package
   const hotsPackage = useSelector((state) => state.hotspot?.package);
@@ -140,85 +144,91 @@ const PrintCustomer = forwardRef((props, ref) => {
               {printOptions?.length > 0 && (
                 <tr className="spetialSortingRow">
                   {printOptions[0]?.checked && (
-                    <th>{t(printOptions[0].value)}</th>
+                    <th scope="col">{t(printOptions[0].value)}</th>
                   )}
 
                   {printOptions[1].checked && !printOptions[2].checked ? (
-                    <th>{t(printOptions[1].value)}</th>
+                    <th scope="col">{t(printOptions[1].value)}</th>
                   ) : !printOptions[1].checked && printOptions[2].checked ? (
-                    <th>{t(printOptions[2].value)}</th>
+                    <th scope="col">{t(printOptions[2].value)}</th>
                   ) : (
                     printOptions[1].checked &&
                     printOptions[2].checked && (
-                      <th>
+                      <th scope="col">
                         {t(printOptions[1].value)}/{t(printOptions[2].value)}
                       </th>
                     )
                   )}
 
                   {printOptions[3].checked && !printOptions[4].checked ? (
-                    <th>{t(printOptions[3].value)}</th>
+                    <th scope="col">{t(printOptions[3].value)}</th>
                   ) : !printOptions[3].checked && printOptions[4].checked ? (
-                    <th>{t(printOptions[4].value)}</th>
+                    <th scope="col">{t(printOptions[4].value)}</th>
                   ) : (
                     printOptions[3].checked &&
                     printOptions[4].checked && (
-                      <th>
+                      <th scope="col">
                         {t(printOptions[3].value)}/{t(printOptions[4].value)}
                       </th>
                     )
                   )}
 
                   {printOptions[5]?.checked && (
-                    <th>{t(printOptions[5].value)}</th>
+                    <th scope="col">{t(printOptions[5].value)}</th>
                   )}
 
                   {printOptions[6].checked && !printOptions[7].checked ? (
-                    <th>{t(printOptions[6].value)}</th>
+                    <th scope="col">{t(printOptions[6].value)}</th>
                   ) : !printOptions[6].checked && printOptions[7].checked ? (
-                    <th>{t(printOptions[7].value)}</th>
+                    <th scope="col">{t(printOptions[7].value)}</th>
                   ) : (
                     printOptions[6].checked &&
                     printOptions[7].checked && (
-                      <th>
+                      <th scope="col">
                         {t(printOptions[6].value)}/{t(printOptions[7].value)}
                       </th>
                     )
                   )}
 
                   {printOptions[8].checked && !printOptions[9].checked ? (
-                    <th>{t(printOptions[8].value)}</th>
+                    <th scope="col">
+                      {t(printOptions[8].value)}&nbsp;
+                      {t("date")}
+                    </th>
                   ) : !printOptions[8].checked && printOptions[9].checked ? (
-                    <th>{t(printOptions[9].value)}</th>
+                    <th scope="col">
+                      {t(printOptions[9].value)}&nbsp;
+                      {t("date")}
+                    </th>
                   ) : (
                     printOptions[8].checked &&
                     printOptions[9].checked && (
-                      <th>
+                      <th scope="col">
                         {t(printOptions[8].value)}/{t(printOptions[9].value)}
                       </th>
                     )
                   )}
 
                   {printOptions[10]?.checked && !printOptions[11]?.checked ? (
-                    <th>{t(printOptions[10].value)}</th>
+                    <th scope="col">{t(printOptions[10].value)}</th>
                   ) : !printOptions[10]?.checked &&
                     printOptions[11]?.checked ? (
-                    <th>{t(printOptions[11].value)}</th>
+                    <th scope="col">{t(printOptions[11].value)}</th>
                   ) : (
                     printOptions[10]?.checked &&
                     printOptions[11]?.checked && (
-                      <th>
+                      <th scope="col">
                         {t(printOptions[10].value)}/{t(printOptions[11].value)}
                       </th>
                     )
                   )}
 
                   {printOptions[12]?.checked && (
-                    <th>{t(printOptions[12].value)}</th>
+                    <th scope="col">{t(printOptions[12].value)}</th>
                   )}
 
                   {printOptions[13]?.checked && (
-                    <th>{t(printOptions[13].value)}</th>
+                    <th scope="col">{t(printOptions[13].value)}</th>
                   )}
                 </tr>
               )}
@@ -229,16 +239,18 @@ const PrintCustomer = forwardRef((props, ref) => {
                   printOptions?.length > 0 && (
                     <tr key={key} id={val.id}>
                       {printOptions[0]?.checked && (
-                        <td className="prin_td">{val?.customerId}</td>
+                        <td className="prin_td align-middle">
+                          {val?.customerId}
+                        </td>
                       )}
 
                       {printOptions[1]?.checked && !printOptions[2]?.checked ? (
-                        <td className="prin_td">
+                        <td className="prin_td align-middle">
                           <p>{val.name}</p>
                         </td>
-                      ) : printOptions[1]?.checked &&
-                        !printOptions[2]?.checked ? (
-                        <td className="prin_td">
+                      ) : !printOptions[1]?.checked &&
+                        printOptions[2]?.checked ? (
+                        <td className="prin_td align-middle">
                           <p>
                             {val?.userType === "pppoe"
                               ? val?.pppoe?.name
@@ -254,7 +266,7 @@ const PrintCustomer = forwardRef((props, ref) => {
                       ) : (
                         printOptions[1]?.checked &&
                         printOptions[2]?.checked && (
-                          <td className="prin_td">
+                          <td className="prin_td align-middle">
                             <p>{val.name}</p>
                             <p>
                               {val?.userType === "pppoe"
@@ -272,23 +284,20 @@ const PrintCustomer = forwardRef((props, ref) => {
                       )}
 
                       {printOptions[3]?.checked && !printOptions[4]?.checked ? (
-                        <td className="prin_td">
-                          <p>
-                            <Phone className="text-info" />
+                        <td className="prin_td align-middle">
+                          <p className="text-bolder">
                             {val?.mobile ? val?.mobile : "N/A"}
                           </p>
                         </td>
                       ) : !printOptions[3]?.checked &&
                         printOptions[4]?.checked ? (
-                        <td className="prin_td">
-                          <p>
-                            <GeoAlt /> {val?.address ? val?.address : "N/A"}
-                          </p>
+                        <td className="prin_td align-middle">
+                          <p>{val?.address ? val?.address : "N/A"}</p>
                         </td>
                       ) : (
                         printOptions[3]?.checked &&
                         printOptions[4]?.checked && (
-                          <td className="prin_td">
+                          <td className="prin_td align-middle">
                             <p>
                               <Phone className="text-info" />
                               {val?.mobile ? val?.mobile : "N/A"}
@@ -302,18 +311,18 @@ const PrintCustomer = forwardRef((props, ref) => {
                       )}
 
                       {printOptions[5]?.checked && (
-                        <td className="prin_td">
+                        <td className="prin_td align-middle">
                           {val && getCustomerPackage(val)?.name}
                         </td>
                       )}
 
                       {printOptions[6]?.checked && !printOptions[7]?.checked ? (
-                        <td className="prin_td">
+                        <td className="prin_td align-middle">
                           <p>৳{val.monthlyFee}</p>
                         </td>
                       ) : !printOptions[6]?.checked &&
                         printOptions[7]?.checked ? (
-                        <td className="prin_td">
+                        <td className="prin_td align-middle">
                           <p
                             className={`text-${
                               val?.balance > -1 ? "success" : "danger"
@@ -325,7 +334,7 @@ const PrintCustomer = forwardRef((props, ref) => {
                       ) : (
                         printOptions[6]?.checked &&
                         printOptions[7]?.checked && (
-                          <td className="prin_td">
+                          <td className="prin_td align-middle">
                             <p>৳{val.monthlyFee}</p>
                             <p
                               className={`text-${
@@ -339,18 +348,20 @@ const PrintCustomer = forwardRef((props, ref) => {
                       )}
 
                       {printOptions[8]?.checked && !printOptions[9]?.checked ? (
-                        <td className="prin_td">
-                          {moment(val?.billingCycle).format("YYYY/MM/DD")}
+                        <td className="prin_td align-middle">
+                          <p>
+                            {moment(val?.billingCycle).format("YYYY/MM/DD")}
+                          </p>
                         </td>
                       ) : !printOptions[8]?.checked &&
                         printOptions[9]?.checked ? (
-                        <td className="prin_td">
-                          {moment(val?.promiseDate).format("YYYY/MM/DD")}
+                        <td className="prin_td align-middle">
+                          <p>{moment(val?.promiseDate).format("YYYY/MM/DD")}</p>
                         </td>
                       ) : (
                         printOptions[8]?.checked &&
                         printOptions[9]?.checked && (
-                          <td>
+                          <td className="prin_td align-middle">
                             <p>
                               {moment(val?.billingCycle).format("YYYY/MM/DD")}
                             </p>
@@ -363,36 +374,34 @@ const PrintCustomer = forwardRef((props, ref) => {
 
                       {printOptions[10]?.checked &&
                       !printOptions[11]?.checked ? (
-                        <td>
+                        <td className="prin_td align-middle">
                           <p>{badge(val?.paymentStatus)}</p>
                         </td>
                       ) : !printOptions[10]?.checked &&
                         printOptions[11]?.checked ? (
-                        <td>
+                        <td className="prin_td align-middle">
                           <p>{badge(val?.status)}</p>
                         </td>
                       ) : (
                         printOptions[10]?.checked &&
                         printOptions[11]?.checked && (
-                          <td>
-                            <small className="smalldf_new_badge">
-                              {badge(val?.paymentStatus)}
-                            </small>
-                            <small className="pdf_new_badge">
-                              {badge(val?.status)}
-                            </small>
+                          <td className="prin_td align-middle">
+                            <div className="d-flex gap-2">
+                              <p>{badge(val?.paymentStatus)}</p>
+                              <p>{badge(val?.status)}</p>
+                            </div>
                           </td>
                         )
                       )}
 
                       {printOptions[12]?.checked && (
-                        <td className="prin_td">
+                        <td className="prin_td align-middle">
                           {moment(val?.createdAt).format("YYYY/MM/DD")}
                         </td>
                       )}
 
                       {printOptions[13]?.checked && (
-                        <td className="prin_td">
+                        <td className="prin_td align-middle">
                           {moment(val?.createdAt).format("YYYY/MM/DD")}
                         </td>
                       )}

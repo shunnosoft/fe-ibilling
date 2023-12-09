@@ -99,6 +99,7 @@
   "todayCollection": "আজকের আদায়",
   "amount": "পরিমান",
   "bill": "বিল",
+  "promise": "প্রমিজ",
   "admin": "এডমিন",
   "billReport": "বিল রিপোর্ট",
   "collectBill": "বিল গ্রহণ",
@@ -906,5 +907,7 @@
   "copyLink": "কপি লিংক",
   "hotspotCustomerUrl": "হটস্পট গ্রাহক URL",
   "connectionFeeDue": "সংযোগ ফি বকেয়া",
-  "connDate": "সংযোগ.ডেট"
+  "connDate": "সংযোগ.ডেট",
+  "creatDate": "ক্রিয়েট.ডেট",
+  "nameType": "নাম/টাইপ"
 }

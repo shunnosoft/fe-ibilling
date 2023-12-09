@@ -37,13 +37,13 @@ export const printOptionData = {
     },
     {
       id: 1009,
-      value: "billDate",
+      value: "bill",
       label: "billDate",
       checked: true,
     },
     {
       id: 1010,
-      value: "promiseDate",
+      value: "promise",
       label: "promiseDate",
       checked: false,
     },
@@ -61,14 +61,14 @@ export const printOptionData = {
     },
     {
       id: 1012,
-      value: "createDate",
+      value: "creatDate",
       label: "createDate",
       checked: false,
     },
     {
       id: 1013,
       value: "connDate",
-      label: "connDate",
+      label: "connectionDate",
       checked: false,
     },
   ],

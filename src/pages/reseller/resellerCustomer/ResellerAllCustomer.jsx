@@ -392,7 +392,7 @@ const AllResellerCustomer = () => {
       },
       {
         width: "12%",
-        Header: t("namePPPoE"),
+        Header: t("nameType"),
         accessor: (
           data
         ) => `${data?.name} ${data.pppoe?.name} ${data.queue?.address}

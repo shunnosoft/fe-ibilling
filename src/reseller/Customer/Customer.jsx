@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import "../collector/collector.css";
 import moment from "moment";
 import useDash from "../../assets/css/dash.module.css";
@@ -27,7 +27,6 @@ import {
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
-import ReactToPrint from "react-to-print";
 import { CSVLink } from "react-csv";
 import { Accordion, Card, Collapse } from "react-bootstrap";
 
@@ -47,7 +46,6 @@ import {
 import CustomerReport from "./customerCRUD/showCustomerReport";
 import { badge } from "../../components/common/Utils";
 import Table from "../../components/table/Table";
-import PrintCustomer from "./customerPDF";
 import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
 import IndeterminateCheckbox from "../../components/table/bulkCheckbox";
 import BulkBillingCycleEdit from "./bulkOpration/bulkBillingCycleEdit";
@@ -70,11 +68,11 @@ import PPPoECustomerEdit from "./actionComponent/PPPoECustomerEdit";
 import { getOwnerUsers } from "../../features/getIspOwnerUsersApi";
 import useISPowner from "../../hooks/useISPOwner";
 import RechargeCustomer from "./actionComponent/RechargeCustomer";
+import PrintOptions from "../../components/common/PrintOptions";
 
 export default function Customer() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const componentRef = useRef(); //reference of pdf export component
 
   // get user & current user data form useISPOwner
   const {
@@ -117,7 +115,6 @@ export default function Customer() {
 
   // loading state
   const [isLoading, setIsLoading] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
 
   // check uncheck mikrotik state when delete customer
   const [checkMikrotik, setMikrotikCheck] = useState(false);
@@ -493,6 +490,14 @@ export default function Customer() {
       : t("allCustomer"),
   };
 
+  // pppoe customer print option
+  const printData = {
+    id: 1003,
+    value: "pppoe",
+    label: "pppoe",
+    checked: true,
+  };
+
   const columns = React.useMemo(
     () => [
       {
@@ -854,16 +859,16 @@ export default function Customer() {
                               <FiletypeCsv className="addcutmButton" />
                             </CSVLink>
 
-                            <ReactToPrint
-                              documentTitle="গ্রাহক লিস্ট"
-                              trigger={() => (
-                                <PrinterFill
-                                  title={t("print")}
-                                  className="addcutmButton"
-                                />
-                              )}
-                              content={() => componentRef.current}
-                            />
+                            <div className="addAndSettingIcon">
+                              <PrinterFill
+                                title={t("customerData")}
+                                className="addcutmButton"
+                                onClick={() => {
+                                  setModalStatus("printOptions");
+                                  setShow(true);
+                                }}
+                              />
+                            </div>
                           </div>
                         </Card>
                       </div>
@@ -941,23 +946,6 @@ export default function Customer() {
                     </Accordion>
 
                     <div className="collectorWrapper pb-2">
-                      <div className="addCollector">
-                        {isDeleting ? (
-                          <div className="deletingAction">
-                            <Loader /> <b>Deleting...</b>
-                          </div>
-                        ) : (
-                          ""
-                        )}
-                      </div>
-                      <div style={{ display: "none" }}>
-                        <PrintCustomer
-                          filterData={filterData}
-                          currentCustomers={Customers}
-                          ref={componentRef}
-                        />
-                      </div>
-
                       <Table
                         customComponent={customComponent}
                         bulkLength={bulkCustomer?.length}
@@ -1033,6 +1021,18 @@ export default function Customer() {
         status="customerDelete"
         page="reseller"
       />
+
+      {/* customers data table print option modal */}
+      {modalStatus === "printOptions" && (
+        <PrintOptions
+          show={show}
+          setShow={setShow}
+          filterData={filterData}
+          tableData={Customers}
+          page={"customer"}
+          printData={printData}
+        />
+      )}
 
       {/* Model finish */}
 
