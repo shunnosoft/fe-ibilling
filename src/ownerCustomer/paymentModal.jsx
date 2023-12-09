@@ -52,8 +52,6 @@ const PaymentModal = (props) => {
       setPaymentAmount(props.customerData.monthlyFee); //handle qr payment
       setUserData(props.customerData);
     }
-
-    selectedMonth.push(options[new Date(userData?.billingCycle).getMonth()]);
   }, [customerData, props.customerData]);
 
   //select bill month name
@@ -164,15 +162,16 @@ const PaymentModal = (props) => {
       return alert("You can't pay less than your monthly fee");
     }
 
-    // if (selectedMonth?.length === 0) {
-    //   setLoading(false);
-    //   return toast.warn("Select Bill Month");
-    // } else {
-    //   const monthValues = selectedMonth.map((item) => {
-    //     return item.value;
-    //   });
-    //   data.month = monthValues.join(",");
-    // }
+    //customer bill month select
+    if (selectedMonth?.length === 0) {
+      setLoading(false);
+      return toast.warn("Select Bill Month");
+    } else {
+      const monthValues = selectedMonth.map((item) => {
+        return item.value;
+      });
+      data.month = monthValues.join(",");
+    }
 
     billPayment(data, setLoading);
   };
@@ -194,19 +193,18 @@ const PaymentModal = (props) => {
 
   useEffect(() => {
     let paymentID = "";
-    // let monthDate = "";
-
-    // if (selectedMonth?.length === 0) {
-    //   toast.warn("Select Bill Month");
-    //   return;
-    // } else {
-    //   const monthValues = selectedMonth.map((item) => {
-    //     return item.value;
-    //   });
-    //   monthDate = monthValues.join(",");
-    // }
 
     if (userData) {
+      // customer bill month select
+      let selectDate = "";
+
+      if (selectedMonth.length) {
+        const monthValues = selectedMonth?.map((item) => {
+          return item?.value;
+        });
+        selectDate = monthValues.join(",");
+      }
+
       bKash.init({
         paymentMode: "checkout", //fixed value ‘checkout’
         paymentRequest: {
@@ -220,7 +218,7 @@ const PaymentModal = (props) => {
           user: userData.id,
           userType: userData.userType,
           medium: userData.ispOwner.bpSettings?.paymentGateway?.gatewayType,
-          // month: monthDate,
+          month: selectDate,
           paymentStatus: "pending",
           collectedBy: "customer",
         },
@@ -256,7 +254,7 @@ const PaymentModal = (props) => {
             user: userData.id,
             userType: userData.userType,
             medium: userData.ispOwner.bpSettings?.paymentGateway?.gatewayType,
-            // month: monthDate,
+            month: selectDate,
             paymentStatus: "pending",
             mikrotikPackage: userData.mikrotikPackage,
           };
@@ -281,7 +279,7 @@ const PaymentModal = (props) => {
         },
       });
     }
-  }, [userData, paymentAmount]);
+  }, [userData, paymentAmount, selectedMonth]);
 
   const gatewayType =
     userData?.ispOwner?.bpSettings?.paymentGateway?.gatewayType;
@@ -300,17 +298,23 @@ const PaymentModal = (props) => {
             ></button>
           </div>
           <div className="modal-body displayGrid">
-            <input
-              onChange={(e) => setPaymentAmount(e.target.value)}
-              min={userData?.monthlyFee}
-              className="form-control "
-              type="number"
-              value={paymentAmount}
-            />
-
-            {/* <div>
+            <div>
               <label className="form-check-label changeLabelFontColor">
-                {"Select Bill Month"}
+                Total Bill Amount <span className="text-danger">*</span>
+              </label>
+
+              <input
+                onChange={(e) => setPaymentAmount(e.target.value)}
+                min={userData?.monthlyFee}
+                className="form-control "
+                type="number"
+                value={paymentAmount}
+              />
+            </div>
+
+            <div>
+              <label className="form-check-label changeLabelFontColor">
+                Select Bill Month <span className="text-danger">*</span>
               </label>
 
               <Select
@@ -322,7 +326,7 @@ const PaymentModal = (props) => {
                 placeholder={"Select Bill Month"}
                 isSearchable
               />
-            </div> */}
+            </div>
 
             <div class="form-check mt-2">
               <input
