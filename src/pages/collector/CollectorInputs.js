@@ -44,3 +44,8 @@ export const collectorData = [
   //     type: "text",
   //   },
 ];
+
+export const RADIO = [
+  { id: 2, label: t("active"), value: "active" },
+  { id: 3, label: t("inactive"), value: "inactive" },
+];

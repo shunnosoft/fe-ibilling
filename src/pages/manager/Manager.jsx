@@ -154,10 +154,10 @@ export default function Manager() {
                 </li>
 
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#managerEditModal"
                   onClick={() => {
                     getSpecificManager(original.id);
+                    setModalStatus("managerEdit");
+                    setShow(true);
                   }}
                 >
                   <div className="dropdown-item">
@@ -237,16 +237,20 @@ export default function Manager() {
                   {bpSettings?.multipleManager ? (
                     <div
                       title={t("addNewManager")}
-                      data-bs-toggle="modal"
-                      data-bs-target="#managerAddModal"
+                      onClick={() => {
+                        setModalStatus("managerPost");
+                        setShow(true);
+                      }}
                     >
                       <PersonPlusFill className="addcutmButton" />
                     </div>
                   ) : manager.length === 0 ? (
                     <div
                       title={t("addNewManager")}
-                      data-bs-toggle="modal"
-                      data-bs-target="#managerAddModal"
+                      onClick={() => {
+                        setModalStatus("managerPost");
+                        setShow(true);
+                      }}
                     >
                       <PersonPlusFill className="addcutmButton" />
                     </div>
@@ -255,19 +259,7 @@ export default function Manager() {
                   )}
                 </div>
               </FourGround>
-              {/* modal start */}
-              <WriteModals manager={manager} />
-              <ManagerPost />
-              <ManagerDetails managerId={singleManager} />
-              <SingleMessage single={singleManager} sendCustomer="manager" />
 
-              {/* collector password reset */}
-              {modalStatus === "password" && (
-                <PasswordReset show={show} setShow={setShow} userId={userId} />
-              )}
-
-              <ManagerEdit managerId={singleManager} />
-              {/* modal End */}
               <FourGround>
                 <div className="collectorWrapper mt-2 py-2">
                   <div className="addCollector">
@@ -286,6 +278,29 @@ export default function Manager() {
           </div>
         </div>
       </div>
+
+      {/* modal start */}
+      <WriteModals manager={manager} />
+
+      {/* manager add modal */}
+      {modalStatus === "managerPost" && (
+        <ManagerPost show={show} setShow={setShow} />
+      )}
+
+      {/* manager data update modal */}
+      {modalStatus === "managerEdit" && (
+        <ManagerEdit show={show} setShow={setShow} managerId={singleManager} />
+      )}
+
+      <ManagerDetails managerId={singleManager} />
+      <SingleMessage single={singleManager} sendCustomer="manager" />
+
+      {/* collector password reset */}
+      {modalStatus === "password" && (
+        <PasswordReset show={show} setShow={setShow} userId={userId} />
+      )}
+
+      {/* modal End */}
     </>
   );
 }

@@ -903,5 +903,6 @@
   "connectionFeeDue": "Connection Fee Due",
   "connDate": "Conn.Dt",
   "creatDate": "Creat.Dt",
-  "nameType": "Name/Type"
+  "nameType": "Name/Type",
+  "permissions": "Permissions"
 }

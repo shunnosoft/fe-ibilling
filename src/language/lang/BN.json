@@ -909,5 +909,6 @@
   "connectionFeeDue": "সংযোগ ফি বকেয়া",
   "connDate": "সংযোগ.ডেট",
   "creatDate": "ক্রিয়েট.ডেট",
-  "nameType": "নাম/টাইপ"
+  "nameType": "নাম/টাইপ",
+  "permissions": "পারমিশান"
 }

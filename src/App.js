@@ -122,6 +122,7 @@ import CollectorDeposit from "./pages/diposit/CollectorDeposit";
 import SupportCall from "./pages/netFeeSupport/supportOpration/SupportCall";
 import MobilePayment from "./pages/public-pages/MobilePayment/MobilePayment";
 import QrCodeHotspotCustomer from "./pages/public-pages/hotspotCoustomerQRCode/QrCodeHotspotCustomer";
+import RechargeHistory from "./reseller/rechargeHistory/RechargeHistory";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
@@ -251,6 +252,10 @@ function App() {
               <Route
                 path="reseller/recharge"
                 element={<RechargeHistoryofReseller />}
+              />
+              <Route
+                path="reseller/recharge-history"
+                element={<RechargeHistory />}
               />
 
               <Route path="reseller/diposit" element={<RDiposit />} />

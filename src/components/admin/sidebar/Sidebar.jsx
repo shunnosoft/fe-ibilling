@@ -666,6 +666,7 @@ export default function Sidebar() {
                             </FontColor>
                           </NavLink>
                         )}
+
                         {((userRole === "ispOwner" &&
                           bpSettings?.customerInvoice) ||
                           (userRole === "manager" &&
@@ -690,6 +691,36 @@ export default function Sidebar() {
                                 <div className="sidebarIcon">{<People />}</div>
                                 <span className="sidebarLinksName">
                                   {t("invoice")}
+                                </span>
+                              </li>
+                            </FontColor>
+                          </NavLink>
+                        )}
+
+                        {userRole === "reseller" && (
+                          <NavLink
+                            key={123}
+                            to={
+                              userRole === "reseller" &&
+                              "/reseller/recharge-history"
+                            }
+                            className={(navInfo) =>
+                              navInfo.isActive ? activeClass.active : ""
+                            }
+                          >
+                            <FontColor>
+                              <li
+                                className="sidebarItems"
+                                id={
+                                  window.location.pathname ===
+                                  "/reseller/recharge-history"
+                                    ? "active"
+                                    : ""
+                                }
+                              >
+                                <div className="sidebarIcon">{<Cash />}</div>
+                                <span className="sidebarLinksName">
+                                  {t("rechargeHistory")}
                                 </span>
                               </li>
                             </FontColor>

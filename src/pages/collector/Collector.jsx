@@ -179,12 +179,13 @@ export default function Collector() {
                     </div>
                   </div>
                 </li>
-                {permission?.collectorEdit || role === "ispOwner" ? (
+
+                {(permission?.collectorEdit || role === "ispOwner") && (
                   <li
-                    data-bs-toggle="modal"
-                    data-bs-target="#collectorEditModal"
                     onClick={() => {
                       getSpecificCollector(original.id);
+                      setModalStatus("collectorEdit");
+                      setShow(true);
                     }}
                   >
                     <div className="dropdown-item">
@@ -194,8 +195,6 @@ export default function Collector() {
                       </div>
                     </div>
                   </li>
-                ) : (
-                  ""
                 )}
 
                 {role !== "collector" && (
@@ -344,7 +343,16 @@ export default function Collector() {
         {/* modals */}
         <CollectorPost />
         <CollectorDetails collectorId={singleCollector} />
-        <CollectorEdit collectorId={singleCollector} />
+
+        {/* collector data edit modal */}
+        {modalStatus === "collectorEdit" && (
+          <CollectorEdit
+            show={show}
+            setShow={setShow}
+            collectorId={singleCollector}
+          />
+        )}
+
         <PrevBalanceReport collectorId={singleCollector} />
         <SingleMessage single={collectorId} sendCustomer="collector" />
 

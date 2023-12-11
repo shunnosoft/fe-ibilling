@@ -563,7 +563,8 @@ export const addManager = async (
   dispatch,
   addStaffStatus,
   managerData,
-  setIsLoading
+  setIsLoading,
+  setShow
 ) => {
   setIsLoading(true);
   const button = document.querySelector(".marginLeft");
@@ -587,7 +588,7 @@ export const addManager = async (
         "Manager Create Successfully"
       );
 
-      document.querySelector("#managerAddModal").click();
+      setShow(false);
     })
     .catch((err) => {
       if (err.response) {
@@ -627,7 +628,8 @@ export const editManager = async (
   dispatch,
   managerData,
   managerId,
-  setIsLoading
+  setIsLoading,
+  setShow
 ) => {
   setIsLoading(true);
   await apiLink({
@@ -648,7 +650,7 @@ export const editManager = async (
         "Manager Updated Successfully"
       );
 
-      document.querySelector("#managerEditModal").click();
+      setShow(false);
     })
     .catch((err) => {
       if (err.response) {
@@ -928,7 +930,7 @@ export const addCollector = async (
   }
 };
 
-export const editCollector = async (dispatch, data, setIsLoading) => {
+export const editCollector = async (dispatch, data, setIsLoading, setShow) => {
   const { ispOwnerId, collectorId, ...rest } = data;
   setIsLoading(true);
   try {
@@ -943,7 +945,7 @@ export const editCollector = async (dispatch, data, setIsLoading) => {
       "কালেক্টর এডিট সফল হয়েছে",
       "Collector Updated Successfully"
     );
-    document.querySelector("#collectorEditModal").click();
+    setShow(false);
   } catch (err) {
     if (err.response) {
       toast.error(err.response.data.message);
