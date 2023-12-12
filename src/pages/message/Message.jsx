@@ -31,10 +31,14 @@ const useForceUpdate = () => {
   return () => setValue((value) => value + 1); // update the state to force render
 };
 
-const makeMessageObj = (template, ispOwnerId, customer, subAreaIds = null) => {
-  if (subAreaIds.includes(customer.subArea)) {
+const makeMessageObj = (
+  template,
+  ispOwnerId,
+  customer,
+  areaSubareas = null
+) => {
+  if (areaSubareas?.includes(customer.subArea)) {
     let msg = template
-      // .replace("USERNAME", customer?.pppoe?.name)
       .replace("CUSTOMER_NAME", customer?.name)
       .replace("CUSTOMER_ID", customer?.customerId)
       .replace(
@@ -74,13 +78,9 @@ const makeMessageObj = (template, ispOwnerId, customer, subAreaIds = null) => {
 
 export default function Message() {
   const { t } = useTranslation();
-  const reset = useForceUpdate();
   const userRole = useSelector((state) => state.persistedReducer.auth.role);
   const [sms, setSms] = useState("");
   const [isChecked, setisChecked] = useState(false);
-  const [isAllChecked, setisAllChecked] = useState(false);
-  const [status, setStatus] = useState("");
-  const [payment, setPayment] = useState("");
   const [smsTemplet, setTemplet] = useState([]);
 
   const [bottomText, setBottomText] = useState("");
@@ -91,8 +91,6 @@ export default function Message() {
   const [isRefrsh, setIsrefresh] = useState(false);
   const area = useSelector((state) => state.area.area);
   const storeSubArea = useSelector((state) => state.area?.subArea);
-  const [areaIds, setAreaIds] = useState([]);
-  const [subAreaIds, setSubAreaIds] = useState([]);
   const [title, setTitle] = useState("");
 
   const [days, setDays] = useState([]);
@@ -103,6 +101,9 @@ export default function Message() {
   const [show, setShow] = useState(false);
 
   const [loading, setIsLoading] = useState(false);
+
+  // ispOwner all areas state
+  const [areaSubareas, setAreaSubareas] = useState();
 
   const maskingId = useSelector(
     (state) => state.persistedReducer.auth.currentUser.ispOwner?.maskingId
@@ -143,12 +144,46 @@ export default function Message() {
     Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
   }, [userRole, getIspownerwitSMS]);
 
-  //get all subArea ids
+  // ispOwner all areas subarea handle
+  useEffect(() => {
+    let temp = [];
 
-  const getSubAreaIds = () => {
-    const subAreaAllId = storeSubArea?.map((sub) => sub.id);
+    area?.map((val) =>
+      storeSubArea?.map((sub) => {
+        if (val.id === sub.area) {
+          let subarea = {
+            ...sub,
+            isChecked: false,
+          };
+          temp.push(subarea);
+        }
+      })
+    );
 
-    return subAreaAllId.flat(Infinity);
+    // set ispOwner subAreas checked key include
+    setAreaSubareas(temp);
+  }, [area, storeSubArea]);
+
+  // select area handle for the bulk message
+  const areaSubareaSelectHandler = ({ target }) => {
+    const { name, checked, id } = target;
+
+    let subAreas = [...areaSubareas];
+
+    if (name === "allAreas") {
+      subAreas = subAreas.map((val) => ({ ...val, isChecked: checked }));
+    } else if (name === "area") {
+      subAreas = subAreas.map((val) =>
+        val.area === id ? { ...val, isChecked: checked } : val
+      );
+    } else {
+      subAreas = subAreas.map((val) =>
+        val.id === id ? { ...val, isChecked: checked } : val
+      );
+    }
+
+    // set collector areas
+    setAreaSubareas(subAreas);
   };
 
   // day checkbox select
@@ -175,11 +210,11 @@ export default function Message() {
 
       let items = [],
         totalSmsCount = 0;
-      const filterCustomerBySelectedArea = (customer) => {
-        if (subAreaIds.includes(customer.subArea)) {
-          return customer;
-        }
-      };
+
+      // all area subareas id
+      let subAreaIds = areaSubareas
+        .filter((val) => val.isChecked)
+        .map((val) => val.id);
 
       res.data.map((customer) => {
         let dueDate = moment(customer.billingCycle);
@@ -360,10 +395,14 @@ export default function Message() {
           });
 
           if (res.data.status) {
-            setSubAreaIds([]);
+            toast.success(t("successSMS"));
+            const subareas = areaSubareas.map((val) =>
+              val.isChecked ? { ...val, isChecked: false } : val
+            );
+            setAreaSubareas(subareas);
+
             setDays([]);
             smsRef.current.value = "";
-            toast.success(t("successSMS"));
             window.location.reload();
           }
         }
@@ -374,9 +413,11 @@ export default function Message() {
       console.log(error);
     }
   };
+
   const handleSMSreceiver = (e) => {
     setsmsReceiverType(e.target.value);
   };
+
   const itemSettingHandler = (item) => {
     if (smsTemplet.includes(item)) {
       const index = smsTemplet.indexOf(item);
@@ -403,54 +444,6 @@ export default function Message() {
     setUpperText(theText);
 
     setTemplet(smsTemplet);
-  };
-
-  const selectAllHandler = (e) => {
-    if (e.target.checked) {
-      const newArray = getSubAreaIds();
-      setSubAreaIds(newArray);
-      setisAllChecked(true);
-    } else {
-      setSubAreaIds([]);
-      setisAllChecked(false);
-    }
-  };
-
-  const areasSubareaHandler = (e) => {
-    const { id, value, checked, name } = e.target;
-
-    if (name === "area") {
-      let selectArea = storeSubArea.filter((item) => item.area === id);
-      let areaSubArea = selectArea?.map((sub) => sub.id);
-
-      if (checked) {
-        for (let i = 0; i < areaSubArea.length; i++) {
-          if (!subAreaIds.includes(areaSubArea[i])) {
-            let allData = subAreaIds.push(areaSubArea[i]);
-            setAreaIds(allData);
-          }
-        }
-      } else {
-        let data = [...subAreaIds];
-        for (let i = 0; i < areaSubArea.length; i++) {
-          if (data.includes(areaSubArea[i])) {
-            data = data.filter((sub) => sub !== areaSubArea[i]);
-          }
-        }
-        setSubAreaIds(data);
-      }
-    }
-
-    if (name === "subArea") {
-      if (checked) {
-        const currentSubArea = subAreaIds.push(value);
-        setAreaIds(currentSubArea);
-      } else {
-        const updatedData = subAreaIds.filter((id) => id !== value);
-
-        setSubAreaIds(updatedData);
-      }
-    }
   };
 
   return (
@@ -572,70 +565,63 @@ export default function Message() {
                         <div className="ifNotCheckBox">
                           <div style={{ width: "200px", height: "30px" }}>
                             <input
-                              style={{ cursor: "pointer" }}
                               type="checkbox"
+                              id="allAreas"
+                              name="allAreas"
                               className="getValueUsingClasses form-check-input"
-                              value={"selectAll"}
-                              onClick={selectAllHandler}
-                              id={"selectAll"}
-                              checked={isAllChecked}
+                              onClick={areaSubareaSelectHandler}
+                              checked={areaSubareas?.every(
+                                (item) => item.isChecked
+                              )}
                             />
+
                             <label
-                              style={{
-                                cursor: "pointer",
-                                marginLeft: "5px",
-                              }}
-                              htmlFor={"selectAll"}
-                              className="areaParent"
+                              htmlFor="allAreas"
+                              className="areaParent ms-1"
                             >
                               {t("allArea")}
                             </label>
                           </div>
+
                           <div className="AllAreaClass mb-4">
                             {area?.map((val, key) => (
                               <div key={key}>
-                                <div
-                                  style={{
-                                    cursor: "pointer",
-                                  }}
-                                  className="areaParent"
-                                >
+                                <div className="form-check">
                                   <input
                                     type="checkbox"
-                                    className="getValueUsingClasses form-check-input"
+                                    className="form-check-input"
                                     name="area"
                                     id={val.id}
-                                    onChange={areasSubareaHandler}
-                                    isChecked
+                                    onChange={areaSubareaSelectHandler}
+                                    checked={areaSubareas
+                                      ?.filter((item) => item.area === val.id)
+                                      ?.every((value) => value.isChecked)}
                                   />
+
                                   <label
                                     htmlFor={val.id}
-                                    className="ms-2"
-                                    style={{
-                                      fontSize: "20px",
-                                    }}
+                                    className="areaParent ms-1"
                                   >
                                     {val.name}
                                   </label>
                                 </div>
-                                {storeSubArea?.map(
-                                  (v, k) =>
-                                    v.area === val.id && (
+
+                                {areaSubareas?.map(
+                                  (subarea, k) =>
+                                    subarea.area === val.id && (
                                       <div key={k} className="displayFlex">
                                         <input
-                                          style={{ cursor: "pointer" }}
                                           type="checkbox"
-                                          className="getValueUsingClass"
-                                          name="subArea"
-                                          value={v.id}
-                                          onChange={areasSubareaHandler}
-                                          checked={subAreaIds.includes(v.id)}
+                                          id={subarea.id}
+                                          onChange={areaSubareaSelectHandler}
+                                          checked={subarea.isChecked}
                                         />
+
                                         <label
-                                          style={{ cursor: "pointer" }}
-                                          htmlFor={v.id}
+                                          htmlFor={subarea.id}
+                                          className="text-secondary"
                                         >
-                                          {v.name}
+                                          {subarea.name}
                                         </label>
                                       </div>
                                     )
@@ -643,13 +629,7 @@ export default function Message() {
                               </div>
                             ))}
                           </div>
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "space-between",
-                            }}
-                          >
+                          <div className="d-flex justify-content-between align-items-center">
                             <div className="radio-buttons">
                               <div>
                                 <input
