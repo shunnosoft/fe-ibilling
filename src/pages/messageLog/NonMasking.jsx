@@ -53,32 +53,6 @@ const NonMasking = ({
   //details modal show state
   const [modalShow, setModalShow] = useState(false);
 
-  // filter function
-  const onClickFilter = () => {
-    let filterData = [...data];
-
-    // type filter
-    if (type) {
-      filterData = filterData.filter((item) => item.type === type);
-    }
-
-    // status filter
-    if (status) {
-      filterData = filterData.filter((item) => item.status === status);
-    }
-
-    // date filter
-    filterData = filterData.filter(
-      (value) =>
-        new Date(moment(value.createdAt).format("YYYY-MM-DD")).getTime() >=
-          new Date(moment(startDate).format("YYYY-MM-DD")).getTime() &&
-        new Date(moment(value.createdAt).format("YYYY-MM-DD")).getTime() <=
-          new Date(moment(endDate).format("YYYY-MM-DD")).getTime()
-    );
-
-    setMainData(filterData);
-  };
-
   // get customer api call
   useEffect(() => {
     if (mainData.length === 0)
@@ -89,6 +63,32 @@ const NonMasking = ({
   useEffect(() => {
     setMainData(data);
   }, [data]);
+
+  // type filter
+  if (type !== "") {
+    const filterType = mainData.filter((item) => item.type === type);
+    setMainData(filterType);
+  }
+
+  // status filter
+  if (status !== "") {
+    const filterStatus = mainData.filter((item) => item.status === status);
+    setMainData(filterStatus);
+  }
+
+  // filter function
+  const onClickFilter = () => {
+    let filterData = [...data];
+
+    // date filter
+    filterData = filterData.filter(
+      (value) =>
+        new Date(value.createdAt) >= new Date(startDate).setHours(0, 0, 0, 0) &&
+        new Date(value.createdAt) <= new Date(endDate).setHours(23, 59, 59, 999)
+    );
+
+    setMainData(filterData);
+  };
 
   // table column
   const columns = React.useMemo(

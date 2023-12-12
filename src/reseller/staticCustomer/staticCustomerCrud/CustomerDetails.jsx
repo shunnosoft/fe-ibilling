@@ -257,10 +257,12 @@ const CustomerDetails = ({ show, setShow, customerId }) => {
                   <p class="vr_line vr ms-2" />
 
                   <div className="row gy-2">
-                    <div className="d-flex gap-3">
-                      <PhoneFill />
-                      <p>{data?.mobile}</p>
-                    </div>
+                    {data?.mobile && (
+                      <div className="d-flex gap-3">
+                        <PhoneFill />
+                        <p>{data?.mobile}</p>
+                      </div>
+                    )}
 
                     <div className="d-flex gap-3">
                       <Cash />
