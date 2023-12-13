@@ -910,5 +910,7 @@
   "connDate": "সংযোগ.ডেট",
   "creatDate": "ক্রিয়েট.ডেট",
   "nameType": "নাম/টাইপ",
-  "permissions": "পারমিশান"
+  "permissions": "পারমিশান",
+  "dueAmount": "বকেয়া টাকা",
+  "birthDate": "জন্ম তারিখ"
 }

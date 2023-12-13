@@ -38,10 +38,12 @@ const divisions = divisionsJSON.divisions;
 const districts = districtsJSON.districts;
 const thana = thanaJSON.thana;
 
-export default function CustomerModal({ show, setShow }) {
+const CustomerModal = ({ show, setShow }) => {
   const { t } = useTranslation();
-  const { hasMikrotik, ispOwnerId, bpSettings } = useISPowner();
   const { userRole, userId } = useCurrentUser();
+
+  // get user & current user data form useISPOwner
+  const { hasMikrotik, ispOwnerId, bpSettings } = useISPowner();
 
   // all areas form redux
   const area = useSelector((state) => state?.area?.area);
@@ -78,8 +80,9 @@ export default function CustomerModal({ show, setShow }) {
 
   const [billDate, setBillDate] = useState(new Date());
   const [connectionDate, setConnectionDate] = useState(new Date());
-  const [connectionFee, setConnectionFee] = useState(false);
-  const [medium, setMedium] = useState("cash");
+
+  // customer birth day dete
+  const [birthdayDate, setBirthdayDate] = useState();
 
   // pole get subarea state
   const [subAreasPoleBox, setSubAreasPoleBox] = useState([]);
@@ -92,7 +95,6 @@ export default function CustomerModal({ show, setShow }) {
 
   // customer validator
   const customerValidator = Yup.object({
-    // customerId: Yup.string(),
     name: Yup.string().required(t("writeCustomerName")),
     mobile: Yup.string()
       .matches(/^(01){1}[3456789]{1}(\d){8}$/, t("incorrectMobile"))
@@ -233,6 +235,7 @@ export default function CustomerModal({ show, setShow }) {
       autoDisable: autoDisable,
       connectionDate: connectionDate?.toISOString(),
       billingCycle: billDate?.toISOString(),
+      birthDate: birthdayDate?.toISOString(),
       pppoe: {
         name: Pname,
         password: Ppassword,
@@ -335,6 +338,7 @@ export default function CustomerModal({ show, setShow }) {
               address: "",
               email: "",
               nid: "",
+              birthDate: "",
               monthlyFee: packageRate?.rate || 0,
               Pname: "",
               Pprofile: packageRate?.name || "",
@@ -407,13 +411,11 @@ export default function CustomerModal({ show, setShow }) {
                     validation={"true"}
                   />
 
-                  {!bpSettings?.hasMikrotik && (
-                    <FtextField
-                      type="number"
-                      label={t("prevDue")}
-                      name="balance"
-                    />
-                  )}
+                  <FtextField
+                    type="number"
+                    label={t("prevDue")}
+                    name="balance"
+                  />
 
                   <FtextField
                     type="text"
@@ -558,6 +560,22 @@ export default function CustomerModal({ show, setShow }) {
                     disabled={!mikrotikPackage}
                   />
 
+                  <div>
+                    <label className="form-control-label changeLabelFontColor">
+                      {t("birthDate")}
+                    </label>
+
+                    <DatePicker
+                      className="form-control mw-100"
+                      name="birthDate"
+                      selected={birthdayDate}
+                      onChange={(date) => setBirthdayDate(date)}
+                      dateFormat="MMM dd yyyy"
+                      placeholderText={t("selectDate")}
+                      disabled={!mikrotikPackage}
+                    />
+                  </div>
+
                   <FtextField
                     type="text"
                     label={t("address")}
@@ -676,4 +694,6 @@ export default function CustomerModal({ show, setShow }) {
       </Modal>
     </>
   );
-}
+};
+
+export default CustomerModal;

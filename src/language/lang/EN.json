@@ -904,5 +904,7 @@
   "connDate": "Conn.Dt",
   "creatDate": "Creat.Dt",
   "nameType": "Name/Type",
-  "permissions": "Permissions"
+  "permissions": "Permissions",
+  "dueAmount": "Due Amount",
+  "birthDate": "Birth Date"
 }

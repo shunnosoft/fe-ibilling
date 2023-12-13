@@ -36,7 +36,7 @@ const divisions = divisionsJSON.divisions;
 const districts = districtsJSON.districts;
 const thana = thanaJSON.thana;
 
-export default function AddStaticCustomer({ show, setShow }) {
+const AddStaticCustomer = ({ show, setShow }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const { ispOwnerId } = useISPowner();
@@ -79,6 +79,9 @@ export default function AddStaticCustomer({ show, setShow }) {
   const [maxUpLimit, setUpMaxLimit] = useState("");
   const [maxDownLimit, setDownMaxLimit] = useState("");
   const [monthlyFee, setMonthlyFee] = useState(packageRate?.rate || 0);
+
+  //customer brith day date
+  const [birthdayDate, setBirthdayDate] = useState();
 
   const [divisionalArea, setDivisionalArea] = useState({
     division: "",
@@ -238,6 +241,7 @@ export default function AddStaticCustomer({ show, setShow }) {
       autoDisable: autoDisable,
       billingCycle: billDate?.toISOString(),
       connectionDate: connectionDate?.toISOString(),
+      birthDate: birthdayDate?.toISOString(),
       balance: -balance,
       ...rest,
       monthlyFee,
@@ -377,6 +381,7 @@ export default function AddStaticCustomer({ show, setShow }) {
               address: "",
               email: "",
               nid: "",
+              birthDate: "",
               balance: "",
               ipAddress: "",
               srcAddress: "",
@@ -417,6 +422,7 @@ export default function AddStaticCustomer({ show, setShow }) {
                       </select>
                     </div>
                   )}
+
                   <div>
                     <label className="form-control-label changeLabelFontColor">
                       {t("selectArea")}{" "}
@@ -483,43 +489,35 @@ export default function AddStaticCustomer({ show, setShow }) {
                   )}
 
                   {userType === "simple-queue" && (
-                    <div>
-                      <FtextField
-                        type="text"
-                        label={t("queueName")}
-                        name="queueName"
-                      />
-                    </div>
+                    <FtextField
+                      type="text"
+                      label={t("queueName")}
+                      name="queueName"
+                    />
                   )}
 
                   {userType === "simple-queue" && (
-                    <div>
-                      <FtextField
-                        type="text"
-                        label={t("ipAddress")}
-                        name="target"
-                      />
-                    </div>
+                    <FtextField
+                      type="text"
+                      label={t("ipAddress")}
+                      name="target"
+                    />
                   )}
 
                   {userType === "firewall-queue" && (
-                    <div>
-                      <FtextField
-                        type="text"
-                        label={t("ipAddress")}
-                        name="ipAddress"
-                      />
-                    </div>
+                    <FtextField
+                      type="text"
+                      label={t("ipAddress")}
+                      name="ipAddress"
+                    />
                   )}
 
                   {userType === "core-queue" && (
-                    <div>
-                      <FtextField
-                        type="text"
-                        label={t("ipAddress")}
-                        name="srcAddress"
-                      />
-                    </div>
+                    <FtextField
+                      type="text"
+                      label={t("ipAddress")}
+                      name="srcAddress"
+                    />
                   )}
 
                   {bpSettings?.hasMikrotik && userType === "firewall-queue" && (
@@ -647,42 +645,45 @@ export default function AddStaticCustomer({ show, setShow }) {
                       </select>
                     </div>
                   )}
-                  <div>
-                    <FtextField
-                      type="number"
-                      label={t("monthFee")}
-                      name="monthlyFee"
-                      min={0}
-                      value={monthlyFee}
-                      onChange={(e) => setMonthlyFee(e.target.value)}
-                    />
-                  </div>
-                  {!bpSettings?.hasMikrotik && (
-                    <div>
-                      <FtextField
-                        type="number"
-                        label={t("prevDue")}
-                        name="balance"
-                      />
-                    </div>
-                  )}
-                  <div>
-                    <FtextField type="text" label={t("NIDno")} name="nid" />
-                  </div>
+
+                  <FtextField
+                    type="number"
+                    label={t("monthFee")}
+                    name="monthlyFee"
+                    min={0}
+                    value={monthlyFee}
+                    onChange={(e) => setMonthlyFee(e.target.value)}
+                  />
+
+                  <FtextField
+                    type="number"
+                    label={t("prevDue")}
+                    name="balance"
+                  />
+
+                  <FtextField type="text" label={t("NIDno")} name="nid" />
 
                   <div>
-                    <FtextField type="text" label={t("name")} name="name" />
-                  </div>
-                  <div>
-                    <FtextField type="text" label={t("mobile")} name="mobile" />
-                  </div>
-                  <div>
-                    <FtextField
-                      type="text"
-                      label={t("address")}
-                      name="address"
+                    <label className="form-control-label changeLabelFontColor">
+                      {t("birthDate")}
+                    </label>
+
+                    <DatePicker
+                      className="form-control mw-100"
+                      name="birthDate"
+                      selected={birthdayDate}
+                      onChange={(date) => setBirthdayDate(date)}
+                      dateFormat="MMM dd yyyy"
+                      placeholderText={t("selectDate")}
+                      disabled={!mikrotikPackage}
                     />
                   </div>
+
+                  <FtextField type="text" label={t("name")} name="name" />
+
+                  <FtextField type="text" label={t("mobile")} name="mobile" />
+
+                  <FtextField type="text" label={t("address")} name="address" />
 
                   {divisionalAreaFormData.map((item) => (
                     <div>
@@ -706,9 +707,8 @@ export default function AddStaticCustomer({ show, setShow }) {
                     </div>
                   ))}
 
-                  <div>
-                    <FtextField type="text" label={t("email")} name="email" />
-                  </div>
+                  <FtextField type="text" label={t("email")} name="email" />
+
                   <div>
                     <div className="billCycle">
                       <label className="form-control-label changeLabelFontColor">
@@ -726,6 +726,7 @@ export default function AddStaticCustomer({ show, setShow }) {
                       />
                     </div>
                   </div>
+
                   <div>
                     <label className="form-control-label changeLabelFontColor">
                       {t("connectionDate")}
@@ -761,22 +762,20 @@ export default function AddStaticCustomer({ show, setShow }) {
                       <option value="postpaid">{t("postPaid")}</option>
                     </SelectField>
                   </div>
-                  <div>
-                    <FtextField
-                      type="text"
-                      label={t("referenceName")}
-                      name="referenceName"
-                      disabled={!mikrotikPackage}
-                    />
-                  </div>
-                  <div>
-                    <FtextField
-                      type="text"
-                      label={t("referenceMobile")}
-                      name="referenceMobile"
-                      disabled={!mikrotikPackage}
-                    />
-                  </div>
+
+                  <FtextField
+                    type="text"
+                    label={t("referenceName")}
+                    name="referenceName"
+                    disabled={!mikrotikPackage}
+                  />
+
+                  <FtextField
+                    type="text"
+                    label={t("referenceMobile")}
+                    name="referenceMobile"
+                    disabled={!mikrotikPackage}
+                  />
 
                   {!bpSettings?.genCustomerId && (
                     <FtextField
@@ -804,7 +803,7 @@ export default function AddStaticCustomer({ show, setShow }) {
           </Formik>
         </ModalBody>
         <ModalFooter>
-          <div className="modal-footer border-none">
+          <div className="displayGrid1">
             <button
               type="button"
               className="btn btn-secondary"
@@ -826,4 +825,6 @@ export default function AddStaticCustomer({ show, setShow }) {
       </Modal>
     </>
   );
-}
+};
+
+export default AddStaticCustomer;

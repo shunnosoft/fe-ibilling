@@ -104,6 +104,14 @@ export default function Customer() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
+  // current Date
+  let today = new Date();
+  let firstDate = new Date(today.getFullYear(), today.getMonth(), 1);
+  let lastDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+
+  firstDate.setHours(0, 0, 0, 0);
+  lastDate.setHours(23, 59, 59, 999);
+
   // get user & current user data form useISPOwner
   const { role, ispOwnerId, bpSettings, permissions } = useISPowner();
 
@@ -795,12 +803,12 @@ export default function Customer() {
                 : original.queue.target}
 
               <span className="ms-1">
-                {new Date(original?.createdAt).getMonth() ===
-                  new Date().getMonth() && (
-                  <small className="new_badge badge bg-secondary">
-                    {"new"}
-                  </small>
-                )}
+                {firstDate <= new Date(original?.createdAt) &&
+                  lastDate >= new Date(original?.createdAt) && (
+                    <small className="new_badge badge bg-secondary">
+                      {"new"}
+                    </small>
+                  )}
               </span>
             </p>
           </div>
