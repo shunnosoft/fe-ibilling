@@ -1,29 +1,30 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import Loader from "../../../components/common/Loader";
 import { useSelector, useDispatch } from "react-redux";
 
 // internal imports
-import { collectorData } from "../CollectorInputs";
+import { RADIO, collectorData } from "../CollectorInputs";
 import "../../Customer/customer.css";
 import { FtextField } from "../../../components/common/FtextField";
 import { addCollector } from "../../../features/apiCalls";
 import { useTranslation } from "react-i18next";
-import { Tab, Tabs } from "react-bootstrap";
+import {
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  ModalTitle,
+  Tab,
+  Tabs,
+} from "react-bootstrap";
+import { areasSubareasChecked } from "../../staff/staffCustomFucn";
+import { toast } from "react-toastify";
 
-export default function CollectorPost() {
+const CollectorPost = ({ show, setShow }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const area = useSelector((state) => state?.area?.area);
-  // get all subAreas
-  const storeSubArea = useSelector((state) => state.area?.subArea);
-  const auth = useSelector((state) => state.persistedReducer.auth?.currentUser);
-  const role = useSelector((state) => state.persistedReducer.auth?.role);
-
-  const [areaIds, setAreaIds] = useState([]);
-  const [addStaffStatus, setAddStaffStatus] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
   //validator
   const collectorValidator = Yup.object({
@@ -38,19 +39,74 @@ export default function CollectorPost() {
     status: Yup.string().required(t("enterStatus")),
   });
 
-  const setAreaHandler = () => {
-    const temp = document.querySelectorAll(".getValueUsingClass");
-    let IDS_temp = [];
-    for (let i = 0; i < temp.length; i++) {
-      if (temp[i].checked === true) {
-        IDS_temp.push(temp[i].value);
-      }
+  const area = useSelector((state) => state?.area?.area);
+  // get all subAreas
+  const storeSubArea = useSelector((state) => state.area?.subArea);
+
+  const auth = useSelector((state) => state.persistedReducer.auth?.currentUser);
+
+  const role = useSelector((state) => state.persistedReducer.auth?.role);
+
+  const [areaIds, setAreaIds] = useState([]);
+
+  const [addStaffStatus, setAddStaffStatus] = useState(false);
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  // ispOwner all areas state
+  const [areaSubareas, setAreaSubareas] = useState();
+
+  // ispOwner all areas subarea handle
+  useEffect(() => {
+    let temp = [];
+
+    area?.map((val) =>
+      storeSubArea?.map((sub) => {
+        if (val.id === sub.area) {
+          let subarea = {
+            ...sub,
+            isChecked: false,
+          };
+          temp.push(subarea);
+        }
+      })
+    );
+
+    // set ispOwner subAreas checked key include
+    setAreaSubareas(temp);
+  }, [area, storeSubArea]);
+
+  // modal close hadler
+  const closeHandler = () => setShow(false);
+
+  // select area handle for the collector
+  const areaSubareaSelectHandler = ({ target }) => {
+    const { name, checked, id } = target;
+
+    let subAreas = [...areaSubareas];
+
+    if (name === "area") {
+      subAreas = subAreas.map((val) =>
+        val.area === id ? { ...val, isChecked: checked } : val
+      );
+    } else {
+      subAreas = subAreas.map((val) =>
+        val.id === id ? { ...val, isChecked: checked } : val
+      );
     }
-    // console.log("IDS: ", IDS_temp);
-    setAreaIds(IDS_temp);
+
+    // set collector areas
+    setAreaSubareas(subAreas);
   };
 
+  // collector create function handler
   const collectorPostHandler = async (data) => {
+    if (areaSubareas.filter((val) => val.isChecked).length === 0) {
+      setIsLoading(false);
+      toast.warn(t("selectArea"));
+      return;
+    }
+
     if (addStaffStatus) {
       if (!data.salary) {
         alert(t("incorrectSalary"));
@@ -60,190 +116,194 @@ export default function CollectorPost() {
     if (auth.ispOwner) {
       const sendingData = {
         ...data,
-        areas: areaIds,
+        areas: areaSubareas.filter((val) => val.isChecked).map((val) => val.id),
         ispOwner: auth.ispOwner.id,
       };
       if (!addStaffStatus) {
         delete sendingData.salary;
       }
+
       addCollector(dispatch, sendingData, setIsLoading, addStaffStatus);
     }
   };
 
   return (
-    <div>
-      {/* Model start */}
-      <div
-        className="modal fade modal-dialog-scrollable "
-        id="collectorModal"
-        tabIndex="-1"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
+    <>
+      <Modal
+        show={show}
+        onHide={closeHandler}
+        backdrop="static"
+        keyboard={false}
+        size="xl"
       >
-        <div className="modal-dialog modal-xl">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLabel">
-                {t("addNewCollector")}
-              </h5>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body">
-              <Formik
-                initialValues={{
-                  name: "",
-                  mobile: "",
-                  address: "",
-                  email: "",
-                  nid: "",
-                  status: "",
-                  salary: "",
-                }}
-                validationSchema={collectorValidator}
-                onSubmit={(values) => {
-                  collectorPostHandler(values);
-                }}
-                enableReinitialize
-              >
-                {() => (
-                  <Form>
-                    <Tabs
-                      defaultActiveKey="details"
-                      id="uncontrolled-tab-example"
-                      className="mb-3"
-                    >
-                      <Tab eventKey="details" title={t("details")}>
-                        <div className="collectorInputs">
-                          {collectorData.map((val, key) => (
-                            <FtextField
-                              key={key}
-                              type={val.type}
-                              label={val.label}
-                              name={val.name}
-                              validation={"true"}
-                            />
-                          ))}
+        <ModalHeader closeButton>
+          <ModalTitle>
+            <h5 className="modal-title" id="exampleModalLabel">
+              {t("addNewCollector")}
+            </h5>
+          </ModalTitle>
+        </ModalHeader>
+        <ModalBody>
+          <Formik
+            initialValues={{
+              name: "",
+              mobile: "",
+              address: "",
+              email: "",
+              nid: "",
+              status: "",
+              salary: "",
+            }}
+            validationSchema={collectorValidator}
+            onSubmit={(values) => {
+              collectorPostHandler(values);
+            }}
+            enableReinitialize
+          >
+            {() => (
+              <Form>
+                <Tabs
+                  defaultActiveKey="details"
+                  id="uncontrolled-tab-example"
+                  className="mb-3"
+                >
+                  {/* collector profile informataion start */}
+                  <Tab eventKey="details" title={t("profile")}>
+                    <div className="d-flex justify-content-center">
+                      <div className="displayGrid col-6">
+                        {collectorData.map((val, key) => (
+                          <FtextField
+                            key={key}
+                            type={val.type}
+                            label={val.label}
+                            name={val.name}
+                            validation={"true"}
+                          />
+                        ))}
 
-                          {/* status */}
-                          <div className="form-check customerFormCheck d-flex justify-content-around">
-                            <div className="collectorStatus mt-2">
-                              <div className="label">
-                                <label className="form-control-label changeLabelFontColor">
-                                  {t("status")}
-                                  <span className="text-danger">*</span>
-                                </label>
-                              </div>
-                              <div className="form-check form-check-inline">
+                        <div>
+                          <label className="form-control-label changeLabelFontColor">
+                            {t("status")}
+                            <span className="text-danger">*</span>
+                          </label>
+
+                          <div className="d-flex">
+                            {RADIO?.map((val, key) => (
+                              <div key={key} className="form-check">
                                 <FtextField
-                                  label="Active"
+                                  label={val.label}
                                   className="form-check-input"
                                   type="radio"
                                   name="status"
-                                  value="active"
+                                  value={val.value}
                                 />
                               </div>
-                              <div className="form-check form-check-inline">
-                                <FtextField
-                                  label="Inactive"
-                                  className="form-check-input"
-                                  type="radio"
-                                  name="status"
-                                  value="inactive"
-                                />
-                              </div>
-                            </div>
-                            {role === "ispOwner" && (
-                              <div className="autoDisable">
-                                <input
-                                  id="addStaffStatus"
-                                  type="checkBox"
-                                  checked={addStaffStatus}
-                                  onChange={(e) =>
-                                    setAddStaffStatus(e.target.checked)
-                                  }
-                                />
-                                <label
-                                  htmlFor="addStaffStatus"
-                                  className="ps-2"
-                                >
-                                  {" "}
-                                  {t("addStaff")}{" "}
-                                </label>
-                              </div>
-                            )}
+                            ))}
                           </div>
-                          {/* status */}
+                        </div>
 
-                          {role === "ispOwner" && addStaffStatus && (
-                            <FtextField
-                              type="number"
-                              label={t("salary")}
-                              name="salary"
+                        {role === "ispOwner" && (
+                          <div className="autoDisable">
+                            <input
+                              id="addStaffStatus"
+                              type="checkBox"
+                              checked={addStaffStatus}
+                              onChange={(e) =>
+                                setAddStaffStatus(e.target.checked)
+                              }
                             />
+                            <label htmlFor="addStaffStatus" className="ps-2">
+                              {t("addStaff")}
+                            </label>
+                          </div>
+                        )}
+
+                        {role === "ispOwner" && addStaffStatus && (
+                          <FtextField
+                            type="number"
+                            label={t("salary")}
+                            name="salary"
+                          />
+                        )}
+                      </div>
+                    </div>
+                  </Tab>
+                  {/* collector profile informataion end */}
+
+                  {/* collector areas tab start */}
+                  <Tab eventKey="area" title={t("area")}>
+                    <div className="AllAreaClass">
+                      {area?.map((val, key) => (
+                        <div key={key}>
+                          <div className="form-check">
+                            <input
+                              type="checkbox"
+                              className="form-check-input"
+                              name="area"
+                              id={val.id}
+                              onChange={areaSubareaSelectHandler}
+                              checked={
+                                areaSubareas &&
+                                areasSubareasChecked(val.id, areaSubareas)
+                              }
+                            />
+
+                            <label htmlFor={val.id} className="areaParent ms-1">
+                              {val.name}
+                            </label>
+                          </div>
+
+                          {areaSubareas?.map(
+                            (subArea, k) =>
+                              subArea.area === val.id && (
+                                <div key={k} className="displayFlex">
+                                  <input
+                                    type="checkbox"
+                                    id={subArea.id}
+                                    checked={subArea.isChecked}
+                                    onChange={areaSubareaSelectHandler}
+                                  />
+                                  <label
+                                    htmlFor={subArea.id}
+                                    className="text-secondary"
+                                  >
+                                    {subArea.name}
+                                  </label>
+                                </div>
+                              )
                           )}
                         </div>
-                      </Tab>
-                      <Tab eventKey="area" title={t("area")}>
-                        <b className="mt-2"> {t("selectArea")} </b>
-                        <div className="AllAreaClass">
-                          {area?.map((val, key) => (
-                            <div key={key}>
-                              <h6 className="areaParent">{val.name}</h6>
-                              {storeSubArea?.map(
-                                (v, k) =>
-                                  v.area === val.id && (
-                                    <div key={k} className="displayFlex">
-                                      <input
-                                        id={v.id + "subAreas"}
-                                        type="checkbox"
-                                        className="getValueUsingClass"
-                                        value={v.id}
-                                        onChange={setAreaHandler}
-                                      />
-                                      <label htmlFor={v.id + "subAreas"}>
-                                        {v.name}
-                                      </label>
-                                    </div>
-                                  )
-                              )}
-                            </div>
-                          ))}
-                        </div>
-                      </Tab>
-                    </Tabs>
-
-                    {/* area */}
-                    <div className="modal-footer">
-                      <button
-                        type="button"
-                        className="btn btn-secondary"
-                        data-bs-dismiss="modal"
-                        disabled={isLoading}
-                      >
-                        {t("cancel")}
-                      </button>
-                      <button
-                        type="submit"
-                        className="btn btn-success customBtn"
-                        disabled={isLoading}
-                      >
-                        {isLoading ? <Loader /> : t("save")}
-                      </button>
+                      ))}
                     </div>
-                  </Form>
-                )}
-              </Formik>
-            </div>
+                  </Tab>
+                  {/* collector areas tab end */}
+                </Tabs>
+              </Form>
+            )}
+          </Formik>
+        </ModalBody>
+        <ModalFooter>
+          <div className="displayGrid1">
+            <button
+              type="button"
+              className="btn btn-secondary"
+              disabled={isLoading}
+              onClick={closeHandler}
+            >
+              {t("cancel")}
+            </button>
+            <button
+              type="submit"
+              className="btn btn-success customBtn"
+              disabled={isLoading}
+            >
+              {isLoading ? <Loader /> : t("submit")}
+            </button>
           </div>
-        </div>
-      </div>
-
-      {/* Model finish */}
-    </div>
+        </ModalFooter>
+      </Modal>
+    </>
   );
-}
+};
+
+export default CollectorPost;

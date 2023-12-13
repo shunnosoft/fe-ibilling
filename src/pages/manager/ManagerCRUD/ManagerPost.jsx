@@ -22,6 +22,7 @@ import { FtextField } from "../../../components/common/FtextField";
 import useISPowner from "../../../hooks/useISPOwner";
 import { addManager } from "../../../features/apiCalls";
 import InformationTooltip from "../../../components/common/InformationTooltip";
+import { areasSubareasChecked } from "../../staff/staffCustomFucn";
 
 const ManagerPost = ({ show, setShow }) => {
   const { t } = useTranslation();
@@ -277,9 +278,10 @@ const ManagerPost = ({ show, setShow }) => {
                               name="area"
                               id={val.id}
                               onChange={areaSubareaSelectHandler}
-                              checked={areaSubareas
-                                ?.filter((item) => item.area === val.id)
-                                ?.every((value) => value.isChecked)}
+                              checked={
+                                areaSubareas &&
+                                areasSubareasChecked(val.id, areaSubareas)
+                              }
                             />
 
                             <label htmlFor={val.id} className="areaParent ms-1">

@@ -22,6 +22,7 @@ import Loader from "../../../components/common/Loader";
 import useISPowner from "../../../hooks/useISPOwner";
 import { toast } from "react-toastify";
 import InformationTooltip from "../../../components/common/InformationTooltip";
+import { areasSubareasChecked } from "../../staff/staffCustomFucn";
 
 const ManagerEdit = ({ show, setShow, managerId }) => {
   const { t } = useTranslation();
@@ -258,9 +259,8 @@ const ManagerEdit = ({ show, setShow, managerId }) => {
                               name="area"
                               id={val.id}
                               onChange={areaSubareaSelectHandler}
-                              checked={areaSubareas
-                                ?.filter((item) => item.area === val.id)
-                                ?.every((value) => value.isChecked)}
+                              checked={ areaSubareas &&
+                                areasSubareasChecked(val.id, areaSubareas)}
                             />
 
                             <label htmlFor={val.id} className="areaParent ms-1">

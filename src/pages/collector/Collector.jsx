@@ -312,9 +312,11 @@ export default function Collector() {
                     </div>
                     {(permission?.collectorAdd || role === "ispOwner") && (
                       <div
-                        title="কালেক্টর এড করুন"
-                        data-bs-toggle="modal"
-                        data-bs-target="#collectorModal"
+                        title={t("collector")}
+                        onClick={() => {
+                          setModalStatus("collectorPost");
+                          setShow(true);
+                        }}
                       >
                         <PersonPlusFill className="addcutmButton" />
                       </div>
@@ -341,8 +343,11 @@ export default function Collector() {
           </div>
         </div>
         {/* modals */}
-        <CollectorPost />
-        <CollectorDetails collectorId={singleCollector} />
+
+        {/* collector post modal */}
+        {modalStatus === "collectorPost" && (
+          <CollectorPost show={show} setShow={setShow} />
+        )}
 
         {/* collector data edit modal */}
         {modalStatus === "collectorEdit" && (
@@ -352,6 +357,8 @@ export default function Collector() {
             collectorId={singleCollector}
           />
         )}
+
+        <CollectorDetails collectorId={singleCollector} />
 
         <PrevBalanceReport collectorId={singleCollector} />
         <SingleMessage single={collectorId} sendCustomer="collector" />

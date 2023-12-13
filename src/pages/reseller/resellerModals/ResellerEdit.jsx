@@ -31,10 +31,32 @@ import GlobalPackageEditWithOutMkt, {
   PackageBasedEditWithOutMkt,
 } from "./ResellerEdit/ResellerEditWihoutMkt";
 import { resellerPermissions } from "./resellerPermission";
+import InformationTooltip from "../../../components/common/InformationTooltip";
+import { areasSubareasChecked } from "../../staff/staffCustomFucn";
 
 const ResellerEdit = ({ show, setShow, resellerId }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+
+  //validator
+  const resellerValidator = Yup.object({
+    name: Yup.string().required(t("enterName")),
+    mobile: Yup.string()
+      .min(11, t("write11DigitMobileNumber"))
+      .max(11, t("over11DigitMobileNumber"))
+      .required(t("writeMobileNumber")),
+    email: Yup.string().email(t("incorrectEmail")),
+    nid: Yup.string(),
+    website: Yup.string(),
+    address: Yup.string(),
+    status: Yup.string().required(t("selectStatus")),
+    commissionRate: Yup.number()
+      .integer()
+      .min(1, t("minimumShare"))
+      .max(99, t("maximumShare"))
+      .required(t("enterResellerShare")),
+  });
+
   const auth = useSelector((state) => state.persistedReducer.auth.currentUser);
   const area = useSelector((state) => state.area.area);
   const storeSubArea = useSelector((state) => state.area?.subArea);
@@ -60,7 +82,6 @@ const ResellerEdit = ({ show, setShow, resellerId }) => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [allowedAreas, setAllowedAreas] = useState([]);
-  const [areaIds_Edit, setAreaIds_Edit] = useState([]);
   const [allowedMikrotik, setAllowedMikrotik] = useState([]);
   const [mikrotikIds_Edit, setMikrotikIds_Edit] = useState([]);
   const [mikroTikPackagesId, setmikroTikPackagesId] = useState([]);
@@ -77,19 +98,13 @@ const ResellerEdit = ({ show, setShow, resellerId }) => {
   //ispOwner customer type data state
   const [customerType, setCustomerType] = useState([]);
 
+  // ispOwner all areas state
+  const [areaSubareas, setAreaSubareas] = useState();
+
   //get all valid permissions from resellerPermissions
   useEffect(() => {
-    // let resellerPermissionLang = [];
-
-    // if (localStorage.getItem("netFee:lang") === "en") {
-    //   resellerPermissionLang = resellerPermissionEng;
-    // } else {
-    //   resellerPermissionLang = resellerPermissionBan;
-    // }
-
     if (reseller) {
       setMikrotikIds_Edit(reseller.mikrotiks);
-      setAreaIds_Edit(reseller.subAreas);
       setAllowedAreas(reseller.subAreas);
       setAllowedMikrotik(reseller.mikrotiks);
       setmikroTikPackagesId(reseller.mikrotikPackages);
@@ -103,11 +118,6 @@ const ResellerEdit = ({ show, setShow, resellerId }) => {
       const perms = resellerPermissions(reseller.permission, bpSettings);
       const filterdPermission = perms.filter((p) => p.disabled === false);
       setPermissions(filterdPermission);
-
-      // const temp = resellerPermissionLang.map((item) => {
-      //   return { ...item, isChecked: reseller.permission[item.value] };
-      // });
-      // setPermissions(temp);
     }
   }, [reseller]);
 
@@ -117,43 +127,155 @@ const ResellerEdit = ({ show, setShow, resellerId }) => {
     }
   }, []);
 
+  // ispOwner all areas subarea handle
+  useEffect(() => {
+    let temp = [];
+
+    storeSubArea?.map((sub) => {
+      if (reseller.subAreas?.includes(sub?.id)) {
+        let subarea = {
+          ...sub,
+          isChecked: true,
+        };
+        temp.push(subarea);
+      } else {
+        let subarea = {
+          ...sub,
+          isChecked: false,
+        };
+        temp.push(subarea);
+      }
+    });
+
+    // set ispOwner subAreas checked key include
+    setAreaSubareas(temp);
+  }, [reseller, storeSubArea]);
+
   // modal close handler
   const closeHandler = () => setShow(false);
 
-  //validator
-  const resellerValidator = Yup.object({
-    name: Yup.string().required(t("enterName")),
-    mobile: Yup.string()
-      .min(11, t("write11DigitMobileNumber"))
-      .max(11, t("over11DigitMobileNumber"))
-      .required(t("writeMobileNumber")),
-    email: Yup.string().email(t("incorrectEmail")),
-    nid: Yup.string(),
-    website: Yup.string(),
-    address: Yup.string(),
-    status: Yup.string().required(t("selectStatus")),
-    commissionRate: Yup.number()
-      .integer()
-      .min(1, t("minimumShare"))
-      .max(99, t("maximumShare"))
-      .required(t("enterResellerShare")),
-  });
+  //reseller customer type handler
+  const customerTypeHandler = (e) => {
+    let customerTypeData = [...customerType];
 
-  const handleChange = (e) => {
-    const { name, checked } = e.target;
-    if (name === "allChecked") {
-      let temp = permissions.map((event) => ({ ...event, isChecked: checked }));
-      setPermissions(temp);
-    } else {
-      let temp = permissions.map((event) =>
-        event.value === name ? { ...event, isChecked: checked } : event
+    if (customerTypeData.includes(e.target.value)) {
+      customerTypeData = customerTypeData.filter(
+        (value) => value !== e.target.value
       );
-      setPermissions(temp);
+    } else if (!customerTypeData.includes(e.target.value)) {
+      customerTypeData.push(e.target.value);
     }
+    setCustomerType(customerTypeData);
+  };
+
+  // select area handle for the collector
+  const areaSubareaSelectHandler = ({ target }) => {
+    const { name, checked, id } = target;
+
+    let subAreas = [...areaSubareas];
+
+    if (name === "area") {
+      subAreas = subAreas.map((val) =>
+        val.area === id ? { ...val, isChecked: checked } : val
+      );
+    } else {
+      subAreas = subAreas.map((val) =>
+        val.id === id ? { ...val, isChecked: checked } : val
+      );
+    }
+
+    // set collector areas
+    setAreaSubareas(subAreas);
+  };
+
+  //miktrotik handler
+  const setMikrotikHandler = (e) => {
+    const temp = document.querySelectorAll(".getValueUsingClassesforMikrotik");
+    let IDS_temp = [];
+    for (let i = 0; i < temp.length; i++) {
+      if (temp[i].checked === true) {
+        IDS_temp.push(temp[i].value);
+      }
+    }
+    setAllowedMikrotik(IDS_temp);
+    setMikrotikIds_Edit(IDS_temp);
+  };
+
+  //get mikrotik packages
+
+  const mikrotikpakages = useSelector(
+    (state) => state.reseller.allMikrotikPakages
+  );
+
+  //handle mikrotik packages
+  const handelMikrotikPakages = (e) => {
+    let newArray = [...mikroTikPackagesId, e.target.value];
+    if (mikroTikPackagesId.includes(e.target.value)) {
+      newArray = newArray.filter((item) => item !== e.target.value);
+    }
+    setmikroTikPackagesId(newArray);
+  };
+
+  const handlePackageDividerInput = ({ target }) => {
+    const packageCommissionState = [...packageCommisson];
+
+    const existingRate = packageCommissionState.find(
+      (item) => item.mikrotikPackage === target.name
+    );
+    const temp = { ...existingRate };
+    if (existingRate) {
+      temp.ispOwnerRate = target.value;
+      packageCommissionState[
+        packageCommissionState.findIndex(
+          (item) => item.mikrotikPackage === target.name
+        )
+      ] = temp;
+    } else {
+      const data = {
+        ispOwner: ispOwnerId,
+        ispOwnerRate: target.value,
+        mikrotikPackage: target.name,
+      };
+      packageCommissionState.push(data);
+    }
+
+    setPackageCommission(packageCommissionState);
+  };
+
+  // handle form onChange
+  const handleOnchange = (e) => {
+    if (e.target.name === "commissionRate") {
+      setIspCommission(100 - e.target.value);
+    }
+  };
+
+  // select permission handle for the manager
+  const resellerPermissionHandler = (e) => {
+    const { name, checked } = e.target;
+
+    //  temporary state set collector single & multiple permission
+    let temp = [...permissions];
+
+    if (name === "allPermissions") {
+      temp = temp.map((val) => ({ ...val, isChecked: checked }));
+    } else {
+      temp = temp.map((val) =>
+        val.value === name ? { ...val, isChecked: checked } : val
+      );
+    }
+
+    // set manager permissions state
+    setPermissions(temp);
   };
 
   //submit handler
   const resellerHandler = (data) => {
+    if (areaSubareas.filter((val) => val.isChecked).length === 0) {
+      setIsLoading(false);
+      toast.warn(t("selectArea"));
+      return;
+    }
+
     let commision = data.commissionRate;
     if (auth.ispOwner) {
       const permissionData = {};
@@ -165,7 +287,9 @@ const ResellerEdit = ({ show, setShow, resellerId }) => {
         ispOwner: reseller.ispOwner,
         ispId: reseller.ispOwner,
         resellerId: reseller.id,
-        subAreas: areaIds_Edit,
+        subAreas: areaSubareas
+          .filter((val) => val.isChecked)
+          .map((val) => val.id),
         mikrotikPackages: mikroTikPackagesId,
         permission: permissionData,
         commissionType,
@@ -254,122 +378,6 @@ const ResellerEdit = ({ show, setShow, resellerId }) => {
     }
   };
 
-  //area handler
-  const setAreaHandler = () => {
-    const temp = document.querySelectorAll(".getValueUsingClass_Edit");
-    let IDS_temp = [];
-    for (let i = 0; i < temp.length; i++) {
-      if (temp[i].checked === true) {
-        IDS_temp.push(temp[i].value);
-      }
-    }
-    setAllowedAreas(IDS_temp);
-    setAreaIds_Edit(IDS_temp);
-  };
-
-  //miktrotik handler
-  const setMikrotikHandler = (e) => {
-    const temp = document.querySelectorAll(".getValueUsingClassesforMikrotik");
-    let IDS_temp = [];
-    for (let i = 0; i < temp.length; i++) {
-      if (temp[i].checked === true) {
-        IDS_temp.push(temp[i].value);
-      }
-    }
-    setAllowedMikrotik(IDS_temp);
-    setMikrotikIds_Edit(IDS_temp);
-  };
-
-  //get mikrotik packages
-
-  const mikrotikpakages = useSelector(
-    (state) => state.reseller.allMikrotikPakages
-  );
-
-  //handle mikrotik packages
-  const handelMikrotikPakages = (e) => {
-    let newArray = [...mikroTikPackagesId, e.target.value];
-    if (mikroTikPackagesId.includes(e.target.value)) {
-      newArray = newArray.filter((item) => item !== e.target.value);
-    }
-    setmikroTikPackagesId(newArray);
-  };
-
-  const handlePackageDividerInput = ({ target }) => {
-    const packageCommissionState = [...packageCommisson];
-
-    const existingRate = packageCommissionState.find(
-      (item) => item.mikrotikPackage === target.name
-    );
-    const temp = { ...existingRate };
-    if (existingRate) {
-      temp.ispOwnerRate = target.value;
-      packageCommissionState[
-        packageCommissionState.findIndex(
-          (item) => item.mikrotikPackage === target.name
-        )
-      ] = temp;
-    } else {
-      const data = {
-        ispOwner: ispOwnerId,
-        ispOwnerRate: target.value,
-        mikrotikPackage: target.name,
-      };
-      packageCommissionState.push(data);
-    }
-
-    setPackageCommission(packageCommissionState);
-  };
-
-  // select area all subArea handler
-  const resellerAreaSubAreaHandle = (e) => {
-    const { id, checked } = e.target;
-
-    let selectArea = storeSubArea.filter((item) => item.area === id);
-    let areaSubArea = selectArea?.map((sub) => sub.id);
-
-    if (checked) {
-      let selectData = [...allowedAreas];
-      for (let i = 0; i < areaSubArea.length; i++) {
-        if (!selectData.includes(areaSubArea[i])) {
-          selectData.push(areaSubArea[i]);
-        }
-      }
-      setAllowedAreas(selectData);
-      setAreaIds_Edit(selectData);
-    } else {
-      let data = [...allowedAreas];
-      for (let i = 0; i < areaSubArea.length; i++) {
-        if (data.includes(areaSubArea[i])) {
-          data = data.filter((sub) => sub !== areaSubArea[i]);
-        }
-      }
-      setAllowedAreas(data);
-      setAreaIds_Edit(data);
-    }
-  };
-
-  // handle form onChange
-  const handleOnchange = (e) => {
-    if (e.target.name === "commissionRate") {
-      setIspCommission(100 - e.target.value);
-    }
-  };
-
-  //reseller customer type handler
-  const customerTypeHandler = (e) => {
-    let customerTypeData = [...customerType];
-
-    if (customerTypeData.includes(e.target.value)) {
-      customerTypeData = customerTypeData.filter(
-        (value) => value !== e.target.value
-      );
-    } else if (!customerTypeData.includes(e.target.value)) {
-      customerTypeData.push(e.target.value);
-    }
-    setCustomerType(customerTypeData);
-  };
-
   return (
     <>
       <Modal
@@ -412,9 +420,9 @@ const ResellerEdit = ({ show, setShow, resellerId }) => {
                   id="uncontrolled-tab-example"
                   className="mb-3"
                 >
-                  <Tab eventKey="basic" title={t("basic")}>
+                  {/* reseller profile information tab start */}
+                  <Tab eventKey="basic" title={t("profile")}>
                     <div className="d-flex justify-content-center">
-                      {/* Basic part */}
                       <div className="displayGrid col-6">
                         {RPD.map((val, key) => (
                           <FtextField
@@ -500,57 +508,48 @@ const ResellerEdit = ({ show, setShow, resellerId }) => {
                       </div>
                     </div>
                   </Tab>
-                  {/* end basic part */}
+                  {/* reseller profile information tab end */}
 
-                  {/* area part */}
+                  {/* reseller user areas tab start */}
                   <Tab eventKey="area" title={t("area")}>
                     <b className="mt-2"> {t("selectArea")} </b>
                     <div className="AllAreaClass">
                       {area?.map((val, key) => (
                         <div key={key}>
-                          <div
-                            style={{
-                              cursor: "pointer",
-                            }}
-                            className="form-check"
-                          >
+                          <div className="form-check">
                             <input
                               type="checkbox"
                               className="form-check-input"
                               name="area"
                               id={val.id}
-                              onChange={resellerAreaSubAreaHandle}
-                              isChecked
+                              onChange={areaSubareaSelectHandler}
+                              checked={
+                                areaSubareas &&
+                                areasSubareasChecked(val.id, areaSubareas)
+                              }
                             />
-                            <label
-                              htmlFor={val.id}
-                              className="ms-2"
-                              style={{
-                                fontSize: "20px",
-                              }}
-                            >
+
+                            <label htmlFor={val.id} className="areaParent ms-1">
                               {val.name}
                             </label>
                           </div>
 
-                          {storeSubArea?.map(
-                            (v, k) =>
-                              v.area === val.id && (
-                                <div key={k} className="form-check my-1">
+                          {areaSubareas?.map(
+                            (subarea, k) =>
+                              subarea.area === val.id && (
+                                <div key={k} className="displayFlex">
                                   <input
                                     type="checkbox"
-                                    id={v.id + v.name}
-                                    className="form-check-input getValueUsingClass_Edit me-2"
-                                    name="subArea"
-                                    value={v.id}
-                                    checked={allowedAreas?.includes(v.id)}
-                                    onChange={setAreaHandler}
+                                    id={subarea.id}
+                                    onChange={areaSubareaSelectHandler}
+                                    checked={subarea.isChecked}
                                   />
+
                                   <label
-                                    className="form-check-label"
-                                    htmlFor={v.id + v.name}
+                                    htmlFor={subarea.id}
+                                    className="text-secondary"
                                   >
-                                    {v.name}
+                                    {subarea.name}
                                   </label>
                                 </div>
                               )
@@ -559,9 +558,9 @@ const ResellerEdit = ({ show, setShow, resellerId }) => {
                       ))}
                     </div>
                   </Tab>
-                  {/* end area part */}
+                  {/* reseller user areas tab end */}
 
-                  {/* package part */}
+                  {/* reseller user packages tab start */}
                   <Tab eventKey="package" title={t("package")}>
                     <div className="d-flex mt-3 justify-content-evenly">
                       <div className="form-check ">
@@ -719,48 +718,57 @@ const ResellerEdit = ({ show, setShow, resellerId }) => {
                       </>
                     )}
                   </Tab>
-                  {/* end package part */}
+                  {/* reseller user packages tab end */}
 
+                  {/* reseller permissions tab start */}
                   <Tab eventKey="permission" title={t("changePermission")}>
-                    <div className="displayGrid3 secondSection text-start">
-                      <div className="permission-section">
+                    <div className="displayGrid3">
+                      <div className="CheckboxContainer">
                         <input
-                          id="permissionEdit"
                           type="checkbox"
-                          className="form-check-input"
-                          onChange={handleChange}
-                          name="allChecked"
+                          className="CheckBox"
+                          name="allPermissions"
+                          onChange={resellerPermissionHandler}
+                          id="selectAllPermissions"
                           checked={permissions.every((item) => item.isChecked)}
                         />
                         <label
-                          htmlFor="permissionEdit"
-                          className="form-check-label"
+                          htmlFor="selectAllPermissions"
+                          className="checkboxLabel text-info fw-bold"
                         >
-                          <p className="radioTitle ms-1">
-                            {t("allPermission")}
-                          </p>
+                          {t("allPermission")}
                         </label>
                       </div>
-                      {permissions.map((val, key) => {
-                        return (
-                          <div key={val + "" + key} className="displayFlex">
+
+                      {permissions.map((val, key) => (
+                        <div
+                          className="CheckboxContainer d-flex justify-content-between"
+                          key={key}
+                        >
+                          <div>
                             <input
-                              id={key + "reseller" + val}
-                              key={val + "" + key}
                               type="checkbox"
-                              className="form-check-input"
-                              checked={val.isChecked}
-                              onChange={handleChange}
+                              className="CheckBox"
                               name={val.value}
+                              checked={val.isChecked}
+                              onChange={resellerPermissionHandler}
+                              id={val.value + key}
                             />
-                            <label htmlFor={key + "reseller" + val}>
+                            <label
+                              htmlFor={val.value + key}
+                              className="checkboxLabel"
+                            >
                               {val.label}
                             </label>
                           </div>
-                        );
-                      })}
+
+                          {/* there is information to grant permission tooltip */}
+                          {val?.info && <InformationTooltip data={val} />}
+                        </div>
+                      ))}
                     </div>
                   </Tab>
+                  {/* reseller permissions tab end */}
                 </Tabs>
               </Form>
             )}
