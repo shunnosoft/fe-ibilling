@@ -222,6 +222,12 @@ export const ispOwnerPermission = (perm) => {
       label: "Fixed BillingCycle Date",
       isChecked: perm?.fixedBillingCycle,
     },
+    {
+      id: 38,
+      value: "withoutMikrotikMinusCustomerBalance",
+      label: "Without Mikrotik Customer Minus Balance",
+      isChecked: perm?.withoutMikrotikMinusCustomerBalance,
+    },
   ];
   return permission;
 };
