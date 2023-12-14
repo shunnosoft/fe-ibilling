@@ -25,6 +25,7 @@ import { getSubAreasApi } from "../../features/actions/customerApiCall";
 import DatePicker from "react-datepicker";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
+import { areasSubareasChecked } from "../staff/staffCustomFucn";
 
 const useForceUpdate = () => {
   const [value, setValue] = useState(0); // integer state
@@ -593,9 +594,10 @@ export default function Message() {
                                     name="area"
                                     id={val.id}
                                     onChange={areaSubareaSelectHandler}
-                                    checked={areaSubareas
-                                      ?.filter((item) => item.area === val.id)
-                                      ?.every((value) => value.isChecked)}
+                                    checked={
+                                      areaSubareas &&
+                                      areasSubareasChecked(val.id, areaSubareas)
+                                    }
                                   />
 
                                   <label

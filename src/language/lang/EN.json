@@ -906,5 +906,6 @@
   "nameType": "Name/Type",
   "permissions": "Permissions",
   "dueAmount": "Due Amount",
-  "birthDate": "Birth Date"
+  "birthDate": "Birth Date",
+  "smsBonus": "Call support team for bonus"
 }
