@@ -121,6 +121,14 @@ const Inactive = ({
     </div>
   );
 
+  //customer print option
+  const printData = {
+    id: 1003,
+    value: "PPIPHp",
+    label: "PPIPHp",
+    checked: true,
+  };
+
   //column for table
   const column = useMemo(
     () => [
@@ -338,6 +346,7 @@ const Inactive = ({
           setShow={setShow}
           tableData={customer}
           page={"customer"}
+          printData={printData}
         />
       )}
 

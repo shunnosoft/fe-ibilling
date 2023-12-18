@@ -18,6 +18,9 @@ const PrintExpenditure = React.forwardRef((props, ref) => {
     (state) => state.expenditure.expenditurePourposes
   );
 
+  // get owner users
+  const ownerUsers = useSelector((state) => state?.ownerUsers?.ownerUser);
+
   // find expenditure purpose method
   const findExpenditureType = (expenditureTypeId) => {
     const matchExpenditure = expenditurePurpose.find(
@@ -26,16 +29,17 @@ const PrintExpenditure = React.forwardRef((props, ref) => {
     return matchExpenditure?.name;
   };
 
+  // find expenditure user
+  const performer = (value) => {
+    let expenditureUser = ownerUsers.find((item) => item[value]);
+
+    return expenditureUser && expenditureUser[value];
+  };
+
   return (
     <>
       <div ref={ref}>
-        <div className="page_header letter_header d-flex justify-content-between align-items-center pb-3 ">
-          <div className="logo_side">
-            <div className="company_logo">
-              <img src="/assets/img/logo.png" alt="" />
-            </div>
-            <div className="company_name">{ispOwnerData.company}</div>
-          </div>
+        {/* <div className="page_header letter_header d-flex justify-content-between align-items-center pb-3 ">
           <div className="details_side">
             <p>
               {t("companyName")} {ispOwnerData.company}
@@ -46,9 +50,15 @@ const PrintExpenditure = React.forwardRef((props, ref) => {
               </p>
             )}
           </div>
-        </div>
+        </div> */}
 
-        <ul className="d-flex justify-content-around filter_list">
+        <ul className="d-flex justify-content-evenly letter_header mb-1">
+          <li>
+            {t("totalData")} {allExpenditures.length}
+          </li>
+          <li className="ms-4">
+            {t("amount")} : ৳{FormatNumber(filterData?.totalAmount)}
+          </li>
           <li>
             {t("name")} : {filterData?.name}
           </li>
@@ -56,44 +66,43 @@ const PrintExpenditure = React.forwardRef((props, ref) => {
             {t("type")} : {filterData?.expenditureType}
           </li>
         </ul>
-        <ul className="d-flex justify-content-center filter_list">
-          <li>
-            {t("totalData")} {allExpenditures.length}
-          </li>
-          <li className="ms-4">
-            {t("amount")}
-            {FormatNumber(filterData?.totalAmount)}
-          </li>
-        </ul>
 
         <table className="table table-striped ">
-          <thead>
+          <thead className="spetialSortingRow">
             <tr>
-              <th>{t("serial")}</th>
-              <th>{t("expenseSector")}</th>
-              <th>{t("amount")}</th>
-              <th>{t("date")}</th>
+              <th scope="col">{t("serial")}</th>
+              <th scope="col">{t("type")}</th>
+              <th scope="col">{t("expenseDefination")}</th>
+              <th scope="col">{t("name")}</th>
+              <th scope="col">{t("amount")}</th>
+              <th scope="col">{t("date")}</th>
             </tr>
           </thead>
           <tbody>
             {allExpenditures?.map((val, key) => (
               <tr key={key}>
-                <td>{++serial}</td>
-                <td>{findExpenditureType(val.expenditurePurpose)}</td>
-                <td>{FormatNumber(val.amount)}</td>
-                <td> {moment(val.createdAt).format("MMM DD YYYY")}</td>
+                <td className="prin_td align-middle">{++serial}</td>
+                <td className="prin_td align-middle">
+                  {findExpenditureType(val.expenditurePurpose)}
+                </td>
+                <td className="prin_td align-middle">{val.description}</td>
+                <td className="prin_td align-middle">
+                  {val.user &&
+                    performer(val.user)?.name +
+                      "(" +
+                      performer(val.user)?.role +
+                      ")"}
+                </td>
+                <td className="prin_td align-middle">
+                  {FormatNumber(val.amount)}
+                </td>
+                <td className="prin_td align-middle">
+                  {moment(val.createdAt).format("YYYY-MM-DD")}
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
-        {/* <div className="page-footer">
-          <div className="signature_container">
-            <div className="p-3 signature_wraper">
-              <div className="signamture_field">{t("manager")}</div>
-              <div className="signamture_field">{t("admin")}</div>
-            </div>
-          </div>
-        </div> */}
       </div>
     </>
   );

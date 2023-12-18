@@ -106,6 +106,14 @@ const Unpaid = ({
     </div>
   );
 
+  //customer print option
+  const printData = {
+    id: 1003,
+    value: "PPIPHp",
+    label: "PPIPHp",
+    checked: true,
+  };
+
   const column = useMemo(
     () => [
       {
@@ -323,6 +331,7 @@ const Unpaid = ({
           setShow={setShow}
           tableData={customer}
           page={"customer"}
+          printData={printData}
         />
       )}
 

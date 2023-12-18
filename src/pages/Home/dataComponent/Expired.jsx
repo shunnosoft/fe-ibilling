@@ -108,6 +108,14 @@ const Expired = ({
     </div>
   );
 
+  //customer print option
+  const printData = {
+    id: 1003,
+    value: "PPIPHp",
+    label: "PPIPHp",
+    checked: true,
+  };
+
   const column = useMemo(
     () => [
       {
@@ -325,6 +333,7 @@ const Expired = ({
           setShow={setShow}
           tableData={customer}
           page={"customer"}
+          printData={printData}
         />
       )}
 

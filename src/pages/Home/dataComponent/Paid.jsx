@@ -110,6 +110,14 @@ const Paid = ({ modalShow, setModalShow, status, ispOwnerId, month, year }) => {
     </div>
   );
 
+  //customer print option
+  const printData = {
+    id: 1003,
+    value: "PPIPHp",
+    label: "PPIPHp",
+    checked: true,
+  };
+
   const column = useMemo(
     () => [
       {
@@ -327,6 +335,7 @@ const Paid = ({ modalShow, setModalShow, status, ispOwnerId, month, year }) => {
           setShow={setShow}
           tableData={customer}
           page={"customer"}
+          printData={printData}
         />
       )}
 

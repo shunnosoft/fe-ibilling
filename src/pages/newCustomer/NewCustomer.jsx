@@ -276,6 +276,14 @@ const NewCustomer = ({
     customerType,
   };
 
+  //customer print option
+  const printData = {
+    id: 1003,
+    value: "PPIPHp",
+    label: "PPIPHp",
+    checked: true,
+  };
+
   // static column
   const columns = React.useMemo(
     () => [
@@ -527,6 +535,7 @@ const NewCustomer = ({
               filterData={filterData}
               tableData={tableData}
               page={"customer"}
+              printData={printData}
             />
 
             <div>

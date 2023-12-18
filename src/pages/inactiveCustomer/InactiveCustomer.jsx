@@ -233,6 +233,14 @@ const InactiveCustomer = ({
     customerType,
   };
 
+  //customer print option
+  const printData = {
+    id: 1003,
+    value: "PPIPHp",
+    label: "PPIPHp",
+    checked: true,
+  };
+
   //inactive customer
   const columns = React.useMemo(
     () => [
@@ -485,6 +493,7 @@ const InactiveCustomer = ({
               filterData={filterData}
               tableData={inactiveCustomers}
               page={"customer"}
+              printData={printData}
             />
 
             <div>

@@ -103,6 +103,14 @@ const Discount = ({
     </div>
   );
 
+  //customer print option
+  const printData = {
+    id: 1003,
+    value: "PPIPHp",
+    label: "PPIPHp",
+    checked: true,
+  };
+
   const column = useMemo(
     () => [
       {
@@ -315,6 +323,7 @@ const Discount = ({
           setShow={setShow}
           tableData={discountCustomer}
           page={"customer"}
+          printData={printData}
         />
       )}
 

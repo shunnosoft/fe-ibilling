@@ -78,19 +78,24 @@ export default function Mikrotik() {
   const columns = React.useMemo(
     () => [
       {
-        width: "18%",
+        width: "10%",
         Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        width: "20%",
+        width: "15%",
         Header: t("name"),
         accessor: "name",
       },
       {
-        width: "20%",
+        width: "15%",
+        Header: t("userName"),
+        accessor: "username",
+      },
+      {
+        width: "15%",
         Header: t("host"),
         accessor: "host",
       },
@@ -100,7 +105,7 @@ export default function Mikrotik() {
         accessor: "port",
       },
       {
-        width: "37%",
+        width: "30%",
         Header: <div className="text-center">{t("action")}</div>,
         id: "option1",
 

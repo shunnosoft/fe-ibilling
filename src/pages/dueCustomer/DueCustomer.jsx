@@ -203,6 +203,14 @@ const DueCustomer = ({
     customerType,
   };
 
+  //customer print option
+  const printData = {
+    id: 1003,
+    value: "PPIPHp",
+    label: "PPIPHp",
+    checked: true,
+  };
+
   // due-customer column
   const columns = React.useMemo(
     () => [
@@ -424,6 +432,7 @@ const DueCustomer = ({
               filterData={filterData}
               tableData={customers}
               page={"customer"}
+              printData={printData}
             />
 
             <div>
