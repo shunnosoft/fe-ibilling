@@ -26,6 +26,7 @@ import DatePicker from "react-datepicker";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
 import { areasSubareasChecked } from "../staff/staffCustomFucn";
+import useISPowner from "../../hooks/useISPOwner";
 
 const useForceUpdate = () => {
   const [value, setValue] = useState(0); // integer state
@@ -79,7 +80,26 @@ const makeMessageObj = (
 
 export default function Message() {
   const { t } = useTranslation();
-  const userRole = useSelector((state) => state.persistedReducer.auth.role);
+
+  // get user & current user data form useISPOwner
+  const { role, ispOwnerData, ispOwnerId } = useISPowner();
+
+  // get ispOwner all area form redux store
+  const area = useSelector((state) => state.area.area);
+
+  // get ispOwner areas subarea form redux
+  const storeSubArea = useSelector((state) => state.area?.subArea);
+
+  // get ispOwner masking name
+  const maskingId = useSelector(
+    (state) => state.persistedReducer.auth.currentUser.ispOwner?.maskingId
+  );
+
+  // get bulletin permission
+  const butPermission = useSelector(
+    (state) => state.adminNetFeeSupport?.bulletinPermission
+  );
+
   const [sms, setSms] = useState("");
   const [isChecked, setisChecked] = useState(false);
   const [smsTemplet, setTemplet] = useState([]);
@@ -89,9 +109,10 @@ export default function Message() {
   // const [totalText, setTotalText] = useState("");
   // console.log(upperText + "\n" + bottomText);
 
+  // payment link state
+  const [paymentLink, setPaymentLink] = useState("");
+
   const [isRefrsh, setIsrefresh] = useState(false);
-  const area = useSelector((state) => state.area.area);
-  const storeSubArea = useSelector((state) => state.area?.subArea);
   const [title, setTitle] = useState("");
 
   const [days, setDays] = useState([]);
@@ -105,18 +126,6 @@ export default function Message() {
 
   // ispOwner all areas state
   const [areaSubareas, setAreaSubareas] = useState();
-
-  const maskingId = useSelector(
-    (state) => state.persistedReducer.auth.currentUser.ispOwner?.maskingId
-  );
-  const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerId
-  );
-
-  // get bulletin permission
-  const butPermission = useSelector(
-    (state) => state.adminNetFeeSupport?.bulletinPermission
-  );
 
   const dispatch = useDispatch();
   const mobileNumRef = useRef();
@@ -135,15 +144,19 @@ export default function Message() {
     }
   }, [ispOwnerId]);
 
+  // ispOwner payment gateway payment link
+  const customerPaymentLink = `https://netfeebd.com/isp/${ispOwnerData?.netFeeId}`;
+
   useEffect(() => {
-    if (userRole === "ispOwner" || userRole === "manager") {
+    if (role === "ispOwner" || role === "manager") {
       getIspownerwitSMS();
       if (area.length === 0) getArea(dispatch, ispOwnerId, setIsLoading);
       getSubAreasApi(dispatch, ispOwnerId);
     }
 
+    //get netFee bulletin api
     Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
-  }, [userRole, getIspownerwitSMS]);
+  }, [role, getIspownerwitSMS]);
 
   // ispOwner all areas subarea handle
   useEffect(() => {
@@ -187,6 +200,15 @@ export default function Message() {
     setAreaSubareas(subAreas);
   };
 
+  // customer payment link handler
+  const paymentLinkHandler = (e) => {
+    if (paymentLink) {
+      setPaymentLink("");
+    } else {
+      setPaymentLink(e.target.value);
+    }
+  };
+
   // day checkbox select
   const daySettingHandler = (e) => {
     let item = Number(e);
@@ -203,7 +225,14 @@ export default function Message() {
   };
 
   const handleSendMessage = async () => {
-    let messageTemplate = title + upperText + "\n" + bottomText;
+    let messageTemplate =
+      title +
+      upperText +
+      "\n" +
+      bottomText +
+      "\n" +
+      "Payment Link: " +
+      paymentLink;
     const now = moment();
     try {
       const owner = await apiLink.get(`/ispOwner/${ispOwnerId}`);
@@ -228,7 +257,7 @@ export default function Message() {
         ) {
           let sms = makeMessageObj(
             messageTemplate,
-            ispOwnerId,
+            ispOwnerData,
             customer,
             subAreaIds
           );
@@ -427,7 +456,17 @@ export default function Message() {
       }
     } else {
       if (
-        (title + "\n" + upperText + "\n" + bottomText).length + item.length >
+        (
+          title +
+          "\n" +
+          upperText +
+          "\n" +
+          bottomText +
+          "\n" +
+          "Payment Link: " +
+          paymentLink
+        ).length +
+          item.length >
         480
       ) {
         toast.error(t("exceedSMSLimit"));
@@ -956,7 +995,7 @@ export default function Message() {
                               </div>
                               <div className="radioselect">
                                 <input
-                                  id="5"
+                                  id="6"
                                   type="checkbox"
                                   className="getValueUsingClass"
                                   checked={smsTemplet.includes(
@@ -971,6 +1010,21 @@ export default function Message() {
                                   {"BILL DUE: BILL_DUE"}
                                 </label>
                               </div>
+
+                              {ispOwnerData?.bpSettings.hasPG && (
+                                <div className="radioselect">
+                                  <input
+                                    id="7"
+                                    type="checkbox"
+                                    className="getValueUsingClass"
+                                    value={customerPaymentLink}
+                                    onChange={paymentLinkHandler}
+                                  />
+                                  <label className="templatelabel" htmlFor="7">
+                                    {"PAYMENT_LINK"}
+                                  </label>
+                                </div>
+                              )}
                             </div>
                           </div>
                           {/* area */}
@@ -1003,14 +1057,34 @@ export default function Message() {
                         })}
 
                         <p className="endingtext">{bottomText}</p>
+                        {paymentLink && (
+                          <p className="text-primary">
+                            {"Payment Link: " + paymentLink}
+                          </p>
+                        )}
                       </div>
                       <div className="smsCount">
                         <span className="smsLength">
-                          {t("letter")}{" "}
-                          {(title + smsTemplet + bottomText).length}
+                          {t("letter")}
+                          {
+                            (
+                              title +
+                              smsTemplet +
+                              bottomText +
+                              "Payment Link: " +
+                              paymentLink
+                            ).length
+                          }
                         </span>
                         <span>
-                          SMS: {smsCount(title + smsTemplet + bottomText)}
+                          SMS:
+                          {smsCount(
+                            title +
+                              smsTemplet +
+                              bottomText +
+                              "Payment Link: " +
+                              paymentLink
+                          )}
                         </span>
                       </div>
                       <textarea
