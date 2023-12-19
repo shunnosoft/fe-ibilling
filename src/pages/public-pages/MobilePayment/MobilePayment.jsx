@@ -81,7 +81,13 @@ const MobilePayment = () => {
                       <tr>
                         <td>Monthly Fee</td>
                         <td>
-                          <strong>: {customerInfo.monthlyFee} TK</strong>{" "}
+                          <strong>: {customerInfo.monthlyFee} TK</strong>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Balalce</td>
+                        <td>
+                          <strong>: {customerInfo.balance} TK</strong>
                         </td>
                       </tr>
                       <tr>

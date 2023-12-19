@@ -10,17 +10,48 @@ const PayMobile = (props) => {
   );
   const [paymentAmount, setPaymentAmount] = useState("");
   const [loading, setLoading] = useState(false);
-  const [agreement, setAgreement] = useState(false);
   const [userData, setUserData] = useState(null);
+
+  // customer monthly fee due balance
+  const [balanceDue, setBalanceDue] = useState();
+
+  // customer total monthly fee
+  const totalAmount = Number(paymentAmount) + Number(balanceDue);
 
   useEffect(() => {
     if (!props.customerData && customerData) {
-      setPaymentAmount(customerData.monthlyFee);
+      setPaymentAmount(
+        customerData?.balance > 0 &&
+          customerData?.balance <= customerData?.monthlyFee
+          ? customerData?.monthlyFee - customerData?.balance
+          : customerData?.balance > customerData?.monthlyFee
+          ? 0
+          : customerData?.monthlyFee
+      );
+
+      setBalanceDue(
+        customerData?.balance < 0 ? Math.abs(customerData?.balance) : 0
+      );
+
       setUserData(customerData);
     }
     //for handling qr payment
     if (props.customerData) {
-      setPaymentAmount(props.customerData.monthlyFee); //handle qr payment
+      setPaymentAmount(
+        props.customerData?.balance > 0 &&
+          props.customerData?.balance <= props.customerData?.monthlyFee
+          ? props.customerData?.monthlyFee - props.customerData?.balance
+          : props.customerData?.balance > props.customerData?.monthlyFee
+          ? 0
+          : props.customerData?.monthlyFee
+      ); //handle qr payment
+
+      setBalanceDue(
+        props.customerData?.balance < 0
+          ? Math.abs(props.customerData?.balance)
+          : 0
+      );
+
       setUserData(props.customerData);
     }
   }, [customerData, props.customerData]);
@@ -31,7 +62,7 @@ const PayMobile = (props) => {
 
   const billPaymentController = async () => {
     const data = {
-      amount: paymentAmount,
+      amount: totalAmount,
       name: userData.name,
       billType: "bill",
       customer: userData.id,
@@ -43,7 +74,7 @@ const PayMobile = (props) => {
       mikrotikPackage: userData.mikrotikPackage,
     };
 
-    if (paymentAmount < userData.monthlyFee) {
+    if (totalAmount < userData.monthlyFee) {
       return alert("You can't pay less than your monthly fee");
     }
     billPayment(data, setLoading);
@@ -70,7 +101,7 @@ const PayMobile = (props) => {
       bKash.init({
         paymentMode: "checkout", //fixed value ‘checkout’
         paymentRequest: {
-          amount: paymentAmount, //paymentAmount
+          amount: totalAmount, //paymentAmount
           merchantInvoiceNumber: Date.now(),
           intent: "sale",
           ispOwnerId: userData.ispOwner.id,
@@ -87,7 +118,7 @@ const PayMobile = (props) => {
           try {
             const { data } = await URL.baseURL.post(URL.create, request);
             if (data?.statusCode === "0000") {
-              localStorage.setItem("paymentAmount", paymentAmount);
+              localStorage.setItem("paymentAmount", totalAmount);
               sessionStorage.setItem("qrispid", userData.ispOwner.id);
               window.location.href = data?.bkashURL;
             }
@@ -107,7 +138,7 @@ const PayMobile = (props) => {
         },
         executeRequestOnAuthorization: async function () {
           const billData = {
-            amount: paymentAmount,
+            amount: totalAmount,
             name: userData.name,
             billType: "bill",
             customer: userData.id,
@@ -123,7 +154,7 @@ const PayMobile = (props) => {
               `${URL.execute}?paymentID=${paymentID}`,
               billData
             );
-            console.log(data);
+
             if (data.bill.paymentStatus === "paid") {
               window.location.href = "/payment/success";
             } else {
@@ -138,7 +169,7 @@ const PayMobile = (props) => {
         },
       });
     }
-  }, [userData, paymentAmount]);
+  }, [userData, totalAmount]);
 
   const gatewayType =
     userData?.ispOwner?.bpSettings?.paymentGateway?.gatewayType;
