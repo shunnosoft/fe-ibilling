@@ -34,7 +34,13 @@ const PaymentModal = (props) => {
   const customerData = useSelector(
     (state) => state.persistedReducer.auth?.currentUser?.customer
   );
+
+  // customer monthly fee
   const [paymentAmount, setPaymentAmount] = useState("");
+
+  // customer monthly fee due balace
+  const [balanceDue, setBalanceDue] = useState();
+
   const [loading, setLoading] = useState(false);
   const [agreement, setAgreement] = useState(false);
   const [userData, setUserData] = useState(null);
@@ -42,14 +48,45 @@ const PaymentModal = (props) => {
   // customer biill date month set is requerd
   const [selectedMonth, setSelectedMonth] = useState([]);
 
+  // customer total monthly amount
+  const totalAmount = Number(paymentAmount) + Number(balanceDue);
+
   useEffect(() => {
     if (!props.customerData && customerData) {
-      setPaymentAmount(customerData.monthlyFee);
+      setPaymentAmount(
+        customerData?.balance > 0 &&
+          customerData?.balance <= customerData?.monthlyFee
+          ? customerData?.monthlyFee - customerData?.balance
+          : customerData?.balance > customerData?.monthlyFee
+          ? 0
+          : customerData?.monthlyFee
+      );
+
+      setBalanceDue(
+        customerData?.balance < 0 ? Math.abs(customerData?.balance) : 0
+      );
+
       setUserData(customerData);
     }
+
     //for handling qr payment
     if (props.customerData) {
-      setPaymentAmount(props.customerData.monthlyFee); //handle qr payment
+      //handle qr payment
+      setPaymentAmount(
+        props.customerData?.balance > 0 &&
+          props.customerData?.balance <= props.customerData?.monthlyFee
+          ? props.customerData?.monthlyFee - props.customerData?.balance
+          : props.customerData?.balance > props.customerData?.monthlyFee
+          ? 0
+          : props.customerData?.monthlyFee
+      );
+
+      setBalanceDue(
+        props.customerData?.balance < 0
+          ? Math.abs(props.customerData?.balance)
+          : 0
+      );
+
       setUserData(props.customerData);
     }
   }, [customerData, props.customerData]);
@@ -308,7 +345,7 @@ const PaymentModal = (props) => {
                 min={userData?.monthlyFee}
                 className="form-control "
                 type="number"
-                value={paymentAmount}
+                value={totalAmount}
               />
             </div>
 
