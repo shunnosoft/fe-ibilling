@@ -70,7 +70,7 @@ const PayMobile = (props) => {
       bKash.init({
         paymentMode: "checkout", //fixed value ‘checkout’
         paymentRequest: {
-          amount: 1, //paymentAmount
+          amount: paymentAmount, //paymentAmount
           merchantInvoiceNumber: Date.now(),
           intent: "sale",
           ispOwnerId: userData.ispOwner.id,

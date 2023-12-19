@@ -36,10 +36,7 @@ const PaymentModal = (props) => {
   );
 
   // customer monthly fee
-  const [paymentAmount, setPaymentAmount] = useState("");
-
-  // customer monthly fee due balace
-  const [balanceDue, setBalanceDue] = useState();
+  const [paymentAmount, setPaymentAmount] = useState();
 
   const [loading, setLoading] = useState(false);
   const [agreement, setAgreement] = useState(false);
@@ -48,22 +45,17 @@ const PaymentModal = (props) => {
   // customer biill date month set is requerd
   const [selectedMonth, setSelectedMonth] = useState([]);
 
-  // customer total monthly amount
-  const totalAmount = Number(paymentAmount) + Number(balanceDue);
-
   useEffect(() => {
     if (!props.customerData && customerData) {
       setPaymentAmount(
         customerData?.balance > 0 &&
           customerData?.balance <= customerData?.monthlyFee
           ? customerData?.monthlyFee - customerData?.balance
+          : customerData?.balance < 0
+          ? customerData?.monthlyFee + Math.abs(customerData?.balance)
           : customerData?.balance > customerData?.monthlyFee
           ? 0
           : customerData?.monthlyFee
-      );
-
-      setBalanceDue(
-        customerData?.balance < 0 ? Math.abs(customerData?.balance) : 0
       );
 
       setUserData(customerData);
@@ -76,15 +68,12 @@ const PaymentModal = (props) => {
         props.customerData?.balance > 0 &&
           props.customerData?.balance <= props.customerData?.monthlyFee
           ? props.customerData?.monthlyFee - props.customerData?.balance
+          : props.customerData?.balance < 0
+          ? props.customerData?.monthlyFee +
+            Math.abs(props.customerData?.balance)
           : props.customerData?.balance > props.customerData?.monthlyFee
           ? 0
           : props.customerData?.monthlyFee
-      );
-
-      setBalanceDue(
-        props.customerData?.balance < 0
-          ? Math.abs(props.customerData?.balance)
-          : 0
       );
 
       setUserData(props.customerData);
@@ -345,7 +334,7 @@ const PaymentModal = (props) => {
                 min={userData?.monthlyFee}
                 className="form-control "
                 type="number"
-                value={totalAmount}
+                value={paymentAmount}
               />
             </div>
 
@@ -378,7 +367,7 @@ const PaymentModal = (props) => {
               </label>
             </div>
           </div>
-          <div className="modal-footer">
+          <div className="modal-footer displayGrid1">
             <button
               type="button"
               className="btn btn-secondary"
