@@ -6,19 +6,24 @@ import Loader from "../../../components/common/Loader";
 import { smsCount } from "../../../components/common/UtilityMethods";
 import { smsSettingUpdateIsp } from "../../../features/authSlice";
 import { useTranslation } from "react-i18next";
+import useISPowner from "../../../hooks/useISPOwner";
 
 function AlertSmsTemplate() {
   const { t } = useTranslation();
-  const [loading, setLoading] = useState(false);
-  const [totalText, setTotalText] = useState("");
+  const dispatch = useDispatch();
+  const textRef = useRef();
+  const formRef = useRef();
 
-  const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerId
-  );
+  // get user & current user data form useISPOwner
+  const { ispOwnerData, ispOwnerId } = useISPowner();
+
+  // loading state
+  const [loading, setLoading] = useState(false);
+
   const settings = useSelector(
     (state) => state.persistedReducer.auth.userData?.settings
   );
-  const dispatch = useDispatch();
+
   const [bottomText, setBottomText] = useState("");
   const [fontValue, setFontValue] = useState("");
   const [upperText, setUpperText] = useState("");
@@ -31,12 +36,15 @@ function AlertSmsTemplate() {
 
   const [sendingType, setSendingType] = useState();
 
-  const textRef = useRef();
-  const formRef = useRef();
-
   const [smsTemplet, setTemplet] = useState([]);
 
   const [alertNum, setAlertNum] = useState("");
+
+  // payment link state
+  const [paymentLink, setPaymentLink] = useState("");
+
+  // ispOwner payment gateway payment link
+  const customerPaymentLink = `Payment Link: https://netfeebd.com/isp/${ispOwnerData?.netFeeId}`;
 
   const itemSettingHandler = (item) => {
     if (smsTemplet.includes(item)) {
@@ -46,7 +54,8 @@ function AlertSmsTemplate() {
       }
     } else {
       if (
-        (fontValue + "\n" + upperText + "\n" + bottomText).length +
+        (fontValue + "\n" + upperText + "\n" + bottomText + "\n" + paymentLink)
+          .length +
           item.length >
         334
       ) {
@@ -103,6 +112,15 @@ function AlertSmsTemplate() {
     setDays(tempDays);
   };
 
+  // customer payment link handler
+  const paymentLinkHandler = (e) => {
+    if (paymentLink) {
+      setPaymentLink("");
+    } else {
+      setPaymentLink(e.target.value);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const temp = upperText.split("\n");
@@ -121,7 +139,8 @@ function AlertSmsTemplate() {
       template: {
         ...settings?.sms?.template,
         alert: newUpperText + "\n" + bottomText,
-        [alertNum]: fontValue + newUpperText + "\n" + bottomText,
+        [alertNum]:
+          fontValue + newUpperText + "\n" + bottomText + "\n" + paymentLink,
       },
     };
     // if (!alertNum) {
@@ -318,6 +337,7 @@ function AlertSmsTemplate() {
               })}
 
               <p className="endingtext">{bottomText}</p>
+              {paymentLink && <p className="text-primary">{paymentLink}</p>}
             </div>
 
             <div className="displayGrid">
@@ -400,6 +420,21 @@ function AlertSmsTemplate() {
                   {"LAST DATE: BILL_DATE"}
                 </label>
               </div>
+
+              {ispOwnerData?.bpSettings.hasPG && (
+                <div className="radioselect">
+                  <input
+                    id="PAYMENT_LINK"
+                    type="checkbox"
+                    className="getValueUsingClass"
+                    value={customerPaymentLink}
+                    onChange={paymentLinkHandler}
+                  />
+                  <label className="templatelabel" htmlFor="PAYMENT_LINK">
+                    {"PAYMENT_LINK"}
+                  </label>
+                </div>
+              )}
             </div>
 
             <div className="displayGrid">
@@ -534,9 +569,13 @@ function AlertSmsTemplate() {
 
           <div className="smsCount">
             <span className="smsLength">
-              {t("letter")} {(fontValue + smsTemplet + bottomText).length}
+              {t("letter")}
+              {(fontValue + smsTemplet + bottomText + paymentLink).length}
             </span>
-            <span>SMS: {smsCount(fontValue + smsTemplet + bottomText)}</span>
+            <span>
+              SMS:
+              {smsCount(fontValue + smsTemplet + bottomText + paymentLink)}
+            </span>
           </div>
 
           <textarea

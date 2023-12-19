@@ -25,6 +25,7 @@ import {
   ThreeDots,
 } from "react-bootstrap-icons";
 import {
+  deleteBillReport,
   getAllBills,
   getAllManagerBills,
   getArea,
@@ -345,15 +346,10 @@ export default function Report() {
   };
 
   // delete customer collection report delete handler
-  const collectionReportDeleteHandler = () => {
+  const collectionReportDeleteHandler = (reportId) => {
     const con = window.confirm(t("deleteAlert"));
     if (con) {
-      // deleteCustomerSingleReport(
-      //   dispatch,
-      //   customerReport,
-      //   setCustomerReport,
-      //   reportId
-      // );
+      deleteBillReport(dispatch, reportId);
     }
   };
 
@@ -574,17 +570,19 @@ export default function Report() {
                   </div>
                 </li>
 
-                {original.customer === null &&
-                  original.hotspotCustomer === null && (
-                    <li onClick={collectionReportDeleteHandler}>
-                      <div className="dropdown-item">
-                        <div className="customerAction">
-                          <ArchiveFill />
-                          <p className="actionP">{t("delete")}</p>
-                        </div>
+                {(original.customer === null ||
+                  original.hotspotCustomer === null) && (
+                  <li
+                    onClick={() => collectionReportDeleteHandler(original?.id)}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <ArchiveFill />
+                        <p className="actionP">{t("delete")}</p>
                       </div>
-                    </li>
-                  )}
+                    </div>
+                  </li>
+                )}
               </ul>
             </div>
           </div>
@@ -731,7 +729,7 @@ export default function Report() {
                               showMonthYearPicker
                               showFullMonthYearPicker
                               maxDate={new Date()}
-                              minDate={new Date(userData.ispOwner?.createdAt)}
+                              minDate={new Date(userData.user?.createdAt)}
                             />
                           </div>
 

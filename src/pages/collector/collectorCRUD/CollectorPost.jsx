@@ -123,7 +123,13 @@ const CollectorPost = ({ show, setShow }) => {
         delete sendingData.salary;
       }
 
-      addCollector(dispatch, sendingData, setIsLoading, addStaffStatus);
+      addCollector(
+        dispatch,
+        sendingData,
+        setIsLoading,
+        addStaffStatus,
+        setShow
+      );
     }
   };
 
@@ -161,7 +167,7 @@ const CollectorPost = ({ show, setShow }) => {
             enableReinitialize
           >
             {() => (
-              <Form>
+              <Form id="collectorPost">
                 <Tabs
                   defaultActiveKey="details"
                   id="uncontrolled-tab-example"
@@ -294,6 +300,7 @@ const CollectorPost = ({ show, setShow }) => {
             </button>
             <button
               type="submit"
+              form="collectorPost"
               className="btn btn-success customBtn"
               disabled={isLoading}
             >

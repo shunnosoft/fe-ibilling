@@ -102,6 +102,7 @@ import {
   updateDepositReportSuccess,
   getCustomerBillReport,
   deleteCustomerBillReport,
+  deleteBillReportSuccess,
 } from "./paymentSlice";
 import { getChartSuccess, getCardDataSuccess } from "./chartsSlice";
 import {
@@ -907,7 +908,8 @@ export const addCollector = async (
   dispatch,
   data,
   setIsLoading,
-  addStaffStatus
+  addStaffStatus,
+  setShow
 ) => {
   try {
     const res = await apiLink.post(
@@ -921,7 +923,7 @@ export const addCollector = async (
       "কালেক্টর সংযুক্ত সফল হয়েছে",
       "Collector Added Successfully"
     );
-    document.querySelector("#collectorModal").click();
+    setShow(false);
   } catch (err) {
     if (err.response) {
       setIsLoading(false);
@@ -3783,6 +3785,19 @@ export const deleteCustomerReport = async (dispatch, reportId) => {
 
     dispatch(deleteCustomerBillReport(res.data));
     dispatch(editCustomerSuccess(res.data.customer));
+
+    langMessage("success", "বিল ডিলিট সফল হয়েছে", "Bill Delete SuccessFully");
+  } catch (error) {
+    toast.error(error.response?.data?.message);
+  }
+};
+
+//delete cusomer bill report delete api
+export const deleteBillReport = async (dispatch, reportId) => {
+  try {
+    const res = await apiLink.delete(`/bill/delete/${reportId}`);
+
+    dispatch(deleteBillReportSuccess(res.data));
 
     langMessage("success", "বিল ডিলিট সফল হয়েছে", "Bill Delete SuccessFully");
   } catch (error) {

@@ -123,7 +123,7 @@ const SMSPurchase = ({ show, setShow }) => {
                       }}
                     >
                       {localStorage.getItem("netFee:lang") === "en"
-                        ? "100,00 SMS (+1000 SMS Bonus)"
+                        ? "10,000 SMS (+1000 SMS Bonus)"
                         : "১০,০০০ এসএমএস (+১০০০ এসএমএস বোনাস)"}
                     </p>
 

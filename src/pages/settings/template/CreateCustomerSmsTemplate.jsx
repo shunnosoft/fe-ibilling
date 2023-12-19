@@ -6,15 +6,17 @@ import Loader from "../../../components/common/Loader";
 import { smsSettingUpdateIsp } from "../../../features/authSlice";
 import { smsCount } from "../../../components/common/UtilityMethods";
 import { useTranslation } from "react-i18next";
+import useISPowner from "../../../hooks/useISPOwner";
 
 function CreateCustomerSmsTemplate() {
   const { t } = useTranslation();
+
+  // get user & current user data form useISPOwner
+  const { ispOwnerData, ispOwnerId } = useISPowner();
+
   const [loading, setLoading] = useState(false);
   const [totalText, setTotalText] = useState("");
 
-  const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerId
-  );
   const settings = useSelector(
     (state) => state.persistedReducer.auth.userData?.settings
   );
@@ -31,6 +33,21 @@ function CreateCustomerSmsTemplate() {
 
   const textRef = useRef();
   const formRef = useRef();
+
+  // payment link state
+  const [paymentLink, setPaymentLink] = useState("");
+
+  // ispOwner payment gateway payment link
+  const customerPaymentLink = `Payment Link: https://netfeebd.com/isp/${ispOwnerData?.netFeeId}`;
+
+  // customer payment link handler
+  const paymentLinkHandler = (e) => {
+    if (paymentLink) {
+      setPaymentLink("");
+    } else {
+      setPaymentLink(e.target.value);
+    }
+  };
 
   const itemSettingHandler = (item) => {
     if (billconfarmationparametres.includes(item)) {
@@ -81,7 +98,8 @@ function CreateCustomerSmsTemplate() {
           : null,
       template: {
         ...settings.sms.template,
-        createCustomer: fontText + upperText + "\n" + bottomText,
+        createCustomer:
+          fontText + upperText + "\n" + bottomText + "\n" + paymentLink,
       },
     };
     setLoading(true);
@@ -107,7 +125,7 @@ function CreateCustomerSmsTemplate() {
     });
 
     setUpperText(theText);
-    setTotalText(upperText + bottomText);
+    setTotalText(upperText + bottomText + paymentLink);
   }, [matchFound, bottomText, upperText]);
   useEffect(() => {
     const fixedvalues = [
@@ -250,6 +268,7 @@ function CreateCustomerSmsTemplate() {
               })}
 
               <p className="endingtext">{bottomText}</p>
+              {paymentLink && <p className="text-primary">{paymentLink}</p>}
             </div>
             <div className="displayFlexx">
               <div className="radioselect">
@@ -342,13 +361,31 @@ function CreateCustomerSmsTemplate() {
                   {"LAST DATE: BILL_DATE"}
                 </label>
               </div>
+
+              {ispOwnerData?.bpSettings.hasPG && (
+                <div className="radioselect">
+                  <input
+                    id="Payment_Link"
+                    type="checkbox"
+                    className="getValueUsingClass"
+                    value={customerPaymentLink}
+                    onChange={paymentLinkHandler}
+                  />
+                  <label className="templatelabel" htmlFor="Payment_Link">
+                    {"PAYMENT_LINK"}
+                  </label>
+                </div>
+              )}
             </div>
           </div>
           <div className="smsCount">
             <span className="smsLength">
-              {t("letter")} {(fontText + matchFound + bottomText).length}
+              {t("letter")}
+              {(fontText + matchFound + bottomText + paymentLink).length}
             </span>
-            <span>SMS: {smsCount(fontText + matchFound + bottomText)}</span>
+            <span>
+              SMS: {smsCount(fontText + matchFound + bottomText + paymentLink)}
+            </span>
           </div>
 
           <textarea

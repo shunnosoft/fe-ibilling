@@ -7,6 +7,7 @@ import { smsCount } from "../../../components/common/UtilityMethods";
 import { smsSettingUpdateIsp } from "../../../features/authSlice";
 import { useTranslation } from "react-i18next";
 import Select from "react-select";
+import useISPowner from "../../../hooks/useISPOwner";
 
 //All days in a month
 const dayOptions = [
@@ -45,12 +46,11 @@ const dayOptions = [
 
 function CalenderAlert() {
   const { t } = useTranslation();
-  const [loading, setLoading] = useState(false);
 
-  //get ISP Owner ID
-  const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerId
-  );
+  // get user & current user data form useISPOwner
+  const { ispOwnerData, ispOwnerId } = useISPowner();
+
+  const [loading, setLoading] = useState(false);
 
   //get settings
   const settings = useSelector(
@@ -83,6 +83,9 @@ function CalenderAlert() {
 
   const [smsTemplet, setTemplet] = useState([]);
 
+  // payment link state
+  const [paymentLink, setPaymentLink] = useState("");
+
   //Status Handler
   const statusHandler = (e) => {
     const val = e.target.value;
@@ -103,9 +106,21 @@ function CalenderAlert() {
     }
   };
 
+  // ispOwner payment gateway payment link
+  const customerPaymentLink = `Payment Link: https://netfeebd.com/isp/${ispOwnerData?.netFeeId}`;
+
+  // customer payment link handler
+  const paymentLinkHandler = (e) => {
+    if (paymentLink) {
+      setPaymentLink("");
+    } else {
+      setPaymentLink(e.target.value);
+    }
+  };
+
   const itemSettingHandler = (e) => {
     const item = e.target.value;
-    console.log(item);
+
     if (smsTemplet.includes(item)) {
       const index = smsTemplet.indexOf(item);
       if (index > -1) {
@@ -114,7 +129,8 @@ function CalenderAlert() {
       smsTemplet.length === 0 ? setSelected(false) : setSelected(true);
     } else {
       if (
-        (fontValue + "\n" + upperText + "\n" + bottomText).length +
+        (fontValue + "\n" + upperText + "\n" + bottomText + "\n" + paymentLink)
+          .length +
           item.length >
         334
       ) {
@@ -245,7 +261,8 @@ function CalenderAlert() {
       calenderDays: monthDays,
       template: {
         ...settings?.sms?.template,
-        calenderAlert: fontValue + newUppText + "\n" + bottomText,
+        calenderAlert:
+          fontValue + newUppText + "\n" + bottomText + "\n" + paymentLink,
         calenderAlertCustomerStatus: status,
       },
     };
@@ -359,6 +376,7 @@ function CalenderAlert() {
               })}
 
               <p className="endingtext">{bottomText}</p>
+              {paymentLink && <p className="text-primary">{paymentLink}</p>}
             </div>
 
             <div
@@ -447,6 +465,21 @@ function CalenderAlert() {
                       {"LAST DATE: BILL_DATE"}
                     </label>
                   </div>
+
+                  {ispOwnerData?.bpSettings.hasPG && (
+                    <div className="radioselect">
+                      <input
+                        id="payment_link"
+                        type="checkbox"
+                        className="getValueUsingClass"
+                        value={customerPaymentLink}
+                        onChange={paymentLinkHandler}
+                      />
+                      <label className="templatelabel" htmlFor="payment_link">
+                        {"PAYMENT_LINK"}
+                      </label>
+                    </div>
+                  )}
                 </div>
 
                 <div>
@@ -581,9 +614,12 @@ function CalenderAlert() {
 
           <div className="smsCount">
             <span className="smsLength">
-              {t("letter")} {(fontValue + smsTemplet + bottomText).length}
+              {t("letter")}
+              {(fontValue + smsTemplet + bottomText + paymentLink).length}
             </span>
-            <span>SMS: {smsCount(fontValue + smsTemplet + bottomText)}</span>
+            <span>
+              SMS: {smsCount(fontValue + smsTemplet + bottomText + paymentLink)}
+            </span>
           </div>
 
           <textarea

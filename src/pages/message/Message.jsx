@@ -145,7 +145,7 @@ export default function Message() {
   }, [ispOwnerId]);
 
   // ispOwner payment gateway payment link
-  const customerPaymentLink = `https://netfeebd.com/isp/${ispOwnerData?.netFeeId}`;
+  const customerPaymentLink = `Payment Link: https://netfeebd.com/isp/${ispOwnerData?.netFeeId}`;
 
   useEffect(() => {
     if (role === "ispOwner" || role === "manager") {
@@ -226,13 +226,7 @@ export default function Message() {
 
   const handleSendMessage = async () => {
     let messageTemplate =
-      title +
-      upperText +
-      "\n" +
-      bottomText +
-      "\n" +
-      "Payment Link: " +
-      paymentLink;
+      title + upperText + "\n" + bottomText + "\n" + paymentLink;
     const now = moment();
     try {
       const owner = await apiLink.get(`/ispOwner/${ispOwnerId}`);
@@ -456,16 +450,8 @@ export default function Message() {
       }
     } else {
       if (
-        (
-          title +
-          "\n" +
-          upperText +
-          "\n" +
-          bottomText +
-          "\n" +
-          "Payment Link: " +
-          paymentLink
-        ).length +
+        (title + "\n" + upperText + "\n" + bottomText + "\n" + paymentLink)
+          .length +
           item.length >
         480
       ) {
@@ -1058,32 +1044,21 @@ export default function Message() {
 
                         <p className="endingtext">{bottomText}</p>
                         {paymentLink && (
-                          <p className="text-primary">
-                            {"Payment Link: " + paymentLink}
-                          </p>
+                          <p className="text-primary">{paymentLink}</p>
                         )}
                       </div>
                       <div className="smsCount">
                         <span className="smsLength">
                           {t("letter")}
                           {
-                            (
-                              title +
-                              smsTemplet +
-                              bottomText +
-                              "Payment Link: " +
-                              paymentLink
-                            ).length
+                            (title + smsTemplet + bottomText + paymentLink)
+                              .length
                           }
                         </span>
                         <span>
                           SMS:
                           {smsCount(
-                            title +
-                              smsTemplet +
-                              bottomText +
-                              "Payment Link: " +
-                              paymentLink
+                            title + smsTemplet + bottomText + paymentLink
                           )}
                         </span>
                       </div>
