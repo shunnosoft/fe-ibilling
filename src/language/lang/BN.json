@@ -234,7 +234,7 @@
   "newCustomerTemplateAlert": "নতুন গ্রাহক SMS টেমপ্লেট সেভ সফল হয়েছে",
   "newCustomerTemplate": "নতুন গ্রাহক SMS টেমপ্লেট",
   "customerInactiveTemplateAlert": "গ্রাহক ইন-এক্টিভ SMS টেমপ্লেট সেভ সফল হয়েছে",
-  "customerInactiveSMSTemplate": "গ্রাহক ইন-এক্টিভ SMS টেমপ্লেট",
+  "customerInactiveSMSTemplate": "এক্সপায়ার্ড গ্রাহক SMS টেমপ্লেট",
   "onedayTemplate": "এক দিনের টেমপ্লেট",
   "twodaysTemplate": "দুই দিনের টেমপ্লেট",
   "threedaysTemplate": "তিন দিনের টেমপ্লেট",

@@ -367,7 +367,7 @@ const PaymentModal = (props) => {
               </label>
             </div>
           </div>
-          <div className="modal-footer displayGrid1">
+          <div className="modal-footer">
             <button
               type="button"
               className="btn btn-secondary"

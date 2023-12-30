@@ -20,7 +20,7 @@ import { FtextField } from "../../../components/common/FtextField";
 import { editCollector } from "../../../features/apiCalls";
 import { collectorPermission } from "./collectorPermission";
 import useISPowner from "../../../hooks/useISPOwner";
-import InformationTooltip from "../../../components/common/InformationTooltip";
+import InformationTooltip from "../../../components/common/tooltipInformation/InformationTooltip";
 import { toast } from "react-toastify";
 import { areasSubareasChecked } from "../../staff/staffCustomFucn";
 

@@ -21,7 +21,7 @@ import Loader from "../../../components/common/Loader";
 import { FtextField } from "../../../components/common/FtextField";
 import useISPowner from "../../../hooks/useISPOwner";
 import { addManager } from "../../../features/apiCalls";
-import InformationTooltip from "../../../components/common/InformationTooltip";
+import InformationTooltip from "../../../components/common/tooltipInformation/InformationTooltip";
 import { areasSubareasChecked } from "../../staff/staffCustomFucn";
 
 const ManagerPost = ({ show, setShow }) => {

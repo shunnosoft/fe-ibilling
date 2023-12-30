@@ -6,18 +6,26 @@ import Loader from "../../../components/common/Loader";
 import { smsSettingUpdateIsp } from "../../../features/authSlice";
 import { smsCount } from "../../../components/common/UtilityMethods";
 import { useTranslation } from "react-i18next";
+import useISPowner from "../../../hooks/useISPOwner";
 
 function CustomerInactiveSmsTemplate() {
   const { t } = useTranslation();
-  const [loading, setLoading] = useState(false);
-  const [totalText, setTotalText] = useState("");
 
-  const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerId
-  );
+  const textRef = useRef();
+  const formRef = useRef();
+
+  // get user & current user data form useISPOwner
+  const { ispOwnerData, ispOwnerId } = useISPowner();
+
   const settings = useSelector(
     (state) => state.persistedReducer.auth.userData?.settings
   );
+
+  // loading state
+  const [loading, setLoading] = useState(false);
+
+  const [totalText, setTotalText] = useState("");
+
   const dispatch = useDispatch();
   const [fontText, setFontText] = useState("");
   const [bottomText, setBottomText] = useState("");
@@ -29,8 +37,20 @@ function CustomerInactiveSmsTemplate() {
 
   const [sendingType, setSendingType] = useState();
 
-  const textRef = useRef();
-  const formRef = useRef();
+  // payment link state
+  const [paymentLink, setPaymentLink] = useState("");
+
+  // ispOwner payment gateway payment link
+  const customerPaymentLink = `Payment Link: https://netfeebd.com/isp/${ispOwnerData?.netFeeId}`;
+
+  // customer payment link handler
+  const paymentLinkHandler = (e) => {
+    if (paymentLink) {
+      setPaymentLink("");
+    } else {
+      setPaymentLink(e.target.value);
+    }
+  };
 
   const itemSettingHandler = (item) => {
     if (billconfarmationparametres.includes(item)) {
@@ -81,7 +101,8 @@ function CustomerInactiveSmsTemplate() {
           : null,
       template: {
         ...settings.sms.template,
-        customerInactive: fontText + upperText + "\n" + bottomText,
+        customerInactive:
+          fontText + upperText + "\n" + bottomText + "\n" + paymentLink,
       },
     };
     setLoading(true);
@@ -107,7 +128,7 @@ function CustomerInactiveSmsTemplate() {
     });
 
     setUpperText(theText);
-    setTotalText(upperText + bottomText);
+    setTotalText(upperText + bottomText + paymentLink);
   }, [matchFound, bottomText, upperText]);
   useEffect(() => {
     const fixedvalues = [
@@ -219,7 +240,7 @@ function CustomerInactiveSmsTemplate() {
                 checked={sendingType === "nonMasking"}
                 value={"nonMasking"}
                 onChange={(event) => setSendingType(event.target.value)}
-              />{" "}
+              />
               {t("nonMasking")} {"              "}
               <input
                 name="messageSendingType"
@@ -227,7 +248,7 @@ function CustomerInactiveSmsTemplate() {
                 checked={sendingType === "masking"}
                 value={"masking"}
                 onChange={(event) => setSendingType(event.target.value)}
-              />{" "}
+              />
               {t("masking")} {"              "}
               <input
                 name="messageSendingType"
@@ -235,7 +256,7 @@ function CustomerInactiveSmsTemplate() {
                 checked={sendingType === "fixedNumber"}
                 value={"fixedNumber"}
                 onChange={(event) => setSendingType(event.target.value)}
-              />{" "}
+              />
               {t("fixedNumber")} {"              "}
             </div>
           </div>
@@ -248,11 +269,12 @@ function CustomerInactiveSmsTemplate() {
               })}
 
               <p className="endingtext">{bottomText}</p>
+              {paymentLink && <p className="text-primary">{paymentLink}</p>}
             </div>
             <div className="displayFlexx">
               <div className="radioselect">
                 <input
-                  id="1"
+                  id="userName"
                   type="checkbox"
                   className="getValueUsingClass"
                   value={"USER: USERNAME"}
@@ -261,13 +283,14 @@ function CustomerInactiveSmsTemplate() {
                     itemSettingHandler(e.target.value);
                   }}
                 />
-                <label className="templatelabel" htmlFor="1">
+                <label className="templatelabel" htmlFor="userName">
                   {"USER: USERNAME"}
                 </label>
               </div>
+
               <div className="radioselect">
                 <input
-                  id="2"
+                  id="customerId"
                   type="checkbox"
                   className="getValueUsingClass"
                   checked={matchFound.includes("ID: CUSTOMER_ID")}
@@ -276,13 +299,14 @@ function CustomerInactiveSmsTemplate() {
                     itemSettingHandler(e.target.value);
                   }}
                 />
-                <label className="templatelabel" htmlFor="2">
+                <label className="templatelabel" htmlFor="customerId">
                   {"ID: CUSTOMER_ID"}
                 </label>
               </div>
+
               <div className="radioselect">
                 <input
-                  id="3"
+                  id="customer"
                   type="checkbox"
                   className="getValueUsingClass"
                   checked={matchFound.includes("NAME: CUSTOMER_NAME")}
@@ -291,13 +315,14 @@ function CustomerInactiveSmsTemplate() {
                     itemSettingHandler(e.target.value);
                   }}
                 />
-                <label className="templatelabel" htmlFor="3">
+                <label className="templatelabel" htmlFor="customer">
                   {"NAME: CUSTOMER_NAME"}
                 </label>
               </div>
+
               <div className="radioselect">
                 <input
-                  id="4"
+                  id="amount"
                   type="checkbox"
                   className="getValueUsingClass"
                   checked={matchFound.includes("BILL: AMOUNT")}
@@ -306,13 +331,14 @@ function CustomerInactiveSmsTemplate() {
                     itemSettingHandler(e.target.value);
                   }}
                 />
-                <label className="templatelabel" htmlFor="4">
+                <label className="templatelabel" htmlFor="amount">
                   {"BILL: AMOUNT"}
                 </label>
               </div>
+
               <div className="radioselect">
                 <input
-                  id="5"
+                  id="billDate"
                   type="checkbox"
                   className="getValueUsingClass"
                   checked={matchFound.includes("LAST DATE: BILL_DATE")}
@@ -321,17 +347,35 @@ function CustomerInactiveSmsTemplate() {
                     itemSettingHandler(e.target.value);
                   }}
                 />
-                <label className="templatelabel" htmlFor="5">
+                <label className="templatelabel" htmlFor="billDate">
                   {"LAST DATE: BILL_DATE"}
                 </label>
               </div>
+
+              {ispOwnerData?.bpSettings.hasPG && (
+                <div className="radioselect">
+                  <input
+                    id="paymentLink"
+                    type="checkbox"
+                    className="getValueUsingClass"
+                    value={customerPaymentLink}
+                    onChange={paymentLinkHandler}
+                  />
+                  <label className="templatelabel" htmlFor="paymentLink">
+                    {"PAYMENT_LINK"}
+                  </label>
+                </div>
+              )}
             </div>
           </div>
           <div className="smsCount">
             <span className="smsLength">
-              {t("letter")} {(fontText + matchFound + bottomText).length}
+              {t("letter")}
+              {(fontText + matchFound + bottomText + paymentLink).length}
             </span>
-            <span>SMS: {smsCount(fontText + matchFound + bottomText)}</span>
+            <span>
+              SMS: {smsCount(fontText + matchFound + bottomText + paymentLink)}
+            </span>
           </div>
 
           <textarea
@@ -344,9 +388,7 @@ function CustomerInactiveSmsTemplate() {
             // onClick={insertMyText}
             maxLength={335 - upperText.length}
             onChange={(e) => setBottomText(e.target.value)}
-          >
-            {" "}
-          </textarea>
+          ></textarea>
           <hr />
           <button
             type="submit"

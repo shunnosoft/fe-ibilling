@@ -75,14 +75,8 @@ export default function Customer() {
   const dispatch = useDispatch();
 
   // get user & current user data form useISPOwner
-  const {
-    role,
-    ispOwnerId,
-    resellerData,
-    permission,
-    permissions,
-    currentUser,
-  } = useISPowner();
+  const { role, ispOwnerId, permission, permissions, currentUser } =
+    useISPowner();
 
   // get ispOwner data from redux
   const ispOwnerData = useSelector(
@@ -669,9 +663,7 @@ export default function Customer() {
                   </div>
                 </li>
                 {((role === "reseller" && permission?.customerRecharge) ||
-                  (role === "collector" &&
-                    resellerData.permission?.customerRecharge &&
-                    permissions?.billPosting)) && (
+                  (role === "collector" && permissions?.billPosting)) && (
                   <li
                     onClick={() => {
                       getSpecificCustomer(original.id);
@@ -1142,7 +1134,8 @@ export default function Customer() {
 
               <hr className="mt-0 mb-0" />
 
-              {permission?.bulkCustomerStatusEdit && (
+              {(permission?.bulkCustomerStatusEdit ||
+                permissions?.bulkStatusEdit) && (
                 <li
                   type="button"
                   className="p-1"

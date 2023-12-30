@@ -27,6 +27,8 @@ import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
 import { areasSubareasChecked } from "../staff/staffCustomFucn";
 import useISPowner from "../../hooks/useISPOwner";
+import InformationTooltip from "../../components/common/tooltipInformation/InformationTooltip";
+import { informationEnBn } from "../../components/common/tooltipInformation/informationEnBn";
 
 const useForceUpdate = () => {
   const [value, setValue] = useState(0); // integer state
@@ -127,6 +129,9 @@ export default function Message() {
   // ispOwner all areas state
   const [areaSubareas, setAreaSubareas] = useState();
 
+  //customer sms receiver type state
+  const [receiverCustomerType, setReceiverCustomerType] = useState([]);
+
   const dispatch = useDispatch();
   const mobileNumRef = useRef();
   const smsRef = useRef();
@@ -198,6 +203,18 @@ export default function Message() {
 
     // set collector areas
     setAreaSubareas(subAreas);
+  };
+
+  //customer type handler
+  const smsReceiveCustomerTypeHandler = (e) => {
+    let customerType = [...receiverCustomerType];
+
+    if (customerType.includes(e.target.value)) {
+      customerType = customerType.filter((value) => value !== e.target.value);
+    } else if (!customerType.includes(e.target.value)) {
+      customerType.push(e.target.value);
+    }
+    setReceiverCustomerType(customerType);
   };
 
   // customer payment link handler
@@ -315,7 +332,8 @@ export default function Message() {
         if (
           smsReceiverType === "active" &&
           customer.mobile &&
-          customer.status === "active"
+          customer.status === "active" &&
+          receiverCustomerType.includes(customer.paymentStatus)
         ) {
           let sms = makeMessageObj(
             messageTemplate,
@@ -657,7 +675,7 @@ export default function Message() {
                             ))}
                           </div>
                           <div className="d-flex justify-content-between align-items-center">
-                            <div className="radio-buttons">
+                            <div className="displayGrid radio-buttons">
                               <div>
                                 <input
                                   id="bilDateEnd"
@@ -805,22 +823,74 @@ export default function Message() {
                                   {t("unpaid")}
                                 </label>
                               </div>
+
                               <div>
-                                <input
-                                  id="activee"
-                                  value="active"
-                                  name="platform"
-                                  type="radio"
-                                  className="form-check-input"
-                                  onChange={(e) => handleSMSreceiver(e)}
-                                />
-                                <label
-                                  className="form-check-lebel ms-2"
-                                  htmlFor="activee"
-                                >
-                                  {t("active")}
-                                </label>
+                                <div className="d-flex align-items-center">
+                                  <div>
+                                    <input
+                                      id="activee"
+                                      value="active"
+                                      name="platform"
+                                      type="radio"
+                                      className="form-check-input"
+                                      onChange={(e) => handleSMSreceiver(e)}
+                                    />
+                                    <label
+                                      className="form-check-lebel ms-2"
+                                      htmlFor="activee"
+                                    >
+                                      {t("active")}
+                                    </label>
+                                  </div>
+
+                                  {/* there is information to grant permission tooltip */}
+                                  {informationEnBn()?.[0] && (
+                                    <InformationTooltip
+                                      data={informationEnBn()?.[0]}
+                                    />
+                                  )}
+                                </div>
+
+                                {smsReceiverType === "active" && (
+                                  <div className="ms-4">
+                                    <div>
+                                      <input
+                                        type="checkbox"
+                                        id="activePaid"
+                                        value="paid"
+                                        name="platform"
+                                        className="form-check-input"
+                                        onChange={smsReceiveCustomerTypeHandler}
+                                      />
+                                      <label
+                                        className="form-check-lebel ms-2"
+                                        htmlFor="activePaid"
+                                      >
+                                        {t("payPaid")}
+                                      </label>
+                                    </div>
+
+                                    <div>
+                                      <input
+                                        type="checkbox"
+                                        id="activeUnpaid"
+                                        value="unpaid"
+                                        name="platform"
+                                        className="form-check-input"
+                                        onChange={smsReceiveCustomerTypeHandler}
+                                      />
+
+                                      <label
+                                        className="form-check-lebel ms-2"
+                                        htmlFor="activeUnpaid"
+                                      >
+                                        {t("unpaid")}
+                                      </label>
+                                    </div>
+                                  </div>
+                                )}
                               </div>
+
                               <div>
                                 <input
                                   id="inactive"

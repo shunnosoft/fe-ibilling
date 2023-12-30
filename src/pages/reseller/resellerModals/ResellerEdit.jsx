@@ -31,7 +31,7 @@ import GlobalPackageEditWithOutMkt, {
   PackageBasedEditWithOutMkt,
 } from "./ResellerEdit/ResellerEditWihoutMkt";
 import { resellerPermissions } from "./resellerPermission";
-import InformationTooltip from "../../../components/common/InformationTooltip";
+import InformationTooltip from "../../../components/common/tooltipInformation/InformationTooltip";
 import { areasSubareasChecked } from "../../staff/staffCustomFucn";
 
 const ResellerEdit = ({ show, setShow, resellerId }) => {

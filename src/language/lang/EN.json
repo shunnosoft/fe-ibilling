@@ -281,7 +281,7 @@
   "newCustomerTemplateAlert": "New Customer Template Save succeess!",
   "newCustomerTemplate": "New Customer SMS Template",
   "customerInactiveTemplateAlert": "Inactive Customer Template Save succeess!",
-  "customerInactiveSMSTemplate": " Inactive Customer SMS Template",
+  "customerInactiveSMSTemplate": "Expired Customer SMS Template",
   "SMStemplate": "SMS Template",
   "expense": "Expenditure",
   "expenseSector": "Expenditure Type",

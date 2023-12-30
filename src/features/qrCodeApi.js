@@ -37,7 +37,7 @@ export const getCustomerInfo = async (
         },
       }
     );
-    console.log(data);
+
     setCustomerInfo(data);
   } catch (error) {
     toast.error(error.response?.data?.message);

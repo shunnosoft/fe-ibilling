@@ -4,8 +4,8 @@ import { OverlayTrigger, Popover } from "react-bootstrap";
 const InformationTooltip = ({ data }) => {
   return (
     <OverlayTrigger
-      key={data?.key}
-      placement="right"
+      key={data?.id}
+      placement="auto"
       overlay={
         <Popover
           style={{

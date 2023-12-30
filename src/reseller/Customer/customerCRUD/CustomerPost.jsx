@@ -318,24 +318,26 @@ export default function CustomerModal({ show, setShow }) {
                   {/* ispOwner collector */}
                   {userRole === "collector" && (
                     <>
-                      <div>
-                        <label className="form-control-label changeLabelFontColor">
-                          {t("selectMikrotik")}
-                          <span className="text-danger">*</span>
-                        </label>
-                        <select
-                          className="form-select mw-100 mt-0"
-                          aria-label="Default select example"
-                          onChange={selectMikrotik}
-                        >
-                          <option value="">...</option>
-                          {Getmikrotik?.map((val, key) => (
-                            <option key={key} value={val.id}>
-                              {val.name}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
+                      {hasMikrotik && (
+                        <div>
+                          <label className="form-control-label changeLabelFontColor">
+                            {t("selectMikrotik")}
+                            <span className="text-danger">*</span>
+                          </label>
+                          <select
+                            className="form-select mw-100 mt-0"
+                            aria-label="Default select example"
+                            onChange={selectMikrotik}
+                          >
+                            <option value="">...</option>
+                            {Getmikrotik?.map((val, key) => (
+                              <option key={key} value={val.id}>
+                                {val.name}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      )}
 
                       <div>
                         <label className="form-control-label changeLabelFontColor">
@@ -343,8 +345,7 @@ export default function CustomerModal({ show, setShow }) {
                           <span className="text-danger">*</span>
                         </label>
                         <select
-                          style={{ width: "22rem" }}
-                          className="form-select mb-3 mw-100"
+                          className="form-select mw-100 mt-0"
                           aria-label="Default select example"
                           onChange={selectMikrotikPackage}
                         >
@@ -358,31 +359,35 @@ export default function CustomerModal({ show, setShow }) {
                       </div>
                     </>
                   )}
+
                   {userRole === "reseller" && Getmikrotik.length > 0 && (
                     <>
-                      <div>
-                        <label className="form-control-label changeLabelFontColor">
-                          {t("selectMikrotik")}
-                          <span className="text-danger">*</span>
-                        </label>
-                        <select
-                          className="form-select mw-100 mt-0"
-                          aria-label="Default select example"
-                          onChange={selectMikrotik}
-                        >
-                          <option value="">...</option>
-                          {Getmikrotik?.map((val, key) =>
-                            reseller.mikrotiks.map(
-                              (item) =>
-                                val.id === item && (
-                                  <option key={key} value={val.id}>
-                                    {val.name}
-                                  </option>
-                                )
-                            )
-                          )}
-                        </select>
-                      </div>
+                      {hasMikrotik && (
+                        <div>
+                          <label className="form-control-label changeLabelFontColor">
+                            {t("selectMikrotik")}
+                            <span className="text-danger">*</span>
+                          </label>
+
+                          <select
+                            className="form-select mw-100 mt-0"
+                            aria-label="Default select example"
+                            onChange={selectMikrotik}
+                          >
+                            <option value="">...</option>
+                            {Getmikrotik?.map((val, key) =>
+                              reseller.mikrotiks.map(
+                                (item) =>
+                                  val.id === item && (
+                                    <option key={key} value={val.id}>
+                                      {val.name}
+                                    </option>
+                                  )
+                              )
+                            )}
+                          </select>
+                        </div>
+                      )}
 
                       <div>
                         <label className="form-control-label changeLabelFontColor">

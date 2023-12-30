@@ -94,7 +94,7 @@ const MobilePayment = () => {
                         <td>Current Status</td>
                         <td>: {badge(customerInfo.status)}</td>
                       </tr>
-                      <br />
+
                       <PayMobile customerData={customerInfo} isPublic />
                     </table>
                   </div>

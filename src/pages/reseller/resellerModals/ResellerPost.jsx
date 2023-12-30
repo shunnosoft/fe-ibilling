@@ -25,7 +25,7 @@ import {
 } from "../../../features/apiCalls";
 import { resellerPermissions } from "./resellerPermission";
 import useISPowner from "../../../hooks/useISPOwner";
-import InformationTooltip from "../../../components/common/InformationTooltip";
+import InformationTooltip from "../../../components/common/tooltipInformation/InformationTooltip";
 import { areasSubareasChecked } from "../../staff/staffCustomFucn";
 import { toast } from "react-toastify";
 // import { postReseller, fetchReseller } from "../../../features/resellerSlice";
