@@ -1,20 +1,17 @@
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import Select from "react-select";
+import { toast } from "react-toastify";
 
 //internal import
 import Loader from "../components/common/Loader";
 import { billPayment } from "../features/getIspOwnerUsersApi";
 import apiLink from "../api/apiLink";
 import { publicRequest } from "../api/apiLink";
-import { toast } from "react-toastify";
+import customerBillMonth from "../pages/Customer/customerCRUD/customerBillMonth";
 
 const PaymentModal = (props) => {
-  // current month date
-  const date = new Date();
-  const monthDate = date.getMonth();
-
   // twelve month options
   const options = [
     { value: "January", label: "January" },
@@ -31,6 +28,7 @@ const PaymentModal = (props) => {
     { value: "December", label: "December" },
   ];
 
+  // get customer data form redux store
   const customerData = useSelector(
     (state) => state.persistedReducer.auth?.currentUser?.customer
   );
@@ -49,126 +47,37 @@ const PaymentModal = (props) => {
     if (!props.customerData && customerData) {
       setPaymentAmount(
         customerData?.balance > 0 &&
-          customerData?.balance <= customerData?.monthlyFee
+          customerData?.balance < customerData?.monthlyFee
           ? customerData?.monthlyFee - customerData?.balance
           : customerData?.balance < 0
           ? customerData?.monthlyFee + Math.abs(customerData?.balance)
-          : customerData?.balance > customerData?.monthlyFee
-          ? 0
           : customerData?.monthlyFee
       );
 
       setUserData(customerData);
+
+      // set customer bill month
+      setSelectedMonth(customerBillMonth(customerData));
     }
 
     //for handling qr payment
     if (props.customerData) {
-      //handle qr payment
       setPaymentAmount(
         props.customerData?.balance > 0 &&
-          props.customerData?.balance <= props.customerData?.monthlyFee
+          props.customerData?.balance < props.customerData?.monthlyFee
           ? props.customerData?.monthlyFee - props.customerData?.balance
           : props.customerData?.balance < 0
           ? props.customerData?.monthlyFee +
             Math.abs(props.customerData?.balance)
-          : props.customerData?.balance > props.customerData?.monthlyFee
-          ? 0
           : props.customerData?.monthlyFee
       );
 
       setUserData(props.customerData);
+
+      // set customer bill month
+      setSelectedMonth(customerBillMonth(props.customerData));
     }
   }, [customerData, props.customerData]);
-
-  //select bill month name
-  useEffect(() => {
-    let temp = [];
-
-    // customer billing date
-    const dataMonth = new Date(userData?.billingCycle).getMonth();
-
-    if (userData?.balance === 0 && userData?.paymentStatus === "unpaid") {
-      // month to monthly bill
-      temp.push(options[dataMonth]);
-    } else if (userData?.balance === 0 && userData?.paymentStatus === "paid") {
-      // month to monthly bill
-      temp.push(options[dataMonth]);
-    } else if (
-      userData?.balance >= userData?.monthlyFee &&
-      userData?.paymentStatus === "paid"
-    ) {
-      // customer advance monthly bill
-      const modVal = Math.floor(userData?.balance / userData?.monthlyFee);
-      temp.push(options[dataMonth + modVal]);
-
-      if (dataMonth + modVal > 11) {
-        const totalMonth = dataMonth + modVal - 12;
-        temp.push(options[totalMonth]);
-      }
-    } else if (
-      userData?.balance < 0 &&
-      userData?.paymentStatus === "unpaid" &&
-      (userData?.status === "active" || userData?.status === "expired")
-    ) {
-      // customer privous monthly bill
-      const modVal = Math.floor(
-        Math.abs(userData?.balance / userData?.monthlyFee)
-      );
-
-      // customer privous years total due month
-      const dueMonth = dataMonth - modVal;
-
-      //find customer privous years dou month
-      if (dueMonth < 0) {
-        const totalMonth = 12 - Math.abs(dueMonth);
-
-        for (let i = totalMonth; i <= 11; i++) {
-          temp.push(options[i]);
-        }
-      }
-
-      //find customer current years dou month
-      if (modVal < 11) {
-        for (let i = dueMonth; i <= dataMonth; i++) {
-          if (!(i < 0)) {
-            temp.push(options[i]);
-          }
-        }
-      }
-    } else if (
-      userData?.balance < 0 &&
-      userData?.paymentStatus === "unpaid" &&
-      userData?.status === "inactive"
-    ) {
-      // customer privous monthly bill
-      const modVal = Math.floor(
-        Math.abs(userData?.balance / userData?.monthlyFee)
-      );
-
-      // customer total due month
-      const dueMonth = dataMonth - modVal;
-
-      //find customer privous years dou month
-      if (dueMonth < 0) {
-        const totalMonth = 12 - Math.abs(dueMonth);
-
-        for (let i = totalMonth; i <= 11; i++) {
-          temp.push(options[i]);
-        }
-      }
-
-      //find customer current years dou month
-      if (modVal < 11) {
-        for (let i = dueMonth; i <= monthDate; i++) {
-          if (!(i < 0)) {
-            temp.push(options[i]);
-          }
-        }
-      }
-    }
-
-    setSelectedMonth(temp);
-  }, [userData]);
 
   const billPaymentController = async () => {
     const data = {
@@ -221,16 +130,6 @@ const PaymentModal = (props) => {
     let paymentID = "";
 
     if (userData) {
-      // customer bill month select
-      let selectDate = "";
-
-      if (selectedMonth.length) {
-        const monthValues = selectedMonth?.map((item) => {
-          return item?.value;
-        });
-        selectDate = monthValues.join(",");
-      }
-
       bKash.init({
         paymentMode: "checkout", //fixed value ‘checkout’
         paymentRequest: {
@@ -244,7 +143,7 @@ const PaymentModal = (props) => {
           user: userData.id,
           userType: userData.userType,
           medium: userData.ispOwner.bpSettings?.paymentGateway?.gatewayType,
-          month: selectDate,
+          month: selectedMonth?.map((item) => item.value).join(","),
           paymentStatus: "pending",
           collectedBy: "customer",
         },
@@ -280,7 +179,7 @@ const PaymentModal = (props) => {
             user: userData.id,
             userType: userData.userType,
             medium: userData.ispOwner.bpSettings?.paymentGateway?.gatewayType,
-            month: selectDate,
+            month: selectedMonth?.map((item) => item.value).join(","),
             paymentStatus: "pending",
             mikrotikPackage: userData.mikrotikPackage,
           };
