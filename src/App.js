@@ -190,6 +190,18 @@ function App() {
             )
           : ""}
 
+        {/* global routes */}
+
+        {(userRole === "ispOwner" ||
+          userRole === "manager" ||
+          userRole === "reseller" ||
+          userRole === "collector") && (
+          <Routes>
+            {/* others customer  */}
+            <Route path="/other/customer" element={<OtherCustomer />} />
+          </Routes>
+        )}
+
         {/* only reseller route */}
         {userRole === "reseller" && (
           <Routes>
@@ -243,6 +255,19 @@ function App() {
                 path="reseller/activeCustomer"
                 element={<RActiveCustomer />}
               />
+
+              {/* others customer  */}
+              {/* <Route
+                path="/other/customer"
+                element={
+                  userRole === "reseller" ||
+                  (userRole === "collector" && user.reseller.collector) ? (
+                    <OtherCustomer />
+                  ) : (
+                    <Navigate to={"/"} />
+                  )
+                }
+              /> */}
 
               <Route path="reseller/profile" element={<RProfile />} />
               <Route path="reseller/summary" element={<Summary />} />
@@ -533,18 +558,18 @@ function App() {
             />
 
             {/* others customer  */}
-            <Route
+            {/* <Route
               path="/other/customer"
               element={
                 userRole === "ispOwner" ||
                 userRole === "manager" ||
-                userRole === "collector" ? (
+                (userRole === "collector" && !user.reseller.collector ? (
                   <OtherCustomer />
                 ) : (
-                  <Navigate to={"/home"} />
-                )
+                  <Navigate to={"/"} />
+                ))
               }
-            />
+            /> */}
 
             <Route
               path="/packageSetting"

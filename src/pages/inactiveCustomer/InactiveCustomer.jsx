@@ -15,6 +15,10 @@ import PPPoECustomerDetails from "../Customer/customerCRUD/CustomerDetails";
 import HotspotCustomerDetails from "../hotspot/customerOperation/CustomerDetails";
 import StaticCustomerDetails from "../staticCustomer/customerCRUD/CustomerDetails";
 import PrintOptions from "../../components/common/PrintOptions";
+import useISPowner from "../../hooks/useISPOwner";
+import { getResellerInactiveCustomer } from "../../features/resellerCustomerAdminApi";
+import ResellerPPPoECustomerDetails from "../../reseller/Customer/customerCRUD/CustomerDetails";
+import ResellerStaticCustomerDetails from "../../reseller/staticCustomer/staticCustomerCrud/CustomerDetails";
 
 const InactiveCustomer = ({
   isInactiveLoading,
@@ -34,20 +38,27 @@ const InactiveCustomer = ({
   firstDate.setHours(0, 0, 0, 0);
   today.setHours(23, 59, 59, 999);
 
-  //get ispOwner id
-  const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerId
-  );
+  // get user & current user data form useISPOwner
+  const { role, ispOwnerData, ispOwnerId, userData } = useISPowner();
 
-  // get isp owner data
-  const ispOwnerData = useSelector(
-    (state) => state.persistedReducer.auth.userData
-  );
+  // user staff role
+  const ispOwnerStaff =
+    role === "ispOwner" ||
+    role === "manager" ||
+    (role === "collector" && !userData.reseller);
 
   // get ispOwner inactive customer
   let inactiveCustomer = useSelector(
     (state) => state.dashboardInformation.inactiveCustomer
   );
+
+  // get reseller new customers form redux store
+  const resellerCustomer = useSelector(
+    (state) => state.resellerCustomer.inactiveCustomer
+  );
+
+  // customer from role base
+  const allCustomers = ispOwnerStaff ? inactiveCustomer : resellerCustomer;
 
   // get all packages
   const allPackages = useSelector((state) => state.package.allPackages);
@@ -75,6 +86,14 @@ const InactiveCustomer = ({
   const [startDate, setStartDate] = useState(firstDate);
   const [endDate, setEndDate] = useState(new Date());
 
+  // reseller id from role base
+  const resellerId = role === "collector" ? userData.reseller : userData.id;
+
+  // customer user type
+  const userType = ispOwnerStaff
+    ? userData?.bpSettings?.customerType
+    : userData.customerType || [];
+
   // current start & end date
   var selectDate = new Date(filterDate.getFullYear(), filterDate.getMonth(), 1);
   var lastDate = new Date(
@@ -92,23 +111,34 @@ const InactiveCustomer = ({
       setEndDate(lastDate);
     }
 
-    filterDate.getMonth() + 1 &&
-      getInactiveCustomer(
-        dispatch,
-        ispOwnerId,
-        filterDate.getFullYear(),
-        filterDate.getMonth() + 1,
-        setIsInactiveLoading
-      );
+    if (ispOwnerStaff) {
+      filterDate.getMonth() + 1 &&
+        getInactiveCustomer(
+          dispatch,
+          ispOwnerId,
+          filterDate.getFullYear(),
+          filterDate.getMonth() + 1,
+          setIsInactiveLoading
+        );
+    } else {
+      filterDate.getMonth() + 1 &&
+        getResellerInactiveCustomer(
+          dispatch,
+          resellerId,
+          filterDate.getFullYear(),
+          filterDate.getMonth() + 1,
+          setIsInactiveLoading
+        );
+    }
   }, [filterDate]);
 
   useEffect(() => {
-    setInActiveCustomers(inactiveCustomer);
-  }, [inactiveCustomer]);
+    setInActiveCustomers(allCustomers);
+  }, [allCustomers]);
 
   // filter function
   const onClickFilter = () => {
-    let arr = [...inactiveCustomer];
+    let arr = [...allCustomers];
 
     if (!customerType) {
       arr = arr;
@@ -423,21 +453,23 @@ const InactiveCustomer = ({
                     showMonthYearPicker
                     showFullMonthYearPicker
                     maxDate={firstDate}
-                    minDate={new Date(ispOwnerData?.createdAt)}
+                    minDate={new Date(userData?.createdAt)}
                   />
                 </div>
 
-                <select
-                  className="form-select mw-100 mt-0"
-                  onChange={(event) => setCustomerType(event.target.value)}
-                >
-                  <option selected value="all">
-                    {t("userType")}
-                  </option>
-                  {ispOwnerData?.bpSettings?.customerType.map((cType) => (
-                    <option value={cType}>{t(`${cType}`)}</option>
-                  ))}
-                </select>
+                {userType.length > 0 && (
+                  <select
+                    className="form-select mw-100 mt-0"
+                    onChange={(e) => setCustomerType(e.target.value)}
+                  >
+                    <option selected value="">
+                      {t("userType")}
+                    </option>
+                    {userType.map((cType) => (
+                      <option value={cType}>{t(`${cType}`)}</option>
+                    ))}
+                  </select>
+                )}
 
                 <div>
                   <DatePicker
@@ -518,20 +550,36 @@ const InactiveCustomer = ({
 
       {/* customer details modal by user type  */}
 
-      {modalStatus === "pppoe" ? (
+      {/* customer details modal by user type  */}
+
+      {modalStatus === "pppoe" && ispOwnerStaff ? (
         <PPPoECustomerDetails
           show={show}
           setShow={setShow}
           customerId={customerId}
         />
-      ) : modalStatus === "hotspot" ? (
+      ) : (
+        <ResellerPPPoECustomerDetails
+          show={show}
+          setShow={setShow}
+          customerId={customerId}
+        />
+      )}
+
+      {modalStatus === "hotspot" && ispOwnerStaff ? (
         <HotspotCustomerDetails
           show={show}
           setShow={setShow}
           customerId={customerId}
         />
-      ) : (
+      ) : ispOwnerStaff ? (
         <StaticCustomerDetails
+          show={show}
+          setShow={setShow}
+          customerId={customerId}
+        />
+      ) : (
+        <ResellerStaticCustomerDetails
           show={show}
           setShow={setShow}
           customerId={customerId}

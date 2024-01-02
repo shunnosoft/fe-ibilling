@@ -33,6 +33,8 @@ import Loader from "../../components/common/Loader";
 import { Accordion } from "react-bootstrap";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
+import { Link } from "react-router-dom";
+import Active from "../dashboardComponent/Active";
 
 export default function Home() {
   const { t } = useTranslation();
@@ -77,6 +79,10 @@ export default function Home() {
   const [Year, setYear] = useState(date.getFullYear());
   const [Month, setMonth] = useState(date.getMonth());
   const [filterDate, setFilterDate] = useState(date);
+
+  // choose modal handle
+  const [status, setStatus] = useState("");
+  const [show, setShow] = useState(false);
 
   const chartsData = {
     // labels: ["Blue", "Yellow", "Green", "Purple", "Orange"],
@@ -346,9 +352,15 @@ export default function Home() {
                   <p style={{ fontSize: "18px" }}> {t("total customer")} </p>
                   <h2>{FormatNumber(customerStat.total)}</h2>
 
-                  <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                    {t("new customer")} {FormatNumber(customerStat.newCustomer)}
-                  </p>
+                  <Link to={"/other/customer"}>
+                    <p
+                      className="dashboardData"
+                      style={{ fontSize: "15px", marginBottom: "0px" }}
+                    >
+                      {t("newCustomer")}:&nbsp;
+                      {FormatNumber(customerStat.newCustomer)}
+                    </p>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -360,8 +372,17 @@ export default function Home() {
                   <PersonCheckFill />
                 </div>
                 <div className="chartSection">
-                  <p style={{ fontSize: "18px" }}> {t("active")} </p>
-                  <h2>{FormatNumber(customerStat.active)}</h2>
+                  <p
+                    className="dashboardActive"
+                    onClick={() => {
+                      setStatus("active");
+                      setShow(true);
+                    }}
+                    style={{ fontSize: "18px" }}
+                  >
+                    {t("active")}
+                    <h4>{FormatNumber(customerStat.active)}</h4>
+                  </p>
 
                   <p style={{ fontSize: "15px", paddingTop: "10px" }}>
                     {t("in active")} : {FormatNumber(customerStat.inactive)}
@@ -622,6 +643,20 @@ export default function Home() {
           </FourGround>
         </div>
       </FontColor>
+
+      {/* dashboard modal */}
+
+      {/* all active customers modal */}
+      {status === "active" && (
+        <Active
+          status={status}
+          modalShow={show}
+          setModalShow={setShow}
+          resellerId={resellerId}
+          year={filterDate.getFullYear()}
+          month={filterDate.getMonth() + 1}
+        />
+      )}
     </div>
   );
 }

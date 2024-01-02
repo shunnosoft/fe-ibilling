@@ -3,7 +3,6 @@ import { ToastContainer } from "react-toastify";
 import { useTranslation } from "react-i18next";
 import { Card, Collapse, Tab, Tabs } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import ReactToPrint from "react-to-print";
 import {
   ArrowBarLeft,
   ArrowBarRight,
@@ -35,25 +34,25 @@ import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
 import { getHotspotPackage } from "../../features/hotspotApi";
 import { getSubAreasApi } from "../../features/actions/customerApiCall";
+import useISPowner from "../../hooks/useISPOwner";
+import {
+  getResellerInactiveCustomer,
+  getResellerNewCustomer,
+} from "../../features/resellerCustomerAdminApi";
+import { getMikrotik, getSubAreas } from "../../features/apiCallReseller";
 
 const OtherCustomer = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const csvLink = useRef();
-  const componentRef = useRef();
 
   //get current date
   const date = new Date();
   const month = date.getMonth() + 1;
   const year = date.getFullYear();
 
-  // get all role
-  const role = useSelector((state) => state.persistedReducer.auth.role);
-
-  // get isp owner id
-  const ispOwner = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerId
-  );
+  // get user & current user data form useISPOwner
+  const { role, ispOwnerId, userData } = useISPowner();
 
   // get bulletin permission
   const butPermission = useSelector(
@@ -76,22 +75,45 @@ const OtherCustomer = () => {
   // tabs state
   const [otherTabs, setOtherTabs] = useState("newCustomer");
 
+  // reseller id from role base
+  const resellerId = role === "collector" ? userData.reseller : userData.id;
+
   // reload handler
   const reloadHandler = () => {
     if (otherTabs === "newCustomer") {
-      getNewCustomer(dispatch, ispOwner, year, month, setIsNewLoading);
+      if (role === "reseller" || (role === "collector" && userData.reseller)) {
+        getResellerNewCustomer(
+          dispatch,
+          resellerId,
+          year,
+          month,
+          setIsNewLoading
+        );
+      } else {
+        getNewCustomer(dispatch, ispOwnerId, year, month, setIsNewLoading);
+      }
     }
     if (otherTabs === "inactiveCustomer") {
-      getInactiveCustomer(
-        dispatch,
-        ispOwner,
-        year,
-        month,
-        setIsInactiveLoading
-      );
+      if (role === "reseller" || (role === "collector" && userData.reseller)) {
+        getResellerInactiveCustomer(
+          dispatch,
+          resellerId,
+          year,
+          month,
+          setIsInactiveLoading
+        );
+      } else {
+        getInactiveCustomer(
+          dispatch,
+          ispOwnerId,
+          year,
+          month,
+          setIsInactiveLoading
+        );
+      }
     }
     if (otherTabs === "dueCustomer") {
-      getDueCustomer(dispatch, ispOwner, month, year, setIsDueLoading);
+      getDueCustomer(dispatch, ispOwnerId, month, year, setIsDueLoading);
     }
   };
 
@@ -102,22 +124,33 @@ const OtherCustomer = () => {
 
   useEffect(() => {
     // fatch mikrotik
-    fetchMikrotik(dispatch, ispOwner, setPackageLoading);
+    if (role === "ispOwner") {
+      fetchMikrotik(dispatch, ispOwnerId, setPackageLoading);
+    } else {
+      getMikrotik(dispatch, resellerId);
+    }
+
+    // withMikrotik & withOut Mikrotik package get api
+    if (role === "ispOwner") {
+      // get pppoe package api call
+      getPPPoEPackage(dispatch, ispOwnerId, setPackageLoading);
+
+      // get hotspot package api call
+      getHotspotPackage(dispatch, ispOwnerId, setPackageLoading);
+    }
 
     //get all customer package
-    getAllPackages(dispatch, ispOwner, setPackageLoading);
-
-    // get pppoe package api call
-    getPPPoEPackage(dispatch, ispOwner, setPackageLoading);
-
-    // get hotspot package api call
-    getHotspotPackage(dispatch, ispOwner, setPackageLoading);
+    getAllPackages(dispatch, ispOwnerId, setPackageLoading);
 
     // get area api
-    getArea(dispatch, ispOwner, setPackageLoading);
+    if (role === "ispOwner") getArea(dispatch, ispOwnerId, setPackageLoading);
 
     // get sub area api
-    getSubAreasApi(dispatch, ispOwner);
+    if (role === "ispOwner") {
+      getSubAreasApi(dispatch, ispOwnerId);
+    } else {
+      getSubAreas(dispatch, resellerId);
+    }
 
     Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
   }, []);

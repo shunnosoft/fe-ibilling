@@ -499,34 +499,29 @@ export default function Sidebar() {
                           </FontColor>
                         </NavLink> */}
 
-                        {(userRole === "ispOwner" ||
-                          userRole === "manager" ||
-                          (userRole === "collector" &&
-                            !user.collector?.reseller)) && (
-                          <NavLink
-                            key={126}
-                            to={"/other/customer"}
-                            className={(navInfo) =>
-                              navInfo.isActive ? activeClass.active : ""
-                            }
-                          >
-                            <FontColor>
-                              <li
-                                className="sidebarItems"
-                                id={
-                                  window.location.pathname === "/other/customer"
-                                    ? "active"
-                                    : ""
-                                }
-                              >
-                                <div className="sidebarIcon">{<People />}</div>
-                                <span className="sidebarLinksName">
-                                  {t("otherCustomer")}
-                                </span>
-                              </li>
-                            </FontColor>
-                          </NavLink>
-                        )}
+                        <NavLink
+                          key={126}
+                          to={"/other/customer"}
+                          className={(navInfo) =>
+                            navInfo.isActive ? activeClass.active : ""
+                          }
+                        >
+                          <FontColor>
+                            <li
+                              className="sidebarItems"
+                              id={
+                                window.location.pathname === "/other/customer"
+                                  ? "active"
+                                  : ""
+                              }
+                            >
+                              <div className="sidebarIcon">{<People />}</div>
+                              <span className="sidebarLinksName">
+                                {t("otherCustomer")}
+                              </span>
+                            </li>
+                          </FontColor>
+                        </NavLink>
                       </Accordion.Body>
 
                       {/* রিপোর্ট */}

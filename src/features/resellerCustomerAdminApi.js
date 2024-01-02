@@ -6,6 +6,9 @@ import {
   editAllResellerCustomerSuccess,
   editResellerCustomerSuccess,
   getAllResellerCustomerSuccess,
+  getDashboardActiveCustomer,
+  getInactiveCustomerSuccess,
+  getNewCustomerSuccess,
   getResellerCustomerBillReportSuccess,
   getResellerCustomerSuccess,
 } from "./resellerCustomerAdminSlice";
@@ -168,6 +171,66 @@ export const getResellerCustomerReport = async (
     dispatch(getResellerCustomerBillReportSuccess(res.data));
   } catch (err) {
     toast.error("Error to get report: ", err);
+  }
+  setIsLoading(false);
+};
+
+// get reseller dashboadr active customer
+export const getActiveCustomer = async (
+  dispatch,
+  resellerId,
+  year,
+  month,
+  setIsLoading
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.get(
+      `reseller/active/customer/${resellerId}?year=${year}&month=${month}`
+    );
+    dispatch(getDashboardActiveCustomer(res.data));
+  } catch (error) {
+    toast.error(error.response?.data.message);
+  }
+  setIsLoading(false);
+};
+
+// get reseller new customer
+export const getResellerNewCustomer = async (
+  dispatch,
+  resellerId,
+  year,
+  month,
+  setIsLoading
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.get(
+      `reseller/new/customer/${resellerId}?year=${year}&month=${month}`
+    );
+    dispatch(getNewCustomerSuccess(res.data));
+  } catch (error) {
+    toast.error(error.response?.data.message);
+  }
+  setIsLoading(false);
+};
+
+// get reseller inactive customer
+export const getResellerInactiveCustomer = async (
+  dispatch,
+  resellerId,
+  year,
+  month,
+  setIsLoading
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.get(
+      `reseller/inactive/customer/${resellerId}?year=${year}&month=${month}`
+    );
+    dispatch(getInactiveCustomerSuccess(res.data));
+  } catch (error) {
+    toast.error(error.response?.data.message);
   }
   setIsLoading(false);
 };

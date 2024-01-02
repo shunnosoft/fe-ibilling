@@ -1874,24 +1874,20 @@ export default function Customer() {
                 />
               )}
 
-              {bpSettings?.hasMikrotik && (
-                <>
-                  {bulkStatus === "bulkStatusEdit" && (
-                    <BulkStatusEdit
-                      bulkCustomer={bulkCustomer}
-                      show={isShow}
-                      setShow={setIsShow}
-                    />
-                  )}
+              {bulkStatus === "bulkStatusEdit" && (
+                <BulkStatusEdit
+                  bulkCustomer={bulkCustomer}
+                  show={isShow}
+                  setShow={setIsShow}
+                />
+              )}
 
-                  {bulkStatus === "bulkMikrotikEdit" && (
-                    <BulkMikrotikEdit
-                      bulkCustomer={bulkCustomer}
-                      show={isShow}
-                      setShow={setIsShow}
-                    />
-                  )}
-                </>
+              {bpSettings?.hasMikrotik && bulkStatus === "bulkMikrotikEdit" && (
+                <BulkMikrotikEdit
+                  bulkCustomer={bulkCustomer}
+                  show={isShow}
+                  setShow={setIsShow}
+                />
               )}
 
               {bulkStatus === "bulkPackageEdit" && (
@@ -2008,61 +2004,59 @@ export default function Customer() {
 
               <hr className="mt-0 mb-0" />
 
-              {bpSettings?.hasMikrotik &&
-                ((role === "ispOwner" && bpSettings?.bulkStatusEdit) ||
-                  (bpSettings?.bulkStatusEdit &&
-                    permissions?.bulkStatusEdit &&
-                    role === "manager")) && (
-                  <li
-                    type="button"
-                    className="p-1"
-                    onClick={() => {
-                      setBulkStatus("bulkStatusEdit");
-                      setIsShow(true);
-                    }}
-                  >
-                    <div className="menu_icon2">
-                      <button
-                        className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-info"
-                        title={t("editStatus")}
-                      >
-                        <i className="fas fa-edit fa-xs  "></i>
-                        <span className="button_title"> {t("editStatus")}</span>
-                      </button>
-                    </div>
-                    <div className="menu_label2">{t("editStatus")}</div>
-                  </li>
-                )}
+              {((role === "ispOwner" && bpSettings?.bulkStatusEdit) ||
+                (bpSettings?.bulkStatusEdit &&
+                  permissions?.bulkStatusEdit &&
+                  role === "manager")) && (
+                <li
+                  type="button"
+                  className="p-1"
+                  onClick={() => {
+                    setBulkStatus("bulkStatusEdit");
+                    setIsShow(true);
+                  }}
+                >
+                  <div className="menu_icon2">
+                    <button
+                      className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-info"
+                      title={t("editStatus")}
+                    >
+                      <i className="fas fa-edit fa-xs  "></i>
+                      <span className="button_title"> {t("editStatus")}</span>
+                    </button>
+                  </div>
+                  <div className="menu_label2">{t("editStatus")}</div>
+                </li>
+              )}
 
               <hr className="mt-0 mb-0" />
 
-              {bpSettings?.hasMikrotik &&
-                ((role === "ispOwner" && bpSettings?.bulkPaymentStatusEdit) ||
-                  (bpSettings?.bulkPaymentStatusEdit &&
-                    permissions?.bulkPaymentStatusEdit &&
-                    role === "manager")) && (
-                  <li
-                    type="button"
-                    className="p-1"
-                    onClick={() => {
-                      setBulkStatus("bulkPaymentStatusEdit");
-                      setIsShow(true);
-                    }}
-                  >
-                    <div className="menu_icon2">
-                      <button
-                        className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-info"
-                        title={t("editPaymentStatus")}
-                      >
-                        <i className="fas fa-edit fa-xs  "></i>
-                        <span className="button_title">
-                          {t("editPaymentStatus")}
-                        </span>
-                      </button>
-                    </div>
-                    <div className="menu_label2">{t("editPaymentStatus")}</div>
-                  </li>
-                )}
+              {((role === "ispOwner" && bpSettings?.bulkPaymentStatusEdit) ||
+                (bpSettings?.bulkPaymentStatusEdit &&
+                  permissions?.bulkPaymentStatusEdit &&
+                  role === "manager")) && (
+                <li
+                  type="button"
+                  className="p-1"
+                  onClick={() => {
+                    setBulkStatus("bulkPaymentStatusEdit");
+                    setIsShow(true);
+                  }}
+                >
+                  <div className="menu_icon2">
+                    <button
+                      className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-info"
+                      title={t("editPaymentStatus")}
+                    >
+                      <i className="fas fa-edit fa-xs  "></i>
+                      <span className="button_title">
+                        {t("editPaymentStatus")}
+                      </span>
+                    </button>
+                  </div>
+                  <div className="menu_label2">{t("editPaymentStatus")}</div>
+                </li>
+              )}
 
               <hr className="mt-0 mb-0" />
 
@@ -2240,35 +2234,36 @@ export default function Customer() {
 
               <hr className="mt-0 mb-0" />
 
-              {((role === "ispOwner" && bpSettings?.bulkAutoDisableEdit) ||
-                (bpSettings?.bulkAutoDisableEdit &&
-                  permissions?.bulkAutoDisableEdit &&
-                  role === "manager")) && (
-                <li
-                  type="button"
-                  className="p-1"
-                  onClick={() => {
-                    setBulkStatus("autoDisableEditModal");
-                    setIsShow(true);
-                  }}
-                >
-                  <div className="menu_icon2">
-                    <button
-                      className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-secondary"
-                      title={t("autoConnectOnOff")}
-                    >
-                      <i class="fas fa-power-off fa-xs"></i>
-                      <span className="button_title">
-                        {t("automaticConnectionOff")}
-                      </span>
-                    </button>
-                  </div>
-                  <div className="menu_label2">
-                    {" "}
-                    {t("automaticConnectionOff")}
-                  </div>
-                </li>
-              )}
+              {bpSettings?.hasMikrotik &&
+                ((role === "ispOwner" && bpSettings?.bulkAutoDisableEdit) ||
+                  (bpSettings?.bulkAutoDisableEdit &&
+                    permissions?.bulkAutoDisableEdit &&
+                    role === "manager")) && (
+                  <li
+                    type="button"
+                    className="p-1"
+                    onClick={() => {
+                      setBulkStatus("autoDisableEditModal");
+                      setIsShow(true);
+                    }}
+                  >
+                    <div className="menu_icon2">
+                      <button
+                        className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-secondary"
+                        title={t("autoConnectOnOff")}
+                      >
+                        <i class="fas fa-power-off fa-xs"></i>
+                        <span className="button_title">
+                          {t("automaticConnectionOff")}
+                        </span>
+                      </button>
+                    </div>
+                    <div className="menu_label2">
+                      {" "}
+                      {t("automaticConnectionOff")}
+                    </div>
+                  </li>
+                )}
 
               <hr className="mt-0 mb-0" />
 

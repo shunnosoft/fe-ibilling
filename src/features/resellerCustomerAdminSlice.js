@@ -3,6 +3,9 @@ import { createSlice } from "@reduxjs/toolkit";
 const resellerCustomerSlice = createSlice({
   name: "resellerCustomer",
   initialState: {
+    newCustomer: [],
+    activeCustomer: [],
+    inactiveCustomer: [],
     resellerCustomer: [],
     allResellerCustomer: [],
     resellerCustomerBillReport: [],
@@ -113,10 +116,27 @@ const resellerCustomerSlice = createSlice({
     getResellerCustomerBillReportSuccess: (state, actions) => {
       state.resellerCustomerBillReport = actions.payload;
     },
+
+    // dashboard click modal action
+    getDashboardActiveCustomer: (state, actions) => {
+      state.activeCustomer = actions.payload;
+    },
+
+    // reseller other customer action
+    getNewCustomerSuccess: (state, actions) => {
+      state.newCustomer = actions.payload;
+    },
+
+    getInactiveCustomerSuccess: (state, actions) => {
+      state.inactiveCustomer = actions.payload;
+    },
   },
 });
 
 export const {
+  getNewCustomerSuccess,
+  getDashboardActiveCustomer,
+  getInactiveCustomerSuccess,
   getResellerCustomerSuccess,
   editResellerCustomerSuccess,
   deleteReCustomer,

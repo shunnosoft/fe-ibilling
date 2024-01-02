@@ -7,7 +7,7 @@ import moment from "moment";
 import DatePicker from "react-datepicker";
 import { Accordion } from "react-bootstrap";
 import { CSVLink } from "react-csv";
-import { GeoAlt, Person, PersonFillCheck, Phone } from "react-bootstrap-icons";
+import { GeoAlt, Person, Phone } from "react-bootstrap-icons";
 
 // internal import
 import { getNewCustomer } from "../../features/apiCalls";
@@ -17,6 +17,10 @@ import PPPoECustomerDetails from "../Customer/customerCRUD/CustomerDetails";
 import HotspotCustomerDetails from "../hotspot/customerOperation/CustomerDetails";
 import StaticCustomerDetails from "../staticCustomer/customerCRUD/CustomerDetails";
 import PrintOptions from "../../components/common/PrintOptions";
+import useISPowner from "../../hooks/useISPOwner";
+import { getResellerNewCustomer } from "../../features/resellerCustomerAdminApi";
+import ResellerPPPoECustomerDetails from "../../reseller/Customer/customerCRUD/CustomerDetails";
+import ResellerStaticCustomerDetails from "../../reseller/staticCustomer/staticCustomerCrud/CustomerDetails";
 
 const NewCustomer = ({
   isNewLoading,
@@ -36,18 +40,25 @@ const NewCustomer = ({
   firstDate.setHours(0, 0, 0, 0);
   today.setHours(23, 59, 59, 999);
 
-  // get isp owner id
-  const ispOwner = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerId
-  );
+  // get user & current user data form useISPOwner
+  const { role, ispOwnerData, ispOwnerId, userData } = useISPowner();
 
-  // get all customer from redux
+  // user staff role
+  const ispOwnerStaff =
+    role === "ispOwner" ||
+    role === "manager" ||
+    (role === "collector" && !userData.reseller);
+
+  // get ispOwner new customers from redux
   const customer = useSelector((state) => state?.customer?.newCustomer);
 
-  // get isp owner data
-  const ispOwnerData = useSelector(
-    (state) => state.persistedReducer.auth.userData
+  // get reseller new customers form redux store
+  const resellerCustomer = useSelector(
+    (state) => state.resellerCustomer.newCustomer
   );
+
+  // customer from role base
+  const allCustomers = ispOwnerStaff ? customer : resellerCustomer;
 
   // get all packages
   const allPackages = useSelector((state) => state.package.allPackages);
@@ -75,6 +86,14 @@ const NewCustomer = ({
   const [startDate, setStartDate] = useState(firstDate);
   const [endDate, setEndDate] = useState(new Date());
 
+  // reseller id from role base
+  const resellerId = role === "collector" ? userData.reseller : userData.id;
+
+  // customer user type
+  const userType = ispOwnerStaff
+    ? userData?.bpSettings?.customerType
+    : userData.customerType || [];
+
   // current start & end date
   var selectDate = new Date(filterDate.getFullYear(), filterDate.getMonth(), 1);
   var lastDate = new Date(
@@ -93,25 +112,36 @@ const NewCustomer = ({
       setEndDate(lastDate);
     }
 
-    filterDate.getMonth() + 1 &&
-      getNewCustomer(
-        dispatch,
-        ispOwner,
-        filterDate.getFullYear(),
-        filterDate.getMonth() + 1,
-        setIsNewLoading
-      );
+    if (ispOwnerStaff) {
+      filterDate.getMonth() + 1 &&
+        getNewCustomer(
+          dispatch,
+          ispOwnerId,
+          filterDate.getFullYear(),
+          filterDate.getMonth() + 1,
+          setIsNewLoading
+        );
+    } else {
+      filterDate.getMonth() + 1 &&
+        getResellerNewCustomer(
+          dispatch,
+          resellerId,
+          filterDate.getFullYear(),
+          filterDate.getMonth() + 1,
+          setIsNewLoading
+        );
+    }
   }, [filterDate]);
 
   useEffect(() => {
-    setNewCustomer(customer);
-  }, [customer]);
+    setNewCustomer(allCustomers);
+  }, [allCustomers]);
 
   // filter function
   const onClickFilter = () => {
-    let arr = [...customer];
+    let arr = [...allCustomers];
     if (!customerType) {
-      arr = customer;
+      arr = arr;
     } else if (customerType && customerType === "pppoe") {
       arr = arr.filter((value) => value.userType === "pppoe");
     } else {
@@ -466,21 +496,23 @@ const NewCustomer = ({
                     showMonthYearPicker
                     showFullMonthYearPicker
                     maxDate={firstDate}
-                    minDate={new Date(ispOwnerData?.createdAt)}
+                    minDate={new Date(userData?.createdAt)}
                   />
                 </div>
 
-                <select
-                  className="form-select mw-100 mt-0"
-                  onChange={(e) => setCustomerType(e.target.value)}
-                >
-                  <option selected value="">
-                    {t("userType")}
-                  </option>
-                  {ispOwnerData?.bpSettings?.customerType.map((cType) => (
-                    <option value={cType}>{t(`${cType}`)}</option>
-                  ))}
-                </select>
+                {userType.length > 0 && (
+                  <select
+                    className="form-select mw-100 mt-0"
+                    onChange={(e) => setCustomerType(e.target.value)}
+                  >
+                    <option selected value="">
+                      {t("userType")}
+                    </option>
+                    {userType.map((cType) => (
+                      <option value={cType}>{t(`${cType}`)}</option>
+                    ))}
+                  </select>
+                )}
 
                 <div>
                   <DatePicker
@@ -561,20 +593,34 @@ const NewCustomer = ({
 
       {/* customer details modal by user type  */}
 
-      {modalStatus === "pppoe" ? (
+      {modalStatus === "pppoe" && ispOwnerStaff ? (
         <PPPoECustomerDetails
           show={show}
           setShow={setShow}
           customerId={customerId}
         />
-      ) : modalStatus === "hotspot" ? (
+      ) : (
+        <ResellerPPPoECustomerDetails
+          show={show}
+          setShow={setShow}
+          customerId={customerId}
+        />
+      )}
+
+      {modalStatus === "hotspot" && ispOwnerStaff ? (
         <HotspotCustomerDetails
           show={show}
           setShow={setShow}
           customerId={customerId}
         />
-      ) : (
+      ) : ispOwnerStaff ? (
         <StaticCustomerDetails
+          show={show}
+          setShow={setShow}
+          customerId={customerId}
+        />
+      ) : (
+        <ResellerStaticCustomerDetails
           show={show}
           setShow={setShow}
           customerId={customerId}
