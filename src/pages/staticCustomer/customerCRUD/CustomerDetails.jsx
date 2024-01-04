@@ -72,7 +72,11 @@ export default function CustomerDetails({ show, setShow, customerId }) {
   const [modalShow, setModalShow] = useState(false);
 
   // profile option state
-  const [profileOption, setProfileOption] = useState("profileEdit");
+  const [profileOption, setProfileOption] = useState(
+    role === "ispOwner" || permissions?.customerEdit
+      ? "profileEdit"
+      : "recharge"
+  );
 
   // user id state
   const [userId, setUserId] = useState("");
@@ -87,6 +91,7 @@ export default function CustomerDetails({ show, setShow, customerId }) {
     // get ispOwner all staffs
     getOwnerUsers(dispatch, ispOwnerId);
 
+    //get customer paid connection fee
     getConnectionFee(customerId, setPaidConnectionFee);
   }, [customerId]);
 

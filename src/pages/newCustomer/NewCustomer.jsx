@@ -21,6 +21,10 @@ import useISPowner from "../../hooks/useISPOwner";
 import { getResellerNewCustomer } from "../../features/resellerCustomerAdminApi";
 import ResellerPPPoECustomerDetails from "../../reseller/Customer/customerCRUD/CustomerDetails";
 import ResellerStaticCustomerDetails from "../../reseller/staticCustomer/staticCustomerCrud/CustomerDetails";
+import {
+  getCustomerDayLeft,
+  getCustomerPromiseDate,
+} from "../Customer/customerCRUD/customerBillDayPromiseDate";
 
 const NewCustomer = ({
   isNewLoading,
@@ -90,9 +94,10 @@ const NewCustomer = ({
   const resellerId = role === "collector" ? userData.reseller : userData.id;
 
   // customer user type
-  const userType = ispOwnerStaff
-    ? userData?.bpSettings?.customerType
-    : userData.customerType || [];
+  const userType =
+    role === "ispOwner" || (role === "collector" && !userData.reseller)
+      ? userData?.bpSettings?.customerType || []
+      : userData.customerType || [];
 
   // current start & end date
   var selectDate = new Date(filterDate.getFullYear(), filterDate.getMonth(), 1);
@@ -173,43 +178,6 @@ const NewCustomer = ({
       );
       return findPack;
     }
-  };
-
-  //find customer billing date before and after promise date
-  const getCustomerPromiseDate = (data) => {
-    const billDate = moment(data?.billingCycle).format("YYYY/MM/DD hh:mm A");
-
-    const promiseDate = moment(data?.promiseDate).format("YYYY/MM/DD hh:mm A");
-
-    var promiseDateChange;
-
-    if (billDate < promiseDate) {
-      promiseDateChange = "danger";
-    } else if (billDate > promiseDate) {
-      promiseDateChange = "warning";
-    }
-
-    return { billDate, promiseDate, promiseDateChange };
-  };
-
-  // customer day left filtering in current date
-  const getCustomerDayLeft = (billDate) => {
-    //current day
-    const currentDay = new Date(
-      new Date(moment(today).format("YYYY-MM-DD"))
-    ).getTime();
-
-    // // billing day
-    const billDay = new Date(
-      new Date(moment(billDate).format("YYYY-MM-DD"))
-    ).getTime();
-
-    const diffInMs = billDay - currentDay;
-
-    // // bill day left
-    const dayLeft = Math.round(diffInMs / (1000 * 60 * 60 * 24));
-
-    return dayLeft;
   };
 
   const sortingCustomer = useMemo(() => {
@@ -593,39 +561,47 @@ const NewCustomer = ({
 
       {/* customer details modal by user type  */}
 
-      {modalStatus === "pppoe" && ispOwnerStaff ? (
-        <PPPoECustomerDetails
-          show={show}
-          setShow={setShow}
-          customerId={customerId}
-        />
-      ) : (
-        <ResellerPPPoECustomerDetails
+      {modalStatus === "pppoe" &&
+        customerId &&
+        (ispOwnerStaff ? (
+          <PPPoECustomerDetails
+            show={show}
+            setShow={setShow}
+            customerId={customerId}
+          />
+        ) : (
+          <ResellerPPPoECustomerDetails
+            show={show}
+            setShow={setShow}
+            customerId={customerId}
+          />
+        ))}
+
+      {modalStatus === "hotspot" && customerId && ispOwnerStaff && (
+        <HotspotCustomerDetails
           show={show}
           setShow={setShow}
           customerId={customerId}
         />
       )}
 
-      {modalStatus === "hotspot" && ispOwnerStaff ? (
-        <HotspotCustomerDetails
-          show={show}
-          setShow={setShow}
-          customerId={customerId}
-        />
-      ) : ispOwnerStaff ? (
-        <StaticCustomerDetails
-          show={show}
-          setShow={setShow}
-          customerId={customerId}
-        />
-      ) : (
-        <ResellerStaticCustomerDetails
-          show={show}
-          setShow={setShow}
-          customerId={customerId}
-        />
-      )}
+      {(modalStatus === "simple-queue" ||
+        modalStatus === "firewall-queue" ||
+        modalStatus === "core-queue") &&
+        customerId &&
+        (ispOwnerStaff ? (
+          <StaticCustomerDetails
+            show={show}
+            setShow={setShow}
+            customerId={customerId}
+          />
+        ) : (
+          <ResellerStaticCustomerDetails
+            show={show}
+            setShow={setShow}
+            customerId={customerId}
+          />
+        ))}
     </>
   );
 };

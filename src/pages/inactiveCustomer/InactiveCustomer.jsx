@@ -19,6 +19,10 @@ import useISPowner from "../../hooks/useISPOwner";
 import { getResellerInactiveCustomer } from "../../features/resellerCustomerAdminApi";
 import ResellerPPPoECustomerDetails from "../../reseller/Customer/customerCRUD/CustomerDetails";
 import ResellerStaticCustomerDetails from "../../reseller/staticCustomer/staticCustomerCrud/CustomerDetails";
+import {
+  getCustomerDayLeft,
+  getCustomerPromiseDate,
+} from "../Customer/customerCRUD/customerBillDayPromiseDate";
 
 const InactiveCustomer = ({
   isInactiveLoading,
@@ -52,19 +56,19 @@ const InactiveCustomer = ({
     (state) => state.dashboardInformation.inactiveCustomer
   );
 
-  // get reseller new customers form redux store
+  // get reseller inactive customers form redux store
   const resellerCustomer = useSelector(
     (state) => state.resellerCustomer.inactiveCustomer
   );
-
-  // customer from role base
-  const allCustomers = ispOwnerStaff ? inactiveCustomer : resellerCustomer;
 
   // get all packages
   const allPackages = useSelector((state) => state.package.allPackages);
 
   // get hotspot package
   const hotsPackage = useSelector((state) => state.hotspot?.package);
+
+  // customer from role base
+  const allCustomers = ispOwnerStaff ? inactiveCustomer : resellerCustomer;
 
   // inactive customer state
   const [inactiveCustomers, setInActiveCustomers] = useState([]);
@@ -90,9 +94,10 @@ const InactiveCustomer = ({
   const resellerId = role === "collector" ? userData.reseller : userData.id;
 
   // customer user type
-  const userType = ispOwnerStaff
-    ? userData?.bpSettings?.customerType
-    : userData.customerType || [];
+  const userType =
+    role === "ispOwner" || (role === "collector" && !userData.reseller)
+      ? userData?.bpSettings?.customerType || []
+      : userData.customerType || [];
 
   // current start & end date
   var selectDate = new Date(filterDate.getFullYear(), filterDate.getMonth(), 1);
@@ -175,43 +180,6 @@ const InactiveCustomer = ({
     }
   };
 
-  //find customer billing date before and after promise date
-  const getCustomerPromiseDate = (data) => {
-    const billDate = moment(data?.billingCycle).format("YYYY/MM/DD hh:mm A");
-
-    const promiseDate = moment(data?.promiseDate).format("YYYY/MM/DD hh:mm A");
-
-    var promiseDateChange;
-
-    if (billDate < promiseDate) {
-      promiseDateChange = "danger";
-    } else if (billDate > promiseDate) {
-      promiseDateChange = "warning";
-    }
-
-    return { billDate, promiseDate, promiseDateChange };
-  };
-
-  // customer day left filtering in current date
-  const getCustomerDayLeft = (billDate) => {
-    //current day
-    const currentDay = new Date(
-      new Date(moment(today).format("YYYY-MM-DD"))
-    ).getTime();
-
-    // // billing day
-    const billDay = new Date(
-      new Date(moment(billDate).format("YYYY-MM-DD"))
-    ).getTime();
-
-    const diffInMs = billDay - currentDay;
-
-    // // bill day left
-    const dayLeft = Math.round(diffInMs / (1000 * 60 * 60 * 24));
-
-    return dayLeft;
-  };
-
   // inactive customer csv table header
   const customerForCsVTableInfoHeader = [
     { label: "customer_id", key: "customerId" },
@@ -272,7 +240,7 @@ const InactiveCustomer = ({
   };
 
   //inactive customer
-  const columns = React.useMemo(
+  const columns = useMemo(
     () => [
       {
         width: "6%",
@@ -550,41 +518,47 @@ const InactiveCustomer = ({
 
       {/* customer details modal by user type  */}
 
-      {/* customer details modal by user type  */}
+      {modalStatus === "pppoe" &&
+        customerId &&
+        (ispOwnerStaff ? (
+          <PPPoECustomerDetails
+            show={show}
+            setShow={setShow}
+            customerId={customerId}
+          />
+        ) : (
+          <ResellerPPPoECustomerDetails
+            show={show}
+            setShow={setShow}
+            customerId={customerId}
+          />
+        ))}
 
-      {modalStatus === "pppoe" && ispOwnerStaff ? (
-        <PPPoECustomerDetails
-          show={show}
-          setShow={setShow}
-          customerId={customerId}
-        />
-      ) : (
-        <ResellerPPPoECustomerDetails
-          show={show}
-          setShow={setShow}
-          customerId={customerId}
-        />
-      )}
-
-      {modalStatus === "hotspot" && ispOwnerStaff ? (
+      {modalStatus === "hotspot" && customerId && ispOwnerStaff && (
         <HotspotCustomerDetails
           show={show}
           setShow={setShow}
           customerId={customerId}
         />
-      ) : ispOwnerStaff ? (
-        <StaticCustomerDetails
-          show={show}
-          setShow={setShow}
-          customerId={customerId}
-        />
-      ) : (
-        <ResellerStaticCustomerDetails
-          show={show}
-          setShow={setShow}
-          customerId={customerId}
-        />
       )}
+
+      {(modalStatus === "simple-queue" ||
+        modalStatus === "firewall-queue" ||
+        modalStatus === "core-queue") &&
+        customerId &&
+        (ispOwnerStaff ? (
+          <StaticCustomerDetails
+            show={show}
+            setShow={setShow}
+            customerId={customerId}
+          />
+        ) : (
+          <ResellerStaticCustomerDetails
+            show={show}
+            setShow={setShow}
+            customerId={customerId}
+          />
+        ))}
     </>
   );
 };

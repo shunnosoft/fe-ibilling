@@ -12,6 +12,9 @@ import {
   PrinterFill,
 } from "react-bootstrap-icons";
 
+// custom hook import
+import useISPowner from "../../hooks/useISPOwner";
+
 // internal import
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import useDash from "../../assets/css/dash.module.css";
@@ -34,8 +37,8 @@ import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
 import { getHotspotPackage } from "../../features/hotspotApi";
 import { getSubAreasApi } from "../../features/actions/customerApiCall";
-import useISPowner from "../../hooks/useISPOwner";
 import {
+  getResellerDueCustomer,
   getResellerInactiveCustomer,
   getResellerNewCustomer,
 } from "../../features/resellerCustomerAdminApi";
@@ -113,7 +116,17 @@ const OtherCustomer = () => {
       }
     }
     if (otherTabs === "dueCustomer") {
-      getDueCustomer(dispatch, ispOwnerId, month, year, setIsDueLoading);
+      if (role === "reseller" || (role === "collector" && userData.reseller)) {
+        getResellerDueCustomer(
+          dispatch,
+          resellerId,
+          year,
+          month,
+          setIsInactiveLoading
+        );
+      } else {
+        getDueCustomer(dispatch, ispOwnerId, month, year, setIsDueLoading);
+      }
     }
   };
 
@@ -153,7 +166,7 @@ const OtherCustomer = () => {
     }
 
     Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
-  }, []);
+  }, [role]);
 
   return (
     <>

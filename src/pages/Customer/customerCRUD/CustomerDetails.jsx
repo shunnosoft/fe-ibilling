@@ -69,7 +69,11 @@ export default function CustomerDetails({ show, setShow, customerId }) {
   const [modalShow, setModalShow] = useState(false);
 
   // profile option state
-  const [profileOption, setProfileOption] = useState("profileEdit");
+  const [profileOption, setProfileOption] = useState(
+    role === "ispOwner" || permissions?.customerEdit
+      ? "profileEdit"
+      : "recharge"
+  );
 
   // user id state
   const [userId, setUserId] = useState("");
@@ -84,6 +88,7 @@ export default function CustomerDetails({ show, setShow, customerId }) {
     // get ispOwner all staffs
     getOwnerUsers(dispatch, ispOwnerId);
 
+    //get customer paid connection fee
     getConnectionFee(customerId, setPaidConnectionFee);
   }, [customerId]);
 
@@ -264,20 +269,24 @@ export default function CustomerDetails({ show, setShow, customerId }) {
                   <Card.Body>
                     <FontColor id="clintSetting">
                       {/* customer profile update */}
-                      <li
-                        className="profileSetting"
-                        onClick={() => setProfileOption("profileEdit")}
-                        id={
-                          profileOption === "profileEdit" ? "activeSetting" : ""
-                        }
-                      >
-                        <div className="profileOptions">
-                          <PencilSquare size={22} />
-                        </div>
-                        <span className="options_name">
-                          {t("updateProfile")}
-                        </span>
-                      </li>
+                      {(role === "ispOwner" || permissions?.customerEdit) && (
+                        <li
+                          className="profileSetting"
+                          onClick={() => setProfileOption("profileEdit")}
+                          id={
+                            profileOption === "profileEdit"
+                              ? "activeSetting"
+                              : ""
+                          }
+                        >
+                          <div className="profileOptions">
+                            <PencilSquare size={22} />
+                          </div>
+                          <span className="options_name">
+                            {t("updateProfile")}
+                          </span>
+                        </li>
+                      )}
 
                       {data?.monthlyFee > 0 && (
                         <>

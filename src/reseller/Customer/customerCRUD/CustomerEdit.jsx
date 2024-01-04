@@ -126,8 +126,10 @@ const CustomerEdit = ({ customerId, setProfileOption }) => {
 
   useEffect(() => {
     // get reseller pppoe package api call
-    if (mikrotikPackages.length === 0)
-      fetchpppoePackage(dispatch, data?.mikrotik);
+    const mikrotik = {
+      mikrotikId: data?.mikrotik,
+    };
+    if (mikrotikPackages.length === 0) fetchpppoePackage(dispatch, mikrotik);
 
     setAreaID(data?.subArea);
     setStatus(data?.status);

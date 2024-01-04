@@ -64,6 +64,14 @@ export default function RstaticCustomer() {
   const dispatch = useDispatch();
   const componentRef = useRef(); //reference of pdf export component
 
+  // current Date
+  let today = new Date();
+  let firstDate = new Date(today.getFullYear(), today.getMonth(), 1);
+  let lastDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+
+  firstDate.setHours(0, 0, 0, 0);
+  lastDate.setHours(23, 59, 59, 999);
+
   // get user & current user data form useISPOwner hook
   const {
     role,
@@ -492,6 +500,15 @@ export default function RstaticCustomer() {
                 : original.userType === "core-queue"
                 ? original.queue.srcAddress
                 : original.queue.target}
+
+              <span className="ms-1">
+                {firstDate <= new Date(original?.createdAt) &&
+                  lastDate >= new Date(original?.createdAt) && (
+                    <small className="new_badge badge bg-secondary">
+                      {"new"}
+                    </small>
+                  )}
+              </span>
             </p>
           </div>
         ),

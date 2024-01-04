@@ -33,6 +33,7 @@ import CustomerBillReport from "../../Customer/customerCRUD/CustomerBillReport";
 import CustomerMessage from "../../../pages/Customer/customerCRUD/CustomerMessage";
 import ProfileDelete from "../../../pages/Customer/ProfileDelete";
 import PasswordReset from "../../../components/modals/passwordReset/PasswordReset";
+import { getOwnerUsers } from "../../../features/getIspOwnerUsersApi";
 
 const CustomerDetails = ({ show, setShow, customerId }) => {
   const { t } = useTranslation();
@@ -41,6 +42,7 @@ const CustomerDetails = ({ show, setShow, customerId }) => {
   // get user & current user data form useISPOwner
   const {
     role,
+    ispOwnerId,
     bpSettings,
     resellerData,
     permission,
@@ -96,6 +98,9 @@ const CustomerDetails = ({ show, setShow, customerId }) => {
           setIsLoading
         );
     }
+
+    // get ispOwner & staffs
+    getOwnerUsers(dispatch, ispOwnerId);
 
     //get customer paid connection fee
     getConnectionFee(customerId, setPaidConnectionFee);

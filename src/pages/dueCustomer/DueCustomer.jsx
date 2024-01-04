@@ -16,6 +16,14 @@ import PPPoECustomerDetails from "../Customer/customerCRUD/CustomerDetails";
 import HotspotCustomerDetails from "../hotspot/customerOperation/CustomerDetails";
 import StaticCustomerDetails from "../staticCustomer/customerCRUD/CustomerDetails";
 import PrintOptions from "../../components/common/PrintOptions";
+import useISPowner from "../../hooks/useISPOwner";
+import { getResellerDueCustomer } from "../../features/resellerCustomerAdminApi";
+import ResellerPPPoECustomerDetails from "../../reseller/Customer/customerCRUD/CustomerDetails";
+import ResellerStaticCustomerDetails from "../../reseller/staticCustomer/staticCustomerCrud/CustomerDetails";
+import {
+  getCustomerDayLeft,
+  getCustomerPromiseDate,
+} from "../Customer/customerCRUD/customerBillDayPromiseDate";
 
 const DueCustomer = ({
   isDueLoading,
@@ -33,24 +41,31 @@ const DueCustomer = ({
   var currentMonth = new Date(date.getFullYear(), date.getMonth(), 1);
   var firstDate = new Date(date.getFullYear(), date.getMonth() - 1);
 
-  // get isp owner id
-  const ispOwner = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerId
-  );
+  // get user & current user data form useISPOwner
+  const { role, ispOwnerData, ispOwnerId, userData } = useISPowner();
 
-  // get isp owner data
-  const ispOwnerData = useSelector(
-    (state) => state.persistedReducer.auth.userData
-  );
+  // user staff role
+  const ispOwnerStaff =
+    role === "ispOwner" ||
+    role === "manager" ||
+    (role === "collector" && !userData.reseller);
 
   // get due customer
   let dueCustomer = useSelector((state) => state.customer.dueCustomer);
+
+  // get reseller due customers form redux store
+  const resellerCustomer = useSelector(
+    (state) => state.resellerCustomer.dueCustomer
+  );
 
   // get all packages
   const allPackages = useSelector((state) => state.package.allPackages);
 
   // get hotspot package
   const hotsPackage = useSelector((state) => state.hotspot?.package);
+
+  // customer from role base
+  const allCustomers = ispOwnerStaff ? dueCustomer : resellerCustomer;
 
   // prev month due customer state
   const [customers, setCustomers] = useState([]);
@@ -68,27 +83,47 @@ const DueCustomer = ({
   //filter state
   const [filterDate, setFilterDate] = useState(firstDate);
 
+  // reseller id from role base
+  const resellerId = role === "collector" ? userData.reseller : userData.id;
+
+  // customer user type
+  const userType =
+    role === "ispOwner" || (role === "collector" && !userData.reseller)
+      ? userData?.bpSettings?.customerType || []
+      : userData.customerType || [];
+
   // get customer api call
   useEffect(() => {
-    filterDate.getMonth() + 1 &&
-      getDueCustomer(
-        dispatch,
-        ispOwner,
-        filterDate.getMonth() + 1,
-        filterDate.getFullYear(),
-        setIsDueLoading
-      );
+    if (ispOwnerStaff) {
+      filterDate.getMonth() + 1 &&
+        getDueCustomer(
+          dispatch,
+          ispOwnerId,
+          filterDate.getMonth() + 1,
+          filterDate.getFullYear(),
+          setIsDueLoading
+        );
+    } else {
+      filterDate.getMonth() + 1 &&
+        getResellerDueCustomer(
+          dispatch,
+          resellerId,
+          filterDate.getFullYear(),
+          filterDate.getMonth() + 1,
+          setIsDueLoading
+        );
+    }
   }, [filterDate]);
 
   useEffect(() => {
-    setCustomers(dueCustomer);
-  }, [dueCustomer]);
+    setCustomers(allCustomers);
+  }, [allCustomers]);
 
   // filter function
   const dueCustomerFilterHandler = () => {
-    let arr = [...dueCustomer];
+    let arr = [...allCustomers];
     if (!customerType) {
-      arr = dueCustomer;
+      arr = arr;
     } else if (customerType && customerType === "pppoe") {
       arr = arr.filter((value) => value.userType === "pppoe");
     } else {
@@ -111,43 +146,6 @@ const DueCustomer = ({
       );
       return findPack;
     }
-  };
-
-  //find customer billing date before and after promise date
-  const getCustomerPromiseDate = (data) => {
-    const billDate = moment(data?.billingCycle).format("YYYY/MM/DD hh:mm A");
-
-    const promiseDate = moment(data?.promiseDate).format("YYYY/MM/DD hh:mm A");
-
-    var promiseDateChange;
-
-    if (billDate < promiseDate) {
-      promiseDateChange = "danger";
-    } else if (billDate > promiseDate) {
-      promiseDateChange = "warning";
-    }
-
-    return { billDate, promiseDate, promiseDateChange };
-  };
-
-  // customer day left filtering in current date
-  const getCustomerDayLeft = (billDate) => {
-    //current day
-    const currentDay = new Date(
-      new Date(moment(date).format("YYYY-MM-DD"))
-    ).getTime();
-
-    // // billing day
-    const billDay = new Date(
-      new Date(moment(billDate).format("YYYY-MM-DD"))
-    ).getTime();
-
-    const diffInMs = billDay - currentDay;
-
-    // // bill day left
-    const dayLeft = Math.round(diffInMs / (1000 * 60 * 60 * 24));
-
-    return dayLeft;
   };
 
   // inactive customer csv table header
@@ -393,21 +391,23 @@ const DueCustomer = ({
                     showMonthYearPicker
                     showFullMonthYearPicker
                     maxDate={firstDate}
-                    minDate={new Date(ispOwnerData?.createdAt)}
+                    minDate={new Date(userData?.createdAt)}
                   />
                 </div>
 
-                <select
-                  className="form-select mw-100 mt-0"
-                  onChange={(e) => setCustomerType(e.target.value)}
-                >
-                  <option selected value="">
-                    {t("userType")}
-                  </option>
-                  {ispOwnerData?.bpSettings?.customerType.map((cType) => (
-                    <option value={cType}>{t(`${cType}`)}</option>
-                  ))}
-                </select>
+                {userType.length > 0 && (
+                  <select
+                    className="form-select mw-100 mt-0"
+                    onChange={(e) => setCustomerType(e.target.value)}
+                  >
+                    <option selected value="">
+                      {t("userType")}
+                    </option>
+                    {userType.map((cType) => (
+                      <option value={cType}>{t(`${cType}`)}</option>
+                    ))}
+                  </select>
+                )}
 
                 <div className="gridButton">
                   <button
@@ -457,25 +457,47 @@ const DueCustomer = ({
 
       {/* customer details modal by user type  */}
 
-      {modalStatus === "pppoe" ? (
-        <PPPoECustomerDetails
-          show={show}
-          setShow={setShow}
-          customerId={customerId}
-        />
-      ) : modalStatus === "hotspot" ? (
+      {modalStatus === "pppoe" &&
+        customerId &&
+        (ispOwnerStaff ? (
+          <PPPoECustomerDetails
+            show={show}
+            setShow={setShow}
+            customerId={customerId}
+          />
+        ) : (
+          <ResellerPPPoECustomerDetails
+            show={show}
+            setShow={setShow}
+            customerId={customerId}
+          />
+        ))}
+
+      {modalStatus === "hotspot" && customerId && ispOwnerStaff && (
         <HotspotCustomerDetails
           show={show}
           setShow={setShow}
           customerId={customerId}
         />
-      ) : (
-        <StaticCustomerDetails
-          show={show}
-          setShow={setShow}
-          customerId={customerId}
-        />
       )}
+
+      {(modalStatus === "simple-queue" ||
+        modalStatus === "firewall-queue" ||
+        modalStatus === "core-queue") &&
+        customerId &&
+        (ispOwnerStaff ? (
+          <StaticCustomerDetails
+            show={show}
+            setShow={setShow}
+            customerId={customerId}
+          />
+        ) : (
+          <ResellerStaticCustomerDetails
+            show={show}
+            setShow={setShow}
+            customerId={customerId}
+          />
+        ))}
     </>
   );
 };

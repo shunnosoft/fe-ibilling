@@ -7,6 +7,7 @@ import {
   editResellerCustomerSuccess,
   getAllResellerCustomerSuccess,
   getDashboardActiveCustomer,
+  getDueCustomerSuccess,
   getInactiveCustomerSuccess,
   getNewCustomerSuccess,
   getResellerCustomerBillReportSuccess,
@@ -229,6 +230,26 @@ export const getResellerInactiveCustomer = async (
       `reseller/inactive/customer/${resellerId}?year=${year}&month=${month}`
     );
     dispatch(getInactiveCustomerSuccess(res.data));
+  } catch (error) {
+    toast.error(error.response?.data.message);
+  }
+  setIsLoading(false);
+};
+
+// get reseller inactive customer
+export const getResellerDueCustomer = async (
+  dispatch,
+  resellerId,
+  year,
+  month,
+  setIsLoading
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.get(
+      `reseller/due/customer/${resellerId}?year=${year}&month=${month}`
+    );
+    dispatch(getDueCustomerSuccess(res.data));
   } catch (error) {
     toast.error(error.response?.data.message);
   }
