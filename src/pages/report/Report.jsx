@@ -728,8 +728,12 @@ export default function Report() {
                               dateFormat="MMM-yyyy"
                               showMonthYearPicker
                               showFullMonthYearPicker
+                              minDate={
+                                new Date(
+                                  new Date(userData?.user?.createdAt).getTime()
+                                )
+                              }
                               maxDate={new Date()}
-                              minDate={new Date(userData.user?.createdAt)}
                             />
                           </div>
 

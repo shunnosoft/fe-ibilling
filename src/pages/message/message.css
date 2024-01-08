@@ -196,6 +196,10 @@
   width: 17px;
   height: 17px;
 }
+.message_radio > label {
+  color: rgb(131, 131, 131);
+  cursor: pointer;
+}
 
 .day_checkbox {
   gap: 5px;

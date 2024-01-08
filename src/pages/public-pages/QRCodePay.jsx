@@ -7,6 +7,7 @@ import PaymentModal from "../../ownerCustomer/paymentModal";
 
 const QRCodePay = () => {
   const [ispInfo, setIspInfo] = useState(null);
+  console.log(ispInfo);
   const [customerInfo, setCustomerInfo] = useState(null);
   const [input, setInput] = useState("");
 
@@ -43,8 +44,12 @@ const QRCodePay = () => {
                         <td>{ispInfo.name}</td>
                       </tr>
                       <tr>
-                        <td>Mobile</td>
-                        <td>{ispInfo.mobile}</td>
+                        <td>Contact</td>
+                        <td>
+                          {ispInfo.signature
+                            ? ispInfo.signature
+                            : ispInfo.mobile}
+                        </td>
                       </tr>
                       <tr>
                         <td>Email</td>

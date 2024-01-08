@@ -37,6 +37,7 @@ import FormatNumber from "../../../components/common/NumberFormat";
 import { CSVLink } from "react-csv";
 import PrintReport from "../../report/ReportPDF";
 import ReactToPrint from "react-to-print";
+import ProgressBar from "react-bootstrap/ProgressBar";
 
 const ResellerCollection = () => {
   const { t } = useTranslation();
@@ -70,22 +71,21 @@ const ResellerCollection = () => {
     (state) => state?.reseller?.resellerCollection
   );
 
+  // get userdata
+  const userData = useSelector(
+    (state) => state.persistedReducer.auth.currentUser
+  );
+
   //loading state
   const [isLoading, setIsLoading] = useState(false);
   const [dataLoader, setDataLoader] = useState(false);
   const [packageLoading, setPackageLoading] = useState(false);
-
-  //reseller id state
-  const [resellerId, setResellerId] = useState("");
 
   // filter Accordion handle state
   const [activeKeys, setActiveKeys] = useState("");
 
   // reseller customer collection main data state
   const [currentData, setCurrentData] = useState([]);
-
-  //payment type state
-  const [paymentType, setPaymentType] = useState("");
 
   // report id state
   const [viewId, setViewId] = useState("");
@@ -99,10 +99,6 @@ const ResellerCollection = () => {
 
   // filter date state
   const [filterDate, setFilterDate] = useState(firstDay);
-
-  // curr & priv date state
-  const [startDate, setStartDate] = useState(firstDay);
-  const [endDate, setEndDate] = useState(new Date());
 
   //filter options state
   const [filterOption, setFilterOption] = useState({
@@ -296,7 +292,7 @@ const ResellerCollection = () => {
           return (
             <>
               <p>
-                {value.note && value.note.slice(0, 15)}{" "}
+                {value.note && value.note.slice(0, 15)}
                 <span>{value?.note && value?.note?.length > 15 && "..."}</span>
               </p>
               {value?.start && value?.end && (
@@ -306,7 +302,7 @@ const ResellerCollection = () => {
                 </span>
               )}
               <p>
-                {value?.month && value.month.slice(0, 15)}{" "}
+                {value?.month && value.month.slice(0, 15)}
                 <span>
                   {value?.month && value?.month?.length > 15 && "..."}
                 </span>
@@ -402,13 +398,17 @@ const ResellerCollection = () => {
     };
   });
 
-  const resellerName = reseller.find((item) => item.id === resellerId);
+  // find select reseller
+  const resellerName = reseller.find(
+    (item) => item.id === filterOption?.reseller
+  );
 
+  // print filter table data heading
   const filterData = {
     reseller: resellerName?.name ? resellerName.name : t("all"),
-    medium: paymentType ? paymentType : t("all"),
-    startDate: startDate,
-    endDate: endDate,
+    medium: filterOption ? filterOption?.medium : t("all"),
+    startDate: filterOption?.startDate,
+    endDate: filterOption?.endDate,
     totalBill: currentData.reduce((prev, current) => prev + current.amount, 0),
   };
 
@@ -425,10 +425,14 @@ const ResellerCollection = () => {
       previous.amount += current.amount;
 
       // sum of all reseller commission
-      previous.resellerCommission += current.resellerCommission;
+      previous.resellerCommission += current.resellerCommission
+        ? current.resellerCommission
+        : 0;
 
       // sum of all ispOwner commission
-      previous.ispOwnerCommission += current.ispOwnerCommission;
+      previous.ispOwnerCommission += current.ispOwnerCommission
+        ? current.ispOwnerCommission
+        : 0;
 
       return previous;
     }, initialValue);
@@ -442,18 +446,18 @@ const ResellerCollection = () => {
     >
       {totalSum()?.amount > 0 && (
         <div className="mx-3">
-          {t("totalBill")}{" "}
+          {t("totalBill")} :
           <span className="fw-bold">৳ {FormatNumber(totalSum().amount)}</span>
         </div>
       )}
       <div className="me-3">
-        {t("resellerCommission")}:{" "}
+        {t("resellerCommission")} :
         <span className="fw-bold">
           ৳ {FormatNumber(totalSum().resellerCommission)}
         </span>
       </div>
       <div>
-        {t("ispOwnerCommission")}:
+        {t("ispOwnerCommission")} :
         <span className="fw-bold">
           ৳ {FormatNumber(totalSum().ispOwnerCommission)}
         </span>
@@ -573,8 +577,12 @@ const ResellerCollection = () => {
                               dateFormat="MMM-yyyy"
                               showMonthYearPicker
                               showFullMonthYearPicker
+                              minDate={
+                                new Date(
+                                  new Date(userData?.user?.createdAt).getTime()
+                                )
+                              }
                               maxDate={new Date()}
-                              minDate={new Date(ispOwnerData?.createdAt)}
                             />
                           </div>
 

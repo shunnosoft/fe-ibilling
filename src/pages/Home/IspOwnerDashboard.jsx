@@ -692,6 +692,12 @@ export default function IspOwnerDashboard() {
                         {role === "ispOwner" && (
                           <>
                             <p className="pb-0" style={{ fontSize: "13px" }}>
+                              {t("newCustomer")}:&nbsp; ৳
+                              {FormatNumber(
+                                customerStat.newCustomerBillCollection
+                              )}
+                            </p>
+                            <p className="pb-0" style={{ fontSize: "13px" }}>
                               {t("withoutDiscount")}:&nbsp; ৳
                               {FormatNumber(customerStat.totalBillCollection)}
                             </p>
