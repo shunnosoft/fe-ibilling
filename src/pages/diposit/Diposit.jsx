@@ -42,7 +42,6 @@ export default function Diposit() {
 
   // get all deposit form redux
   const allDeposit = useSelector((state) => state?.payment?.allDeposit);
-  console.log(allDeposit);
 
   // get manager from redux
   const manager = useSelector((state) => state?.manager?.manager);
@@ -343,25 +342,52 @@ export default function Diposit() {
   );
 
   // total deposit calculation
-  let depositCalculation;
-  const getTotalDeposit = useCallback(() => {
-    depositCalculation = mainData.filter(
-      (item) => item.depositBy === "manager" && item.status === "accepted"
+  //function to calculate total Commissions and other amount
+  const getTotalOwnDeposit = useCallback(() => {
+    let collectionDeposit;
+    let previousDeposit;
+
+    // current month depostit filter
+    collectionDeposit = allDeposit.filter(
+      (item) => item.status === "accepted" && !item.month
     );
 
-    const sumWithInitial = depositCalculation.reduce(
+    // previous month deposit filter
+    previousDeposit = allDeposit.filter(
+      (item) => item.status === "accepted" && item.month
+    );
+
+    const initialValue = 0;
+
+    // current month colleciton deposti
+    const collectionDepositSum = collectionDeposit.reduce(
       (previousValue, currentValue) => previousValue + currentValue.amount,
-      0
+      initialValue
     );
-    return sumWithInitial.toString();
-  }, [mainData]);
 
-  // send sum deposit of table header
-  const depositReportSum = (
+    // previous balance deposti
+    const previousDepositSum = previousDeposit.reduce(
+      (previousValue, currentValue) => previousValue + currentValue.amount,
+      initialValue
+    );
+
+    return { collectionDepositSum, previousDepositSum };
+  }, [allDeposit]);
+
+  // send sum own deposits of table
+  const allDepositSum = (
     <div style={{ fontSize: "18px", display: "flex", alignItems: "center" }}>
-      {getTotalDeposit() > 0 && (
-        <div style={{ marginRight: "10px" }}>
-          {t("totalDiposit")}:-৳{getTotalDeposit()}
+      {getTotalOwnDeposit()?.collectionDepositSum > 0 && (
+        <div>
+          {t("collectionDeposit")}: ৳
+          {FormatNumber(getTotalOwnDeposit()?.collectionDepositSum)}
+        </div>
+      )}
+      &nbsp; &nbsp;
+      {getTotalOwnDeposit()?.previousDepositSum > 0 && (
+        <div>
+          {t("previousMonthDeposit")}: ৳
+          {FormatNumber(getTotalOwnDeposit()?.previousDepositSum)}
         </div>
       )}
     </div>
@@ -519,7 +545,7 @@ export default function Diposit() {
                           isLoading={isLoading}
                           columns={columns}
                           data={mainData}
-                          customComponent={depositReportSum}
+                          customComponent={allDepositSum}
                         ></Table>
                       </div>
                     </div>

@@ -54,7 +54,7 @@ export const resellerPermissions = (permission, bpSettings) => {
     },
     {
       id: 8,
-      label: "Auto Disabled",
+      label: "Customer Auto Disable Edit",
       value: "customerAutoDisableEdit",
       isChecked: permission?.customerAutoDisableEdit,
       disabled: false,
@@ -229,7 +229,7 @@ export const resellerPermissions = (permission, bpSettings) => {
     },
     {
       id: 8,
-      label: "অটো ডিসেবল",
+      label: "কাস্টমার অটো ডিসেবল এডিট",
       value: "customerAutoDisableEdit",
       isChecked: permission?.customerAutoDisableEdit,
       disabled: false,

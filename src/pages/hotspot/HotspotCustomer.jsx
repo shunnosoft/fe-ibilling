@@ -414,6 +414,14 @@ const HotspotCustomer = () => {
     return { totalMonthlyFee, totalCollection };
   }, [hotspotCustomers]);
 
+  // pppoe customer print option
+  const printData = {
+    id: 1003,
+    value: "hotspot",
+    label: "hotspot",
+    checked: true,
+  };
+
   //custom table header component
   const customComponent = (
     <div
@@ -1043,6 +1051,7 @@ const HotspotCustomer = () => {
           filterData={filterData}
           tableData={tableData}
           page={"customer"}
+          printData={printData}
         />
       )}
 

@@ -1,8 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import "../collector/collector.css";
 import moment from "moment";
-import useDash from "../../assets/css/dash.module.css";
-import Sidebar from "../../components/admin/sidebar/Sidebar";
 import {
   PersonPlusFill,
   ThreeDots,
@@ -30,7 +27,13 @@ import { useTranslation } from "react-i18next";
 import { CSVLink } from "react-csv";
 import { Accordion, Card, Collapse } from "react-bootstrap";
 
+// custom hooks import
+import useISPowner from "../../hooks/useISPOwner";
+
 // internal imports
+import "../collector/collector.css";
+import useDash from "../../assets/css/dash.module.css";
+import Sidebar from "../../components/admin/sidebar/Sidebar";
 import Footer from "../../components/admin/footer/Footer";
 import { FontColor, FourGround } from "../../assets/js/theme";
 import CustomerPost from "./customerCRUD/CustomerPost";
@@ -66,11 +69,10 @@ import {
 } from "../../pages/Customer/customerCRUD/customerBillDayPromiseDate";
 import PPPoECustomerEdit from "./actionComponent/PPPoECustomerEdit";
 import { getOwnerUsers } from "../../features/getIspOwnerUsersApi";
-import useISPowner from "../../hooks/useISPOwner";
 import RechargeCustomer from "./actionComponent/RechargeCustomer";
 import PrintOptions from "../../components/common/PrintOptions";
 
-export default function Customer() {
+const Customer = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
@@ -83,20 +85,8 @@ export default function Customer() {
   lastDate.setHours(23, 59, 59, 999);
 
   // get user & current user data form useISPOwner
-  const { role, ispOwnerId, permission, permissions, currentUser } =
+  const { role, ispOwnerData, ispOwnerId, userData, permission, permissions } =
     useISPowner();
-
-  // get ispOwner data from redux
-  const ispOwnerData = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerData
-  );
-
-  // get reseller & collector id
-  const resellerId = useSelector((state) =>
-    role === "reseller"
-      ? state.persistedReducer.auth?.userData?.id
-      : state.persistedReducer.auth?.userData?.reseller
-  );
 
   // customer get form redux
   const allCustomer = useSelector((state) => state?.customer?.customer);
@@ -114,6 +104,9 @@ export default function Customer() {
   const butPermission = useSelector(
     (state) => state.adminNetFeeSupport?.bulletinPermission
   );
+
+  // reseller id from role base
+  const resellerId = role === "collector" ? userData.reseller : userData.id;
 
   // loading state
   const [isLoading, setIsLoading] = useState(false);
@@ -164,8 +157,15 @@ export default function Customer() {
     package: "",
   });
 
-  // api calls
+  // get api calls
   useEffect(() => {
+    // get reseller customers from ispOwner
+    if (allCustomer.length === 0)
+      getCustomer(dispatch, resellerId, setIsLoading);
+
+    // get reseller mikrotiks from provider
+    getMikrotik(dispatch, resellerId);
+
     // withMikrotik & withOutMikrotik package get api
     if (ppPackage.length === 0) withMtkPackage(dispatch, resellerId);
 
@@ -173,17 +173,7 @@ export default function Customer() {
     getSubAreas(dispatch, resellerId);
 
     if (role === "collector") {
-      getMikrotik(dispatch, currentUser.collector.reseller);
       resellerInfo(resellerId, dispatch);
-    }
-
-    if (role === "reseller") {
-      getMikrotik(dispatch, resellerId);
-      if (allCustomer.length === 0)
-        getCustomer(dispatch, currentUser?.reseller.id, setIsLoading);
-    } else if (role === "collector") {
-      if (allCustomer.length === 0)
-        getCustomer(dispatch, currentUser?.collector?.reseller, setIsLoading);
     }
 
     // get ispOwner & staffs
@@ -191,7 +181,7 @@ export default function Customer() {
 
     // bulletin permission get api
     Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
-  }, [currentUser, role]);
+  }, [role]);
 
   // set state api call data
   useEffect(() => {
@@ -203,9 +193,9 @@ export default function Customer() {
   // reload handler
   const reloadHandler = () => {
     if (role === "reseller") {
-      getCustomer(dispatch, currentUser?.reseller.id, setIsLoading);
+      getCustomer(dispatch, userData?.id, setIsLoading);
     } else if (role === "collector") {
-      getCustomer(dispatch, currentUser?.collector?.reseller, setIsLoading);
+      getCustomer(dispatch, userData?.reseller, setIsLoading);
     }
   };
 
@@ -1358,4 +1348,6 @@ export default function Customer() {
       />
     </>
   );
-}
+};
+
+export default Customer;

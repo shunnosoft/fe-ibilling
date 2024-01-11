@@ -22,8 +22,10 @@ import {
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
-import ReactToPrint from "react-to-print";
 import { Accordion, Card, Collapse } from "react-bootstrap";
+
+// custom hooks import
+import useISPowner from "../../hooks/useISPOwner";
 
 // internal imports
 import Footer from "../../components/admin/footer/Footer";
@@ -34,6 +36,7 @@ import {
   getMikrotik,
   getStaticCustomerApi,
   getSubAreas,
+  withMtkPackage,
 } from "../../features/apiCallReseller";
 import { badge } from "../../components/common/Utils";
 import Table from "../../components/table/Table";
@@ -41,14 +44,10 @@ import AddStaticCustomer from "./staticCustomerCrud/StaticCustomerPost";
 import PrintCustomer from "./customerPDF";
 import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
 import FormatNumber from "../../components/common/NumberFormat";
-import {
-  fetchPackagefromDatabase,
-  getAllPackages,
-} from "../../features/apiCalls";
+import { fetchPackagefromDatabase } from "../../features/apiCalls";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
 import CustomerDelete from "../../pages/Customer/customerCRUD/CustomerDelete";
-import useISPowner from "../../hooks/useISPOwner";
 import {
   getCustomerDayLeft,
   getCustomerPromiseDate,
@@ -91,11 +90,7 @@ export default function RstaticCustomer() {
   const Getmikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
 
   // get mikrotik & with out mikrotik packages
-  const ppPackage = useSelector((state) =>
-    bpSettings?.hasMikrotik
-      ? state?.mikrotik?.packagefromDatabase
-      : state?.package?.packages
-  );
+  const ppPackage = useSelector((state) => state?.mikrotik?.pppoePackage);
 
   // get all packages
   const allPackages = useSelector((state) => state.package.allPackages);
@@ -107,6 +102,9 @@ export default function RstaticCustomer() {
   const butPermission = useSelector(
     (state) => state.adminNetFeeSupport?.bulletinPermission
   );
+
+  // reseller id from role base
+  const resellerId = role === "collector" ? userData.reseller : userData.id;
 
   // loading state
   const [isLoading, setIsloading] = useState(false);
@@ -139,38 +137,20 @@ export default function RstaticCustomer() {
   // filter Accordion handle state
   const [activeKeys, setActiveKeys] = useState("");
 
-  // api calls
+  // get api calls
   useEffect(() => {
-    if (role === "reseller") {
-      // get reseller mikrotik
-      getMikrotik(dispatch, userData?.id);
+    // get reseller areas static customer
+    if (cus.length === 0)
+      getStaticCustomerApi(dispatch, resellerId, setIsloading);
 
-      // get reseller areas
-      getSubAreas(dispatch, userData?.id);
+    // withMikrotik & withOutMikrotik package get api
+    if (ppPackage.length === 0) withMtkPackage(dispatch, resellerId);
 
-      // get reseller areas static customer
-      if (cus.length === 0)
-        getStaticCustomerApi(dispatch, currentUser.reseller?.id, setIsloading);
-    }
+    // get reseller mikrotik
+    getMikrotik(dispatch, resellerId);
 
-    if (role === "collector") {
-      // get reseller mikrotik
-      getMikrotik(dispatch, currentUser.collector?.reseller);
-
-      // get reseller areas
-      getSubAreas(dispatch, currentUser.collector?.reseller);
-
-      // get collector areas static customer
-      if (cus.length === 0)
-        getStaticCustomerApi(
-          dispatch,
-          currentUser.collector?.reseller,
-          setIsloading
-        );
-    }
-
-    // get ispOwner all packages api
-    getAllPackages(dispatch, ispOwnerId, setPackLoading);
+    // get reseller areas
+    getSubAreas(dispatch, resellerId);
 
     // get ispOwner & staffs api
     getOwnerUsers(dispatch, ispOwnerId);
@@ -383,7 +363,7 @@ export default function RstaticCustomer() {
 
   // customer current package find
   const customerPackageFind = (pack) => {
-    const findPack = allPackages.find((item) => item.id.includes(pack));
+    const findPack = ppPackage.find((item) => item.id.includes(pack));
     return findPack;
   };
 

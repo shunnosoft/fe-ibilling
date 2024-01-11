@@ -311,3 +311,16 @@
   font-weight: 700 bold;
   color: rgb(104, 104, 104);
 }
+
+.checkboxSelect {
+  display: flex;
+  align-items: center;
+}
+.checkboxSelect > input {
+  width: 22px;
+  height: 22px;
+}
+.checkboxSelect > label {
+  color: rgb(131, 131, 131);
+  cursor: pointer;
+}

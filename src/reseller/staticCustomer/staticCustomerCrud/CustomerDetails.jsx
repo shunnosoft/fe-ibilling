@@ -17,8 +17,10 @@ import {
 } from "react-bootstrap-icons";
 import moment from "moment";
 
-//internal import
+// custom hooks import
 import useISPowner from "../../../hooks/useISPOwner";
+
+//internal import
 import {
   getStaticCustomerApi,
   updateResellerStaticCustomer,
@@ -39,15 +41,15 @@ const CustomerDetails = ({ show, setShow, customerId }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
-  // get user & current user data form useISPOwner
+  // get user & current user data form useISPOwner hooks
   const {
     role,
     ispOwnerId,
     bpSettings,
+    userData,
     resellerData,
     permission,
     permissions,
-    currentUser,
   } = useISPowner();
 
   // get mikrotiks
@@ -65,6 +67,14 @@ const CustomerDetails = ({ show, setShow, customerId }) => {
   // get all packages
   const allPackages = useSelector((state) => state.package.allPackages);
 
+  // get customer connection fee due form redux store
+  const connectionFeeDue = useSelector(
+    (state) => state.customer.connectionFeeDue
+  );
+
+  // reseller id from role base
+  const resellerId = role === "collector" ? userData.reseller : userData.id;
+
   // find single static customer
   const data = customer.find((val) => val.id === customerId);
 
@@ -76,34 +86,33 @@ const CustomerDetails = ({ show, setShow, customerId }) => {
   const [modalShow, setModalShow] = useState(false);
 
   // profile option state
-  const [profileOption, setProfileOption] = useState("profileEdit");
-
-  // customer due connection fee state
-  const [paidConnectionFee, setPaidConnectionFee] = useState(0);
+  const [profileOption, setProfileOption] = useState(
+    permission?.customerEdit || permissions?.customerEdit
+      ? "profileEdit"
+      : data?.monthlyFee > 0 &&
+        ((role === "reseller" && permission?.customerRecharge) ||
+          (role === "collector" &&
+            resellerData.permission?.customerRecharge &&
+            permissions?.billPosting))
+      ? "recharge"
+      : data?.mobile && (role === "reseller" || permissions?.sendSMS)
+      ? "message"
+      : "passwordReset"
+  );
 
   // user id state
   const [userId, setUserId] = useState("");
 
   // get customer api call
   useEffect(() => {
-    if (role === "reseller") {
-      customer.length === 0 &&
-        getStaticCustomerApi(dispatch, currentUser.reseller?.id, setIsLoading);
-    }
-    if (role === "collector") {
-      customer.length === 0 &&
-        getStaticCustomerApi(
-          dispatch,
-          currentUser.collector?.reseller,
-          setIsLoading
-        );
-    }
+    customer.length === 0 &&
+      getStaticCustomerApi(dispatch, resellerId, setIsLoading);
 
     // get ispOwner & staffs
     getOwnerUsers(dispatch, ispOwnerId);
 
     //get customer paid connection fee
-    getConnectionFee(customerId, setPaidConnectionFee);
+    getConnectionFee(dispatch, customerId);
   }, [customerId]);
 
   //modal close handler
@@ -317,14 +326,14 @@ const CustomerDetails = ({ show, setShow, customerId }) => {
                         </li>
                       )}
 
-                      {data?.monthlyFee > 0 && (
-                        <>
-                          {/* customer bill colleciton */}
-                          {((role === "reseller" &&
-                            permission?.customerRecharge) ||
-                            (role === "collector" &&
-                              resellerData.permission?.customerRecharge &&
-                              permissions?.billPosting)) && (
+                      {data?.monthlyFee > 0 &&
+                        ((role === "reseller" &&
+                          permission?.customerRecharge) ||
+                          (role === "collector" &&
+                            resellerData.permission?.customerRecharge &&
+                            permissions?.billPosting)) && (
+                          <>
+                            {/* customer bill colleciton */}
                             <li
                               className="profileSetting"
                               onClick={() => setProfileOption("recharge")}
@@ -341,14 +350,8 @@ const CustomerDetails = ({ show, setShow, customerId }) => {
                                 {t("recharge")}
                               </span>
                             </li>
-                          )}
 
-                          {/* customer bill collection report */}
-                          {((role === "reseller" &&
-                            permission?.customerRecharge) ||
-                            (role === "collector" &&
-                              resellerData.permission?.customerRecharge &&
-                              permissions?.billPosting)) && (
+                            {/* customer bill collection report */}
                             <li
                               className="profileSetting"
                               onClick={() => setProfileOption("report")}
@@ -365,9 +368,8 @@ const CustomerDetails = ({ show, setShow, customerId }) => {
                                 {t("report")}
                               </span>
                             </li>
-                          )}
-                        </>
-                      )}
+                          </>
+                        )}
 
                       {/* customer single message  */}
                       {data?.mobile &&
@@ -542,8 +544,8 @@ const CustomerDetails = ({ show, setShow, customerId }) => {
                           <p>
                             ৳
                             {FormatNumber(
-                              data?.connectionFee - paidConnectionFee &&
-                                paidConnectionFee
+                              connectionFeeDue &&
+                                data?.connectionFee - connectionFeeDue
                             )}
                           </p>
                         </div>

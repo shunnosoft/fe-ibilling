@@ -5,7 +5,6 @@ import { useSelector, useDispatch } from "react-redux";
 import moment from "moment";
 
 // internal imports
-import { FtextField } from "../../../components/common/FtextField";
 import Loader from "../../../components/common/Loader";
 import { fetchPackagefromDatabase } from "../../../features/apiCalls";
 import { useTranslation } from "react-i18next";
@@ -405,6 +404,7 @@ const StaticCustomerEdit = ({ customerId, setProfileOption }) => {
             target: customer?.queue.target || "",
             customerId: customer?.customerId,
             customerBillingType: customer?.customerBillingType,
+            connectionFee: customer.connectionFee || 0,
           }}
           validationSchema={customerValidator}
           onSubmit={(values, { resetForm }) => {
@@ -427,7 +427,7 @@ const StaticCustomerEdit = ({ customerId, setProfileOption }) => {
                 {bpSettings?.hasMikrotik && userType === "firewall-queue" && (
                   <div className="displayGridManual6_4">
                     <label className="form-control-label manualLable">
-                      {t("selectPackage")}{" "}
+                      {t("selectPackage")}
                       <span className="text-danger">*</span>
                     </label>
 
@@ -483,13 +483,13 @@ const StaticCustomerEdit = ({ customerId, setProfileOption }) => {
                 {bpSettings?.hasMikrotik && userType === "simple-queue" && (
                   <div className="displayGridManual6_4">
                     <label className="form-control-label manualLable">
-                      {t("downloadPackge")}{" "}
+                      {t("downloadPackge")}
                       <span className="text-danger">*</span>
                     </label>
 
                     <select
                       name="downPackage"
-                      className="form-select mw-100 mt-0 mb-3"
+                      className="form-select mw-100 mt-0"
                       onChange={selectMikrotikPackage}
                     >
                       {ppPackage?.map(
@@ -512,7 +512,7 @@ const StaticCustomerEdit = ({ customerId, setProfileOption }) => {
                 {!bpSettings?.hasMikrotik && (
                   <div className="displayGridManual6_4">
                     <label className="form-control-label manualLable">
-                      {t("downloadPackge")}{" "}
+                      {t("downloadPackge")}
                       <span className="text-danger">*</span>
                     </label>
                     <select
@@ -755,6 +755,13 @@ const StaticCustomerEdit = ({ customerId, setProfileOption }) => {
                     placeholderText={t("selectDate")}
                   />
                 </div>
+
+                <TextField
+                  type="number"
+                  label={t("connectionFee")}
+                  name="connectionFee"
+                  disabled={role === "collector"}
+                />
 
                 <div className="displayGridManual6_4">
                   <label className="form-control-label manualLable">

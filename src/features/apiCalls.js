@@ -51,6 +51,7 @@ import {
   postFireWllFilterIpDrop,
   getSearchCustomer,
   getNewCustomerSuccess,
+  getCustomerConnectionFeeDue,
 } from "./customerSlice";
 import {
   mtkIsLoading,
@@ -1022,10 +1023,10 @@ export const getCustomer = async (dispatch, ispOwner, setIsloading) => {
 };
 
 //customer connection fee api
-export const getConnectionFee = async (customerId, setPaidConnectionFee) => {
+export const getConnectionFee = async (dispatch, customerId) => {
   try {
     const res = await apiLink.get(`/ispOwner/connection-fee/${customerId}`);
-    setPaidConnectionFee(res.data.amount);
+    dispatch(getCustomerConnectionFeeDue(res.data.amount));
   } catch (error) {
     console.log(error.message);
   }
@@ -2323,13 +2324,13 @@ export const createCustomerInvoice = async (
   setLoading(false);
 };
 
-export const addDeposit = async (dispatch, data, setLoading) => {
+export const addDeposit = async (dispatch, data, setLoading, setShow) => {
   setLoading(true);
   try {
     const res = await apiLink.post(`/deposit`, data);
     dispatch(addDepositSucces(res.data));
-    setLoading(false);
     langMessage("success", "একসেপ্ট এর জন্য অপেক্ষা করেন", "Wait for Accept");
+    setShow(false);
   } catch (error) {
     setLoading(false);
     toast.error(error.response?.data.message);

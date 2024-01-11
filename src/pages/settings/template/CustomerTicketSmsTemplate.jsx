@@ -11,7 +11,7 @@ import Loader from "../../../components/common/Loader";
 import apiLink from "../../../api/apiLink";
 import { smsCount } from "../../../components/common/UtilityMethods";
 
-const CustomerTicketSmsTemplate = ({ otherTabs }) => {
+const CustomerTicketSmsTemplate = () => {
   const { t } = useTranslation();
   const textRef = useRef();
 
@@ -23,96 +23,94 @@ const CustomerTicketSmsTemplate = ({ otherTabs }) => {
     (state) => state.persistedReducer.auth.userData?.settings
   );
 
-  // get message from redux
-  let customerTicketMsg = settings.sms?.template?.customerTicket;
-
   // loading state
   const [loading, setLoading] = useState(false);
 
-  // SMS state
-  const [customerTicketStatus, setCustomerTicketStatus] = useState(false);
+  // customer ticket message sending status
+  const [ticketConfirmation, setTicketConfirmation] = useState(true);
 
-  // message type status
-  const [sendingType, setSendingType] = useState("");
+  // customer support ticket message sending type
+  const [sendingType, setSendingType] = useState("nonMasking");
 
+  // customer match data state
   const [matchFound, setMatchFound] = useState([]);
 
-  const [billconfarmationparametres, setbillconparametres] = useState([]);
-  console.log(billconfarmationparametres);
-
+  // message title
   const [fontText, setFontText] = useState("");
 
+  // select customer information
   const [upperText, setUpperText] = useState("");
 
+  // customer text message
   const [bottomText, setBottomText] = useState("");
 
   // set customer text message
   const [totalText, setTotalText] = useState("");
 
-  // message state
-  const [ticketSub, setTicketSub] = useState("");
-
   // set customer support ticket
   useEffect(() => {
-    setCustomerTicketStatus(settings.sms.customerTicket);
-    setSendingType(settings?.sms?.customerTicketSendBy);
-    setTicketSub(customerTicketMsg ? customerTicketMsg : "");
-  }, [settings]);
+    const fixedvalues = [
+      "USER: USERNAME",
+      "ID: CUSTOMER_ID",
+      "NAME: CUSTOMER_NAME",
+      "TICKET ID: TICKET_ID",
+      "SUB: TICKET_SUBJECT",
+    ];
+    var found = [];
 
-  // useEffect(() => {
-  //   const fixedvalues = [
-  //     "USER: USERNAME",
-  //     "ID: CUSTOMER_ID",
-  //     "NAME: CUSTOMER_NAME",
-  //   ];
-  //   var found = [];
+    let messageBoxStr = settings?.sms?.template?.customerTicket
+      ?.replace("USER: USERNAME", "")
+      .replace("ID: CUSTOMER_ID", "")
+      .replace("NAME: CUSTOMER_NAME", "")
+      .replace("TICKET ID: TICKET_ID", "")
+      .replace("SUB: TICKET_SUBJECT", "");
 
-  //   let messageBoxStr = settings?.sms?.template?.customerInactive
-  //     ?.replace("USER: USERNAME", "")
-  //     .replace("ID: CUSTOMER_ID", "")
-  //     .replace("NAME: CUSTOMER_NAME", "");
+    let temp = messageBoxStr !== "undefined" ? messageBoxStr?.split("\n") : "";
 
-  //   let temp = messageBoxStr !== "undefined" ? messageBoxStr?.split("\n") : "";
+    if (temp?.length > 0) {
+      setFontText(temp[0] || "");
 
-  //   if (temp?.length > 0) {
-  //     setFontText(temp[0] || "");
-
-  //     let temptxt = "";
-  //     temp?.map((value, index) => {
-  //       if (index > 1 && value !== "") {
-  //         temptxt += value + "\n";
-  //       }
-  //     });
-  //     setBottomText(temptxt);
-  //   }
-  //   fixedvalues.map((i) => {
-  //     if (settings?.sms?.template?.customerInactive?.includes(i)) {
-  //       found.push(i);
-  //     }
-  //     return found;
-  //   });
-  //   setMatchFound(found);
-  //   // setbillconparametres(found);
-
-  //   if (settings?.sms?.customerInactive) {
-  //     setBillConfirmation("on");
-  //   } else {
-  //     setBillConfirmation("off");
-  //   }
-
-  //   setSendingType(settings?.sms?.customerInactiveSendBy);
-  // }, [settings]);
-
-  const itemSettingHandler = (item) => {
-    if (billconfarmationparametres.includes(item)) {
-      const index = billconfarmationparametres.indexOf(item);
-      if (index > -1) {
-        billconfarmationparametres.splice(index, 1);
-      }
-    } else {
-      billconfarmationparametres.push(item);
+      let temptxt = "";
+      temp?.map((value, index) => {
+        if (index > 1 && value !== "") {
+          temptxt += value + "\n";
+        }
+      });
+      setBottomText(temptxt);
     }
 
+    fixedvalues.map((i) => {
+      if (settings?.sms?.template?.customerTicket?.includes(i)) {
+        found.push(i);
+      }
+      return found;
+    });
+    setMatchFound(found);
+
+    // set message sending confirmation
+    if (settings?.sms?.customerTicket) {
+      setTicketConfirmation(true);
+    } else {
+      setTicketConfirmation(false);
+    }
+
+    // set message sending type
+    setSendingType(settings?.sms?.customerTicketSendBy);
+  }, [settings]);
+
+  // set customer information match data
+  useEffect(() => {
+    var theText = "";
+    matchFound.map((i) => {
+      return (theText = theText + "\n" + i);
+    });
+
+    setUpperText(theText);
+    setTotalText(upperText + bottomText);
+  }, [matchFound, bottomText, upperText]);
+
+  // customer message submit handler
+  const itemSettingHandler = (item) => {
     if (matchFound.includes(item)) {
       const index = matchFound.indexOf(item);
       if (index > -1) {
@@ -125,62 +123,50 @@ const CustomerTicketSmsTemplate = ({ otherTabs }) => {
       }
       matchFound.push(item);
     }
-
     setMatchFound(matchFound);
 
     var theText = "";
     matchFound.map((i) => {
       return (theText = theText + "\n" + i);
     });
-
     setUpperText(theText);
-
-    setbillconparametres(billconfarmationparametres);
   };
 
   // handle submit method
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     let data = {
       ...settings.sms,
       customerTicketSendBy: sendingType,
-      customerTicket: customerTicketStatus,
-
+      customerTicket: ticketConfirmation,
       template: {
         ...settings.sms.template,
-        customerTicket:
-          fontText + upperText + "\n" + ticketSub + "\n" + bottomText,
+        customerTicket: fontText + upperText + "\n" + bottomText,
       },
-      // template: {
-      //   ...settings.sms.template,
-      //   customerTicket: ticketSub,
-      // },
     };
 
-    console.log(data);
-
-    // setLoading(true);
-
     // api call
-    // if (role === "ispOwner") {
-    //   try {
-    //     await apiLink.patch(`/ispOwner/settings/sms/${ispOwnerId}`, data);
-    //     setLoading(false);
-    //     toast.success(t("customerTicketToast"));
-    //   } catch (error) {
-    //     setLoading(false);
-    //   }
-    // }
+    setLoading(true);
+    if (role === "ispOwner") {
+      try {
+        await apiLink.patch(`/ispOwner/settings/sms/${ispOwnerId}`, data);
+        setLoading(false);
+        toast.success(t("customerTicketToast"));
+      } catch (error) {
+        setLoading(false);
+      }
+    }
 
-    // if (role === "reseller") {
-    //   try {
-    //     await apiLink.patch(`/reseller/settings/sms/${userData.id}`, data);
-    //     setLoading(false);
-    //     toast.success(t("customerTicketToast"));
-    //   } catch (error) {
-    //     setLoading(false);
-    //   }
-    // }
+    if (role === "reseller") {
+      try {
+        await apiLink.patch(`/reseller/settings/sms/${userData.id}`, data);
+        setLoading(false);
+        toast.success(t("customerTicketToast"));
+      } catch (error) {
+        setLoading(false);
+      }
+    }
   };
 
   return (
@@ -194,22 +180,22 @@ const CustomerTicketSmsTemplate = ({ otherTabs }) => {
                 <input
                   type="radio"
                   name="customerTicket"
-                  id="onTemplate"
-                  checked={customerTicketStatus}
-                  onChange={() => setCustomerTicketStatus(true)}
+                  id="templateON"
+                  checked={ticketConfirmation}
+                  onChange={() => setTicketConfirmation(true)}
                 />
-                <label htmlFor="onTemplate">{t("ON")}</label>
+                <label htmlFor="templateON">{t("ON")}</label>
               </div>
 
               <div className="message_radio">
                 <input
                   type="radio"
                   name="customerTicket"
-                  id="offTemplate"
-                  checked={!customerTicketStatus}
-                  onChange={() => setCustomerTicketStatus(false)}
+                  id="templateOFF"
+                  checked={!ticketConfirmation}
+                  onChange={() => setTicketConfirmation(false)}
                 />
-                <label htmlFor="offTemplate">{t("OFF")}</label>
+                <label htmlFor="templateOFF">{t("OFF")}</label>
               </div>
             </div>
 
@@ -272,14 +258,13 @@ const CustomerTicketSmsTemplate = ({ otherTabs }) => {
             {matchFound.map((item, key) => {
               return <p key={key}>{item}</p>;
             })}
-            <p className="endingtext">{ticketSub}</p>
             <p className="endingtext">{bottomText}</p>
           </div>
 
-          <div className="displayFlexx">
-            <div className="radioselect">
+          <div className="displayGrid mt-3">
+            <div className="checkboxSelect">
               <input
-                id="userName"
+                id="user_Name"
                 type="checkbox"
                 className="getValueUsingClass"
                 value={"USER: USERNAME"}
@@ -288,14 +273,14 @@ const CustomerTicketSmsTemplate = ({ otherTabs }) => {
                   itemSettingHandler(e.target.value);
                 }}
               />
-              <label className="templatelabel" htmlFor="userName">
+              <label className="templatelabel" htmlFor="user_Name">
                 {"USER: USERNAME"}
               </label>
             </div>
 
-            <div className="radioselect">
+            <div className="checkboxSelect">
               <input
-                id="customerId"
+                id="customer_Id"
                 type="checkbox"
                 className="getValueUsingClass"
                 checked={matchFound.includes("ID: CUSTOMER_ID")}
@@ -304,14 +289,14 @@ const CustomerTicketSmsTemplate = ({ otherTabs }) => {
                   itemSettingHandler(e.target.value);
                 }}
               />
-              <label className="templatelabel" htmlFor="customerId">
+              <label className="templatelabel" htmlFor="customer_Id">
                 {"ID: CUSTOMER_ID"}
               </label>
             </div>
 
-            <div className="radioselect">
+            <div className="checkboxSelect">
               <input
-                id="customer"
+                id="customer_Name"
                 type="checkbox"
                 className="getValueUsingClass"
                 checked={matchFound.includes("NAME: CUSTOMER_NAME")}
@@ -320,25 +305,39 @@ const CustomerTicketSmsTemplate = ({ otherTabs }) => {
                   itemSettingHandler(e.target.value);
                 }}
               />
-              <label className="templatelabel" htmlFor="customer">
+              <label className="templatelabel" htmlFor="customer_Name">
                 {"NAME: CUSTOMER_NAME"}
               </label>
             </div>
 
-            <div className="radioselect">
+            <div className="checkboxSelect">
               <input
-                id="2"
+                id="ticket_Id"
+                type="checkbox"
+                className="getValueUsingClass"
+                value={"TICKET ID: TICKET_ID"}
+                checked={matchFound.includes("TICKET ID: TICKET_ID")}
+                onChange={(e) => {
+                  itemSettingHandler(e.target.value);
+                }}
+              />
+              <label className="templatelabel" htmlFor="ticket_Id">
+                {"TICKET ID: TICKET_ID"}
+              </label>
+            </div>
+
+            <div className="checkboxSelect">
+              <input
+                id="ticket_Sub"
                 type="checkbox"
                 className="getValueUsingClass"
                 value={"SUB: TICKET_SUBJECT"}
-                checked={ticketSub}
+                checked={matchFound.includes("SUB: TICKET_SUBJECT")}
                 onChange={(e) => {
-                  e.target.checked
-                    ? setTicketSub(e.target.value)
-                    : setTicketSub("");
+                  itemSettingHandler(e.target.value);
                 }}
               />
-              <label className="templatelabel" htmlFor="2">
+              <label className="templatelabel" htmlFor="ticket_Sub">
                 {"SUB: TICKET_SUBJECT"}
               </label>
             </div>
@@ -349,11 +348,9 @@ const CustomerTicketSmsTemplate = ({ otherTabs }) => {
       <div className="smsCount">
         <span className="smsLength">
           {t("letter")}
-          {(fontText + matchFound + ticketSub + bottomText).length}
+          {(fontText + matchFound + bottomText).length}
         </span>
-        <span>
-          SMS: {smsCount(fontText + matchFound + ticketSub + bottomText)}
-        </span>
+        <span>SMS: {smsCount(fontText + matchFound + bottomText)}</span>
       </div>
 
       <textarea
@@ -363,7 +360,7 @@ const CustomerTicketSmsTemplate = ({ otherTabs }) => {
         placeholder={t("messageLikhun")}
         ref={textRef}
         value={bottomText}
-        maxLength={335 - (upperText.length + ticketSub.length)}
+        maxLength={335 - upperText.length}
         onChange={(e) => setBottomText(e.target.value)}
       ></textarea>
 

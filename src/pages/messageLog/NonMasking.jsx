@@ -64,21 +64,15 @@ const NonMasking = ({
     setMainData(data);
   }, [data]);
 
-  // type filter
-  if (type !== "") {
-    const filterType = mainData.filter((item) => item.type === type);
-    setMainData(filterType);
-  }
-
-  // status filter
-  if (status !== "") {
-    const filterStatus = mainData.filter((item) => item.status === status);
-    setMainData(filterStatus);
-  }
-
   // filter function
   const onClickFilter = () => {
     let filterData = [...data];
+
+    // message type filter
+    filterData = filterData.filter((item) => item.type === type);
+
+    // message status filter
+    filterData = filterData.filter((item) => item.status === status);
 
     // date filter
     filterData = filterData.filter(
@@ -178,6 +172,7 @@ const NonMasking = ({
 
                   <option value="bill">{t("bill")}</option>
                   <option value="bulk">{t("bulk")}</option>
+                  <option value="auth">Auth</option>
                   <option value="other">{t("other")}</option>
                 </select>
               </div>

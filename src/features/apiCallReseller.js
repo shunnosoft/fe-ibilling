@@ -285,6 +285,7 @@ export const addResellerStaticCustomer = async (
   dispatch,
   data,
   setIsloading,
+  resetForm,
   setShow
 ) => {
   setIsloading(true);
@@ -297,6 +298,8 @@ export const addResellerStaticCustomer = async (
       "কাস্টমার এড সফল হয়েছে",
       "Customer Added Successfully"
     );
+
+    resetForm();
   } catch (error) {
     toast.error(error.response?.data?.message);
   }

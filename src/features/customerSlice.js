@@ -10,6 +10,7 @@ const customerSliec = createSlice({
     staticActiveCustomer: [],
     searchCustomer: [],
     fireWallFilterDrop: [],
+    connectionFeeDue: {},
   },
   reducers: {
     getCustomerSuccess: (state, action) => {
@@ -150,6 +151,11 @@ const customerSliec = createSlice({
       }
     },
 
+    // customer connection fee reducer
+    getCustomerConnectionFeeDue: (state, action) => {
+      state.connectionFeeDue = action.payload;
+    },
+
     // search mobile number update or delete customer
     getSearchCustomer: (state, action) => {
       state.searchCustomer = action.payload;
@@ -189,6 +195,7 @@ export const {
   getStaticCustomerSuccess,
   addStaticCustomerSuccess,
   editStaticCustomerSuccess,
+  getCustomerConnectionFeeDue,
   deleteStaticCustomerSuccess,
   getStaticCustomerActiveSuccess,
   bulkDelete,

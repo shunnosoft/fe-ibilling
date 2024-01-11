@@ -907,5 +907,8 @@
   "permissions": "Permissions",
   "dueAmount": "Due Amount",
   "birthDate": "Birth Date",
-  "smsBonus": "Call support team for active your bonus"
+  "smsBonus": "Call support team for active your bonus",
+  "collectionDeposit": "Collection Deposit",
+  "previousMonthDeposit": "Previous Month's Deposit",
+  "youDoNotHaveEnoughCollectionBalance": "You don't have enough Bill Collection balance!"
 }

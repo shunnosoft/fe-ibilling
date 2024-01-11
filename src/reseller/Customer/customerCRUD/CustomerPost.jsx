@@ -3,6 +3,9 @@ import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
 
+// custom hooks import
+import useISPowner from "../../../hooks/useISPOwner";
+
 // internal imports
 import "../../collector/collector.css";
 import "../customer.css";
@@ -10,13 +13,11 @@ import { FtextField } from "../../../components/common/FtextField";
 import Loader from "../../../components/common/Loader";
 import {
   addCustomer,
-  fetchpppoePackage,
   getResellerPackageRate,
 } from "../../../features/apiCallReseller";
 import { useTranslation } from "react-i18next";
 import DatePicker from "react-datepicker";
 import getName from "../../../utils/getLocationName";
-import useISPowner from "../../../hooks/useISPOwner";
 
 //divisional location
 import divisionsJSON from "../../../bdAddress/bd-divisions.json";
@@ -35,57 +36,32 @@ const divisions = divisionsJSON.divisions;
 const districts = districtsJSON.districts;
 const thana = thanaJSON.thana;
 
-export default function CustomerModal({ show, setShow }) {
+const CustomerModal = ({ show, setShow }) => {
   const { t } = useTranslation();
-  const { hasMikrotik } = useISPowner();
   // import dispatch
   const dispatch = useDispatch();
 
-  // get user role from redux
-  const userRole = useSelector((state) => state.persistedReducer.auth?.role);
-
-  const permission = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.permission
-  );
-
-  const collectorResellerInfo = useSelector(
-    (state) => state.resellerProfile.reseller
-  );
-
-  // get user data from redux
-  const userData = useSelector(
-    (state) => state.persistedReducer.auth?.userData
-  );
-
-  const resellerId = useSelector((state) =>
-    userRole === "reseller"
-      ? state.persistedReducer.auth?.userData?.id
-      : state.persistedReducer.auth?.userData?.reseller
-  );
-
-  // const area = useSelector(
-  //   (state) => state.persistedReducer.auth?.userData.areas
-  // );
+  // get user & current user data form useISPOwner hooks
+  const { role, hasMikrotik, resellerData, userData, permission } =
+    useISPowner();
 
   // get are from redux
   const area = useSelector((state) => state?.area?.area);
-
-  // get reseller from redux
-  const reseller = useSelector(
-    (state) => state.persistedReducer.auth?.userData
-  );
-
-  // package commission rate
-  const [packageCommission, setPackageCommission] = useState();
-
-  //sub area id state
-  const [subAreaId, setsubAreaId] = useState("");
 
   // get mikrotik from redux
   const Getmikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
 
   // get mikrotik package from redux
   const ppPackage = useSelector((state) => state?.mikrotik?.pppoePackage);
+
+  // reseller id from role base
+  const resellerId = role === "collector" ? userData.reseller : userData.id;
+
+  // package commission rate
+  const [packageCommission, setPackageCommission] = useState();
+
+  //sub area id state
+  const [subAreaId, setsubAreaId] = useState("");
 
   // package rate sate
   const [packageRate, setPackageRate] = useState("");
@@ -113,6 +89,19 @@ export default function CustomerModal({ show, setShow }) {
     district: "",
     thana: "",
   });
+
+  // get api calls
+  useEffect(() => {
+    mikrotikPackage &&
+      userData?.commissionType === "packageBased" &&
+      userData?.commissionStyle === "fixedRate" &&
+      getResellerPackageRate(resellerId, mikrotikPackage, setPackageCommission);
+  }, [mikrotikPackage]);
+
+  //modal show handler
+  const handleClose = () => {
+    setShow(false);
+  };
 
   // form validation validator
   const customerValidator = Yup.object({
@@ -142,7 +131,9 @@ export default function CustomerModal({ show, setShow }) {
   const selectMikrotik = (e) => {
     const id = e.target.value;
     if (id) {
-      const mikrotikPackage = ppPackage.filter((pack) => pack.mikrotik === id);
+      const mikrotikPackage = ppPackage.filter(
+        (pack) => pack.mikrotik === id && pack.packageType === "pppoe"
+      );
       setMikrotikPackages(mikrotikPackage);
     } else {
       setMikrotikPackages([]);
@@ -158,18 +149,6 @@ export default function CustomerModal({ show, setShow }) {
     setPackageRate(temp);
   };
 
-  useEffect(() => {
-    mikrotikPackage &&
-      reseller?.commissionType === "packageBased" &&
-      reseller?.commissionStyle === "fixedRate" &&
-      getResellerPackageRate(resellerId, mikrotikPackage, setPackageCommission);
-  }, [mikrotikPackage]);
-
-  //modal show handler
-  const handleClose = () => {
-    setShow(false);
-  };
-
   // sending data to backed
   const customerHandler = async (data, resetForm) => {
     if (!mikrotikPackage) {
@@ -183,9 +162,8 @@ export default function CustomerModal({ show, setShow }) {
     const { Pname, Ppassword, Pprofile, Pcomment, ...rest } = data;
 
     if (
-      (userRole === "reseller" && permission.addCustomerWithMobile) ||
-      (userRole === "collector" &&
-        collectorResellerInfo.permission?.addCustomerWithMobile)
+      (role === "reseller" && permission.addCustomerWithMobile) ||
+      (role === "collector" && resellerData.permission?.addCustomerWithMobile)
     ) {
       if (data.mobile === "") {
         setIsloading(false);
@@ -305,6 +283,7 @@ export default function CustomerModal({ show, setShow }) {
               Ppassword: "",
               Pcomment: "",
               customerBillingType: "prepaid",
+              connectionFee: "",
             }}
             validationSchema={customerValidator}
             onSubmit={(values, { resetForm }) => {
@@ -316,7 +295,7 @@ export default function CustomerModal({ show, setShow }) {
               <Form id="customerPost">
                 <div className="displayGrid3">
                   {/* ispOwner collector */}
-                  {userRole === "collector" && (
+                  {role === "collector" && (
                     <>
                       {hasMikrotik && (
                         <div>
@@ -360,7 +339,7 @@ export default function CustomerModal({ show, setShow }) {
                     </>
                   )}
 
-                  {userRole === "reseller" && Getmikrotik.length > 0 && (
+                  {role === "reseller" && Getmikrotik.length > 0 && (
                     <>
                       {hasMikrotik && (
                         <div>
@@ -376,7 +355,7 @@ export default function CustomerModal({ show, setShow }) {
                           >
                             <option value="">...</option>
                             {Getmikrotik?.map((val, key) =>
-                              reseller.mikrotiks.map(
+                              userData.mikrotiks.map(
                                 (item) =>
                                   val.id === item && (
                                     <option key={key} value={val.id}>
@@ -410,7 +389,7 @@ export default function CustomerModal({ show, setShow }) {
                     </>
                   )}
 
-                  {userRole === "reseller" && Getmikrotik.length === 0 && (
+                  {role === "reseller" && Getmikrotik.length === 0 && (
                     <div>
                       <label className="form-control-label changeLabelFontColor">
                         {t("selectPPPoEPackage")}
@@ -491,7 +470,7 @@ export default function CustomerModal({ show, setShow }) {
                     label={t("mobile")}
                     validation={
                       permission?.addCustomerWithMobile ||
-                      collectorResellerInfo.permission?.addCustomerWithMobile
+                      resellerData.permission?.addCustomerWithMobile
                     }
                     name="mobile"
                   />
@@ -519,7 +498,7 @@ export default function CustomerModal({ show, setShow }) {
                     </div>
                   ))}
 
-                  {userRole === "collector" ? (
+                  {role === "collector" ? (
                     <div className="billCycle">
                       <label className="form-control-label changeLabelFontColor">
                         {t("billingCycle")}
@@ -557,6 +536,12 @@ export default function CustomerModal({ show, setShow }) {
                     </div>
                   )}
 
+                  <FtextField
+                    type="number"
+                    label={t("connectionFee")}
+                    name="connectionFee"
+                  />
+
                   <SelectField
                     label={t("customerBillType")}
                     id="exampleSelect"
@@ -571,9 +556,8 @@ export default function CustomerModal({ show, setShow }) {
                   </SelectField>
 
                   {Getmikrotik.length > 0 &&
-                    (permission?.customerAutomaticConnectionOnOff ||
-                      collectorResellerInfo.permission
-                        ?.customerAutomaticConnectionOnOff) && (
+                    (permission?.customerAutoDisableEdit ||
+                      resellerData.permission?.customerAutoDisableEdit) && (
                       <div className="autoDisable">
                         <label> {t("automaticConnectionOff")} </label>
                         <input
@@ -609,4 +593,6 @@ export default function CustomerModal({ show, setShow }) {
       </Modal>
     </>
   );
-}
+};
+
+export default CustomerModal;

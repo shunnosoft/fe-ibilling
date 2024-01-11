@@ -22,20 +22,13 @@ const PrintCustomer = forwardRef((props, ref) => {
 
   //user Data
   const userData = useSelector((state) =>
-    userRole === "manager"
+    ["manager", "reseller", "collector"].includes(userRole)
       ? state.persistedReducer.auth.ispOwnerData
       : state.persistedReducer.auth.userData
   );
 
   // get all packages
   const allPackages = useSelector((state) => state.package.allPackages);
-
-  //get pppoe package
-  const ppoePackage = useSelector((state) =>
-    userRole === "ispOwner"
-      ? state?.package?.pppoePackages
-      : state?.mikrotik?.pppoePackage
-  );
 
   // get hotspot package
   const hotsPackage = useSelector((state) => state.hotspot?.package);
@@ -58,11 +51,6 @@ const PrintCustomer = forwardRef((props, ref) => {
     if (value?.userType === "hotspot") {
       const findPack = hotsPackage.find((item) =>
         item.id.includes(value?.hotspotPackage)
-      );
-      return findPack;
-    } else if (value?.userType === "pppoe") {
-      const findPack = ppoePackage.find((item) =>
-        item.id.includes(value?.mikrotikPackage)
       );
       return findPack;
     } else {
@@ -113,13 +101,13 @@ const PrintCustomer = forwardRef((props, ref) => {
               {filterData?.startDate && (
                 <li>
                   {t("startDate")} :
-                  {moment(filterData?.startDate).format("YYYY/MM/DD")}
+                  {moment(filterData?.startDate).format("YYYY-MM-DD")}
                 </li>
               )}
               {filterData?.endDate && (
                 <li>
                   {t("endDate")} :
-                  {moment(filterData?.endDate).format("YYYY/MM/DD")}
+                  {moment(filterData?.endDate).format("YYYY-MM-DD")}
                 </li>
               )}
               {filterData?.customerType && (
@@ -350,23 +338,23 @@ const PrintCustomer = forwardRef((props, ref) => {
                       {printOptions[8]?.checked && !printOptions[9]?.checked ? (
                         <td className="prin_td align-middle">
                           <p>
-                            {moment(val?.billingCycle).format("YYYY/MM/DD")}
+                            {moment(val?.billingCycle).format("YYYY-MM-DD")}
                           </p>
                         </td>
                       ) : !printOptions[8]?.checked &&
                         printOptions[9]?.checked ? (
                         <td className="prin_td align-middle">
-                          <p>{moment(val?.promiseDate).format("YYYY/MM/DD")}</p>
+                          <p>{moment(val?.promiseDate).format("YYYY-MM-DD")}</p>
                         </td>
                       ) : (
                         printOptions[8]?.checked &&
                         printOptions[9]?.checked && (
                           <td className="prin_td align-middle">
                             <p>
-                              {moment(val?.billingCycle).format("YYYY/MM/DD")}
+                              {moment(val?.billingCycle).format("YYYY-MM-DD")}
                             </p>
                             <p>
-                              {moment(val?.promiseDate).format("YYYY/MM/DD")}
+                              {moment(val?.promiseDate).format("YYYY-MM-DD")}
                             </p>
                           </td>
                         )
@@ -396,13 +384,13 @@ const PrintCustomer = forwardRef((props, ref) => {
 
                       {printOptions[12]?.checked && (
                         <td className="prin_td align-middle">
-                          {moment(val?.createdAt).format("YYYY/MM/DD")}
+                          {moment(val?.createdAt).format("YYYY-MM-DD")}
                         </td>
                       )}
 
                       {printOptions[13]?.checked && (
                         <td className="prin_td align-middle">
-                          {moment(val?.createdAt).format("YYYY/MM/DD")}
+                          {moment(val?.createdAt).format("YYYY-MM-DD")}
                         </td>
                       )}
                     </tr>

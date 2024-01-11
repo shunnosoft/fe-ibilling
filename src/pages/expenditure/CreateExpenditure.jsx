@@ -8,6 +8,7 @@ import { Plus } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { addExpenditure } from "../../features/apiCalls";
 import { useTranslation } from "react-i18next";
+import { toast } from "react-toastify";
 export default function CreateExpenditure() {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
@@ -21,6 +22,10 @@ export default function CreateExpenditure() {
   );
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
   const userRole = useSelector((state) => state.persistedReducer.auth.role);
+
+  // user collection balance
+  const balance = useSelector((state) => state?.payment?.balance);
+
   const desRef = useRef("");
   const collectorValidator = Yup.object({
     amount: Yup.number().required("***"),
@@ -35,6 +40,11 @@ export default function CreateExpenditure() {
     setPourpose(e.target.value);
   };
   const expenditureHandler = async (formdata, resetForm) => {
+    if (balance <= formdata.amount) {
+      setIsLoading(false);
+      return toast.error(t("youDoNotHaveEnoughCollectionBalance"));
+    }
+
     if (pourpose !== "") {
       const data = {
         amount: formdata.amount,

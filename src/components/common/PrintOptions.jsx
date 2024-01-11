@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
 import {
   Button,
   Modal,
@@ -10,9 +11,13 @@ import {
 import { useTranslation } from "react-i18next";
 import ReactToPrint from "react-to-print";
 
+// custome hooks import
+import useISPowner from "../../hooks/useISPOwner";
+
 // INTERNAL IMPORT
 import { printOptionData } from "../../pages/Customer/customerCRUD/printOptionData";
 import PrintCustomer from "../../pages/Customer/customerPDF";
+import { getAllPackages } from "../../features/apiCalls";
 
 const PrintOptions = ({
   show,
@@ -24,8 +29,15 @@ const PrintOptions = ({
   printData,
   printOptions,
 }) => {
+  const dispatch = useDispatch();
   const { t } = useTranslation();
   const componentRef = useRef();
+
+  // get user & current user data form useISPOwner hook
+  const { ispOwnerId } = useISPowner();
+
+  // loading state
+  const [isLoading, setIsLoading] = useState(false);
 
   // single bill report id
   const [printOption, setPrintOption] = useState();
@@ -46,6 +58,9 @@ const PrintOptions = ({
     } else {
       setPrintOption(printOptionData?.report);
     }
+
+    // get ispOwner all packages api
+    getAllPackages(dispatch, ispOwnerId, setIsLoading);
   }, [page]);
 
   //modal close handle

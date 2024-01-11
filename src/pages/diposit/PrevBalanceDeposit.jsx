@@ -52,7 +52,7 @@ const PrevBalanceDeposit = ({ show, setShow, depositData }) => {
         year: depositData.year,
         note: `${depositData.month} ${depositData.year} collection: ${depositData.billReport} deposit: ${depositData.deposit}`,
       };
-      addDeposit(dispatch, sendingData, setIsLoading);
+      addDeposit(dispatch, sendingData, setIsLoading, setShow);
     }
   };
 

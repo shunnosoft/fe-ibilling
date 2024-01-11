@@ -1,15 +1,11 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import Sidebar from "../../../components/admin/sidebar/Sidebar";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Accordion, Card, Collapse, ToastContainer } from "react-bootstrap";
-import useDash from "../../../assets/css/dash.module.css";
-import { FontColor, FourGround } from "../../../assets/js/theme";
-import Loader from "../../../components/common/Loader";
+import { useTranslation } from "react-i18next";
+import { useDispatch, useSelector } from "react-redux";
+import moment from "moment";
+import DatePicker from "react-datepicker";
+import { CSVLink } from "react-csv";
+import ReactToPrint from "react-to-print";
 import {
   ArrowBarLeft,
   ArrowBarRight,
@@ -20,24 +16,26 @@ import {
   PrinterFill,
   ThreeDots,
 } from "react-bootstrap-icons";
+
+// custom hooks import
+import useISPowner from "../../../hooks/useISPOwner";
+
+// internal import
+import Sidebar from "../../../components/admin/sidebar/Sidebar";
+import useDash from "../../../assets/css/dash.module.css";
+import { FontColor, FourGround } from "../../../assets/js/theme";
+import Loader from "../../../components/common/Loader";
 import Table from "../../../components/table/Table";
 import Footer from "../../../components/admin/footer/Footer";
-import { useTranslation } from "react-i18next";
-import { useDispatch, useSelector } from "react-redux";
 import {
   fetchReseller,
   getAllPackages,
   resellerCustomerReport,
 } from "../../../features/apiCalls";
-import moment from "moment";
 import ReportView from "../../report/modal/ReportView";
 import EditReport from "../../report/modal/EditReport";
-import DatePicker from "react-datepicker";
 import FormatNumber from "../../../components/common/NumberFormat";
-import { CSVLink } from "react-csv";
 import PrintReport from "../../report/ReportPDF";
-import ReactToPrint from "react-to-print";
-import ProgressBar from "react-bootstrap/ProgressBar";
 
 const ResellerCollection = () => {
   const { t } = useTranslation();
@@ -50,15 +48,8 @@ const ResellerCollection = () => {
   firstDay.setHours(0, 0, 0, 0);
   today.setHours(23, 59, 59, 999);
 
-  // get isp owner id
-  const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerId
-  );
-
-  // get isp owner data
-  const ispOwnerData = useSelector(
-    (state) => state.persistedReducer.auth?.userData
-  );
+  // get user & current user data form useISPOwner
+  const { ispOwnerData, ispOwnerId, userData } = useISPowner();
 
   // get all packages
   const allPackages = useSelector((state) => state.package.allPackages);
@@ -69,11 +60,6 @@ const ResellerCollection = () => {
   //get reseller collection report data
   const collectionReport = useSelector(
     (state) => state?.reseller?.resellerCollection
-  );
-
-  // get userdata
-  const userData = useSelector(
-    (state) => state.persistedReducer.auth.currentUser
   );
 
   //loading state
@@ -236,7 +222,7 @@ const ResellerCollection = () => {
       {
         width: "7%",
         Header: t("PPIPHp"),
-        accessor: "customer.pppoe.name",
+        accessor: "customer.name",
       },
       {
         width: "8%",
@@ -579,7 +565,7 @@ const ResellerCollection = () => {
                               showFullMonthYearPicker
                               minDate={
                                 new Date(
-                                  new Date(userData?.user?.createdAt).getTime()
+                                  new Date(userData?.createdAt).getTime()
                                 )
                               }
                               maxDate={new Date()}

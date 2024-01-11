@@ -347,6 +347,7 @@ const CustomerEdit = ({ customerId, setProfileOption }) => {
             Pprofile: customerPackage?.name || data?.pppoe?.profile || "",
             Ppassword: data?.pppoe?.password || "",
             customerBillingType: data?.customerBillingType,
+            connectionFee: data.connectionFee || 0,
           }}
           validationSchema={customerValidator}
           onSubmit={(values) => {

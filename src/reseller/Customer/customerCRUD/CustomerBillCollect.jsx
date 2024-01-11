@@ -11,6 +11,10 @@ import { useEffect } from "react";
 import ReactToPrint from "react-to-print";
 import { useRef } from "react";
 import { Card } from "react-bootstrap";
+import { CashStack } from "react-bootstrap-icons";
+
+// custom hooks import
+import useISPowner from "../../../hooks/useISPOwner";
 
 //internal imports
 import { FtextField } from "../../../components/common/FtextField";
@@ -21,18 +25,16 @@ import {
 } from "../../../features/apiCallReseller";
 import Loader from "../../../components/common/Loader";
 import RechargePrintInvoice from "../../../pages/Customer/customerCRUD/bulkOpration/RechargePrintInvoice";
-import useISPowner from "../../../hooks/useISPOwner";
-import { CashStack } from "react-bootstrap-icons";
+import SelectField from "../../../components/common/SelectField";
+
+// custome function import
+import customerBillMonth from "../../../pages/Customer/customerCRUD/customerBillMonth";
 
 const CustomerBillCollect = ({ customerId, customerData }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
   const resellerRechargePrint = useRef();
-
-  // current month date
-  const date = new Date();
-  const monthDate = date.getMonth();
 
   // twelve month options
   const options = [
@@ -50,7 +52,7 @@ const CustomerBillCollect = ({ customerId, customerData }) => {
     { value: "December", label: t("december") },
   ];
 
-  // get user & current user data form useISPOwner
+  // get user & current user data form useISPOwner hooks
   const {
     role,
     ispOwnerData,
@@ -65,6 +67,11 @@ const CustomerBillCollect = ({ customerId, customerData }) => {
   // get customers form redux store
   const customer = useSelector((state) => state?.customer?.customer);
 
+  // get customer connection fee due form redux store
+  const connectionFeeDue = useSelector(
+    (state) => state.customer.connectionFeeDue
+  );
+
   // single customer find
   const data = customer.find((item) => item.id === customerId);
 
@@ -74,9 +81,6 @@ const CustomerBillCollect = ({ customerId, customerData }) => {
   //set customer billing date
   const [startDate, setStartDate] = useState(false);
   const [endDate, setEndDate] = useState(false);
-
-  // customer bill medium
-  const [medium, setMedium] = useState("cash");
 
   // note check & note
   const [noteCheck, setNoteCheck] = useState(false);
@@ -99,22 +103,11 @@ const CustomerBillCollect = ({ customerId, customerData }) => {
   //calculation total bill due & amount
   const [balanceDue, setBalanceDue] = useState();
 
-  // calculation
-  const totalAmount = Number(billAmount) + Number(balanceDue);
-
-  //print button is clicked after successful response
-  useEffect(() => {
-    if (test) {
-      if (
-        (role === "reseller" && permission?.instantRechargeBillPrint) ||
-        (role === "collector" &&
-          resellerData.permission?.instantRechargeBillPrint)
-      ) {
-        document.getElementById("printButtonReseller").click();
-        setTest(!test);
-      }
-    }
-  }, [test]);
+  // total bill calculation
+  const totalAmount =
+    billType === "bill"
+      ? Number(billAmount) + Number(balanceDue)
+      : Number(data.connectionFee - connectionFeeDue);
 
   useEffect(() => {
     //get reseller package based commission
@@ -139,89 +132,37 @@ const CustomerBillCollect = ({ customerId, customerData }) => {
         : data?.monthlyFee
     );
 
-    let temp = [];
+    // set customer bill month
+    setSelectedMonth(customerBillMonth(data));
+  }, [data]);
 
-    // customer billing date
-    const dataMonth = new Date(data?.billingCycle).getMonth();
-
-    if (data?.balance === 0 && data?.paymentStatus === "unpaid") {
-      // month to monthly bill
-      temp.push(options[dataMonth]);
-    } else if (data?.balance === 0 && data?.paymentStatus === "paid") {
-      // month to monthly bill
-      temp.push(options[dataMonth]);
-    } else if (
-      data?.balance >= data?.monthlyFee &&
-      data?.paymentStatus === "paid"
-    ) {
-      // customer advance monthly bill
-      const modVal = Math.floor(data?.balance / data?.monthlyFee);
-      temp.push(options[dataMonth + modVal]);
-
-      if (dataMonth + modVal > 11) {
-        const totalMonth = dataMonth + modVal - 12;
-        temp.push(options[totalMonth]);
-      }
-    } else if (
-      data?.balance < 0 &&
-      data?.paymentStatus === "unpaid" &&
-      (data?.status === "active" || data?.status === "expired")
-    ) {
-      // customer privous monthly bill
-      const modVal = Math.floor(Math.abs(data?.balance / data?.monthlyFee));
-
-      // customer privous years total due month
-      const dueMonth = dataMonth - modVal;
-
-      //find customer privous years dou month
-      if (dueMonth < 0) {
-        const totalMonth = 12 - Math.abs(dueMonth);
-
-        for (let i = totalMonth; i <= 11; i++) {
-          temp.push(options[i]);
-        }
-      }
-
-      //find customer current years dou month
-      if (modVal < 11) {
-        for (let i = dueMonth; i <= dataMonth; i++) {
-          if (!(i < 0)) {
-            temp.push(options[i]);
-          }
-        }
-      }
-    } else if (
-      data?.balance < 0 &&
-      data?.paymentStatus === "unpaid" &&
-      data?.status === "inactive"
-    ) {
-      // customer privous monthly bill
-      const modVal = Math.floor(Math.abs(data?.balance / data?.monthlyFee));
-
-      // customer total due month
-      const dueMonth = dataMonth - modVal;
-
-      //find customer privous years dou month
-      if (dueMonth < 0) {
-        const totalMonth = 12 - Math.abs(dueMonth);
-
-        for (let i = totalMonth; i <= 11; i++) {
-          temp.push(options[i]);
-        }
-      }
-
-      //find customer current years dou month
-      if (modVal < 11) {
-        for (let i = dueMonth; i <= monthDate; i++) {
-          if (!(i < 0)) {
-            temp.push(options[i]);
-          }
-        }
+  //print button is clicked after successful response
+  useEffect(() => {
+    if (test) {
+      if (
+        (role === "reseller" && permission?.instantRechargeBillPrint) ||
+        (role === "collector" &&
+          resellerData.permission?.instantRechargeBillPrint)
+      ) {
+        document.getElementById("printButtonReseller").click();
+        setTest(!test);
       }
     }
+  }, [test]);
 
-    setSelectedMonth(temp);
-  }, [data]);
+  //print button is clicked after successful response
+  useEffect(() => {
+    if (test) {
+      if (
+        (role === "reseller" && permission?.instantRechargeBillPrint) ||
+        (role === "collector" &&
+          resellerData.permission?.instantRechargeBillPrint)
+      ) {
+        document.getElementById("printButtonReseller").click();
+        setTest(!test);
+      }
+    }
+  }, [test]);
 
   // customer recharge bilkl validation
   const BillValidatoin = Yup.object({
@@ -247,7 +188,7 @@ const CustomerBillCollect = ({ customerId, customerData }) => {
   // bill amount
   const customerBillHandler = (formValue) => {
     if (
-      billType !== "connectionFee" &&
+      billType === "bill" &&
       userData?.commissionType === "packageBased" &&
       userData?.commissionStyle === "fixedRate" &&
       packageRate.ispOwnerRate > formValue.amount
@@ -257,8 +198,8 @@ const CustomerBillCollect = ({ customerId, customerData }) => {
     }
 
     if (
+      billType === "bill" &&
       !(
-        billType !== "connectionFee" &&
         userData?.commissionType === "packageBased" &&
         userData?.commissionStyle === "fixedRate"
       ) &&
@@ -277,7 +218,7 @@ const CustomerBillCollect = ({ customerId, customerData }) => {
       ispOwner: ispOwnerId,
       user: currentUser?.user.id,
       collectorId: userData?.id, //when collector is logged in
-      medium,
+      medium: formValue.medium,
       package: data.pppoe.profile,
     };
 
@@ -332,10 +273,8 @@ const CustomerBillCollect = ({ customerId, customerData }) => {
       <Card.Body>
         <Formik
           initialValues={{
-            amount:
-              data?.balance < data?.monthlyFee
-                ? data?.monthlyFee - data?.balance
-                : data?.monthlyFee,
+            amount: totalAmount,
+            medium: "cash",
           }}
           validationSchema={BillValidatoin}
           onSubmit={(values) => {
@@ -356,20 +295,7 @@ const CustomerBillCollect = ({ customerId, customerData }) => {
                   <FtextField type="number" name="amount" label={t("amount")} />
 
                   <div>
-                    <label
-                      htmlFor="receiver_type"
-                      className="form-control-label changeLabelFontColor"
-                    >
-                      {t("medium")}
-                    </label>
-
-                    <select
-                      as="select"
-                      id="receiver_type"
-                      className="form-select mt-0 mw-100"
-                      aria-label="Default select example"
-                      onChange={(e) => setMedium(e.target.value)}
-                    >
+                    <SelectField label={t("medium")} name="medium">
                       <option value="cash" selected>
                         {t("handCash")}
                       </option>
@@ -377,7 +303,7 @@ const CustomerBillCollect = ({ customerId, customerData }) => {
                       <option value="rocket"> {t("rocket")} </option>
                       <option value="nagad"> {t("nagad")} </option>
                       <option value="others"> {t("others")} </option>
-                    </select>
+                    </SelectField>
                   </div>
                 </div>
 

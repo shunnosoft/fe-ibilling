@@ -2,24 +2,9 @@ import React, { useState } from "react";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
-
-// internal imports
-import { FtextField } from "../../../components/common/FtextField";
-import Loader from "../../../components/common/Loader";
-import { fetchPackagefromDatabase } from "../../../features/apiCalls";
 import moment from "moment";
 import { useTranslation } from "react-i18next";
 import DatePicker from "react-datepicker";
-
-//divisional location
-import divisionsJSON from "../../../bdAddress/bd-divisions.json";
-import districtsJSON from "../../../bdAddress/bd-districts.json";
-import thanaJSON from "../../../bdAddress/bd-upazilas.json";
-import getName from "../../../utils/getLocationName";
-
-//custom hooks
-import SelectField from "../../../components/common/SelectField";
-import { addResellerStaticCustomer } from "../../../features/apiCallReseller";
 import {
   Modal,
   ModalBody,
@@ -28,52 +13,49 @@ import {
   ModalTitle,
 } from "react-bootstrap";
 
+// internal imports
+import { FtextField } from "../../../components/common/FtextField";
+import Loader from "../../../components/common/Loader";
+
+//divisional location
+import divisionsJSON from "../../../bdAddress/bd-divisions.json";
+import districtsJSON from "../../../bdAddress/bd-districts.json";
+import thanaJSON from "../../../bdAddress/bd-upazilas.json";
+import getName from "../../../utils/getLocationName";
+
+// custom hooks import
+import SelectField from "../../../components/common/SelectField";
+import { addResellerStaticCustomer } from "../../../features/apiCallReseller";
+import useISPowner from "../../../hooks/useISPOwner";
+
 const divisions = divisionsJSON.divisions;
 const districts = districtsJSON.districts;
 const thana = thanaJSON.thana;
 
-export default function AddStaticCustomer({ show, setShow }) {
+const AddStaticCustomer = ({ show, setShow }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
-  // get user bp setting
-  const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
-  );
+  // get user & current user data form useISPOwner hooks
+  const { role, hasMikrotik, resellerData, userData, permission } =
+    useISPowner();
 
-  const permission = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.permission
-  );
-
-  // get role from redux
-  const role = useSelector((state) => state.persistedReducer.auth?.role);
-
-  // get Isp owner id
-  const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerId
-  );
-
-  const resellerId = useSelector((state) =>
-    role === "reseller"
-      ? state.persistedReducer.auth?.userData?.id
-      : state.persistedReducer.auth?.userData?.reseller
-  );
-
+  // user customer type get form ispOwner bpSetting
   const userType = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings.queueType
   );
 
-  // get all area
+  // get all area form reseller profile
   const area = useSelector((state) => state?.area?.area);
 
-  // get all mikrotik
+  // get ispOwner all mikrotik form redux store
   const Getmikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
 
-  const ppPackage = useSelector((state) =>
-    bpSettings?.hasMikrotik
-      ? state?.mikrotik?.packagefromDatabase
-      : state?.package?.packages
-  );
+  // get mikrotik package from redux
+  const ppPackage = useSelector((state) => state?.mikrotik?.pppoePackage);
+
+  // reseller id from role base
+  const resellerId = role === "collector" ? userData.reseller : userData.id;
 
   const [packageRate, setPackageRate] = useState({ rate: 0 });
   const [isLoading, setIsloading] = useState(false);
@@ -82,16 +64,24 @@ export default function AddStaticCustomer({ show, setShow }) {
   const [autoDisable, setAutoDisable] = useState(true);
   const [subArea, setSubArea] = useState("");
   const [billDate, setBillDate] = useState(new Date());
-  const [billTime, setBilltime] = useState();
   const [maxUpLimit, setUpMaxLimit] = useState("");
   const [maxDownLimit, setDownMaxLimit] = useState("");
   const [monthlyFee, setMonthlyFee] = useState(packageRate?.rate || 0);
+
+  // mikrorik package state
+  const [mikrotikPackages, setMikrotikPackages] = useState([]);
+  console.log(mikrotikPackages);
 
   const [divisionalArea, setDivisionalArea] = useState({
     division: "",
     district: "",
     thana: "",
   });
+
+  //modal show handler
+  const handleClose = () => {
+    setShow(false);
+  };
 
   // customer validator
   const customerValidator = Yup.object({
@@ -107,22 +97,16 @@ export default function AddStaticCustomer({ show, setShow }) {
     customerBillingType: Yup.string().required(t("select billing type")),
   });
 
-  //modal show handler
-  const handleClose = () => {
-    setShow(false);
-  };
-
+  // select Getmikrotik
   const selectMikrotik = (e) => {
     const id = e.target.value;
-    if (id && ispOwnerId) {
-      const IDs = {
-        ispOwner: ispOwnerId,
-        mikrotikId: id,
-      };
-      //ToDo
-      if (bpSettings?.hasMikrotik) {
-        fetchPackagefromDatabase(dispatch, IDs, setIsloading);
-      }
+    if (id) {
+      const mikrotikPackage = ppPackage.filter(
+        (pack) => pack.mikrotik === id && pack.packageType === "queue"
+      );
+      setMikrotikPackages(mikrotikPackage);
+    } else {
+      setMikrotikPackages([]);
     }
     setSingleMikrotik(id);
   };
@@ -176,7 +160,7 @@ export default function AddStaticCustomer({ show, setShow }) {
     const mainData = {
       paymentStatus: "unpaid",
       subArea: subArea,
-      ispOwner: ispOwnerId,
+      ispOwner: userData.ispOwner,
       reseller: resellerId,
       mikrotik: singleMikrotik,
       mikrotikPackage: mikrotikPackage,
@@ -189,21 +173,19 @@ export default function AddStaticCustomer({ show, setShow }) {
       ...rest,
       monthlyFee,
     };
-    if (!bpSettings.hasMikrotik) {
-      delete mainData.mikrotik;
-    }
-    let sendingData = { ...mainData };
+
     if (userType === "firewall-queue") {
-      sendingData.userType = "firewall-queue";
-      sendingData.queue = {
+      mainData.userType = "firewall-queue";
+      mainData.queue = {
         type: userType,
         address: ipAddress,
         list: "allow_ip",
       };
     }
+
     if (userType === "simple-queue") {
-      sendingData.userType = "simple-queue";
-      sendingData.queue = {
+      mainData.userType = "simple-queue";
+      mainData.queue = {
         name: queueName,
         type: userType,
         target,
@@ -220,11 +202,22 @@ export default function AddStaticCustomer({ show, setShow }) {
       const districtName = getName(districts, divisionalArea.district)?.name;
       const thanaName = getName(thana, divisionalArea.thana)?.name;
       //if  exist add the data
-      if (divisionName) sendingData.division = divisionName;
-      if (districtName) sendingData.district = districtName;
-      if (thanaName) sendingData.thana = thanaName;
+      if (divisionName) mainData.division = divisionName;
+      if (districtName) mainData.district = districtName;
+      if (thanaName) mainData.thana = thanaName;
     }
-    addResellerStaticCustomer(dispatch, sendingData, setIsloading, setShow);
+
+    if (!hasMikrotik) {
+      delete mainData.mikrotik;
+    }
+
+    addResellerStaticCustomer(
+      dispatch,
+      mainData,
+      setIsloading,
+      resetForm,
+      setShow
+    );
   };
   //divisional area formula
   const divisionalAreaFormData = [
@@ -254,6 +247,7 @@ export default function AddStaticCustomer({ show, setShow }) {
       ),
     },
   ];
+
   // this function control the division district and thana change input
   const onDivisionalAreaChange = ({ target }) => {
     const { name, value } = target;
@@ -293,6 +287,7 @@ export default function AddStaticCustomer({ show, setShow }) {
               queueName: "",
               target: "",
               customerBillingType: "prepaid",
+              connectionFee: "",
             }}
             validationSchema={customerValidator}
             onSubmit={(values, { resetForm }) => {
@@ -376,15 +371,14 @@ export default function AddStaticCustomer({ show, setShow }) {
                         onChange={selectMikrotikPackage}
                       >
                         <option value={"0"}>...</option>
-                        {ppPackage &&
-                          ppPackage?.map(
-                            (val, key) =>
-                              val.packageType === "queue" && (
-                                <option key={key} value={val.id}>
-                                  {val.name}
-                                </option>
-                              )
-                          )}
+                        {mikrotikPackages?.map(
+                          (val, key) =>
+                            val.packageType === "queue" && (
+                              <option key={key} value={val.id}>
+                                {val.name}
+                              </option>
+                            )
+                        )}
                       </select>
                     </div>
                   )}
@@ -401,15 +395,14 @@ export default function AddStaticCustomer({ show, setShow }) {
                         onChange={selectMikrotikPackage}
                       >
                         <option value={"0"}>...</option>
-                        {ppPackage &&
-                          ppPackage?.map(
-                            (val, key) =>
-                              val.packageType === "queue" && (
-                                <option key={key} value={val.id}>
-                                  {val.name}
-                                </option>
-                              )
-                          )}
+                        {mikrotikPackages?.map(
+                          (val, key) =>
+                            val.packageType === "queue" && (
+                              <option key={key} value={val.id}>
+                                {val.name}
+                              </option>
+                            )
+                        )}
                       </select>
                     </div>
                   )}
@@ -426,15 +419,14 @@ export default function AddStaticCustomer({ show, setShow }) {
                         onChange={selectMikrotikPackage}
                       >
                         <option value={"0"}>...</option>
-                        {ppPackage &&
-                          ppPackage?.map(
-                            (val, key) =>
-                              val.packageType === "queue" && (
-                                <option key={key} value={val.id}>
-                                  {val.name}
-                                </option>
-                              )
-                          )}
+                        {mikrotikPackages?.map(
+                          (val, key) =>
+                            val.packageType === "queue" && (
+                              <option key={key} value={val.id}>
+                                {val.name}
+                              </option>
+                            )
+                        )}
                       </select>
                     </div>
                   )}
@@ -448,7 +440,7 @@ export default function AddStaticCustomer({ show, setShow }) {
                     onChange={(e) => setMonthlyFee(e.target.value)}
                   />
 
-                  {!bpSettings?.hasMikrotik && (
+                  {!hasMikrotik && (
                     <FtextField
                       type="number"
                       label={t("prevDue")}
@@ -463,6 +455,8 @@ export default function AddStaticCustomer({ show, setShow }) {
                   <FtextField type="text" label={t("mobile")} name="mobile" />
 
                   <FtextField type="text" label={t("address")} name="address" />
+
+                  <FtextField type="text" label={t("email")} name="email" />
 
                   {divisionalAreaFormData.map((item) => (
                     <div>
@@ -485,22 +479,6 @@ export default function AddStaticCustomer({ show, setShow }) {
                     </div>
                   ))}
 
-                  <FtextField type="text" label={t("email")} name="email" />
-
-                  <SelectField
-                    label={t("customerBillType")}
-                    id="exampleSelect"
-                    name="customerBillingType"
-                    className="form-select mw-100 mt-0"
-                  >
-                    <option value="">{t("customerBillType")}</option>
-
-                    <option value="prepaid">{t("prepaid")}</option>
-                    <option value="postpaid">{t("postPaid")}</option>
-                  </SelectField>
-
-                  <FtextField type="text" label={t("email")} name="email" />
-
                   <div>
                     <label className="form-control-label changeLabelFontColor">
                       {t("billingCycle")}
@@ -517,16 +495,35 @@ export default function AddStaticCustomer({ show, setShow }) {
                     />
                   </div>
 
-                  {bpSettings?.hasMikrotik && (
-                    <div className="autoDisable mt-0">
-                      <label> {t("automaticConnectionOff")} </label>
-                      <input
-                        type="checkBox"
-                        checked={autoDisable}
-                        onChange={(e) => setAutoDisable(e.target.checked)}
-                      />
-                    </div>
-                  )}
+                  <FtextField
+                    type="number"
+                    label={t("connectionFee")}
+                    name="connectionFee"
+                  />
+                  <SelectField
+                    label={t("customerBillType")}
+                    id="exampleSelect"
+                    name="customerBillingType"
+                    className="form-select mw-100 mt-0"
+                  >
+                    <option value="">{t("customerBillType")}</option>
+
+                    <option value="prepaid">{t("prepaid")}</option>
+                    <option value="postpaid">{t("postPaid")}</option>
+                  </SelectField>
+
+                  {Getmikrotik.length > 0 &&
+                    (permission?.customerAutoDisableEdit ||
+                      resellerData.permission?.customerAutoDisableEdit) && (
+                      <div className="autoDisable">
+                        <label> {t("automaticConnectionOff")} </label>
+                        <input
+                          type="checkBox"
+                          checked={autoDisable}
+                          onChange={(e) => setAutoDisable(e.target.checked)}
+                        />
+                      </div>
+                    )}
                 </div>
               </Form>
             )}
@@ -555,4 +552,6 @@ export default function AddStaticCustomer({ show, setShow }) {
       </Modal>
     </>
   );
-}
+};
+
+export default AddStaticCustomer;

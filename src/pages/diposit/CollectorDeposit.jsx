@@ -30,6 +30,7 @@ import { getBulletinPermission } from "../../features/apiCallAdmin";
 import PrevBalanceDeposit from "./PrevBalanceDeposit";
 import { badge } from "../../components/common/Utils";
 import FormatNumber from "../../components/common/NumberFormat";
+import NoteDetailsModal from "./NoteDetailsModal";
 
 const CollectorDeposit = () => {
   const { t } = useTranslation();
@@ -92,6 +93,9 @@ const CollectorDeposit = () => {
 
   // own deposit report monthly filter
   const [ownFilter, setOwnFilter] = useState(firstDate);
+
+  // manager message note
+  const [message, setMessage] = useState("");
 
   // own deposit month start & end date
   const [ownDepositStart, setOwnDepositStart] = useState(firstDate);
@@ -189,29 +193,51 @@ const CollectorDeposit = () => {
   };
 
   //function to calculate total Commissions and other amount
-  let ownDepositCalculation;
-
   const getTotalOwnDeposit = useCallback(() => {
-    ownDepositCalculation = ownDepositData.filter(
-      (item) => item.status === "accepted"
+    let collectionDeposit;
+    let previousDeposit;
+
+    // current month depostit filter
+    collectionDeposit = ownDepositData.filter(
+      (item) => item.status === "accepted" && !item.month
+    );
+
+    // previous month deposit filter
+    previousDeposit = ownDepositData.filter(
+      (item) => item.status === "accepted" && item.month
     );
 
     const initialValue = 0;
 
-    const sumWithInitial = ownDepositCalculation.reduce(
+    // current month colleciton deposti
+    const collectionDepositSum = collectionDeposit.reduce(
       (previousValue, currentValue) => previousValue + currentValue.amount,
       initialValue
     );
 
-    return sumWithInitial.toString();
+    // previous balance deposti
+    const previousDepositSum = previousDeposit.reduce(
+      (previousValue, currentValue) => previousValue + currentValue.amount,
+      initialValue
+    );
+
+    return { collectionDepositSum, previousDepositSum };
   }, [ownDepositData]);
 
   // send sum own deposits of table
   const ownDepositSum = (
     <div style={{ fontSize: "18px", display: "flex", alignItems: "center" }}>
-      {getTotalOwnDeposit() > 0 && (
+      {getTotalOwnDeposit()?.collectionDepositSum > 0 && (
         <div>
-          {t("totalDiposit")}: ৳{FormatNumber(getTotalOwnDeposit())}
+          {t("collectionDeposit")}: ৳
+          {FormatNumber(getTotalOwnDeposit()?.collectionDepositSum)}
+        </div>
+      )}
+      &nbsp; &nbsp;
+      {getTotalOwnDeposit()?.previousDepositSum > 0 && (
+        <div>
+          {t("previousMonthDeposit")}: ৳
+          {FormatNumber(getTotalOwnDeposit()?.previousDepositSum)}
         </div>
       )}
     </div>
@@ -267,7 +293,7 @@ const CollectorDeposit = () => {
                 className="text-primary see-more"
                 data-bs-toggle="modal"
                 data-bs-target="#dipositNoteDetailsModal"
-                // onClick={() => setMessage(original?.note)}
+                onClick={() => setMessage(original?.note)}
               >
                 {original?.note?.length > 70 ? "...see more" : ""}
               </span>
@@ -310,7 +336,7 @@ const CollectorDeposit = () => {
       },
       {
         width: "15%",
-        Header: t("diposit"),
+        Header: t("deposit"),
         accessor: "deposit",
       },
       {
@@ -475,7 +501,11 @@ const CollectorDeposit = () => {
                                     showMonthYearPicker
                                     showFullMonthYearPicker
                                     maxDate={new Date()}
-                                    minDate={new Date(userData?.createdAt)}
+                                    minDate={
+                                      new Date(
+                                        new Date(userData.collector?.createdAt)
+                                      )
+                                    }
                                   />
                                 </div>
 
@@ -566,6 +596,9 @@ const CollectorDeposit = () => {
         setShow={setShow}
         depositData={depositData}
       />
+
+      {/* modals */}
+      <NoteDetailsModal message={message} />
     </>
   );
 };
