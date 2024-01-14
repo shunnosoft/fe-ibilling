@@ -68,7 +68,7 @@ const CustomerBillCollect = ({ customerId, customerData }) => {
   const customer = useSelector((state) => state?.customer?.customer);
 
   // get customer connection fee due form redux store
-  const connectionFeeDue = useSelector(
+  const paidConnectionFee = useSelector(
     (state) => state.customer.connectionFeeDue
   );
 
@@ -107,7 +107,7 @@ const CustomerBillCollect = ({ customerId, customerData }) => {
   const totalAmount =
     billType === "bill"
       ? Number(billAmount) + Number(balanceDue)
-      : Number(data.connectionFee - connectionFeeDue);
+      : Number(data.connectionFee - paidConnectionFee);
 
   useEffect(() => {
     //get reseller package based commission
@@ -246,6 +246,7 @@ const CustomerBillCollect = ({ customerId, customerData }) => {
     billCollect(
       dispatch,
       sendingData,
+      paidConnectionFee,
       setLoading,
       resetForm,
       setResponseData,

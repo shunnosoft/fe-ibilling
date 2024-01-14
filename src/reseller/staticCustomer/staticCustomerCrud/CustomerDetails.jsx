@@ -477,12 +477,12 @@ const CustomerDetails = ({ show, setShow, customerId }) => {
 
                         <div className="displayGridHorizontalFill5_5 profileDetails">
                           <p>{t("monthlyFee")}</p>
-                          <p>৳{data?.monthlyFee}</p>
+                          <p>৳{FormatNumber(data?.monthlyFee)}</p>
                         </div>
 
                         <div className="displayGridHorizontalFill5_5 profileDetails">
                           <p>{t("balance")}</p>
-                          <p>৳{data?.balance}</p>
+                          <p>৳{FormatNumber(data?.balance)}</p>
                         </div>
 
                         <div className="displayGridHorizontalFill5_5 profileDetails">
@@ -536,7 +536,7 @@ const CustomerDetails = ({ show, setShow, customerId }) => {
 
                         <div className="displayGridHorizontalFill5_5 profileDetails">
                           <p>{t("connectionFee")}</p>
-                          <p>৳{data?.connectionFee}</p>
+                          <p>৳{FormatNumber(data?.connectionFee)}</p>
                         </div>
 
                         <div className="displayGridHorizontalFill5_5 profileDetails">
@@ -544,7 +544,7 @@ const CustomerDetails = ({ show, setShow, customerId }) => {
                           <p>
                             ৳
                             {FormatNumber(
-                              connectionFeeDue &&
+                              connectionFeeDue >= 0 &&
                                 data?.connectionFee - connectionFeeDue
                             )}
                           </p>

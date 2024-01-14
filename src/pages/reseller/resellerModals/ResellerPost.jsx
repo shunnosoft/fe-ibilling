@@ -239,11 +239,11 @@ const ResellerPost = ({ show, setShow }) => {
   };
 
   const resellerHandler = async (data, resetForm) => {
-    if (areaSubareas.filter((val) => val.isChecked).length === 0) {
-      setIsLoading(false);
-      toast.warn(t("selectArea"));
-      return;
-    }
+    // if (areaSubareas.filter((val) => val.isChecked).length === 0) {
+    //   setIsLoading(false);
+    //   toast.warn(t("selectArea"));
+    //   return;
+    // }
 
     if (!commissionType) {
       alert("Commision type must be selected !");

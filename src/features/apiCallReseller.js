@@ -17,6 +17,7 @@ import {
   deleteStaticCustomerSuccess,
   editCustomerSuccess,
   editStaticCustomerSuccess,
+  getCustomerConnectionFeeDue,
   getCustomerSuccess,
   getStaticCustomerActiveSuccess,
   getStaticCustomerSuccess,
@@ -442,6 +443,7 @@ export const getResellerPackageRate = async (
 export const billCollect = async (
   dispatch,
   billData,
+  paidConnectionFee,
   setLoading,
   resetForm,
   setResponseData,
@@ -458,6 +460,13 @@ export const billCollect = async (
     } else if (status === "static") {
       dispatch(updateBalanceStaticCustomer(res.data));
     }
+
+    // customer profile connection fee update after bill collect
+    if (res.data.billType === "connectionFee") {
+      const connectionFeeDue = paidConnectionFee + res.data.amount;
+      dispatch(getCustomerConnectionFeeDue(connectionFeeDue));
+    }
+
     setResponseData(res.data);
     setTest(true);
     langMessage(

@@ -180,6 +180,7 @@ const CustomerSync = ({
                   bulkState={{
                     setBulkCustomer,
                   }}
+                  bulkLength={bulkCustomers.length}
                 ></Table>
               </>
             )}

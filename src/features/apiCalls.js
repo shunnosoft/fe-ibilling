@@ -2234,6 +2234,7 @@ export const collectorProfileUpdate = async ({
 export const billCollect = async (
   dispatch,
   billData,
+  paidConnectionFee,
   setLoading,
   resetForm = null,
   setResponseData,
@@ -2252,6 +2253,12 @@ export const billCollect = async (
       dispatch(updateBalanceStaticCustomer(res.data));
       setResponseData(res.data);
       setTest(true);
+    }
+
+    // customer profile connection fee update after bill collect
+    if (res.data.billType === "connectionFee") {
+      const connectionFeeDue = paidConnectionFee + res.data.amount;
+      dispatch(getCustomerConnectionFeeDue(connectionFeeDue));
     }
 
     langMessage(

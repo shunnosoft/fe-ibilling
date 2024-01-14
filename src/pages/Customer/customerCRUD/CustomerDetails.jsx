@@ -17,6 +17,9 @@ import {
   Trash3Fill,
 } from "react-bootstrap-icons";
 
+// custom hooks import
+import useISPowner from "../../../hooks/useISPOwner";
+
 // internal import
 import "../customer.css";
 import { badge } from "../../../components/common/Utils";
@@ -31,12 +34,11 @@ import {
   getConnectionFee,
   getCustomer,
 } from "../../../features/apiCalls";
-import useISPowner from "../../../hooks/useISPOwner";
 import FormatNumber from "../../../components/common/NumberFormat";
 import PasswordReset from "../../../components/modals/passwordReset/PasswordReset";
 import { getOwnerUsers } from "../../../features/getIspOwnerUsersApi";
 
-export default function CustomerDetails({ show, setShow, customerId }) {
+const CustomerDetails = ({ show, setShow, customerId }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
@@ -61,6 +63,11 @@ export default function CustomerDetails({ show, setShow, customerId }) {
   // find single customer data
   const data = customer.find((item) => item.id === customerId);
 
+  // get customer connection fee due form redux store
+  const paidConnectionFee = useSelector(
+    (state) => state.customer.connectionFeeDue
+  );
+
   // loading state
   const [loading, setLoading] = useState(false);
 
@@ -78,9 +85,6 @@ export default function CustomerDetails({ show, setShow, customerId }) {
   // user id state
   const [userId, setUserId] = useState("");
 
-  // customer due connection fee state
-  const [paidConnectionFee, setPaidConnectionFee] = useState(0);
-
   // get api calls
   useEffect(() => {
     if (customer.length === 0) getCustomer(dispatch, ispOwnerId, setLoading);
@@ -89,7 +93,7 @@ export default function CustomerDetails({ show, setShow, customerId }) {
     getOwnerUsers(dispatch, ispOwnerId);
 
     //get customer paid connection fee
-    getConnectionFee(customerId, setPaidConnectionFee);
+    getConnectionFee(dispatch, customerId);
   }, [customerId]);
 
   // modal close handler
@@ -433,12 +437,12 @@ export default function CustomerDetails({ show, setShow, customerId }) {
 
                         <div className="displayGridHorizontalFill5_5 profileDetails">
                           <p>{t("monthlyFee")}</p>
-                          <p>৳{data?.monthlyFee}</p>
+                          <p>৳{FormatNumber(data?.monthlyFee)}</p>
                         </div>
 
                         <div className="displayGridHorizontalFill5_5 profileDetails">
                           <p>{t("balance")}</p>
-                          <p>৳{data?.balance}</p>
+                          <p>৳{FormatNumber(data?.balance)}</p>
                         </div>
 
                         <div className="displayGridHorizontalFill5_5 profileDetails">
@@ -488,7 +492,7 @@ export default function CustomerDetails({ show, setShow, customerId }) {
 
                         <div className="displayGridHorizontalFill5_5 profileDetails">
                           <p>{t("connectionFee")}</p>
-                          <p>৳{data?.connectionFee}</p>
+                          <p>৳{FormatNumber(data?.connectionFee)}</p>
                         </div>
 
                         <div className="displayGridHorizontalFill5_5 profileDetails">
@@ -496,8 +500,8 @@ export default function CustomerDetails({ show, setShow, customerId }) {
                           <p>
                             ৳
                             {FormatNumber(
-                              data?.connectionFee - paidConnectionFee &&
-                                paidConnectionFee
+                              paidConnectionFee >= 0 &&
+                                data?.connectionFee - paidConnectionFee
                             )}
                           </p>
                         </div>
@@ -602,4 +606,6 @@ export default function CustomerDetails({ show, setShow, customerId }) {
       )}
     </>
   );
-}
+};
+
+export default CustomerDetails;

@@ -270,11 +270,11 @@ const ResellerEdit = ({ show, setShow, resellerId }) => {
 
   //submit handler
   const resellerHandler = (data) => {
-    if (areaSubareas.filter((val) => val.isChecked).length === 0) {
-      setIsLoading(false);
-      toast.warn(t("selectArea"));
-      return;
-    }
+    // if (areaSubareas.filter((val) => val.isChecked).length === 0) {
+    //   setIsLoading(false);
+    //   toast.warn(t("selectArea"));
+    //   return;
+    // }
 
     let commision = data.commissionRate;
     if (auth.ispOwner) {

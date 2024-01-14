@@ -11,6 +11,9 @@ import { Card } from "react-bootstrap";
 import { CashStack } from "react-bootstrap-icons";
 import { toast } from "react-toastify";
 
+// custom hooks import
+import useISPowner from "../../../hooks/useISPOwner";
+
 //internal imports
 import "../../Customer/customer.css";
 import { FtextField } from "../../../components/common/FtextField";
@@ -18,16 +21,14 @@ import { billCollect } from "../../../features/apiCalls";
 import Loader from "../../../components/common/Loader";
 import RechargePrintInvoice from "./bulkOpration/RechargePrintInvoice";
 import ReactToPrint from "react-to-print";
-import useISPowner from "../../../hooks/useISPOwner";
+
+// custom function import
+import customerBillMonth from "./customerBillMonth";
 
 const CustomerBillCollect = ({ single, status }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const rechargePrint = useRef();
-
-  // current month date
-  const date = new Date();
-  const monthDate = date.getMonth();
 
   // twelve month options
   const options = [
@@ -45,9 +46,16 @@ const CustomerBillCollect = ({ single, status }) => {
     { value: "December", label: t("december") },
   ];
 
-  // get user & current user data form useISPOwner
-  const { role, ispOwnerId, bpSettings, permissions, permission } =
-    useISPowner();
+  // get user & current user data form useISPOwner hooks
+  const {
+    role,
+    ispOwnerId,
+    bpSettings,
+    userData,
+    currentUser,
+    permissions,
+    permission,
+  } = useISPowner();
 
   // get all customer
   const customer = useSelector((state) =>
@@ -56,17 +64,14 @@ const CustomerBillCollect = ({ single, status }) => {
       : state?.customer?.staticCustomer
   );
 
-  // get userData
-  const userData = useSelector((state) => state.persistedReducer.auth.userData);
-
-  // get currentUser
-  const currentUser = useSelector(
-    (state) => state.persistedReducer.auth?.currentUser
-  );
-
   // get currentUserId
   const currentUserId = useSelector(
     (state) => state.persistedReducer.auth?.userData?.id
+  );
+
+  // get customer connection fee due form redux store
+  const paidConnectionFee = useSelector(
+    (state) => state.customer.connectionFeeDue
   );
 
   // find editable data
@@ -95,14 +100,16 @@ const CustomerBillCollect = ({ single, status }) => {
 
   //calculation total bill due & amount
   const [balanceDue, setBalanceDue] = useState();
-  const [amount, setAmount] = useState(null);
 
   //response data after API call after payment
   const [responseData, setResponseData] = useState();
   const [test, setTest] = useState(false);
 
   // calculation
-  const totalAmount = Number(billAmount) + Number(balanceDue);
+  const totalAmount =
+    billType === "bill"
+      ? Number(billAmount) + Number(balanceDue)
+      : Number(data.connectionFee - paidConnectionFee);
   const maxDiscount = totalAmount;
 
   //bill colleciton validation
@@ -131,10 +138,10 @@ const CustomerBillCollect = ({ single, status }) => {
     setNoteCheck(false);
     setSelectedMonth(null);
     setBillAmount(
-      data?.balance > 0 && data?.balance <= data?.monthlyFee
+      data?.balance > 0 && data?.balance < data?.monthlyFee
         ? data?.monthlyFee - data?.balance
-        : data?.balance > data?.monthlyFee
-        ? 0
+        : data?.balance < 0
+        ? data?.monthlyFee + Math.abs(data?.balance)
         : data?.monthlyFee
     );
   };
@@ -142,95 +149,15 @@ const CustomerBillCollect = ({ single, status }) => {
   useEffect(() => {
     setBalanceDue(data?.balance < 0 ? Math.abs(data?.balance) : 0);
     setBillAmount(
-      data?.balance > 0 && data?.balance <= data?.monthlyFee
+      data?.balance > 0 && data?.balance < data?.monthlyFee
         ? data?.monthlyFee - data?.balance
-        : data?.balance > data?.monthlyFee
-        ? 0
+        : data?.balance < 0
+        ? data?.monthlyFee + Math.abs(data?.balance)
         : data?.monthlyFee
     );
 
-    let temp = [];
-
-    // customer billing date
-    const dataMonth = new Date(data?.billingCycle).getMonth();
-
-    if (data?.balance === 0 && data?.paymentStatus === "unpaid") {
-      // month to monthly bill
-      temp.push(options[dataMonth]);
-    } else if (data?.balance === 0 && data?.paymentStatus === "paid") {
-      // month to monthly bill
-      temp.push(options[dataMonth]);
-    } else if (
-      data?.balance >= data?.monthlyFee &&
-      data?.paymentStatus === "paid"
-    ) {
-      // customer advance monthly bill
-      const modVal = Math.floor(data?.balance / data?.monthlyFee);
-      temp.push(options[dataMonth + modVal]);
-
-      if (dataMonth + modVal > 11) {
-        const totalMonth = dataMonth + modVal - 12;
-        temp.push(options[totalMonth]);
-      }
-    } else if (
-      data?.balance < 0 &&
-      data?.paymentStatus === "unpaid" &&
-      (data?.status === "active" || data?.status === "expired")
-    ) {
-      // customer privous monthly bill
-      const modVal = Math.floor(Math.abs(data?.balance / data?.monthlyFee));
-
-      // customer privous years total due month
-      const dueMonth = dataMonth - modVal;
-
-      //find customer privous years dou month
-      if (dueMonth < 0) {
-        const totalMonth = 12 - Math.abs(dueMonth);
-
-        for (let i = totalMonth; i <= 11; i++) {
-          temp.push(options[i]);
-        }
-      }
-
-      //find customer current years dou month
-      if (modVal < 11) {
-        for (let i = dueMonth; i <= dataMonth; i++) {
-          if (!(i < 0)) {
-            temp.push(options[i]);
-          }
-        }
-      }
-    } else if (
-      data?.balance < 0 &&
-      data?.paymentStatus === "unpaid" &&
-      data?.status === "inactive"
-    ) {
-      // customer privous monthly bill
-      const modVal = Math.floor(Math.abs(data?.balance / data?.monthlyFee));
-
-      // customer total due month
-      const dueMonth = dataMonth - modVal;
-
-      //find customer privous years dou month
-      if (dueMonth < 0) {
-        const totalMonth = 12 - Math.abs(dueMonth);
-
-        for (let i = totalMonth; i <= 11; i++) {
-          temp.push(options[i]);
-        }
-      }
-
-      //find customer current years dou month
-      if (modVal < 11) {
-        for (let i = dueMonth; i <= monthDate; i++) {
-          if (!(i < 0)) {
-            temp.push(options[i]);
-          }
-        }
-      }
-    }
-
-    setSelectedMonth(temp);
+    // set customer bill month
+    setSelectedMonth(customerBillMonth(data));
   }, [data]);
 
   //print button is clicked after successful response
@@ -312,14 +239,13 @@ const CustomerBillCollect = ({ single, status }) => {
     billCollect(
       dispatch,
       sendingData,
+      paidConnectionFee,
       setLoading,
       resetForm,
       setResponseData,
       setTest,
       ""
     );
-
-    setAmount(data.amount);
   };
 
   return (
@@ -330,12 +256,7 @@ const CustomerBillCollect = ({ single, status }) => {
       <Card.Body>
         <Formik
           initialValues={{
-            amount:
-              data?.balance > 0 && data?.balance <= data?.monthlyFee
-                ? data?.monthlyFee - data?.balance
-                : data?.balance > data?.monthlyFee
-                ? 0
-                : data?.monthlyFee,
+            amount: totalAmount,
             due: data?.balance < 0 ? Math.abs(data?.balance) : 0,
             discount: 0,
           }}
@@ -355,12 +276,7 @@ const CustomerBillCollect = ({ single, status }) => {
 
               <div className="displayGrid">
                 <div className="displayGrid2">
-                  <FtextField
-                    type="number"
-                    name="amount"
-                    label={t("amount")}
-                    value={billAmount}
-                  />
+                  <FtextField type="number" name="amount" label={t("amount")} />
 
                   <FtextField type="number" name="due" label={t("due")} />
                 </div>

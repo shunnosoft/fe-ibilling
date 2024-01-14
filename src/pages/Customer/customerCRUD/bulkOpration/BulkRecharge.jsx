@@ -205,8 +205,8 @@ const BulkRecharge = ({ bulkCustomer, show, setShow }) => {
   return (
     <RootBulkModal show={show} setShow={setShow} header={t("bulkRecharge")}>
       <form onSubmit={changePackage}>
-        <div className="mikrotikSection">
-          {bpSettings?.hasMikrotik ? (
+        <div className="displayGrid2">
+          {bpSettings?.hasMikrotik && (
             <div>
               <label className="form-control-label changeLabelFontColor">
                 {t("mikrotik")} <span className="text-danger">*</span>
@@ -217,21 +217,17 @@ const BulkRecharge = ({ bulkCustomer, show, setShow }) => {
                 onChange={selectMikrotik}
               >
                 <option value="">...</option>
-                {Getmikrotik.length === undefined
-                  ? ""
-                  : Getmikrotik.map((val, key) => (
-                      <option
-                        key={key}
-                        selected={singleMikrotik === val.id}
-                        value={val.id}
-                      >
-                        {val?.name}
-                      </option>
-                    ))}
+                {Getmikrotik.map((val, key) => (
+                  <option
+                    key={key}
+                    selected={singleMikrotik === val.id}
+                    value={val.id}
+                  >
+                    {val?.name}
+                  </option>
+                ))}
               </select>
             </div>
-          ) : (
-            ""
           )}
 
           {/* pppoe package */}
@@ -240,21 +236,20 @@ const BulkRecharge = ({ bulkCustomer, show, setShow }) => {
               {t("package")} <span className="text-danger">*</span>
             </label>
             <select
-              className="form-select mb-3 mw-100 mt-0"
+              className="form-select mw-100 mt-0"
               aria-label="Default select example"
               onChange={selectMikrotikPackage}
             >
               <option value={"0"}>...</option>
-              {ppPackage &&
-                ppPackage?.map((val, key) => (
-                  <option
-                    key={key}
-                    selected={mikrotikPackage === val.id}
-                    value={val.id}
-                  >
-                    {val.name}
-                  </option>
-                ))}
+              {ppPackage?.map((val, key) => (
+                <option
+                  key={key}
+                  selected={mikrotikPackage === val.id}
+                  value={val.id}
+                >
+                  {val.name}
+                </option>
+              ))}
             </select>
           </div>
 

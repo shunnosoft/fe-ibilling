@@ -24,7 +24,11 @@ export default function CreateExpenditure() {
   const userRole = useSelector((state) => state.persistedReducer.auth.role);
 
   // user collection balance
-  const balance = useSelector((state) => state?.payment?.balance);
+  const balance = useSelector((state) =>
+    userRole === "ispOwner"
+      ? state.chart.customerStat.ispOwner?.ownBalance
+      : state?.payment?.balance
+  );
 
   const desRef = useRef("");
   const collectorValidator = Yup.object({

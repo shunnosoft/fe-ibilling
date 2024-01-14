@@ -3,6 +3,11 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
+
+// custom hooks import
+import useISPowner from "../../../hooks/useISPOwner";
+
+// internal import
 import { bulkResellerRecharge } from "../../../features/actions/bulkOperationApi";
 import RootBulkModal from "./bulkModal";
 import Loader from "../../../components/common/Loader";
@@ -12,10 +17,8 @@ const BulkResellerRecharge = ({ bulkCustomer, show, setShow }) => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
-  // get reseller
-  const reseller = useSelector(
-    (state) => state.persistedReducer.auth?.userData
-  );
+  // get user & current user data form useISPOwner hooks
+  const { role, bpSettings, userData, currentUser } = useISPowner();
 
   // get mikrotik
   const Getmikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
@@ -23,27 +26,8 @@ const BulkResellerRecharge = ({ bulkCustomer, show, setShow }) => {
   // get pppoe Package
   const ppPackage = useSelector((state) => state?.mikrotik?.pppoePackage);
 
-  // get login user info
-  const userData = useSelector((state) => state.persistedReducer.auth.userData);
-
-  // get login current user roles and others
-  const currentUser = useSelector(
-    (state) => state.persistedReducer.auth?.currentUser
-  );
-
-  // get current user Id
-  const currentUserId = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.id
-  );
-  // get role
-  const role = useSelector((state) => state.persistedReducer.auth?.role);
-
   // get resellerId
-  const resellerId = useSelector((state) =>
-    role === "reseller"
-      ? state.persistedReducer.auth?.userData?.id
-      : state.persistedReducer.auth?.userData?.reseller
-  );
+  const resellerId = role === "reseller" ? userData?.id : userData?.reseller;
 
   const [isLoading, setIsLoading] = useState(false);
   const [singleMikrotik, setSingleMikrotik] = useState("");
@@ -137,7 +121,7 @@ const BulkResellerRecharge = ({ bulkCustomer, show, setShow }) => {
         name: userData.name,
         collectedBy: currentUser?.user.role,
         user: currentUser?.user.id,
-        collectorId: currentUserId, //when collector is logged in
+        collectorId: userData?.id, //when collector is logged in
         resellerId,
       };
 
@@ -168,31 +152,32 @@ const BulkResellerRecharge = ({ bulkCustomer, show, setShow }) => {
   };
 
   return (
-    <RootBulkModal
-      show={show}
-      setShow={setShow}
-      header={t("Bulk Reseller Recharge")}
-    >
+    <RootBulkModal show={show} setShow={setShow} header={t("bulkRecharge")}>
       <form onSubmit={changePackage}>
-        <div className="mikrotikSection">
-          <div>
-            <label className="form-control-label changeLabelFontColor">
-              {t("mikrotik")} <span className="text-danger">*</span>
-            </label>
-            <select
-              className="form-select mw-100 mt-0"
-              aria-label="Default select example"
-              onChange={selectMikrotik}
-            >
-              <option value="">...</option>
-              {Getmikrotik?.length &&
-                Getmikrotik?.map((val, key) => (
-                  <option key={key} value={val.id}>
+        <div className="displayGrid2">
+          {bpSettings?.hasMikrotik && (
+            <div>
+              <label className="form-control-label changeLabelFontColor">
+                {t("mikrotik")} <span className="text-danger">*</span>
+              </label>
+              <select
+                className="form-select mw-100 mt-0"
+                aria-label="Default select example"
+                onChange={selectMikrotik}
+              >
+                <option value="">...</option>
+                {Getmikrotik?.map((val, key) => (
+                  <option
+                    key={key}
+                    value={val.id}
+                    selected={singleMikrotik === val.id}
+                  >
                     {val.name}
                   </option>
                 ))}
-            </select>
-          </div>
+              </select>
+            </div>
+          )}
 
           {/* pppoe package */}
           <div>
@@ -205,12 +190,11 @@ const BulkResellerRecharge = ({ bulkCustomer, show, setShow }) => {
               onChange={selectMikrotikPackage}
             >
               <option value={"0"}>...</option>
-              {ppPackage.length &&
-                ppPackage?.map((val, key) => (
-                  <option key={key} value={val.id}>
-                    {val.name}
-                  </option>
-                ))}
+              {ppPackage?.map((val, key) => (
+                <option key={key} value={val.id}>
+                  {val.name}
+                </option>
+              ))}
             </select>
           </div>
 

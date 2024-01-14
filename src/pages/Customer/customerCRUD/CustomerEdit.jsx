@@ -42,7 +42,6 @@ const CustomerEdit = ({ customerId, setProfileOption }) => {
 
   // customer validator
   const customerValidator = Yup.object({
-    // customerId: Yup.string().required(t("writeCustomerId")),
     name: Yup.string().required(t("writeCustomerName")),
     mobile: Yup.string()
       .matches(/^(01){1}[3456789]{1}(\d){8}$/, t("incorrectMobile"))
@@ -63,7 +62,8 @@ const CustomerEdit = ({ customerId, setProfileOption }) => {
   });
 
   //calling custom hook here
-  const { ispOwnerId, hasMikrotik, permissions } = useISPowner();
+  const { role, ispOwnerId, bpSettings, hasMikrotik, permission, permissions } =
+    useISPowner();
 
   // get all customer
   const customer = useSelector((state) => state?.customer?.customer);
@@ -76,19 +76,6 @@ const CustomerEdit = ({ customerId, setProfileOption }) => {
 
   // get mikrotiks
   const mikrotiks = useSelector((state) => state?.mikrotik?.mikrotik);
-
-  // get bp setting
-  const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
-  );
-
-  // get all role
-  const role = useSelector((state) => state.persistedReducer.auth?.role);
-
-  // get user permission
-  const permission = useSelector(
-    (state) => state.persistedReducer.auth.userData.permissions
-  );
 
   // get pppoe package
   const ppPackage = useSelector((state) =>
@@ -112,8 +99,6 @@ const CustomerEdit = ({ customerId, setProfileOption }) => {
 
   const [subArea, setSubArea] = useState([]);
 
-  const [activeStatus, setActiveStatus] = useState(data?.pppoe?.disabled);
-  const [mikrotikName, setmikrotikName] = useState("");
   const [areaID, setAreaID] = useState("");
   const [subAreaId, setSubAreaId] = useState("");
   const [connectionDate, setConnectionDate] = useState("");
@@ -191,11 +176,6 @@ const CustomerEdit = ({ customerId, setProfileOption }) => {
       ...divisionalInfo,
     });
   }, [bpSettings, ispOwnerId, data]);
-
-  useEffect(() => {
-    const temp = mikrotiks.find((val) => val.id === data?.mikrotik);
-    setmikrotikName(temp);
-  }, [mikrotiks, data, ispOwnerId]);
 
   useEffect(() => {
     fetchMikrotik(dispatch, ispOwnerId, setLoading);
@@ -336,7 +316,7 @@ const CustomerEdit = ({ customerId, setProfileOption }) => {
         service: "pppoe",
         comment: Pcomment,
         profile: Pprofile,
-        disabled: activeStatus,
+        disabled: data.disabled,
       },
       ...rest,
       status,
