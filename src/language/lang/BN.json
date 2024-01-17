@@ -916,5 +916,7 @@
   "smsBonus": "আপনার বোনাস চালু করার জন্য সাপোর্ট টিমকে কল করুন",
   "collectionDeposit": "কালেকশন ডিপোজিট",
   "previousMonthDeposit": "পূর্বের মাসের ডিপোজিট",
-  "youDoNotHaveEnoughCollectionBalance": "আপনার কাছে পর্যাপ্ত বিল সংগ্রহ ব্যালেন্স নেই!"
+  "youDoNotHaveEnoughCollectionBalance": "আপনার কাছে পর্যাপ্ত বিল সংগ্রহ ব্যালেন্স নেই!",
+  "customerNotify": "কাস্টমার নোটিফাই",
+  "customerNotifyTemplate": "কাস্টমার নোটিফাই টেমপ্লেট"
 }

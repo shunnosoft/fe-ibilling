@@ -94,37 +94,53 @@ const StaffAssignTicketSMSTemplate = () => {
 
           <div className="message-sending-type">
             <h4> {t("sendingMessageType")} </h4>
-            <input
-              type="radio"
-              checked={sendingType === "nonMasking"}
-              value={"nonMasking"}
-              onChange={(event) => setSendingType(event.target.value)}
-            />
-            {t("nonMasking")}
-            <input
-              type="radio"
-              checked={sendingType === "masking"}
-              value={"masking"}
-              onChange={(event) => setSendingType(event.target.value)}
-            />
-            {t("masking")}
-            <input
-              type="radio"
-              checked={sendingType === "fixedNumber"}
-              value={"fixedNumber"}
-              onChange={(event) => setSendingType(event.target.value)}
-            />
-            {t("fixedNumber")}
+            <div className="smsType">
+              <div className="message_radio">
+                <input
+                  type="radio"
+                  id="non_Masking_11"
+                  checked={sendingType === "nonMasking"}
+                  value={"nonMasking"}
+                  onChange={(event) => setSendingType(event.target.value)}
+                />
+
+                <label htmlFor="non_Masking_11"> {t("nonMasking")}</label>
+              </div>
+
+              <div className="message_radio">
+                <input
+                  type="radio"
+                  id="_masking_11"
+                  checked={sendingType === "masking"}
+                  value={"masking"}
+                  onChange={(event) => setSendingType(event.target.value)}
+                />
+
+                <label htmlFor="_masking_11"> {t("masking")}</label>
+              </div>
+
+              <div className="message_radio">
+                <input
+                  type="radio"
+                  id="fixed_Number_11"
+                  checked={sendingType === "fixedNumber"}
+                  value={"fixedNumber"}
+                  onChange={(event) => setSendingType(event.target.value)}
+                />
+
+                <label htmlFor="fixed_Number_11"> {t("fixedNumber")}</label>
+              </div>
+            </div>
           </div>
         </div>
 
         <div className="displayFlexx">
-          <div className="radioselect">
+          <div className="checkboxSelect">
             <input
-              id="2"
+              id="ticket_subject_11"
               type="checkbox"
               className="getValueUsingClass"
-              value={"SUB: TICKET_SUBJECT"}
+              value={"Subject: TICKET_SUBJECT"}
               checked={ticketSub}
               onChange={(e) => {
                 e.target.checked
@@ -132,7 +148,7 @@ const StaffAssignTicketSMSTemplate = () => {
                   : setTicketSub("");
               }}
             />
-            <label className="templatelabel" htmlFor="1">
+            <label className="templatelabel" htmlFor="ticket_subject_11">
               {"SUB: TICKET_SUBJECT"}
             </label>
           </div>

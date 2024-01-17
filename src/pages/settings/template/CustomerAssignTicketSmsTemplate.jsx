@@ -50,7 +50,7 @@ const CustomerTicketAssignSmsTemplate = () => {
   // set customer support ticket
   useEffect(() => {
     const fixedvalues = [
-      "CUSTOMER NAME: CUSTOMER_NAME",
+      "CUSTOMER_NAME",
       "TICKET ID: TICKET_ID",
       "STAFF NAME: STAFF_NAME",
       "STAFF MOBILE: STAFF_MOBILE",
@@ -58,7 +58,7 @@ const CustomerTicketAssignSmsTemplate = () => {
     var found = [];
 
     let messageBoxStr = settings?.sms?.template?.ticketSendCustomer
-      ?.replace("CUSTOMER NAME: CUSTOMER_NAME", "")
+      ?.replace("CUSTOMER_NAME", "")
       .replace("TICKET ID: TICKET_ID", "")
       .replace("STAFF NAME: STAFF_NAME", "")
       .replace("STAFF MOBILE: STAFF_MOBILE", "");
@@ -139,7 +139,7 @@ const CustomerTicketAssignSmsTemplate = () => {
       ticketSendCustomer: assignTicketStatus,
       template: {
         ...settings.sms.template,
-        ticketSendCustomer: fontText + upperText + "\n" + bottomText,
+        ticketSendCustomer: fontText + " " + upperText + "\n" + bottomText,
       },
     };
     setLoading(true);
@@ -159,7 +159,7 @@ const CustomerTicketAssignSmsTemplate = () => {
       <div className="writeMessageSection">
         <div className="messageStatus d-flex justify-content-between">
           <div className="sending-status">
-            <h4> {t("assingTicketTemplate")} </h4>
+            <h4> {t("customerNotifyTemplate")} </h4>
             <div className="displayGrid1 mb-3">
               <div className="message_radio">
                 <input
@@ -251,8 +251,8 @@ const CustomerTicketAssignSmsTemplate = () => {
                 id="user_Name_10"
                 type="checkbox"
                 className="getValueUsingClass"
-                value={"CUSTOMER NAME: CUSTOMER_NAME"}
-                checked={matchFound.includes("CUSTOMER NAME: CUSTOMER_NAME")}
+                value={"CUSTOMER_NAME"}
+                checked={matchFound.includes("CUSTOMER_NAME")}
                 onChange={(e) => {
                   itemSettingHandler(e.target.value);
                 }}

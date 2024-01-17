@@ -37,7 +37,7 @@ const BulkCustomerMessage = ({ bulkCustomer, show, setShow }) => {
   };
 
   // Message counting from text
-  let smsAmount = smsCount(messageText);
+  let smsAmount = smsCount(messageText) * bulkCustomer.length;
 
   // validation check
   const hadleRequired = () => {
@@ -66,16 +66,18 @@ const BulkCustomerMessage = ({ bulkCustomer, show, setShow }) => {
       // send data for api body
       const sendingData = {
         items: customerInfo,
-        totalSmsCount: smsCount(messageText),
+        totalSmsCount: smsCount(messageText) * bulkCustomer.length,
         sendBy: sendingType,
       };
       try {
-        alert(`${t("sampleSMS")} :\n\n${messageText}`);
+        alert(`${t("sampleSMS")} :${messageText}`);
 
         if (ispOwnerData.smsBalance >= smsAmount) {
           // message confirm alert
           let condition = window.confirm(
-            `${t("getSMS")} ${smsAmount} ${t("expenseSMS")}`
+            `${bulkCustomer.length} ${t("getSMS")} ${smsAmount} ${t(
+              "expenseSMS"
+            )}`
           );
           if (condition) {
             setIsloading(true);
@@ -120,7 +122,7 @@ const BulkCustomerMessage = ({ bulkCustomer, show, setShow }) => {
               <span className="smsLength">
                 {t("letter")} {messageText.length}
               </span>
-              <span>SMS: {smsAmount}</span>
+              <span>SMS: {smsCount(messageText)}</span>
             </div>
           </div>
           <textarea

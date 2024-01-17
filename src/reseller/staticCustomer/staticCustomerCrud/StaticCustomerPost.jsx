@@ -70,7 +70,6 @@ const AddStaticCustomer = ({ show, setShow }) => {
 
   // mikrorik package state
   const [mikrotikPackages, setMikrotikPackages] = useState([]);
-  console.log(mikrotikPackages);
 
   const [divisionalArea, setDivisionalArea] = useState({
     division: "",
@@ -297,28 +296,31 @@ const AddStaticCustomer = ({ show, setShow }) => {
             {() => (
               <Form id="customerPost">
                 <div className="displayGrid3">
-                  <div>
-                    <label className="form-control-label changeLabelFontColor">
-                      {t("selectMikrotik")}
-                    </label>
-                    <select
-                      className="form-select mw-100 mt-0"
-                      aria-label="Default select example"
-                      onChange={selectMikrotik}
-                    >
-                      <option value="">...</option>
-                      {Getmikrotik.length &&
-                        Getmikrotik.map((val, key) => (
+                  {hasMikrotik && (
+                    <div>
+                      <label className="form-control-label changeLabelFontColor">
+                        {t("selectMikrotik")}
+                        <span className="text-danger ms-1">*</span>
+                      </label>
+                      <select
+                        className="form-select mw-100 mt-0"
+                        aria-label="Default select example"
+                        onChange={selectMikrotik}
+                      >
+                        <option value="">...</option>
+                        {Getmikrotik.map((val, key) => (
                           <option key={key} value={val.id}>
                             {val.name}
                           </option>
                         ))}
-                    </select>
-                  </div>
+                      </select>
+                    </div>
+                  )}
 
                   <div>
                     <label className="form-control-label changeLabelFontColor">
                       {t("selectArea")}
+                      <span className="text-danger ms-1">*</span>
                     </label>
                     <select
                       className="form-select mw-100 mt-0"
@@ -326,28 +328,20 @@ const AddStaticCustomer = ({ show, setShow }) => {
                       onChange={(event) => setSubArea(event.target.value)}
                     >
                       <option value="">...</option>
-                      {area.length &&
-                        area.map((val, key) => (
-                          <option key={key} value={val.id}>
-                            {val.name}
-                          </option>
-                        ))}
+                      {area.map((val, key) => (
+                        <option key={key} value={val.id}>
+                          {val.name}
+                        </option>
+                      ))}
                     </select>
                   </div>
 
                   {userType === "simple-queue" && (
                     <FtextField
                       type="text"
-                      label={t("queueName")}
-                      name="queueName"
-                    />
-                  )}
-
-                  {userType === "simple-queue" && (
-                    <FtextField
-                      type="text"
                       label={t("ipAddress")}
                       name="target"
+                      validation={true}
                     />
                   )}
 
@@ -356,6 +350,7 @@ const AddStaticCustomer = ({ show, setShow }) => {
                       type="text"
                       label={t("ipAddress")}
                       name="ipAddress"
+                      validation={true}
                     />
                   )}
 
@@ -363,6 +358,7 @@ const AddStaticCustomer = ({ show, setShow }) => {
                     <div>
                       <label className="form-control-label changeLabelFontColor">
                         {t("selectPackage")}
+                        <span className="text-danger ms-1">*</span>
                       </label>
                       <select
                         name="firewallPackage"
@@ -386,7 +382,8 @@ const AddStaticCustomer = ({ show, setShow }) => {
                   {userType === "simple-queue" && (
                     <div>
                       <label className="form-control-label changeLabelFontColor">
-                        {t("uploadPackge")}{" "}
+                        {t("uploadPackge")}
+                        <span className="text-danger ms-1">*</span>
                       </label>
                       <select
                         name="upPackage"
@@ -411,6 +408,7 @@ const AddStaticCustomer = ({ show, setShow }) => {
                     <div>
                       <label className="form-control-label changeLabelFontColor">
                         {t("downloadPackge")}
+                        <span className="text-danger ms-1">*</span>
                       </label>
                       <select
                         name="downPackage"
@@ -438,6 +436,7 @@ const AddStaticCustomer = ({ show, setShow }) => {
                     min={0}
                     value={monthlyFee}
                     onChange={(e) => setMonthlyFee(e.target.value)}
+                    validation={true}
                   />
 
                   {!hasMikrotik && (
@@ -448,11 +447,29 @@ const AddStaticCustomer = ({ show, setShow }) => {
                     />
                   )}
 
+                  {userType === "simple-queue" && (
+                    <FtextField
+                      type="text"
+                      label={t("queueName")}
+                      name="queueName"
+                    />
+                  )}
+
+                  <FtextField
+                    type="text"
+                    label={t("name")}
+                    name="name"
+                    validation={true}
+                  />
+
+                  <FtextField
+                    type="text"
+                    label={t("mobile")}
+                    name="mobile"
+                    validation={permission.addCustomerWithMobile}
+                  />
+
                   <FtextField type="text" label={t("NIDno")} name="nid" />
-
-                  <FtextField type="text" label={t("name")} name="name" />
-
-                  <FtextField type="text" label={t("mobile")} name="mobile" />
 
                   <FtextField type="text" label={t("address")} name="address" />
 
@@ -482,6 +499,7 @@ const AddStaticCustomer = ({ show, setShow }) => {
                   <div>
                     <label className="form-control-label changeLabelFontColor">
                       {t("billingCycle")}
+                      <span className="text-danger ms-1">*</span>
                     </label>
                     <DatePicker
                       className="form-control mw-100"
@@ -505,6 +523,7 @@ const AddStaticCustomer = ({ show, setShow }) => {
                     id="exampleSelect"
                     name="customerBillingType"
                     className="form-select mw-100 mt-0"
+                    validation={true}
                   >
                     <option value="">{t("customerBillType")}</option>
 

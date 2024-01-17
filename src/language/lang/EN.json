@@ -224,7 +224,7 @@
   "resellerSmsRequest": "Reseller's SMS Request",
   "notFoundCustomer": "Not Found Any Customer",
   "sampleSMS": "Sample SMS",
-  "getSMS": "customer will get SMS",
+  "getSMS": "Customer will get SMS",
   "totalPossibilityBill": "Total Possibile Bill (Present Month)",
   "totalPossibilityBillWithDue": " Total Possibile Bill With (Due)",
   "totalPrevDue": "Total Previous Due",
@@ -910,5 +910,7 @@
   "smsBonus": "Call support team for active your bonus",
   "collectionDeposit": "Collection Deposit",
   "previousMonthDeposit": "Previous Month's Deposit",
-  "youDoNotHaveEnoughCollectionBalance": "You don't have enough Bill Collection balance!"
+  "youDoNotHaveEnoughCollectionBalance": "You don't have enough Bill Collection balance!",
+  "customerNotify": "Customer Notify",
+  "customerNotifyTemplate": "Customer Notify Template"
 }
