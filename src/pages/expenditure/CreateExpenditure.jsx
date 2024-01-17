@@ -23,13 +23,6 @@ export default function CreateExpenditure() {
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
   const userRole = useSelector((state) => state.persistedReducer.auth.role);
 
-  // user collection balance
-  const balance = useSelector((state) =>
-    userRole === "ispOwner"
-      ? state.chart.customerStat.ispOwner?.ownBalance
-      : state?.payment?.balance
-  );
-
   const desRef = useRef("");
   const collectorValidator = Yup.object({
     amount: Yup.number().required("***"),
@@ -37,18 +30,11 @@ export default function CreateExpenditure() {
     description: Yup.string(),
   });
 
-  // useEffect(() => {
-  // }, [ispOwnerId, dispatch]);
   const handleSelect = (e) => {
-    // console.log(e.target.value);
     setPourpose(e.target.value);
   };
-  const expenditureHandler = async (formdata, resetForm) => {
-    if (balance <= formdata.amount) {
-      setIsLoading(false);
-      return toast.error(t("youDoNotHaveEnoughCollectionBalance"));
-    }
 
+  const expenditureHandler = async (formdata, resetForm) => {
     if (pourpose !== "") {
       const data = {
         amount: formdata.amount,
@@ -67,6 +53,7 @@ export default function CreateExpenditure() {
       desRef.current.value = "";
     }
   };
+
   return (
     <div>
       <div
