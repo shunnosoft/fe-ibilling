@@ -2,20 +2,27 @@ import { useRef, useState } from "react";
 import { Form, Formik } from "formik";
 import { useSelector } from "react-redux";
 import * as Yup from "yup";
-//internal imports
-import { FtextField } from "../../../../components/common/FtextField";
-import "../../../Customer/customer.css";
-import { useDispatch } from "react-redux";
-import { billCollect } from "../../../../features/apiCalls";
-import Loader from "../../../../components/common/Loader";
 import DatePicker from "react-datepicker";
 import Select from "react-select";
 import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
 import ReactToPrint from "react-to-print";
-import RechargePrintInvoice from "../bulkOpration/RechargePrintInvoice";
 import { Modal, ModalBody, ModalHeader, ModalTitle } from "react-bootstrap";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+
+// custom hooks import
+import useISPowner from "../../../../hooks/useISPOwner";
+
+//internal imports
+import { FtextField } from "../../../../components/common/FtextField";
+import "../../../Customer/customer.css";
+import { billCollect } from "../../../../features/apiCalls";
+import Loader from "../../../../components/common/Loader";
+import RechargePrintInvoice from "../bulkOpration/RechargePrintInvoice";
+
+// custom function import
+import customerBillMonth from "../customerBillMonth";
 
 export default function RechargeCustomer({
   show,
@@ -26,10 +33,6 @@ export default function RechargeCustomer({
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const rechargePrint = useRef();
-
-  // current month date
-  const date = new Date();
-  const monthDate = date.getMonth();
 
   const options = [
     { value: "January", label: t("january") },
@@ -46,31 +49,19 @@ export default function RechargeCustomer({
     { value: "December", label: t("december") },
   ];
 
+  // get user & current user data form useISPOwner hooks
+  const {
+    role,
+    ispOwnerId,
+    bpSettings,
+    hasMikrotik,
+    resellerData,
+    userData,
+    permissions,
+  } = useISPowner();
+
   // get all customer
   const customer = useSelector((state) => state?.customer?.customer);
-
-  // find editable data
-  const data = customer.find((item) => item.id === single);
-
-  // get all role
-  const role = useSelector((state) => state.persistedReducer.auth.role);
-
-  // get user permission
-  const permission = useSelector(
-    (state) => state.persistedReducer.auth.userData.permissions
-  );
-
-  // get bpSettings
-  const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
-  );
-  // get ispOwner info
-  const ispOwner = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerId
-  );
-
-  // get userData
-  const userData = useSelector((state) => state.persistedReducer.auth.userData);
 
   // get currentUser
   const currentUser = useSelector(
@@ -81,6 +72,9 @@ export default function RechargeCustomer({
   const currentUserId = useSelector(
     (state) => state.persistedReducer.auth?.userData?.id
   );
+
+  // find editable data
+  const data = customer.find((item) => item.id === single);
 
   const [isLoading, setLoading] = useState(false);
 
@@ -108,7 +102,7 @@ export default function RechargeCustomer({
       if (
         (role === "ispOwner" && bpSettings?.instantRechargeBillPrint) ||
         ((role === "manager" || role === "collector") &&
-          permission?.instantRechargeBillPrint &&
+          permissions?.instantRechargeBillPrint &&
           bpSettings?.instantRechargeBillPrint)
       ) {
         document.getElementById("printButton").click();
@@ -166,89 +160,10 @@ export default function RechargeCustomer({
         : data?.monthlyFee
     );
 
-    let temp = [];
-
-    // customer billing date
-    const dataMonth = new Date(data?.billingCycle).getMonth();
-
-    if (data?.balance === 0 && data?.paymentStatus === "unpaid") {
-      // month to monthly bill
-      temp.push(options[dataMonth]);
-    } else if (data?.balance === 0 && data?.paymentStatus === "paid") {
-      // month to monthly bill
-      temp.push(options[dataMonth]);
-    } else if (
-      data?.balance >= data?.monthlyFee &&
-      data?.paymentStatus === "paid"
-    ) {
-      // customer advance monthly bill
-      const modVal = Math.floor(data?.balance / data?.monthlyFee);
-      temp.push(options[dataMonth + modVal]);
-
-      if (dataMonth + modVal > 11) {
-        const totalMonth = dataMonth + modVal - 12;
-        temp.push(options[totalMonth]);
-      }
-    } else if (
-      data?.balance < 0 &&
-      data?.paymentStatus === "unpaid" &&
-      (data?.status === "active" || data?.status === "expired")
-    ) {
-      // customer privous monthly bill
-      const modVal = Math.floor(Math.abs(data?.balance / data?.monthlyFee));
-
-      // customer privous years total due month
-      const dueMonth = dataMonth - modVal;
-
-      //find customer privous years dou month
-      if (dueMonth < 0) {
-        const totalMonth = 12 - Math.abs(dueMonth);
-
-        for (let i = totalMonth; i <= 11; i++) {
-          temp.push(options[i]);
-        }
-      }
-
-      //find customer current years dou month
-      if (modVal < 11) {
-        for (let i = dueMonth; i <= dataMonth; i++) {
-          if (!(i < 0)) {
-            temp.push(options[i]);
-          }
-        }
-      }
-    } else if (
-      data?.balance < 0 &&
-      data?.paymentStatus === "unpaid" &&
-      data?.status === "inactive"
-    ) {
-      // customer privous monthly bill
-      const modVal = Math.floor(Math.abs(data?.balance / data?.monthlyFee));
-
-      // customer total due month
-      const dueMonth = dataMonth - modVal;
-
-      //find customer privous years dou month
-      if (dueMonth < 0) {
-        const totalMonth = 12 - Math.abs(dueMonth);
-
-        for (let i = totalMonth; i <= 11; i++) {
-          temp.push(options[i]);
-        }
-      }
-
-      //find customer current years dou month
-      if (modVal < 11) {
-        for (let i = dueMonth; i <= monthDate; i++) {
-          if (!(i < 0)) {
-            temp.push(options[i]);
-          }
-        }
-      }
-    }
-
-    setSelectedMonth(temp);
+    // set customer bill month
+    setSelectedMonth(customerBillMonth(data));
   }, [data]);
+
   const handleFormValue = (event) => {
     if (event.target.name === "amount") {
       setBillAmount(event.target.value);
@@ -281,7 +196,7 @@ export default function RechargeCustomer({
       collectedBy: currentUser?.user.role,
       billType: billType,
       customer: data?.id,
-      ispOwner: ispOwner,
+      ispOwner: ispOwnerId,
       user: currentUser?.user.id,
       collectorId: currentUserId, //when collector is logged in
       userType: data?.userType,
@@ -428,7 +343,7 @@ export default function RechargeCustomer({
                       onChange={(e) => setBillType(e.target.value)}
                     >
                       <option value="bill"> {t("bill")} </option>
-                      {permission?.connectionFee || role !== "collector" ? (
+                      {permissions?.connectionFee || role !== "collector" ? (
                         <option value="connectionFee">
                           {t("connectionFee")}
                         </option>
@@ -485,7 +400,7 @@ export default function RechargeCustomer({
                 )}
 
                 <div className="d-flex justify-content-between align-items-center">
-                  {(role === "ispOwner" || permission.billDiscount) && (
+                  {(role === "ispOwner" || permissions.billDiscount) && (
                     <div className="w-50">
                       <FtextField
                         type="number"
@@ -562,7 +477,7 @@ export default function RechargeCustomer({
                   {((role === "ispOwner" &&
                     bpSettings?.instantRechargeBillPrint) ||
                     ((role === "manager" || role === "collector") &&
-                      permission?.instantRechargeBillPrint &&
+                      permissions?.instantRechargeBillPrint &&
                       bpSettings?.instantRechargeBillPrint)) && (
                     <div className="d-none">
                       <RechargePrintInvoice

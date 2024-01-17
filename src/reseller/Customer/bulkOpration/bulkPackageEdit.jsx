@@ -1,49 +1,50 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import RootBulkModal from "./bulkModal";
+import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
-import { toast } from "react-toastify";
-import { fetchPackagefromDatabase } from "../../../features/apiCalls";
-import { bulkPackageEdit } from "../../../features/actions/bulkOperationApi";
-import Loader from "../../../components/common/Loader";
-import apiLink from "../../../api/apiLink";
+
+// internal import
+import RootBulkModal from "./bulkModal";
+import BulkPackageUpdateRecharge from "../../../pages/Customer/customerCRUD/bulkOpration/PackageUpdateRecharge";
+
+// custom function import
+import {
+  getMonthStartDay,
+  getCustomerDayLeft,
+} from "../../../pages/Customer/customerCRUD/customerBillDayPromiseDate";
 
 const BulkPackageEdit = ({ bulkCustomer, show, setShow }) => {
-  const dispatch = useDispatch();
   const { t } = useTranslation();
-
-  // get isp owner id
-  const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerId
-  );
-
-  // get bp settings
-  const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.bpSettings
-  );
 
   // get mikrotik
   const Getmikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
 
-  //get permissions
-  const permission = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.permission
-  );
-
   // get mikrotik package from redux
   const pppoePackage = useSelector((state) => state?.mikrotik?.pppoePackage);
 
-  // find profile package
-  //   const findPackage = ppPackage.find((item) => item.id === dataPackageRate);
+  // package recharge modal handle state
+  const [modalStatus, setModalStatus] = useState("");
+  const [modalShow, setModalShow] = useState(false);
 
+  // user mikrotik packages
   const [ppPackage, setppPackage] = useState([]);
 
-  const [isLoading, setIsLoading] = useState(false);
-
+  // single mikrotik id
   const [singleMikrotik, setSingleMikrotik] = useState("");
 
-  const [mikrotikPackage, setMikrotikPackage] = useState("");
+  // single mikrotik package
+  const [mikrotikPackage, setMikrotikPackage] = useState();
+
+  // user select mikrotik packages
+  useEffect(() => {
+    const userMikrotikId = bulkCustomer[0]?.original.mikrotik;
+
+    const mikrotikPackage = pppoePackage.filter(
+      (pack) => pack.mikrotik === userMikrotikId
+    );
+    setppPackage(mikrotikPackage);
+    setSingleMikrotik(userMikrotikId);
+  }, [pppoePackage, bulkCustomer]);
 
   // select Getmikrotik
   const selectMikrotik = (e) => {
@@ -59,10 +60,60 @@ const BulkPackageEdit = ({ bulkCustomer, show, setShow }) => {
     }
 
     setSingleMikrotik(id);
-    setMikrotikPackage("");
   };
 
-  const changePackage = (e) => {
+  // mikrotik package find handler
+  const selectMikrotikPackage = ({ target }) => {
+    const mikrotikPackage = pppoePackage.find(
+      (pack) => pack.id === target.value
+    );
+    setMikrotikPackage(mikrotikPackage);
+  };
+
+  const customer = bulkCustomer.map((val) => {
+    // home user data
+    const homeUser = val.original;
+
+    // home user billing date
+    const billingDate = new Date(val.original.billingCycle);
+
+    // customer bill month days
+    const monthDate = new Date(
+      billingDate.getFullYear(),
+      billingDate.getMonth(),
+      0
+    ).getDate();
+
+    // customer bill month day
+    const monthDay = new Date(
+      billingDate.getFullYear(),
+      billingDate.getMonth() - 1,
+      billingDate.getDate()
+    );
+
+    // customer useds day in current date
+    const daysUsed = getMonthStartDay(monthDay);
+
+    // customer bill day left
+    const dayLeft = getCustomerDayLeft(homeUser.billingCycle);
+
+    // customer current package useds day amount
+    const currentPackgeUsedDayAmount =
+      (homeUser.monthlyFee / monthDate) * daysUsed;
+
+    // customer current package day left amount
+    const currentPackgeBalance =
+      homeUser.monthlyFee - currentPackgeUsedDayAmount;
+
+    // customer day left amount
+    const changePackageDayLeftAmount =
+      (mikrotikPackage.rate / monthDate) * dayLeft;
+
+    return { currentPackgeBalance, changePackageDayLeftAmount };
+  });
+
+  // customer package change and recharge
+  const customersPackageUpdateHandle = (e) => {
     e.preventDefault();
 
     bulkCustomer.map((temp) => temp.original.monthlyFee);
@@ -75,7 +126,7 @@ const BulkPackageEdit = ({ bulkCustomer, show, setShow }) => {
           acc.push(current);
         } else {
           otherCusetomerCount++;
-          toast.error("মাইক্রটিক এর মধ্যে এই" + current.original.name + "নেই");
+          // toast.error("মাইক্রটিক এর মধ্যে এই" + current.original.name + "নেই");
         }
         return acc;
       }, []);
@@ -97,26 +148,16 @@ const BulkPackageEdit = ({ bulkCustomer, show, setShow }) => {
           t("otherMtkUsers")
       );
       if (confirm) {
-        bulkPackageEdit(dispatch, data, setIsLoading, setShow);
+        // bulkPackageEdit(dispatch, data, setIsLoading, setShow);
       }
     } else {
       alert(t("selectPackage"));
     }
   };
 
-  // select Mikrotik Package
-  const selectMikrotikPackage = (e) => {
-    const mikrotikPackageId = e.target.value;
-    if (mikrotikPackageId === "0") {
-      setMikrotikPackage("");
-    } else {
-      setMikrotikPackage(mikrotikPackageId);
-    }
-  };
-
   return (
-    <RootBulkModal show={show} setShow={setShow} header={t("updatePackage")}>
-      <form onSubmit={changePackage}>
+    <>
+      <RootBulkModal show={show} setShow={setShow} header={t("updatePackage")}>
         {Getmikrotik.length > 0 ? (
           <div className="displayGrid2">
             <div>
@@ -130,7 +171,11 @@ const BulkPackageEdit = ({ bulkCustomer, show, setShow }) => {
               >
                 <option value="">...</option>
                 {Getmikrotik?.map((val, key) => (
-                  <option key={key} value={val.id}>
+                  <option
+                    key={key}
+                    value={val.id}
+                    selected={val.id === bulkCustomer[0]?.original.mikrotik}
+                  >
                     {val.name}
                   </option>
                 ))}
@@ -187,21 +232,36 @@ const BulkPackageEdit = ({ bulkCustomer, show, setShow }) => {
           <button
             type="button"
             className="btn btn-secondary"
-            disabled={isLoading}
             onClick={() => setShow(false)}
           >
             {t("cancel")}
           </button>
           <button
-            type="submit"
+            type="button"
             className="btn btn-success"
-            disabled={isLoading}
+            onClick={() => {
+              setShow(false);
+              setModalStatus("PackageUpdateRecharge");
+              setModalShow(true);
+            }}
           >
-            {isLoading ? <Loader /> : t("save")}
+            {t("submit")}
           </button>
         </div>
-      </form>
-    </RootBulkModal>
+      </RootBulkModal>
+
+      {/* package update customer monthly recharge modal */}
+      {/* {modalStatus === "PackageUpdateRecharge" && (
+        <BulkPackageUpdateRecharge
+          show={modalShow}
+          customer={customer}
+          setShow={setModalShow}
+          bulkCustomer={bulkCustomer}
+          singleMikrotik={singleMikrotik}
+          mikrotikPackage={mikrotikPackage}
+        />
+      )} */}
+    </>
   );
 };
 

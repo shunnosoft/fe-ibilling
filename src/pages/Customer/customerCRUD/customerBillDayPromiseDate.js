@@ -39,3 +39,23 @@ export const getCustomerPromiseDate = (data) => {
 
   return { billDate, promiseDate, promiseDateChange };
 };
+
+// customer month start day
+export const getMonthStartDay = (startDate) => {
+  //current day
+  const currentDay = new Date(
+    new Date(moment(date).format("YYYY-MM-DD"))
+  ).getTime();
+
+  // month start date
+  const monthStartDate = new Date(
+    new Date(moment(startDate).format("YYYY-MM-DD"))
+  ).getTime();
+
+  const diffInMs = currentDay - monthStartDate;
+
+  //month used days
+  const usedDays = Math.round(diffInMs / (1000 * 60 * 60 * 24));
+
+  return usedDays;
+};
