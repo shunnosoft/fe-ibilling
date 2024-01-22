@@ -378,9 +378,9 @@ const IspOwnerDashboard = () => {
       month: filterDate.getMonth() + 1,
     };
 
-    getIspOwnerDashboardCardData(
+    getIspOwnerDashboardOverViewData(
       dispatch,
-      setLoadingDashboardData,
+      setDashboardLoading,
       ispOwnerId,
       filterData
     );
@@ -393,9 +393,9 @@ const IspOwnerDashboard = () => {
       month: filterDate.getMonth() + 1,
     };
 
-    getIspOwnerDashboardCardData(
+    getIspOwnerDashboardOverViewData(
       dispatch,
-      setLoadingDashboardData,
+      setDashboardLoading,
       ispOwnerId,
       filterData
     );
