@@ -40,7 +40,7 @@ export default function CreateExpenditure() {
   };
 
   const expenditureHandler = async (formdata, resetForm) => {
-    if (balance <= formdata.amount) {
+    if (userRole === "collector" && balance <= formdata.amount) {
       setIsLoading(false);
       return toast.error(t("youDoNotHaveEnoughCollectionBalance"));
     }
