@@ -5,6 +5,11 @@ const chartsSlice = createSlice({
   initialState: {
     charts: [],
     customerStat: {},
+    dashboardOverview: {},
+    dashboardBelowAdminCardData: {},
+    dashboardBelowManagerCardData: {},
+    dashboardBelowResellerCardData: {},
+    dashboardBelowCollectorCardData: {},
   },
   reducers: {
     getChartSuccess: (state, { payload }) => {
@@ -16,9 +21,36 @@ const chartsSlice = createSlice({
     clearChart: (state) => {
       state.charts = [];
     },
+
+    getDashboardOverViewData: (state, { payload }) => {
+      state.dashboardOverview = payload;
+    },
+    getBelowAdminCardData: (state, { payload }) => {
+      state.dashboardBelowAdminCardData = payload;
+    },
+    getBelowManagerCardData: (state, { payload }) => {
+      state.dashboardBelowManagerCardData = payload;
+    },
+    getBelowManagerCardData: (state, { payload }) => {
+      state.dashboardBelowManagerCardData = payload;
+    },
+    getBelowCollectorCardData: (state, { payload }) => {
+      state.dashboardBelowCollectorCardData = payload;
+    },
+    getBelowResellerCardData: (state, { payload }) => {
+      state.dashboardBelowResellerCardData = payload;
+    },
   },
 });
 
-export const { getChartSuccess, clearChart, getCardDataSuccess } =
-  chartsSlice.actions;
+export const {
+  getChartSuccess,
+  clearChart,
+  getCardDataSuccess,
+  getBelowAdminCardData,
+  getBelowManagerCardData,
+  getDashboardOverViewData,
+  getBelowResellerCardData,
+  getBelowCollectorCardData,
+} = chartsSlice.actions;
 export default chartsSlice.reducer;

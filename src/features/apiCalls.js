@@ -105,7 +105,15 @@ import {
   deleteCustomerBillReport,
   deleteBillReportSuccess,
 } from "./paymentSlice";
-import { getChartSuccess, getCardDataSuccess } from "./chartsSlice";
+import {
+  getChartSuccess,
+  getCardDataSuccess,
+  getDashboardOverViewData,
+  getBelowAdminCardData,
+  getBelowManagerCardData,
+  getBelowCollectorCardData,
+  getBelowResellerCardData,
+} from "./chartsSlice";
 import {
   getAllRechargeHistory,
   historyEditSuccess,
@@ -351,6 +359,101 @@ export const getIspOwnerDashboardCardData = async (
     dispatch(getCardDataSuccess(res.data));
   } catch (err) {
     console.log("Card data error: ", err);
+    toast.error(err.response?.data?.message);
+  }
+  setIsloading(false);
+};
+
+// get dashboard overview
+export const getIspOwnerDashboardOverViewData = async (
+  dispatch,
+  setIsloading,
+  ispOwnerId,
+  filterData
+) => {
+  setIsloading(true);
+  try {
+    const res = await apiLink(
+      `/dashboard/overview/${ispOwnerId}?year=${filterData.year}&month=${filterData.month}`
+    );
+    dispatch(getDashboardOverViewData(res.data));
+  } catch (err) {
+    toast.error(err.response?.data?.message);
+  }
+  setIsloading(false);
+};
+
+// get dashboard below admin card data
+export const getDashboardBelowIspOwnerCardData = async (
+  dispatch,
+  setIsloading,
+  ispOwnerId,
+  filterData
+) => {
+  setIsloading(true);
+  try {
+    const res = await apiLink(
+      `/dashboard/ispOwner/data/${ispOwnerId}?year=${filterData.year}&month=${filterData.month}`
+    );
+    dispatch(getBelowAdminCardData(res.data));
+  } catch (err) {
+    toast.error(err.response?.data?.message);
+  }
+  setIsloading(false);
+};
+
+// get dashboard below manager card data
+export const getDashboardBelowManagerCardData = async (
+  dispatch,
+  setIsloading,
+  ispOwnerId,
+  filterData
+) => {
+  setIsloading(true);
+  try {
+    const res = await apiLink(
+      `/dashboard/manager/data/${ispOwnerId}?year=${filterData.year}&month=${filterData.month}`
+    );
+    dispatch(getBelowManagerCardData(res.data));
+  } catch (err) {
+    toast.error(err.response?.data?.message);
+  }
+  setIsloading(false);
+};
+
+// get dashboard below collector card data
+export const getDashboardBelowCollectorCardData = async (
+  dispatch,
+  setIsloading,
+  ispOwnerId,
+  filterData
+) => {
+  setIsloading(true);
+  try {
+    const res = await apiLink(
+      `/dashboard/collector/data/${ispOwnerId}?year=${filterData.year}&month=${filterData.month}`
+    );
+    dispatch(getBelowCollectorCardData(res.data));
+  } catch (err) {
+    toast.error(err.response?.data?.message);
+  }
+  setIsloading(false);
+};
+
+// get dashboard below collector card data
+export const getDashboardBelowResellerCardData = async (
+  dispatch,
+  setIsloading,
+  ispOwnerId,
+  filterData
+) => {
+  setIsloading(true);
+  try {
+    const res = await apiLink(
+      `/dashboard/reseller/data/${ispOwnerId}?year=${filterData.year}&month=${filterData.month}`
+    );
+    dispatch(getBelowResellerCardData(res.data));
+  } catch (err) {
     toast.error(err.response?.data?.message);
   }
   setIsloading(false);

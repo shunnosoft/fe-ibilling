@@ -506,7 +506,6 @@
   "todayTotalCollectorDeposite": "Today",
   "totalDue": "Total Due",
   "possibleCollection": "Expected",
-  "totalCollection": "Collected",
   "todayBillCollection": "Today Bill Collection",
   "totalBillCollected": "Total Bill Collected",
   "totalDepositCollector": "Total Deposit",
@@ -912,5 +911,13 @@
   "previousMonthDeposit": "Previous Month's Deposit",
   "youDoNotHaveEnoughCollectionBalance": "You don't have enough Bill Collection balance!",
   "customerNotify": "Customer Notify",
-  "customerNotifyTemplate": "Customer Notify Template"
+  "customerNotifyTemplate": "Customer Notify Template",
+  "totalDiscount": "Total Discount",
+  "todayDiscount": "Today Discount",
+  "totalConnectionFee": "Total Connection Fee",
+  "todayConnectionFee": "Today Connection Fee",
+  "totalCollection": "Total Collection",
+  "todayDeposit": "Today Deposit",
+  "todayExpenditure": "Today Expenditure",
+  "allManager": "All Manager"
 }

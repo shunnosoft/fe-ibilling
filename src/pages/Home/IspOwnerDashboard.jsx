@@ -5,32 +5,31 @@ import { Line } from "react-chartjs-2";
 import "chart.js/auto";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
-import {
-  People,
-  ThreeDotsVertical,
-  BarChartFill,
-  PersonCheckFill,
-  ChatSquareDots,
-} from "react-bootstrap-icons";
 import moment from "moment";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import ReactDatePicker from "react-datepicker";
 import { easeQuadIn } from "d3-ease";
 import { Accordion } from "react-bootstrap";
-import { Link } from "react-router-dom";
+
+// custom hooks import
+import useISPowner from "../../hooks/useISPOwner";
+import useAreaPackage from "../../hooks/useAreaPackage";
 
 // internal imports
 import "./home.css";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import {
-  fetchReseller,
   getAllPackages,
   getArea,
   getCollector,
+  getDashboardBelowCollectorCardData,
+  getDashboardBelowIspOwnerCardData,
+  getDashboardBelowManagerCardData,
+  getDashboardBelowResellerCardData,
+  getIspOwnerDashboardOverViewData,
   getIspOwnerData,
   getManger,
-  getPPPoEPackage,
 } from "../../features/apiCalls";
 import {
   getIspOwnerCharts,
@@ -41,43 +40,69 @@ import FormatNumber from "../../components/common/NumberFormat";
 import AnimatedProgressProvider from "../../components/common/AnimationProgressProvider";
 import Loader from "../../components/common/Loader";
 import Footer from "../../components/admin/footer/Footer";
-import Inactive from "./dataComponent/Inactive";
-import Expired from "./dataComponent/Expired";
-import FreeCustomer from "./dataComponent/FreeCustomer";
-import Paid from "./dataComponent/Paid";
-import Unpaid from "./dataComponent/Unpaid";
-import Active from "./dataComponent/Active";
-import AllCollector from "./dataComponent/AllCollector";
-import Reseller from "./dataComponent/Reseller";
-import Discount from "./dataComponent/Discount";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
 import { getHotspotPackage } from "../../features/hotspotApi";
 import { getSubAreasApi } from "../../features/actions/customerApiCall";
-import useISPowner from "../../hooks/useISPOwner";
+import DashboardCard from "./dashboardCard/DashboardCard";
 
-export default function IspOwnerDashboard() {
+const IspOwnerDashboard = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
-  // get user & current user data form useISPOwner
-  const { role, ispOwnerId } = useISPowner();
+  // get current date
+  const getDate = new Date();
+  const currentDate = {
+    year: getDate.getFullYear(),
+    month: getDate.getMonth() + 1,
+  };
 
-  //get ispOwner data when logged in
-  const ispOwnerData = useSelector(
-    (state) => state.persistedReducer.auth.currentUser.ispOwner
+  // full year twelve months
+  const monthsName = [
+    { value: "January", label: t("january") },
+    { value: "February", label: t("february") },
+    { value: "March", label: t("march") },
+    { value: "April", label: t("april") },
+    { value: "May", label: t("may") },
+    { value: "June", label: t("june") },
+    { value: "July", label: t("July") },
+    { value: "August", label: t("august") },
+    { value: "September", label: t("september") },
+    { value: "October", label: t("october") },
+    { value: "November", label: t("november") },
+    { value: "December", label: t("december") },
+  ];
+
+  // get user & current user data form useISPOwner hooks
+  const { role, ispOwnerData, ispOwnerId, bpSettings } = useISPowner();
+
+  // get users area pacages form useAreaPackage hook
+  const { areas, subAreas, allPackage, hotsPackage } = useAreaPackage();
+
+  // get dashboard over view data form redux store
+  const dashboardOverView = useSelector(
+    (state) => state.chart.dashboardOverview
   );
 
-  //get ispOwner data from any component
-  const ispOwner = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerData
+  // get dashboard Below  admin card data form redux store
+  const dashboardBelowAdminCardData = useSelector(
+    (state) => state.chart.dashboardBelowAdminCardData
   );
 
-  // ispOwner permissions
-  const ispOwnerPermission = ispOwner.bpSettings;
+  // get dashboard Below manager card data form redux store
+  const dashboardBelowManagerCardData = useSelector(
+    (state) => state.chart.dashboardBelowManagerCardData
+  );
 
-  //get reseller data
-  const reseller = useSelector((state) => state.reseller);
+  // get dashboard Below collector card data form redux store
+  const dashboardBelowCollectorCardData = useSelector(
+    (state) => state.chart.dashboardBelowCollectorCardData
+  );
+
+  // get dashboard Below reseller card data form redux store
+  const dashboardBelowResellerCardData = useSelector(
+    (state) => state.chart.dashboardBelowResellerCardData
+  );
 
   //get all Collectors
   const allCollector = useSelector((state) => state.collector.collector);
@@ -88,9 +113,6 @@ export default function IspOwnerDashboard() {
   //get graph data
   const ChartsData = useSelector((state) => state.chart.charts);
 
-  //get dashboard different cards data
-  const customerStat = useSelector((state) => state.chart.customerStat);
-
   //get payment invoice to check expiration
   const invoice = useSelector((state) => state.invoice.invoice);
 
@@ -99,8 +121,13 @@ export default function IspOwnerDashboard() {
     (state) => state.adminNetFeeSupport?.bulletinPermission
   );
 
-  //all internal states
+  // loading states
   const [isLoading, setIsloading] = useState(false);
+  const [dashboardLoading, setDashboardLoading] = useState(false);
+  const [adminCardLoading, setAdminCardLoading] = useState(false);
+  const [managerCardLoading, setManagerCardLoading] = useState(false);
+  const [collectorCardLoading, setCollectorCardLoading] = useState(false);
+  const [resellerCardLoading, setResellerCardLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loadingDashboardData, setLoadingDashboardData] = useState(false);
   const [packageLoading, setPackageLoading] = useState(false);
@@ -112,9 +139,8 @@ export default function IspOwnerDashboard() {
   const [count, setCount] = useState([]);
   const [currentCollector, setCurrentCollector] = useState("");
 
-  // choose modal handle
-  const [status, setStatus] = useState("");
-  const [show, setShow] = useState(false);
+  // accordion eventKey state
+  const [accordionKey, setAccordionKey] = useState([]);
 
   //all dates states
   const date = new Date();
@@ -125,6 +151,48 @@ export default function IspOwnerDashboard() {
 
   const minMonth = new Date(ispOwnerData?.createdAt);
   minMonth.setDate(1);
+
+  //api calls
+  useEffect(() => {
+    // get dashboard over view api
+    getIspOwnerDashboardOverViewData(
+      dispatch,
+      setDashboardLoading,
+      ispOwnerId,
+      currentDate
+    );
+
+    //get graph chart data
+    getIspOwnerCharts(setLoading, dispatch, ispOwnerId, Year, Month);
+
+    // get ispOwner data api
+    Object.keys(ispOwnerData)?.length === 0 &&
+      getIspOwnerData(dispatch, ispOwnerId, setIsloading);
+
+    // get all manager api
+    Object.keys(manager)?.length === 0 && getManger(dispatch, ispOwnerId);
+
+    // // get all collector api
+    allCollector?.length === 0 &&
+      getCollector(dispatch, ispOwnerId, setIsloading);
+
+    // get area api
+    areas.length === 0 && getArea(dispatch, ispOwnerId, setPackageLoading);
+
+    // get sub area api
+    subAreas.length === 0 && getSubAreasApi(dispatch, ispOwnerId);
+
+    //get all customer package api
+    allPackage.length === 0 &&
+      getAllPackages(dispatch, ispOwnerId, setPackageLoading);
+
+    // get hotspot package api call
+    hotsPackage.length === 0 &&
+      getHotspotPackage(dispatch, ispOwnerId, setPackageLoading);
+
+    // get netFee bulletin api call
+    Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
+  }, []);
 
   // collectors and managers for graph filter
   useEffect(() => {
@@ -144,46 +212,6 @@ export default function IspOwnerDashboard() {
     setCollectors(collectors);
   }, [allCollector, manager]);
 
-  //api calls
-  useEffect(() => {
-    Object.keys(ispOwner)?.length === 0 &&
-      getIspOwnerData(dispatch, ispOwnerId, setIsloading);
-
-    Object.keys(manager)?.length === 0 && getManger(dispatch, ispOwnerId);
-
-    reseller?.reseller.length === 0 &&
-      fetchReseller(dispatch, ispOwnerId, setIsloading);
-
-    allCollector?.length === 0 &&
-      getCollector(dispatch, ispOwnerId, setIsloading);
-
-    //get graph chart data
-    getIspOwnerCharts(setLoading, dispatch, ispOwnerId, Year, Month);
-
-    //get card data
-    getIspOwnerDashboardCardData(dispatch, setLoadingDashboardData, ispOwnerId);
-
-    // get netFee bulletin api call
-    Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
-  }, []);
-
-  useEffect(() => {
-    // get area api
-    getArea(dispatch, ispOwnerId, setPackageLoading);
-
-    // get sub area api
-    getSubAreasApi(dispatch, ispOwnerId);
-
-    //get all customer package
-    getAllPackages(dispatch, ispOwnerId, setPackageLoading);
-
-    // get pppoe package api call
-    getPPPoEPackage(dispatch, ispOwnerId, setPackageLoading);
-
-    // get hotspot package api call
-    getHotspotPackage(dispatch, ispOwnerId, setPackageLoading);
-  }, [status]);
-
   //graph data calculation
   useEffect(() => {
     let tempArr = [],
@@ -201,20 +229,58 @@ export default function IspOwnerDashboard() {
     setCount(tempCount);
   }, [ChartsData]);
 
-  const monthsName = [
-    { value: "January", label: t("january") },
-    { value: "February", label: t("february") },
-    { value: "March", label: t("march") },
-    { value: "April", label: t("april") },
-    { value: "May", label: t("may") },
-    { value: "June", label: t("june") },
-    { value: "July", label: t("July") },
-    { value: "August", label: t("august") },
-    { value: "September", label: t("september") },
-    { value: "October", label: t("october") },
-    { value: "November", label: t("november") },
-    { value: "December", label: t("december") },
-  ];
+  // dashboard accordion change api call
+  const handleAccordionChange = (eventKey) => {
+    setAccordionKey(eventKey);
+
+    if (
+      eventKey.includes("admin") &&
+      Object.keys(dashboardBelowAdminCardData).length === 0
+    ) {
+      getDashboardBelowIspOwnerCardData(
+        dispatch,
+        setAdminCardLoading,
+        ispOwnerId,
+        currentDate
+      );
+    }
+
+    if (
+      eventKey.includes("manager") &&
+      Object.keys(dashboardBelowManagerCardData).length === 0
+    ) {
+      getDashboardBelowManagerCardData(
+        dispatch,
+        setManagerCardLoading,
+        ispOwnerId,
+        currentDate
+      );
+    }
+
+    if (
+      eventKey.includes("collector") &&
+      Object.keys(dashboardBelowCollectorCardData).length === 0
+    ) {
+      getDashboardBelowCollectorCardData(
+        dispatch,
+        setCollectorCardLoading,
+        ispOwnerId,
+        currentDate
+      );
+    }
+
+    if (
+      eventKey.includes("reseller") &&
+      Object.keys(dashboardBelowResellerCardData).length === 0
+    ) {
+      getDashboardBelowResellerCardData(
+        dispatch,
+        setResellerCardLoading,
+        ispOwnerId,
+        currentDate
+      );
+    }
+  };
 
   //chartsData for graph
   const chartsData = {
@@ -277,24 +343,25 @@ export default function IspOwnerDashboard() {
 
   // probability amount calculation ispOwner permission wise
   const probabilityAmountCalculation = () => {
-    if (ispOwnerPermission?.dashboardProbabilityAmountWithNewCustomer) {
+    if (bpSettings?.dashboardProbabilityAmountWithNewCustomer) {
       return (
-        customerStat.totalProbableAmount -
-        customerStat.totalInactiveAmount -
-        customerStat.newCustomerBillCount
+        dashboardOverView.totalProbableAmount -
+        dashboardOverView.totalInactiveAmount -
+        dashboardOverView.newCustomerBillCount
       );
     } else {
       return (
-        customerStat.totalProbableAmount - customerStat.totalInactiveAmount
+        dashboardOverView.totalProbableAmount -
+        dashboardOverView.totalInactiveAmount
       );
     }
   };
 
   //percantage calculation
-  const collectionPercentage = customerStat
+  const collectionPercentage = dashboardOverView
     ? Math.floor(
-        ((customerStat.totalBillCollection -
-          customerStat.totalMonthlyDiscount) /
+        ((dashboardOverView.totalMonthlyCollection -
+          dashboardOverView.totalMonthlyDiscount) /
           probabilityAmountCalculation()) *
           100
       )
@@ -333,10 +400,10 @@ export default function IspOwnerDashboard() {
   return (
     <>
       <div className="container homeWrapper">
-        {loadingDashboardData && (
+        {dashboardLoading && (
           <div
             className={`d-flex justify-content-center align-items-center Loader ${
-              loadingDashboardData && "d-block"
+              dashboardLoading && "d-block"
             }`}
           >
             <div class="d-flex justify-content-center align-items-center spinner-square">
@@ -420,47 +487,19 @@ export default function IspOwnerDashboard() {
                     <h2>
                       {t("totalCollection")} <br /> ৳ &nbsp;
                       {FormatNumber(
-                        customerStat.totalBillCollection -
-                          customerStat.totalMonthlyDiscount
+                        bpSettings?.dashboardProbabilityAmountWithNewCustomer
+                          ? dashboardOverView.totalMonthlyCollection -
+                              dashboardOverView.newCustomerBillCollection -
+                              dashboardOverView.totalMonthlyDiscount
+                          : dashboardOverView.totalMonthlyCollection -
+                              dashboardOverView.totalMonthlyDiscount
                       )}
                     </h2>
                   </div>
                 </div>
 
                 <div className="d-flex justify-content-between d_calculation_section">
-                  <div
-                    id="dashboard_active_inactive_calculation"
-                    className="d-flex justify-content-between align-items-center "
-                  >
-                    <p
-                      className="fw-700 me-3"
-                      style={{ fontSize: "20px", cursor: "pointer" }}
-                      onClick={() => {
-                        setStatus("active");
-                        setShow(true);
-                      }}
-                    >
-                      {t("active")} &nbsp;
-                      <span className="text-secondary fw-bold">
-                        ৳{FormatNumber(customerStat.totalActiveAmount)}
-                      </span>
-                    </p>
-
-                    <p
-                      className="fw-700"
-                      style={{ fontSize: "20px", cursor: "pointer" }}
-                      onClick={() => {
-                        setStatus("expired");
-                        setShow(true);
-                      }}
-                    >
-                      {t("expired")} &nbsp;
-                      <span className="text-secondary fw-bold">
-                        ৳{FormatNumber(customerStat.totalExpiredAmount)}
-                      </span>
-                    </p>
-                  </div>
-
+                  <div></div>
                   <div
                     id="reload_search"
                     className="d-flex justify-content-end "
@@ -518,213 +557,14 @@ export default function IspOwnerDashboard() {
                     </button>
                   </div>
                 </div>
-
-                {/* </div> */}
               </div>
 
-              <div className="col-md-3">
-                <div id="card1" className="dataCard">
-                  <ThreeDotsVertical className="ThreeDots" />
-                  <div className="cardIcon">
-                    <People />
-                  </div>
-                  <div className="chartSection">
-                    <p style={{ fontSize: "16px" }}>{t("total customer")}</p>
-                    <h2>{FormatNumber(customerStat.customers)}</h2>
-
-                    <Link to={"/other/customer"}>
-                      <p
-                        className="dashboardData"
-                        style={{ fontSize: "15px", marginBottom: "0px" }}
-                      >
-                        {t("newCustomer")}:&nbsp;
-                        {FormatNumber(customerStat.newCustomer)}
-                        &nbsp;
-                        <span className="text-info">
-                          ৳ {FormatNumber(customerStat.newCustomerBillCount)}
-                        </span>
-                      </p>
-                    </Link>
-                  </div>
-                </div>
-              </div>
-
-              <div className="col-md-3" key={2}>
-                <div id="card2" className="dataCard">
-                  <ThreeDotsVertical className="ThreeDots" />
-                  <div className="cardIcon">
-                    <PersonCheckFill />
-                  </div>
-                  <div className="chartSection">
-                    <p
-                      className="dashboardActive pb-0"
-                      style={{ fontSize: "16px" }}
-                      onClick={() => {
-                        setStatus("active");
-                        setShow(true);
-                      }}
-                    >
-                      {t("active")}
-                      <h4>{FormatNumber(customerStat.active)}</h4>
-                    </p>
-
-                    {role === "ispOwner" && (
-                      <p
-                        className="dashboardActive pb-1"
-                        style={{ fontSize: "15px" }}
-                        onClick={() => {
-                          setStatus("active");
-                          setShow(true);
-                        }}
-                      >
-                        {t("active")}
-                        &nbsp;
-                        <span className="text-info">
-                          ৳ {FormatNumber(customerStat.totalActiveAmount)}
-                        </span>
-                      </p>
-                    )}
-                    <p
-                      className="dashboardData pb-1 pt-0"
-                      style={{ fontSize: "15px", marginBottom: "0px" }}
-                      onClick={() => {
-                        setStatus("inactive");
-                        setShow(true);
-                      }}
-                    >
-                      {t("in active")}: {FormatNumber(customerStat.inactive)}
-                      &nbsp;
-                      {role === "ispOwner" && (
-                        <span className="text-info">
-                          ৳ {FormatNumber(customerStat.totalInactiveAmount)}
-                        </span>
-                      )}
-                    </p>
-                    <p
-                      className="dashboardData pb-1"
-                      style={{ fontSize: "15px", paddingTop: "0px" }}
-                      onClick={() => {
-                        setStatus("expired");
-                        setShow(true);
-                      }}
-                    >
-                      {t("expired")}: {FormatNumber(customerStat.expired)}
-                      &nbsp;
-                      {role === "ispOwner" && (
-                        <span className="text-info">
-                          ৳{FormatNumber(customerStat.totalExpiredAmount)}
-                        </span>
-                      )}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="col-md-3" key={3}>
-                <div id="card3" className="dataCard">
-                  <ThreeDotsVertical className="ThreeDots" />
-                  <div className="cardIcon">
-                    <BarChartFill />
-                  </div>
-                  <div className="chartSection">
-                    <p
-                      className="dashboardUnpaid pb-0"
-                      style={{ fontSize: "16px" }}
-                      onClick={() => {
-                        setStatus("paid");
-                        setShow(true);
-                      }}
-                    >
-                      {t("paid")}
-                      <h4>{FormatNumber(customerStat.paid)}</h4>
-                    </p>
-
-                    <p
-                      className="dashboardUnpaid pb-1"
-                      style={{ fontSize: "15px" }}
-                      onClick={() => {
-                        setStatus("unpaid");
-                        setShow(true);
-                      }}
-                    >
-                      {t("unpaid")}: {FormatNumber(customerStat.unpaid)}
-                    </p>
-
-                    <p
-                      className="dashboardUnpaid pb-1"
-                      style={{
-                        fontSize: "15px",
-                        paddingTop: "0px",
-                      }}
-                      onClick={() => {
-                        setStatus("freeCustomer");
-                        setShow(true);
-                      }}
-                    >
-                      {t("freeCustomer")}:
-                      {FormatNumber(customerStat.freeCustomer)}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="col-md-3">
-                <div id="card4" className="dataCard">
-                  <ThreeDotsVertical className="ThreeDots" />
-                  <div className="cardIcon">৳</div>
-                  <div className="chartSection">
-                    {role === "ispOwner" && (
-                      <>
-                        <p style={{ fontSize: "16px", paddingTop: "10px" }}>
-                          {t("total collection")}
-                          <h4>
-                            ৳
-                            {FormatNumber(
-                              customerStat.totalBillCollection -
-                                customerStat.totalMonthlyDiscount
-                            )}
-                          </h4>
-                        </p>
-                      </>
-                    )}
-                    {role !== "collector" && (
-                      <>
-                        {role === "ispOwner" && (
-                          <>
-                            <p className="pb-0" style={{ fontSize: "13px" }}>
-                              {t("newCustomer")}:&nbsp; ৳
-                              {FormatNumber(
-                                customerStat.newCustomerBillCollection
-                              )}
-                            </p>
-                            <p className="pb-0" style={{ fontSize: "13px" }}>
-                              {t("withoutDiscount")}:&nbsp; ৳
-                              {FormatNumber(customerStat.totalBillCollection)}
-                            </p>
-
-                            <p
-                              className="dashboardCollection pb-0"
-                              style={{ fontSize: "15px" }}
-                              onClick={() => {
-                                setStatus("discount");
-                                setShow(true);
-                              }}
-                            >
-                              {t("discount")}:&nbsp; ৳
-                              {FormatNumber(customerStat.totalMonthlyDiscount)}
-                            </p>
-
-                            <p className="fs-6">
-                              {t("today collection")}&nbsp;৳
-                              {FormatNumber(customerStat.todayBillCollection)}
-                            </p>
-                          </>
-                        )}
-                      </>
-                    )}
-                  </div>
-                </div>
-              </div>
+              {/* dashboard overview card */}
+              <DashboardCard
+                dashboardCard={dashboardOverView}
+                filterDate={filterDate}
+                cardRole="overView"
+              />
             </div>
             <hr />
 
@@ -817,451 +657,73 @@ export default function IspOwnerDashboard() {
               </div>
             </FourGround>
 
-            <Accordion alwaysOpen>
-              <Accordion.Item eventKey="0">
+            <Accordion
+              alwaysOpen
+              onSelect={handleAccordionChange}
+              activeKey={accordionKey}
+            >
+              <Accordion.Item eventKey="admin">
                 <Accordion.Header>
                   <h4 className="mb-0">{t("roleAdmin")}</h4>
                 </Accordion.Header>
                 <Accordion.Body>
-                  <div className="row">
-                    <div className="col-md-3">
-                      <div id="card12" className="dataCard">
-                        <ThreeDotsVertical className="ThreeDots" />
-                        <div className="cardIcon">৳</div>
-                        <div className="chartSection">
-                          <p style={{ fontSize: "16px" }}>
-                            {t("totalCollection")}
-                          </p>
-                          <h2>
-                            ৳
-                            {FormatNumber(
-                              customerStat?.ispOwner?.billCollection -
-                                customerStat?.ispOwner?.monthlyDiscount
-                            )}
-                          </h2>
-
-                          <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                            {t("today")}:
-                            {FormatNumber(
-                              customerStat?.ispOwner?.billCollectionToday
-                            )}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-md-3">
-                      <div id="card14" className="dataCard">
-                        <ThreeDotsVertical className="ThreeDots" />
-                        <div className="cardIcon">৳</div>
-                        <div className="chartSection">
-                          <p style={{ fontSize: "16px" }}>
-                            {t("connectionFee")}
-                          </p>
-                          <h2>
-                            ৳
-                            {FormatNumber(
-                              customerStat?.ispOwner?.monthlyConnectionFee
-                            )}
-                          </h2>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-md-3">
-                      <div id="card8" className="dataCard">
-                        <ThreeDotsVertical className="ThreeDots" />
-                        <div className="cardIcon">৳</div>
-                        <div className="chartSection">
-                          <p style={{ fontSize: "16px" }}>{t("ownCost")}</p>
-                          <h2>
-                            ৳{FormatNumber(customerStat?.ispOwner?.expenditure)}
-                          </h2>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-md-3">
-                      <div id="card7" className="dataCard">
-                        <ThreeDotsVertical className="ThreeDots" />
-                        <div className="cardIcon">৳</div>
-                        <div className="chartSection">
-                          <p style={{ fontSize: "16px" }}>
-                            {t("totalExpenditure")}
-                          </p>
-                          <h2>
-                            ৳ {FormatNumber(customerStat?.totalExpenditure)}
-                          </h2>
-
-                          <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                            {t("todayTotalExpenditure")}:
-                            {FormatNumber(customerStat?.todayExpenditure)}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-md-3">
-                      <div id="card11" className="dataCard">
-                        <ThreeDotsVertical className="ThreeDots" />
-                        <div className="cardIcon">৳</div>
-                        <div className="chartSection">
-                          <p style={{ fontSize: "16px" }}>{t("salary")}</p>
-                          <h2>৳ {FormatNumber(customerStat?.totalSalary)}</h2>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-md-3">
-                      <div id="card1" className="dataCard">
-                        <ThreeDotsVertical className="ThreeDots" />
-                        <div className="cardIcon">৳</div>
-                        <div className="chartSection">
-                          <p style={{ fontSize: "16px" }}>
-                            {t("businessBalance")}
-                          </p>
-                          <h2>
-                            ৳ {FormatNumber(customerStat?.ispOwner?.balance)}
-                          </h2>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-md-3">
-                      <div id="card5" className="dataCard">
-                        <ThreeDotsVertical className="ThreeDots" />
-                        <div className="cardIcon">৳</div>
-                        <div className="chartSection">
-                          <p style={{ fontSize: "16px" }}>{t("ownBalance")}</p>
-                          <h2>
-                            ৳ {FormatNumber(customerStat?.ispOwner?.ownBalance)}
-                          </h2>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-md-3">
-                      <div id="card5" className="dataCard">
-                        <ThreeDotsVertical className="ThreeDots" />
-                        <div className="cardIcon">
-                          <ChatSquareDots />
-                        </div>
-                        <div className="chartSection">
-                          <p style={{ fontSize: "16px" }}>{t("nonMasking")}</p>
-                          <h2> {FormatNumber(ispOwnerData.smsBalance)}</h2>
-                          <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                            {t("masking")}:
-                            {FormatNumber(ispOwnerData.maskingSmsBalance)}
-                          </p>
-                          <p style={{ fontSize: "15px" }}>
-                            {t("fixedNumber")}:
-                            {FormatNumber(ispOwnerData.fixedNumberSmsBalance)}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  {/* dashboard below admin card */}
+                  <DashboardCard
+                    dashboardCard={dashboardBelowAdminCardData}
+                    isLoading={adminCardLoading}
+                    filterDate={filterDate}
+                    cardRole="adminCard"
+                  />
                 </Accordion.Body>
               </Accordion.Item>
 
-              <Accordion.Item eventKey="1">
+              <Accordion.Item eventKey="manager">
                 <Accordion.Header>
                   <h4 className="mb-0">{t("roleManager")}</h4>
                 </Accordion.Header>
                 <Accordion.Body>
-                  <div className="row">
-                    <div className="col-md-3">
-                      <div id="card12" className="dataCard">
-                        <ThreeDotsVertical className="ThreeDots" />
-                        <div className="cardIcon">৳</div>
-                        <div className="chartSection">
-                          <p style={{ fontSize: "16px" }}>{t("manager")}</p>
-                          <h2>
-                            {FormatNumber(customerStat?.manager?.managerLength)}
-                          </h2>
-                          <h2 style={{ fontSize: "15px" }}>
-                            {t("collection")}: ৳
-                            {FormatNumber(
-                              customerStat?.manager?.billCollection
-                            )}
-                          </h2>
-                          <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                            {t("todayTotalCollectionByManager")}:&nbsp;৳
-                            {FormatNumber(
-                              customerStat?.manager?.todayBillCollection
-                            )}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-md-3">
-                      <div id="card10" className="dataCard">
-                        <ThreeDotsVertical className="ThreeDots" />
-                        <div className="cardIcon">৳</div>
-                        <div className="chartSection">
-                          <p style={{ fontSize: "16px" }}>
-                            {t("connectionFee")}
-                          </p>
-                          <h2>
-                            ৳
-                            {FormatNumber(customerStat?.manager?.connectionFee)}
-                          </h2>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-md-3">
-                      <div id="card14" className="dataCard">
-                        <ThreeDotsVertical className="ThreeDots" />
-                        <div className="cardIcon">৳</div>
-                        <div className="chartSection">
-                          <p style={{ fontSize: "16px" }}>
-                            {t("depositCollection")}
-                          </p>
-                          <h2>
-                            ৳
-                            {FormatNumber(
-                              customerStat?.manager?.collectionDeposit
-                            )}
-                          </h2>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-md-3">
-                      <div id="card5" className="dataCard">
-                        <ThreeDotsVertical className="ThreeDots" />
-                        <div className="cardIcon">৳</div>
-                        <div className="chartSection">
-                          <p style={{ fontSize: "16px" }}>
-                            {t("totalMonthlyCollection")}
-                          </p>
-                          <h2>
-                            ৳
-                            {FormatNumber(
-                              customerStat?.manager?.totalBillCollection
-                            )}
-                          </h2>
-
-                          <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                            {t("discount")}: ৳
-                            {FormatNumber(
-                              customerStat?.manager?.totalBillDiscount
-                            )}
-                          </p>
-
-                          <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                            {t("todayTotalCollectionByManager")}:&nbsp;৳
-                            {FormatNumber(
-                              customerStat?.manager?.totalBillCollectionToday
-                            )}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-md-3" key={3}>
-                      <div id="card6" className="dataCard">
-                        <ThreeDotsVertical className="ThreeDots" />
-                        <div className="cardIcon">
-                          <BarChartFill />
-                        </div>
-                        <div className="chartSection">
-                          <p style={{ fontSize: "16px" }}>
-                            {t("totalManagerDeposite")}
-                          </p>
-                          <h2>
-                            ৳ {FormatNumber(customerStat?.manager?.deposit)}
-                          </h2>
-
-                          <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                            {t("todayTotalManagerDeposite")}:&nbsp;৳
-                            {FormatNumber(customerStat?.manager?.todayDeposit)}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-md-3">
-                      <div id="card8" className="dataCard">
-                        <ThreeDotsVertical className="ThreeDots" />
-                        <div className="cardIcon">৳</div>
-                        <div className="chartSection">
-                          <p style={{ fontSize: "16px" }}>{t("cost")}</p>
-                          <h2>
-                            ৳ {FormatNumber(customerStat?.manager?.expenditure)}
-                          </h2>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-md-3">
-                      <div id="card11" className="dataCard">
-                        <ThreeDotsVertical className="ThreeDots" />
-                        <div className="cardIcon">৳</div>
-                        <div className="chartSection">
-                          <p style={{ fontSize: "16px" }}>{t("staffSalary")}</p>
-                          <h2>
-                            ৳ {FormatNumber(customerStat?.manager?.staffSalary)}
-                          </h2>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-md-3">
-                      <div id="card7" className="dataCard">
-                        <ThreeDotsVertical className="ThreeDots" />
-                        <div className="cardIcon">৳</div>
-                        <div className="chartSection">
-                          <p style={{ fontSize: "16px" }}>
-                            {t("managersBalance")}
-                          </p>
-                          <h2>
-                            ৳ {FormatNumber(customerStat?.manager?.balance)}
-                          </h2>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  {/* dashboard below manager card */}
+                  <DashboardCard
+                    dashboardCard={dashboardBelowManagerCardData}
+                    isLoading={managerCardLoading}
+                    filterDate={filterDate}
+                    cardRole="managerCard"
+                  />
                 </Accordion.Body>
               </Accordion.Item>
 
-              {customerStat?.collector?.collectors ? (
-                <>
-                  <Accordion.Item eventKey="2">
-                    <Accordion.Header className="shadow-none">
-                      <h4 className="mb-0">{t("roleCollector")}</h4>
-                    </Accordion.Header>
-                    <Accordion.Body>
-                      <div className="row ">
-                        <div className="col-md-3">
-                          <div
-                            id="card9"
-                            className="dataCard"
-                            data-bs-toggle="modal"
-                            data-bs-target="#allCollector"
-                            onClick={() => setStatus("collector")}
-                            style={{ cursor: "pointer" }}
-                          >
-                            <ThreeDotsVertical className="ThreeDots" />
-                            <div className="cardIcon">৳</div>
-                            <div className="chartSection">
-                              <p style={{ fontSize: "16px" }}>
-                                {t("allCollector")}
-                              </p>
-                              <h2>
-                                {FormatNumber(
-                                  customerStat?.collector?.collectors
-                                )}
-                              </h2>
+              {dashboardOverView.collectors > 0 && (
+                <Accordion.Item eventKey="collector">
+                  <Accordion.Header className="shadow-none">
+                    <h4 className="mb-0">{t("roleCollector")}</h4>
+                  </Accordion.Header>
+                  <Accordion.Body>
+                    {/* dashboard below collector card */}
+                    <DashboardCard
+                      dashboardCard={dashboardBelowCollectorCardData}
+                      isLoading={collectorCardLoading}
+                      filterDate={filterDate}
+                      cardRole="collectorCard"
+                    />
+                  </Accordion.Body>
+                </Accordion.Item>
+              )}
 
-                              <p style={{ fontSize: "15px" }}>
-                                {t("totalCollection")}:&nbsp;৳
-                                {FormatNumber(
-                                  customerStat?.collector?.billCollection
-                                )}
-                              </p>
-
-                              <p style={{ fontSize: "15px" }}>
-                                {t("todayTotalCollectionByCollector")}:&nbsp;৳
-                                {FormatNumber(
-                                  customerStat?.collector?.todayBillCollection
-                                )}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="col-md-3">
-                          <div id="card13" className="dataCard">
-                            <ThreeDotsVertical className="ThreeDots" />
-                            <div className="cardIcon">৳</div>
-                            <div className="chartSection">
-                              <p style={{ fontSize: "16px" }}>
-                                {t("connectionFee")}
-                              </p>
-                              <h2>
-                                ৳
-                                {FormatNumber(
-                                  customerStat?.collector?.connectionFee
-                                )}
-                              </h2>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="col-md-3" key={2}>
-                          <div id="card10" className="dataCard">
-                            <ThreeDotsVertical className="ThreeDots" />
-                            <div className="cardIcon">
-                              <PersonCheckFill />
-                            </div>
-                            <div className="chartSection">
-                              <p style={{ fontSize: "16px" }}>
-                                {t("totalManagerDeposite")}
-                              </p>
-                              <h2>
-                                ৳
-                                {FormatNumber(customerStat?.collector?.deposit)}
-                              </h2>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="col-md-3">
-                          <div id="card13" className="dataCard">
-                            <ThreeDotsVertical className="ThreeDots" />
-                            <div className="cardIcon">৳</div>
-                            <div className="chartSection">
-                              <p style={{ fontSize: "16px" }}>
-                                {t("managersBalance")}
-                              </p>
-                              <h2>
-                                ৳
-                                {FormatNumber(customerStat?.collector?.balance)}
-                              </h2>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </Accordion.Body>
-                  </Accordion.Item>
-
-                  {customerStat?.reseller?.resellers > 0 && (
-                    <Accordion.Item eventKey="3">
-                      <Accordion.Header className="shadow-none">
-                        <h4 className="mb-0">{t("reseller")}</h4>
-                      </Accordion.Header>
-                      <Accordion.Body>
-                        <div className="row ">
-                          <div className="col-md-3">
-                            <div
-                              id="card1"
-                              className="dataCard"
-                              data-bs-toggle="modal"
-                              data-bs-target="#resellerInformationModal"
-                              onClick={() => setStatus("reseller")}
-                              style={{ cursor: "pointer" }}
-                            >
-                              <ThreeDotsVertical className="ThreeDots" />
-                              <div className="cardIcon">
-                                <People />
-                              </div>
-                              <div className="chartSection">
-                                <p style={{ fontSize: "16px" }}>
-                                  {t("reseller")}
-                                </p>
-                                <h2>
-                                  {FormatNumber(
-                                    customerStat?.reseller?.resellers
-                                  )}
-                                </h2>
-
-                                <p
-                                  style={{
-                                    fontSize: "15px",
-                                    paddingTop: "10px",
-                                  }}
-                                >
-                                  {t("totalMonthlyBillCollect")}:&nbsp;৳
-                                  {FormatNumber(
-                                    customerStat?.reseller?.billCollection
-                                  )}
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </Accordion.Body>
-                    </Accordion.Item>
-                  )}
-                </>
-              ) : (
-                ""
+              {dashboardOverView.resellers > 0 && (
+                <Accordion.Item eventKey="reseller">
+                  <Accordion.Header className="shadow-none">
+                    <h4 className="mb-0">{t("reseller")}</h4>
+                  </Accordion.Header>
+                  <Accordion.Body>
+                    {/* dashboard below reseller card */}
+                    <DashboardCard
+                      dashboardCard={dashboardBelowResellerCardData}
+                      isLoading={resellerCardLoading}
+                      filterDate={filterDate}
+                      cardRole="resellerCard"
+                    />
+                  </Accordion.Body>
+                </Accordion.Item>
               )}
             </Accordion>
           </div>
@@ -1269,107 +731,12 @@ export default function IspOwnerDashboard() {
         </FontColor>
       </div>
 
-      {/* dashboard modal */}
-
-      {/* all active customers modal */}
-      {status === "active" && (
-        <Active
-          status={status}
-          modalShow={show}
-          setModalShow={setShow}
-          ispOwnerId={ispOwnerId}
-          year={filterDate.getFullYear()}
-          month={filterDate.getMonth() + 1}
-        />
-      )}
-
-      {/* all active customers modal */}
-      {status === "inactive" && (
-        <Inactive
-          status={status}
-          modalShow={show}
-          setModalShow={setShow}
-          ispOwnerId={ispOwnerId}
-          year={filterDate.getFullYear()}
-          month={filterDate.getMonth() + 1}
-        />
-      )}
-
-      {/* all expired customers modal */}
-      {status === "expired" && (
-        <Expired
-          status={status}
-          modalShow={show}
-          setModalShow={setShow}
-          ispOwnerId={ispOwnerId}
-          year={filterDate.getFullYear()}
-          month={filterDate.getMonth() + 1}
-        />
-      )}
-
-      {/* all paid customers modal */}
-      {status === "paid" && (
-        <Paid
-          status={status}
-          modalShow={show}
-          setModalShow={setShow}
-          ispOwnerId={ispOwnerId}
-          year={filterDate.getFullYear()}
-          month={filterDate.getMonth() + 1}
-        />
-      )}
-
-      {/* all unpaid customers modal */}
-      {status === "unpaid" && (
-        <Unpaid
-          status={status}
-          modalShow={show}
-          setModalShow={setShow}
-          ispOwnerId={ispOwnerId}
-          year={filterDate.getFullYear()}
-          month={filterDate.getMonth() + 1}
-        />
-      )}
-
-      {/* owner free customer modal */}
-      {status === "freeCustomer" && (
-        <FreeCustomer
-          status={status}
-          modalShow={show}
-          setModalShow={setShow}
-          ispOwnerId={ispOwnerId}
-          year={filterDate.getFullYear()}
-          month={filterDate.getMonth() + 1}
-        />
-      )}
-      {status === "discount" && (
-        <Discount
-          status={status}
-          modalShow={show}
-          setModalShow={setShow}
-          ispOwnerId={ispOwnerId}
-          year={filterDate.getFullYear()}
-          month={filterDate.getMonth() + 1}
-        />
-      )}
-
-      <AllCollector
-        status={status}
-        ispOwnerId={ispOwnerId}
-        year={filterDate.getFullYear()}
-        month={filterDate.getMonth() + 1}
-      />
-      <Reseller
-        status={status}
-        ispOwnerId={ispOwnerId}
-        year={filterDate.getFullYear()}
-        month={filterDate.getMonth() + 1}
-      />
-
       {/* dashboard netFee bulletin added */}
       {(butPermission?.dashboard || butPermission?.allPage) && (
         <NetFeeBulletin />
       )}
     </>
   );
-}
+};
+
+export default IspOwnerDashboard;

@@ -1,0 +1,262 @@
+.order-card {
+  color: #fff;
+}
+
+.bg-card-01 {
+  background: linear-gradient(45deg, #0c9397, #05abba);
+  height: 9rem;
+}
+
+.bg-card-02 {
+  background: linear-gradient(45deg, #147dda, #25a1db);
+  height: 9rem;
+}
+
+.bg-card-03 {
+  background: linear-gradient(45deg, #48995c, #86d63c);
+  height: 9rem;
+}
+
+.bg-card-04 {
+  background: linear-gradient(45deg, #f18c0f, #f1c01d);
+  height: 9rem;
+}
+
+.bg-card-05 {
+  background: linear-gradient(45deg, #ed2a2a, #e36671);
+  height: 9rem;
+}
+
+.bg-card-06 {
+  background: linear-gradient(45deg, #8b8888, #9e9698);
+  height: 9rem;
+}
+
+.bg-card-07 {
+  background: linear-gradient(45deg, #7991ac, #9db0c7);
+  height: 9rem;
+}
+
+.bg-card-08 {
+  background: linear-gradient(45deg, #4b75a5, #348aec);
+  height: 9rem;
+}
+
+.bg-card-09 {
+  background: linear-gradient(45deg, #b2a409, #aca443);
+  height: 9rem;
+}
+
+.bg-card-10 {
+  background: linear-gradient(45deg, #4b75a5, #348aec);
+  height: 9rem;
+}
+
+.bg-card-11 {
+  background: linear-gradient(45deg, #19bbe8, #1cdad6);
+  height: 9rem;
+}
+
+.bg-card-12 {
+  background: linear-gradient(45deg, #435859, #36b9bd);
+  height: 9rem;
+}
+
+.bg-card-13 {
+  background: linear-gradient(45deg, #3b5868, #6b8b9c);
+  height: 9rem;
+}
+/* 14,15,16 */
+.bg-card-17 {
+  background: linear-gradient(45deg, #23c7cc, #4bc8cc);
+  height: 9rem;
+}
+
+.bg-card-18 {
+  background: linear-gradient(45deg, #1f7bac, #35a6e3);
+  height: 9rem;
+}
+
+.bg-card-19 {
+  background: linear-gradient(45deg, #6f6d6d, #97c4b9);
+  height: 9rem;
+}
+
+.bg-card-20 {
+  background: linear-gradient(45deg, #454545, #a98467);
+  height: 9rem;
+}
+
+.bg-card-21 {
+  background: linear-gradient(45deg, #30d4da, #608ba6);
+  height: 9rem;
+}
+
+.bg-card-22 {
+  background: linear-gradient(45deg, #488a8d, #73bb70);
+  height: 9rem;
+}
+
+.bg-card-23 {
+  background: linear-gradient(45deg, #22b096, #53b5f2);
+  height: 9rem;
+}
+
+.bg-card-24 {
+  background: linear-gradient(45deg, #8e4f4f, #ab9148);
+  height: 9rem;
+}
+
+.bg-card-25 {
+  background: linear-gradient(45deg, #435859, #36b9bd);
+  height: 9rem;
+}
+
+.bg-card-26 {
+  background: linear-gradient(45deg, #486378, #39b88c);
+  height: 9rem;
+}
+
+.bg-card-27 {
+  background: linear-gradient(45deg, #784860, #3988b8);
+  height: 9rem;
+}
+
+.bg-card-28 {
+  background: linear-gradient(45deg, #307ea5, #45cc77);
+  height: 9rem;
+}
+
+.bg-card-29 {
+  background: linear-gradient(45deg, #435859, #36b9bd);
+  height: 9rem;
+}
+
+.bg-card-30 {
+  background: linear-gradient(45deg, #435859, #7c9992);
+  height: 9rem;
+}
+
+.bg-card-31 {
+  background: linear-gradient(45deg, #914c71, #378353);
+  height: 9rem;
+}
+
+.bg-card-32 {
+  background: linear-gradient(45deg, #5f6a8b, #26c0c5);
+  height: 9rem;
+}
+
+.bg-card-33 {
+  background: linear-gradient(45deg, #4ad97c, #6b9df8);
+  height: 9rem;
+}
+
+.bg-card-34 {
+  background: linear-gradient(45deg, #729194, #43e4e4);
+  height: 9rem;
+}
+
+.bg-card-35 {
+  background: linear-gradient(45deg, #c44da6, #56c068);
+  height: 9rem;
+}
+
+.bg-card-36 {
+  background: linear-gradient(45deg, #4d79c4, #56c0b9);
+  height: 9rem;
+}
+
+.card {
+  border-radius: 5px;
+  -webkit-box-shadow: 0 1px 2.94px 0.06px rgba(4, 26, 55, 0.16);
+  box-shadow: 0 1px 2.94px 0.06px rgba(4, 26, 55, 0.16);
+  border: none !important;
+  -webkit-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+  height: 9rem !important;
+}
+
+.card .card-block {
+  padding: 20px 25px;
+}
+
+.f-left {
+  float: left;
+}
+
+.f-right {
+  float: right;
+}
+
+.display_card {
+  display: grid;
+  grid-gap: 0.3rem 0rem;
+}
+.display_card > p {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.card_Icon {
+  font-size: 30px;
+  width: 45px;
+  height: 45px;
+  background: rgb(255 255 255 / 18%);
+  text-align: center;
+  border-radius: 20%;
+  margin-right: 10px;
+}
+
+.total_collection_amount {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.dashboard_card {
+  display: grid;
+  row-gap: 0.5rem;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+/* loader css */
+.host {
+  width: 50px;
+  height: 800px;
+  margin: auto;
+  padding-top: 40px;
+}
+.loading {
+  width: 8px;
+  height: 8px;
+  border-radius: 100%;
+  float: left;
+  margin-right: 5px;
+}
+.loading-0 {
+  animation: bounce 1s infinite;
+  animation-delay: 0.1s;
+  background: #000000;
+}
+.loading-1 {
+  animation: bounce 1s infinite;
+  animation-delay: 0.3s;
+  background: #000000;
+}
+.loading-2 {
+  animation: bounce 1s infinite ease;
+  animation-delay: 0.5s;
+  background: #000000;
+}
+@keyframes bounce {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  60% {
+    opacity: 0;
+  }
+}

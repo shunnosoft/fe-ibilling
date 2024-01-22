@@ -510,7 +510,6 @@
   "todayTotalCollectorDeposite": "আজ",
   "totalDue": "মোট বকেয়া",
   "possibleCollection": "সম্ভাব্য",
-  "totalCollection": "কালেকশন",
   "todayBillCollection": "আজকের বিল কালেকশন",
   "totalBillCollected": "মোট বিল কালেকশন",
   "totalDepositCollector": "মোট ডিপোজিট",
@@ -918,5 +917,13 @@
   "previousMonthDeposit": "পূর্বের মাসের ডিপোজিট",
   "youDoNotHaveEnoughCollectionBalance": "আপনার কাছে পর্যাপ্ত বিল সংগ্রহ ব্যালেন্স নেই!",
   "customerNotify": "কাস্টমার নোটিফাই",
-  "customerNotifyTemplate": "কাস্টমার নোটিফাই টেমপ্লেট"
+  "customerNotifyTemplate": "কাস্টমার নোটিফাই টেমপ্লেট",
+  "totalDiscount": "মোট ডিসকাউন্ট",
+  "todayDiscount": "আজকে ডিসকাউন্ট",
+  "totalConnectionFee": "মোট সংযোগ ফি",
+  "todayConnectionFee": "আজকের সংযোগ ফি",
+  "totalCollection": "মোট কালেকশন",
+  "todayDeposit": "আজকের ডিপোজিট",
+  "todayExpenditure": "আজকে খরচ",
+  "allManager": "সকল ম্যানেজার"
 }
