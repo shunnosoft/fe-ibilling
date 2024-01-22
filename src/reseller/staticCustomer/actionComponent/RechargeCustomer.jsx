@@ -1,312 +1,26 @@
-import { useEffect, useRef, useState } from "react";
-import { Form, Formik } from "formik";
-import { useSelector } from "react-redux";
-import * as Yup from "yup";
+import { useTranslation } from "react-i18next";
+import { Card, Modal, ModalHeader, ModalTitle } from "react-bootstrap";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 
 //internal imports
-import { FtextField } from "../../../components/common/FtextField";
 import "../../Customer/customer.css";
-import { useDispatch } from "react-redux";
-import {
-  billCollect,
-  getResellerPackageRate,
-  resellerInfo,
-} from "../../../features/apiCallReseller";
-import Loader from "../../../components/common/Loader";
-import DatePicker from "react-datepicker";
-import Select from "react-select";
-import { useTranslation } from "react-i18next";
-import ReactToPrint from "react-to-print";
-import RechargePrintInvoice from "../../../pages/Customer/customerCRUD/bulkOpration/RechargePrintInvoice";
-import { Modal, ModalBody, ModalHeader, ModalTitle } from "react-bootstrap";
-import SelectField from "../../../components/common/SelectField";
-import { toast } from "react-toastify";
+
+import CustomerBillCollect from "../staticCustomerCrud/CustomerBillCollect";
+import { getConnectionFee } from "../../../features/apiCalls";
 
 const RechargeCustomer = ({ show, setShow, single, customerData }) => {
   const { t } = useTranslation();
-
-  // current month date
-  const date = new Date();
-  const monthDate = date.getMonth();
-
-  // twelve month options
-  const options = [
-    { value: "January", label: t("january") },
-    { value: "February", label: t("february") },
-    { value: "March", label: t("march") },
-    { value: "April", label: t("april") },
-    { value: "May", label: t("may") },
-    { value: "June", label: t("june") },
-    { value: "July", label: t("July") },
-    { value: "August", label: t("august") },
-    { value: "September", label: t("september") },
-    { value: "October", label: t("october") },
-    { value: "November", label: t("november") },
-    { value: "December", label: t("december") },
-  ];
-
-  const customer = useSelector((state) => state?.customer?.staticCustomer);
-
-  const data = customer.find((item) => item.id === single);
-
-  const [billType, setBillType] = useState("bill");
-
-  const ispOwner = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerId
-  );
-
-  const userData = useSelector((state) => state.persistedReducer.auth.userData);
-
-  const currentUser = useSelector(
-    (state) => state.persistedReducer.auth?.currentUser
-  );
-
-  const currentUserId = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.id
-  );
-
-  //get collectorPermission
-  const collectorPermission = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.permissions
-  );
-
-  //get resellerId from userData store
-  const resellerId = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.reseller
-  );
-
-  // get user permission
-  const resellerPermission = useSelector(
-    (state) => state.persistedReducer.auth.userData.permission
-  );
-
-  const collectorResellerInfo = useSelector(
-    (state) => state.resellerProfile.reseller
-  );
-
-  //get roles
-  const role = useSelector((state) => state.persistedReducer.auth?.role);
   const dispatch = useDispatch();
-  const [isLoading, setLoading] = useState(false);
 
-  //billing date
-  const [startDate, setStartDate] = useState(false);
-  const [endDate, setEndDate] = useState(false);
-  const [noteCheck, setNoteCheck] = useState(false);
-  const [note, setNote] = useState("");
-  const [selectedMonth, setSelectedMonth] = useState([]);
-  const resellerRechargePrint = useRef();
-
-  const [responseData, setResponseData] = useState({});
-  const [test, setTest] = useState(false);
-
-  // set reseller package rate
-  const [packageRate, setPackageRate] = useState();
-
-  const BillValidatoin = Yup.object({
-    amount: Yup.number()
-      .min(0, t("billNotAcceptable"))
-      .integer(t("decimalNumberNotAcceptable")),
-  });
-
+  // get customer api call
   useEffect(() => {
-    //get reseller package based commission
-    data &&
-      userData?.commissionType === "packageBased" &&
-      userData?.commissionStyle === "fixedRate" &&
-      getResellerPackageRate(
-        data?.reseller,
-        data?.mikrotikPackage,
-        setPackageRate
-      );
+    //get customer paid connection fee
+    getConnectionFee(dispatch, single);
+  }, [single]);
 
-    let temp = [];
-
-    // customer billing date
-    const dataMonth = new Date(data?.billingCycle).getMonth();
-
-    if (data?.balance === 0 && data?.paymentStatus === "unpaid") {
-      // month to monthly bill
-      temp.push(options[dataMonth]);
-    } else if (data?.balance === 0 && data?.paymentStatus === "paid") {
-      // month to monthly bill
-      temp.push(options[dataMonth]);
-    } else if (
-      data?.balance >= data?.monthlyFee &&
-      data?.paymentStatus === "paid"
-    ) {
-      // customer advance monthly bill
-      const modVal = Math.floor(data?.balance / data?.monthlyFee);
-      temp.push(options[dataMonth + modVal]);
-
-      if (dataMonth + modVal > 11) {
-        const totalMonth = dataMonth + modVal - 12;
-        temp.push(options[totalMonth]);
-      }
-    } else if (
-      data?.balance < 0 &&
-      data?.paymentStatus === "unpaid" &&
-      (data?.status === "active" || data?.status === "expired")
-    ) {
-      // customer privous monthly bill
-      const modVal = Math.floor(Math.abs(data?.balance / data?.monthlyFee));
-
-      // customer privous years total due month
-      const dueMonth = dataMonth - modVal;
-
-      //find customer privous years dou month
-      if (dueMonth < 0) {
-        const totalMonth = 12 - Math.abs(dueMonth);
-
-        for (let i = totalMonth; i <= 11; i++) {
-          temp.push(options[i]);
-        }
-      }
-
-      //find customer current years dou month
-      if (modVal < 11) {
-        for (let i = dueMonth; i <= dataMonth; i++) {
-          if (!(i < 0)) {
-            temp.push(options[i]);
-          }
-        }
-      }
-    } else if (
-      data?.balance < 0 &&
-      data?.paymentStatus === "unpaid" &&
-      data?.status === "inactive"
-    ) {
-      // customer privous monthly bill
-      const modVal = Math.floor(Math.abs(data?.balance / data?.monthlyFee));
-
-      // customer total due month
-      const dueMonth = dataMonth - modVal;
-
-      //find customer privous years dou month
-      if (dueMonth < 0) {
-        const totalMonth = 12 - Math.abs(dueMonth);
-
-        for (let i = totalMonth; i <= 11; i++) {
-          temp.push(options[i]);
-        }
-      }
-
-      //find customer current years dou month
-      if (modVal < 11) {
-        for (let i = dueMonth; i <= monthDate; i++) {
-          if (!(i < 0)) {
-            temp.push(options[i]);
-          }
-        }
-      }
-    }
-
-    setSelectedMonth(temp);
-  }, [data]);
-
-  //print button is clicked after successful response
-  useEffect(() => {
-    if (test) {
-      if (
-        (role === "reseller" && resellerPermission?.instantRechargeBillPrint) ||
-        (role === "collector" &&
-          collectorPermission?.instantRechargeBillPrint &&
-          collectorResellerInfo?.permission.instantRechargeBillPrint)
-      ) {
-        document.getElementById("printButtonReseller").click();
-        setTest(!test);
-      }
-    }
-  }, [test]);
-
-  //api is called to get reseller info for the reseller collector customer
-  useEffect(() => {
-    resellerInfo(resellerId, dispatch);
-  }, [resellerId]);
-
-  //modal show handler
-  const handleClose = () => {
-    setShow(false);
-  };
-
-  // bill amount
-  const customerBillHandler = (formValue) => {
-    if (
-      billType !== "connectionFee" &&
-      userData?.commissionType === "packageBased" &&
-      userData?.commissionStyle === "fixedRate" &&
-      packageRate.ispOwnerRate > formValue.amount
-    ) {
-      toast.error(t("rechargeAmountMustBeUptoIspOwnerRate"));
-      return;
-    }
-
-    if (
-      !(
-        billType !== "connectionFee" &&
-        userData?.commissionType === "packageBased" &&
-        userData?.commissionStyle === "fixedRate"
-      ) &&
-      data?.monthlyFee > formValue.amount + data?.balance
-    ) {
-      toast.error(t("rechargeAmountMustBeUptoOrEqualMonthlyFee"));
-      return;
-    }
-
-    const sendingData = {
-      amount: formValue.amount,
-      collectedBy: currentUser?.user.role,
-      billType: billType,
-      name: userData.name,
-      customer: data?.id,
-      ispOwner: ispOwner,
-      user: currentUser?.user.id,
-      collectorId: currentUserId, //when collector is logged in
-      medium: formValue.medium,
-      package: data.queue.package,
-    };
-
-    if (note) sendingData.note = note;
-
-    if (startDate && endDate) {
-      sendingData.start = startDate.toISOString();
-      sendingData.end = endDate.toISOString();
-    }
-
-    if (billType === "connectionFee") {
-      sendingData.month = "Connection Fee";
-    } else {
-      if (selectedMonth?.length === 0) {
-        setLoading(false);
-        return toast.warn(t("selctMonth"));
-      } else {
-        const monthValues = selectedMonth.map((item) => {
-          return item.value;
-        });
-        sendingData.month = monthValues.join(",");
-      }
-    }
-
-    billCollect(
-      dispatch,
-      sendingData,
-      setLoading,
-      resetForm,
-      setResponseData,
-      setTest,
-      "static",
-      setShow
-    );
-  };
-
-  //form resetFunction
-  const resetForm = () => {
-    setStartDate(false);
-    setEndDate(false);
-    setNote("");
-    setNoteCheck(false);
-    setSelectedMonth(null);
-  };
+  // modal close handler
+  const handleClose = () => setShow(false);
 
   return (
     <>
@@ -328,224 +42,55 @@ const RechargeCustomer = ({ show, setShow, single, customerData }) => {
             </h5>
           </ModalTitle>
         </ModalHeader>
-        <ModalBody>
-          <Formik
-            initialValues={{
-              amount:
-                data?.balance < data?.monthlyFee
-                  ? data?.monthlyFee - data?.balance
-                  : data?.monthlyFee,
-              medium: "cash",
-            }}
-            validationSchema={BillValidatoin}
-            onSubmit={(values) => {
-              customerBillHandler(values);
-            }}
-            enableReinitialize
-          >
-            {() => (
-              <Form>
-                <table
-                  className="table table-bordered"
-                  style={{ lineHeight: "12px" }}
-                >
-                  <tbody>
-                    <tr>
-                      <td>{t("id")}</td>
-                      <td>
-                        <b>{data?.customerId}</b>
-                      </td>
-                      <td>{t("queue")}</td>
-                      <td>
-                        <b>{data?.queue?.name}</b>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>{t("name")}</td>
-                      <td>
-                        <b>{data?.name}</b>
-                      </td>
-                      <td>{t("mobile")}</td>
-                      <td className="text-primary">
-                        <b>{data?.mobile}</b>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>{t("monthly")}</td>
-                      <td className="text-success">
-                        <b>{data?.monthlyFee}</b>
-                      </td>
-                      <td>{t("balance")}</td>
-                      <td className="text-info">
-                        <b>{data?.balance}</b>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+        <Card>
+          <Card.Body className="pb-0">
+            <table
+              className="table table-bordered"
+              style={{ lineHeight: "12px" }}
+            >
+              <tbody>
+                <tr>
+                  <td>{t("id")}</td>
+                  <td>
+                    <b>{customerData?.customerId}</b>
+                  </td>
+                  <td>{t("queue")}</td>
+                  <td>
+                    <b>{customerData?.queue?.name}</b>
+                  </td>
+                </tr>
+                <tr>
+                  <td>{t("name")}</td>
+                  <td>
+                    <b>{customerData?.name}</b>
+                  </td>
+                  <td>{t("mobile")}</td>
+                  <td className="text-primary">
+                    <b>{customerData?.mobile}</b>
+                  </td>
+                </tr>
+                <tr>
+                  <td>{t("monthly")}</td>
+                  <td className="text-success">
+                    <b>{customerData?.monthlyFee}</b>
+                  </td>
+                  <td>{t("balance")}</td>
+                  <td className="text-info">
+                    <b>{customerData?.balance}</b>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </Card.Body>
 
-                <div className="displayGrid">
-                  <div className="displayGrid2">
-                    <FtextField
-                      type="number"
-                      name="amount"
-                      label={t("amount")}
-                    />
-
-                    <SelectField label={t("medium")} name="medium">
-                      <option value="cash" selected>
-                        {t("handCash")}
-                      </option>
-                      <option value="bKash"> {t("bKash")} </option>
-                      <option value="rocket"> {t("rocket")} </option>
-                      <option value="nagad"> {t("nagad")} </option>
-                      <option value="others"> {t("others")} </option>
-                    </SelectField>
-                  </div>
-
-                  {billType === "bill" && (
-                    <div className="month">
-                      <label
-                        className="form-check-label changeLabelFontColor"
-                        htmlFor="selectMonth"
-                      >
-                        {t("selectMonth")}
-                      </label>
-                      <Select
-                        className="mt-0"
-                        value={selectedMonth}
-                        onChange={(data) => setSelectedMonth(data)}
-                        options={options}
-                        isMulti={true}
-                        placeholder={t("selectMonth")}
-                        isSearchable
-                        id="selectMonth"
-                      />
-                    </div>
-                  )}
-
-                  <div className="displayGrid2">
-                    <div>
-                      <label className="form-control-label changeLabelFontColor">
-                        {t("billType")}
-                      </label>
-                      <select
-                        className="form-select mt-0"
-                        onChange={(e) => setBillType(e.target.value)}
-                      >
-                        <option value="bill"> {t("bill")} </option>
-                        <option value="connectionFee">
-                          {t("connectionFee")}
-                        </option>
-                      </select>
-                    </div>
-
-                    <div className="d-flex align-self-end">
-                      <input
-                        type="checkbox"
-                        className="form-check-input me-1"
-                        id="addNOte"
-                        onChange={(e) => setNoteCheck(e.target.checked)}
-                        checked={noteCheck}
-                      />
-                      <label
-                        className="form-check-label changeLabelFontColor"
-                        htmlFor="addNOte"
-                      >
-                        {t("noteAndDate")}
-                      </label>
-                    </div>
-                  </div>
-
-                  {noteCheck && (
-                    <>
-                      <div className="displayGrid2">
-                        <div>
-                          <label className="form-control-label changeLabelFontColor">
-                            {t("startDate")}
-                          </label>
-                          <DatePicker
-                            selected={startDate}
-                            className="form-control mw-100"
-                            onChange={(date) => setStartDate(date)}
-                            dateFormat="dd/MM/yyyy"
-                            placeholderText={t("selectDate")}
-                          />
-                        </div>
-
-                        <div>
-                          <label className="form-control-label changeLabelFontColor">
-                            {t("endDate")}
-                          </label>
-
-                          <DatePicker
-                            selected={endDate}
-                            className="form-control mw-100"
-                            onChange={(date) => setEndDate(date)}
-                            dateFormat="dd/MM/yyyy"
-                            placeholderText={t("selectDate")}
-                          />
-                        </div>
-                      </div>
-
-                      <div class="form-floating">
-                        <textarea
-                          cols={200}
-                          class="form-control shadow-none"
-                          placeholder="নোট লিখুন"
-                          id="noteField"
-                          onChange={(e) => setNote(e.target.value)}
-                        ></textarea>
-                        <label for="noteField"> {t("addNote")} </label>
-                      </div>
-                    </>
-                  )}
-
-                  {/* Print the report after instant payment component and button */}
-                  <>
-                    {((role === "reseller" &&
-                      resellerPermission?.instantRechargeBillPrint) ||
-                      (role === "collector" &&
-                        collectorPermission?.instantRechargeBillPrint &&
-                        collectorResellerInfo?.permission
-                          ?.instantRechargeBillPrint)) && (
-                      <div className="d-none">
-                        <RechargePrintInvoice
-                          ref={resellerRechargePrint}
-                          customerData={customerData}
-                          billingData={responseData}
-                          ispOwnerData={userData}
-                        />
-                      </div>
-                    )}
-
-                    <div className="d-none">
-                      <ReactToPrint
-                        documentTitle={t("saddda")}
-                        trigger={() => (
-                          <div
-                            title={t("printInvoiceBill")}
-                            style={{ cursor: "pointer" }}
-                          >
-                            <button type="button" id="printButtonReseller">
-                              Print
-                            </button>
-                          </div>
-                        )}
-                        content={() => resellerRechargePrint.current}
-                      />
-                    </div>
-                  </>
-                </div>
-
-                <div className="mt-4 float-end">
-                  <button type="submit" className="btn btn-success">
-                    {isLoading ? <Loader /> : t("submit")}
-                  </button>
-                </div>
-              </Form>
-            )}
-          </Formik>
-        </ModalBody>
+          <CustomerBillCollect
+            customerId={single}
+            customerData={customerData}
+            status="static"
+            page="recharge"
+            setShow={setShow}
+          />
+        </Card>
       </Modal>
     </>
   );

@@ -30,7 +30,7 @@ import SelectField from "../../../components/common/SelectField";
 // custome function import
 import customerBillMonth from "../../../pages/Customer/customerCRUD/customerBillMonth";
 
-const CustomerBillCollect = ({ customerId, customerData }) => {
+const CustomerBillCollect = ({ customerId, customerData, page, setShow }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
@@ -252,7 +252,7 @@ const CustomerBillCollect = ({ customerId, customerData }) => {
       setResponseData,
       setTest, //to verify successful response
       "pppoe",
-      ""
+      setShow
     );
   };
 
@@ -267,9 +267,11 @@ const CustomerBillCollect = ({ customerId, customerData }) => {
 
   return (
     <>
-      <Card.Title className="clintTitle mb-0">
-        <h5 className="profileInfo">{t("recharge")}</h5>
-      </Card.Title>
+      {page !== "recharge" && (
+        <Card.Title className="clintTitle mb-0">
+          <h5 className="profileInfo">{t("recharge")}</h5>
+        </Card.Title>
+      )}
 
       <Card.Body>
         <Formik

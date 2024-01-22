@@ -18,6 +18,7 @@ import {
   ArchiveFill,
   Phone,
   GeoAlt,
+  Cash,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -626,6 +627,27 @@ export default function RstaticCustomer() {
                   </div>
                 </li>
 
+                {((role === "reseller" && permission?.customerRecharge) ||
+                  (role === "collector" &&
+                    resellerData.permission?.customerRecharge &&
+                    permissions?.billPosting)) && (
+                  <li
+                    onClick={() => {
+                      getSpecificCustomer(original.id);
+                      getSpecificCustomerReport(original);
+                      setModalStatus("billCollect");
+                      setShow(true);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <Cash />
+                        <p className="actionP"> {t("recharge")} </p>
+                      </div>
+                    </div>
+                  </li>
+                )}
+
                 {(permission?.customerEdit || permissions?.customerEdit) && (
                   <li
                     data-bs-toggle="modal"
@@ -643,26 +665,6 @@ export default function RstaticCustomer() {
                   </li>
                 )}
 
-                {((role === "reseller" && permission?.customerRecharge) ||
-                  (role === "collector" &&
-                    resellerData.permission?.customerRecharge &&
-                    permissions?.billPosting)) && (
-                  <li
-                    onClick={() => {
-                      getSpecificCustomer(original.id);
-                      getSpecificCustomerReport(original);
-                      setModalStatus("billCollect");
-                      setShow(true);
-                    }}
-                  >
-                    <div className="dropdown-item">
-                      <div className="customerAction">
-                        <Wallet />
-                        <p className="actionP"> {t("useMemoRecharge")} </p>
-                      </div>
-                    </div>
-                  </li>
-                )}
                 {permission?.customerDelete && (
                   <li
                     data-bs-toggle="modal"

@@ -20,6 +20,7 @@ import {
   ArchiveFill,
   Phone,
   GeoAlt,
+  Cash,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -683,8 +684,8 @@ const Customer = () => {
                   >
                     <div className="dropdown-item">
                       <div className="customerAction">
-                        <CurrencyDollar />
-                        <p className="actionP">{t("useMemoRecharge")}</p>
+                        <Cash />
+                        <p className="actionP">{t("recharge")}</p>
                       </div>
                     </div>
                   </li>
@@ -1222,7 +1223,7 @@ const Customer = () => {
 
               <hr className="mt-0 mb-0" />
 
-              {permission?.customerMikrotikPackageEdit && (
+              {/* {permission?.customerMikrotikPackageEdit && (
                 <li
                   type="button"
                   className="p-1"
@@ -1242,7 +1243,7 @@ const Customer = () => {
                   </div>
                   <div className="menu_label2">{t("updatePackage")}</div>
                 </li>
-              )}
+              )} */}
             </ul>
 
             <div className="setting_icon_wraper2">

@@ -28,7 +28,13 @@ import { toast } from "react-toastify";
 // custome function import
 import customerBillMonth from "../../../pages/Customer/customerCRUD/customerBillMonth";
 
-const CustomerBillCollect = ({ customerId, customerData, status }) => {
+const CustomerBillCollect = ({
+  customerId,
+  customerData,
+  status,
+  page,
+  setShow,
+}) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
@@ -236,7 +242,7 @@ const CustomerBillCollect = ({ customerId, customerData, status }) => {
       setResponseData,
       setTest,
       status,
-      ""
+      setShow
     );
   };
 
@@ -251,9 +257,11 @@ const CustomerBillCollect = ({ customerId, customerData, status }) => {
 
   return (
     <>
-      <Card.Title className="clintTitle mb-0">
-        <h5 className="profileInfo">{t("recharge")}</h5>
-      </Card.Title>
+      {page !== "recharge" && (
+        <Card.Title className="clintTitle mb-0">
+          <h5 className="profileInfo">{t("recharge")}</h5>
+        </Card.Title>
+      )}
 
       <Card.Body>
         <Formik
