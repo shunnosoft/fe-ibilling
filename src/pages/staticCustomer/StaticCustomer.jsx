@@ -43,7 +43,7 @@ import DatePicker from "react-datepicker";
 import Footer from "../../components/admin/footer/Footer";
 import { FontColor, FourGround } from "../../assets/js/theme";
 import CustomerDetails from "./customerCRUD/CustomerDetails";
-import CustomerBillCollect from "./customerCRUD/CustomerBillCollect";
+import RechargeCustomer from "./customerCRUD/RechargeCustomer";
 import {
   getStaticCustomer,
   getPackagewithoutmikrotik,
@@ -1795,7 +1795,7 @@ export default function Customer() {
 
               {/* customer bill collection */}
               {modalStatus === "customerRecharge" && (
-                <CustomerBillCollect
+                <RechargeCustomer
                   show={show}
                   setShow={setShow}
                   single={singleCustomer}

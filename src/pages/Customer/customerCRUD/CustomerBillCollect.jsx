@@ -25,7 +25,7 @@ import ReactToPrint from "react-to-print";
 // custom function import
 import customerBillMonth from "./customerBillMonth";
 
-const CustomerBillCollect = ({ single, status }) => {
+const CustomerBillCollect = ({ single, status, page, setShow }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const rechargePrint = useRef();
@@ -244,15 +244,18 @@ const CustomerBillCollect = ({ single, status }) => {
       resetForm,
       setResponseData,
       setTest,
-      ""
+      setShow
     );
   };
 
   return (
     <>
-      <Card.Title className="clintTitle mb-0">
-        <h5 className="profileInfo">{t("recharge")}</h5>
-      </Card.Title>
+      {page !== "recharge" && (
+        <Card.Title className="clintTitle mb-0">
+          <h5 className="profileInfo">{t("recharge")}</h5>
+        </Card.Title>
+      )}
+
       <Card.Body>
         <Formik
           initialValues={{

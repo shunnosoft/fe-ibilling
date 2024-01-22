@@ -360,8 +360,12 @@ const IspOwnerDashboard = () => {
   //percantage calculation
   const collectionPercentage = dashboardOverView
     ? Math.floor(
-        ((dashboardOverView.totalMonthlyCollection -
-          dashboardOverView.totalMonthlyDiscount) /
+        ((bpSettings?.dashboardProbabilityAmountWithNewCustomer
+          ? dashboardOverView.totalMonthlyCollection -
+            dashboardOverView.newCustomerBillCollection -
+            dashboardOverView.totalMonthlyDiscount
+          : dashboardOverView.totalMonthlyCollection -
+            dashboardOverView.totalMonthlyDiscount) /
           probabilityAmountCalculation()) *
           100
       )
@@ -485,7 +489,7 @@ const IspOwnerDashboard = () => {
                   </div>
                   <div className="col-md-3 d-flex justify-content-start align-items-center">
                     <h2>
-                      {t("totalCollection")} <br /> ৳ &nbsp;
+                      {t("collection")} <br /> ৳ &nbsp;
                       {FormatNumber(
                         bpSettings?.dashboardProbabilityAmountWithNewCustomer
                           ? dashboardOverView.totalMonthlyCollection -

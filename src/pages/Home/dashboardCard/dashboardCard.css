@@ -1,5 +1,6 @@
 .order-card {
   color: #fff;
+  height: 9rem !important;
 }
 
 .bg-card-01 {
@@ -48,7 +49,7 @@
 }
 
 .bg-card-10 {
-  background: linear-gradient(45deg, #4b75a5, #348aec);
+  background: linear-gradient(45deg, rgb(100, 57, 95), rgb(133, 78, 126));
   height: 9rem;
 }
 
@@ -174,7 +175,6 @@
   border: none !important;
   -webkit-transition: all 0.3s ease-in-out;
   transition: all 0.3s ease-in-out;
-  height: 9rem !important;
 }
 
 .card .card-block {

@@ -284,3 +284,18 @@ span.button_title {
 .pdf_new_badge {
   padding: 0.09rem 0.4rem !important;
 }
+
+.inner-info > p {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 5px 0px;
+}
+
+.inner-info_name {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.recharge_title {
+  background-color: #b1b1b11b;
+}

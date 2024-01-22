@@ -1,22 +1,12 @@
-import { Card, Modal, ModalHeader, ModalTitle } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
+import { Card, Modal, ModalHeader, ModalTitle } from "react-bootstrap";
 
 //internal imports
-import "../../../Customer/customer.css";
-import CustomerBillCollect from "../CustomerBillCollect";
-import { getConnectionFee } from "../../../../features/apiCalls";
-import { useDispatch } from "react-redux";
-import { useEffect } from "react";
+import "../../Customer/customer.css";
+import CustomerBillCollect from "../../Customer/customerCRUD/CustomerBillCollect";
 
 const RechargeCustomer = ({ show, setShow, single, customerData }) => {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
-
-  // get api calls
-  useEffect(() => {
-    //get customer paid connection fee
-    getConnectionFee(dispatch, customerData.id);
-  }, [customerData]);
 
   // modal close handler
   const handleClose = () => setShow(false);
@@ -41,6 +31,7 @@ const RechargeCustomer = ({ show, setShow, single, customerData }) => {
             </h5>
           </ModalTitle>
         </ModalHeader>
+
         <Card>
           <Card.Body className="pb-0">
             <table
@@ -53,9 +44,13 @@ const RechargeCustomer = ({ show, setShow, single, customerData }) => {
                   <td>
                     <b>{customerData?.customerId}</b>
                   </td>
-                  <td>{t("pppoe")}</td>
+                  <td>{t("ip")}</td>
                   <td>
-                    <b>{customerData?.pppoe.name}</b>
+                    <b>
+                      {customerData?.userType === "firewall-queue"
+                        ? customerData?.queue.address
+                        : customerData?.queue.target}
+                    </b>
                   </td>
                 </tr>
                 <tr>
@@ -84,7 +79,7 @@ const RechargeCustomer = ({ show, setShow, single, customerData }) => {
 
           <CustomerBillCollect
             single={single}
-            status="pppoe"
+            status="static"
             page="recharge"
             setShow={setShow}
           />
