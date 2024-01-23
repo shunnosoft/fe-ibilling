@@ -1,30 +1,39 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
+import { useTranslation } from "react-i18next";
+import moment from "moment";
+
+// internal import
 import Loader from "../../../components/common/Loader";
 import { fetchMikrotikSyncUser } from "../../../features/apiCalls";
-import { useTranslation } from "react-i18next";
 import apiLink from "../../../api/apiLink";
 import Table from "../../../components/table/Table";
 import IndeterminateCheckbox from "../../../components/table/bulkCheckbox";
 import { badge } from "../../../components/common/Utils";
-import moment from "moment";
+import ComponentCustomModal from "../../../components/common/customModal/ComponentCustomModal";
+import TdLoader from "../../../components/common/TdLoader";
 
 const CustomerSync = ({
+  show,
+  setShow,
   mikrotikId,
   ispOwner,
   inActiveCustomer,
   setInActiveCustomer,
 }) => {
   const { t } = useTranslation();
-  // import dispatch
   const dispatch = useDispatch();
 
   // loading state
   const [isLoading, setIsloading] = useState(false);
-  const [customer, setCustomer] = useState([]);
   const [loaded, setLoaded] = useState(false);
+
+  // customer state
+  const [customer, setCustomer] = useState([]);
+
   // bulk customer state
   const [bulkCustomers, setBulkCustomer] = useState([]);
+
   // Sync Customer
   const syncCustomer = () => {
     // send data for api
@@ -35,9 +44,10 @@ const CustomerSync = ({
       customers: bulkCustomers.map((item) => item.original),
     };
 
-    fetchMikrotikSyncUser(dispatch, data, setIsloading);
+    fetchMikrotikSyncUser(dispatch, data, setIsloading, setShow);
   };
 
+  // sync first time
   const syncCustomerFirstTime = async () => {
     setIsloading(true);
     try {
@@ -102,13 +112,13 @@ const CustomerSync = ({
       },
       {
         width: "8%",
-        Header: t("mountly"),
+        Header: t("monthly"),
         accessor: "monthlyFee",
       },
 
       {
         width: "11%",
-        Header: t("bill"),
+        Header: t("billDate"),
         accessor: "billingCycle",
         Cell: ({ cell: { value } }) => {
           return moment(value).format("MMM DD YYYY hh:mm A");
@@ -119,92 +129,67 @@ const CustomerSync = ({
   );
 
   return (
-    <div
-      className="modal fade"
-      id="SyncCustomer"
-      tabIndex="-1"
-      aria-labelledby="customerModalDetails"
-      aria-hidden="true"
-    >
-      <div
-        className={`modal-dialog modal-dialog-scrollable ${
-          customer.length && "modal-xl"
-        }`}
+    <>
+      <ComponentCustomModal
+        show={show}
+        setShow={setShow}
+        centered={false}
+        size={customer?.length ? "xl" : "md"}
+        header={t("PPPoECustomerSync")}
       >
-        <div className="modal-content">
-          <div className="modal-header">
-            <h5
-              style={{ color: "#0abb7a" }}
-              className="modal-title"
-              id="customerModalDetails"
-            >
-              {t("PPPoECustomerSync")}
-            </h5>
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div className="modal-body">
-            {isLoading && (
-              <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
-              </div>
-            )}
-            {!loaded ? (
-              <div class="form-check mt-4">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  checked={inActiveCustomer}
-                  id="flexCheckDefault"
-                  onChange={(event) =>
-                    setInActiveCustomer(event.target.checked)
-                  }
-                />
-                <label class="form-check-label" for="flexCheckDefault">
-                  <small className="text-secondary">
-                    {t("doYouWantToSyncWithInActiveCustomer")}
-                  </small>
-                </label>
-              </div>
-            ) : (
-              <>
-                <h4>{t("selectCustomer")}</h4>
-                <Table
-                  columns={column}
-                  data={customer}
-                  isLoading={false}
-                  bulkState={{
-                    setBulkCustomer,
-                  }}
-                  bulkLength={bulkCustomers.length}
-                ></Table>
-              </>
-            )}
-          </div>
-          <div className="modal-footer" style={{ border: "none" }}>
-            <button
-              type="button"
-              className="btn btn-secondary"
-              data-bs-dismiss="modal"
-              disabled={isLoading}
-            >
-              {t("cancel")}
-            </button>
-            <button
-              onClick={loaded ? syncCustomer : syncCustomerFirstTime}
-              className="btn btn-success"
-              disabled={isLoading}
-            >
-              {isLoading ? <Loader /> : t("sync")}
-            </button>
-          </div>
+        <div>
+          {isLoading && (
+            <div className="d-flex justify-content-center align-items-center">
+              <TdLoader />
+            </div>
+          )}
+          {!loaded ? (
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                checked={inActiveCustomer}
+                id="InActiveCustomer"
+                onChange={(event) => setInActiveCustomer(event.target.checked)}
+              />
+              <label class="form-check-label" htmlFor="InActiveCustomer">
+                <small className="text-secondary">
+                  {t("doYouWantToSyncWithInActiveCustomer")}
+                </small>
+              </label>
+            </div>
+          ) : (
+            <Table
+              columns={column}
+              data={customer}
+              isLoading={false}
+              bulkState={{
+                setBulkCustomer,
+              }}
+              bulkLength={bulkCustomers.length}
+            ></Table>
+          )}
         </div>
-      </div>
-    </div>
+
+        <div className="displayGrid1 float-end mt-4">
+          <button
+            type="button"
+            className="btn btn-secondary"
+            disabled={isLoading}
+            onClick={() => setShow(false)}
+          >
+            {t("cancel")}
+          </button>
+          <button
+            onClick={loaded ? syncCustomer : syncCustomerFirstTime}
+            className="btn btn-success"
+            disabled={isLoading}
+          >
+            {isLoading ? <Loader /> : t("sync")}
+          </button>
+        </div>
+      </ComponentCustomModal>
+    </>
   );
 };
 

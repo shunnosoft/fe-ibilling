@@ -2,26 +2,26 @@ import React, { useState } from "react";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
+import { useTranslation } from "react-i18next";
 
 // internal imports
-// import { collectorData } from "../CollectorInputs";
 import "../Customer/customer.css";
-// import { FtextField } from "../../../components/common/FtextField";
 import { FtextField } from "../../components/common/FtextField";
 import Loader from "../../components/common/Loader";
 import { addPackagewithoutmikrotik } from "../../features/apiCalls";
-import { useTranslation } from "react-i18next";
+import ComponentCustomModal from "../../components/common/customModal/ComponentCustomModal";
 
-export default function CreatePackage() {
+const CreatePackage = ({ show, setShow }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const area = useSelector((state) => state.area.area);
-  const [areaIds, setAreaIds] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const auth = useSelector((state) => state.persistedReducer.auth.currentUser);
+
+  // get ispOwner id from redux store
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
   );
+
+  // loading state
+  const [isLoading, setIsLoading] = useState(false);
 
   //validator
   const collectorValidator = Yup.object({
@@ -31,102 +31,74 @@ export default function CreatePackage() {
       .integer()
       .min(1, t("minimumPackageRate1"))
       .required(t("enterPackageRate")),
-
-    // refName: Yup.string().required("রেফারেন্স নাম"),
-    // refMobile: Yup.string()
-    //   .min(11, "এগারো  ডিজিট এর সঠিক নম্বর দিন ")
-    //   .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে ")
-    //   .required("মোবাইল নম্বর দিন "),
   });
 
+  // package create handler
   const packageAddHandler = (data) => {
     const sendingData = {
       ...data,
       ispOwner: ispOwnerId,
     };
 
-    addPackagewithoutmikrotik(sendingData, dispatch, setIsLoading);
+    addPackagewithoutmikrotik(sendingData, dispatch, setIsLoading, setShow);
   };
 
   return (
-    <div>
-      {/* Model start */}
-      <div
-        className="modal fade modal-dialog-scrollable "
-        id="createPackage"
-        tabIndex="-1"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
+    <>
+      <ComponentCustomModal
+        show={show}
+        setShow={setShow}
+        centered={false}
+        size={"md"}
+        header={t("addNewPackage")}
       >
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLabel">
-                {t("addNewPackage")}
-              </h5>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body">
-              <Formik
-                initialValues={{
-                  name: "",
-                  rate: 1,
-                }}
-                validationSchema={collectorValidator}
-                onSubmit={(values) => {
-                  packageAddHandler(values);
-                }}
-                enableReinitialize
-              >
-                {() => (
-                  <Form>
-                    <div className="collectorInputs">
-                      <div className="newDisplayforpackage">
-                        <FtextField
-                          type="text"
-                          label={t("packageName")}
-                          name="name"
-                        />
-                        <FtextField
-                          min={0}
-                          type="number"
-                          label={t("packageRate")}
-                          name="rate"
-                        />
-                      </div>
-                    </div>
+        <Formik
+          initialValues={{
+            name: "",
+            rate: 1,
+          }}
+          validationSchema={collectorValidator}
+          onSubmit={(values) => {
+            packageAddHandler(values);
+          }}
+          enableReinitialize
+        >
+          {() => (
+            <Form>
+              <div className="displayGrid">
+                <FtextField type="text" label={t("packageName")} name="name" />
 
-                    <div className="modal-footer">
-                      <button
-                        type="button"
-                        className="btn btn-secondary"
-                        data-bs-dismiss="modal"
-                        disabled={isLoading}
-                      >
-                        {t("cancel")}
-                      </button>
-                      <button
-                        type="submit"
-                        className="btn btn-success customBtn"
-                        disabled={isLoading}
-                      >
-                        {isLoading ? <Loader /> : t("save")}
-                      </button>
-                    </div>
-                  </Form>
-                )}
-              </Formik>
-            </div>
-          </div>
-        </div>
-      </div>
+                <FtextField
+                  min={0}
+                  type="number"
+                  label={t("packageRate")}
+                  name="rate"
+                />
+              </div>
 
-      {/* Model finish */}
-    </div>
+              <div className="displayGrid1 float-end mt-4">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  disabled={isLoading}
+                  onClick={() => setShow(false)}
+                >
+                  {t("cancel")}
+                </button>
+                <button
+                  type="submit"
+                  className="btn btn-success customBtn"
+                  disabled={isLoading}
+                >
+                  {isLoading ? <Loader /> : t("save")}
+                </button>
+              </div>
+            </Form>
+          )}
+        </Formik>
+      </ComponentCustomModal>
+    </>
   );
-}
+};
+
+export default CreatePackage;

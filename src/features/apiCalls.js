@@ -781,34 +781,32 @@ export const getArea = async (dispatch, ispOwnerId, setIsLoading) => {
   setIsLoading(false);
 };
 
-export const addArea = async (dispatch, data, setIsLoading) => {
+export const addArea = async (dispatch, data, setIsLoading, setShow) => {
   setIsLoading(true);
   try {
     const res = await apiLink.post("/ispOwner/area", data);
-
     dispatch(AddAreaSuccess(res.data));
-    setIsLoading(false);
-    document.querySelector("#areaModal").click();
+    setShow(false);
     langMessage("success", "এরিয়া সংযুক্ত সফল হয়েছে", "Area Add Successfully");
   } catch (error) {
-    setIsLoading(false);
     toast.error(error.response?.data.message);
   }
+  setIsLoading(false);
 };
-export const editArea = async (dispatch, data, setIsLoading) => {
+export const editArea = async (dispatch, data, setIsLoading, setShow) => {
+  setIsLoading(true);
   try {
     const res = await apiLink.patch(
       `/ispOwner/area/${data.ispOwner}/${data.id}`,
       data
     );
     dispatch(EditAreaSuccess(res.data));
-    setIsLoading(false);
-    document.querySelector("#areaEditModal").click();
+    setShow(false);
     langMessage("success", "এরিয়া এডিট সফল হয়েছে", "Area Updated Successfully");
   } catch (error) {
-    setIsLoading(false);
     langMessage("error", "এরিয়া এডিট সফল হয়নি", "Area Update Failed");
   }
+  setIsLoading(false);
 };
 
 export const deleteArea = async (dispatch, data, setIsLoading) => {
@@ -1401,7 +1399,7 @@ export const deleteMikrotikCustomer = async (dispatch, data, setIsLoading) => {
 };
 
 // get Mikrotik Sync user
-export const fetchMikrotikSyncUser = async (dispatch, data, setIsLoading) => {
+export const fetchMikrotikSyncUser = async (dispatch, data, setIsLoading,setShow) => {
   setIsLoading(true);
   await apiLink({
     method: "POST",
@@ -1413,7 +1411,7 @@ export const fetchMikrotikSyncUser = async (dispatch, data, setIsLoading) => {
     .then((res) => {
       dispatch(fetchMikrotikSyncUserSuccess(res.data));
       setIsLoading(false);
-      document.querySelector("#SyncCustomer").click();
+      setShow(false);
       langMessage(
         "success",
         "মাইক্রোটিক থেকে PPPoE গ্রাহক সিঙ্ক সফল হয়েছে",
@@ -1494,7 +1492,7 @@ export const fetchMikrotik = async (dispatch, ispOwnerId, setIsLoading) => {
 };
 
 // POST mikrotik
-export const postMikrotik = async (dispatch, data, setIsLoading) => {
+export const postMikrotik = async (dispatch, data, setIsLoading, setShow) => {
   setIsLoading(true);
   await apiLink({
     url: "/mikrotik",
@@ -1506,8 +1504,7 @@ export const postMikrotik = async (dispatch, data, setIsLoading) => {
   })
     .then((res) => {
       dispatch(addMikrotikSuccess(res.data));
-      setIsLoading(false);
-      document.querySelector("#MikrotikModal").click();
+      setShow(false);
       langMessage(
         "success",
         "মাইক্রোটিক সংযুক্ত সফল হয়েছে",
@@ -1516,14 +1513,14 @@ export const postMikrotik = async (dispatch, data, setIsLoading) => {
     })
     .catch((err) => {
       if (err.response) {
-        setIsLoading(false);
         toast.error(err.response.data.message);
       }
     });
+  setIsLoading(false);
 };
 
 // PATCH mikrotik
-export const editSingleMikrotik = async (dispatch, data) => {
+export const editSingleMikrotik = async (dispatch, data, setShow) => {
   const { ispId, id, ...rest } = data;
 
   await apiLink({
@@ -1536,7 +1533,7 @@ export const editSingleMikrotik = async (dispatch, data) => {
   })
     .then((res) => {
       dispatch(editMikrotikSuccess(res.data));
-      document.querySelector("#configMikrotikModal").click();
+      setShow(false);
       langMessage(
         "success",
         "মাইক্রোটিক এডিট সফল হয়েছে",
@@ -1565,7 +1562,12 @@ export const fetchSingleMikrotik = async (mikrotik, id) => {
 };
 
 // DELETE single mikrotik
-export const deleteSingleMikrotik = async (dispatch, IDs, setIsloading) => {
+export const deleteSingleMikrotik = async (
+  dispatch,
+  IDs,
+  setIsloading,
+  setShow
+) => {
   setIsloading(true);
   await apiLink({
     method: "DELETE",
@@ -1573,9 +1575,7 @@ export const deleteSingleMikrotik = async (dispatch, IDs, setIsloading) => {
   })
     .then((res) => {
       dispatch(deleteMikrotikSuccess(IDs.id));
-
-      setIsloading(false);
-      document.querySelector("#deleteMikrotikModal").click();
+      setShow(false);
       langMessage(
         "success",
         "মাইক্রোটিক ডিলিট সফল হয়েছে",
@@ -1583,10 +1583,9 @@ export const deleteSingleMikrotik = async (dispatch, IDs, setIsloading) => {
       );
     })
     .catch((error) => {
-      setIsloading(false);
       toast.error(error.response?.data.message);
-      document.querySelector("#deleteMikrotikModal").click();
     });
+  setIsloading(false);
 };
 
 //  test
@@ -1982,7 +1981,8 @@ export const editPPPoEpackageRate = async (
   dispatch,
   data,
   setLoading,
-  resetForm
+  resetForm,
+  setShow
 ) => {
   setLoading(true);
   const { mikrotikId, pppPackageId, ...rest } = data;
@@ -1996,7 +1996,7 @@ export const editPPPoEpackageRate = async (
   })
     .then((res) => {
       dispatch(editpppoePackageSuccess(res.data));
-      document.querySelector("#pppoePackageEditModal").click();
+      setShow(false)
       langMessage(
         "success",
         "PPPoE প্যাকেজ রেট এডিট সফল হয়েছে!",
@@ -2867,25 +2867,23 @@ export const getQueuePackageByIspOwnerId = async (
 export const addPackagewithoutmikrotik = async (
   data,
   dispatch,
-  setIsLoading
+  setIsLoading,
+  setShow
 ) => {
   setIsLoading(true);
   try {
     const res = await apiLink.post(`/mikrotik/package`, data);
-    // console.log(res.data.newPackage);
     dispatch(addPackageSuccess(res.data.newPackage));
-    setIsLoading(false);
-    document.querySelector("#createPackage").click();
+    setShow(false);
     langMessage(
       "success",
       "প্যাকেজ সফলভাবে যুক্ত হয়েছে",
       "Package Added Successfully"
     );
   } catch (error) {
-    console.log(error.response?.data.message);
-    setIsLoading(false);
     langMessage("error", "প্যাকেজ অ্যাড ব্যর্থ হয়েছে", "Package Add Failed");
   }
+  setIsLoading(false);
 };
 
 export const addQueuePackage = async (data, dispatch, setIsLoading) => {
@@ -2912,25 +2910,22 @@ export const editPackagewithoutmikrotik = async (
   data,
   dispatch,
   setIsLoading,
-  packageId
+  setShow
 ) => {
   setIsLoading(true);
   try {
     const res = await apiLink.patch(`/mikrotik/package/${data?.id}`, data);
-    // console.log(res.data.updatedPackage);
     dispatch(editPackageSuccess(res.data.updatedPackage));
-    setIsLoading(false);
-    document.querySelector("#editPackage").click();
+    setShow(false);
     langMessage(
       "success",
       "প্যাকেজ এডিট সফল হয়েছে",
       "Package Updated Successfully"
     );
   } catch (error) {
-    console.log(error.response?.data.message);
-    setIsLoading(false);
-    langMessage("success", "প্যাকেজ এডিট ব্যার্থ হয়েছে", "Package Add Failed");
+    langMessage("error", "প্যাকেজ এডিট ব্যার্থ হয়েছে", "Package Add Failed");
   }
+  setIsLoading(false);
 };
 
 // DELETE pppoe Package

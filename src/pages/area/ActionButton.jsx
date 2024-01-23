@@ -8,6 +8,8 @@ export default function ActionButton({
   getSpecificArea,
   deleteSingleArea,
   data,
+  setShow,
+  setModalStatus,
 }) {
   const { t } = useTranslation();
 
@@ -35,10 +37,10 @@ export default function ActionButton({
             {!allMikrotiks.find((val) => val.name == data?.name) && (
               <>
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#areaEditModal"
                   onClick={() => {
                     getSpecificArea(data.id);
+                    setModalStatus("areaEdit");
+                    setShow(true);
                   }}
                 >
                   <div className="dropdown-item">

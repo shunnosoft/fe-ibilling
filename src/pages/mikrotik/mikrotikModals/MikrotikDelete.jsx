@@ -2,10 +2,13 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
+
+// internal import
 import Loader from "../../../components/common/Loader";
 import { deleteSingleMikrotik } from "../../../features/apiCalls";
+import ComponentCustomModal from "../../../components/common/customModal/ComponentCustomModal";
 
-const MikrotikDelete = ({ mikrotikID }) => {
+const MikrotikDelete = ({ show, setShow, mikrotikID }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
@@ -29,52 +32,38 @@ const MikrotikDelete = ({ mikrotikID }) => {
       ispOwner,
       id: mikrotikID,
     };
-    deleteSingleMikrotik(dispatch, IDs, setIsLoading);
+    deleteSingleMikrotik(dispatch, IDs, setIsLoading, setShow);
   };
 
   return (
-    <div
-      className="modal fade modal-dialog-scrollable "
-      id="deleteMikrotikModal"
-      tabIndex="-1"
-      aria-labelledby="exampleModalLabel"
-      aria-hidden="true"
-    >
-      <div className="modal-dialog">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h5 className="modal-title" id="exampleModalLabel">
-              {data?.name} {t("mikrotikDelete")}
-            </h5>
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div className="modal-body">
-            {t("areYouSureWantToDeleteMikrotik")}
-          </div>
-          <div className="modal-footer">
-            <button
-              type="button"
-              className="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              {t("cancel")}
-            </button>
-            <button
-              type="submit"
-              className="btn btn-success"
-              onClick={deleteMikrotik}
-            >
-              {isLoading ? <Loader /> : t("delete")}
-            </button>
-          </div>
+    <>
+      <ComponentCustomModal
+        show={show}
+        setShow={setShow}
+        centered={false}
+        size={"md"}
+        header={data?.name + " " + t("deleteMikrotik")}
+      >
+        <p className="">{t("areYouSureWantToDeleteMikrotik")}</p>
+
+        <div className="displayGrid1 float-end mt-4">
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={() => setShow(false)}
+          >
+            {t("cancel")}
+          </button>
+          <button
+            type="submit"
+            className="btn btn-success"
+            onClick={deleteMikrotik}
+          >
+            {isLoading ? <Loader /> : t("delete")}
+          </button>
         </div>
-      </div>
-    </div>
+      </ComponentCustomModal>
+    </>
   );
 };
 

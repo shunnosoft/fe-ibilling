@@ -9,25 +9,26 @@ import {
   ThreeDots,
 } from "react-bootstrap-icons";
 import { useSelector } from "react-redux";
-import Loader from "../../../components/common/Loader";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { CSVLink } from "react-csv";
+import { toast } from "react-toastify";
+
+// internal import
 import {
   deletePPPoEpackage,
   fetchPackagefromDatabase,
   fetchpppoePackage,
   fetchpppoeUser,
 } from "../../../features/apiCalls";
-import { useDispatch } from "react-redux";
+import Loader from "../../../components/common/Loader";
 import CustomerSync from "../configMikrotikModals/CustomerSync";
 import Table from "../../../components/table/Table";
 import PPPoEpackageEditModal from "../configMikrotikModals/PPPoEpackageEditModal";
-import { CSVLink } from "react-csv";
-import { toast } from "react-toastify";
 
 const PPPoE = () => {
   const { t } = useTranslation();
-
   const dispatch = useDispatch();
 
   // get ispOwner id & mikrotik id form params
@@ -44,14 +45,14 @@ const PPPoE = () => {
   // get all mikrotik
   const mikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
 
-  // mikrotik
-  const configMikrotik = mikrotik.find((item) => item.id === mikrotikId);
-
   // get pppoe package
   let pppoePackage = useSelector((state) => state?.mikrotik?.pppoePackage);
 
   // get all user
   const allMikrotikUsers = useSelector((state) => state?.mikrotik?.pppoeUser);
+
+  // mikrotik
+  const configMikrotik = mikrotik.find((item) => item.id === mikrotikId);
 
   // inactive customer state
   const [inActiveCustomer, setInActiveCustomer] = useState(false);
@@ -73,6 +74,11 @@ const PPPoE = () => {
 
   // section show state
   const [showSection, setShowSection] = useState("PPPoEPackage");
+
+  // modal close handler
+  const [modalStatus, setModalStatus] = useState("");
+  const [show, setShow] = useState(false);
+  console.log(show);
 
   // status filter
   const filterIt = (e) => {
@@ -132,6 +138,7 @@ const PPPoE = () => {
     setAllUsers(allMikrotikUsers);
   }, [allMikrotikUsers]);
 
+  // get package
   useEffect(() => {
     const IDs = {
       ispOwner: ispOwner,
@@ -231,10 +238,10 @@ const PPPoE = () => {
                 aria-labelledby="pppoePackageDropdown"
               >
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#pppoePackageEditModal"
                   onClick={() => {
                     packageUpdateHandle(original);
+                    setModalStatus("packageEdit");
+                    setShow(true);
                   }}
                 >
                   <div className="dropdown-item">
@@ -439,13 +446,13 @@ const PPPoE = () => {
 
               <br />
               <button
-                data-bs-toggle="modal"
-                data-bs-target="#SyncCustomer"
-                onClick={() => {
-                  setInActiveCustomer(false);
-                }}
                 title={t("PPPoECustomerSync")}
                 className="btn btn-outline-primary"
+                onClick={() => {
+                  setInActiveCustomer(false);
+                  setModalStatus("customerSync");
+                  setShow(true);
+                }}
               >
                 {mtkIsLoading ? <Loader /> : t("customerSync")}{" "}
                 <PersonCheckFill />
@@ -471,14 +478,26 @@ const PPPoE = () => {
         </div>
       </div>
 
-      {/* modals */}
-      <PPPoEpackageEditModal singlePackage={packageId} />
-      <CustomerSync
-        mikrotikId={mikrotikId}
-        ispOwner={ispOwner}
-        inActiveCustomer={inActiveCustomer}
-        setInActiveCustomer={setInActiveCustomer}
-      />
+      {/* package edit modal */}
+      {modalStatus === "packageEdit" && (
+        <PPPoEpackageEditModal
+          show={show}
+          setShow={setShow}
+          singlePackage={packageId}
+        />
+      )}
+
+      {/* customer sync modal */}
+      {modalStatus === "customerSync" && (
+        <CustomerSync
+          show={show}
+          setShow={setShow}
+          mikrotikId={mikrotikId}
+          ispOwner={ispOwner}
+          inActiveCustomer={inActiveCustomer}
+          setInActiveCustomer={setInActiveCustomer}
+        />
+      )}
     </>
   );
 };

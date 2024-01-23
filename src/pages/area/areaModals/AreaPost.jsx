@@ -10,21 +10,26 @@ import Loader from "../../../components/common/Loader";
 
 import { addArea } from "../../../features/apiCalls";
 import { useTranslation } from "react-i18next";
+import ComponentCustomModal from "../../../components/common/customModal/ComponentCustomModal";
 
-export default function AreaPost() {
+const AreaPost = ({ show, setShow }) => {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
+
+  // get ispOwnerId from redux store
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
+
+  // loading state
   const [isLoading, setIsLoading] = useState(false);
-  const dispatch = useDispatch();
 
   //validator
   const linemanValidator = Yup.object({
     name: Yup.string().required(t("enterName")),
   });
 
-  // POST
+  // add area handler function
   const areaHandler = async (data) => {
     setIsLoading(true);
     if (ispOwnerId) {
@@ -32,70 +37,54 @@ export default function AreaPost() {
         name: data.name,
         ispOwner: ispOwnerId,
       };
-      addArea(dispatch, sendingData, setIsLoading);
+      addArea(dispatch, sendingData, setIsLoading, setShow);
     }
   };
 
   return (
-    <div>
-      <div
-        className="modal fade modal-dialog-scrollable "
-        id="areaModal"
-        tabIndex="-1"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
+    <>
+      <ComponentCustomModal
+        show={show}
+        setShow={setShow}
+        centered={false}
+        size={"md"}
+        header={t("addNewArea")}
       >
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLabel">
-                {t("addNewArea")}
-              </h5>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body">
-              <Formik
-                initialValues={{
-                  name: "",
-                  // ispOwner:
-                }}
-                validationSchema={linemanValidator}
-                onSubmit={(values) => {
-                  areaHandler(values);
-                }}
-              >
-                {(formik) => (
-                  <Form>
-                    <FtextField type="text" label={t("areaName")} name="name" />
+        <Formik
+          initialValues={{
+            name: "",
+          }}
+          validationSchema={linemanValidator}
+          onSubmit={(values) => {
+            areaHandler(values);
+          }}
+        >
+          {() => (
+            <Form>
+              <FtextField type="text" label={t("areaName")} name="name" />
 
-                    <div className="modal-footer">
-                      <button
-                        type="button"
-                        className="btn btn-secondary"
-                        data-bs-dismiss="modal"
-                      >
-                        {t("cancel")}
-                      </button>
-                      <button
-                        type="submit"
-                        className="btn btn-success customBtn"
-                        disabled={isLoading}
-                      >
-                        {isLoading ? <Loader /> : t("save")}
-                      </button>
-                    </div>
-                  </Form>
-                )}
-              </Formik>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+              <div className="displayGrid1 float-end mt-4">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => setShow(false)}
+                >
+                  {t("cancel")}
+                </button>
+                <button
+                  type="submit"
+                  className="btn btn-success customBtn"
+                  disabled={isLoading}
+                >
+                  {isLoading ? <Loader /> : t("save")}
+                </button>
+              </div>
+            </Form>
+          )}
+        </Formik>
+      </ComponentCustomModal>
+    </>
   );
-}
+};
+
+export default AreaPost;

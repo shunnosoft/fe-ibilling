@@ -4,55 +4,62 @@ import "./configmikrotik.css";
 import { PlugFill, PencilFill, ArrowLeftShort } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router";
+import { toast, ToastContainer } from "react-toastify";
+import { useTranslation } from "react-i18next";
+import { Tab, Tabs } from "react-bootstrap";
 
 // internal imports
-import { toast, ToastContainer } from "react-toastify";
 import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
 import ConfigMikrotikModal from "./configMikrotikModals/ConfigMikrotikModal";
-
 import Loader from "../../components/common/Loader";
 import { fetchMikrotik } from "../../features/apiCalls";
 import apiLink from "../../api/apiLink";
-import { useTranslation } from "react-i18next";
-import { Tab, Tabs } from "react-bootstrap";
 import PPPoE from "./pppoe/PPPoE";
 import Hotspot from "./hotspot/Hotspot";
 import Static from "./static/Static";
 import FireWallFilter from "./FireWallQueue/FireWallFilter";
 
-export default function ConfigMikrotik() {
+const ConfigMikrotik = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
+  // get params from url
   const { ispOwner, mikrotikId } = useParams();
-
-  const mikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
-
-  const singleMik = mikrotik.find((item) => item.id === mikrotikId);
 
   // get ispOwner bpSetting
   const bpSettings = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
   );
 
-  let pppoePackage = useSelector((state) => state?.mikrotik?.pppoePackage);
+  // get all mikrotik from redux store
+  const mikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
 
-  const [isChecking, setIsChecking] = useState(false);
+  // get pppoe package from redux store
+  const pppoePackage = useSelector((state) => state?.mikrotik?.pppoePackage);
 
+  // single mikrotik find
+  const singleMik = mikrotik.find((item) => item.id === mikrotikId);
+
+  // loading state
   const [isLoading, setIsloading] = useState(false);
 
-  const dispatch = useDispatch();
+  // check mikrotik connection
+  const [isChecking, setIsChecking] = useState(false);
+
+  // modal close handler
+  const [modalStatus, setModalStatus] = useState("");
+  const [show, setShow] = useState(false);
 
   //get Reseller
   useEffect(() => {
     fetchMikrotik(dispatch, ispOwner, setIsloading);
   }, []);
 
-  // fetch single mikrotik
-
+  // check zero rate
   useEffect(() => {
     const zeroRate = pppoePackage.filter(
       (i) =>
@@ -68,6 +75,7 @@ export default function ConfigMikrotik() {
     navigate("/mikrotik");
   };
 
+  // check mikrotik connection test
   const MikrotikConnectionTest = async () => {
     setIsChecking(true);
 
@@ -108,14 +116,16 @@ export default function ConfigMikrotik() {
                       className="btn btn-outline-light"
                       onClick={MikrotikConnectionTest}
                     >
-                      {isChecking ? <Loader /> : t("checkConnection")}{" "}
+                      {isChecking ? <Loader /> : t("checkConnection")}
                       <PlugFill className="rotating" />
                     </button>
                     <button
                       title={t("editMkrotik")}
-                      data-bs-toggle="modal"
-                      data-bs-target="#configMikrotikModal"
                       className="btn btn-outline-light ms-2 me-2"
+                      onClick={() => {
+                        setModalStatus("mikrotikEdit");
+                        setShow(true);
+                      }}
                     >
                       {t("edit")} <PencilFill />
                     </button>
@@ -165,8 +175,17 @@ export default function ConfigMikrotik() {
           </div>
         </div>
       </div>
-      {/* Modals */}
-      <ConfigMikrotikModal mik={singleMik} />
+
+      {/* config mikrotik modal */}
+      {modalStatus === "mikrotikEdit" && (
+        <ConfigMikrotikModal
+          show={show}
+          setShow={setShow}
+          singleMik={singleMik}
+        />
+      )}
     </>
   );
-}
+};
+
+export default ConfigMikrotik;

@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import "../collector/collector.css";
-import "./mikrotik.css";
 import {
   Plus,
   ArrowRightShort,
@@ -11,9 +9,12 @@ import {
 } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import { useTranslation } from "react-i18next";
 
 // internal imports
-import { toast, ToastContainer } from "react-toastify";
+import "../collector/collector.css";
+import "./mikrotik.css";
 import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { FourGround, FontColor } from "../../assets/js/theme";
@@ -21,33 +22,41 @@ import Footer from "../../components/admin/footer/Footer";
 import MikrotikPost from "./mikrotikModals/MikrotikPost";
 import { fetchMikrotik } from "../../features/apiCalls";
 import Table from "../../components/table/Table";
-import { useTranslation } from "react-i18next";
 import Loader from "../../components/common/Loader";
 import MikrotikDelete from "./mikrotikModals/MikrotikDelete";
 import apiLink from "../../api/apiLink";
+import useISPowner from "../../hooks/useISPOwner";
 
-export default function Mikrotik() {
+const Mikrotik = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const auth = useSelector((state) => state.persistedReducer.auth.currentUser);
 
-  // get user permission
-  const permission = useSelector(
-    (state) => state.persistedReducer.auth.userData.bpSettings
-  );
+  // get user & current user data form useISPOwner hooks
+  const { ispOwnerId, bpSettings } = useISPowner();
 
-  let allmikrotiks = [];
-  allmikrotiks = useSelector((state) => state.mikrotik.mikrotik);
+  // get all mikrotiks from redux store
+  const allmikrotiks = useSelector((state) => state.mikrotik.mikrotik);
 
+  // loading state
   const [isLoading, setIsLoading] = useState(false);
   const [isChecking, setIsChecking] = useState(false);
 
+  // mikrotik id state
   const [mikrotikId, setMikrotikId] = useState();
+
+  // modal close handler
+  const [modalStatus, setModalStatus] = useState("");
+  const [show, setShow] = useState(false);
+
+  // fetch mikrotik
+  useEffect(() => {
+    if (allmikrotiks.length === 0)
+      fetchMikrotik(dispatch, ispOwnerId, setIsLoading);
+  }, [ispOwnerId]);
 
   // reload handler
   const reloadHandler = () => {
-    const { ispOwner } = auth;
-    fetchMikrotik(dispatch, ispOwner.id, setIsLoading);
+    fetchMikrotik(dispatch, ispOwnerId, setIsLoading);
   };
 
   // mikrottik Connection Check
@@ -56,7 +65,7 @@ export default function Mikrotik() {
 
     await apiLink({
       method: "GET",
-      url: `/mikrotik/testConnection/${auth.ispOwner.id}/${connectionCheckId}`,
+      url: `/mikrotik/testConnection/${ispOwnerId}/${connectionCheckId}`,
     })
       .then(() => {
         setIsChecking(false);
@@ -68,12 +77,6 @@ export default function Mikrotik() {
         toast.error(`দুঃখিত, ${mikrotikName} এর কানেকশন ঠিক নেই!`);
       });
   };
-
-  useEffect(() => {
-    const { ispOwner } = auth;
-    if (allmikrotiks.length === 0)
-      fetchMikrotik(dispatch, ispOwner.id, setIsLoading);
-  }, [auth, dispatch]);
 
   const columns = React.useMemo(
     () => [
@@ -117,7 +120,8 @@ export default function Mikrotik() {
             >
               {t("configure")} <ArrowRightShort style={{ fontSize: "19px" }} />
             </Link>
-            {permission.customerType.includes("pppoe") && (
+
+            {bpSettings.customerType.includes("pppoe") && (
               <Link
                 to={`/mikrotik/customer/${original.ispOwner}/${original.id}`}
                 className="mikrotikConfigureButtom ms-1"
@@ -126,7 +130,6 @@ export default function Mikrotik() {
               </Link>
             )}
 
-            {/* {permission.customerType.includes("pppoe") && ( */}
             <button
               title={t("checkConnection")}
               style={{ padding: "0.10rem .5rem" }}
@@ -135,14 +138,15 @@ export default function Mikrotik() {
             >
               <PlugFill />
             </button>
-            {/* )} */}
 
-            {permission?.mikrotikDelete && (
+            {bpSettings?.mikrotikDelete && (
               <button
                 title={t("deletekrotik")}
-                data-bs-toggle="modal"
-                data-bs-target="#deleteMikrotikModal"
-                onClick={() => setMikrotikId(original.id)}
+                onClick={() => {
+                  setMikrotikId(original.id);
+                  setModalStatus("deletekrotik");
+                  setShow(true);
+                }}
                 style={{ padding: "0.10rem .5rem" }}
                 className="btn btn-sm btn-danger"
               >
@@ -182,8 +186,10 @@ export default function Mikrotik() {
 
                     <div
                       title={t("addMikrotik")}
-                      data-bs-toggle="modal"
-                      data-bs-target="#MikrotikModal"
+                      onClick={() => {
+                        setModalStatus("addMikrotik");
+                        setShow(true);
+                      }}
                     >
                       <Plus className="addcutmButton" />
                     </div>
@@ -198,7 +204,7 @@ export default function Mikrotik() {
                       <Loader /> Loading ...
                     </span>
                   )}
-                  {/* table */}
+
                   <Table
                     isLoading={isLoading}
                     columns={columns}
@@ -211,10 +217,18 @@ export default function Mikrotik() {
           </div>
         </div>
       </div>
-      {/* modals */}
-      <MikrotikPost />
 
-      <MikrotikDelete mikrotikID={mikrotikId} />
+      {/* mikrotik modal for delete */}
+      {modalStatus === "addMikrotik" && (
+        <MikrotikPost show={show} setShow={setShow} />
+      )}
+
+      {/* mikrotik modal for delete */}
+      {modalStatus === "deletekrotik" && (
+        <MikrotikDelete show={show} setShow={setShow} mikrotikID={mikrotikId} />
+      )}
     </>
   );
-}
+};
+
+export default Mikrotik;

@@ -57,8 +57,8 @@ export default function Area() {
   const [areaName, setAreaName] = useState("");
 
   //modal handler state
-  const [isOpen, setIsOpen] = useState(false);
-  const [poleShow, setPoleShow] = useState(false);
+  const [modalStatus, setModalStatus] = useState("");
+  const [show, setShow] = useState(false);
 
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
@@ -103,11 +103,6 @@ export default function Area() {
 
   const getSpecificArea = (id) => {
     setEditAreaId(id);
-  };
-
-  const getAreaSubarea = (areaId) => {
-    setAreaID(areaId);
-    setIsOpen(true);
   };
 
   // area subarea count function
@@ -161,7 +156,11 @@ export default function Area() {
               width: "7rem",
               cursor: "pointer",
             }}
-            onClick={() => getAreaSubarea(original.id)}
+            onClick={() => {
+              setAreaID(original.id);
+              setModalStatus("subArea");
+              setShow(true);
+            }}
           >
             {t("subArea")}
             <b className="text-warning ms-1">
@@ -189,8 +188,9 @@ export default function Area() {
                 }}
                 onClick={() => {
                   setAreaId(original?.id);
-                  setPoleShow(true);
                   setAreaName(original?.name);
+                  setModalStatus("poleBox");
+                  setShow(true);
                 }}
               >
                 {t("poleBox")}
@@ -212,6 +212,8 @@ export default function Area() {
             getSpecificArea={getSpecificArea}
             deleteSingleArea={deleteSingleArea}
             data={original}
+            setShow={setShow}
+            setModalStatus={setModalStatus}
           />
         ),
       },
@@ -246,8 +248,10 @@ export default function Area() {
                     </div>
                     <div
                       title={t("addArea")}
-                      data-bs-toggle="modal"
-                      data-bs-target="#areaModal"
+                      onClick={() => {
+                        setModalStatus("addArea");
+                        setShow(true);
+                      }}
                     >
                       <GeoAlt className="addcutmButton" />
                     </div>
@@ -269,20 +273,30 @@ export default function Area() {
           </div>
         </div>
       </div>
-      {/* modals */}
-      <ResellerPost />
-      {/* area edit modal */}
-      <AreaEdit areaId={editAreaId} />
+      {/* add area modal */}
+      {modalStatus === "addArea" && (
+        <ResellerPost show={show} setShow={setShow} />
+      )}
 
-      {/* subAreas modal */}
+      {/* area edit modal */}
+      {modalStatus === "areaEdit" && (
+        <AreaEdit show={show} setShow={setShow} areaId={editAreaId} />
+      )}
+
       {/* <SubAreaModal areaId={areaID} /> */}
-      <SubArea areaId={areaID} isOpen={isOpen} setIsOpen={setIsOpen} />
-      <PoleBox
-        areaName={areaName}
-        areaId={areaId}
-        poleShow={poleShow}
-        setPoleShow={setPoleShow}
-      />
+      {modalStatus === "subArea" && (
+        <SubArea areaId={areaID} isOpen={show} setIsOpen={setShow} />
+      )}
+
+      {/* poleBox modal */}
+      {modalStatus === "poleBox" && (
+        <PoleBox
+          areaName={areaName}
+          areaId={areaId}
+          poleShow={show}
+          setPoleShow={setShow}
+        />
+      )}
     </>
   );
 }

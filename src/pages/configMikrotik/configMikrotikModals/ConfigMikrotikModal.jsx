@@ -2,24 +2,21 @@ import React, { useState } from "react";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import { useDispatch } from "react-redux";
+import { useTranslation } from "react-i18next";
 
 // internal imports
 import "../../collector/collector.css";
 import { FtextField } from "../../../components/common/FtextField";
 import Loader from "../../../components/common/Loader";
 import { editSingleMikrotik } from "../../../features/apiCalls";
-import { useTranslation } from "react-i18next";
-// import {
-//   fetchSingleMikrotik,
-//   editSingleMikrotik,
-// } from "../../../features/mikrotikSlice";
+import ComponentCustomModal from "../../../components/common/customModal/ComponentCustomModal";
 
-export default function ConfigMikrotikModal(props) {
+const ConfigMikrotikModal = ({ show, setShow, singleMik }) => {
   const { t } = useTranslation();
-  // const auth = useSelector(state => state.persistedReducer.auth.currentUser);
-  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
-  const { mik } = props;
+
+  // loading state
+  const [isLoading, setIsLoading] = useState(false);
 
   //validator
   const mikrotikValidator = Yup.object({
@@ -30,107 +27,94 @@ export default function ConfigMikrotikModal(props) {
     password: Yup.string().required(t("enterPassword")),
   });
 
+  // edit single mikrotik handler
   const mikrotikHandler = async (data) => {
     setIsLoading(true);
-    if (mik) {
+    if (singleMik) {
       const sendingData = {
         ...data,
-        id: mik.id,
-        ispOwner: mik.ispOwner,
-        ispId: mik.ispOwner,
+        id: singleMik.id,
+        ispOwner: singleMik.ispOwner,
+        ispId: singleMik.ispOwner,
       };
 
-      editSingleMikrotik(dispatch, sendingData);
-      setIsLoading(false);
+      editSingleMikrotik(dispatch, sendingData, setShow);
     }
+    setIsLoading(false);
   };
 
   return (
-    <div>
-      <div
-        className="modal fade modal-dialog-scrollable "
-        id="configMikrotikModal"
-        tabIndex="-1"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
+    <>
+      <ComponentCustomModal
+        show={show}
+        setShow={setShow}
+        centered={false}
+        size={"md"}
+        header={t("editMkrotik")}
       >
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLabel">
-                {t("editMkrotik")}
-              </h5>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body">
-              {/* model body here */}
-              <Formik
-                initialValues={{
-                  name: mik?.name || "",
-                  username: mik?.username || "",
-                  host: mik?.host || "",
-                  port: mik?.port || "",
-                  password: "",
-                }}
-                validationSchema={mikrotikValidator}
-                onSubmit={(values) => {
-                  mikrotikHandler(values);
-                }}
-                enableReinitialize
-              >
-                {() => (
-                  <Form>
-                    <FtextField
-                      type="text"
-                      label={t("mikrotikName")}
-                      name="name"
-                      disabled
-                    />
-                    <FtextField
-                      type="text"
-                      label={t("mikrotikUserName")}
-                      name="username"
-                    />
-                    <FtextField
-                      type="text"
-                      label={t("mikrotikIP")}
-                      name="host"
-                    />
-                    <FtextField
-                      type="text"
-                      label={t("mikrotikApiPort")}
-                      name="port"
-                    />
-                    <FtextField
-                      type="password"
-                      label={t("mikrotikUserPassword")}
-                      name="password"
-                    />
+        <Formik
+          initialValues={{
+            name: singleMik?.name || "",
+            username: singleMik?.username || "",
+            host: singleMik?.host || "",
+            port: singleMik?.port || "",
+            password: "",
+          }}
+          validationSchema={mikrotikValidator}
+          onSubmit={(values) => {
+            mikrotikHandler(values);
+          }}
+          enableReinitialize
+        >
+          {() => (
+            <Form>
+              <div className="displayGrid">
+                <FtextField
+                  type="text"
+                  label={t("mikrotikName")}
+                  name="name"
+                  disabled
+                />
 
-                    <div className="modal-footer">
-                      <button
-                        type="button"
-                        className="btn btn-secondary"
-                        data-bs-dismiss="modal"
-                      >
-                        {t("cancel")}
-                      </button>
-                      <button type="submit" className="btn btn-success">
-                        {isLoading ? <Loader /> : t("save")}
-                      </button>
-                    </div>
-                  </Form>
-                )}
-              </Formik>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+                <FtextField
+                  type="text"
+                  label={t("mikrotikUserName")}
+                  name="username"
+                />
+
+                <FtextField type="text" label={t("mikrotikIP")} name="host" />
+
+                <FtextField
+                  type="text"
+                  label={t("mikrotikApiPort")}
+                  name="port"
+                />
+
+                <FtextField
+                  type="password"
+                  label={t("mikrotikUserPassword")}
+                  name="password"
+                />
+              </div>
+
+              <div className="displayGrid1 float-end mt-4">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => setShow(false)}
+                >
+                  {t("cancel")}
+                </button>
+                <button type="submit" className="btn btn-success">
+                  {isLoading ? <Loader /> : t("save")}
+                </button>
+              </div>
+            </Form>
+          )}
+        </Formik>
+      </ComponentCustomModal>
+    </>
   );
-}
+};
+
+export default ConfigMikrotikModal;

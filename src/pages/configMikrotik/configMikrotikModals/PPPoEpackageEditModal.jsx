@@ -2,123 +2,112 @@ import { useState } from "react";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 
 // internal imports
 import "../../collector/collector.css";
 import { FtextField } from "../../../components/common/FtextField";
 import Loader from "../../../components/common/Loader";
 import { editPPPoEpackageRate } from "../../../features/apiCalls";
-import { useTranslation } from "react-i18next";
-// import {
-//   editPPPoEpackageRate,
-//   fetchpppoePackage,
-// } from "../../../features/mikrotikSlice";
+import ComponentCustomModal from "../../../components/common/customModal/ComponentCustomModal";
 
-export default function PPPoEpackageEditModal({ singlePackage }) {
+const PPPoEpackageEditModal = ({ show, setShow, singlePackage }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+
+  // get pppoe package from redux store
   const pppoePackage = useSelector((state) => state?.mikrotik?.pppoePackage);
 
+  // find single pppoe package
   const data = pppoePackage.find((item) => item.id === singlePackage);
 
+  // loading state
   const [isLoading, setIsLoading] = useState(false);
-  const [radioChecked, setRadioChecked] = useState(false);
-  const reseller = useSelector((state) => state?.reseller?.reseller);
 
   //validator
   const pppoeValidator = Yup.object({
     rate: Yup.number(),
   });
 
+  // edit pppoe package handler
   const pppoeEditHandler = async (formValue, resetForm) => {
     if (formValue) {
-      // const IDs = {
-      //   ispOwner: singlePackage.ispOwner,
-      //   mikrotikId: singlePackage.mikrotik,
-      // };
       const sendingData = {
         rate: formValue.rate.toString(),
         mikrotikId: data?.mikrotik,
         pppPackageId: data?.id,
         aliasName: formValue.aliasName,
       };
-      editPPPoEpackageRate(dispatch, sendingData, setIsLoading, resetForm);
+      editPPPoEpackageRate(
+        dispatch,
+        sendingData,
+        setIsLoading,
+        resetForm,
+        setShow
+      );
     }
   };
 
   return (
-    <div>
-      <div
-        className="modal fade modal-dialog-scrollable "
-        id="pppoePackageEditModal"
-        tabIndex="-1"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
+    <>
+      <ComponentCustomModal
+        show={show}
+        setShow={setShow}
+        centered={false}
+        size={"md"}
+        header={data?.name + " " + t("rateEdit")}
       >
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLabel">
-                {data?.name} - {t("rateEdit")}
-              </h5>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body">
-              <Formik
-                initialValues={{
-                  rate: data?.rate || "",
-                  aliasName: data?.aliasName || "",
-                  // percentage: data?.percentage || 0,
-                }}
-                validationSchema={pppoeValidator}
-                onSubmit={(values, { resetForm }) => {
-                  pppoeEditHandler(values, resetForm);
-                }}
-                enableReinitialize
-              >
-                {() => (
-                  <Form>
-                    <FtextField
-                      min={0}
-                      type="number"
-                      label={t("packageRate")}
-                      name="rate"
-                    />
-                    <FtextField
-                      min={0}
-                      type="text"
-                      label={t("packageAliasName")}
-                      name="aliasName"
-                    />
+        <Formik
+          initialValues={{
+            rate: data?.rate || "",
+            aliasName: data?.aliasName || "",
+          }}
+          validationSchema={pppoeValidator}
+          onSubmit={(values, { resetForm }) => {
+            pppoeEditHandler(values, resetForm);
+          }}
+          enableReinitialize
+        >
+          {() => (
+            <Form>
+              <div className="displayGrid">
+                <FtextField
+                  min={0}
+                  type="number"
+                  label={t("packageRate")}
+                  name="rate"
+                />
 
-                    <div className="modal-footer">
-                      <button
-                        type="button"
-                        className="btn btn-secondary"
-                        data-bs-dismiss="modal"
-                      >
-                        {t("cancel")}
-                      </button>
-                      <button
-                        type="submit"
-                        className="btn btn-success customBtn"
-                        disabled={isLoading}
-                      >
-                        {isLoading ? <Loader /> : t("save")}
-                      </button>
-                    </div>
-                  </Form>
-                )}
-              </Formik>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+                <FtextField
+                  min={0}
+                  type="text"
+                  label={t("packageAliasName")}
+                  name="aliasName"
+                />
+              </div>
+
+              <div className="displayGrid1 float-end mt-4">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => setShow(false)}
+                >
+                  {t("cancel")}
+                </button>
+                <button
+                  type="submit"
+                  className="btn btn-success customBtn"
+                  disabled={isLoading}
+                >
+                  {isLoading ? <Loader /> : t("save")}
+                </button>
+              </div>
+            </Form>
+          )}
+        </Formik>
+      </ComponentCustomModal>
+    </>
   );
-}
+};
+
+export default PPPoEpackageEditModal;

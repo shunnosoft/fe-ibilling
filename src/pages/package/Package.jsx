@@ -8,6 +8,7 @@ import {
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 
 // internal imports
 import "../collector/collector.css";
@@ -22,49 +23,56 @@ import {
 import CreatePackage from "./CreatePackageModal";
 import EditPackage from "./EditPackageModal";
 import Table from "../../components/table/Table";
-import { useTranslation } from "react-i18next";
 import Loader from "../../components/common/Loader";
 
-// import { getCollector, getSubAreas } from "../../features/apiCallReseller";
-
-export default function Package() {
+const Package = () => {
   const { t } = useTranslation();
-  const packages = useSelector((state) => state.package.packages);
-  // console.log(packages)
   const dispatch = useDispatch();
-  const [collSearch, setCollSearch] = useState("");
-  const collector = useSelector((state) => state.collector.collector);
-  const userData = useSelector((state) => state.persistedReducer.auth.userData);
+
+  // get role from redux store
+  const role = useSelector((state) => state.persistedReducer.auth.role);
+
+  // get isp owner id from redux
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerId
   );
-  let serial = 0;
 
-  const role = useSelector((state) => state.persistedReducer.auth.role);
+  // get packages without mikrotik
+  const packages = useSelector((state) => state.package.packages);
 
+  // get collector form redux store
+  const collector = useSelector((state) => state.collector.collector);
+
+  // get current user form redux store
+  const userData = useSelector((state) => state.persistedReducer.auth.userData);
+
+  // loading state
   const [isLoading, setIsLoading] = useState(false);
+
+  // set single package
+  const [singlePackage, setSinglePackage] = useState("");
+
+  // modal close handler
+  const [modalStatus, setModalStatus] = useState("");
+  const [show, setShow] = useState(false);
+
+  // api call
+  useEffect(() => {
+    if (packages.length === 0)
+      getPackagewithoutmikrotik(ispOwnerId, dispatch, setIsLoading);
+  }, []);
 
   // reload handler
   const reloadHandler = () => {
     getPackagewithoutmikrotik(ispOwnerId, dispatch, setIsLoading);
   };
 
-  useEffect(() => {
-    if (packages.length === 0)
-      getPackagewithoutmikrotik(ispOwnerId, dispatch, setIsLoading);
-  }, []);
-
-  const [singlePackage, setSinglePackage] = useState("");
-
+  // specific package handler
   const getSpecificPackage = (val) => {
-    // console.log(val)
     setSinglePackage(val);
   };
 
-  const searchHandler = (e) => {
-    setCollSearch(e.toString().toLowerCase());
-  };
-
+  // delete package handler
   const deletePackageHandler = (id) => {
     const confirm = window.confirm(t("withOutPackageDelete"));
     if (confirm) {
@@ -94,13 +102,7 @@ export default function Package() {
         id: "option",
 
         Cell: ({ row: { original } }) => (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
+          <div className="d-flex justify-content-center align-items-center">
             <ThreeDots
               className="dropdown-toggle ActionDots"
               id="areaDropdown"
@@ -111,10 +113,10 @@ export default function Package() {
             <ul className="dropdown-menu" aria-labelledby="customerDrop">
               {
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#editPackage"
                   onClick={() => {
                     getSpecificPackage(original);
+                    setModalStatus("packageEdit");
+                    setShow(true);
                   }}
                 >
                   <div className="dropdown-item">
@@ -146,8 +148,6 @@ export default function Package() {
   );
   return (
     <>
-      <CreatePackage></CreatePackage>
-      <EditPackage package={singlePackage}></EditPackage>
       <Sidebar />
       <ToastContainer position="top-right" theme="colored" />
       <div className={useDash.dashboardWrapper}>
@@ -173,8 +173,10 @@ export default function Package() {
                   {role === "ispOwner" && (
                     <div
                       title={t("addPackage")}
-                      data-bs-toggle="modal"
-                      data-bs-target="#createPackage"
+                      onClick={() => {
+                        setModalStatus("packageCreate");
+                        setShow(true);
+                      }}
                     >
                       <Plus className="addcutmButton" />
                     </div>
@@ -184,24 +186,6 @@ export default function Package() {
 
               <FourGround>
                 <div className="collectorWrapper mt-2 py-2">
-                  {/* <div className="addCollector">
-                    {role === "ispOwner" && (
-                      <div className="addNewCollector">
-                        <div className="displexFlexSys">
-                          <div className="addAndSettingIcon">
-                            {
-                              <PlusLg
-                                className="addcutmButton"
-                                data-bs-toggle="modal"
-                                data-bs-target="#createPackage"
-                              />
-                            }
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </div> */}
-                  {/* table */}
                   <Table
                     isLoading={isLoading}
                     columns={columns1}
@@ -214,6 +198,22 @@ export default function Package() {
           </div>
         </div>
       </div>
+
+      {/* package create modal */}
+      {modalStatus === "packageCreate" && (
+        <CreatePackage show={show} setShow={setShow} />
+      )}
+
+      {/* package edit modal */}
+      {modalStatus === "packageEdit" && (
+        <EditPackage
+          show={show}
+          setShow={setShow}
+          singlePackage={singlePackage}
+        />
+      )}
     </>
   );
-}
+};
+
+export default Package;

@@ -2,15 +2,16 @@ import { useState } from "react";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
+import { useTranslation } from "react-i18next";
 
 // internal imports
 import "../../collector/collector.css";
 import { FtextField } from "../../../components/common/FtextField";
 import Loader from "../../../components/common/Loader";
 import { editArea } from "../../../features/apiCalls";
-import { useTranslation } from "react-i18next";
+import ComponentCustomModal from "../../../components/common/customModal/ComponentCustomModal";
 
-export default function AreaEdit({ areaId }) {
+const AreaEdit = ({ show, setShow, areaId }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
@@ -50,75 +51,60 @@ export default function AreaEdit({ areaId }) {
         ispOwner: ispOwnerId,
         id: oneArea ? oneArea.id : "",
       };
-      editArea(dispatch, sendingData, setIsLoading);
+      editArea(dispatch, sendingData, setIsLoading, setShow);
     }
   };
 
   return (
-    <div>
-      <div
-        className="modal fade modal-dialog-scrollable "
-        id="areaEditModal"
-        tabIndex="-1"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
+    <>
+      <ComponentCustomModal
+        show={show}
+        setShow={setShow}
+        centered={false}
+        size={"md"}
+        header={t("editArea")}
       >
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLabel">
-                {t("editArea")}
-              </h5>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body">
-              <Formik
-                initialValues={{
-                  name: oneArea?.name || "",
-                }}
-                validationSchema={areaEditValidator}
-                onSubmit={(values) => {
-                  areaEditHandler(values);
-                }}
-                enableReinitialize
-              >
-                {() => (
-                  <Form>
-                    <FtextField
-                      type="text"
-                      label={t("editAreaName")}
-                      name="name"
-                      disabled={checkMikrotikName()}
-                    />
+        <Formik
+          initialValues={{
+            name: oneArea?.name,
+          }}
+          validationSchema={areaEditValidator}
+          onSubmit={(values) => {
+            areaEditHandler(values);
+          }}
+          enableReinitialize
+        >
+          {() => (
+            <Form>
+              <FtextField
+                type="text"
+                label={t("editAreaName")}
+                name="name"
+                disabled={checkMikrotikName()}
+              />
 
-                    <div className="modal-footer">
-                      <button
-                        type="button"
-                        className="btn btn-secondary"
-                        data-bs-dismiss="modal"
-                      >
-                        {t("cancel")}
-                      </button>
-                      <button
-                        type="submit"
-                        className="btn btn-success customBtn"
-                        disabled={isLoading}
-                      >
-                        {isLoading ? <Loader /> : t("save")}
-                      </button>
-                    </div>
-                  </Form>
-                )}
-              </Formik>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+              <div className="displayGrid1 float-end mt-4">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => setShow(false)}
+                >
+                  {t("cancel")}
+                </button>
+                <button
+                  type="submit"
+                  className="btn btn-success customBtn"
+                  disabled={isLoading}
+                >
+                  {isLoading ? <Loader /> : t("save")}
+                </button>
+              </div>
+            </Form>
+          )}
+        </Formik>
+      </ComponentCustomModal>
+    </>
   );
-}
+};
+
+export default AreaEdit;
