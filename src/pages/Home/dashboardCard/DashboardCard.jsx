@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import {
   Cash,
   CashStack,
+  Diagram2,
   EnvelopePlus,
   FileEarmarkBarGraph,
   GraphDown,
@@ -17,7 +18,6 @@ import {
   PersonX,
   Reception3,
   Wallet,
-  Wifi,
 } from "react-bootstrap-icons";
 import { Link } from "react-router-dom";
 
@@ -268,7 +268,7 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
                   <p class="m-b-20">{t("totalConnectionFee")}</p>
                   <div class="d-flex align-items-center">
                     <p className="card_Icon">
-                      <Wifi />
+                      <Diagram2 />
                     </p>
                     <h2>
                       {FormatNumber(dashboardCard.totalMonthlyConnectionFee)}
@@ -420,7 +420,7 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
                 <p class="m-b-20">{t("connectionFee")}</p>
                 <div class="d-flex align-items-center">
                   <p className="card_Icon">
-                    <Wifi />
+                    <Diagram2 />
                   </p>
                   <h2>
                     {isLoading ? (
@@ -625,7 +625,7 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
                 <p class="m-b-20">{t("connectionFee")}</p>
                 <div class="d-flex align-items-center">
                   <p className="card_Icon">
-                    <Wifi />
+                    <Diagram2 />
                   </p>
                   <h2>
                     {isLoading ? (
@@ -793,7 +793,7 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
                 <p class="m-b-20">{t("connectionFee")}</p>
                 <div class="d-flex align-items-center">
                   <p className="card_Icon">
-                    <Wifi />
+                    <Diagram2 />
                   </p>
                   <h2>
                     {isLoading ? (

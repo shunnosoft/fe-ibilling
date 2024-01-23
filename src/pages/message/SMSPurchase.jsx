@@ -95,7 +95,7 @@ const SMSPurchase = ({ show, setShow }) => {
       </Modal.Header>
       <Modal.Body>
         <div className="container">
-          <div className="shadow border p-1 mb-5 bg-white rounded position-relative">
+          {/* <div className="shadow border p-1 mb-5 bg-white rounded position-relative">
             <span className="position-absolute end-0 badge bg-primary text-white">
               {t("myOffer")}
             </span>
@@ -147,7 +147,7 @@ const SMSPurchase = ({ show, setShow }) => {
                 </p>
               </div>
             </div>
-          </div>
+          </div> */}
           <div className="text-center">
             <span className="fw-bold"> {t("purchagePrice")} </span>
             <span className="price">

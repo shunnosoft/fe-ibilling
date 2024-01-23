@@ -1,4 +1,4 @@
-const customerBillMonth = (customerData) => {
+const customerBillMonth = (customerData, amount) => {
   // current month date
   const date = new Date();
   const monthDate = date.getMonth();
@@ -73,6 +73,11 @@ const customerBillMonth = (customerData) => {
         if (!(i < 0)) {
           temp.push(options[i]);
         }
+      }
+
+      // if the customer don't pay the current month bill
+      if (amount < customerData?.monthlyFee) {
+        temp.splice(temp.length - 1, 1);
       }
     }
   } else if (

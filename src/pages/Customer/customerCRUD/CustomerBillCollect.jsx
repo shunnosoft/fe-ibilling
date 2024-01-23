@@ -138,10 +138,8 @@ const CustomerBillCollect = ({ single, status, page, setShow }) => {
     setNoteCheck(false);
     setSelectedMonth(null);
     setBillAmount(
-      data?.balance > 0 && data?.balance < data?.monthlyFee
+      data?.balance > 0 && data?.balance <= data?.monthlyFee
         ? data?.monthlyFee - data?.balance
-        : data?.balance < 0
-        ? data?.monthlyFee + Math.abs(data?.balance)
         : data?.monthlyFee
     );
   };
@@ -149,10 +147,8 @@ const CustomerBillCollect = ({ single, status, page, setShow }) => {
   useEffect(() => {
     setBalanceDue(data?.balance < 0 ? Math.abs(data?.balance) : 0);
     setBillAmount(
-      data?.balance > 0 && data?.balance < data?.monthlyFee
+      data?.balance > 0 && data?.balance <= data?.monthlyFee
         ? data?.monthlyFee - data?.balance
-        : data?.balance < 0
-        ? data?.monthlyFee + Math.abs(data?.balance)
         : data?.monthlyFee
     );
 
@@ -175,9 +171,11 @@ const CustomerBillCollect = ({ single, status, page, setShow }) => {
     }
   }, [test]);
 
+  // handle form customer bill amount & due
   const handleFormValue = (event) => {
     if (event.target.name === "amount") {
       setBillAmount(event.target.value);
+      setSelectedMonth(customerBillMonth(data, event.target.value));
     }
     if (event.target.name === "due") {
       setBalanceDue(event.target.value);
@@ -256,11 +254,11 @@ const CustomerBillCollect = ({ single, status, page, setShow }) => {
         </Card.Title>
       )}
 
-      <Card.Body>
+      <Card.Body className={page === "recharge" ? "pt-0" : ""}>
         <Formik
           initialValues={{
-            amount: totalAmount,
-            due: data?.balance < 0 ? Math.abs(data?.balance) : 0,
+            amount: billAmount,
+            due: balanceDue,
             discount: 0,
           }}
           validationSchema={BillValidatoin}
@@ -458,7 +456,7 @@ const CustomerBillCollect = ({ single, status, page, setShow }) => {
                 </div>
               </>
 
-              <div className="d-flex justify-content-end mt-5">
+              <div className="d-flex justify-content-end mt-4">
                 <button type="submit" className="btn btn-outline-success">
                   {isLoading ? (
                     <Loader />
