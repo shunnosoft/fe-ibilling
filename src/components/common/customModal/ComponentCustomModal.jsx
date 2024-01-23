@@ -7,6 +7,7 @@ const ComponentCustomModal = ({
   centered,
   size,
   header,
+  printr,
   children,
 }) => {
   // modal close handler
@@ -23,7 +24,10 @@ const ComponentCustomModal = ({
     >
       <ModalHeader closeButton>
         <ModalTitle>
-          <h5 className="modal-title">{header}</h5>
+          <div className="d-flex">
+            <h5 className="modal-title">{header}</h5>
+            <div className="ms-2">{printr && printr}</div>
+          </div>
         </ModalTitle>
       </ModalHeader>
       <ModalBody>{children}</ModalBody>

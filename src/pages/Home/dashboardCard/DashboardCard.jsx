@@ -40,6 +40,7 @@ import Reseller from "../dataComponent/Reseller";
 
 const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
   const { t } = useTranslation();
+  console.log(dashboardCard);
 
   // get user & current user data form useISPOwner hooks
   const { role, ispOwnerId, bpSettings } = useISPowner();
@@ -978,6 +979,8 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
       {status === "collector" && (
         <AllCollector
           status={status}
+          modalShow={show}
+          setModalShow={setShow}
           ispOwnerId={ispOwnerId}
           year={filterDate.getFullYear()}
           month={filterDate.getMonth() + 1}
@@ -987,6 +990,8 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
       {status === "reseller" && (
         <Reseller
           status={status}
+          modalShow={show}
+          setModalShow={setShow}
           ispOwnerId={ispOwnerId}
           year={filterDate.getFullYear()}
           month={filterDate.getMonth() + 1}

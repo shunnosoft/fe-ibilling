@@ -8,8 +8,16 @@ import ResellerCollectionPdf from "../homePdf/ResellerCollectionPdf";
 import { getIspOwnerReseller } from "../../../features/apiCalls";
 import FormatNumber from "../../../components/common/NumberFormat";
 import { useCallback } from "react";
+import ComponentCustomModal from "../../../components/common/customModal/ComponentCustomModal";
 
-const Reseller = ({ ispOwnerId, month, year, status }) => {
+const Reseller = ({
+  modalShow,
+  setModalShow,
+  ispOwnerId,
+  month,
+  year,
+  status,
+}) => {
   const { t } = useTranslation();
   const componentRef = useRef();
   const dispatch = useDispatch();
@@ -18,9 +26,6 @@ const Reseller = ({ ispOwnerId, month, year, status }) => {
   const resellerData = useSelector(
     (state) => state.dashboardInformation?.ispOwnerReseller
   );
-
-  //get dashboard different cards data
-  const customerStat = useSelector((state) => state.chart.customerStat);
 
   // is Loading state
   const [isLoading, setIsLoading] = useState(false);
@@ -118,68 +123,43 @@ const Reseller = ({ ispOwnerId, month, year, status }) => {
   );
 
   return (
-    <div
-      className="modal fade"
-      id="resellerInformationModal"
-      tabIndex="-1"
-      aria-labelledby="customerModalDetails"
-      aria-hidden="true"
-    >
-      <div className="modal-dialog modal-dialog-scrollable modal-xl">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h5 className="modal-title" id="exampleModalLabel">
-              {t("reseller")}
-            </h5>
-
-            <div className="collectorWrapper pt-0">
-              <div
-                className="addAndSettingIcon"
-                style={{
-                  marginLeft: ".5rem",
-                  textAlign: "end",
-                }}
-              >
-                <ReactToPrint
-                  documentTitle="Collection Overview"
-                  trigger={() => (
-                    <PrinterFill
-                      // title={t("print")}
-                      className="addcutmButton"
-                      style={{ background: "#0EB96A", color: "white" }}
-                    />
-                  )}
-                  content={() => componentRef.current}
-                />
-              </div>
-            </div>
-
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div className="modal-body">
-            <div className="table-section">
-              <Table
-                isLoading={isLoading}
-                columns={column}
-                data={resellerData}
-                customComponent={customComponent}
-              ></Table>
-            </div>
-            <div className="d-none">
-              <ResellerCollectionPdf
-                resellerCollectionData={resellerData}
-                ref={componentRef}
+    <>
+      <ComponentCustomModal
+        show={modalShow}
+        setShow={setModalShow}
+        centered={false}
+        size={"xl"}
+        header={t("reseller")}
+        printr={
+          <ReactToPrint
+            documentTitle="Collection Overview"
+            trigger={() => (
+              <PrinterFill
+                className="addcutmButton"
+                style={{ background: "#0EB96A", color: "white" }}
               />
-            </div>
-          </div>
+            )}
+            content={() => componentRef.current}
+          />
+        }
+      >
+        <div className="table-section">
+          <Table
+            isLoading={isLoading}
+            columns={column}
+            data={resellerData}
+            customComponent={customComponent}
+          ></Table>
         </div>
-      </div>
-    </div>
+
+        <div className="d-none">
+          <ResellerCollectionPdf
+            resellerCollectionData={resellerData}
+            ref={componentRef}
+          />
+        </div>
+      </ComponentCustomModal>
+    </>
   );
 };
 
