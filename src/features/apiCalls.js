@@ -227,11 +227,10 @@ export const getManagerDashboardCharts = async (
   month,
   collectorId
 ) => {
-  const plusMonth = Number(month) + 1;
   try {
     setLoading(true);
     const res = await apiLink(
-      `dashboard/manager/chart-data/${managerId}?year=${year}&month=${plusMonth}&user=${collectorId}`
+      `dashboard/manager/chart-data/${managerId}?year=${year}&month=${month}&user=${collectorId}`
     );
     dispatch(getChartSuccess(res.data));
   } catch (err) {
@@ -459,23 +458,39 @@ export const getDashboardBelowResellerCardData = async (
   setIsloading(false);
 };
 
+// get manager dashboard below card data
 export const getManagerDashboardCardData = async (
   dispatch,
   setIsloading,
   managerId,
-  filterData = {}
+  filterData
 ) => {
-  let year = filterData.year || new Date().getFullYear(),
-    month = filterData.month || new Date().getMonth() + 1;
-
+  setIsloading(true);
   try {
-    setIsloading(true);
     const res = await apiLink(
-      `/dashboard/manager/${managerId}?year=${year}&month=${month}`
+      `/dashboard/manager/${managerId}?year=${filterData.year}&month=${filterData.month}`
     );
     dispatch(getCardDataSuccess(res.data));
   } catch (err) {
-    console.log("Card data error: ", err);
+    toast.error(err.response?.data?.message);
+  }
+  setIsloading(false);
+};
+
+// get manager dashboard overview card
+export const getManagerDashboardOverViewCardData = async (
+  dispatch,
+  setIsloading,
+  managerId,
+  filterDate
+) => {
+  setIsloading(true);
+  try {
+    const res = await apiLink(
+      `/dashboard/manager/customer/${managerId}?year=${filterDate.year}&month=${filterDate.month}`
+    );
+    dispatch(getDashboardOverViewData(res.data));
+  } catch (err) {
     toast.error(err.response?.data?.message);
   }
   setIsloading(false);
@@ -1399,7 +1414,12 @@ export const deleteMikrotikCustomer = async (dispatch, data, setIsLoading) => {
 };
 
 // get Mikrotik Sync user
-export const fetchMikrotikSyncUser = async (dispatch, data, setIsLoading,setShow) => {
+export const fetchMikrotikSyncUser = async (
+  dispatch,
+  data,
+  setIsLoading,
+  setShow
+) => {
   setIsLoading(true);
   await apiLink({
     method: "POST",
@@ -1996,7 +2016,7 @@ export const editPPPoEpackageRate = async (
   })
     .then((res) => {
       dispatch(editpppoePackageSuccess(res.data));
-      setShow(false)
+      setShow(false);
       langMessage(
         "success",
         "PPPoE প্যাকেজ রেট এডিট সফল হয়েছে!",

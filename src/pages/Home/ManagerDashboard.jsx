@@ -5,15 +5,15 @@ import { Line } from "react-chartjs-2";
 import "chart.js/auto";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
-import {
-  People,
-  ThreeDotsVertical,
-  BarChartFill,
-  PersonCheckFill,
-  Coin,
-  CurrencyDollar,
-} from "react-bootstrap-icons";
 import moment from "moment";
+import { useTranslation } from "react-i18next";
+import { easeQuadIn } from "d3-ease";
+import ReactDatePicker from "react-datepicker";
+
+// custom hooks import
+import useISPowner from "../../hooks/useISPOwner";
+import useAreaPackage from "../../hooks/useAreaPackage";
+
 // internal imports
 import "./home.css";
 import { FourGround, FontColor } from "../../assets/js/theme";
@@ -24,50 +24,38 @@ import {
   getIspOwnerData,
   getManagerDashboardCardData,
   getManagerDashboardCharts,
-  getPPPoEPackage,
+  getManagerDashboardOverViewCardData,
 } from "../../features/apiCalls";
 import { useDispatch, useSelector } from "react-redux";
 import { managerFetchSuccess } from "../../features/managerSlice";
 import { showModal } from "../../features/uiSlice";
 import FormatNumber from "../../components/common/NumberFormat";
-// the hook
-import { useTranslation } from "react-i18next";
 import AnimatedProgressProvider from "../../components/common/AnimationProgressProvider";
-import { easeQuadIn } from "d3-ease";
-import ReactDatePicker from "react-datepicker";
 import Loader from "../../components/common/Loader";
-import { Link } from "react-router-dom";
 import Footer from "../../components/admin/footer/Footer";
-import Inactive from "./dataComponent/Inactive";
-import Expired from "./dataComponent/Expired";
-import FreeCustomer from "./dataComponent/FreeCustomer";
-import Paid from "./dataComponent/Paid";
-import Unpaid from "./dataComponent/Unpaid";
-import Active from "./dataComponent/Active";
-import AllCollector from "./dataComponent/AllCollector";
-import Discount from "./dataComponent/Discount";
 import { getHotspotPackage } from "../../features/hotspotApi";
-import useISPowner from "../../hooks/useISPOwner";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
 import { getSubAreasApi } from "../../features/actions/customerApiCall";
+import DashboardCard from "./dashboardCard/DashboardCard";
 
-export default function ManagerDashboard() {
+const ManagerDashboard = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
+  // get current date
+  const getDate = new Date();
+  const currentDate = {
+    year: getDate.getFullYear(),
+    month: getDate.getMonth() + 1,
+  };
+
   // get user & current user data form useISPOwner
-  const { role, ispOwnerId, bpSetting, permissions } = useISPowner();
+  const { role, ispOwnerData, ispOwnerId, bpSettings, permissions } =
+    useISPowner();
 
-  //get ispOwner data for logged in user
-  const ispOwnerData = useSelector(
-    (state) => state.persistedReducer.auth.currentUser.ispOwner
-  );
-
-  //get ispOwner data from any component
-  const ispOwner = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerData
-  );
+  // get users area pacages form useAreaPackage hook
+  const { areas, subAreas, allPackage, hotsPackage } = useAreaPackage();
 
   // get userdata
   const userData = useSelector(
@@ -81,6 +69,11 @@ export default function ManagerDashboard() {
 
   //get dashboard different cards data
   const customerStat = useSelector((state) => state.chart.customerStat);
+
+  // get dashboard over view data form redux store
+  const dashboardOverView = useSelector(
+    (state) => state.chart.dashboardOverview
+  );
 
   //get payment invoice to check expiration
   const invoice = useSelector((state) => state.invoice.invoice);
@@ -96,8 +89,9 @@ export default function ManagerDashboard() {
   //all internal states
   const [isLoading, setIsloading] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [loadingDashboardData, setLoadingDashboardData] = useState(false);
+  const [belowCardLoading, setBelowCardLoading] = useState(false);
   const [packageLoading, setPackageLoading] = useState(false);
+  const [overViewLoading, setOverViewLoading] = useState(false);
 
   const [showGraphData, setShowGraphData] = useState("amount");
   const [label, setLabel] = useState([]);
@@ -105,26 +99,22 @@ export default function ManagerDashboard() {
   const [count, setCount] = useState([]);
   const [currentCollector, setCurrentCollector] = useState("");
 
-  // choose modal handle
-  const [status, setStatus] = useState("");
-  const [show, setShow] = useState(false);
-
   //all dates states
   const date = new Date();
   const newYear = date.getFullYear();
   const [Year, setYear] = useState(date.getFullYear());
-  const [Month, setMonth] = useState(date.getMonth());
+  const [Month, setMonth] = useState(date.getMonth() + 1);
   const [filterDate, setFilterDate] = useState(date);
-
-  // discount modal state
-  const [discountShow, setDiscountShow] = useState(false);
 
   //api calls
   useEffect(() => {
-    Object.keys(ispOwner)?.length === 0 &&
-      getIspOwnerData(dispatch, ispOwnerId, setIsloading);
-
-    dispatch(managerFetchSuccess(userData));
+    // get manager dashboard overview card data api
+    getManagerDashboardOverViewCardData(
+      dispatch,
+      setOverViewLoading,
+      managerId,
+      currentDate
+    );
 
     //get graph data
     getManagerDashboardCharts(
@@ -136,23 +126,34 @@ export default function ManagerDashboard() {
       currentCollector
     );
 
-    //get card data
-    getManagerDashboardCardData(dispatch, setLoadingDashboardData, managerId);
+    //get dashboard below card api
+    getManagerDashboardCardData(
+      dispatch,
+      setBelowCardLoading,
+      managerId,
+      currentDate
+    );
+
+    // get ispOwner data api
+    Object.keys(ispOwnerData)?.length === 0 &&
+      getIspOwnerData(dispatch, ispOwnerId, setIsloading);
+
+    // get user data
+    dispatch(managerFetchSuccess(userData));
 
     // get area api
-    getArea(dispatch, ispOwnerId, setPackageLoading);
+    areas.length === 0 && getArea(dispatch, ispOwnerId, setPackageLoading);
 
     // get sub area api
-    getSubAreasApi(dispatch, ispOwnerId);
+    subAreas.length === 0 && getSubAreasApi(dispatch, ispOwnerId);
 
     //get all customer package
-    getAllPackages(dispatch, ispOwnerId, setPackageLoading);
-
-    // get pppoe package api call
-    getPPPoEPackage(dispatch, ispOwnerId, setPackageLoading);
+    allPackage.length === 0 &&
+      getAllPackages(dispatch, ispOwnerId, setPackageLoading);
 
     // get hotspot package api call
-    getHotspotPackage(dispatch, ispOwnerId, setPackageLoading);
+    hotsPackage.length === 0 &&
+      getHotspotPackage(dispatch, ispOwnerId, setPackageLoading);
 
     // get netFee bulletin api call
     Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
@@ -174,6 +175,86 @@ export default function ManagerDashboard() {
     setCollection(tempCollection);
     setCount(tempCount);
   }, [ChartsData]);
+
+  //reload cards handler
+  const dashboardReloadHandler = () => {
+    const filterData = {
+      year: filterDate.getFullYear(),
+      month: filterDate.getMonth() + 1,
+    };
+
+    // get manager dashboard overview card api
+    getManagerDashboardOverViewCardData(
+      dispatch,
+      setOverViewLoading,
+      managerId,
+      filterData
+    );
+
+    // get graph data api
+    getManagerDashboardCharts(
+      setLoading,
+      dispatch,
+      managerId,
+      filterData.year,
+      filterData.month,
+      currentCollector
+    );
+
+    // get dashboard below card api
+    getManagerDashboardCardData(
+      dispatch,
+      setBelowCardLoading,
+      managerId,
+      filterData
+    );
+  };
+
+  //filter for graph chart
+  const handleFilterHandler = () => {
+    getManagerDashboardCharts(
+      setLoading,
+      dispatch,
+      managerId,
+      Year,
+      Month,
+      currentCollector
+    );
+  };
+
+  //filter card information
+  const dashboardFilterController = () => {
+    const filterData = {
+      year: filterDate.getFullYear(),
+      month: filterDate.getMonth() + 1,
+    };
+
+    // get manager dashboard overview card api
+    getManagerDashboardOverViewCardData(
+      dispatch,
+      setOverViewLoading,
+      managerId,
+      filterData
+    );
+
+    // get graph data api
+    getManagerDashboardCharts(
+      setLoading,
+      dispatch,
+      managerId,
+      filterData.year,
+      filterData.month,
+      currentCollector
+    );
+
+    // get dashboard below card api
+    getManagerDashboardCardData(
+      dispatch,
+      setBelowCardLoading,
+      managerId,
+      filterData
+    );
+  };
 
   //chartsData for graph
   const chartsData = {
@@ -198,18 +279,6 @@ export default function ManagerDashboard() {
             backgroundColor: "rgb(110 110 110 / 24%)",
           },
     ],
-  };
-
-  //filter for graph chart
-  const handleFilterHandler = () => {
-    getManagerDashboardCharts(
-      setLoading,
-      dispatch,
-      managerId,
-      Year,
-      Month,
-      currentCollector
-    );
   };
 
   //expiration date calculation for pop-up modal
@@ -237,15 +306,16 @@ export default function ManagerDashboard() {
 
   // probability amount calculation ispOwner permission wise
   const probabilityAmountCalculation = () => {
-    if (bpSetting?.dashboardProbabilityAmountWithNewCustomer) {
+    if (bpSettings?.dashboardProbabilityAmountWithNewCustomer) {
       return (
-        customerStat.totalProbableAmount -
-        customerStat.totalInactiveAmount -
-        customerStat.newCustomerBillCount
+        dashboardOverView.totalProbableAmount -
+        dashboardOverView.totalInactiveAmount -
+        dashboardOverView.newCustomerBillCount
       );
     } else {
       return (
-        customerStat.totalProbableAmount - customerStat.totalInactiveAmount
+        dashboardOverView.totalProbableAmount -
+        dashboardOverView.totalInactiveAmount
       );
     }
   };
@@ -253,50 +323,28 @@ export default function ManagerDashboard() {
   //percantage calculation
   const collectionPercentage = customerStat
     ? Math.round(
-        (customerStat.totalMonthlyBillCollection /
-          (customerStat.totalProbableAmount -
-            customerStat.totalInactiveAmount)) *
+        ((bpSettings?.dashboardProbabilityAmountWithNewCustomer
+          ? Math.abs(
+              dashboardOverView.totalMonthlyCollection -
+                dashboardOverView.newCustomerBillCollection -
+                dashboardOverView.totalMonthlyDiscount
+            )
+          : Math.abs(
+              dashboardOverView.totalMonthlyCollection -
+                dashboardOverView.totalMonthlyDiscount
+            )) /
+          probabilityAmountCalculation()) *
           100
       )
     : 0;
 
-  //reload cards handler
-  const dashboardReloadHandler = () => {
-    const filterData = {
-      year: filterDate.getFullYear(),
-      month: filterDate.getMonth() + 1,
-    };
-
-    getManagerDashboardCardData(
-      dispatch,
-      setLoadingDashboardData,
-      managerId,
-      filterData
-    );
-  };
-
-  //filter card information
-  const dashboardFilterController = () => {
-    const filterData = {
-      year: filterDate.getFullYear(),
-      month: filterDate.getMonth() + 1,
-    };
-
-    getManagerDashboardCardData(
-      dispatch,
-      setLoadingDashboardData,
-      managerId,
-      filterData
-    );
-  };
-
   return (
     <>
       <div className="container homeWrapper">
-        {loadingDashboardData && (
+        {overViewLoading && (
           <div
             className={`d-flex justify-content-center align-items-center Loader ${
-              loadingDashboardData && "d-block"
+              overViewLoading && "d-block"
             }`}
           >
             <div class="d-flex justify-content-center align-items-center spinner-square">
@@ -310,8 +358,6 @@ export default function ManagerDashboard() {
         <ToastContainer position="top-right" theme="colored" />
         <FontColor>
           <div className="home">
-            {/* card section */}
-
             <div className="row">
               {invoiceFlag === "UNPAID" && (
                 <div className="col-md-12 mb-3 pt-3 pb-3 badge bg-primary text-wrap fs-5 text">
@@ -340,7 +386,7 @@ export default function ManagerDashboard() {
                       <h2>
                         {t("possibleCollection")}
                         <br /> ৳ &nbsp;
-                        {FormatNumber(probabilityAmountCalculation())}{" "}
+                        {FormatNumber(probabilityAmountCalculation())}
                       </h2>
                     </div>
                     <div className="col-md-6">
@@ -379,10 +425,18 @@ export default function ManagerDashboard() {
                     </div>
                     <div className="col-md-3 d-flex justify-content-start align-items-center">
                       <h2>
-                        {t("totalCollection")} <br /> ৳ &nbsp;
+                        {t("collection")} <br /> ৳ &nbsp;
                         {FormatNumber(
-                          customerStat?.totalMonthlyBillCollection -
-                            customerStat?.totalMonthlyBillDiscount
+                          bpSettings?.dashboardProbabilityAmountWithNewCustomer
+                            ? Math.abs(
+                                dashboardOverView.totalMonthlyCollection -
+                                  dashboardOverView.newCustomerBillCollection -
+                                  dashboardOverView.totalMonthlyDiscount
+                              )
+                            : Math.abs(
+                                dashboardOverView.totalMonthlyCollection -
+                                  dashboardOverView.totalMonthlyDiscount
+                              )
                         )}
                       </h2>
                     </div>
@@ -390,37 +444,7 @@ export default function ManagerDashboard() {
                 )}
 
                 <div className="d-flex justify-content-between">
-                  {permissions?.dashboardCollectionData && (
-                    <div className="d-flex justify-content-between align-items-center">
-                      <p
-                        className="fw-700 me-3"
-                        onClick={() => {
-                          setStatus("active");
-                          setShow(true);
-                        }}
-                        style={{ fontSize: "20px", cursor: "pointer" }}
-                      >
-                        {t("active")} &nbsp;
-                        <span className="text-secondary fw-bold">
-                          ৳{FormatNumber(customerStat?.totalActiveAmount)}
-                        </span>
-                      </p>
-
-                      <p
-                        className="fw-700"
-                        onClick={() => {
-                          setStatus("expired");
-                          setShow(true);
-                        }}
-                        style={{ fontSize: "20px", cursor: "pointer" }}
-                      >
-                        {t("expired")} &nbsp;
-                        <span className="text-secondary fw-bold">
-                          ৳{FormatNumber(customerStat?.totalExpiredAmount)}
-                        </span>
-                      </p>
-                    </div>
-                  )}
+                  <div></div>
 
                   <div className="d-flex justify-content-end">
                     <div
@@ -479,206 +503,12 @@ export default function ManagerDashboard() {
                 {/* </div> */}
               </div>
 
-              <div className="col-md-3">
-                <div id="card1" className="dataCard">
-                  <ThreeDotsVertical className="ThreeDots" />
-                  <div className="cardIcon">
-                    <People />
-                  </div>
-                  <div className="chartSection">
-                    <p style={{ fontSize: "16px" }}>{t("total customer")}</p>
-                    <h2>{FormatNumber(customerStat?.customers)}</h2>
-
-                    <Link to={"/other/customer"}>
-                      <p
-                        className="dashboardData"
-                        style={{ fontSize: "15px", marginBottom: "0px" }}
-                      >
-                        {t("newCustomer")}:&nbsp;
-                        {FormatNumber(customerStat.newCustomer)}
-                        &nbsp;
-                        <span className="text-info">
-                          ৳{FormatNumber(customerStat.newCustomerBillCount)}
-                        </span>
-                      </p>
-                    </Link>
-                  </div>
-                </div>
-              </div>
-
-              <div className="col-md-3" key={2}>
-                <div id="card2" className="dataCard">
-                  <ThreeDotsVertical className="ThreeDots" />
-                  <div className="cardIcon">
-                    <PersonCheckFill />
-                  </div>
-                  <div className="chartSection">
-                    <p
-                      className="dashboardActive pb-0"
-                      style={{ fontSize: "16px" }}
-                      onClick={() => {
-                        setStatus("active");
-                        setShow(true);
-                      }}
-                    >
-                      {t("active")}
-                      <h4>{FormatNumber(customerStat.active)}</h4>
-                    </p>
-
-                    {permissions?.dashboardCollectionData && (
-                      <p
-                        className="dashboardActive pb-1"
-                        style={{ fontSize: "15px" }}
-                        onClick={() => {
-                          setStatus("active");
-                          setShow(true);
-                        }}
-                      >
-                        {t("active")}
-                        &nbsp;
-                        <span className="text-info">
-                          ৳{FormatNumber(customerStat?.totalActiveAmount)}
-                        </span>
-                      </p>
-                    )}
-                    <p
-                      className="dashboardData pb-1 pt-0"
-                      onClick={() => {
-                        setStatus("inactive");
-                        setShow(true);
-                      }}
-                      style={{ fontSize: "15px", marginBottom: "0px" }}
-                    >
-                      {t("in active")}: {FormatNumber(customerStat?.inactive)}
-                      &nbsp;
-                      {permissions?.dashboardCollectionData && (
-                        <span className="text-info">
-                          ৳{FormatNumber(customerStat?.totalInactiveAmount)}
-                        </span>
-                      )}
-                    </p>
-                    <p
-                      className="dashboardData pb-1"
-                      onClick={() => {
-                        setStatus("expired");
-                        setShow(true);
-                      }}
-                      style={{ fontSize: "15px", paddingTop: "0px" }}
-                    >
-                      {t("expired")}: {FormatNumber(customerStat?.expired)}
-                      &nbsp;
-                      {permissions?.dashboardCollectionData && (
-                        <span className="text-info">
-                          ৳{FormatNumber(customerStat?.totalExpiredAmount)}
-                        </span>
-                      )}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="col-md-3" key={3}>
-                <div id="card3" className="dataCard">
-                  <ThreeDotsVertical className="ThreeDots" />
-                  <div className="cardIcon">
-                    <BarChartFill />
-                  </div>
-                  <div className="chartSection">
-                    <p
-                      className="dashboardUnpaid pb-0"
-                      onClick={() => {
-                        setStatus("paid");
-                        setShow(true);
-                      }}
-                      style={{ fontSize: "16px" }}
-                    >
-                      {t("paid")}
-                      <h4>{FormatNumber(customerStat.paid)}</h4>
-                    </p>
-
-                    <p
-                      className="dashboardUnpaid pb-1"
-                      onClick={() => {
-                        setStatus("unpaid");
-                        setShow(true);
-                      }}
-                      style={{ fontSize: "15px", paddingTop: "10px" }}
-                    >
-                      {t("unpaid")}: {FormatNumber(customerStat?.unpaid)}
-                    </p>
-
-                    <p
-                      className="dashboardUnpaid pb-1"
-                      onClick={() => {
-                        setStatus("freeCustomer");
-                        setShow(true);
-                      }}
-                      style={{
-                        fontSize: "15px",
-                        paddingTop: "0px",
-                      }}
-                    >
-                      {t("freeCustomer")}:
-                      {FormatNumber(customerStat?.freeCustomer)}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="col-md-3">
-                <div id="card4" className="dataCard">
-                  <ThreeDotsVertical className="ThreeDots" />
-                  <div className="cardIcon">৳</div>
-                  <div className="chartSection">
-                    {permissions?.dashboardCollectionData && (
-                      <>
-                        <p style={{ fontSize: "16px", paddingTop: "10px" }}>
-                          {t("total collection")}
-                          <h4>
-                            ৳&nbsp;
-                            {FormatNumber(
-                              customerStat?.totalMonthlyBillCollection -
-                                customerStat?.totalMonthlyBillDiscount
-                            )}
-                          </h4>
-                        </p>
-                      </>
-                    )}
-
-                    {permissions?.dashboardCollectionData && (
-                      <>
-                        <p
-                          className="dashboardCollection pb-0"
-                          style={{ fontSize: "15px" }}
-                          // onClick={() => {
-                          //   setDiscountShow(true);
-                          //   setStatus("discount");
-                          // }}
-                        >
-                          {t("discount")}:&nbsp;৳
-                          {FormatNumber(customerStat?.totalMonthlyBillDiscount)}
-                        </p>
-
-                        <p style={{ fontSize: "13px", paddingBottom: "0px" }}>
-                          {t("withoutDiscount")}:&nbsp;৳
-                          {FormatNumber(
-                            customerStat?.totalMonthlyBillCollection
-                          )}
-                        </p>
-                      </>
-                    )}
-
-                    <p
-                      className={
-                        !permissions?.dashboardCollectionData ? "fs-6" : "fs-13"
-                      }
-                    >
-                      {t("today collection")}&nbsp;৳
-                      {FormatNumber(customerStat?.billCollectionToday)}
-                    </p>
-                  </div>
-                </div>
-              </div>
+              {/* dashboard overview card */}
+              <DashboardCard
+                dashboardCard={dashboardOverView}
+                filterDate={filterDate}
+                cardRole={"overView"}
+              />
             </div>
             <hr />
 
@@ -717,7 +547,7 @@ export default function ManagerDashboard() {
                         onChange={(e) => setCurrentCollector(e.target.value)}
                       >
                         <option value="">{t("all collector")}</option>
-                        {customerStat?.collectorStat?.map((c, key) => (
+                        {dashboardOverView?.collectorStat?.map((c, key) => (
                           <option key={key} value={c.user}>
                             {c.name}
                           </option>
@@ -732,21 +562,19 @@ export default function ManagerDashboard() {
                       <option value={newYear}>{newYear}</option>
                       <option value={newYear - 1}>{newYear - 1}</option>
                     </select>
+
                     <select
                       className="form-select chartFilteritem"
                       value={Month}
                       onChange={(e) => setMonth(e.target.value)}
                     >
                       {monthsName.map((val, index) => (
-                        <option
-                          // selected={index === Month ? true : false}
-                          value={index}
-                          key={index}
-                        >
+                        <option value={index} key={index}>
                           {val}
                         </option>
                       ))}
                     </select>
+
                     <button
                       className="btn btn-outline-primary w-140 mt-2 chartFilteritem"
                       type="button"
@@ -756,8 +584,6 @@ export default function ManagerDashboard() {
                     </button>
                   </div>
                 </div>
-
-                {/* select graph */}
 
                 <div className="lineChart">
                   <Line
@@ -773,253 +599,17 @@ export default function ManagerDashboard() {
               </FourGround>
             )}
 
-            {role === "manager" ? (
-              <div className="row">
-                <div className="col-md-3">
-                  <div id="card5" className="dataCard">
-                    <ThreeDotsVertical className="ThreeDots" />
-                    <div className="cardIcon">৳</div>
-                    <div className="chartSection">
-                      {permissions?.dashboardCollectionData && (
-                        <>
-                          <p style={{ fontSize: "16px" }}>
-                            {t("totalMonthlyCollection")}
-                          </p>
-                          <h2>
-                            ৳&nbsp;
-                            {FormatNumber(
-                              customerStat?.totalMonthlyBillCollection -
-                                customerStat?.totalMonthlyBillDiscount
-                            )}
-                          </h2>
-                        </>
-                      )}
-
-                      <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                        {t("todayTotalCollectionByManager")}:&nbsp;৳
-                        {FormatNumber(customerStat?.billCollectionToday)}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-md-3">
-                  <div id="card5" className="dataCard">
-                    <ThreeDotsVertical className="ThreeDots" />
-                    <div className="cardIcon">৳</div>
-                    <div className="chartSection">
-                      <p style={{ fontSize: "16px" }}>
-                        {t("totalOwnCollection")}
-                      </p>
-                      <h2>
-                        ৳ {FormatNumber(customerStat?.totalOwnCollection)}
-                      </h2>
-
-                      <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                        {t("todayTotalCollectionByManager")}:&nbsp;৳
-                        {FormatNumber(customerStat?.totalOwnCollectionToday)}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-md-3" key={3}>
-                  <div id="card6" className="dataCard">
-                    <ThreeDotsVertical className="ThreeDots" />
-                    <div className="cardIcon">
-                      <BarChartFill />
-                    </div>
-                    <div className="chartSection">
-                      <p style={{ fontSize: "16px" }}>
-                        {t("totalManagerDeposite")}
-                      </p>
-                      <h2>
-                        ৳ {FormatNumber(customerStat?.totalManagerDeposit)}
-                      </h2>
-
-                      <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                        {t("todayTotalCollectionByManager")}:&nbsp;৳
-                        {FormatNumber(customerStat?.todayManagerDeposit)}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-md-3">
-                  <div id="card14" className="dataCard">
-                    <ThreeDotsVertical className="ThreeDots" />
-                    <div className="cardIcon">৳</div>
-                    <div className="chartSection">
-                      <p style={{ fontSize: "16px" }}>
-                        {t("depositCollection")}
-                      </p>
-                      <h2>
-                        ৳ {FormatNumber(customerStat?.totalDepositByCollectors)}
-                      </h2>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-md-3">
-                  <div id="card11" className="dataCard">
-                    <ThreeDotsVertical className="ThreeDots" />
-                    <div className="cardIcon">৳</div>
-                    <div className="chartSection">
-                      <p style={{ fontSize: "16px" }}>{t("staffSalary")}</p>
-                      <h2>
-                        ৳ {FormatNumber(customerStat?.managerStaffSalarySum)}
-                      </h2>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-md-3">
-                  <div id="card8" className="dataCard">
-                    <ThreeDotsVertical className="ThreeDots" />
-                    <div className="cardIcon">৳</div>
-                    <div className="chartSection">
-                      <p style={{ fontSize: "16px" }}>{t("cost")}</p>
-                      <h2>
-                        ৳ {FormatNumber(customerStat?.managerExpenditure)}
-                      </h2>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-md-3">
-                  <div id="card7" className="dataCard">
-                    <ThreeDotsVertical className="ThreeDots" />
-                    <div className="cardIcon">৳</div>
-                    <div className="chartSection">
-                      <p style={{ fontSize: "16px" }}>{t("managersBalance")}</p>
-                      <h2>৳ {FormatNumber(customerStat.balance)}</h2>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-md-3">
-                  <div
-                    id="card5"
-                    className="dataCard"
-                    data-bs-toggle="modal"
-                    data-bs-target="#allCollector"
-                    onClick={() => setStatus("collector")}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <ThreeDotsVertical className="ThreeDots" />
-                    <div className="cardIcon">৳</div>
-                    <div className="chartSection">
-                      <p style={{ fontSize: "16px" }}>{t("collector")}</p>
-                      <h2>{customerStat?.collectorStat?.length}</h2>
-
-                      {permissions?.dashboardCollectionData && (
-                        <p style={{ fontSize: "15px", paddingTop: "10px" }}>
-                          {t("totalCollection")}:&nbsp;৳
-                          {FormatNumber(customerStat?.collectorsBillCollection)}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              ""
-            )}
+            {/* dashboard below card */}
+            <DashboardCard
+              dashboardCard={customerStat}
+              isLoading={belowCardLoading}
+              filterDate={filterDate}
+              cardRole={"managerBelowCard"}
+            />
           </div>
           <Footer />
         </FontColor>
       </div>
-
-      {/* dashboard modal */}
-
-      {/* all active customers modal */}
-      {status === "active" && (
-        <Active
-          status={status}
-          modalShow={show}
-          setModalShow={setShow}
-          ispOwnerId={ispOwnerId}
-          year={filterDate.getFullYear()}
-          month={filterDate.getMonth() + 1}
-        />
-      )}
-
-      {/* all active customers modal */}
-      {status === "inactive" && (
-        <Inactive
-          status={status}
-          modalShow={show}
-          setModalShow={setShow}
-          ispOwnerId={ispOwnerId}
-          year={filterDate.getFullYear()}
-          month={filterDate.getMonth() + 1}
-        />
-      )}
-
-      {/* all expired customers modal */}
-      {status === "expired" && (
-        <Expired
-          status={status}
-          modalShow={show}
-          setModalShow={setShow}
-          ispOwnerId={ispOwnerId}
-          year={filterDate.getFullYear()}
-          month={filterDate.getMonth() + 1}
-        />
-      )}
-
-      {/* all paid customers modal */}
-      {status === "paid" && (
-        <Paid
-          status={status}
-          modalShow={show}
-          setModalShow={setShow}
-          ispOwnerId={ispOwnerId}
-          year={filterDate.getFullYear()}
-          month={filterDate.getMonth() + 1}
-        />
-      )}
-
-      {/* all unpaid customers modal */}
-      {status === "unpaid" && (
-        <Unpaid
-          status={status}
-          modalShow={show}
-          setModalShow={setShow}
-          ispOwnerId={ispOwnerId}
-          year={filterDate.getFullYear()}
-          month={filterDate.getMonth() + 1}
-        />
-      )}
-
-      {/* owner free customer modal */}
-      {status === "freeCustomer" && (
-        <FreeCustomer
-          status={status}
-          modalShow={show}
-          setModalShow={setShow}
-          ispOwnerId={ispOwnerId}
-          year={filterDate.getFullYear()}
-          month={filterDate.getMonth() + 1}
-        />
-      )}
-      {status === "discount" && (
-        <Discount
-          status={status}
-          modalShow={show}
-          setModalShow={setShow}
-          ispOwnerId={ispOwnerId}
-          year={filterDate.getFullYear()}
-          month={filterDate.getMonth() + 1}
-        />
-      )}
-
-      <AllCollector
-        status={status}
-        ispOwnerId={ispOwnerId}
-        year={filterDate.getFullYear()}
-        month={filterDate.getMonth() + 1}
-      />
 
       {/* dashboard netFee bulletin added */}
       {(butPermission?.dashboard || butPermission?.allPage) && (
@@ -1027,4 +617,6 @@ export default function ManagerDashboard() {
       )}
     </>
   );
-}
+};
+
+export default ManagerDashboard;

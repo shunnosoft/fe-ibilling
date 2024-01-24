@@ -40,14 +40,34 @@ import Reseller from "../dataComponent/Reseller";
 
 const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
   const { t } = useTranslation();
-  console.log(dashboardCard);
 
   // get user & current user data form useISPOwner hooks
-  const { role, ispOwnerId, bpSettings } = useISPowner();
+  const { role, ispOwnerId, bpSettings, permissions } = useISPowner();
 
   // modal close handler
   const [status, setStatus] = useState("");
   const [show, setShow] = useState(false);
+
+  // own totoal collection in role base
+  const ownTotalCollection = () => {
+    if (["ispOwner", "manager"].includes(role)) {
+      return bpSettings?.dashboardProbabilityAmountWithNewCustomer
+        ? Math.abs(
+            dashboardCard.totalMonthlyCollection -
+              dashboardCard.newCustomerBillCollection -
+              dashboardCard.totalMonthlyDiscount
+          )
+        : dashboardCard.totalMonthlyCollection -
+            dashboardCard.totalMonthlyDiscount;
+    } else {
+      return bpSettings?.dashboardProbabilityAmountWithNewCustomer
+        ? Math.abs(
+            dashboardCard.totalMonthlyCollection -
+              dashboardCard.newCustomerBillCollection
+          )
+        : dashboardCard.totalMonthlyCollection;
+    }
+  };
 
   return (
     <>
@@ -96,7 +116,8 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
                       {FormatNumber(dashboardCard.active)}
                     </h2>
                     &nbsp; &nbsp;
-                    {role === "ispOwner" && dashboardCard.totalActiveAmount && (
+                    {(role === "ispOwner" ||
+                      permissions.dashboardCollectionData) && (
                       <span className="total_collection_amount">
                         ৳{FormatNumber(dashboardCard.totalActiveAmount)}
                       </span>
@@ -105,8 +126,14 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
                   <p class="m-b-0">
                     {t("newCustomer")}
                     <span class="f-right">
-                      {FormatNumber(dashboardCard.newCustomerActive)}/ ৳
-                      {FormatNumber(dashboardCard.newCustomerActiveAmount)}
+                      {FormatNumber(dashboardCard.newCustomerActive)}
+                      {(role === "ispOwner" ||
+                        permissions.dashboardCollectionData) && (
+                        <span>
+                          / ৳
+                          {FormatNumber(dashboardCard.newCustomerActiveAmount)}
+                        </span>
+                      )}
                     </span>
                   </p>
                 </div>
@@ -131,7 +158,8 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
                       {FormatNumber(dashboardCard.paid)}
                     </h2>
                     &nbsp; &nbsp;
-                    {role === "ispOwner" && dashboardCard.paidAmount && (
+                    {(role === "ispOwner" ||
+                      permissions.dashboardCollectionData) && (
                       <span className="total_collection_amount">
                         ৳{FormatNumber(dashboardCard.paidAmount)}
                       </span>
@@ -140,8 +168,13 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
                   <p class="m-b-0">
                     {t("newCustomer")}
                     <span class="f-right">
-                      {FormatNumber(dashboardCard.newCustomerPaid)}/ ৳
-                      {FormatNumber(dashboardCard.newCustomerPaidAmount)}
+                      {FormatNumber(dashboardCard.newCustomerPaid)}
+                      {(role === "ispOwner" ||
+                        permissions.dashboardCollectionData) && (
+                        <span>
+                          / ৳{FormatNumber(dashboardCard.newCustomerPaidAmount)}
+                        </span>
+                      )}
                     </span>
                   </p>
                 </div>
@@ -159,14 +192,15 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
                     <h2
                       className="clickable"
                       onClick={() => {
-                        setStatus("unPaid");
+                        setStatus("unpaid");
                         setShow(true);
                       }}
                     >
                       {FormatNumber(dashboardCard.unpaid)}
                     </h2>
                     &nbsp; &nbsp;
-                    {role === "ispOwner" && dashboardCard.unpaidAmount && (
+                    {(role === "ispOwner" ||
+                      permissions.dashboardCollectionData) && (
                       <span className="total_collection_amount">
                         ৳{FormatNumber(Math.abs(dashboardCard.unpaidAmount))}
                       </span>
@@ -175,8 +209,14 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
                   <p class="m-b-0">
                     {t("newCustomer")}
                     <span class="f-right">
-                      {FormatNumber(dashboardCard.newCustomerUnpaid)}/ ৳
-                      {FormatNumber(dashboardCard.newCustomerUnpaidAmount)}
+                      {FormatNumber(dashboardCard.newCustomerUnpaid)}
+                      {(role === "ispOwner" ||
+                        permissions.dashboardCollectionData) && (
+                        <span>
+                          / ৳
+                          {FormatNumber(dashboardCard.newCustomerUnpaidAmount)}
+                        </span>
+                      )}
                     </span>
                   </p>
                 </div>
@@ -201,12 +241,12 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
                       {FormatNumber(dashboardCard.expired)}
                     </h2>
                     &nbsp; &nbsp;
-                    {role === "ispOwner" &&
-                      dashboardCard.totalExpiredAmount && (
-                        <span className="total_collection_amount">
-                          ৳{FormatNumber(dashboardCard.totalExpiredAmount)}
-                        </span>
-                      )}
+                    {(role === "ispOwner" ||
+                      permissions.dashboardCollectionData) && (
+                      <span className="total_collection_amount">
+                        ৳{FormatNumber(dashboardCard.totalExpiredAmount)}
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>
@@ -230,12 +270,12 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
                       {FormatNumber(dashboardCard.inactive)}
                     </h2>
                     &nbsp; &nbsp;
-                    {role === "ispOwner" &&
-                      dashboardCard.totalInactiveAmount && (
-                        <span className="total_collection_amount">
-                          ৳{FormatNumber(dashboardCard.totalInactiveAmount)}
-                        </span>
-                      )}
+                    {(role === "ispOwner" ||
+                      permissions.dashboardCollectionData) && (
+                      <span className="total_collection_amount">
+                        ৳{FormatNumber(dashboardCard.totalInactiveAmount)}
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>
@@ -263,47 +303,51 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
               </div>
             </div>
 
-            <div class="col-md-4 col-xl-3">
-              <div class="card bg-card-08 order-card">
-                <div class="card-block display_card">
-                  <p class="m-b-20">{t("totalConnectionFee")}</p>
-                  <div class="d-flex align-items-center">
-                    <p className="card_Icon">
-                      <Diagram2 />
-                    </p>
-                    <h2>
-                      {FormatNumber(dashboardCard.totalMonthlyConnectionFee)}
-                    </h2>
+            {(role === "ispOwner" || permissions.dashboardCollectionData) && (
+              <div class="col-md-4 col-xl-3">
+                <div class="card bg-card-08 order-card">
+                  <div class="card-block display_card">
+                    <p class="m-b-20">{t("totalConnectionFee")}</p>
+                    <div class="d-flex align-items-center">
+                      <p className="card_Icon">
+                        <Diagram2 />
+                      </p>
+                      <h2>
+                        {FormatNumber(dashboardCard.totalMonthlyConnectionFee)}
+                      </h2>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            )}
 
-            <div class="col-md-4 col-xl-3">
-              <div class="card bg-card-09 order-card">
-                <div class="card-block display_card">
-                  <p class="m-b-20">{t("totalDiscount")}</p>
-                  <div class="d-flex align-items-center">
-                    <p className="card_Icon">%</p>
-                    <h2
-                      className="clickable"
-                      onClick={() => {
-                        setStatus("discount");
-                        setShow(true);
-                      }}
-                    >
-                      {FormatNumber(dashboardCard.totalMonthlyDiscount)}
-                    </h2>
+            {role !== "collector" && (
+              <div class="col-md-4 col-xl-3">
+                <div class="card bg-card-09 order-card">
+                  <div class="card-block display_card">
+                    <p class="m-b-20">{t("totalDiscount")}</p>
+                    <div class="d-flex align-items-center">
+                      <p className="card_Icon">%</p>
+                      <h2
+                        className="clickable"
+                        onClick={() => {
+                          setStatus("discount");
+                          setShow(true);
+                        }}
+                      >
+                        {FormatNumber(dashboardCard.totalMonthlyDiscount)}
+                      </h2>
+                    </div>
+                    <p class="m-b-0">
+                      {t("todayDiscount")}
+                      <span class="f-right">
+                        {FormatNumber(dashboardCard.todayTotalBillDiscount)}
+                      </span>
+                    </p>
                   </div>
-                  <p class="m-b-0">
-                    {t("todayDiscount")}
-                    <span class="f-right">
-                      {FormatNumber(dashboardCard.todayTotalBillDiscount)}
-                    </span>
-                  </p>
                 </div>
               </div>
-            </div>
+            )}
 
             <div class="col-md-4 col-xl-3">
               <div class="card bg-card-10 order-card">
@@ -313,60 +357,89 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
                     <p className="card_Icon">
                       <GraphDownArrow />
                     </p>
-                    <h2>{FormatNumber(dashboardCard.totalExpenditure)}</h2>
+                    <h2>{FormatNumber(dashboardCard.totalExpenditure || 0)}</h2>
                   </div>
-                  <p class="m-b-0">
-                    {t("todayExpenditure")}
-                    <span class="f-right">
-                      {FormatNumber(dashboardCard.todayExpenditure)}
-                    </span>
-                  </p>
+                  {role === "ispOwner" && (
+                    <p class="m-b-0">
+                      {t("todayExpenditure")}
+                      <span class="f-right">
+                        {FormatNumber(dashboardCard.todayExpenditure)}
+                      </span>
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
 
-            <div class="col-md-4 col-xl-3">
-              <div class="card bg-card-11 order-card">
-                <div class="card-block display_card">
-                  <p class="m-b-20">{t("totalCollection")}</p>
-                  <div class="d-flex align-items-center">
-                    <p className="card_Icon">
-                      <Reception3 />
+            {role === "manager" && (
+              <div class="col-md-4 col-xl-3">
+                <div class="card bg-card-13 order-card">
+                  <div class="card-block display_card">
+                    <p class="m-b-20">{t("collectorCollection")}</p>
+                    <div class="d-flex align-items-center">
+                      <p className="card_Icon">
+                        <CashStack />
+                      </p>
+                      <h2
+                        className="clickable"
+                        onClick={() => {
+                          setStatus("collector");
+                          setShow(true);
+                        }}
+                      >
+                        {FormatNumber(dashboardCard.collectorsBillCollection)}
+                      </h2>
+                    </div>
+                    <p class="m-b-0">
+                      {t("todayCollection")}
+                      <span class="f-right">
+                        {FormatNumber(
+                          dashboardCard.collectorsBillCollectionToday
+                        )}
+                      </span>
                     </p>
-                    <h2>
-                      {FormatNumber(
-                        bpSettings?.dashboardProbabilityAmountWithNewCustomer
-                          ? dashboardCard.totalMonthlyCollection -
-                              dashboardCard.newCustomerBillCollection -
-                              dashboardCard.totalMonthlyDiscount
-                          : dashboardCard.totalMonthlyCollection -
-                              dashboardCard.totalMonthlyDiscount
-                      )}
-                    </h2>
                   </div>
-                  <p class="m-b-0">
-                    {t("newCustomer")}
-                    <span class="f-right">
-                      {FormatNumber(dashboardCard.newCustomerBillCollection)}
-                    </span>
-                  </p>
                 </div>
               </div>
-            </div>
+            )}
 
-            <div class="col-md-4 col-xl-3">
-              <div class="card bg-card-12 order-card">
-                <div class="card-block display_card">
-                  <p class="m-b-20">{t("businessBalance")}</p>
-                  <div class="d-flex align-items-center">
-                    <p className="card_Icon">
-                      <GraphUpArrow />
+            {(role === "ispOwner" || permissions.dashboardCollectionData) && (
+              <div class="col-md-4 col-xl-3">
+                <div class="card bg-card-11 order-card">
+                  <div class="card-block display_card">
+                    <p class="m-b-20">{t("totalCollection")}</p>
+                    <div class="d-flex align-items-center">
+                      <p className="card_Icon">
+                        <Reception3 />
+                      </p>
+                      <h2>{FormatNumber(ownTotalCollection())}</h2>
+                    </div>
+                    <p class="m-b-0">
+                      {t("newCustomer")}
+                      <span class="f-right">
+                        {FormatNumber(dashboardCard.newCustomerBillCollection)}
+                      </span>
                     </p>
-                    <h2>{FormatNumber(dashboardCard.balance)}</h2>
                   </div>
                 </div>
               </div>
-            </div>
+            )}
+
+            {role === "ispOwner" && (
+              <div class="col-md-4 col-xl-3">
+                <div class="card bg-card-12 order-card">
+                  <div class="card-block display_card">
+                    <p class="m-b-20">{t("businessBalance")}</p>
+                    <div class="d-flex align-items-center">
+                      <p className="card_Icon">
+                        <GraphUpArrow />
+                      </p>
+                      <h2>{FormatNumber(dashboardCard.balance)}</h2>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* <div class="col-md-4 col-xl-3">
             <div class="card bg-card-13 order-card">
@@ -891,6 +964,184 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
           </div>
         </div>
       )}
+
+      {/* collector card data end */}
+
+      {/* manager dashboard below card data start */}
+      {cardRole === "managerBelowCard" && (
+        <div class="row dashboard_card">
+          <div class="col-md-4 col-xl-3">
+            <div class="card bg-card-32 order-card">
+              <div class="card-block display_card">
+                <p class="m-b-20">{t("totalCollection")}</p>
+                <div class="d-flex align-items-center">
+                  <p className="card_Icon">
+                    <Reception3 />
+                  </p>
+                  <h2>
+                    {isLoading ? (
+                      <DotLoder />
+                    ) : (
+                      FormatNumber(dashboardCard.monthlyBillCollection)
+                    )}
+                  </h2>
+                </div>
+                <p class="m-b-0">
+                  {t("todayCollection")}
+                  <span class="f-right">
+                    {FormatNumber(dashboardCard.totalOwnCollectionToday)}
+                  </span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4 col-xl-3">
+            <div class="card bg-card-20 order-card">
+              <div class="card-block display_card">
+                <p class="m-b-20">{t("connectionFee")}</p>
+                <div class="d-flex align-items-center">
+                  <p className="card_Icon">
+                    <Diagram2 />
+                  </p>
+                  <h2>
+                    {isLoading ? (
+                      <DotLoder />
+                    ) : (
+                      FormatNumber(dashboardCard.totalOwnMonthlyConnectionFee)
+                    )}
+                  </h2>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4 col-xl-3">
+            <div class="card bg-card-33 order-card">
+              <div class="card-block display_card">
+                <p class="m-b-20">{t("depositCollection")}</p>
+                <div class="d-flex align-items-center">
+                  <p className="card_Icon">
+                    <CashStack />
+                  </p>
+                  <h2>
+                    {isLoading ? (
+                      <DotLoder />
+                    ) : (
+                      FormatNumber(dashboardCard.totalDepositByCollectors)
+                    )}
+                  </h2>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4 col-xl-3">
+            <div class="card bg-card-34 order-card">
+              <div class="card-block display_card">
+                <p class="m-b-20">{t("deposit")}</p>
+                <div class="d-flex align-items-center">
+                  <p className="card_Icon">
+                    <Cash />
+                  </p>
+                  <h2>
+                    {isLoading ? (
+                      <DotLoder />
+                    ) : (
+                      FormatNumber(dashboardCard.totalManagerDeposit)
+                    )}
+                  </h2>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4 col-xl-3">
+            <div class="card bg-card-25 order-card">
+              <div class="card-block display_card">
+                <p class="m-b-20">{t("staffSalary")}</p>
+                <div class="d-flex align-items-center">
+                  <p className="card_Icon">
+                    <Cash />
+                  </p>
+                  <h2>
+                    {isLoading ? (
+                      <DotLoder />
+                    ) : (
+                      FormatNumber(dashboardCard.managerStaffSalarySum)
+                    )}
+                  </h2>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4 col-xl-3">
+            <div class="card bg-card-30 order-card">
+              <div class="card-block display_card">
+                <p class="m-b-20">{t("cost")}</p>
+                <div class="d-flex align-items-center">
+                  <p className="card_Icon">
+                    <GraphDown />
+                  </p>
+                  <h2>
+                    {isLoading ? (
+                      <DotLoder />
+                    ) : (
+                      FormatNumber(dashboardCard.managerExpenditure)
+                    )}
+                  </h2>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4 col-xl-3">
+            <div class="card bg-card-26 order-card">
+              <div class="card-block display_card">
+                <p class="m-b-20">{t("discount")}</p>
+                <div class="d-flex align-items-center">
+                  <p className="card_Icon">%</p>
+                  <h2>
+                    {isLoading ? (
+                      <DotLoder />
+                    ) : (
+                      FormatNumber(dashboardCard.monthlyBillDiscount)
+                    )}
+                  </h2>
+                </div>
+                <p class="m-b-0">
+                  {t("todayDiscount")}
+                  <span class="f-right">
+                    {FormatNumber(dashboardCard.todayBillDiscount)}
+                  </span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4 col-xl-3">
+            <div class="card bg-card-35 order-card">
+              <div class="card-block display_card">
+                <p class="m-b-20">{t("balance")}</p>
+                <div class="d-flex align-items-center">
+                  <p className="card_Icon">
+                    <Wallet />
+                  </p>
+                  <h2>
+                    {isLoading ? (
+                      <DotLoder />
+                    ) : (
+                      FormatNumber(dashboardCard.balance)
+                    )}
+                  </h2>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* manager dashboard below card data end */}
 
       {/* dashboard modal */}
 

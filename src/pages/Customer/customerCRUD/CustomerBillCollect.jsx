@@ -199,7 +199,7 @@ const CustomerBillCollect = ({ single, status, page, setShow }) => {
     }
 
     const sendingData = {
-      amount: formValue.amount + formValue.due,
+      amount: Number(formValue.amount) + Number(formValue.due),
       discount: formValue.discount,
       name: userData.name,
       collectedBy: currentUser?.user.role,

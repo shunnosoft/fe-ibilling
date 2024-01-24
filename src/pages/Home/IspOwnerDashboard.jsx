@@ -31,10 +31,7 @@ import {
   getIspOwnerData,
   getManger,
 } from "../../features/apiCalls";
-import {
-  getIspOwnerCharts,
-  getIspOwnerDashboardCardData,
-} from "../../features/apiCalls";
+import { getIspOwnerCharts } from "../../features/apiCalls";
 import { showModal } from "../../features/uiSlice";
 import FormatNumber from "../../components/common/NumberFormat";
 import AnimatedProgressProvider from "../../components/common/AnimationProgressProvider";
@@ -129,7 +126,6 @@ const IspOwnerDashboard = () => {
   const [collectorCardLoading, setCollectorCardLoading] = useState(false);
   const [resellerCardLoading, setResellerCardLoading] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [loadingDashboardData, setLoadingDashboardData] = useState(false);
   const [packageLoading, setPackageLoading] = useState(false);
 
   const [showGraphData, setShowGraphData] = useState("amount");
@@ -231,6 +227,12 @@ const IspOwnerDashboard = () => {
 
   // dashboard accordion change api call
   const handleAccordionChange = (eventKey) => {
+    const filterData = {
+      year: filterDate.getFullYear(),
+      month: filterDate.getMonth() + 1,
+    };
+
+    // set accordion key
     setAccordionKey(eventKey);
 
     if (
@@ -241,7 +243,7 @@ const IspOwnerDashboard = () => {
         dispatch,
         setAdminCardLoading,
         ispOwnerId,
-        currentDate
+        filterData
       );
     }
 
@@ -253,7 +255,7 @@ const IspOwnerDashboard = () => {
         dispatch,
         setManagerCardLoading,
         ispOwnerId,
-        currentDate
+        filterData
       );
     }
 
@@ -265,7 +267,7 @@ const IspOwnerDashboard = () => {
         dispatch,
         setCollectorCardLoading,
         ispOwnerId,
-        currentDate
+        filterData
       );
     }
 
@@ -277,7 +279,63 @@ const IspOwnerDashboard = () => {
         dispatch,
         setResellerCardLoading,
         ispOwnerId,
-        currentDate
+        filterData
+      );
+    }
+  };
+
+  // dashboard filter date api
+  const dashboardFilterController = () => {
+    const filterData = {
+      year: filterDate.getFullYear(),
+      month: filterDate.getMonth() + 1,
+    };
+
+    // get dashboard over view api
+    getIspOwnerDashboardOverViewData(
+      dispatch,
+      setDashboardLoading,
+      ispOwnerId,
+      filterData
+    );
+
+    // get dashboard below admin date filter card api
+    if (accordionKey.includes("admin")) {
+      getDashboardBelowIspOwnerCardData(
+        dispatch,
+        setAdminCardLoading,
+        ispOwnerId,
+        filterData
+      );
+    }
+
+    // get dashboard below manager date filter card api
+    if (accordionKey.includes("manager")) {
+      getDashboardBelowManagerCardData(
+        dispatch,
+        setManagerCardLoading,
+        ispOwnerId,
+        filterData
+      );
+    }
+
+    // get dashboard below collector date filter card api
+    if (accordionKey.includes("collector")) {
+      getDashboardBelowCollectorCardData(
+        dispatch,
+        setCollectorCardLoading,
+        ispOwnerId,
+        filterData
+      );
+    }
+
+    // get dashboard below admin date filter card api
+    if (accordionKey.includes("reseller")) {
+      getDashboardBelowResellerCardData(
+        dispatch,
+        setResellerCardLoading,
+        ispOwnerId,
+        filterData
       );
     }
   };
@@ -361,11 +419,15 @@ const IspOwnerDashboard = () => {
   const collectionPercentage = dashboardOverView
     ? Math.floor(
         ((bpSettings?.dashboardProbabilityAmountWithNewCustomer
-          ? dashboardOverView.totalMonthlyCollection -
-            dashboardOverView.newCustomerBillCollection -
-            dashboardOverView.totalMonthlyDiscount
-          : dashboardOverView.totalMonthlyCollection -
-            dashboardOverView.totalMonthlyDiscount) /
+          ? Math.abs(
+              dashboardOverView.totalMonthlyCollection -
+                dashboardOverView.newCustomerBillCollection -
+                dashboardOverView.totalMonthlyDiscount
+            )
+          : Math.abs(
+              dashboardOverView.totalMonthlyCollection -
+                dashboardOverView.totalMonthlyDiscount
+            )) /
           probabilityAmountCalculation()) *
           100
       )
@@ -373,21 +435,6 @@ const IspOwnerDashboard = () => {
 
   //reload cards handler
   const dashboardReloadHandler = () => {
-    const filterData = {
-      year: filterDate.getFullYear(),
-      month: filterDate.getMonth() + 1,
-    };
-
-    getIspOwnerDashboardOverViewData(
-      dispatch,
-      setDashboardLoading,
-      ispOwnerId,
-      filterData
-    );
-  };
-
-  //filter card information
-  const dashboardFilterController = () => {
     const filterData = {
       year: filterDate.getFullYear(),
       month: filterDate.getMonth() + 1,
@@ -492,11 +539,15 @@ const IspOwnerDashboard = () => {
                       {t("collection")} <br /> ৳ &nbsp;
                       {FormatNumber(
                         bpSettings?.dashboardProbabilityAmountWithNewCustomer
-                          ? dashboardOverView.totalMonthlyCollection -
-                              dashboardOverView.newCustomerBillCollection -
-                              dashboardOverView.totalMonthlyDiscount
-                          : dashboardOverView.totalMonthlyCollection -
-                              dashboardOverView.totalMonthlyDiscount
+                          ? Math.abs(
+                              dashboardOverView.totalMonthlyCollection -
+                                dashboardOverView.newCustomerBillCollection -
+                                dashboardOverView.totalMonthlyDiscount
+                            )
+                          : Math.abs(
+                              dashboardOverView.totalMonthlyCollection -
+                                dashboardOverView.totalMonthlyDiscount
+                            )
                       )}
                     </h2>
                   </div>
@@ -627,11 +678,7 @@ const IspOwnerDashboard = () => {
                     onChange={(e) => setMonth(e.target.value)}
                   >
                     {monthsName.map((val, index) => (
-                      <option
-                        // selected={index === Month ? true : false}
-                        value={index}
-                        key={index}
-                      >
+                      <option value={index} key={index}>
                         {val.label}
                       </option>
                     ))}

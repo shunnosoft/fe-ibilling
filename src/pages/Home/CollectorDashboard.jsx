@@ -5,15 +5,16 @@ import { Line } from "react-chartjs-2";
 import "chart.js/auto";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
-import {
-  People,
-  ThreeDotsVertical,
-  BarChartFill,
-  PersonCheckFill,
-  Coin,
-  CurrencyDollar,
-} from "react-bootstrap-icons";
 import moment from "moment";
+import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
+import { easeQuadIn } from "d3-ease";
+import ReactDatePicker from "react-datepicker";
+
+// custom hook import
+import useISPowner from "../../hooks/useISPOwner";
+import useAreaPackage from "../../hooks/useAreaPackage";
+
 // internal imports
 import "./home.css";
 import { FourGround, FontColor } from "../../assets/js/theme";
@@ -23,46 +24,26 @@ import {
   getCollectorDashboardCardData,
   getCollectorDashboardCharts,
   getIspOwnerData,
-  getPPPoEPackage,
 } from "../../features/apiCalls";
-import { useDispatch, useSelector } from "react-redux";
 import { showModal } from "../../features/uiSlice";
 import FormatNumber from "../../components/common/NumberFormat";
-// the hook
-import { useTranslation } from "react-i18next";
 import AnimatedProgressProvider from "../../components/common/AnimationProgressProvider";
-import { easeQuadIn } from "d3-ease";
-import ReactDatePicker from "react-datepicker";
 import Loader from "../../components/common/Loader";
-import { Link } from "react-router-dom";
 import Footer from "../../components/admin/footer/Footer";
-import Inactive from "./dataComponent/Inactive";
-import Expired from "./dataComponent/Expired";
-import FreeCustomer from "./dataComponent/FreeCustomer";
-import Paid from "./dataComponent/Paid";
-import Unpaid from "./dataComponent/Unpaid";
-import Active from "./dataComponent/Active";
 import { getHotspotPackageSuccess } from "../../features/packageSlice";
-import useISPowner from "../../hooks/useISPOwner";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
+import DashboardCard from "./dashboardCard/DashboardCard";
 
-export default function CollectorDashboard() {
+const CollectorDashboard = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
   // get user & current user data form useISPOwner
-  const { ispOwnerId, bpSetting, permissions } = useISPowner();
+  const { ispOwnerData, ispOwnerId, bpSettings, permissions } = useISPowner();
 
-  //get ispOwner data when logged in
-  const ispOwnerData = useSelector(
-    (state) => state.persistedReducer.auth.currentUser.ispOwner
-  );
-
-  //get ispOwner Info
-  const ispOwner = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerData
-  );
+  // get users area pacages form useAreaPackage hook
+  const { allPackage, hotsPackage } = useAreaPackage();
 
   // get collectorId
   const collectorId = useSelector(
@@ -92,10 +73,6 @@ export default function CollectorDashboard() {
   const [collection, setCollection] = useState([]);
   const [count, setCount] = useState([]);
 
-  // choose modal handle
-  const [status, setStatus] = useState("");
-  const [show, setShow] = useState(false);
-
   //all dates states
   const date = new Date();
   const newYear = date.getFullYear();
@@ -105,7 +82,7 @@ export default function CollectorDashboard() {
 
   //api calls
   useEffect(() => {
-    Object.keys(ispOwner)?.length === 0 &&
+    Object.keys(ispOwnerData)?.length === 0 &&
       getIspOwnerData(dispatch, ispOwnerId, setIsLoading);
 
     //get graph chart data
@@ -119,13 +96,12 @@ export default function CollectorDashboard() {
     );
 
     //get all customer package
-    getAllPackages(dispatch, ispOwnerId, setIsLoading);
-
-    // get pppoe package api call
-    getPPPoEPackage(dispatch, ispOwnerId, setIsLoading);
+    allPackage.length === 0 &&
+      getAllPackages(dispatch, ispOwnerId, setIsLoading);
 
     // get hotspot package api call
-    getHotspotPackageSuccess(dispatch, ispOwnerId, setIsLoading);
+    hotsPackage.length === 0 &&
+      getHotspotPackageSuccess(dispatch, ispOwnerId, setIsLoading);
 
     // get netFee bulletin api call
     Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
@@ -148,83 +124,10 @@ export default function CollectorDashboard() {
     setCount(tempCount);
   }, [ChartsData]);
 
-  //chartsData for graph
-  const chartsData = {
-    labels: collection,
-    datasets: [
-      showGraphData === "amount"
-        ? {
-            label: t("এমাউন্ট"),
-            data: label,
-            backgroundColor: "rgb(110 110 110 / 24%)",
-            borderJoinStyle: "round",
-            borderColor: "#00a4e3",
-            fill: "origin",
-            borderWidth: 2,
-          }
-        : {
-            label: t("বিল"),
-            data: count,
-            borderColor: "#0cc30c",
-            borderWidth: 2,
-            fill: "origin",
-            backgroundColor: "rgb(110 110 110 / 24%)",
-          },
-    ],
-  };
-
   //filter for graph chart
   const handleFilterHandler = () => {
     getCollectorDashboardCharts(setLoading, dispatch, collectorId, Year, Month);
   };
-
-  //expiration date calculation for pop-up modal
-  let invoiceFlag;
-  if (invoice) {
-    if (new Date(invoice?.dueDate).getTime() < new Date().getTime()) {
-      invoiceFlag = "EXPIRED";
-    } else {
-      const dt = new Date(),
-        expDate = new Date(invoice?.dueDate);
-
-      const diffTime = Math.abs(expDate - dt);
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-      if (diffDays <= 7) {
-        invoiceFlag = "UNPAID";
-      }
-    }
-  }
-
-  const invoiceType = {
-    monthlyServiceCharge: t("monthly"),
-    registration: t("register"),
-  };
-
-  // probability amount calculation ispOwner permission wise
-  const probabilityAmountCalculation = () => {
-    if (bpSetting?.dashboardProbabilityAmountWithNewCustomer) {
-      return (
-        customerStat.totalProbableAmount -
-        customerStat.totalInactiveAmount -
-        customerStat.newCustomerBillCount
-      );
-    } else {
-      return (
-        customerStat.totalProbableAmount - customerStat.totalInactiveAmount
-      );
-    }
-  };
-
-  //percantage calculation
-  const collectionPercentage = customerStat
-    ? Math.round(
-        (customerStat.totalOwnCollection /
-          (customerStat.totalProbableAmount -
-            customerStat.totalInactiveAmount)) *
-          100
-      )
-    : 0;
 
   //reload cards handler
   const dashboardReloadHandler = () => {
@@ -255,6 +158,83 @@ export default function CollectorDashboard() {
       filterData
     );
   };
+
+  //chartsData for graph
+  const chartsData = {
+    labels: collection,
+    datasets: [
+      showGraphData === "amount"
+        ? {
+            label: t("এমাউন্ট"),
+            data: label,
+            backgroundColor: "rgb(110 110 110 / 24%)",
+            borderJoinStyle: "round",
+            borderColor: "#00a4e3",
+            fill: "origin",
+            borderWidth: 2,
+          }
+        : {
+            label: t("বিল"),
+            data: count,
+            borderColor: "#0cc30c",
+            borderWidth: 2,
+            fill: "origin",
+            backgroundColor: "rgb(110 110 110 / 24%)",
+          },
+    ],
+  };
+
+  //expiration date calculation for pop-up modal
+  let invoiceFlag;
+  if (invoice) {
+    if (new Date(invoice?.dueDate).getTime() < new Date().getTime()) {
+      invoiceFlag = "EXPIRED";
+    } else {
+      const dt = new Date(),
+        expDate = new Date(invoice?.dueDate);
+
+      const diffTime = Math.abs(expDate - dt);
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+      if (diffDays <= 7) {
+        invoiceFlag = "UNPAID";
+      }
+    }
+  }
+
+  const invoiceType = {
+    monthlyServiceCharge: t("monthly"),
+    registration: t("register"),
+  };
+
+  // probability amount calculation ispOwner permission wise
+  const probabilityAmountCalculation = () => {
+    if (bpSettings?.dashboardProbabilityAmountWithNewCustomer) {
+      return (
+        customerStat.totalProbableAmount -
+        customerStat.totalInactiveAmount -
+        customerStat.newCustomerBillCount
+      );
+    } else {
+      return (
+        customerStat.totalProbableAmount - customerStat.totalInactiveAmount
+      );
+    }
+  };
+
+  //percantage calculation
+  const collectionPercentage = customerStat
+    ? Math.round(
+        ((bpSettings?.dashboardProbabilityAmountWithNewCustomer
+          ? Math.abs(
+              customerStat.totalMonthlyCollection -
+                customerStat.newCustomerBillCollection
+            )
+          : customerStat.totalMonthlyCollection) /
+          probabilityAmountCalculation()) *
+          100
+      )
+    : 0;
 
   return (
     <>
@@ -345,47 +325,23 @@ export default function CollectorDashboard() {
                     </div>
                     <div className="col-md-3 d-flex justify-content-start align-items-center">
                       <h2>
-                        {t("totalCollection")}
+                        {t("collection")}
                         <br /> ৳ &nbsp;
-                        {FormatNumber(customerStat?.totalOwnCollection)}
+                        {FormatNumber(
+                          bpSettings?.dashboardProbabilityAmountWithNewCustomer
+                            ? Math.abs(
+                                customerStat.totalMonthlyCollection -
+                                  customerStat.newCustomerBillCollection
+                              )
+                            : customerStat.totalMonthlyCollection
+                        )}
                       </h2>
                     </div>
                   </div>
                 )}
 
                 <div className="d-flex justify-content-between">
-                  {permissions?.dashboardCollectionData && (
-                    <div className="d-flex justify-content-between align-items-center">
-                      <p
-                        className="fw-700 me-3"
-                        style={{ fontSize: "20px", cursor: "pointer" }}
-                        onClick={() => {
-                          setStatus("active");
-                          setShow(true);
-                        }}
-                      >
-                        {t("active")} &nbsp;
-                        <span className="text-secondary fw-bold">
-                          ৳{FormatNumber(customerStat?.totalActiveAmount)}
-                        </span>
-                      </p>
-
-                      <p
-                        className="fw-700"
-                        style={{ fontSize: "20px", cursor: "pointer" }}
-                        onClick={() => {
-                          setStatus("expired");
-                          setShow(true);
-                        }}
-                      >
-                        {t("expired")} &nbsp;
-                        <span className="text-secondary fw-bold">
-                          ৳{FormatNumber(customerStat?.totalExpiredAmount)}
-                        </span>
-                      </p>
-                    </div>
-                  )}
-
+                  <div></div>
                   <div className="d-flex justify-content-end">
                     <div
                       className="d-flex justify-content-center align-items-center me-2"
@@ -432,6 +388,7 @@ export default function CollectorDashboard() {
                         minDate={new Date(ispOwnerData?.createdAt)}
                       />
                     </div>
+
                     <button
                       className="btn btn-primary w-140 ms-1"
                       onClick={dashboardFilterController}
@@ -442,181 +399,12 @@ export default function CollectorDashboard() {
                 </div>
               </div>
 
-              <div className="col-md-3">
-                <div id="card1" className="dataCard">
-                  <ThreeDotsVertical className="ThreeDots" />
-                  <div className="cardIcon">
-                    <People />
-                  </div>
-                  <div className="chartSection">
-                    <p style={{ fontSize: "16px" }}>{t("total customer")}</p>
-                    <h2>{FormatNumber(customerStat?.customers)}</h2>
-
-                    <Link to={"/other/customer"}>
-                      <p
-                        className="dashboardData"
-                        style={{ fontSize: "15px", marginBottom: "0px" }}
-                      >
-                        {t("newCustomer")}:&nbsp;
-                        {FormatNumber(customerStat.newCustomer)}
-                        &nbsp;
-                        <span className="text-info">
-                          ৳{FormatNumber(customerStat.newCustomerBillCount)}
-                        </span>
-                      </p>
-                    </Link>
-                  </div>
-                </div>
-              </div>
-
-              <div className="col-md-3" key={2}>
-                <div id="card2" className="dataCard">
-                  <ThreeDotsVertical className="ThreeDots" />
-                  <div className="cardIcon">
-                    <PersonCheckFill />
-                  </div>
-                  <div className="chartSection">
-                    <p
-                      className="dashboardActive pb-0"
-                      style={{ fontSize: "16px" }}
-                      onClick={() => {
-                        setStatus("active");
-                        setShow(true);
-                      }}
-                    >
-                      {t("active")}
-                      <h4>{FormatNumber(customerStat?.active)}</h4>
-                    </p>
-
-                    {permissions?.dashboardCollectionData && (
-                      <p
-                        className="dashboardActive pb-0"
-                        style={{ fontSize: "15px", marginTop: "0px" }}
-                        onClick={() => {
-                          setStatus("active");
-                          setShow(true);
-                        }}
-                      >
-                        {t("active")}
-                        &nbsp;
-                        <span className="text-info">
-                          ৳{FormatNumber(customerStat?.totalActiveAmount)}
-                        </span>
-                      </p>
-                    )}
-                    <p
-                      className="dashboardActive pb-1"
-                      style={{ fontSize: "15px", marginBottom: "0px" }}
-                      onClick={() => {
-                        setStatus("inactive");
-                        setShow(true);
-                      }}
-                    >
-                      {t("in active")}: {FormatNumber(customerStat?.inactive)}
-                      &nbsp;
-                      {permissions?.dashboardCollectionData && (
-                        <span className="text-info">
-                          ৳{FormatNumber(customerStat?.totalInactiveAmount)}
-                        </span>
-                      )}
-                    </p>
-                    <p
-                      className="dashboardActive pb-1"
-                      style={{ fontSize: "15px", marginBottom: "0px" }}
-                      onClick={() => {
-                        setStatus("expired");
-                        setShow(true);
-                      }}
-                    >
-                      {t("expired")}: {FormatNumber(customerStat?.expired)}
-                      &nbsp;
-                      {permissions?.dashboardCollectionData && (
-                        <span className="text-info">
-                          ৳{FormatNumber(customerStat?.totalExpiredAmount)}
-                        </span>
-                      )}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="col-md-3" key={3}>
-                <div id="card3" className="dataCard">
-                  <ThreeDotsVertical className="ThreeDots" />
-                  <div className="cardIcon">
-                    <BarChartFill />
-                  </div>
-                  <div className="chartSection">
-                    <p
-                      className="dashboardActive pb-1"
-                      style={{ fontSize: "16px" }}
-                      onClick={() => {
-                        setStatus("paid");
-                        setShow(true);
-                      }}
-                    >
-                      {t("paid")}
-                      <h4>{FormatNumber(customerStat?.paid)}</h4>
-                    </p>
-
-                    <p
-                      className="dashboardActive pb-1"
-                      style={{ fontSize: "15px", paddingTop: "10px" }}
-                      onClick={() => {
-                        setStatus("unpaid");
-                        setShow(true);
-                      }}
-                    >
-                      {t("unpaid")}: {FormatNumber(customerStat?.unpaid)}
-                    </p>
-
-                    <p
-                      className="dashboardUnpaid pb-1"
-                      style={{
-                        fontSize: "15px",
-                        paddingTop: "0px",
-                      }}
-                      onClick={() => {
-                        setStatus("freeCustomer");
-                        setShow(true);
-                      }}
-                    >
-                      {t("freeCustomer")}:
-                      {FormatNumber(customerStat?.freeCustomer)}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="col-md-3">
-                <div id="card4" className="dataCard">
-                  <ThreeDotsVertical className="ThreeDots" />
-                  <div className="cardIcon">
-                    <Coin />
-                  </div>
-                  <div className="chartSection">
-                    {permissions?.dashboardCollectionData && (
-                      <>
-                        <p style={{ fontSize: "16px" }}>
-                          {t("total collection")}
-                        </p>
-                        <h2>
-                          ৳ {FormatNumber(customerStat?.totalOwnCollection)}
-                        </h2>
-                      </>
-                    )}
-
-                    <p
-                      className={
-                        !permissions?.dashboardCollectionData ? "fs-6" : "fs-13"
-                      }
-                    >
-                      {t("today collection")} &nbsp;৳
-                      {FormatNumber(customerStat?.totalOwnCollectionToday)}
-                    </p>
-                  </div>
-                </div>
-              </div>
+              {/* dashboard over view card */}
+              <DashboardCard
+                dashboardCard={customerStat}
+                filterDate={filterDate}
+                cardRole={"overView"}
+              />
             </div>
 
             <hr />
@@ -661,11 +449,7 @@ export default function CollectorDashboard() {
                       onChange={(e) => setMonth(e.target.value)}
                     >
                       {monthsName.map((val, index) => (
-                        <option
-                          // selected={index === Month ? true : false}
-                          value={index}
-                          key={index}
-                        >
+                        <option value={index} key={index}>
                           {val}
                         </option>
                       ))}
@@ -679,8 +463,6 @@ export default function CollectorDashboard() {
                     </button>
                   </div>
                 </div>
-
-                {/* select graph */}
 
                 <div className="lineChart">
                   <Line
@@ -700,84 +482,11 @@ export default function CollectorDashboard() {
         </FontColor>
       </div>
 
-      {/* dashboard modal */}
-
-      {/* all active customers modal */}
-      {status === "active" && (
-        <Active
-          status={status}
-          modalShow={show}
-          setModalShow={setShow}
-          ispOwnerId={ispOwnerId}
-          year={filterDate.getFullYear()}
-          month={filterDate.getMonth() + 1}
-        />
-      )}
-
-      {/* all active customers modal */}
-      {status === "inactive" && (
-        <Inactive
-          status={status}
-          modalShow={show}
-          setModalShow={setShow}
-          ispOwnerId={ispOwnerId}
-          year={filterDate.getFullYear()}
-          month={filterDate.getMonth() + 1}
-        />
-      )}
-
-      {/* all expired customers modal */}
-      {status === "expired" && (
-        <Expired
-          status={status}
-          modalShow={show}
-          setModalShow={setShow}
-          ispOwnerId={ispOwnerId}
-          year={filterDate.getFullYear()}
-          month={filterDate.getMonth() + 1}
-        />
-      )}
-
-      {/* all paid customers modal */}
-      {status === "paid" && (
-        <Paid
-          status={status}
-          modalShow={show}
-          setModalShow={setShow}
-          ispOwnerId={ispOwnerId}
-          year={filterDate.getFullYear()}
-          month={filterDate.getMonth() + 1}
-        />
-      )}
-
-      {/* all unpaid customers modal */}
-      {status === "unpaid" && (
-        <Unpaid
-          status={status}
-          modalShow={show}
-          setModalShow={setShow}
-          ispOwnerId={ispOwnerId}
-          year={filterDate.getFullYear()}
-          month={filterDate.getMonth() + 1}
-        />
-      )}
-
-      {/* owner free customer modal */}
-      {status === "freeCustomer" && (
-        <FreeCustomer
-          status={status}
-          modalShow={show}
-          setModalShow={setShow}
-          ispOwnerId={ispOwnerId}
-          year={filterDate.getFullYear()}
-          month={filterDate.getMonth() + 1}
-        />
-      )}
-
       {/* dashboard netFee bulletin added */}
       {(butPermission?.dashboard || butPermission?.allPage) && (
         <NetFeeBulletin />
       )}
     </>
   );
-}
+};
+export default CollectorDashboard;
