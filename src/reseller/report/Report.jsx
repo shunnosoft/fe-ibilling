@@ -38,6 +38,7 @@ import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
 import { getAllPackages } from "../../features/apiCalls";
 import ReportView from "../../pages/report/modal/ReportView";
+import { getOwnerUsers } from "../../features/getIspOwnerUsersApi";
 
 const Report = () => {
   const { t } = useTranslation();
@@ -64,9 +65,11 @@ const Report = () => {
   // get user information
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
 
+  // get owner users
+  const ownerUsers = useSelector((state) => state?.ownerUsers?.ownerUser);
+
   // get reseller, collector collection all bills
   const allBills = useSelector((state) => state.payment.allBills);
-  console.log(allBills);
 
   // get all area subArea
   const subAreas = useSelector((state) => state.area.area);
@@ -155,6 +158,9 @@ const Report = () => {
     Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
 
     getAllPackages(dispatch, ispOwnerId, setPackageLoading);
+
+    // get ispOwner all staffs
+    ownerUsers?.length === 0 && getOwnerUsers(dispatch, ispOwnerId);
   }, []);
 
   // reload handler
@@ -215,6 +221,12 @@ const Report = () => {
     return findPack;
   };
 
+  //
+  const getCollectedByBill = (collectedId) => {
+    const performer = ownerUsers.find((item) => item[collectedId]);
+    return performer && performer[collectedId];
+  };
+
   // select area & collector find
   const areaName = subAreas.find((item) => item.id === areaIds);
   const collector = allCollector.find((item) => item.user === collectorIds);
@@ -261,7 +273,7 @@ const Report = () => {
         Header: t("package"),
         accessor: "customer.mikrotikPackage",
         Cell: ({ cell: { value } }) => (
-          <div>{mainData && getCustomerPackage(value)?.name}</div>
+          <div>{getCustomerPackage(value)?.name}</div>
         ),
       },
       {
@@ -283,6 +295,14 @@ const Report = () => {
         width: "11%",
         Header: t("medium"),
         accessor: "medium",
+      },
+      {
+        width: "11%",
+        Header: t("collected"),
+        accessor: (data) => `${getCollectedByBill(data?.user)?.name}`,
+        Cell: ({ row: { original } }) => (
+          <div>{getCollectedByBill(original?.user)?.name}</div>
+        ),
       },
       {
         width: "12%",
@@ -338,7 +358,7 @@ const Report = () => {
         },
       },
     ],
-    [t, allBills]
+    [t, allBills, allPackages, ownerUsers]
   );
 
   return (
