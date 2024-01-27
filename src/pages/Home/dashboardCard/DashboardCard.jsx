@@ -13,9 +13,11 @@ import {
   Person,
   PersonCheck,
   PersonDown,
+  PersonLinesFill,
   PersonLock,
   PersonUp,
   PersonX,
+  Phone,
   Reception3,
   Wallet,
 } from "react-bootstrap-icons";
@@ -42,11 +44,27 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
   const { t } = useTranslation();
 
   // get user & current user data form useISPOwner hooks
-  const { role, ispOwnerId, bpSettings, permissions } = useISPowner();
+  const { role, ispOwnerId, bpSettings, permissions, currentUser } =
+    useISPowner();
 
   // modal close handler
   const [status, setStatus] = useState("");
   const [show, setShow] = useState(false);
+
+  // user role and permission handle
+  const userHandle =
+    role === "ispOwner" ||
+    (role === "manager" && permissions.dashboardCollectionData) ||
+    (role === "collector" &&
+      currentUser.collector.reseller &&
+      permissions.dashboardCollectionData) ||
+    role === "reseller";
+
+  // admin staff user role permission
+  const adminUser =
+    role === "ispOwner" ||
+    role === "manager" ||
+    (role === "collector" && !currentUser.collector.reseller);
 
   // own totoal collection in role base
   const ownTotalCollection = () => {
@@ -59,14 +77,22 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
           )
         : dashboardCard.totalMonthlyCollection -
             dashboardCard.totalMonthlyDiscount;
-    } else {
+    } else if (role === "collector" && !currentUser.collector.reseller) {
       return bpSettings?.dashboardProbabilityAmountWithNewCustomer
         ? Math.abs(
             dashboardCard.totalMonthlyCollection -
               dashboardCard.newCustomerBillCollection
           )
         : dashboardCard.totalMonthlyCollection;
+    } else {
+      return Math.abs(dashboardCard.totalMonthlyCollection);
     }
+  };
+
+  // dashboard customer modal click handler
+  const modlaClickHandler = (value) => {
+    setStatus(value);
+    setShow(true);
   };
 
   return (
@@ -107,17 +133,13 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
                       <PersonCheck />
                     </p>
                     <h2
-                      className="clickable"
-                      onClick={() => {
-                        setStatus("active");
-                        setShow(true);
-                      }}
+                      className={adminUser && "clickable"}
+                      onClick={() => adminUser && modlaClickHandler("active")}
                     >
                       {FormatNumber(dashboardCard.active)}
                     </h2>
                     &nbsp; &nbsp;
-                    {(role === "ispOwner" ||
-                      permissions.dashboardCollectionData) && (
+                    {userHandle && (
                       <span className="total_collection_amount">
                         ৳{FormatNumber(dashboardCard.totalActiveAmount)}
                       </span>
@@ -127,8 +149,7 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
                     {t("newCustomer")}
                     <span class="f-right">
                       {FormatNumber(dashboardCard.newCustomerActive)}
-                      {(role === "ispOwner" ||
-                        permissions.dashboardCollectionData) && (
+                      {userHandle && (
                         <span>
                           / ৳
                           {FormatNumber(dashboardCard.newCustomerActiveAmount)}
@@ -149,17 +170,13 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
                       <PersonUp />
                     </p>
                     <h2
-                      className="clickable"
-                      onClick={() => {
-                        setStatus("paid");
-                        setShow(true);
-                      }}
+                      className={adminUser && "clickable"}
+                      onClick={() => adminUser && modlaClickHandler("paid")}
                     >
                       {FormatNumber(dashboardCard.paid)}
                     </h2>
                     &nbsp; &nbsp;
-                    {(role === "ispOwner" ||
-                      permissions.dashboardCollectionData) && (
+                    {userHandle && (
                       <span className="total_collection_amount">
                         ৳{FormatNumber(dashboardCard.paidAmount)}
                       </span>
@@ -169,8 +186,7 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
                     {t("newCustomer")}
                     <span class="f-right">
                       {FormatNumber(dashboardCard.newCustomerPaid)}
-                      {(role === "ispOwner" ||
-                        permissions.dashboardCollectionData) && (
+                      {userHandle && (
                         <span>
                           / ৳{FormatNumber(dashboardCard.newCustomerPaidAmount)}
                         </span>
@@ -190,17 +206,13 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
                       <PersonDown />
                     </p>
                     <h2
-                      className="clickable"
-                      onClick={() => {
-                        setStatus("unpaid");
-                        setShow(true);
-                      }}
+                      className={adminUser && "clickable"}
+                      onClick={() => adminUser && modlaClickHandler("unpaid")}
                     >
                       {FormatNumber(dashboardCard.unpaid)}
                     </h2>
                     &nbsp; &nbsp;
-                    {(role === "ispOwner" ||
-                      permissions.dashboardCollectionData) && (
+                    {userHandle && (
                       <span className="total_collection_amount">
                         ৳{FormatNumber(Math.abs(dashboardCard.unpaidAmount))}
                       </span>
@@ -210,8 +222,7 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
                     {t("newCustomer")}
                     <span class="f-right">
                       {FormatNumber(dashboardCard.newCustomerUnpaid)}
-                      {(role === "ispOwner" ||
-                        permissions.dashboardCollectionData) && (
+                      {userHandle && (
                         <span>
                           / ৳
                           {FormatNumber(dashboardCard.newCustomerUnpaidAmount)}
@@ -232,17 +243,13 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
                       <PersonX />
                     </p>
                     <h2
-                      className="clickable"
-                      onClick={() => {
-                        setStatus("expired");
-                        setShow(true);
-                      }}
+                      className={adminUser && "clickable"}
+                      onClick={() => adminUser && modlaClickHandler("expired")}
                     >
                       {FormatNumber(dashboardCard.expired)}
                     </h2>
                     &nbsp; &nbsp;
-                    {(role === "ispOwner" ||
-                      permissions.dashboardCollectionData) && (
+                    {userHandle && (
                       <span className="total_collection_amount">
                         ৳{FormatNumber(dashboardCard.totalExpiredAmount)}
                       </span>
@@ -261,17 +268,13 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
                       <PersonLock />
                     </p>
                     <h2
-                      className="clickable"
-                      onClick={() => {
-                        setStatus("inactive");
-                        setShow(true);
-                      }}
+                      className={adminUser && "clickable"}
+                      onClick={() => adminUser && modlaClickHandler("inactive")}
                     >
                       {FormatNumber(dashboardCard.inactive)}
                     </h2>
                     &nbsp; &nbsp;
-                    {(role === "ispOwner" ||
-                      permissions.dashboardCollectionData) && (
+                    {userHandle && (
                       <span className="total_collection_amount">
                         ৳{FormatNumber(dashboardCard.totalInactiveAmount)}
                       </span>
@@ -290,11 +293,10 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
                       <Person />
                     </p>
                     <h2
-                      className="clickable"
-                      onClick={() => {
-                        setStatus("freeCustomer");
-                        setShow(true);
-                      }}
+                      className={adminUser && "clickable"}
+                      onClick={() =>
+                        adminUser && modlaClickHandler("freeCustomer")
+                      }
                     >
                       {FormatNumber(dashboardCard.freeCustomer)}
                     </h2>
@@ -303,7 +305,7 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
               </div>
             </div>
 
-            {(role === "ispOwner" || permissions.dashboardCollectionData) && (
+            {userHandle && (
               <div class="col-md-4 col-xl-3">
                 <div class="card bg-card-08 order-card">
                   <div class="card-block display_card">
@@ -321,89 +323,53 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
               </div>
             )}
 
-            {role !== "collector" && (
+            {role === "reseller" && (
               <div class="col-md-4 col-xl-3">
-                <div class="card bg-card-09 order-card">
+                <div class="card bg-card-16 order-card">
                   <div class="card-block display_card">
-                    <p class="m-b-20">{t("totalDiscount")}</p>
+                    <p class="m-b-20">{t("offlinePaymentCustomer")}</p>
                     <div class="d-flex align-items-center">
-                      <p className="card_Icon">%</p>
-                      <h2
-                        className="clickable"
-                        onClick={() => {
-                          setStatus("discount");
-                          setShow(true);
-                        }}
-                      >
-                        {FormatNumber(dashboardCard.totalMonthlyDiscount)}
+                      <p className="card_Icon">
+                        <PersonLinesFill />
+                      </p>
+                      <h2>
+                        {FormatNumber(
+                          dashboardCard.offlinePaymentCustomerCount
+                        )}
                       </h2>
-                    </div>
-                    <p class="m-b-0">
-                      {t("todayDiscount")}
-                      <span class="f-right">
-                        {FormatNumber(dashboardCard.todayTotalBillDiscount)}
+                      &nbsp; &nbsp;
+                      <span className="total_collection_amount">
+                        ৳{FormatNumber(dashboardCard.offlinePaymentAmount)}
                       </span>
-                    </p>
+                    </div>
                   </div>
                 </div>
               </div>
             )}
 
-            <div class="col-md-4 col-xl-3">
-              <div class="card bg-card-10 order-card">
-                <div class="card-block display_card">
-                  <p class="m-b-20">{t("totalExpenditure")}</p>
-                  <div class="d-flex align-items-center">
-                    <p className="card_Icon">
-                      <GraphDownArrow />
-                    </p>
-                    <h2>{FormatNumber(dashboardCard.totalExpenditure || 0)}</h2>
-                  </div>
-                  {role === "ispOwner" && (
-                    <p class="m-b-0">
-                      {t("todayExpenditure")}
-                      <span class="f-right">
-                        {FormatNumber(dashboardCard.todayExpenditure)}
-                      </span>
-                    </p>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {role === "manager" && (
+            {["reseller", "collector"].includes(role) && bpSettings?.hasPG && (
               <div class="col-md-4 col-xl-3">
                 <div class="card bg-card-13 order-card">
                   <div class="card-block display_card">
-                    <p class="m-b-20">{t("collectorCollection")}</p>
+                    <p class="m-b-20">{t("onlinePaymentCustomer")}</p>
                     <div class="d-flex align-items-center">
                       <p className="card_Icon">
-                        <CashStack />
+                        <Phone />
                       </p>
-                      <h2
-                        className="clickable"
-                        onClick={() => {
-                          setStatus("collector");
-                          setShow(true);
-                        }}
-                      >
-                        {FormatNumber(dashboardCard.collectorsBillCollection)}
+                      <h2>
+                        {FormatNumber(dashboardCard.onlinePaymentCustomerCount)}
                       </h2>
-                    </div>
-                    <p class="m-b-0">
-                      {t("todayCollection")}
-                      <span class="f-right">
-                        {FormatNumber(
-                          dashboardCard.collectorsBillCollectionToday
-                        )}
+                      &nbsp; &nbsp;
+                      <span className="total_collection_amount">
+                        ৳{FormatNumber(dashboardCard.onlinePaymentAmount)}
                       </span>
-                    </p>
+                    </div>
                   </div>
                 </div>
               </div>
             )}
 
-            {(role === "ispOwner" || permissions.dashboardCollectionData) && (
+            {userHandle && (
               <div class="col-md-4 col-xl-3">
                 <div class="card bg-card-11 order-card">
                   <div class="card-block display_card">
@@ -425,9 +391,119 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
               </div>
             )}
 
+            {["ispOwner", "manager"].includes(role) && (
+              <div class="col-md-4 col-xl-3">
+                <div class="card bg-card-09 order-card">
+                  <div class="card-block display_card">
+                    <p class="m-b-20">{t("totalDiscount")}</p>
+                    <div class="d-flex align-items-center">
+                      <p className="card_Icon">%</p>
+                      <h2
+                        className={adminUser && "clickable"}
+                        onClick={() =>
+                          adminUser && modlaClickHandler("discount")
+                        }
+                      >
+                        {FormatNumber(dashboardCard.totalMonthlyDiscount)}
+                      </h2>
+                    </div>
+                    <p class="m-b-0">
+                      {t("todayDiscount")}
+                      <span class="f-right">
+                        {FormatNumber(dashboardCard.todayTotalBillDiscount)}
+                      </span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {(role === "ispOwner" ||
+              (role === "collector" && !currentUser.collector.reseller)) && (
+              <div class="col-md-4 col-xl-3">
+                <div class="card bg-card-10 order-card">
+                  <div class="card-block display_card">
+                    <p class="m-b-20">{t("totalExpenditure")}</p>
+                    <div class="d-flex align-items-center">
+                      <p className="card_Icon">
+                        <GraphDownArrow />
+                      </p>
+                      <h2>{FormatNumber(dashboardCard.totalExpenditure)}</h2>
+                    </div>
+                    {role === "ispOwner" && (
+                      <p class="m-b-0">
+                        {t("todayExpenditure")}
+                        <span class="f-right">
+                          {FormatNumber(dashboardCard.todayExpenditure)}
+                        </span>
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {role === "manager" && permissions.dashboardCollectionData && (
+              <div class="col-md-4 col-xl-3">
+                <div class="card bg-card-13 order-card">
+                  <div class="card-block display_card">
+                    <p class="m-b-20">{t("collectorCollection")}</p>
+                    <div class="d-flex align-items-center">
+                      <p className="card_Icon">
+                        <CashStack />
+                      </p>
+                      <h2>
+                        {FormatNumber(dashboardCard.collectorsBillCollection)}
+                      </h2>
+                    </div>
+                    <p class="m-b-0">
+                      {t("todayCollection")}
+                      <span class="f-right">
+                        {FormatNumber(
+                          dashboardCard.collectorsBillCollectionToday
+                        )}
+                      </span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {role === "collector" && (
+              <div class="col-md-4 col-xl-3">
+                <div class="card bg-card-14 order-card">
+                  <div class="card-block display_card">
+                    <p class="m-b-20">{t("deposit")}</p>
+                    <div class="d-flex align-items-center">
+                      <p className="card_Icon">
+                        <CashStack />
+                      </p>
+                      <h2>{FormatNumber(dashboardCard.totalDeposit)}</h2>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {role === "ispOwner" && (
               <div class="col-md-4 col-xl-3">
                 <div class="card bg-card-12 order-card">
+                  <div class="card-block display_card">
+                    <p class="m-b-20">{t("totalSalary")}</p>
+                    <div class="d-flex align-items-center">
+                      <p className="card_Icon">
+                        <CashStack />
+                      </p>
+                      <h2>{FormatNumber(dashboardCard.totalSalary)}</h2>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {role === "ispOwner" && (
+              <div class="col-md-4 col-xl-3">
+                <div class="card bg-card-15 order-card">
                   <div class="card-block display_card">
                     <p class="m-b-20">{t("businessBalance")}</p>
                     <div class="d-flex align-items-center">
@@ -440,20 +516,6 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
                 </div>
               </div>
             )}
-
-            {/* <div class="col-md-4 col-xl-3">
-            <div class="card bg-card-13 order-card">
-              <div class="card-block display_card">
-                <p class="m-b-20">{t("totalSalary")}</p>
-                <div class="d-flex align-items-center">
-                  <p className="card_Icon">
-                    <CashStack />
-                  </p>
-                  <h2>{FormatNumber(dashboardCard.totalSalary)}</h2>
-                </div>
-              </div>
-            </div>
-          </div> */}
           </div>
         )}
         {/* dashboard over view card data end */}
@@ -834,11 +896,8 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
                     <People />
                   </p>
                   <h2
-                    className="clickable"
-                    onClick={() => {
-                      setStatus("collector");
-                      setShow(true);
-                    }}
+                    className={adminUser && "clickable"}
+                    onClick={() => adminUser && modlaClickHandler("collector")}
                   >
                     {isLoading ? (
                       <DotLoder />
@@ -936,11 +995,8 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
                     <People />
                   </p>
                   <h2
-                    className="clickable"
-                    onClick={() => {
-                      setStatus("reseller");
-                      setShow(true);
-                    }}
+                    className={adminUser && "clickable"}
+                    onClick={() => adminUser && modlaClickHandler("reseller")}
                   >
                     {isLoading ? (
                       <DotLoder />

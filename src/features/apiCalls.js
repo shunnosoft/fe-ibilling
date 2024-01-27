@@ -299,19 +299,20 @@ export const getIspOwnerCharts = async (
 export const getChartsReseller = async (
   dispatch,
   resellerId,
-  year,
-  month,
-  user
+  filterData,
+  user,
+  setIsLoading
 ) => {
+  setIsLoading(true);
   try {
-    let link = `/dashboard/reseller/${resellerId}?year=${year}&month=${month}`;
-    if (user)
-      link = `/dashboard/reseller/${resellerId}?year=${year}&month=${month}&user=${user}`;
-    const res = await apiLink(link);
+    const res = await apiLink(
+      `/dashboard/reseller/${resellerId}?year=${filterData.year}&month=${filterData.month}&user=${user}`
+    );
     dispatch(getChartSuccess(res.data));
   } catch (err) {
-    console.log("Charts error: ", err);
+    toast.error(err.response?.data?.message);
   }
+  setIsLoading(false);
 };
 
 export const getDashboardCardData = async (
@@ -452,6 +453,63 @@ export const getDashboardBelowResellerCardData = async (
       `/dashboard/reseller/data/${ispOwnerId}?year=${filterData.year}&month=${filterData.month}`
     );
     dispatch(getBelowResellerCardData(res.data));
+  } catch (err) {
+    toast.error(err.response?.data?.message);
+  }
+  setIsloading(false);
+};
+
+// get reseller dashboard over view
+export const getResellerDashboardOverViewData = async (
+  dispatch,
+  setIsloading,
+  resellerId,
+  filterData
+) => {
+  setIsloading(true);
+  try {
+    const res = await apiLink(
+      `/dashboard/reseller/customer/${resellerId}?year=${filterData.year}&month=${filterData.month}`
+    );
+    dispatch(getDashboardOverViewData(res.data));
+  } catch (err) {
+    toast.error(err.response?.data?.message);
+  }
+  setIsloading(false);
+};
+
+// get reseller collector below card data
+export const getResellerCollectorBwlowCardData = async (
+  dispatch,
+  setIsloading,
+  resellerId,
+  filterData
+) => {
+  setIsloading(true);
+  try {
+    const res = await apiLink(
+      `/dashboard/reseller/collector/${resellerId}?year=${filterData.year}&month=${filterData.month}`
+    );
+    dispatch(getBelowCollectorCardData(res.data));
+  } catch (err) {
+    toast.error(err.response?.data?.message);
+  }
+  setIsloading(false);
+};
+
+// get reseller collector dashboard over view
+export const getResellerCollectorDashboardOverViewData = async (
+  dispatch,
+  setIsloading,
+  collectorId,
+  filterData
+) => {
+  setIsloading(true);
+  try {
+    const res = await apiLink(
+      `/dashboard/reseller-collector/${collectorId}?year=${filterData.year}&month=${filterData.month}`
+    );
+    dispatch(getDashboardOverViewData(res.data));
   } catch (err) {
     toast.error(err.response?.data?.message);
   }

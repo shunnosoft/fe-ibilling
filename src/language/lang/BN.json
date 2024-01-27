@@ -831,7 +831,6 @@
   "resellerMikrotik": "রিসেলার মাইক্রোটিক পাওয়া যায়নি!",
   "bulkCustomerError": "কাস্টমার মাইক্রোটিকটি রিসেলার অধীনে নেই!",
   "automaticConnectionOn": "অটোমেটিক সংযোগ চালু",
-  "onlinePaymentCustomer": "অনলাইন পেমেন্ট গ্রাহক",
   "resellerCommission": "রিসেলার কমিশন",
   "ispOwnerCommission": "আইএসপি কমিশন",
   "connectionOn": "সংযোগ চালু",
@@ -926,5 +925,8 @@
   "todayDeposit": "আজকের ডিপোজিট",
   "todayExpenditure": "আজকে খরচ",
   "allManager": "সকল ম্যানেজার",
-  "collectorCollection": "কালেক্টর কালেকশন"
+  "collectorCollection": "কালেক্টর কালেকশন",
+  "totalSalary": "মোট বেতন",
+  "offlinePaymentCustomer": "অফলাইন পেমেন্ট গ্রাহক",
+  "onlinePaymentCustomer": "অনলাইন পেমেন্ট গ্রাহক"
 }

@@ -67,7 +67,22 @@
   background: linear-gradient(45deg, #5a693b, #3c6e63);
   height: 9rem;
 }
-/* 14,15,16 */
+
+.bg-card-14 {
+  background: linear-gradient(45deg, #4256b1, #7c52d8);
+  height: 9rem;
+}
+
+.bg-card-15 {
+  background: linear-gradient(45deg, #067448, #45855b);
+  height: 9rem;
+}
+
+.bg-card-16 {
+  background: linear-gradient(45deg, #36626e, #4b8387);
+  height: 9rem;
+}
+
 .bg-card-17 {
   background: linear-gradient(45deg, #23c7cc, #4bc8cc);
   height: 9rem;
