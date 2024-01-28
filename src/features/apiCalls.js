@@ -227,10 +227,11 @@ export const getManagerDashboardCharts = async (
   month,
   collectorId
 ) => {
+  const plusMonth = Number(month) + 1;
   try {
     setLoading(true);
     const res = await apiLink(
-      `dashboard/manager/chart-data/${managerId}?year=${year}&month=${month}&user=${collectorId}`
+      `dashboard/manager/chart-data/${managerId}?year=${year}&month=${plusMonth}&user=${collectorId}`
     );
     dispatch(getChartSuccess(res.data));
   } catch (err) {
@@ -251,7 +252,7 @@ export const getCollectorDashboardCharts = async (
   try {
     setLoading(true);
     const res = await apiLink(
-      `dashboard/collector/chart-data/${collectorId}?year=${year}&month=${plusMonth}&user=""`
+      `dashboard/collector/chart-data/${collectorId}?year=${year}&month=${plusMonth}`
     );
     dispatch(getChartSuccess(res.data));
   } catch (err) {
@@ -296,6 +297,7 @@ export const getIspOwnerCharts = async (
   setIsloading(false);
 };
 
+//
 export const getChartsReseller = async (
   dispatch,
   resellerId,
@@ -306,7 +308,26 @@ export const getChartsReseller = async (
   setIsLoading(true);
   try {
     const res = await apiLink(
-      `/dashboard/reseller/${resellerId}?year=${filterData.year}&month=${filterData.month}&user=${user}`
+      `/dashboard/reseller/chart-data/${resellerId}?year=${filterData.year}&month=${filterData.month}&user=${user}`
+    );
+    dispatch(getChartSuccess(res.data));
+  } catch (err) {
+    toast.error(err.response?.data?.message);
+  }
+  setIsLoading(false);
+};
+
+// Reseller Collector dashboard chart data
+export const getChartsResellerCollector = async (
+  dispatch,
+  collectorId,
+  filterData,
+  setIsLoading
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink(
+      `/dashboard/reseller-collector/chart-data/${collectorId}?year=${filterData.year}&month=${filterData.month}`
     );
     dispatch(getChartSuccess(res.data));
   } catch (err) {

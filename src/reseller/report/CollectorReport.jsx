@@ -29,6 +29,7 @@ import DatePicker from "react-datepicker";
 import PrintReport from "./CollectorReportPDF";
 import ReactToPrint from "react-to-print";
 import { Accordion } from "react-bootstrap";
+import ReportView from "../../pages/report/modal/ReportView";
 
 export default function CollectorReport() {
   const { t } = useTranslation();
@@ -71,6 +72,13 @@ export default function CollectorReport() {
 
   // filter Accordion handle state
   const [activeKeys, setActiveKeys] = useState("");
+
+  // report note view id
+  const [viewId, setViewId] = useState();
+
+  // modal close hadler
+  const [modalStatus, setModalStatus] = useState("");
+  const [show, setShow] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -191,43 +199,94 @@ export default function CollectorReport() {
     return FormatNumber(count);
   }, [mainData]);
 
-  const columns2 = useMemo(
+  //billing data show columns
+  const columns = useMemo(
     () => [
       {
-        width: "25%",
+        width: "8%",
         Header: t("id"),
         accessor: "customer.customerId",
       },
       {
-        width: "25%",
-        Header: t("customer"),
+        width: "12%",
+        Header: t("name"),
         accessor: "customer.name",
       },
       {
-        width: "15%",
-        Header: t("mobile"),
-        accessor: "customer.mobile",
+        width: "11%",
+        Header: t("package"),
+        accessor: "package",
       },
       {
-        width: "25%",
+        width: "11%",
         Header: t("bill"),
         accessor: "amount",
       },
       {
-        width: "15%",
+        width: "11%",
+        Header: t("billType"),
+        accessor: "billType",
+      },
+      {
+        width: "11%",
         Header: t("medium"),
         accessor: "medium",
       },
       {
-        width: "25%",
+        width: "12%",
+        Header: t("note"),
+        accessor: (data) => {
+          return {
+            id: data.id,
+            note: data.note,
+            start: data.start,
+            end: data.end,
+            month: data.month,
+          };
+        },
+        Cell: ({ cell: { value } }) => {
+          return (
+            <>
+              <p>
+                {value.note && value.note.slice(0, 15)}{" "}
+                <span>{value?.note && value?.note?.length > 15 && "..."}</span>
+              </p>
+              {value?.start && value?.end && (
+                <span className="badge bg-secondary">
+                  {moment(value.start).format("YYYY/MM/DD")}
+                  {moment(value.end).format("YYYY/MM/DD")}
+                </span>
+              )}
+              <p>
+                {value?.month && value.month.slice(0, 15)}{" "}
+                <span>
+                  {value?.month && value?.month?.length > 15 && "..."}
+                </span>
+              </p>
+              <span
+                className="see_more"
+                onClick={() => {
+                  setViewId(value?.id);
+                  setModalStatus("reportView");
+                  setShow(true);
+                }}
+              >
+                ...See More
+              </span>
+            </>
+          );
+        },
+      },
+      {
+        width: "12%",
         Header: t("date"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("YYYY-MM-DD h:mm a");
+          return moment(value).format("YYYY/MM/DD hh:mm a");
         },
       },
     ],
-    [t]
+    [t, allBills]
   );
 
   const customComponent = (
@@ -403,7 +462,7 @@ export default function CollectorReport() {
                           customComponent={customComponent}
                           isLoading={isLoading}
                           data={mainData}
-                          columns={columns2}
+                          columns={columns}
                         ></Table>
                       </div>
                     </div>
@@ -415,6 +474,16 @@ export default function CollectorReport() {
           </div>
         </div>
       </div>
+
+      {/* view report */}
+      {modalStatus === "reportView" && (
+        <ReportView
+          show={show}
+          setShow={setShow}
+          reportId={viewId}
+          status="resellerCollector"
+        />
+      )}
     </>
   );
 }

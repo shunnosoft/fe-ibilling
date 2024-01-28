@@ -103,7 +103,7 @@ const ManagerDashboard = () => {
   const date = new Date();
   const newYear = date.getFullYear();
   const [Year, setYear] = useState(date.getFullYear());
-  const [Month, setMonth] = useState(date.getMonth() + 1);
+  const [Month, setMonth] = useState(date.getMonth());
   const [filterDate, setFilterDate] = useState(date);
 
   //api calls

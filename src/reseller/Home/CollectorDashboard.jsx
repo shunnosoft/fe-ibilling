@@ -16,7 +16,7 @@ import "../Home/home.css";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import { monthsName } from "./homeData";
 import {
-  getChartsReseller,
+  getChartsResellerCollector,
   getIspOwnerData,
   getResellerCollectorDashboardOverViewData,
 } from "../../features/apiCalls";
@@ -26,6 +26,7 @@ import Loader from "../../components/common/Loader";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
 import DashboardCard from "../../pages/Home/dashboardCard/DashboardCard";
+import { Line } from "react-chartjs-2";
 
 const CollectorDashboard = () => {
   const { t } = useTranslation();
@@ -49,14 +50,10 @@ const CollectorDashboard = () => {
     (state) => state.adminNetFeeSupport?.bulletinPermission
   );
 
-  // reseller id from role base
-  const resellerId = role === "collector" ? userData.reseller : userData.id;
-
   // collector id from user data
   const collectorId = userData.id;
 
   // loading state
-  const [loadingDashboardData, setLoadingDashboardData] = useState(false);
   const [overviewLoading, setOverviewLoading] = useState(false);
   const [chartLoading, setChartLoading] = useState(false);
 
@@ -67,7 +64,6 @@ const CollectorDashboard = () => {
   const [count, setCount] = useState([]);
   const dispatch = useDispatch();
 
-  const [currentCollector, setCurrentCollector] = useState("");
   const [Year, setYear] = useState(date.getFullYear());
   const [Month, setMonth] = useState(date.getMonth());
   const [filterDate, setFilterDate] = useState(date);
@@ -88,13 +84,12 @@ const CollectorDashboard = () => {
     );
 
     // get dashboard chart api
-    // getChartsReseller(
-    //   dispatch,
-    //   resellerId,
-    //   filterData,
-    //   collectorId,
-    //   setChartLoading
-    // );
+    getChartsResellerCollector(
+      dispatch,
+      collectorId,
+      filterData,
+      setChartLoading
+    );
 
     // get ispOwner data api
     Object.keys(ispOwnerData)?.length === 0 &&
@@ -137,31 +132,29 @@ const CollectorDashboard = () => {
     );
 
     // get dashboard chart api
-    // getChartsReseller(
-    //   dispatch,
-    //   resellerId,
-    //   filterData,
-    //   collectorId,
-    //   setChartLoading
-    // );
+    getChartsResellerCollector(
+      dispatch,
+      collectorId,
+      filterData,
+      setChartLoading
+    );
   };
 
   // dashboard charts data filter handler
-  // const dashboardChartsDataFilter = () => {
-  //   const filterData = {
-  //     year: filterDate.getFullYear(),
-  //     month: filterDate.getMonth() + 1,
-  //   };
+  const dashboardChartsDataFilter = () => {
+    const filterData = {
+      year: filterDate.getFullYear(),
+      month: filterDate.getMonth() + 1,
+    };
 
-  //   // get dashboard chart api
-  //   getChartsReseller(
-  //     dispatch,
-  //     resellerId,
-  //     filterData,
-  //     collectorId,
-  //     setChartLoading
-  //   );
-  // };
+    // get dashboard chart api
+    getChartsResellerCollector(
+      dispatch,
+      collectorId,
+      filterData,
+      setChartLoading
+    );
+  };
 
   // probability amount calculation reseller
   const probabilityAmountCalculation = () => {
@@ -301,7 +294,7 @@ const CollectorDashboard = () => {
           </div>
 
           <FourGround>
-            {/* <div className="ChartsHeadernew mt-3">
+            <div className="ChartsHeadernew mt-3">
               <div className="selectGraph">
                 <h3> {t("collection")} </h3>
                 <div>
@@ -324,18 +317,6 @@ const CollectorDashboard = () => {
               </div>
 
               <div className="ChartsFilternew">
-                <select
-                  className="form-select chartFilteritem"
-                  onChange={(e) => setCurrentCollector(e.target.value)}
-                >
-                  <option value=""> {t("all collector")} </option>
-                  {dashboardOverView.collectors?.map((c, key) => (
-                    <option key={key} value={c.user}>
-                      {c.name}
-                    </option>
-                  ))}
-                </select>
-
                 <select
                   className="form-select chartFilteritem"
                   onChange={(e) => setYear(e.target.value)}
@@ -364,9 +345,9 @@ const CollectorDashboard = () => {
                   {t("filter")}
                 </button>
               </div>
-            </div> */}
+            </div>
 
-            {/* <div className="lineChart">
+            <div className="lineChart">
               <Line
                 data={chartOption}
                 height={400}
@@ -376,13 +357,13 @@ const CollectorDashboard = () => {
                   maintainAspectRatio: false,
                 }}
               />
-            </div> */}
-
-            {(butPermission?.dashboard || butPermission?.allPage) && (
-              <NetFeeBulletin />
-            )}
+            </div>
           </FourGround>
         </div>
+
+        {(butPermission?.dashboard || butPermission?.allPage) && (
+          <NetFeeBulletin />
+        )}
       </FontColor>
     </div>
   );

@@ -56,9 +56,10 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
     role === "ispOwner" ||
     (role === "manager" && permissions.dashboardCollectionData) ||
     (role === "collector" &&
-      currentUser.collector.reseller &&
+      !currentUser.collector.reseller &&
       permissions.dashboardCollectionData) ||
-    role === "reseller";
+    role === "reseller" ||
+    (role === "collector" && currentUser.collector.reseller);
 
   // admin staff user role permission
   const adminUser =
@@ -347,27 +348,31 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
               </div>
             )}
 
-            {["reseller", "collector"].includes(role) && bpSettings?.hasPG && (
-              <div class="col-md-4 col-xl-3">
-                <div class="card bg-card-13 order-card">
-                  <div class="card-block display_card">
-                    <p class="m-b-20">{t("onlinePaymentCustomer")}</p>
-                    <div class="d-flex align-items-center">
-                      <p className="card_Icon">
-                        <Phone />
-                      </p>
-                      <h2>
-                        {FormatNumber(dashboardCard.onlinePaymentCustomerCount)}
-                      </h2>
-                      &nbsp; &nbsp;
-                      <span className="total_collection_amount">
-                        ৳{FormatNumber(dashboardCard.onlinePaymentAmount)}
-                      </span>
+            {(role === "reseller" ||
+              (role === "collector" && currentUser.collector.reseller)) &&
+              bpSettings?.hasPG && (
+                <div class="col-md-4 col-xl-3">
+                  <div class="card bg-card-13 order-card">
+                    <div class="card-block display_card">
+                      <p class="m-b-20">{t("onlinePaymentCustomer")}</p>
+                      <div class="d-flex align-items-center">
+                        <p className="card_Icon">
+                          <Phone />
+                        </p>
+                        <h2>
+                          {FormatNumber(
+                            dashboardCard.onlinePaymentCustomerCount
+                          )}
+                        </h2>
+                        &nbsp; &nbsp;
+                        <span className="total_collection_amount">
+                          ৳{FormatNumber(dashboardCard.onlinePaymentAmount)}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            )}
+              )}
 
             {userHandle && (
               <div class="col-md-4 col-xl-3">
@@ -386,6 +391,22 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
                         {FormatNumber(dashboardCard.newCustomerBillCollection)}
                       </span>
                     </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {userHandle && (
+              <div class="col-md-4 col-xl-3">
+                <div class="card bg-card-37 order-card">
+                  <div class="card-block display_card">
+                    <p class="m-b-20">{t("todayCollection")}</p>
+                    <div class="d-flex align-items-center">
+                      <p className="card_Icon">
+                        <Cash />
+                      </p>
+                      <h2>{FormatNumber(dashboardCard.todayBillCollection)}</h2>
+                    </div>
                   </div>
                 </div>
               </div>

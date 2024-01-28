@@ -70,12 +70,12 @@ const BulkPackageEdit = ({ bulkCustomer, show, setShow }) => {
     setMikrotikPackage(mikrotikPackage);
   };
 
-  const customer = bulkCustomer.map((val) => {
+  const customer = bulkCustomer.reduce((acc, crr) => {
     // home user data
-    const homeUser = val.original;
+    const homeUser = crr.original;
 
     // home user billing date
-    const billingDate = new Date(val.original.billingCycle);
+    const billingDate = new Date(crr.original.billingCycle);
 
     // customer bill month days
     const monthDate = new Date(
@@ -101,58 +101,81 @@ const BulkPackageEdit = ({ bulkCustomer, show, setShow }) => {
     const currentPackgeUsedDayAmount =
       (homeUser.monthlyFee / monthDate) * daysUsed;
 
+    console.log(currentPackgeUsedDayAmount);
+
     // customer current package day left amount
-    const currentPackgeBalance =
-      homeUser.monthlyFee - currentPackgeUsedDayAmount;
+    // const currentPackgeBalance =
+    //   homeUser.monthlyFee - currentPackgeUsedDayAmount;
 
     // customer day left amount
     const changePackageDayLeftAmount =
-      (mikrotikPackage.rate / monthDate) * dayLeft;
+      (mikrotikPackage?.rate / monthDate) * dayLeft;
 
-    return { currentPackgeBalance, changePackageDayLeftAmount };
-  });
+    console.log(changePackageDayLeftAmount);
+
+    if (homeUser.paymentStatus === "paid") {
+      const changePackageAmount =
+        changePackageDayLeftAmount - currentPackgeUsedDayAmount;
+    }
+
+    const packageAmount = Math.floor(
+      currentPackgeUsedDayAmount - changePackageDayLeftAmount
+    );
+    console.log(packageAmount);
+
+    // return { currentPackgeBalance, changePackageDayLeftAmount };
+  }, {});
 
   // customer package change and recharge
   const customersPackageUpdateHandle = (e) => {
     e.preventDefault();
 
-    bulkCustomer.map((temp) => temp.original.monthlyFee);
+    // let otherCusetomerCount = 0;
 
-    let otherCusetomerCount = 0;
-    let customers;
-    if (singleMikrotik) {
-      customers = bulkCustomer.reduce((acc, current) => {
-        if (current.original.mikrotik === singleMikrotik) {
-          acc.push(current);
-        } else {
-          otherCusetomerCount++;
-          // toast.error("মাইক্রটিক এর মধ্যে এই" + current.original.name + "নেই");
-        }
-        return acc;
-      }, []);
-    } else {
-      alert(t("selectMikrotik"));
-    }
+    // const customer = bulkCustomer.reduce((acc, current) => {
+    //   if (current.original.mikrotik === singleMikrotik) {
+    //     acc.push(current);
+    //   } else {
+    //     otherCusetomerCount++;
+    //   }
+    //   return acc;
+    // }, []);
+    // console.log(customer);
 
-    if (singleMikrotik && mikrotikPackage) {
-      const data = {
-        customerIds: customers.map((item) => item.original.id),
-        mikrotikPackage,
-      };
-      const confirm = window.confirm(
-        t("areYouWantToUpdateStatus") +
-          customers.length +
-          t("updateCustomerPackage") +
-          "\n" +
-          otherCusetomerCount +
-          t("otherMtkUsers")
-      );
-      if (confirm) {
-        // bulkPackageEdit(dispatch, data, setIsLoading, setShow);
-      }
-    } else {
-      alert(t("selectPackage"));
-    }
+    // let otherCusetomerCount = 0;
+    // let customers;
+    // if (singleMikrotik) {
+    //   customers = bulkCustomer.reduce((acc, current) => {
+    //     if (current.original.mikrotik === singleMikrotik) {
+    //       acc.push(current);
+    //     } else {
+    //       otherCusetomerCount++;
+    //     }
+    //     return acc;
+    //   }, []);
+    // } else {
+    //   alert(t("selectMikrotik"));
+    // }
+
+    // if (singleMikrotik && mikrotikPackage) {
+    //   const data = {
+    //     customerIds: customers.map((item) => item.original.id),
+    //     mikrotikPackage,
+    //   };
+    //   const confirm = window.confirm(
+    //     t("areYouWantToUpdateStatus") +
+    //       customers.length +
+    //       t("updateCustomerPackage") +
+    //       "\n" +
+    //       otherCusetomerCount +
+    //       t("otherMtkUsers")
+    //   );
+    //   if (confirm) {
+    //     // bulkPackageEdit(dispatch, data, setIsLoading, setShow);
+    //   }
+    // } else {
+    //   alert(t("selectPackage"));
+    // }
   };
 
   return (
@@ -239,11 +262,7 @@ const BulkPackageEdit = ({ bulkCustomer, show, setShow }) => {
           <button
             type="button"
             className="btn btn-success"
-            onClick={() => {
-              setShow(false);
-              setModalStatus("PackageUpdateRecharge");
-              setModalShow(true);
-            }}
+            onClick={customersPackageUpdateHandle}
           >
             {t("submit")}
           </button>

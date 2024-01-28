@@ -424,7 +424,7 @@ export default function Diposit() {
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-4">
                   <div className="d-flex">
-                    <div>{t("diposit")}</div>
+                    <div>{t("deposit")}</div>
                   </div>
 
                   <div className="d-flex justify-content-center align-items-center">
