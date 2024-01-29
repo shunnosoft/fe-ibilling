@@ -922,5 +922,6 @@
   "collectorCollection": "Collector Collection",
   "totalSalary": "Total Salary",
   "offlinePaymentCustomer": "Offline Payment Customer",
-  "onlinePaymentCustomer": "Online Payment Customer"
+  "onlinePaymentCustomer": "Online Payment Customer",
+  "hotspotCustomerSync": "Hotspot Customer Sync"
 }

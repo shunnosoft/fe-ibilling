@@ -1246,11 +1246,17 @@ export const getNewCustomer = async (
   setIsloading(false);
 };
 
-export const addCustomerNote = async (dispatch, setIsLoading, data) => {
+export const addCustomerNote = async (
+  dispatch,
+  setIsLoading,
+  data,
+  setShow
+) => {
   setIsLoading(true);
   try {
     const res = await apiLink.post(`/ispOwner/addNote`, data);
     dispatch(createNote(res.data));
+    setShow(false);
     langMessage("success", "নোট সংযুক্ত সফল হয়েছে", "Note Added Successfully");
   } catch (error) {
     console.log(error.message);
@@ -1411,7 +1417,14 @@ export const deleteACustomer = async (
       `/ispOwner/customer/${data.ispID}/${data.customerID}?mikrotik=${data.mikrotik}`
     );
 
-    dispatch(deleteCustomerSuccess(data.customerID));
+    // delete customer from owner
+    if (data.userType === "pppoe") {
+      dispatch(deleteCustomerSuccess(data.customerID));
+    } else {
+      dispatch(deleteStaticCustomerSuccess(data.customerID));
+    }
+
+    // delete customer from reseller
     isResellerCustomer && dispatch(deleteReCustomer(data.customerID));
 
     langMessage(
@@ -1420,7 +1433,6 @@ export const deleteACustomer = async (
       "Customer Deleted Successfully"
     );
 
-    document.querySelector("#customerDelete").click();
     setShow(false);
   } catch (err) {
     if (err.response) {
@@ -1528,7 +1540,8 @@ export const syncMikrotikStaticUser = async (
   dispatch,
   data,
   setIsLoading,
-  setInActiveCustomer
+  setInActiveCustomer,
+  setShow
 ) => {
   setIsLoading(true);
   await apiLink({
@@ -1537,20 +1550,17 @@ export const syncMikrotikStaticUser = async (
   })
     .then((res) => {
       dispatch(fetchMikrotikSyncSimpleQueueUserSuccess(res.data));
-      console.log(res.data);
-      setIsLoading(false);
-      document.querySelector("#staticCustomerSync").click();
+      setShow(false);
       langMessage(
         "success",
         "মাইক্রোটিক থেকে স্ট্যাটিক গ্রাহক সিঙ্ক সফল হয়েছে",
         "Static Customer Sync form Mikrotik is Successful"
       );
-      setInActiveCustomer(false);
     })
     .catch((error) => {
-      setIsLoading(false);
       toast.error(error.response?.data.message);
     });
+  setIsLoading(false);
 };
 
 // get Mikrotik Sync user
@@ -2506,7 +2516,6 @@ export const billCollectInvoice = async (
 
 //create invoice
 export const createCustomerInvoice = async (
-  dispatch,
   billData,
   setLoading,
   resetForm = null,
@@ -2515,16 +2524,13 @@ export const createCustomerInvoice = async (
   setLoading(true);
   try {
     const res = await apiLink.post("/bill/customer/invoice", billData);
-    // dispatch(updateBalance(res.data));
-    document.querySelector("#createInvoiceModal").click();
+    setShow(false);
 
     langMessage(
       "success",
       `${res.data.billType} ইনভয়েস তৈরি সফল হয়েছে।`,
       `${res.data.billType} Invoice Create Successful.`
     );
-
-    setShow(false);
 
     resetForm();
   } catch (error) {
@@ -3371,7 +3377,8 @@ export const fireWallIpFilterDrop = async (
   setIsLoading,
   ispOwner,
   mikrotikId,
-  dropIp
+  dropIp,
+  setShow
 ) => {
   setIsLoading(true);
   try {
@@ -3380,7 +3387,7 @@ export const fireWallIpFilterDrop = async (
       { dropIp }
     );
     dispatch(postFireWllFilterIpDrop(res.data));
-    document.querySelector("#fireWallIpFilter").click();
+    setShow(false);
     langMessage("success", " সফলভাবে যুক্ত হয়েছে", "Added Successfully");
   } catch (error) {
     toast.error(error.response?.data?.message);
@@ -3408,14 +3415,19 @@ export const syncFireWallFilterDrop = async (
 };
 
 //delete fire wall ip filter drop
-export const deleteFireWallIpDrop = async (dispatch, setIsLoading, data) => {
+export const deleteFireWallIpDrop = async (
+  dispatch,
+  setIsLoading,
+  data,
+  setShow
+) => {
   setIsLoading(true);
   try {
     const res = await apiLink.delete(
       `mikrotik/firewallFilterDrop/${data.ispOwner}/${data.id}?mikrotikCheck=${data.mikrotik}`
     );
 
-    document.querySelector("#fireWallFilterIpDropDelete").click();
+    setShow(false);
     langMessage("success", " সফলভাবে যুক্ত হয়েছে", "Added Successfully");
   } catch (error) {
     toast.error(error.response?.data?.message);
@@ -3439,7 +3451,8 @@ export const getFireWallIpDrop = async (dispatch, setIpLoading, ispOwner) => {
 export const updateFireWallIpDrop = async (
   dispatch,
   setIsLoading,
-  fireWallIp
+  fireWallIp,
+  setShow
 ) => {
   setIsLoading(true);
   try {
@@ -3447,8 +3460,8 @@ export const updateFireWallIpDrop = async (
       `mikrotik/firewallFilterDrop/${fireWallIp.ispOwner}/${fireWallIp.id}`,
       fireWallIp
     );
-    document.querySelector("#fireWallFilterIpDropUpdate").click();
     dispatch(updateFireWallFilterIpDrop(res.data));
+    setShow(false);
     langMessage("success", " সফলভাবে যুক্ত হয়েছে", "Added Successfully");
   } catch (error) {
     toast.error(error.response?.data?.message);

@@ -66,8 +66,8 @@ export const syncHotspotCustomer = async (
   ispOwner,
   mikrotikId,
   inActiveCustomer,
-  setInActiveCustomer,
-  setHotspotCustomerLoading
+  setHotspotCustomerLoading,
+  setShow
 ) => {
   setHotspotCustomerLoading(true);
   try {
@@ -75,8 +75,7 @@ export const syncHotspotCustomer = async (
       `hotspot/sync/customers/${ispOwner}/${mikrotikId}?inActiveCustomer=${inActiveCustomer}`
     );
     dispatch(getHotspotCustomerSuccess(res.data.updatedCustomers));
-    document.querySelector("#hotspotCustomerSync").click();
-    setInActiveCustomer(false);
+    setShow(true);
 
     langMessage(
       "success",
@@ -84,7 +83,6 @@ export const syncHotspotCustomer = async (
       "Customer sync Successfully"
     );
   } catch (err) {
-    console.log(err.response?.data);
     toast.error(err.response?.data?.message);
   }
   setHotspotCustomerLoading(false);
@@ -262,7 +260,8 @@ export const hotspotPackageEdit = async (
   mikrotikId,
   packageId,
   data,
-  setEditLoading
+  setEditLoading,
+  setShow
 ) => {
   setEditLoading(true);
   try {
@@ -270,16 +269,15 @@ export const hotspotPackageEdit = async (
       `hotspot/package/${mikrotikId}/${packageId}`,
       data
     );
-    console.log(res.data.hotspotPackage);
+
     dispatch(editHotspotPackageSuccess(res.data.hotspotPackage));
-    document.querySelector("#hotspotPackageEdit").click();
+    setShow(false);
     langMessage(
       "success",
       "প্যকেজ এডিট সফল হয়েছে!",
       "Package Edited Successfully"
     );
   } catch (err) {
-    console.log(err.response?.data);
     toast.error(err.response?.data?.message);
   }
   setEditLoading(false);

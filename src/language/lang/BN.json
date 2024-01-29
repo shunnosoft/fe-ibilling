@@ -928,5 +928,6 @@
   "collectorCollection": "কালেক্টর কালেকশন",
   "totalSalary": "মোট বেতন",
   "offlinePaymentCustomer": "অফলাইন পেমেন্ট গ্রাহক",
-  "onlinePaymentCustomer": "অনলাইন পেমেন্ট গ্রাহক"
+  "onlinePaymentCustomer": "অনলাইন পেমেন্ট গ্রাহক",
+  "hotspotCustomerSync": "হটস্পট গ্রাহক সিঙ্ক"
 }

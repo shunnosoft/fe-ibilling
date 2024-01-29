@@ -7,8 +7,9 @@ import {
   resetFireWallAllIpDrop,
 } from "../../features/apiCalls";
 import Loader from "../../components/common/Loader";
+import ComponentCustomModal from "../../components/common/customModal/ComponentCustomModal";
 
-const FireWallFilterIpDropControl = () => {
+const FireWallFilterIpDropControl = ({ show, setShow }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
@@ -66,94 +67,72 @@ const FireWallFilterIpDropControl = () => {
   }, [ispOwner]);
 
   return (
-    <div
-      className="modal fade"
-      id="fireWallFilterIpDropControl"
-      tabIndex="-1"
-      aria-labelledby="fireWallIpDrop"
-      aria-hidden="true"
-    >
-      <div className="modal-dialog ">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h5
-              style={{ color: "#0abb7a" }}
-              className="modal-title"
-              id="fireWallIpDrop"
+    <>
+      <ComponentCustomModal
+        show={show}
+        setShow={setShow}
+        centered={false}
+        size={"md"}
+        header={t("fireWallIpFilterDrop")}
+      >
+        <form>
+          <div class="mb-4">
+            <label class="form-label mb-0 text-secondary">
+              {t("selectMikrotik")}
+            </label>
+            <select
+              className="form-select mw-100 mt-0"
+              aria-label="Default select example"
+              onChange={mikrotikChangeHandler}
             >
-              {t("fireWallIpFilterDrop")}
-            </h5>
+              <option value="">...</option>
+              {mikrotiks.map((mtk) => (
+                <option value={mtk.id} name={mtk.name}>
+                  {mtk.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {mikrotikId && (
+            <div className="shadow-none p-3 mb-5 bg-light rounded">
+              <div class="form-check form-switch">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  role="switch"
+                  id="fireWallIpDropApiCall"
+                  onChange={(e) => apiCallChangeHandler(e.target.checked)}
+                  checked={
+                    fireWallIpFilterDrop[0]?.status === "delete" &&
+                    fireWallIpFilterDrop[0]?.status !== "drop"
+                  }
+                ></input>
+                <label
+                  class="form-check-label text-secondary"
+                  for="fireWallIpDropApiCall"
+                  style={{ cursor: "pointer" }}
+                >
+                  {fireWallIpFilterDrop[0]?.status === "delete"
+                    ? t("bringBackFireWallIpDrop")
+                    : t("deleteFireWallIpDrop")}
+                </label>
+              </div>
+            </div>
+          )}
+          <div className="float-end mt-3">
             <button
               type="button"
-              className="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
+              className="btn btn-secondary"
+              disabled={isLoading || ipLoading}
+              onClick={() => setShow(false)}
+            >
+              {ipLoading ? <Loader /> : t("cancel")}
+            </button>
           </div>
-          <div className="modal-body">
-            <form>
-              <div class="mb-4">
-                <label
-                  class="form-label mb-0 text-secondary"
-                  for="singleIpDrop"
-                >
-                  {t("selectMikrotik")}
-                </label>
-                <select
-                  className="form-select mw-100 mt-0"
-                  aria-label="Default select example"
-                  onChange={mikrotikChangeHandler}
-                >
-                  <option value="">...</option>
-                  {mikrotiks.map((mtk) => (
-                    <option value={mtk.id} name={mtk.name}>
-                      {mtk.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {mikrotikId && (
-                <div className="shadow-none p-3 mb-5 bg-light rounded">
-                  <div class="form-check form-switch">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      role="switch"
-                      id="fireWallIpDropApiCall"
-                      onChange={(e) => apiCallChangeHandler(e.target.checked)}
-                      checked={
-                        fireWallIpFilterDrop[0]?.status === "delete" &&
-                        fireWallIpFilterDrop[0]?.status !== "drop"
-                      }
-                    ></input>
-                    <label
-                      class="form-check-label text-secondary"
-                      for="fireWallIpDropApiCall"
-                      style={{ cursor: "pointer" }}
-                    >
-                      {fireWallIpFilterDrop[0]?.status === "delete"
-                        ? t("bringBackFireWallIpDrop")
-                        : t("deleteFireWallIpDrop")}
-                    </label>
-                  </div>
-                </div>
-              )}
-              <div className="modal-footer">
-                <button
-                  type="button"
-                  className="btn btn-secondary"
-                  data-bs-dismiss="modal"
-                  disabled={isLoading || ipLoading}
-                >
-                  {ipLoading ? <Loader /> : t("cancel")}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
+        </form>
+      </ComponentCustomModal>
+    </>
   );
 };
 

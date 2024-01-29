@@ -63,6 +63,10 @@ const Hotspot = () => {
   // edit package state
   const [editPackageId, setEditPackageId] = useState();
 
+  // modal close handler
+  const [modalStatus, setModalStatus] = useState("");
+  const [show, setShow] = useState(false);
+
   // hotspot package sync handler
   const hotspotPackageHandle = () => {
     syncHotspotPackage(
@@ -158,10 +162,10 @@ const Hotspot = () => {
                 aria-labelledby="pppoePackageDropdown"
               >
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#hotspotPackageEdit"
                   onClick={() => {
                     setEditPackageId(original.id);
+                    setModalStatus("packageEdit");
+                    setShow(true);
                   }}
                 >
                   <div className="dropdown-item">
@@ -273,18 +277,21 @@ const Hotspot = () => {
                 title={t("packageSync")}
                 className="btn btn-outline-primary mb-2"
               >
-                {hotspotPackageLoading ? <Loader /> : t("packageSync")}{" "}
+                {hotspotPackageLoading ? <Loader /> : t("packageSync")}
                 <BagCheckFill />
               </button>
               <br />
+
               {/* hotspot customer sync button */}
               <button
-                data-bs-toggle="modal"
-                data-bs-target="#hotspotCustomerSync"
                 title={t("hotspotpackageSync")}
                 className="btn btn-outline-primary"
+                onClick={() => {
+                  setModalStatus("customerSync");
+                  setShow(true);
+                }}
               >
-                {hotspotCustomerLoading ? <Loader /> : t("customerSync")}{" "}
+                {hotspotCustomerLoading ? <Loader /> : t("customerSync")}
                 <PersonCheckFill />
               </button>
             </div>
@@ -306,8 +313,25 @@ const Hotspot = () => {
           )}
         </div>
       </div>
-      <EditHotspotPackage packageId={editPackageId} />
-      <HotspotCustomerSync ispOwnerId={ispOwner} mikrotikId={mikrotikId} />
+
+      {/* pakcage edit modal */}
+      {modalStatus === "packageEdit" && (
+        <EditHotspotPackage
+          show={show}
+          setShow={setShow}
+          packageId={editPackageId}
+        />
+      )}
+
+      {/* customer sync modal */}
+      {modalStatus === "customerSync" && (
+        <HotspotCustomerSync
+          show={show}
+          setShow={setShow}
+          ispOwnerId={ispOwner}
+          mikrotikId={mikrotikId}
+        />
+      )}
     </>
   );
 };

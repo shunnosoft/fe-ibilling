@@ -12,14 +12,19 @@ import {
 } from "./supportTicketSlice";
 
 //create supportTickets api
-export const createSupportTicketApi = async (dispatch, body, setIsLoading) => {
+export const createSupportTicketApi = async (
+  dispatch,
+  body,
+  setIsLoading,
+  setShow
+) => {
   setIsLoading(true);
   try {
     const { data } = await apiLink.post(`customer/supportTicket/`, body);
-
     dispatch(createSupportTicket(data.data));
+
+    setShow(false);
     toast.success("Support ticket created successful");
-    document.getElementById("createSupportTicket").click();
   } catch (error) {
     toast.error(error.response?.data.message);
   }

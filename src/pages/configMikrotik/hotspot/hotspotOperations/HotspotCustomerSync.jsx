@@ -1,9 +1,13 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
+
+// inaternal import
 import Loader from "../../../../components/common/Loader";
 import { syncHotspotCustomer } from "../../../../features/hotspotApi";
-const HotspotCustomerSync = ({ ispOwnerId, mikrotikId }) => {
+import ComponentCustomModal from "../../../../components/common/customModal/ComponentCustomModal";
+
+const HotspotCustomerSync = ({ show, setShow, ispOwnerId, mikrotikId }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
@@ -20,72 +24,54 @@ const HotspotCustomerSync = ({ ispOwnerId, mikrotikId }) => {
       ispOwnerId,
       mikrotikId,
       inActiveCustomer,
-      setInActiveCustomer,
-      setHotspotCustomerLoading
+      setHotspotCustomerLoading,
+      setShow
     );
   };
   return (
-    <div
-      className="modal fade"
-      id="hotspotCustomerSync"
-      tabIndex="-1"
-      aria-labelledby="customerModalDetails"
-      aria-hidden="true"
-    >
-      <div className="modal-dialog ">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h5
-              style={{ color: "#0abb7a" }}
-              className="modal-title"
-              id="customerModalDetails"
-            >
-              {t("PPPoECustomerSync")}
-            </h5>
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div className="modal-body">
-            <div class="form-check mt-4">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                checked={inActiveCustomer}
-                id="flexCheckDefault"
-                onChange={(event) => setInActiveCustomer(event.target.checked)}
-              />
-              <label class="form-check-label" for="flexCheckDefault">
-                <small className="text-secondary">
-                  {t("doYouWantToSyncWithInActiveCustomer")}
-                </small>
-              </label>
-            </div>
-
-            <div className="modal-footer" style={{ border: "none" }}>
-              <button
-                type="button"
-                className="btn btn-secondary"
-                data-bs-dismiss="modal"
-                disabled={hotspotCustomerLoading}
-              >
-                {t("cancel")}
-              </button>
-              <button
-                onClick={hotspotCustomerHandle}
-                className="btn btn-success"
-                disabled={hotspotCustomerLoading}
-              >
-                {hotspotCustomerLoading ? <Loader /> : t("sync")}
-              </button>
-            </div>
-          </div>
+    <>
+      <ComponentCustomModal
+        show={show}
+        setShow={setShow}
+        centered={false}
+        size={"md"}
+        header={t("hotspotCustomerSync")}
+      >
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            checked={inActiveCustomer}
+            id="hotspotCustomerSync"
+            onChange={(event) => setInActiveCustomer(event.target.checked)}
+          />
+          <label class="form-check-label" htmlFor="hotspotCustomerSync">
+            <small className="text-secondary">
+              {t("doYouWantToSyncWithInActiveCustomer")}
+            </small>
+          </label>
         </div>
-      </div>
-    </div>
+
+        <div className="displayGrid1 float-end mt-4">
+          <button
+            type="button"
+            className="btn btn-secondary"
+            disabled={hotspotCustomerLoading}
+            onClick={() => setShow(false)}
+          >
+            {t("cancel")}
+          </button>
+
+          <button
+            onClick={hotspotCustomerHandle}
+            className="btn btn-success"
+            disabled={hotspotCustomerLoading}
+          >
+            {hotspotCustomerLoading ? <Loader /> : t("sync")}
+          </button>
+        </div>
+      </ComponentCustomModal>
+    </>
   );
 };
 

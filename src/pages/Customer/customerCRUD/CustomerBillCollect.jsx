@@ -90,6 +90,9 @@ const CustomerBillCollect = ({ single, status, page, setShow }) => {
   const [selectedMonth, setSelectedMonth] = useState(null);
   const [billAmount, setBillAmount] = useState();
 
+  //
+  const [connectionFeeDue, setConnectionFeeDue] = useState(0);
+
   // note check & note
   const [noteCheck, setNoteCheck] = useState(false);
   const [note, setNote] = useState("");
@@ -109,7 +112,7 @@ const CustomerBillCollect = ({ single, status, page, setShow }) => {
   const totalAmount =
     billType === "bill"
       ? Number(billAmount) + Number(balanceDue)
-      : Number(data.connectionFee - paidConnectionFee);
+      : Number(data.connectionFee - paidConnectionFee) || 0;
   const maxDiscount = totalAmount;
 
   //bill colleciton validation
@@ -150,6 +153,11 @@ const CustomerBillCollect = ({ single, status, page, setShow }) => {
       data?.balance > 0 && data?.balance <= data?.monthlyFee
         ? data?.monthlyFee - data?.balance
         : data?.monthlyFee
+    );
+
+    //
+    setConnectionFeeDue(
+      data?.connectionFee ? data?.connectionFee - paidConnectionFee : 0
     );
 
     // set customer bill month
@@ -257,7 +265,7 @@ const CustomerBillCollect = ({ single, status, page, setShow }) => {
       <Card.Body className={page === "recharge" ? "pt-0" : ""}>
         <Formik
           initialValues={{
-            amount: billAmount,
+            amount: billType === "bill" ? billAmount : connectionFeeDue,
             due: balanceDue,
             discount: 0,
           }}

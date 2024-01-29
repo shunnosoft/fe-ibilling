@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
+
+// internal import
 import { fireWallIpFilterDrop } from "../../../features/apiCalls";
 import Loader from "../../../components/common/Loader";
+import ComponentCustomModal from "../../../components/common/customModal/ComponentCustomModal";
 
-const FireWallFIlterDrop = ({ ispOwner, mikrotikId }) => {
+const FireWallFIlterDrop = ({ show, setShow, ispOwner, mikrotikId }) => {
   const { t } = useTranslation();
 
   const dispatch = useDispatch();
@@ -19,67 +22,54 @@ const FireWallFIlterDrop = ({ ispOwner, mikrotikId }) => {
   const fireWallIpDropHandler = (e) => {
     e.preventDefault();
 
-    fireWallIpFilterDrop(dispatch, setIsLoading, ispOwner, mikrotikId, dropIp);
+    fireWallIpFilterDrop(
+      dispatch,
+      setIsLoading,
+      ispOwner,
+      mikrotikId,
+      dropIp,
+      setShow
+    );
   };
   return (
-    <div
-      className="modal fade"
-      id="fireWallIpFilter"
-      tabIndex="-1"
-      aria-labelledby="fireWallIpDrop"
-      aria-hidden="true"
-    >
-      <div className="modal-dialog ">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h5
-              style={{ color: "#0abb7a" }}
-              className="modal-title"
-              id="fireWallIpDrop"
-            >
-              {t("fireWallIpFilterDrop")}
-            </h5>
+    <>
+      <ComponentCustomModal
+        show={show}
+        setShow={setShow}
+        centered={false}
+        size={"md"}
+        header={t("fireWallIpFilterDrop")}
+      >
+        <form onSubmit={fireWallIpDropHandler}>
+          <div>
+            <label class="form-label mb-0 text-secondary">
+              {t("inputFireWallIpFilterDrop")}
+            </label>
+            <input
+              class="form-control"
+              type="text"
+              id="singleIpDrop"
+              onChange={(e) => setDropIp(e.target.value)}
+            />
+          </div>
+
+          <div className="displayGrid1 float-end mt-4">
             <button
               type="button"
-              className="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
+              className="btn btn-secondary"
+              disabled={isLoading}
+              onClick={() => setShow(false)}
+            >
+              {t("cancel")}
+            </button>
+
+            <button className="btn btn-success" disabled={isLoading}>
+              {isLoading ? <Loader /> : t("submit")}
+            </button>
           </div>
-          <div className="modal-body">
-            <form onSubmit={fireWallIpDropHandler}>
-              <div class="mb-4">
-                <label
-                  class="form-label mb-0 text-secondary"
-                  for="singleIpDrop"
-                >
-                  {t("inputFireWallIpFilterDrop")}
-                </label>
-                <input
-                  class="form-control"
-                  type="text"
-                  id="singleIpDrop"
-                  onChange={(e) => setDropIp(e.target.value)}
-                />
-              </div>
-              <div className="modal-footer">
-                <button
-                  type="button"
-                  className="btn btn-secondary"
-                  data-bs-dismiss="modal"
-                  disabled={isLoading}
-                >
-                  {t("cancel")}
-                </button>
-                <button className="btn btn-success" disabled={isLoading}>
-                  {isLoading ? <Loader /> : t("submit")}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
+        </form>
+      </ComponentCustomModal>
+    </>
   );
 };
 

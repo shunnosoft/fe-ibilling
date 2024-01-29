@@ -2,24 +2,26 @@ import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
+import { useEffect } from "react";
 import {
   ArchiveFill,
   PenFill,
   PersonLinesFill,
   ThreeDots,
 } from "react-bootstrap-icons";
+import { useDispatch } from "react-redux";
+import moment from "moment";
+
+// internal import
 import CustomerSync from "./staticOperation/CustomerSync";
-import { useEffect } from "react";
 import {
   deleteStaticPackage,
   getQueuePackageByIspOwnerId,
   getStaticCustomer,
-  testFireWallApi,
 } from "../../../features/apiCalls";
-import { useDispatch } from "react-redux";
 import Table from "../../../components/table/Table";
-import moment from "moment";
 import EditPackage from "../../staticCustomer/EditPackageModal";
+import ComponentCustomModal from "../../../components/common/customModal/ComponentCustomModal";
 
 const Static = () => {
   const { t } = useTranslation();
@@ -27,6 +29,7 @@ const Static = () => {
   // get dispatch
   const dispatch = useDispatch();
 
+  // get ispOwner id & mikrotik id form params
   const { ispOwner, mikrotikId } = useParams();
 
   // get all package list
@@ -53,6 +56,10 @@ const Static = () => {
 
   // set editable data for state
   const [singlePackage, setSinglePackage] = useState("");
+
+  // modal close handler
+  const [modalStatus, setModalStatus] = useState("");
+  const [show, setShow] = useState(false);
 
   useEffect(() => {
     // filter mikrotik customer
@@ -102,13 +109,7 @@ const Static = () => {
         id: "option",
 
         Cell: ({ row: { original } }) => (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
+          <div className="d-flex justify-content-center align-items-center">
             <ThreeDots
               className="dropdown-toggle ActionDots"
               id="areaDropdown"
@@ -119,10 +120,10 @@ const Static = () => {
             <ul className="dropdown-menu" aria-labelledby="customerDrop">
               {
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#editPackage"
                   onClick={() => {
                     setSinglePackage(original);
+                    setModalStatus("packageEdit");
+                    setShow(true);
                   }}
                 >
                   <div className="dropdown-item">
@@ -152,6 +153,7 @@ const Static = () => {
     ],
     []
   );
+
   // customer column
   const columns = React.useMemo(
     () => [
@@ -224,10 +226,12 @@ const Static = () => {
             <div className="addAndSettingIcon">
               {/* static customer sync button */}
               <button
-                data-bs-toggle="modal"
-                data-bs-target="#staticCustomerSync"
+                className="btn btn-outline-primary me-2"
                 title={t("staticCustomerSync")}
-                className="btn btn-outline-primary me-2 "
+                onClick={() => {
+                  setModalStatus("customerSync");
+                  setShow(true);
+                }}
               >
                 {t("staticCustomerSync")} <PersonLinesFill />
               </button>
@@ -250,10 +254,25 @@ const Static = () => {
           )}
         </div>
       </div>
-      <CustomerSync mikrotikId={mikrotikId} ispOwner={ispOwner} />
 
       {/* package edit modal */}
-      <EditPackage package={singlePackage} />
+      {modalStatus === "packageEdit" && (
+        <EditPackage
+          show={show}
+          setShow={setShow}
+          singlePackage={singlePackage}
+        />
+      )}
+
+      {/* customer sync modal */}
+      {modalStatus === "customerSync" && (
+        <CustomerSync
+          show={show}
+          setShow={setShow}
+          mikrotikId={mikrotikId}
+          ispOwner={ispOwner}
+        />
+      )}
     </>
   );
 };

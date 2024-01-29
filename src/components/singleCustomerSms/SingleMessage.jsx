@@ -1,14 +1,18 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import Loader from "../common/Loader";
-import { smsCount } from "../common/UtilityMethods";
-import apiLink from "../../api/apiLink";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
 import { ExclamationOctagonFill } from "react-bootstrap-icons";
 
-const SingleMessage = ({ single, sendCustomer }) => {
+// internal import
+import Loader from "../common/Loader";
+import { smsCount } from "../common/UtilityMethods";
+import apiLink from "../../api/apiLink";
+import ComponentCustomModal from "../common/customModal/ComponentCustomModal";
+
+const SingleMessage = ({ show, setShow, single, sendCustomer }) => {
   const { t } = useTranslation();
+
   //get role from redux
   const currentUser = useSelector(
     (state) => state.persistedReducer.auth?.currentUser
@@ -168,7 +172,7 @@ const SingleMessage = ({ single, sendCustomer }) => {
 
             setIsloading(false);
             if (res.data.status) {
-              document.querySelector("#customerMessageModal").click();
+              setShow(false);
               toast.success(t("successAlertSMS"));
             } else {
               toast.error(t("sendingProblem"));
@@ -183,117 +187,117 @@ const SingleMessage = ({ single, sendCustomer }) => {
     }
   };
   return (
-    <div
-      className="modal fade modal-dialog-scrollable "
-      id="customerMessageModal"
-      tabIndex="-1"
-      aria-labelledby="exampleModalLabel"
-      aria-hidden="true"
-    >
-      <div className="modal-dialog">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h5 className="modal-title" id="exampleModalLabel">
-              {data?.name} {t("sendingMessage")}
-            </h5>
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div className="modal-body">
-            {/* model body here */}
-            <form onSubmit={handleSubmit}>
-              <div className="mb-3">
-                {!data?.mobile && (
-                  <div className="d-flex justify-content-center align-items-center">
-                    <h5 className="text-center text-danger">
-                      {t("notFoundMobileNumber")}
-                    </h5>
-                    <ExclamationOctagonFill
-                      className="text-warning fs-5 ms-1"
-                      style={{ marginBottom: "10px" }}
-                    />
-                  </div>
-                )}
-                <div className="d-flex justify-content-between">
-                  <label
-                    htmlFor="exampleFormControlTextarea1"
-                    className="form-label fw-bold mb-0"
-                  >
-                    {t("message")}
-                  </label>
-                  <div className="smsCount mt-0">
-                    <span className="smsLength">
-                      {t("letter")} {messageLength.length}
-                    </span>
-                    <span>SMS: {smsAmount}</span>
-                  </div>
-                </div>
-                <textarea
-                  className="form-control"
-                  id="exampleFormControlTextarea1"
-                  rows="3"
-                  placeholder={t("messageLikhun")}
-                  onChange={handleChange}
-                  onBlur={hadleRequired}
-                ></textarea>
-                <div id="emailHelp" className="form-text text-danger">
-                  {errMsg}
-                </div>
-                <div
-                  className="message-sending-type mt-3"
-                  style={{ fontWeight: "normal" }}
-                >
-                  <h4 className="mb-0"> {t("sendingMessageType")} </h4>
+    <>
+      <ComponentCustomModal
+        show={show}
+        setShow={setShow}
+        centered={false}
+        size={"md"}
+        header={data?.name + " " + t("sendingMessage")}
+      >
+        <form onSubmit={handleSubmit}>
+          <div className="mb-3">
+            {!data?.mobile && (
+              <div className="d-flex justify-content-center align-items-center">
+                <h5 className="text-center text-danger">
+                  {t("notFoundMobileNumber")}
+                </h5>
+                <ExclamationOctagonFill
+                  className="text-warning fs-5 ms-1"
+                  style={{ marginBottom: "10px" }}
+                />
+              </div>
+            )}
+            <div className="d-flex justify-content-between">
+              <label
+                htmlFor="exampleFormControlTextarea1"
+                className="form-label fw-bold mb-0"
+              >
+                {t("message")}
+              </label>
+              <div className="smsCount mt-0">
+                <span className="smsLength">
+                  {t("letter")} {messageLength.length}
+                </span>
+                <span>SMS: {smsAmount}</span>
+              </div>
+            </div>
+
+            <textarea
+              className="form-control"
+              id="exampleFormControlTextarea1"
+              rows="3"
+              placeholder={t("messageLikhun")}
+              onChange={handleChange}
+              onBlur={hadleRequired}
+            ></textarea>
+
+            <div id="emailHelp" className="form-text text-danger">
+              {errMsg}
+            </div>
+
+            <div className="message-sending-type mt-3">
+              <h5 className="mb-0"> {t("sendingMessageType")} </h5>
+              <div className="d-flex align-items-center">
+                <div className="message_radio">
                   <input
-                    name="messageSendingType"
                     type="radio"
+                    id="non_Masking"
                     checked={sendingType === "nonMasking"}
                     value={"nonMasking"}
                     onChange={(event) => setSendingType(event.target.value)}
-                  />{" "}
-                  {t("nonMasking")}&nbsp; &nbsp;
+                  />
+
+                  <label htmlFor="non_Masking"> {t("nonMasking")}</label>
+                </div>
+
+                <div className="message_radio">
                   <input
-                    name="messageSendingType"
                     type="radio"
+                    id="_masking"
+                    checked={sendingType === "masking"}
                     value={"masking"}
                     onChange={(event) => setSendingType(event.target.value)}
-                  />{" "}
-                  {t("masking")}&nbsp; &nbsp;
+                  />
+
+                  <label htmlFor="_masking"> {t("masking")}</label>
+                </div>
+
+                <div className="message_radio">
                   <input
-                    name="messageSendingType"
                     type="radio"
+                    id="fixed_Number"
+                    checked={sendingType === "fixedNumber"}
                     value={"fixedNumber"}
                     onChange={(event) => setSendingType(event.target.value)}
-                  />{" "}
-                  {t("fixedNumber")}
+                  />
+
+                  <label htmlFor="fixed_Number"> {t("fixedNumber")}</label>
                 </div>
               </div>
-              <div className="modal-footer" style={{ border: "none" }}>
-                <button
-                  type="button"
-                  className="btn btn-secondary"
-                  data-bs-dismiss="modal"
-                  disabled={isLoading}
-                >
-                  {t("cancel")}
-                </button>
-                <button
-                  type="submit"
-                  className="btn btn-success"
-                  disabled={isLoading || !data?.mobile}
-                >
-                  {isLoading ? <Loader /> : t("sendMessage")}
-                </button>
-              </div>
-            </form>
+            </div>
           </div>
-        </div>
-      </div>
-    </div>
+
+          <div className="displayGrid1 float-end mt-2">
+            <button
+              type="button"
+              className="btn btn-secondary"
+              disabled={isLoading}
+              onClick={() => setShow(false)}
+            >
+              {t("cancel")}
+            </button>
+            <button
+              type="submit"
+              className="btn btn-success"
+              disabled={isLoading || !data?.mobile}
+            >
+              {isLoading ? <Loader /> : t("sendMessage")}
+            </button>
+          </div>
+        </form>
+      </ComponentCustomModal>
+    </>
   );
 };
 

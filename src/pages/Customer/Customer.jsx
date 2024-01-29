@@ -6,7 +6,6 @@ import {
   CardChecklist,
   CashStack,
   ChatText,
-  CurrencyDollar,
   FileExcelFill,
   FiletypeCsv,
   FilterCircle,
@@ -23,6 +22,8 @@ import {
   PencilSquare,
   Phone,
   GeoAlt,
+  FileEarmarkBarGraph,
+  FileEarmark,
 } from "react-bootstrap-icons";
 import { CSVLink } from "react-csv";
 import moment from "moment";
@@ -44,6 +45,7 @@ import {
 import {
   editCustomer,
   fetchMikrotik,
+  fetchReseller,
   getArea,
   getCollector,
   getCustomer,
@@ -284,6 +286,9 @@ const PPPOECustomer = () => {
 
     // get ispOwner all staffs
     getOwnerUsers(dispatch, ispOwnerId);
+
+    // get reseller api
+    fetchReseller(dispatch, ispOwnerId, setCollectorLoading);
 
     // bulletin get apipppoeCustomerOption
     Object.keys(bulletinPagePermission)?.length === 0 &&
@@ -807,7 +812,7 @@ const PPPOECustomer = () => {
                   >
                     <div className="dropdown-item">
                       <div className="customerAction">
-                        <CurrencyDollar />
+                        <CashStack />
                         <p className="actionP">{t("recharge")}</p>
                       </div>
                     </div>
@@ -832,25 +837,25 @@ const PPPOECustomer = () => {
                 )}
 
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#showCustomerReport"
                   onClick={() => {
                     setCustomerData(original);
+                    setModalStatus("report");
+                    setShowModal(true);
                   }}
                 >
                   <div className="dropdown-item">
                     <div className="customerAction">
-                      <CashStack />
+                      <FileEarmarkBarGraph />
                       <p className="actionP">{t("report")}</p>
                     </div>
                   </div>
                 </li>
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#customerNote"
                   onClick={() => {
                     setCustomerNoteId(original.id);
                     setCustomerName(original?.name);
+                    setModalStatus("note");
+                    setShowModal(true);
                   }}
                 >
                   <div className="dropdown-item">
@@ -863,10 +868,10 @@ const PPPOECustomer = () => {
 
                 {(permissions?.customerDelete || role === "ispOwner") && (
                   <li
-                    data-bs-toggle="modal"
-                    data-bs-target="#customerDelete"
                     onClick={() => {
                       customerDelete(original.id);
+                      setModalStatus("delete");
+                      setShowModal(true);
                     }}
                   >
                     <div className="dropdown-item">
@@ -880,10 +885,10 @@ const PPPOECustomer = () => {
 
                 {permissions?.sendSMS || role !== "collector" ? (
                   <li
-                    data-bs-toggle="modal"
-                    data-bs-target="#customerMessageModal"
                     onClick={() => {
                       getSpecificCustomer(original.id);
+                      setModalStatus("message");
+                      setShowModal(true);
                     }}
                   >
                     <div className="dropdown-item">
@@ -899,10 +904,10 @@ const PPPOECustomer = () => {
                 {role === "ispOwner" &&
                   ispOwnerData?.bpSettings?.hasReseller && (
                     <li
-                      data-bs-toggle="modal"
-                      data-bs-target="#transferToReseller"
                       onClick={() => {
                         getSpecificCustomer(original.id);
+                        setModalStatus("resellerTransfer");
+                        setShowModal(true);
                       }}
                     >
                       <div className="dropdown-item">
@@ -926,9 +931,11 @@ const PPPOECustomer = () => {
                   )} */}
 
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#createSupportTicket"
-                  onClick={() => setSingleCustomer(original)}
+                  onClick={() => {
+                    setSingleCustomer(original);
+                    setModalStatus("supportTicket");
+                    setShowModal(true);
+                  }}
                 >
                   <div className="dropdown-item">
                     <div className="customerAction">
@@ -954,25 +961,24 @@ const PPPOECustomer = () => {
                     </div>
                   </li>
                 )}
-                {(role === "ispOwner" && bpSettings?.customerInvoice) ||
-                (role === "manager" && permissions?.customerInvoice) ? (
+
+                {((role === "ispOwner" && bpSettings?.customerInvoice) ||
+                  (role === "manager" && permissions?.customerInvoice)) && (
                   <li
-                    data-bs-toggle="modal"
-                    data-bs-target="#createInvoiceModal"
                     onClick={() => {
                       getSpecificCustomer(original.id);
                       setCustomerData(original);
+                      setModalStatus("invoice");
+                      setShowModal(true);
                     }}
                   >
                     <div className="dropdown-item">
                       <div className="customerAction">
-                        <CurrencyDollar />
+                        <FileEarmark />
                         <p className="actionP">{t("invoice")}</p>
                       </div>
                     </div>
                   </li>
-                ) : (
-                  ""
                 )}
               </ul>
             </div>
@@ -1654,23 +1660,67 @@ const PPPOECustomer = () => {
       )}
 
       {/* customer report modal  */}
-      <CustomerReport single={customerData} />
+      {modalStatus === "report" && (
+        <CustomerReport
+          show={showModal}
+          setShow={setShowModal}
+          single={customerData}
+        />
+      )}
 
       {/* customer note modal */}
-      <CustomerNote customerId={customerNoteId} customerName={customerName} />
+      {modalStatus === "note" && (
+        <CustomerNote
+          show={showModal}
+          setShow={setShowModal}
+          customerId={customerNoteId}
+          customerName={customerName}
+        />
+      )}
 
       {/* customer delete modal  */}
-      <CustomerDelete
-        single={customerId}
-        mikrotikCheck={checkMikrotik}
-        setMikrotikCheck={setMikrotikCheck}
-        status="customerDelete"
-      />
+      {modalStatus === "delete" && (
+        <CustomerDelete
+          show={showModal}
+          setShow={setShowModal}
+          single={customerId}
+          mikrotikCheck={checkMikrotik}
+          setMikrotikCheck={setMikrotikCheck}
+          status="pppoe"
+        />
+      )}
+
       {/* single message send modal  */}
-      <SingleMessage single={customerId} sendCustomer="customer" />
+      {modalStatus === "message" && (
+        <SingleMessage
+          show={showModal}
+          setShow={setShowModal}
+          single={customerId}
+          sendCustomer="customer"
+        />
+      )}
 
       {/* transferReseller modal */}
-      <TransferToReseller customerId={customerId} />
+      {modalStatus === "resellerTransfer" && (
+        <TransferToReseller
+          show={showModal}
+          setShow={setShowModal}
+          customerId={customerId}
+          page="pppoe"
+        />
+      )}
+
+      {/* customer support ticket modal */}
+      {modalStatus === "supportTicket" && (
+        <CreateSupportTicket
+          show={showModal}
+          setShow={setShowModal}
+          collectors={collectors}
+          manager={manager}
+          customer={singleCustomer}
+          ispOwner={ispOwnerId}
+        />
+      )}
 
       {/* password reset modal */}
       {modalStatus === "passwordReset" && (
@@ -1682,19 +1732,19 @@ const PPPOECustomer = () => {
       )}
 
       {/* create temp invoice */}
-      <CreateInvoice single={customerId} customerData={customerData} />
+      {modalStatus === "invoice" && (
+        <CreateInvoice
+          show={showModal}
+          setShow={setShowModal}
+          single={customerId}
+          customerData={customerData}
+        />
+      )}
 
       <BandwidthModal
         setModalShow={setBandWidthModal}
         modalShow={bandWidthModal}
         customerId={customerId}
-      />
-      <CreateSupportTicket
-        collectors={collectors}
-        manager={manager}
-        customer={singleCustomer}
-        ispOwner={ispOwnerId}
-        reseller=""
       />
 
       {/* customers number update or delete modal */}

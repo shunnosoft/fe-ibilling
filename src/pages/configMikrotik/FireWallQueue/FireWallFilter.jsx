@@ -3,13 +3,15 @@ import {
   ArchiveFill,
   PenFill,
   PencilFill,
-  PersonCheckFill,
   PersonLinesFill,
   ThreeDots,
 } from "react-bootstrap-icons";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import moment from "moment";
+
+// internal import
 import FireWallFIlterDrop from "./FireWallFIlterDrop";
 import {
   getFireWallIpDrop,
@@ -23,18 +25,24 @@ import Table from "../../../components/table/Table";
 import { badge } from "../../../components/common/Utils";
 import FireWallFilterIpUpdate from "./FireWallFilterIpUpdate";
 import FireWallFilterIpDelete from "./FireWallFilterIpDelete";
-import TdLoader from "../../../components/common/TdLoader";
-import moment from "moment";
 
 const FireWallFilter = () => {
   const { t } = useTranslation();
-  const { ispOwner, mikrotikId } = useParams();
   const dispatch = useDispatch();
+
+  // get params
+  const { ispOwner, mikrotikId } = useParams();
+
+  //get all mikrotik
+  const mikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
 
   // get fire wall ip filter drop
   const fireWallIpFilterDrop = useSelector(
     (state) => state.customer?.fireWallFilterDrop
   );
+
+  //single mikrotik
+  const configMikrotik = mikrotik.find((mtk) => mtk.id === mikrotikId);
 
   //loading state
   const [isLoading, setIsLoading] = useState(false);
@@ -53,11 +61,9 @@ const FireWallFilter = () => {
   // api call change handler
   const [apiCall, setApiCall] = useState("");
 
-  //get all mikrotik
-  const mikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
-
-  //single mikrotik
-  const configMikrotik = mikrotik.find((mtk) => mtk.id === mikrotikId);
+  // modal close handler
+  const [modalStatus, setModalStatus] = useState("");
+  const [show, setShow] = useState(false);
 
   //sync simple queue to fire wall filter handler
   const syncSimpleQueueToFirewallFilterRuleHandler = () => {
@@ -154,9 +160,12 @@ const FireWallFilter = () => {
               />
               <ul className="dropdown-menu" aria-labelledby="customerDrop">
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#fireWallFilterIpDropUpdate"
-                  onClick={() => fireWallFilterIpUpdateHandler(original)}
+                  d
+                  onClick={() => {
+                    fireWallFilterIpUpdateHandler(original);
+                    setModalStatus("dropIPEdit");
+                    setShow(true);
+                  }}
                 >
                   <div className="dropdown-item">
                     <div className="customerAction">
@@ -167,9 +176,11 @@ const FireWallFilter = () => {
                 </li>
 
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#fireWallFilterIpDropDelete"
-                  onClick={() => fireWallFilterIpDeleteHandler(original)}
+                  onClick={() => {
+                    fireWallFilterIpDeleteHandler(original);
+                    setModalStatus("dropIPDelete");
+                    setShow(true);
+                  }}
                 >
                   <div className="dropdown-item">
                     <div className="customerAction">
@@ -188,7 +199,6 @@ const FireWallFilter = () => {
   );
 
   // fire wall filter all ip drop delete and reset api call handler
-
   useEffect(() => {
     if (apiCall === "removeRequest" && fireWallIpFilterDrop.length) {
       removeFireWallAllIpDrop(dispatch, setIpLoading, ispOwner, mikrotikId);
@@ -248,10 +258,12 @@ const FireWallFilter = () => {
 
               <div className="">
                 <button
-                  data-bs-toggle="modal"
-                  data-bs-target="#fireWallIpFilter"
                   title="Block Ip"
                   className="btn btn-outline-primary my-2"
+                  onClick={() => {
+                    setModalStatus("IPDrop");
+                    setShow(true);
+                  }}
                 >
                   {t("fireWallIpFilterDrop")} &nbsp;
                   <PencilFill />
@@ -287,13 +299,36 @@ const FireWallFilter = () => {
           </div>
         </div>
       </div>
-      <FireWallFIlterDrop ispOwner={ispOwner} mikrotikId={mikrotikId} />
-      <FireWallFilterIpUpdate updateIp={updateIp} />
-      <FireWallFilterIpDelete
-        deleteIp={deleteIp}
-        mikrotikCheck={mikrotikCheck}
-        setMikrotikCheck={setMikrotikCheck}
-      />
+
+      {/* fire wall filter ip drop */}
+      {modalStatus === "IPDrop" && (
+        <FireWallFIlterDrop
+          show={show}
+          setShow={setShow}
+          ispOwner={ispOwner}
+          mikrotikId={mikrotikId}
+        />
+      )}
+
+      {/* fire wall filter ip update */}
+      {modalStatus === "dropIPEdit" && (
+        <FireWallFilterIpUpdate
+          show={show}
+          setShow={setShow}
+          updateIp={updateIp}
+        />
+      )}
+
+      {/* fire wall filter ip delete */}
+      {modalStatus === "dropIPDelete" && (
+        <FireWallFilterIpDelete
+          show={show}
+          setShow={setShow}
+          deleteIp={deleteIp}
+          mikrotikCheck={mikrotikCheck}
+          setMikrotikCheck={setMikrotikCheck}
+        />
+      )}
     </>
   );
 };

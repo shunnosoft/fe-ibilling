@@ -1,11 +1,16 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
+
+// internal import
 import Loader from "../../../components/common/Loader";
 import { deleteACustomer } from "../../../features/apiCalls";
-import { useTranslation } from "react-i18next";
 import { deleteResellerCustomer } from "../../../features/apiCallReseller";
+import ComponentCustomModal from "../../../components/common/customModal/ComponentCustomModal";
 
 const CustomerDelete = ({
+  show,
+  setShow,
   single,
   mikrotikCheck,
   setMikrotikCheck,
@@ -27,7 +32,7 @@ const CustomerDelete = ({
 
   // get all customer
   const customers = useSelector((state) =>
-    status === "customerDelete"
+    status === "pppoe"
       ? state?.customer?.customer
       : state?.customer?.staticCustomer
   );
@@ -51,6 +56,7 @@ const CustomerDelete = ({
       ispID: ispOwnerId,
       customerID: customerId,
       mikrotik: mikrotikCheck,
+      userType: singleData.userType,
     };
 
     const resellerCusData = {
@@ -58,83 +64,62 @@ const CustomerDelete = ({
       customerID: customerId,
       mikrotik: mikrotikCheck,
     };
+
     // api call
     if (checkCondition && page !== "reseller") {
-      deleteACustomer(dispatch, data, setIsLoading);
+      deleteACustomer(dispatch, data, setIsLoading, null, setShow);
     } else {
       deleteResellerCustomer(dispatch, resellerCusData, setIsLoading);
     }
   };
 
   return (
-    <div
-      className="modal fade"
-      id="customerDelete"
-      tabIndex="-1"
-      aria-labelledby="customerModalDetails"
-      aria-hidden="true"
-    >
-      <div className="modal-dialog ">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h5
-              style={{ color: "#0abb7a" }}
-              className="modal-title"
-              id="customerModalDetails"
-            >
-              {t("customerDelete")}
-            </h5>
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div className="modal-body">
-            <h5>
-              {singleData?.name} {t("deleteCustomer")}
-            </h5>
-            {bpSettings?.hasMikrotik && (
-              <div class="form-check mt-4">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  checked={mikrotikCheck}
-                  id="flexCheckDefault"
-                  onChange={(event) => setMikrotikCheck(event.target.checked)}
-                />
-                <label class="form-check-label" htmlFor="flexCheckDefault">
-                  <small className="text-secondary">
-                    {t("deleteMikrotik")}
-                  </small>
-                </label>
-              </div>
-            )}
+    <>
+      <ComponentCustomModal
+        show={show}
+        setShow={setShow}
+        centered={false}
+        size={"md"}
+        header={singleData?.name + " " + t("customerDelete")}
+      >
+        {bpSettings?.hasMikrotik && (
+          <div class="form-check">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              checked={mikrotikCheck}
+              id="customerDelete"
+              onChange={(event) => setMikrotikCheck(event.target.checked)}
+            />
 
-            <div className="modal-footer" style={{ border: "none" }}>
-              <button
-                type="button"
-                className="btn btn-secondary"
-                data-bs-dismiss="modal"
-                disabled={isLoading}
-              >
-                {t("cancel")}
-              </button>
-              <button
-                onClick={() => {
-                  deleteCustomer(single);
-                }}
-                className="btn btn-success"
-                disabled={isLoading}
-              >
-                {isLoading ? <Loader /> : t("delete")}
-              </button>
-            </div>
+            <label class="form-check-label" htmlFor="customerDelete">
+              <small className="text-secondary">{t("deleteMikrotik")}</small>
+            </label>
           </div>
+        )}
+
+        <div className="displayGrid1 float-end mt-4">
+          <button
+            type="button"
+            className="btn btn-secondary"
+            disabled={isLoading}
+            onClick={() => setShow(false)}
+          >
+            {t("cancel")}
+          </button>
+
+          <button
+            onClick={() => {
+              deleteCustomer(single);
+            }}
+            className="btn btn-success"
+            disabled={isLoading}
+          >
+            {isLoading ? <Loader /> : t("delete")}
+          </button>
         </div>
-      </div>
-    </div>
+      </ComponentCustomModal>
+    </>
   );
 };
 

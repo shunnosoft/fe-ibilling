@@ -2,22 +2,30 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
+
+// internal import
 import {
   createSupportTicketApi,
   getTicketCategoryApi,
 } from "../../features/supportTicketApi";
 import Loader from "../common/Loader";
+import ComponentCustomModal from "../common/customModal/ComponentCustomModal";
 
 const CreateSupportTicket = ({
+  show,
+  setShow,
   customer,
   collectors,
   manager,
   ispOwner,
-  reseller,
 }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+
+  // get user role form redux
   const role = useSelector((state) => state.persistedReducer.auth?.role);
+
+  // get user data form redux store
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
 
   //get ticket category
@@ -61,10 +69,7 @@ const CreateSupportTicket = ({
       ticketType: supportTicket.ticketType,
       ticketCategory: supportTicket.ticketCategory,
       assignedStaff: supportTicket.assignPerson,
-
-      // ...(customer?.reseller ? { reseller } : { ispOwner }),
       customer: customer.id,
-      // ...(role === "collector" && { assignedStaff: userData.user }),
     };
 
     if (role === "ispOwner") data.ispOwner = ispOwner;
@@ -96,123 +101,95 @@ const CreateSupportTicket = ({
       delete data.ticketCategory;
     }
 
-    createSupportTicketApi(dispatch, data, setLoading);
+    createSupportTicketApi(dispatch, data, setLoading, setShow);
   };
 
   return (
-    <div
-      className="modal fade modal-dialog-scrollable "
-      id="createSupportTicket"
-      tabIndex="-1"
-      aria-labelledby="createSupportTicket"
-      aria-hidden="true"
-    >
-      <div className="modal-dialog">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h4 className="modal-title" id="createSupportTicket">
-              {t("createSupportTicket")}
-            </h4>
-            <button
-              type="button"
-              className="btn-close"
-              id="closeAddManagerBtn"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
+    <>
+      <ComponentCustomModal
+        show={show}
+        setShow={setShow}
+        centered={false}
+        size={"md"}
+        header={t("createSupportTicket")}
+      >
+        <div className="displayGrid">
+          <div>
+            <label className="text-secondary">{t("enterSupportText")}</label>
+            <input
+              className="form-control mw-100"
+              type="text"
+              name="message"
+              onChange={onChangeHandler}
+              value={supportTicket.message}
+            />
           </div>
-          <div className="modal-body">
-            <div className="input-group mb-3">
-              <div className="w-100">
-                <label className="text-secondary" htmlFor="message">
-                  {t("enterSupportText")}
-                </label>
-                <input
-                  className="form-control mw-100"
-                  type="text"
-                  name="message"
-                  id="message"
-                  onChange={onChangeHandler}
-                  value={supportTicket.message}
-                />
-              </div>
 
-              <>
-                {role !== "collector" && (
-                  <div className="w-100 mt-3">
-                    <label className="text-secondary" htmlFor="assignedPerson">
-                      {t("selectStaff")}
-                    </label>
-                    <select
-                      name="assignPerson"
-                      id="assignedPerson"
-                      onChange={onChangeHandler}
-                      className="form-select mt-0 mw-100"
-                    >
-                      <option value="">...</option>
-                      {role === "ispOwner" &&
-                        manager &&
-                        manager?.map((man) => (
-                          <option value={man?.user}>
-                            {man.name} (Manager)
-                          </option>
-                        ))}
-
-                      {collectors &&
-                        collectors.map((item) => (
-                          <option value={item?.user}>{item.name}</option>
-                        ))}
-                    </select>
-                  </div>
-                )}
-
-                <div className="w-100 mt-3">
-                  <label className="text-secondary" htmlFor="ticketType">
-                    {t("selectTicketType")}
-                  </label>
-                  <select
-                    name="ticketType"
-                    id="ticketType"
-                    onChange={onChangeHandler}
-                    className="form-select mt-0 mw-100"
-                  >
-                    <option value="">...</option>
-                    <option value="high">{t("High")}</option>
-                    <option value="medium">{t("Medium")}</option>
-                    <option value="low">{t("Low")}</option>
-                  </select>
-                </div>
-
-                <div className="w-100 mt-3">
-                  <label className="text-secondary" htmlFor="ticketCategory">
-                    {t("selectTicketCategory")}
-                  </label>
-                  <select
-                    name="ticketCategory"
-                    id="ticketCategory"
-                    onChange={onChangeHandler}
-                    className="form-select mt-0 mw-100"
-                  >
-                    <option value="">...</option>
-                    {allTicketCategory &&
-                      allTicketCategory.map((item) => (
-                        <option value={item?.id}>{item.name}</option>
-                      ))}
-                  </select>
-                </div>
-              </>
-
-              <button
-                className="btn btn-success ms-auto shadow-none mt-3"
-                onClick={createSupportTicketHandler}
+          {role !== "collector" && (
+            <div>
+              <label className="text-secondary">{t("selectStaff")}</label>
+              <select
+                name="assignPerson"
+                onChange={onChangeHandler}
+                className="form-select mt-0 mw-100"
               >
-                {loading ? <Loader /> : t("submit")}
-              </button>
+                <option value="">...</option>
+                {role === "ispOwner" &&
+                  manager &&
+                  manager?.map((man) => (
+                    <option value={man?.user}>{man.name} (Manager)</option>
+                  ))}
+
+                {collectors &&
+                  collectors.map((item) => (
+                    <option value={item?.user}>{item.name}</option>
+                  ))}
+              </select>
             </div>
+          )}
+
+          <div>
+            <label className="text-secondary">{t("selectTicketType")}</label>
+
+            <select
+              name="ticketType"
+              onChange={onChangeHandler}
+              className="form-select mt-0 mw-100"
+            >
+              <option value="">...</option>
+              <option value="high">{t("High")}</option>
+              <option value="medium">{t("Medium")}</option>
+              <option value="low">{t("Low")}</option>
+            </select>
           </div>
+
+          <div>
+            <label className="text-secondary">
+              {t("selectTicketCategory")}
+            </label>
+
+            <select
+              name="ticketCategory"
+              onChange={onChangeHandler}
+              className="form-select mt-0 mw-100"
+            >
+              <option value="">...</option>
+              {allTicketCategory &&
+                allTicketCategory.map((item) => (
+                  <option value={item?.id}>{item.name}</option>
+                ))}
+            </select>
+          </div>
+
+          <button
+            className="btn btn-success ms-auto shadow-none mt-3"
+            onClick={createSupportTicketHandler}
+          >
+            {loading ? <Loader /> : t("submit")}
+          </button>
         </div>
-      </div>
-    </div>
+      </ComponentCustomModal>
+    </>
   );
 };
 

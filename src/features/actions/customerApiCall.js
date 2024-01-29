@@ -1,7 +1,10 @@
 import { toast } from "react-toastify";
 import apiLink from "../../api/apiLink";
 import { getPoleBoxSuccess, getSubareas } from "../areaSlice";
-import { deleteCustomerSuccess } from "../customerSlice";
+import {
+  deleteCustomerSuccess,
+  deleteStaticCustomerSuccess,
+} from "../customerSlice";
 
 export const getSubAreasApi = async (dispatch, ispOwnerId) => {
   try {
@@ -26,7 +29,8 @@ export const getPoleBoxApi = async (dispatch, ispOwnerId, setIsLoading) => {
 export const transferToResellerApi = async (
   dispatch,
   customer,
-  setIsLoading
+  setIsLoading,
+  setShow
 ) => {
   setIsLoading(true);
   try {
@@ -34,12 +38,17 @@ export const transferToResellerApi = async (
       `/ispOwner/customer/${customer.ispOwner}/${customer.id}`,
       customer
     );
-    dispatch(deleteCustomerSuccess(res.data.id));
-    document.getElementById("transferToReseller").click();
+
+    // transfer customer from owner
+    if (res.data.userType === "pppoe") {
+      dispatch(deleteCustomerSuccess(res.data.id));
+    } else {
+      dispatch(deleteStaticCustomerSuccess(res.data.id));
+    }
+    setShow(false);
     toast.success("Customer Transfered to reseller");
   } catch (error) {
     toast.error("Failed to transfer");
-    console.log(error);
   }
   setIsLoading(false);
 };

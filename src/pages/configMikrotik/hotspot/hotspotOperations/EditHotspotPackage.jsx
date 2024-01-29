@@ -1,16 +1,18 @@
 import { Form, Formik } from "formik";
 import React, { useState } from "react";
-import { FtextField } from "../../../../components/common/FtextField";
-import { useTranslation } from "react-i18next";
 import * as Yup from "yup";
 import { useSelector } from "react-redux";
-import Loader from "../../../../components/common/Loader";
+import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
+
+// internal import
+import { FtextField } from "../../../../components/common/FtextField";
+import Loader from "../../../../components/common/Loader";
 import { hotspotPackageEdit } from "../../../../features/hotspotApi";
+import ComponentCustomModal from "../../../../components/common/customModal/ComponentCustomModal";
 
-const EditHotspotPackage = ({ packageId }) => {
+const EditHotspotPackage = ({ show, setShow, packageId }) => {
   const { t } = useTranslation();
-
   const dispatch = useDispatch();
 
   //validator
@@ -37,73 +39,66 @@ const EditHotspotPackage = ({ packageId }) => {
     };
 
     // edit api call
-    hotspotPackageEdit(dispatch, mikrotikId, packageId, data, setEditLoading);
+    hotspotPackageEdit(
+      dispatch,
+      mikrotikId,
+      packageId,
+      data,
+      setEditLoading,
+      setShow
+    );
   };
 
   return (
-    <div
-      className="modal fade modal-dialog-scrollable "
-      id="hotspotPackageEdit"
-      tabIndex="-1"
-      aria-labelledby="exampleModalLabel"
-      aria-hidden="true"
-    >
-      <div className="modal-dialog">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h5 className="modal-title" id="exampleModalLabel">
-              {data?.name} - {t("rateEdit")}
-            </h5>
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div className="modal-body">
-            <Formik
-              initialValues={{
-                rate: data?.rate || "",
-              }}
-              validationSchema={pppoeValidator}
-              onSubmit={(values) => {
-                editHotspotPackage(values);
-              }}
-              enableReinitialize
-            >
-              {() => (
-                <Form>
-                  <FtextField
-                    min={0}
-                    type="number"
-                    label={t("packageRate")}
-                    name="rate"
-                  />
+    <>
+      <ComponentCustomModal
+        show={show}
+        setShow={setShow}
+        centered={false}
+        size={"md"}
+        header={data?.name + " " + t("rateEdit")}
+      >
+        <Formik
+          initialValues={{
+            rate: data?.rate || "",
+          }}
+          validationSchema={pppoeValidator}
+          onSubmit={(values) => {
+            editHotspotPackage(values);
+          }}
+          enableReinitialize
+        >
+          {() => (
+            <Form>
+              <FtextField
+                min={0}
+                type="number"
+                label={t("packageRate")}
+                name="rate"
+              />
 
-                  <div className="modal-footer">
-                    <button
-                      type="button"
-                      className="btn btn-secondary"
-                      data-bs-dismiss="modal"
-                    >
-                      {t("cancel")}
-                    </button>
-                    <button
-                      type="submit"
-                      className="btn btn-success customBtn"
-                      disabled={editLoading}
-                    >
-                      {editLoading ? <Loader /> : t("save")}
-                    </button>
-                  </div>
-                </Form>
-              )}
-            </Formik>
-          </div>
-        </div>
-      </div>
-    </div>
+              <div className="displayGrid1 float-end mt-4">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => setShow(false)}
+                >
+                  {t("cancel")}
+                </button>
+
+                <button
+                  type="submit"
+                  className="btn btn-success customBtn"
+                  disabled={editLoading}
+                >
+                  {editLoading ? <Loader /> : t("save")}
+                </button>
+              </div>
+            </Form>
+          )}
+        </Formik>
+      </ComponentCustomModal>
+    </>
   );
 };
 

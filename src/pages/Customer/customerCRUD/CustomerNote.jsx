@@ -6,11 +6,14 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { toast, ToastContainer } from "react-toastify";
 import { useTranslation } from "react-i18next";
+
+// internal import
 import Loader from "../../../components/common/Loader";
 import { addCustomerNote, getCustomerNotes } from "../../../features/apiCalls";
 import { getOwnerUsers } from "../../../features/getIspOwnerUsersApi";
+import ComponentCustomModal from "../../../components/common/customModal/ComponentCustomModal";
 
-const CustomerNote = ({ customerId, customerName }) => {
+const CustomerNote = ({ show, setShow, customerId, customerName }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
@@ -67,7 +70,7 @@ const CustomerNote = ({ customerId, customerName }) => {
         customerId,
         note: addNote,
       };
-      addCustomerNote(dispatch, setIsLoading, data);
+      addCustomerNote(dispatch, setIsLoading, data, setShow);
       setAddNote("");
     } else {
       toast.error(t("noteFieldRequired"));
@@ -84,104 +87,85 @@ const CustomerNote = ({ customerId, customerName }) => {
   return (
     <>
       <ToastContainer theme="colored" />
-      <div
-        className="modal fade modal-dialog-scrollable "
-        id="customerNote"
-        tabIndex="-1"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
+      <ComponentCustomModal
+        show={show}
+        setShow={setShow}
+        centered={false}
+        size={"xl"}
+        header={customerName}
       >
-        <div className="modal-dialog modal-xl">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title text-primary" id="exampleModalLabel">
-                {customerName}
-              </h5>
-              <div className="d-flex">
-                <button
-                  onClick={handleSubmit}
-                  type="submit"
-                  className="btn btn-sm btn-outline-success"
-                  disabled={isLoading}
-                >
-                  {isLoading ? <Loader /> : t("submit")}
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-sm btn-outline-secondary ms-3"
-                  data-bs-dismiss="modal"
-                  disabled={isLoading}
-                >
-                  {t("cancel")}
-                </button>
-              </div>
-            </div>
-            <div className="modal-body">
-              {/* model body here */}
-
-              {notes?.length > 0 ? (
+        {notes?.length > 0 ? (
+          <>
+            <div
+              className="noteList container"
+              style={{
+                height: "48vh",
+                overflowY: "auto",
+              }}
+            >
+              {notes.map((data, key) => (
                 <>
-                  <div
-                    className="noteList container"
-                    style={{
-                      height: "48vh",
-                      overflowY: "auto",
-                    }}
-                  >
-                    {notes.map((data, key) => (
-                      <>
-                        <div className="comment-show">
-                          <div className="">
-                            <h5 className="mb-0">
-                              <b>{performerName(data?.addedBy)}</b>
-                            </h5>
+                  <div className="comment-show">
+                    <div className="">
+                      <h5 className="mb-0">
+                        <b>{performerName(data?.addedBy)}</b>
+                      </h5>
 
-                            <small className="text-secondary">
-                              <i>
-                                {moment(data.createdAt).format(
-                                  "MMM DD YYYY hh:mm A"
-                                )}
-                              </i>
-                            </small>
-                          </div>
-                          {/* <div className="d-flex">
-                            <h5 className="mb-1">
-                              {moment(data.createdAt).format(
-                                "MMM DD YYYY hh:mm:ss A"
-                              )}
-                            </h5>
-                          </div> */}
-                          <p className="">{data?.note}</p>
-                        </div>
-                        <br />
-                      </>
-                    ))}
+                      <small className="text-secondary">
+                        <i>
+                          {moment(data.createdAt).format("MMM DD YYYY hh:mm A")}
+                        </i>
+                      </small>
+                    </div>
+
+                    <p className="">{data?.note}</p>
                   </div>
+                  <br />
                 </>
-              ) : (
-                <div className="text-center">{t("dataNotAvailable")}</div>
-              )}
-              <hr />
-              <form>
-                <div class="mb-3">
-                  <textarea
-                    class="form-control"
-                    id="exampleFormControlTextarea1"
-                    rows="3"
-                    placeholder="Note"
-                    onChange={handleChange}
-                    onBlur={handleRequired}
-                    value={addNote}
-                  ></textarea>
-                  <div id="emailHelp" class="form-text text-danger">
-                    {errMsg}
-                  </div>
-                </div>
-              </form>
+              ))}
+            </div>
+          </>
+        ) : (
+          <div className="text-center">{t("dataNotAvailable")}</div>
+        )}
+        <hr />
+        <form>
+          <div class="mb-3">
+            <textarea
+              class="form-control"
+              id="exampleFormControlTextarea1"
+              rows="3"
+              placeholder="Note"
+              onChange={handleChange}
+              onBlur={handleRequired}
+              value={addNote}
+            ></textarea>
+            <div id="emailHelp" class="form-text text-danger">
+              {errMsg}
             </div>
           </div>
-        </div>
-      </div>
+
+          <div className="displayGrid1 float-end mt-2">
+            <button
+              onClick={handleSubmit}
+              type="submit"
+              className="btn btn-sm btn-outline-success"
+              disabled={isLoading}
+            >
+              {isLoading ? <Loader /> : t("submit")}
+            </button>
+
+            <button
+              type="button"
+              className="btn btn-sm btn-outline-secondary"
+              disabled={isLoading}
+              onClick={() => setShow(false)}
+            >
+              {t("cancel")}
+            </button>
+          </div>
+        </form>
+      </ComponentCustomModal>
     </>
   );
 };

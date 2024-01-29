@@ -5,12 +5,17 @@ import { useTranslation } from "react-i18next";
 import "../../../Customer/customer.css";
 import CustomerBillCollect from "../CustomerBillCollect";
 import { getConnectionFee } from "../../../../features/apiCalls";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 
 const RechargeCustomer = ({ show, setShow, single, customerData }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+
+  // get customer connection fee due form redux store
+  const paidConnectionFee = useSelector(
+    (state) => state.customer.connectionFeeDue
+  );
 
   // get api calls
   useEffect(() => {
@@ -76,6 +81,30 @@ const RechargeCustomer = ({ show, setShow, single, customerData }) => {
                   <td>{t("balance")}</td>
                   <td className="text-info">
                     <b>{customerData?.balance}</b>
+                  </td>
+                </tr>
+                <tr>
+                  <td>{t("connectionFee")}</td>
+                  <td>
+                    <b>
+                      {customerData?.connectionFee
+                        ? customerData?.connectionFee
+                        : 0}
+                    </b>
+                  </td>
+                  <td>{t("connectionFeeDue")}</td>
+                  <td>
+                    <b
+                      className={
+                        customerData?.connectionFee - paidConnectionFee
+                          ? "text-danger"
+                          : "text-success"
+                      }
+                    >
+                      {customerData?.connectionFee
+                        ? customerData?.connectionFee - paidConnectionFee
+                        : 0}
+                    </b>
                   </td>
                 </tr>
               </tbody>

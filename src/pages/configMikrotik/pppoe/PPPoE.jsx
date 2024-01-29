@@ -78,7 +78,6 @@ const PPPoE = () => {
   // modal close handler
   const [modalStatus, setModalStatus] = useState("");
   const [show, setShow] = useState(false);
-  console.log(show);
 
   // status filter
   const filterIt = (e) => {
@@ -423,20 +422,15 @@ const PPPoE = () => {
                       headers={customerForCsVTableInfoHeader}
                       title={t("mikrotikCustomerCsvDownload")}
                     >
-                      <span className="text-primary">{t("print")}</span>{" "}
+                      <span className="text-primary">{t("print")}</span>
                       <FileExcelFill className="text-primary" />
                     </CSVLink>
                   </button>
                   <br />
                 </>
               )}
+
               <button
-                // disabled={pppoePackage.some(
-                //   (i) =>
-                //     i.rate === 0 &&
-                //     i.name !== "default-encryption" &&
-                //     i.name !== "default"
-                // )}
                 onClick={syncPackage}
                 title={t("packageSync")}
                 className="btn btn-outline-primary mb-1"
@@ -454,11 +448,12 @@ const PPPoE = () => {
                   setShow(true);
                 }}
               >
-                {mtkIsLoading ? <Loader /> : t("customerSync")}{" "}
+                {mtkIsLoading ? <Loader /> : t("customerSync")}
                 <PersonCheckFill />
               </button>
             </div>
           </div>
+
           {showSection === "PPPoEPackage" && (
             <Table
               isLoading={packageLoading}
@@ -466,6 +461,7 @@ const PPPoE = () => {
               data={pppoePackage}
             ></Table>
           )}
+
           {showSection === "PPPoECustomer" && (
             <div className="table_section">
               <Table

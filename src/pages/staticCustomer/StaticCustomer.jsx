@@ -1,11 +1,7 @@
 import React, { useEffect, useState, useMemo } from "react";
-import "../collector/collector.css";
 import moment from "moment";
 import { CSVLink } from "react-csv";
-
 import { Link } from "react-router-dom";
-import useDash from "../../assets/css/dash.module.css";
-import Sidebar from "../../components/admin/sidebar/Sidebar";
 import {
   ThreeDots,
   ArchiveFill,
@@ -17,7 +13,6 @@ import {
   FileExcelFill,
   PrinterFill,
   ArrowClockwise,
-  CurrencyDollar,
   KeyFill,
   CardChecklist,
   Newspaper,
@@ -32,6 +27,8 @@ import {
   PencilSquare,
   Phone,
   GeoAlt,
+  FileEarmarkBarGraph,
+  FileEarmark,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -39,7 +36,13 @@ import { Accordion, Card, Collapse } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import DatePicker from "react-datepicker";
 
+// custom hooks
+import useISPowner from "../../hooks/useISPOwner";
+
 // internal imports
+import "../collector/collector.css";
+import useDash from "../../assets/css/dash.module.css";
+import Sidebar from "../../components/admin/sidebar/Sidebar";
 import Footer from "../../components/admin/footer/Footer";
 import { FontColor, FourGround } from "../../assets/js/theme";
 import CustomerDetails from "./customerCRUD/CustomerDetails";
@@ -54,12 +57,12 @@ import {
   getAllPackages,
   staticMACBinding,
   getQueuePackageByIspOwnerId,
+  fetchReseller,
 } from "../../features/apiCalls";
 import CustomerReport from "./customerCRUD/showCustomerReport";
 import { badge } from "../../components/common/Utils";
 import Table from "../../components/table/Table";
 import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
-import CustomerDelete from "./customerCRUD/StaticCustomerDelete";
 import AddStaticCustomer from "./customerCRUD/AddStaticCustomer";
 import BulkSubAreaEdit from "../Customer/customerCRUD/bulkOpration/bulkSubAreaEdit";
 import BulkBillingCycleEdit from "../Customer/customerCRUD/bulkOpration/bulkBillingCycleEdit";
@@ -74,7 +77,6 @@ import PasswordReset from "../../components/modals/passwordReset/PasswordReset";
 import CustomerNote from "./customerCRUD/CustomerNote";
 import CreateSupportTicket from "../../components/modals/CreateSupportTicket";
 import BulkCustomerTransfer from "../Customer/customerCRUD/bulkOpration/bulkCustomerTransfer";
-import TransferToReseller from "./customerCRUD/TransferToReseller";
 import {
   getPoleBoxApi,
   getSubAreasApi,
@@ -96,10 +98,11 @@ import {
   getCustomerDayLeft,
   getCustomerPromiseDate,
 } from "../Customer/customerCRUD/customerBillDayPromiseDate";
-import useISPowner from "../../hooks/useISPOwner";
 import { getOwnerUsers } from "../../features/getIspOwnerUsersApi";
+import CustomerDelete from "../Customer/customerCRUD/CustomerDelete";
+import TransferToReseller from "../Customer/customerCRUD/TransferToReseller";
 
-export default function Customer() {
+const Customer = () => {
   //call hooks
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -282,6 +285,9 @@ export default function Customer() {
 
     // get ispOwner all staffs
     getOwnerUsers(dispatch, ispOwnerId);
+
+    // get reseller api
+    fetchReseller(dispatch, ispOwnerId, setIsloading);
 
     // netFee bulletin get api call
     Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
@@ -944,10 +950,9 @@ export default function Customer() {
                     </div>
                   </div>
                 </li>
+
                 {(permissions?.billPosting || role === "ispOwner") && (
                   <li
-                    data-bs-toggle="modal"
-                    data-bs-target="#collectCustomerBillModal"
                     onClick={() => {
                       getSpecificCustomer(original.id);
                       getSpecificCustomerReport(original);
@@ -957,12 +962,13 @@ export default function Customer() {
                   >
                     <div className="dropdown-item">
                       <div className="customerAction">
-                        <CurrencyDollar />
+                        <CashStack />
                         <p className="actionP">{t("recharge")}</p>
                       </div>
                     </div>
                   </li>
                 )}
+
                 {(role === "ispOwner" || permissions.customerEdit) && (
                   <li
                     onClick={() => {
@@ -981,26 +987,26 @@ export default function Customer() {
                 )}
 
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#showCustomerReport"
                   onClick={() => {
                     getSpecificCustomerReport(original);
+                    setModalStatus("report");
+                    setShow(true);
                   }}
                 >
                   <div className="dropdown-item">
                     <div className="customerAction">
-                      <CashStack />
+                      <FileEarmarkBarGraph />
                       <p className="actionP">{t("report")}</p>
                     </div>
                   </div>
                 </li>
 
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#customerNote"
                   onClick={() => {
                     setCustomerNoteId(original.id);
                     setCustomerName(original?.name);
+                    setModalStatus("note");
+                    setShow(true);
                   }}
                 >
                   <div className="dropdown-item">
@@ -1013,10 +1019,10 @@ export default function Customer() {
 
                 {(role === "ispOwner" || permissions.customerDelete) && (
                   <li
-                    data-bs-toggle="modal"
-                    data-bs-target="#staticCustomerDelete"
                     onClick={() => {
                       customerDelete(original.id);
+                      setModalStatus("delete");
+                      setShow(true);
                     }}
                   >
                     <div className="dropdown-item">
@@ -1030,10 +1036,10 @@ export default function Customer() {
 
                 {(role === "ispOwner" || permissions.sendSMS) && (
                   <li
-                    data-bs-toggle="modal"
-                    data-bs-target="#customerMessageModal"
                     onClick={() => {
                       getSpecificCustomer(original.id);
+                      setModalStatus("message");
+                      setShow(true);
                     }}
                   >
                     <div className="dropdown-item">
@@ -1048,10 +1054,10 @@ export default function Customer() {
                 {role === "ispOwner" &&
                   ispOwnerData?.bpSettings?.hasReseller && (
                     <li
-                      data-bs-toggle="modal"
-                      data-bs-target="#transferToReseller"
                       onClick={() => {
                         getSpecificCustomer(original.id);
+                        setModalStatus("resellerTransfer");
+                        setShow(true);
                       }}
                     >
                       <div className="dropdown-item">
@@ -1064,10 +1070,10 @@ export default function Customer() {
                   )}
 
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#createSupportTicket"
                   onClick={() => {
                     getSpecificCustomer(original);
+                    setModalStatus("supportTicket");
+                    setShow(true);
                   }}
                 >
                   <div className="dropdown-item">
@@ -1077,10 +1083,9 @@ export default function Customer() {
                     </div>
                   </div>
                 </li>
+
                 {role === "ispOwner" && original.mobile && (
                   <li
-                    data-bs-toggle="modal"
-                    data-bs-target="#resetPassword"
                     onClick={() => {
                       setUserId(original.user);
                       setModalStatus("password");
@@ -1097,9 +1102,7 @@ export default function Customer() {
                 )}
 
                 {((role === "ispOwner" && bpSettings?.customerInvoice) ||
-                  (role === "manager" && permissions?.customerInvoice)) &&
-                (!(original?.monthlyFee <= original?.balance) ||
-                  original?.paymentStatus !== "paid") ? (
+                  (role === "manager" && permissions?.customerInvoice)) && (
                   <li
                     onClick={() => {
                       setIsOpen(true);
@@ -1109,13 +1112,11 @@ export default function Customer() {
                   >
                     <div className="dropdown-item">
                       <div className="customerAction">
-                        <CurrencyDollar />
+                        <FileEarmark />
                         <p className="actionP">{t("invoice")}</p>
                       </div>
                     </div>
                   </li>
-                ) : (
-                  ""
                 )}
 
                 {/* {(role === "ispOwner" || role === "manager") &&
@@ -1260,8 +1261,10 @@ export default function Customer() {
                                 <div
                                   className="addAndSettingIcon"
                                   title={t("fireWallFilterIpDrop")}
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#fireWallFilterIpDropControl"
+                                  onClick={() => {
+                                    setModalStatus("IPDrop");
+                                    setShow(true);
+                                  }}
                                 >
                                   <ReceiptCutoff className="addcutmButton" />
                                 </div>
@@ -1803,28 +1806,80 @@ export default function Customer() {
                 />
               )}
 
-              <CustomerReport single={customerReportData} />
+              {/* customer report modal */}
+              {modalStatus === "report" && (
+                <CustomerReport
+                  show={show}
+                  setShow={setShow}
+                  single={customerReportData}
+                />
+              )}
+
               {/* customer note modal */}
-              <CustomerNote
-                customerId={customerNoteId}
-                customerName={customerName}
-              />
-              <CustomerDelete
-                single={singleData}
-                mikrotikCheck={mikrotikCheck}
-                setMikrotikCheck={setMikrotikCheck}
-              />
-              <SingleMessage
-                single={singleCustomer}
-                sendCustomer="staticCustomer"
-              />
+              {modalStatus === "note" && (
+                <CustomerNote
+                  show={show}
+                  setShow={setShow}
+                  customerId={customerNoteId}
+                  customerName={customerName}
+                />
+              )}
+
+              {/* customer delete modal */}
+              {modalStatus === "delete" && (
+                <CustomerDelete
+                  show={show}
+                  setShow={setShow}
+                  single={singleData}
+                  mikrotikCheck={mikrotikCheck}
+                  setMikrotikCheck={setMikrotikCheck}
+                />
+              )}
+
+              {/* static customer message */}
+              {modalStatus === "message" && (
+                <SingleMessage
+                  show={show}
+                  setShow={setShow}
+                  single={singleCustomer}
+                  sendCustomer="staticCustomer"
+                />
+              )}
 
               {/* transferReseller modal */}
-              <TransferToReseller customerId={singleCustomer} />
+              {modalStatus === "resellerTransfer" && (
+                <TransferToReseller
+                  show={show}
+                  setShow={setShow}
+                  customerId={singleCustomer}
+                  page="static"
+                />
+              )}
 
               {/* password reset modal */}
               {modalStatus === "password" && (
                 <PasswordReset show={show} setShow={setShow} userId={userId} />
+              )}
+
+              {/* support ticket modal */}
+              {modalStatus === "supportTicket" && (
+                <CreateSupportTicket
+                  show={show}
+                  setShow={setShow}
+                  collectors={collectors}
+                  manager={manager}
+                  customer={singleCustomer}
+                  ispOwner={ispOwnerId}
+                  reseller=""
+                />
+              )}
+
+              {/* customers number update or delete modal */}
+              <CustomersNumber showModal={numberModalShow} />
+
+              {/* fire wall filter ip drop control */}
+              {modalStatus === "IPDrop" && (
+                <FireWallFilterIpDropControl show={show} setShow={setShow} />
               )}
 
               {/* print option modal */}
@@ -1839,7 +1894,7 @@ export default function Customer() {
                 />
               )}
 
-              {/* bulk Modal */}
+              {/* Model finish */}
 
               {/* static customer create invoice */}
               <StaticCreateInvoice
@@ -1948,21 +2003,6 @@ export default function Customer() {
               )}
 
               {/* bulk Modal end */}
-
-              <CreateSupportTicket
-                collectors={collectors}
-                manager={manager}
-                customer={singleCustomer}
-                ispOwner={ispOwnerId}
-                reseller=""
-              />
-
-              <FireWallFilterIpDropControl />
-
-              {/* customers number update or delete modal */}
-              <CustomersNumber showModal={numberModalShow} />
-
-              {/* Model finish */}
 
               <Footer />
             </FontColor>
@@ -2339,4 +2379,6 @@ export default function Customer() {
       )}
     </>
   );
-}
+};
+
+export default Customer;

@@ -353,16 +353,6 @@ export default function Report() {
     }
   };
 
-  const addAllBills = useMemo(() => {
-    var count = 0;
-    let discount = 0;
-    mainData.forEach((item) => {
-      count = count + item.amount;
-      discount = discount + item.discount;
-    });
-    return { count, discount };
-  }, [mainData]);
-
   let subArea, collector;
   if (singleArea && subAreaIds.length === 1) {
     subArea = storeSubArea?.find((item) => item.id === subAreaIds[0]);
@@ -592,6 +582,22 @@ export default function Report() {
     [t]
   );
 
+  // Add All Bill
+  const addAllBills = useMemo(() => {
+    var count = 0;
+    let connectionFeeSum = 0;
+    let discount = 0;
+    mainData.forEach((item) => {
+      item.billType === "bill"
+        ? (count += item.amount)
+        : (connectionFeeSum += item.amount);
+
+      discount = discount + item.discount;
+    });
+    return { count, connectionFeeSum, discount };
+  }, [mainData]);
+
+  // custom component
   const customComponent = (
     <div
       className="text-center"
@@ -600,16 +606,20 @@ export default function Report() {
       {(userRole === "ispOwner" || permissions?.dashboardCollectionData) &&
         addAllBills.count > 0 && (
           <div>
-            {t("totalBill")}
-            :-৳
-            {FormatNumber(addAllBills.count)}
+            {t("totalBill")}: ৳{FormatNumber(addAllBills.count)}
+          </div>
+        )}
+      &nbsp;&nbsp;
+      {(userRole === "ispOwner" || permissions?.dashboardCollectionData) &&
+        addAllBills.connectionFeeSum > 0 && (
+          <div>
+            {t("connectionFee")}: ৳{FormatNumber(addAllBills.connectionFeeSum)}
           </div>
         )}
       &nbsp;&nbsp;
       {addAllBills.discount > 0 && (
         <div>
-          {t("discount")}:-৳
-          {FormatNumber(addAllBills.discount)}
+          {t("discount")}: ৳{FormatNumber(addAllBills.discount)}
         </div>
       )}
     </div>
