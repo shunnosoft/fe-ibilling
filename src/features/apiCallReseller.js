@@ -39,7 +39,7 @@ import {
 import { getChartSuccess } from "./chartsSlice";
 import { getMikrotikSuccess, getpppoePackageSuccess } from "./mikrotikSlice";
 import { getAllRechargeHistory } from "./rechargeSlice";
-import { getAllMikrotikPakages } from "./resellerSlice";
+import { getAllMikrotikPakages, getResellerUsersData } from "./resellerSlice";
 import {
   addResellerSupport,
   getResellerSupport,
@@ -856,6 +856,18 @@ export const getPaymentWithdrawReport = async (
       `reseller/payment/withdraw/${resellerId}?year=${year}&month=${month}`
     );
     dispatch(getWithdrawBalance(res.data));
+  } catch (error) {
+    toast.error(error.response?.data.message);
+  }
+  setIsLoading(false);
+};
+
+// get reseller payment withdraw report
+export const getResellerUsers = async (dispatch, resellerId, setIsLoading) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.get(`reseller/staffs/${resellerId}`);
+    dispatch(getResellerUsersData(res.data));
   } catch (error) {
     toast.error(error.response?.data.message);
   }

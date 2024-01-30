@@ -6,6 +6,7 @@ export const resellerSlice = createSlice({
     reseller: [],
     allMikrotikPakages: [],
     resellerCollection: [],
+    resellerUsers: [],
   },
   reducers: {
     getResellerrSuccess: (state, action) => {
@@ -49,6 +50,11 @@ export const resellerSlice = createSlice({
     getResellerCollectionReport: (state, action) => {
       state.resellerCollection = action.payload;
     },
+
+    //reseller users data action
+    getResellerUsersData: (state, action) => {
+      state.resellerUsers = action.payload;
+    },
   },
 });
 export const {
@@ -58,6 +64,7 @@ export const {
   deleteResellerSuccess,
   editResellerforRecharge,
   clearReseller,
+  getResellerUsersData,
   getAllMikrotikPakages,
   getResellerCollectionReport,
 } = resellerSlice.actions;

@@ -23,7 +23,7 @@ import Footer from "../../components/admin/footer/Footer";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getAllBills,
-  getCollector,
+  getResellerUsers,
   getSubAreas,
 } from "../../features/apiCallReseller";
 import moment from "moment";
@@ -74,25 +74,29 @@ const Report = () => {
   // get all area subArea
   const subAreas = useSelector((state) => state.area.area);
 
-  // get all bill collector
-  const allCollector = useSelector((state) => state.collector.collector);
-
   // get user role
   const userRole = useSelector((state) => state.persistedReducer.auth.role);
 
   // get all packages
   const allPackages = useSelector((state) => state.package.allPackages);
 
+  // get reseller all users data from redux store
+  const resellerUsers = useSelector((state) => state.reseller.resellerUsers);
+
   // get bulletin permission
   const butPermission = useSelector(
     (state) => state.adminNetFeeSupport?.bulletinPermission
   );
+
+  // reseller id from role base
+  const resellerId = userRole === "collector" ? userData.reseller : userData.id;
 
   // Loading state
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [show, setShow] = useState(false);
   const [packageLoading, setPackageLoading] = useState(false);
+  const [defaultLoading, setDefaultLoading] = useState(false);
 
   // collection all bills state
   const [mainData, setMainData] = useState(allBills);
@@ -154,10 +158,13 @@ const Report = () => {
 
   useEffect(() => {
     getSubAreas(dispatch, userData.id);
-    getCollector(dispatch, userData.id);
+
     Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
 
     getAllPackages(dispatch, ispOwnerId, setPackageLoading);
+
+    // get reseller user api
+    getResellerUsers(dispatch, resellerId, setDefaultLoading);
 
     // get ispOwner all staffs
     ownerUsers?.length === 0 && getOwnerUsers(dispatch, ispOwnerId);
@@ -229,7 +236,7 @@ const Report = () => {
 
   // select area & collector find
   const areaName = subAreas.find((item) => item.id === areaIds);
-  const collector = allCollector.find((item) => item.user === collectorIds);
+  const collector = resellerUsers.find((item) => item.user === collectorIds);
 
   // collection bill report print pdf
   const filterData = {
@@ -497,7 +504,7 @@ const Report = () => {
                               <option value="" defaultValue>
                                 {t("all collector")}{" "}
                               </option>
-                              {allCollector?.map((coll, key) => (
+                              {resellerUsers?.map((coll, key) => (
                                 <option key={key} value={coll.user}>
                                   {coll.name}
                                 </option>
