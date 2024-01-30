@@ -8,12 +8,16 @@ import {
   ArrowClockwise,
   KeyFill,
   ArchiveFill,
-  PeopleFill,
   CashStack,
   CurrencyDollar,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
+
+// custom hooks import
+import useISPowner from "../../hooks/useISPOwner";
 
 // internal imports
 import "./collector.css";
@@ -22,7 +26,6 @@ import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
 import CollectorPost from "./collectorCRUD/CollectorPost";
-
 import CollectorDetails from "./collectorCRUD/CollectorDetails";
 import CollectorEdit from "./collectorCRUD/CollectorEdit";
 import {
@@ -32,46 +35,38 @@ import {
 } from "../../features/apiCalls";
 import Table from "../../components/table/Table";
 import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
-import { useTranslation } from "react-i18next";
 import Loader from "../../components/common/Loader";
 import PasswordReset from "../../components/modals/passwordReset/PasswordReset";
 import { getSubAreasApi } from "../../features/actions/customerApiCall";
-import { Link } from "react-router-dom";
 import PrevBalanceReport from "./collectorCRUD/PrevBalanceReport";
 
-export default function Collector() {
+const Collector = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerId
-  );
-  const [collSearch, setCollSearch] = useState("");
+
+  // get user & current user data form useISPOwner hooks
+  const { role, ispOwnerId, permissions } = useISPowner();
+
+  // get all collector data from redux store
   const collector = useSelector((state) => state?.collector?.collector);
 
-  let serial = 0;
-  // pagination
-  const [currentPage, setCurrentPage] = useState(1);
-  const [collectorPerPage, setCollectorPerPage] = useState(5);
-  const lastIndex = currentPage * collectorPerPage;
-  const firstIndex = lastIndex - collectorPerPage;
-  const currentCollector = collector.slice(firstIndex, lastIndex);
-  const [allCollector, setCollector] = useState(currentCollector);
-  const [userId, setUserId] = useState();
+  // loading state
   const [isLoading, setIsLoading] = useState(false);
-  const permission = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.permissions
-  );
-  const role = useSelector((state) => state.persistedReducer.auth?.role);
+
+  // state for modal
+  const [userId, setUserId] = useState();
+
+  // state for single message
+  const [collectorId, setCollectorId] = useState();
+
+  // state for password reset
+  const [singleCollector, setSingleCollector] = useState();
 
   // modal open handler
   const [modalStatus, setModalStatus] = useState("");
   const [show, setShow] = useState(false);
 
-  // reload handler
-  const reloadHandler = () => {
-    getCollector(dispatch, ispOwnerId, setIsLoading);
-  };
-
+  // api call
   useEffect(() => {
     if (collector.length === 0)
       getCollector(dispatch, ispOwnerId, setIsLoading);
@@ -79,39 +74,28 @@ export default function Collector() {
     getSubAreasApi(dispatch, ispOwnerId);
   }, []);
 
-  const [singleCollector, setSingleCollector] = useState();
+  // reload handler
+  const reloadHandler = () => {
+    getCollector(dispatch, ispOwnerId, setIsLoading);
+  };
+
+  // collector single edit
   const getSpecificCollector = (collectorId) => {
     setSingleCollector(collectorId);
   };
 
-  const [collectorId, setCollectorId] = useState();
+  // collector single message
   const handleSingleMessage = (collectorID) => {
     setCollectorId(collectorID);
   };
 
+  // collector delete handler
   const deleteSingleCollector = (collectorId) => {
     const confirm = window.confirm(t("colelctorDeleteNotify"));
     if (confirm) {
       deleteCollector(dispatch, setIsLoading, ispOwnerId, collectorId);
     }
   };
-
-  useEffect(() => {
-    const keys = ["name", "mobile", "email"];
-    if (collSearch !== "") {
-      setCollector(
-        collector.filter((item) =>
-          keys.some((key) =>
-            typeof item[key] === "string"
-              ? item[key].toString().toLowerCase().includes(collSearch)
-              : item[key].toString().includes(collSearch)
-          )
-        )
-      );
-    } else {
-      setCollector(collector);
-    }
-  }, [collSearch, collector]);
 
   const columns = React.useMemo(
     () => [
@@ -149,13 +133,7 @@ export default function Collector() {
         id: "option",
 
         Cell: ({ row: { original } }) => (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
+          <div className="d-flex justify-content-center align-items-center">
             <div className="dropdown">
               <ThreeDots
                 className="dropdown-toggle ActionDots"
@@ -180,7 +158,7 @@ export default function Collector() {
                   </div>
                 </li>
 
-                {(permission?.collectorEdit || role === "ispOwner") && (
+                {(permissions?.collectorEdit || role === "ispOwner") && (
                   <li
                     onClick={() => {
                       getSpecificCollector(original.id);
@@ -210,12 +188,13 @@ export default function Collector() {
                     </li>
                   </Link>
                 )}
+
                 {role === "ispOwner" && (
                   <li
-                    data-bs-toggle="modal"
-                    data-bs-target="#collectorPrevMonthBalance"
                     onClick={() => {
                       getSpecificCollector(original.id);
+                      setModalStatus("previousBalance");
+                      setShow(true);
                     }}
                   >
                     <div className="dropdown-item">
@@ -226,12 +205,13 @@ export default function Collector() {
                     </div>
                   </li>
                 )}
+
                 {original.mobile && (
                   <li
-                    data-bs-toggle="modal"
-                    data-bs-target="#customerMessageModal"
                     onClick={() => {
                       handleSingleMessage(original.id);
+                      setModalStatus("message");
+                      setShow(true);
                     }}
                   >
                     <div className="dropdown-item">
@@ -260,8 +240,6 @@ export default function Collector() {
 
                 {role === "ispOwner" && (
                   <li
-                    data-bs-toggle="modal"
-                    data-bs-target="#resetPassword"
                     onClick={() => {
                       setUserId(original.user);
                       setModalStatus("password");
@@ -288,6 +266,7 @@ export default function Collector() {
     <>
       <Sidebar />
       <ToastContainer position="top-right" theme="colored" />
+
       <div className={useDash.dashboardWrapper}>
         <div className="container-fluied collector">
           <div className="container">
@@ -310,7 +289,7 @@ export default function Collector() {
                         ></ArrowClockwise>
                       )}
                     </div>
-                    {(permission?.collectorAdd || role === "ispOwner") && (
+                    {(permissions?.collectorAdd || role === "ispOwner") && (
                       <div
                         title={t("collector")}
                         onClick={() => {
@@ -327,14 +306,12 @@ export default function Collector() {
 
               <FourGround>
                 <div className="collectorWrapper mt-2 py-2">
-                  <div className="addCollector">
-                    <div className="table-section">
-                      <Table
-                        isLoading={isLoading}
-                        columns={columns}
-                        data={collector}
-                      ></Table>
-                    </div>
+                  <div className="table-section">
+                    <Table
+                      isLoading={isLoading}
+                      columns={columns}
+                      data={collector}
+                    ></Table>
                   </div>
                 </div>
               </FourGround>
@@ -343,6 +320,7 @@ export default function Collector() {
           </div>
         </div>
         {/* modals */}
+        <CollectorDetails collectorId={singleCollector} />
 
         {/* collector post modal */}
         {modalStatus === "collectorPost" && (
@@ -358,10 +336,24 @@ export default function Collector() {
           />
         )}
 
-        <CollectorDetails collectorId={singleCollector} />
+        {/* collector previous balance modal */}
+        {modalStatus === "previousBalance" && (
+          <PrevBalanceReport
+            show={show}
+            setShow={setShow}
+            collectorId={singleCollector}
+          />
+        )}
 
-        <PrevBalanceReport collectorId={singleCollector} />
-        <SingleMessage single={collectorId} sendCustomer="collector" />
+        {/* single message modal */}
+        {modalStatus === "message" && (
+          <SingleMessage
+            show={show}
+            setShow={setShow}
+            single={collectorId}
+            sendCustomer="collector"
+          />
+        )}
 
         {/* collector password reset */}
         {modalStatus === "password" && (
@@ -370,4 +362,6 @@ export default function Collector() {
       </div>
     </>
   );
-}
+};
+
+export default Collector;

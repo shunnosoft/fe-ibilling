@@ -15,10 +15,15 @@ import {
   Book,
 } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
+import { ToastContainer } from "react-toastify";
+import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+
+// custom hooks import
+import useISPowner from "../../hooks/useISPOwner";
 
 // internal imports
 import "./reseller.css";
-import { ToastContainer } from "react-toastify";
 import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { FourGround, FontColor } from "../../assets/js/theme";
@@ -27,7 +32,6 @@ import ResellerPost from "./resellerModals/ResellerPost";
 import ResellerEdit from "./resellerModals/ResellerEdit";
 import Loader from "../../components/common/Loader";
 import { getMikrotikPackages } from "../../features/apiCallReseller";
-
 import ResellerDetails from "./resellerModals/ResellerDetails";
 import {
   deleteReseller,
@@ -36,9 +40,7 @@ import {
 } from "../../features/apiCalls";
 import Recharge from "./resellerModals/recharge";
 import Table from "../../components/table/Table";
-import { Link } from "react-router-dom";
 import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
-import { useTranslation } from "react-i18next";
 import EditResellerBalance from "./smsRecharge/modal/editResellerBalance";
 import PasswordReset from "../../components/modals/passwordReset/PasswordReset";
 import RechargeReport from "./resellerModals/RechargeReport";
@@ -46,24 +48,14 @@ import MonthlyReport from "./resellerModals/MonthlyReport";
 import { getSubAreasApi } from "../../features/actions/customerApiCall";
 import FormatNumber from "../../components/common/NumberFormat";
 
-export default function Reseller() {
+const Reseller = () => {
   const { t } = useTranslation();
-
-  // import dispatch
   const dispatch = useDispatch();
 
-  // get all auth
-  const auth = useSelector((state) => state.persistedReducer.auth.currentUser);
+  // get user & current user data form useISPOwner hooks
+  const { role, ispOwnerId } = useISPowner();
 
-  // get isp owner id
-  const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerId
-  );
-
-  // get user role
-  const role = useSelector((state) => state.persistedReducer.auth?.role);
-
-  // get all reseller
+  // get all reseller data form redux store
   const reseller = useSelector((state) => state?.reseller?.reseller);
 
   // reseller id state
@@ -78,9 +70,6 @@ export default function Reseller() {
   // singl reseler sms id
   const [resellerSmsId, setResellerSmsId] = useState();
 
-  // reseller name state
-  const [resellerName, setResellerName] = useState("");
-
   // data loader
   const [dataLoader, setDataLoader] = useState(false);
 
@@ -88,15 +77,30 @@ export default function Reseller() {
   const [modalStatus, setModalStatus] = useState("");
   const [show, setShow] = useState(false);
 
+  // get api call
+  useEffect(() => {
+    // get all reseller data api
+    if (reseller.length == 0)
+      fetchReseller(dispatch, ispOwnerId, setDataLoader);
+
+    // get area api
+    getArea(dispatch, ispOwnerId, setIsLoading);
+
+    // get sub area api
+    getSubAreasApi(dispatch, ispOwnerId);
+
+    // get mikrotik packages
+    getMikrotikPackages(dispatch, ispOwnerId);
+  }, []);
+
   // reload handler
   const reloadHandler = () => {
-    fetchReseller(dispatch, auth.ispOwner.id, setDataLoader);
+    fetchReseller(dispatch, ispOwnerId, setDataLoader);
   };
 
   // get Single reseller
   const getSpecificReseller = (id, resellerName) => {
     setResellerId(id);
-    setResellerName(resellerName);
   };
 
   // handle single sms method
@@ -112,23 +116,6 @@ export default function Reseller() {
       deleteReseller(dispatch, IDs, setIsLoading);
     }
   };
-
-  // reseller and area api call
-  useEffect(() => {
-    if (auth.ispOwner) {
-      if (reseller.length == 0)
-        fetchReseller(dispatch, auth.ispOwner.id, setDataLoader);
-      getArea(dispatch, auth.ispOwner.id, setIsLoading);
-      getSubAreasApi(dispatch, ispOwnerId);
-    }
-  }, [dispatch, auth.ispOwner]);
-
-  // mikrotik package get api
-  useEffect(() => {
-    if (ispOwnerId !== undefined) {
-      getMikrotikPackages(dispatch, ispOwnerId);
-    }
-  }, [ispOwnerId]);
 
   // table column
   const columns = React.useMemo(
@@ -211,11 +198,10 @@ export default function Reseller() {
                   </div>
                 </li>
                 <li
-                  data-bs-toggle="modal"
-                  href="#resellerRechargeModal"
-                  role="button"
                   onClick={() => {
                     getSpecificReseller(original.id);
+                    setModalStatus("recharge");
+                    setShow(true);
                   }}
                 >
                   <div className="dropdown-item">
@@ -264,10 +250,10 @@ export default function Reseller() {
                 </Link>
 
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#rechargeReport"
                   onClick={() => {
                     getSpecificReseller(original.id);
+                    setModalStatus("report");
+                    setShow(true);
                   }}
                 >
                   <div className="dropdown-item">
@@ -279,10 +265,10 @@ export default function Reseller() {
                 </li>
 
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#monthlyReport"
                   onClick={() => {
                     getSpecificReseller(original.id);
+                    setModalStatus("previousReport");
+                    setShow(true);
                   }}
                 >
                   <div className="dropdown-item">
@@ -307,10 +293,10 @@ export default function Reseller() {
 
                 {original.mobile && (
                   <li
-                    data-bs-toggle="modal"
-                    data-bs-target="#customerMessageModal"
                     onClick={() => {
                       handleSingleMessage(original.id);
+                      setModalStatus("message");
+                      setShow(true);
                     }}
                   >
                     <div className="dropdown-item">
@@ -325,10 +311,10 @@ export default function Reseller() {
                 {role === "ispOwner" && (
                   <>
                     <li
-                      data-bs-toggle="modal"
-                      data-bs-target="#resellerBalanceEditModal"
                       onClick={() => {
                         getSpecificReseller(original.id);
+                        setModalStatus("editBalance");
+                        setShow(true);
                       }}
                     >
                       <div className="dropdown-item">
@@ -340,8 +326,6 @@ export default function Reseller() {
                     </li>
 
                     <li
-                      data-bs-toggle="modal"
-                      data-bs-target="#resetPassword"
                       onClick={() => {
                         getSpecificReseller(original.id);
                         setUserId(original.user);
@@ -419,6 +403,7 @@ export default function Reseller() {
     <>
       <Sidebar />
       <ToastContainer position="top-right" theme="colored" />
+
       <div className={useDash.dashboardWrapper}>
         <div className="container-fluied collector">
           <div className="container">
@@ -462,16 +447,14 @@ export default function Reseller() {
               </FourGround>
 
               <FourGround>
-                <div className="collectorWrapper mt-2 py-2">
-                  <div className="addCollector">
-                    <div className="table-section">
-                      <Table
-                        isLoading={dataLoader}
-                        columns={columns}
-                        data={reseller}
-                        customComponent={customComponent}
-                      ></Table>
-                    </div>
+                <div className="collectorWrapper mt-2 py-1">
+                  <div className="table-section">
+                    <Table
+                      isLoading={dataLoader}
+                      columns={columns}
+                      data={reseller}
+                      customComponent={customComponent}
+                    ></Table>
                   </div>
                 </div>
               </FourGround>
@@ -483,6 +466,9 @@ export default function Reseller() {
 
       {/* start modals section */}
 
+      {/* reseller details modal */}
+      <ResellerDetails resellerId={resellerId} />
+
       {/* add reseller modal */}
       {modalStatus === "resellerPost" && (
         <ResellerPost show={show} setShow={setShow} />
@@ -493,23 +479,39 @@ export default function Reseller() {
         <ResellerEdit show={show} setShow={setShow} resellerId={resellerId} />
       )}
 
-      {/* reseller details modal */}
-      <ResellerDetails resellerId={resellerId} />
-
       {/* reseller rechare modal  */}
-      <Recharge resellerId={resellerId} />
+      {modalStatus === "recharge" && (
+        <Recharge show={show} setShow={setShow} resellerId={resellerId} />
+      )}
 
-      {/* recharge report  */}
-      <RechargeReport resellerId={resellerId} />
+      {/* recharge report modal  */}
+      {modalStatus === "report" && (
+        <RechargeReport show={show} setShow={setShow} resellerId={resellerId} />
+      )}
 
       {/* monthly report */}
-      <MonthlyReport resellerID={resellerId} />
+      {modalStatus === "previousReport" && (
+        <MonthlyReport show={show} setShow={setShow} resellerID={resellerId} />
+      )}
 
       {/* reseller msg modal  */}
-      <SingleMessage single={resellerSmsId} sendCustomer="reseller" />
+      {modalStatus === "message" && (
+        <SingleMessage
+          show={show}
+          setShow={setShow}
+          single={resellerSmsId}
+          sendCustomer="reseller"
+        />
+      )}
 
       {/* reseler edit balnce modal  */}
-      <EditResellerBalance resellerId={resellerId} />
+      {modalStatus === "editBalance" && (
+        <EditResellerBalance
+          show={show}
+          setShow={setShow}
+          resellerId={resellerId}
+        />
+      )}
 
       {/* password reset modal */}
       {modalStatus === "password" && (
@@ -519,4 +521,6 @@ export default function Reseller() {
       {/* end modals section*/}
     </>
   );
-}
+};
+
+export default Reseller;

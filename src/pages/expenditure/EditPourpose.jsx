@@ -1,26 +1,22 @@
 import { useState } from "react";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
-import { useSelector, useDispatch } from "react-redux";
-
-// internal imports
-// import "../../collector/collector.css";
-import "../collector/collector.css";
-
-import { FtextField } from "../../components/common/FtextField";
-import Loader from "../../components/common/Loader";
-import {
-  addExpenditurePourpose,
-  editExpenditurePourpose,
-} from "../../features/apiCalls";
+import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 
-export default function EditPourpose({ singlePurpose }) {
-  const { t } = useTranslation();
-  // console.log(singlePurpose);
+// internal imports
+import "../collector/collector.css";
+import { FtextField } from "../../components/common/FtextField";
+import Loader from "../../components/common/Loader";
+import { editExpenditurePourpose } from "../../features/apiCalls";
+import ComponentCustomModal from "../../components/common/customModal/ComponentCustomModal";
 
-  const [isLoading, setIsLoading] = useState(false);
+const EditPourpose = ({ show, setShow, singlePurpose }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
+
+  // loading state
+  const [isLoading, setIsLoading] = useState(false);
 
   //validator
   const linemanValidator = Yup.object({
@@ -34,74 +30,65 @@ export default function EditPourpose({ singlePurpose }) {
       name: data.name,
     };
 
-    editExpenditurePourpose(dispatch, sendingData, setIsLoading, resetForm);
+    editExpenditurePourpose(
+      dispatch,
+      sendingData,
+      setIsLoading,
+      resetForm,
+      setShow
+    );
   };
 
   return (
-    <div>
-      <div
-        className="modal fade modal-dialog-scrollable "
-        id="editPurpose"
-        tabIndex="-1"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
+    <>
+      <ComponentCustomModal
+        show={show}
+        setShow={setShow}
+        centered={false}
+        size={"md"}
+        header={t("editExpenditureSector")}
       >
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLabel">
-                {t("editExpenditureSector")}
-              </h5>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body">
-              <Formik
-                initialValues={{
-                  name: singlePurpose.name,
-                  // ispOwner:
-                }}
-                validationSchema={linemanValidator}
-                onSubmit={(values, { resetForm }) => {
-                  purposeHandler(values, resetForm);
-                }}
-                enableReinitialize
-              >
-                {(formik) => (
-                  <Form>
-                    <FtextField
-                      type="text"
-                      label={t("expenditureSectorsName")}
-                      name="name"
-                    />
+        <Formik
+          initialValues={{
+            name: singlePurpose.name,
+          }}
+          validationSchema={linemanValidator}
+          onSubmit={(values, { resetForm }) => {
+            purposeHandler(values, resetForm);
+          }}
+          enableReinitialize
+        >
+          {() => (
+            <Form>
+              <FtextField
+                type="text"
+                label={t("expenditureSectorsName")}
+                name="name"
+              />
 
-                    <div className="modal-footer">
-                      <button
-                        type="button"
-                        className="btn btn-secondary"
-                        data-bs-dismiss="modal"
-                      >
-                        {t("cancel")}
-                      </button>
-                      <button
-                        type="submit"
-                        className="btn btn-success customBtn"
-                        disabled={isLoading}
-                      >
-                        {isLoading ? <Loader /> : t("save")}
-                      </button>
-                    </div>
-                  </Form>
-                )}
-              </Formik>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+              <div className="displayGrid1 float-end mt-4">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => setShow(false)}
+                >
+                  {t("cancel")}
+                </button>
+
+                <button
+                  type="submit"
+                  className="btn btn-success customBtn"
+                  disabled={isLoading}
+                >
+                  {isLoading ? <Loader /> : t("save")}
+                </button>
+              </div>
+            </Form>
+          )}
+        </Formik>
+      </ComponentCustomModal>
+    </>
   );
-}
+};
+
+export default EditPourpose;

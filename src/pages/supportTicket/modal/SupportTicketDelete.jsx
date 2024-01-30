@@ -1,57 +1,45 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import { supportTicketsDeleteApi } from "../../../features/supportTicketApi";
+import ComponentCustomModal from "../../../components/common/customModal/ComponentCustomModal";
 
-const SupportTicketDelete = ({ supportTicketDeleteID }) => {
+const SupportTicketDelete = ({ show, setShow, supportTicketDeleteID }) => {
   const dispatch = useDispatch();
+
+  // delete support ticket handler
   const SupportTicketDeleteSubmit = (e) => {
     e.preventDefault();
-    supportTicketsDeleteApi(dispatch, supportTicketDeleteID);
+    supportTicketsDeleteApi(dispatch, supportTicketDeleteID, setShow);
   };
   return (
-    <div
-      class="modal fade"
-      id="deleteModal"
-      tabindex="-1"
-      aria-labelledby="exampleModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">
-              Support Ticket Delete
-            </h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body">
-            <p>Do you want to delete support ticket ?</p>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              cancel
-            </button>
-            <button
-              type="button"
-              class="btn btn-danger"
-              data-bs-dismiss="modal"
-              onClick={SupportTicketDeleteSubmit}
-            >
-              Delete
-            </button>
-          </div>
+    <>
+      <ComponentCustomModal
+        show={show}
+        setShow={setShow}
+        centered={false}
+        size={"md"}
+        header={"Support Ticket Delete"}
+      >
+        <p>Do you want to delete support ticket ?</p>
+
+        <div class="displayGrid1 float-end mt-4">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            onClick={() => setShow(false)}
+          >
+            cancel
+          </button>
+          <button
+            type="button"
+            class="btn btn-danger"
+            onClick={SupportTicketDeleteSubmit}
+          >
+            Delete
+          </button>
         </div>
-      </div>
-    </div>
+      </ComponentCustomModal>
+    </>
   );
 };
 

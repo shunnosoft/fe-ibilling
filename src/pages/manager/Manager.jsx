@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   PersonPlusFill,
   ThreeDots,
@@ -9,6 +9,13 @@ import {
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector } from "react-redux";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { useTranslation } from "react-i18next";
+
+// custom hooks imports
+import useISPowner from "../../hooks/useISPOwner";
+import useAreaPackage from "../../hooks/useAreaPackage";
 
 // internal imports
 import "./manager.css";
@@ -16,15 +23,10 @@ import "../collector/collector.css";
 import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { FourGround, FontColor } from "../../assets/js/theme";
-
-// import { getManager } from "../../features/authSlice";
 import ReadModals from "../../components/modals/ReadModals";
 import WriteModals from "../../components/modals/WriteModals";
 import Footer from "../../components/admin/footer/Footer";
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
 import { getArea, getManger } from "../../features/apiCalls";
-import { useTranslation } from "react-i18next";
 import PasswordReset from "../../components/modals/passwordReset/PasswordReset";
 import ManagerPost from "./ManagerCRUD/ManagerPost";
 import Table from "../../components/table/Table";
@@ -33,11 +35,23 @@ import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
 import ManagerEdit from "./ManagerCRUD/ManagerEdit";
 import { getSubAreasApi } from "../../features/actions/customerApiCall";
 
-export default function Manager() {
+const Manager = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+
+  // get user & current user data form useISPOwner hooks
+  const { ispOwnerId, bpSettings } = useISPowner();
+
+  // get all area package data from useAreaPackage hooks
+  const { areas, subAreas } = useAreaPackage();
+
+  //get all managers data form redux store
+  const manager = useSelector((state) => state.manager?.manager);
+
+  // loading state
   const [isLoading, setIsLoading] = useState(false);
 
+  // modal state
   const [userId, setUserId] = useState();
   const [singleManager, setSingleManager] = useState();
 
@@ -45,48 +59,24 @@ export default function Manager() {
   const [modalStatus, setModalStatus] = useState("");
   const [show, setShow] = useState(false);
 
-  //get all managers
-  const manager = useSelector((state) => state.manager?.manager);
+  // api call
+  useEffect(() => {
+    // get all managers api
+    manager.length === 0 && getManger(dispatch, ispOwnerId);
 
-  // get bp setting
-  const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
-  );
+    // get all area api
+    areas.length === 0 && getArea(dispatch, ispOwnerId, setIsLoading);
 
-  //get ispOwner Id
-  const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth.currentUser?.ispOwner?.id
-  );
-
-  // get role
-  const role = useSelector((state) => state.persistedReducer.auth?.role);
+    // get all area subareas api
+    subAreas.length === 0 && getSubAreasApi(dispatch, ispOwnerId);
+  }, []);
 
   //get specific manager set id
   const getSpecificManager = (managerId) => {
     setSingleManager(managerId);
   };
 
-  // //delete manager handler
-  // const deleteSingleManager = (managerId) => {
-  //   const confirm = window.confirm(t("managerDeleteNotify"));
-  //   if (confirm) {
-  //     // deleteManager(dispatch, setIsLoading, ispOwnerId, managerId);
-  //     return;
-  //   }
-  // };
-
-  //get all managers
-  useEffect(() => {
-    getManger(dispatch, ispOwnerId);
-  }, [ispOwnerId]);
-
-  //get all areas
-  useEffect(() => {
-    getArea(dispatch, ispOwnerId, setIsLoading);
-    getSubAreasApi(dispatch, ispOwnerId);
-  }, []);
-
-  const columns = React.useMemo(
+  const columns = useMemo(
     () => [
       {
         width: "8%",
@@ -122,13 +112,7 @@ export default function Manager() {
         id: "option",
 
         Cell: ({ row: { original } }) => (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
+          <div className="d-flex justify-content-center align-items-center">
             <div className="dropdown">
               <ThreeDots
                 className="dropdown-toggle ActionDots"
@@ -167,12 +151,13 @@ export default function Manager() {
                     </div>
                   </div>
                 </li>
+
                 {original.mobile && (
                   <li
-                    data-bs-toggle="modal"
-                    data-bs-target="#customerMessageModal"
                     onClick={() => {
                       getSpecificManager(original.id);
+                      setModalStatus("message");
+                      setShow(true);
                     }}
                   >
                     <div className="dropdown-item">
@@ -184,22 +169,7 @@ export default function Manager() {
                   </li>
                 )}
 
-                {/* <li
-                  onClick={() => {
-                    deleteSingleManager(original.id);
-                  }}
-                >
-                  <div className="dropdown-item actionManager">
-                    <div className="customerAction">
-                      <ArchiveFill />
-                      <p className="actionP">{t("delete")}</p>
-                    </div>
-                  </div>
-                </li> */}
-
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#resetPassword"
                   onClick={() => {
                     setUserId(original.user);
                     setModalStatus("password");
@@ -225,11 +195,10 @@ export default function Manager() {
     <>
       <Sidebar />
       <ToastContainer position="top-right" theme="colored" />
+
       <div className={useDash.dashboardWrapper}>
         <div className="container-fluied collector">
           <div className="container">
-            {/* manager modal */}
-            <ReadModals managerDetails={manager} />
             <FontColor>
               <FourGround>
                 <div className="d-flex justify-content-between collectorTitle px-4">
@@ -261,15 +230,13 @@ export default function Manager() {
               </FourGround>
 
               <FourGround>
-                <div className="collectorWrapper mt-2 py-2">
-                  <div className="addCollector">
-                    <div className="table-section">
-                      <Table
-                        isLoading={isLoading}
-                        columns={columns}
-                        data={manager}
-                      ></Table>
-                    </div>
+                <div className="collectorWrapper mt-2 py-1">
+                  <div className="table-section">
+                    <Table
+                      isLoading={isLoading}
+                      columns={columns}
+                      data={manager}
+                    ></Table>
                   </div>
                 </div>
               </FourGround>
@@ -280,7 +247,9 @@ export default function Manager() {
       </div>
 
       {/* modal start */}
+      <ReadModals managerDetails={manager} />
       <WriteModals manager={manager} />
+      <ManagerDetails managerId={singleManager} />
 
       {/* manager add modal */}
       {modalStatus === "managerPost" && (
@@ -292,8 +261,15 @@ export default function Manager() {
         <ManagerEdit show={show} setShow={setShow} managerId={singleManager} />
       )}
 
-      <ManagerDetails managerId={singleManager} />
-      <SingleMessage single={singleManager} sendCustomer="manager" />
+      {/* singel message modal */}
+      {modalStatus === "message" && (
+        <SingleMessage
+          show={show}
+          setShow={setShow}
+          single={singleManager}
+          sendCustomer="manager"
+        />
+      )}
 
       {/* collector password reset */}
       {modalStatus === "password" && (
@@ -303,4 +279,6 @@ export default function Manager() {
       {/* modal End */}
     </>
   );
-}
+};
+
+export default Manager;

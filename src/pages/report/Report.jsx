@@ -1,18 +1,8 @@
-import { useCallback, useEffect, useState, useRef, useMemo } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import { ToastContainer } from "react-toastify";
-import Sidebar from "../../components/admin/sidebar/Sidebar";
-import useDash from "../../assets/css/dash.module.css";
-import { FontColor, FourGround } from "../../assets/js/theme";
 import moment from "moment";
 import ReactToPrint from "react-to-print";
-import PrintReport from "./ReportPDF";
-
-import Footer from "../../components/admin/footer/Footer";
-import "../Customer/customer.css";
-import "./report.css";
-// import { useDispatch } from "react-redux";
 import { useDispatch, useSelector } from "react-redux";
-
 import {
   ArchiveFill,
   ArrowBarLeft,
@@ -24,6 +14,16 @@ import {
   PrinterFill,
   ThreeDots,
 } from "react-bootstrap-icons";
+import { useTranslation } from "react-i18next";
+import { CSVLink } from "react-csv";
+import DatePicker from "react-datepicker";
+import { Accordion, Card, Collapse } from "react-bootstrap";
+
+// custom hooks import
+import useISPowner from "../../hooks/useISPOwner";
+import useAreaPackage from "../../hooks/useAreaPackage";
+
+// internal import
 import {
   deleteBillReport,
   getAllBills,
@@ -32,82 +32,64 @@ import {
   getCollector,
   getManger,
 } from "../../features/apiCalls";
+import Footer from "../../components/admin/footer/Footer";
+import "../Customer/customer.css";
+import "./report.css";
+import { FontColor, FourGround } from "../../assets/js/theme";
+import Sidebar from "../../components/admin/sidebar/Sidebar";
+import useDash from "../../assets/css/dash.module.css";
+import PrintReport from "./ReportPDF";
 import Table from "../../components/table/Table";
-import { useTranslation } from "react-i18next";
 import Loader from "../../components/common/Loader";
 import EditReport from "./modal/EditReport";
 import ReportView from "./modal/ReportView";
-import { CSVLink } from "react-csv";
 import FormatNumber from "../../components/common/NumberFormat";
-import DatePicker from "react-datepicker";
 import { getSubAreasApi } from "../../features/actions/customerApiCall";
 import { managerFetchSuccess } from "../../features/managerSlice";
-import { Accordion, Card, Collapse } from "react-bootstrap";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
-import { deleteCustomerSingleReport } from "../../features/hotspotApi";
-export default function Report() {
+
+const Report = () => {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
   const componentRef = useRef();
 
-  const [isLoading, setIsLoading] = useState(false);
+  // get user & current user data form useISPOwner hooks
+  const { role, ispOwnerId, userData, permissions, currentUser } =
+    useISPowner();
 
-  // get isp owner data
-  const ispOwnerData = useSelector(
-    (state) => state.persistedReducer.auth?.userData
-  );
+  // get all area package data from useAreaPackage hooks
+  const { areas, subAreas } = useAreaPackage();
 
-  const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerId
-  );
-  const dispatch = useDispatch();
-  const allArea = useSelector((state) => state?.area?.area);
-
-  // get all subAreas
-  const storeSubArea = useSelector((state) => state.area?.subArea);
-
-  // get isp owner id
-  const ispOwner = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerId
-  );
-
-  // customer bill collection
+  // get customer bill collection data from redux store
   const allBills = useSelector((state) => state?.payment?.allBills);
 
-  // get userdata
-  const userData = useSelector(
-    (state) => state.persistedReducer.auth.currentUser
-  );
-  const userRole = useSelector((state) => state.persistedReducer.auth?.role);
-
-  const allCollector = useSelector((state) => state?.collector?.collector);
+  // get all manager data from redux store
   const manager = useSelector((state) => state?.manager?.manager);
 
-  // get user permission
-  const permissions = useSelector(
-    (state) => state.persistedReducer.auth.currentUser.manager?.permissions
-  );
-
-  const currentUser = useSelector(
-    (state) => state.persistedReducer.auth?.currentUser
-  );
+  // get all collector data from redux store
+  const allCollector = useSelector((state) => state?.collector?.collector);
 
   // get bulletin permission
   const butPermission = useSelector(
     (state) => state.adminNetFeeSupport?.bulletinPermission
   );
 
+  // current date state
   var today = new Date();
   var firstDay =
-    userRole === "ispOwner" || permissions?.dashboardCollectionData
+    role === "ispOwner" || permissions?.dashboardCollectionData
       ? new Date(today.getFullYear(), today.getMonth(), 1)
       : new Date();
 
   firstDay.setHours(0, 0, 0, 0);
   today.setHours(23, 59, 59, 999);
 
+  // loading state
+  const [isLoading, setIsLoading] = useState(false);
   const [areaLoading, setAreaLoading] = useState(false);
   const [collectorLoading, setCollectorLoading] = useState(false);
+
   const [singleArea, setArea] = useState({});
   const [subareas, setSubAreas] = useState([]);
   const [subAreaIds, setSubArea] = useState([]);
@@ -121,6 +103,10 @@ export default function Report() {
   const [medium, setMedium] = useState("");
   const [open, setOpen] = useState(false);
 
+  // modal close handler
+  const [modalStatus, setModalStatus] = useState("");
+  const [show, setShow] = useState(false);
+
   // filter Accordion handle state
   const [activeKeys, setActiveKeys] = useState("");
 
@@ -131,6 +117,7 @@ export default function Report() {
   const [dateStart, setStartDate] = useState(firstDay);
   const [dateEnd, setEndDate] = useState(today);
 
+  // filter date state
   var selectDate = new Date(filterDate.getFullYear(), filterDate.getMonth(), 1);
   var lastDate = new Date(
     filterDate.getFullYear(),
@@ -138,34 +125,26 @@ export default function Report() {
     0
   );
 
-  //reload handler
-  const reloadHandler = () => {
-    if (userRole === "manager") {
-      getAllManagerBills(
-        dispatch,
-        ispOwnerId,
-        filterDate.getFullYear(),
-        filterDate.getMonth() + 1,
-        setIsLoading
-      );
+  // api call
+  useEffect(() => {
+    if (role === "ispOwner") getManger(dispatch, ispOwnerId);
+
+    if (role === "manager") {
       dispatch(managerFetchSuccess(userData));
     }
 
-    userRole === "ispOwner" &&
-      getAllBills(
-        dispatch,
-        ispOwnerId,
-        filterDate.getFullYear(),
-        filterDate.getMonth() + 1,
-        setIsLoading
-      );
-  };
+    areas.length === 0 && getArea(dispatch, ispOwnerId, setAreaLoading);
+    subAreas.length === 0 && getSubAreasApi(dispatch, ispOwnerId);
+
+    if (allCollector.length === 0)
+      getCollector(dispatch, ispOwnerId, setCollectorLoading);
+
+    // get netfee bulletin permission api
+    Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
+  }, []);
 
   useEffect(() => {
-    allArea.length === 0 && getArea(dispatch, ispOwnerId, setAreaLoading);
-    storeSubArea.length === 0 && getSubAreasApi(dispatch, ispOwner);
-
-    if (userRole === "ispOwner") {
+    if (role === "ispOwner") {
       setStartDate(selectDate);
 
       if (lastDate.getMonth() + 1 === today.getMonth() + 1) {
@@ -184,7 +163,7 @@ export default function Report() {
         );
     }
 
-    if (userRole === "manager") {
+    if (role === "manager") {
       filterDate.getMonth() + 1 &&
         getAllManagerBills(
           dispatch,
@@ -202,7 +181,7 @@ export default function Report() {
     );
 
     if (collectors.length === allCollector.length) {
-      if (userRole === "ispOwner") {
+      if (role === "ispOwner") {
         // const { user, name, id } = manager;
         let allManager = [];
         let manager1 = {};
@@ -242,27 +221,40 @@ export default function Report() {
     setCollectorIds(collectorUserIdsArr);
   }, [allCollector, manager, filterDate]);
 
+  // set data in state
   useEffect(() => {
     if (allBills) {
       setMainData(allBills);
     }
   }, [allBills]);
 
-  useEffect(() => {
-    if (userRole === "manager") {
+  // report page reload handler
+  const reloadHandler = () => {
+    if (role === "manager") {
+      getAllManagerBills(
+        dispatch,
+        ispOwnerId,
+        filterDate.getFullYear(),
+        filterDate.getMonth() + 1,
+        setIsLoading
+      );
       dispatch(managerFetchSuccess(userData));
     }
-    if (userRole === "ispOwner") getManger(dispatch, ispOwnerId);
-    if (allCollector.length === 0)
-      getCollector(dispatch, ispOwnerId, setCollectorLoading);
 
-    Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
-  }, []);
+    role === "ispOwner" &&
+      getAllBills(
+        dispatch,
+        ispOwnerId,
+        filterDate.getFullYear(),
+        filterDate.getMonth() + 1,
+        setIsLoading
+      );
+  };
 
   const onChangeArea = (param) => {
     let area = JSON.parse(param);
     setArea(area);
-    const temp = storeSubArea.filter((val) => val.area === area?.id);
+    const temp = subAreas.filter((val) => val.area === area?.id);
     setSubAreas(temp);
     if (
       area &&
@@ -355,7 +347,7 @@ export default function Report() {
 
   let subArea, collector;
   if (singleArea && subAreaIds.length === 1) {
-    subArea = storeSubArea?.find((item) => item.id === subAreaIds[0]);
+    subArea = subAreas?.find((item) => item.id === subAreaIds[0]);
   }
 
   if (collectorIds.length === 1 && collectors.length > 0) {
@@ -472,7 +464,7 @@ export default function Report() {
       },
       {
         width: "9%",
-        Header: t("collector"),
+        Header: t("collected"),
         accessor: "name",
       },
       {
@@ -508,10 +500,10 @@ export default function Report() {
               </p>
               <span
                 className="see_more"
-                data-bs-toggle="modal"
-                data-bs-target="#reportView"
                 onClick={() => {
                   setViewId(value?.id);
+                  setModalStatus("reportView");
+                  setShow(true);
                 }}
               >
                 ...See More
@@ -546,10 +538,10 @@ export default function Report() {
               />
               <ul className="dropdown-menu" aria-labelledby="customerDrop">
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#reportEditModal"
                   onClick={() => {
                     getReportId(original?.id);
+                    setModalStatus("reportEdit");
+                    setShow(true);
                   }}
                 >
                   <div className="dropdown-item">
@@ -582,7 +574,7 @@ export default function Report() {
     [t]
   );
 
-  // Add All Bill
+  // data amount count in data table hader
   const addAllBills = useMemo(() => {
     var count = 0;
     let connectionFeeSum = 0;
@@ -597,20 +589,20 @@ export default function Report() {
     return { count, connectionFeeSum, discount };
   }, [mainData]);
 
-  // custom component
+  // custom component for table header
   const customComponent = (
     <div
       className="text-center"
       style={{ fontSize: "18px", fontWeight: "500", display: "flex" }}
     >
-      {(userRole === "ispOwner" || permissions?.dashboardCollectionData) &&
+      {(role === "ispOwner" || permissions?.dashboardCollectionData) &&
         addAllBills.count > 0 && (
           <div>
             {t("totalBill")}: ৳{FormatNumber(addAllBills.count)}
           </div>
         )}
       &nbsp;&nbsp;
-      {(userRole === "ispOwner" || permissions?.dashboardCollectionData) &&
+      {(role === "ispOwner" || permissions?.dashboardCollectionData) &&
         addAllBills.connectionFeeSum > 0 && (
           <div>
             {t("connectionFee")}: ৳{FormatNumber(addAllBills.connectionFeeSum)}
@@ -674,7 +666,7 @@ export default function Report() {
                             <div className="addAndSettingIcon">
                               <CSVLink
                                 data={reportForCsVTableInfo}
-                                filename={ispOwnerData.company}
+                                filename={userData.company}
                                 headers={reportForCsVTableInfoHeader}
                                 title="Bill Report"
                               >
@@ -738,11 +730,7 @@ export default function Report() {
                               dateFormat="MMM-yyyy"
                               showMonthYearPicker
                               showFullMonthYearPicker
-                              minDate={
-                                new Date(
-                                  new Date(userData?.user?.createdAt).getTime()
-                                )
-                              }
+                              minDate={new Date(userData?.createdAt)}
                               maxDate={new Date()}
                             />
                           </div>
@@ -754,7 +742,7 @@ export default function Report() {
                             <option value={JSON.stringify({})} defaultValue>
                               {t("allArea")}
                             </option>
-                            {allArea.map((area, key) => (
+                            {areas.map((area, key) => (
                               <option key={key} value={JSON.stringify(area)}>
                                 {area.name}
                               </option>
@@ -774,7 +762,7 @@ export default function Report() {
                             ))}
                           </select>
 
-                          {userRole !== "collector" && (
+                          {role !== "collector" && (
                             <select
                               className="form-select mt-0"
                               onChange={(e) => setCollectedBy(e.target.value)}
@@ -816,13 +804,12 @@ export default function Report() {
                             <option value="onlinePayment">
                               {t("onlinePayment")}
                             </option>
-                            <option value="bKash"> {t("bKash")} </option>
                             <option value="rocket"> {t("rocket")} </option>
                             <option value="nagad"> {t("nagad")} </option>
                             <option value="others"> {t("others")} </option>
                           </select>
 
-                          {(userRole === "ispOwner" ||
+                          {(role === "ispOwner" ||
                             permissions?.dashboardCollectionData) && (
                             <>
                               <div>
@@ -874,6 +861,7 @@ export default function Report() {
                       </Accordion.Body>
                     </Accordion.Item>
                   </Accordion>
+
                   <div className="collectorWrapper pb-2">
                     <div className="addCollector">
                       <div style={{ display: "none" }}>
@@ -905,13 +893,30 @@ export default function Report() {
           </div>
         </div>
       </div>
-      <EditReport
-        reportId={reportId}
-        note={note}
-        setNote={setNote}
-        status="ispOwnerCustomerReport"
-      />
-      <ReportView reportId={viewId} status="ispOwnerCustomerReport" />
+
+      {/* report edit modal */}
+      {modalStatus === "reportEdit" && (
+        <EditReport
+          show={show}
+          setShow={setShow}
+          reportId={reportId}
+          note={note}
+          setNote={setNote}
+          status="ispOwnerCustomerReport"
+        />
+      )}
+
+      {/* report view modal */}
+      {modalStatus === "reportView" && (
+        <ReportView
+          show={show}
+          setShow={setShow}
+          reportId={viewId}
+          status="ispOwnerCustomerReport"
+        />
+      )}
     </>
   );
-}
+};
+
+export default Report;

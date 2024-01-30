@@ -1,114 +1,117 @@
 import { useState } from "react";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
+import { useTranslation } from "react-i18next";
+
+// custom hooks import
+import useISPowner from "../../hooks/useISPOwner";
 
 // internal imports
-// import "../../collector/collector.css";
 import "../collector/collector.css";
-
 import { FtextField } from "../../components/common/FtextField";
 import Loader from "../../components/common/Loader";
 import { addExpenditurePourpose } from "../../features/apiCalls";
-import { useTranslation } from "react-i18next";
+import ComponentCustomModal from "../../components/common/customModal/ComponentCustomModal";
 
-export default function CreatePourpose() {
+const CreatePourpose = ({ show, setShow }) => {
   const { t } = useTranslation();
-  const userRole = useSelector((state) => state.persistedReducer.auth.role);
-  const userData = useSelector((state) => state.persistedReducer.auth.userData);
-  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
+
+  // get user & current user data form useISPOwner hooks
+  const { role, userData } = useISPowner();
+
+  // loading state
+  const [isLoading, setIsLoading] = useState(false);
 
   //validator
   const linemanValidator = Yup.object({
     name: Yup.string().required(t("enterName")),
   });
 
-  // POST
+  // add new purpose handler
   const purposeHandler = async (data, resetForm) => {
-    if (userRole === "ispOwner") {
+    if (role === "ispOwner") {
       const sendingData = {
         name: data.name,
 
         ispOwner: userData.id,
       };
 
-      addExpenditurePourpose(dispatch, sendingData, setIsLoading, resetForm);
+      addExpenditurePourpose(
+        dispatch,
+        sendingData,
+        setIsLoading,
+        resetForm,
+        setShow
+      );
     }
-    if (userRole === "reseller") {
+
+    if (role === "reseller") {
       const sendingData = {
         name: data.name,
         reseller: userData.id,
       };
 
-      addExpenditurePourpose(dispatch, sendingData, setIsLoading, resetForm);
+      addExpenditurePourpose(
+        dispatch,
+        sendingData,
+        setIsLoading,
+        resetForm,
+        setShow
+      );
     }
   };
 
   return (
-    <div>
-      <div
-        className="modal fade modal-dialog-scrollable "
-        id="createPourpose"
-        tabIndex="-1"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
+    <>
+      <ComponentCustomModal
+        show={show}
+        setShow={setShow}
+        centered={false}
+        size={"md"}
+        header={t("addNewExpenditureSector")}
       >
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLabel">
-                {t("addNewExpenditureSector")}
-              </h5>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body">
-              <Formik
-                initialValues={{
-                  name: "",
-                  // ispOwner:
-                }}
-                validationSchema={linemanValidator}
-                onSubmit={(values, { resetForm }) => {
-                  purposeHandler(values, resetForm);
-                }}
-              >
-                {(formik) => (
-                  <Form>
-                    <FtextField
-                      type="text"
-                      label={t("expenditureSectorsName")}
-                      name="name"
-                    />
+        <Formik
+          initialValues={{
+            name: "",
+          }}
+          validationSchema={linemanValidator}
+          onSubmit={(values, { resetForm }) => {
+            purposeHandler(values, resetForm);
+          }}
+        >
+          {() => (
+            <Form>
+              <FtextField
+                type="text"
+                label={t("expenditureSectorsName")}
+                name="name"
+              />
 
-                    <div className="modal-footer">
-                      <button
-                        type="button"
-                        className="btn btn-secondary"
-                        data-bs-dismiss="modal"
-                      >
-                        {t("cancel")}
-                      </button>
-                      <button
-                        type="submit"
-                        className="btn btn-success customBtn"
-                        disabled={isLoading}
-                      >
-                        {isLoading ? <Loader /> : t("save")}
-                      </button>
-                    </div>
-                  </Form>
-                )}
-              </Formik>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+              <div className="displayGrid1 float-end mt-4">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => setShow(false)}
+                >
+                  {t("cancel")}
+                </button>
+
+                <button
+                  type="submit"
+                  className="btn btn-success customBtn"
+                  disabled={isLoading}
+                >
+                  {isLoading ? <Loader /> : t("save")}
+                </button>
+              </div>
+            </Form>
+          )}
+        </Formik>
+      </ComponentCustomModal>
+    </>
   );
-}
+};
+
+export default CreatePourpose;

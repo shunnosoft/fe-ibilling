@@ -1,27 +1,36 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Loader from "../../../components/common/Loader";
-import { recharge } from "../../../features/apiCalls";
 import * as Yup from "yup";
-
-import "../../message/message.css";
 import { useTranslation } from "react-i18next";
 import { Field, Form, Formik } from "formik";
-import { FtextField } from "../../../components/common/FtextField";
 
-function Recharge({ resellerId }) {
+// custom hooks import
+import useISPowner from "../../../hooks/useISPOwner";
+
+// internal import
+import "../../message/message.css";
+import Loader from "../../../components/common/Loader";
+import { recharge } from "../../../features/apiCalls";
+import { FtextField } from "../../../components/common/FtextField";
+import ComponentCustomModal from "../../../components/common/customModal/ComponentCustomModal";
+
+const Recharge = ({ show, setShow, resellerId }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const [isLoading, setIsloading] = useState(false);
 
-  const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth.userData.id
-  );
+  // get user & current user data form useISPOwner hooks
+  const { ispOwnerId } = useISPowner();
 
+  // get all reseller data from redux store
   const allReseller = useSelector((state) => state?.reseller?.reseller);
+
+  // single reseller find by id
   const reseller = allReseller.find((val) => {
     return val.id === resellerId;
   });
+
+  // loading state
+  const [isLoading, setIsloading] = useState(false);
 
   //recharge Validate with yup
   const rechargeValidate = Yup.object({
@@ -37,89 +46,75 @@ function Recharge({ resellerId }) {
       ispOwner: ispOwnerId,
       reseller: reseller.id,
     };
-    recharge(data, setIsloading, dispatch);
+    recharge(data, setIsloading, dispatch, setShow);
   };
   return (
     <>
-      <div
-        className="modal fade"
-        id="resellerRechargeModal"
-        tabindex="-1"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
+      <ComponentCustomModal
+        show={show}
+        setShow={setShow}
+        centered={false}
+        size={"md"}
+        header={t("rechargeAmount")}
       >
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLabel">
-                {t("rechargeAmount")}
-              </h5>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body">
-              <Formik
-                initialValues={{
-                  amount: "",
-                  comment: "",
-                }}
-                validationSchema={rechargeValidate}
-                onSubmit={(values) => {
-                  rechargeHandler(values);
-                }}
-                enableReinitialize
-              >
-                {(formik) => (
-                  <Form>
-                    <div>
-                      <FtextField
-                        type="number"
-                        label={t("enterAmount")}
-                        name="amount"
-                        min={0}
-                      />
-                      <label className="changeLabelFontColor" htmlFor="comment">
-                        {t("addComment")}
-                      </label>
+        <Formik
+          initialValues={{
+            amount: "",
+            comment: "",
+          }}
+          validationSchema={rechargeValidate}
+          onSubmit={(values) => {
+            rechargeHandler(values);
+          }}
+          enableReinitialize
+        >
+          {() => (
+            <Form>
+              <div className="displayGrid">
+                <FtextField
+                  type="number"
+                  label={t("enterAmount")}
+                  name="amount"
+                  min={0}
+                />
 
-                      <Field
-                        className="form-control shadow-none"
-                        style={{
-                          height: "70px",
-                          width: "100%",
-                          padding: "10px",
-                        }}
-                        component="textarea"
-                        name="comment"
-                      />
-                    </div>
+                <div>
+                  <label className="changeLabelFontColor" htmlFor="comment">
+                    {t("addComment")}
+                  </label>
 
-                    <div className="modal-footer">
-                      <button
-                        type="button"
-                        className="btn btn-secondary"
-                        data-bs-dismiss="modal"
-                      >
-                        {t("cancel")}
-                      </button>
+                  <Field
+                    className="form-control shadow-none"
+                    style={{
+                      height: "70px",
+                      width: "100%",
+                      padding: "10px",
+                    }}
+                    component="textarea"
+                    name="comment"
+                  />
+                </div>
+              </div>
 
-                      <button type="submit" className="btn btn-success">
-                        {isLoading ? <Loader /> : t("recharge")}
-                      </button>
-                    </div>
-                  </Form>
-                )}
-              </Formik>
-            </div>
-          </div>
-        </div>
-      </div>
+              <div className="displayGrid1 float-end mt-4">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => setShow(false)}
+                >
+                  {t("cancel")}
+                </button>
+
+                <button type="submit" className="btn btn-success">
+                  {isLoading ? <Loader /> : t("recharge")}
+                </button>
+              </div>
+            </Form>
+          )}
+        </Formik>
+      </ComponentCustomModal>
     </>
   );
-}
+};
 
 export default Recharge;

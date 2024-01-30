@@ -1,5 +1,4 @@
 import React from "react";
-import Table from "../../components/table/Table";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import { useMemo } from "react";
@@ -7,6 +6,12 @@ import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { PenFill, PlusCircle, ThreeDots } from "react-bootstrap-icons";
+
+// custom hooks import
+import useISPowner from "../../hooks/useISPOwner";
+
+// internal import
+import Table from "../../components/table/Table";
 import CategoryPost from "./modal/CategoryPost";
 import { getTicketCategoryApi } from "../../features/supportTicketApi";
 import CategoryEdit from "./modal/CategoryEdit";
@@ -15,14 +20,12 @@ const Category = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
+  // get user & current user data form useISPOwner hooks
+  const { role, ispOwnerId } = useISPowner();
+
   //get ticket Cartagory
   const ticketCategory = useSelector(
     (state) => state.supportTicket?.ticketCategory
-  );
-
-  //get ispOwner Id
-  const ispOwner = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerId
   );
 
   //get manager permission
@@ -30,15 +33,19 @@ const Category = () => {
     (state) => state.persistedReducer.auth?.currentUser?.manager?.permissions
   );
 
-  // get role
-  const role = useSelector((state) => state.persistedReducer?.auth?.role);
-
+  // loading state
   const [isLoading, setIsLoading] = useState(false);
+
+  // modal state
   const [category, setCategory] = useState("");
+
+  // modal close handler
+  const [modalStatus, setModalStatus] = useState("");
+  const [show, setShow] = useState(false);
 
   //api call
   useEffect(() => {
-    getTicketCategoryApi(dispatch, ispOwner, setIsLoading);
+    getTicketCategoryApi(dispatch, ispOwnerId, setIsLoading, setShow);
   }, []);
 
   //table column
@@ -70,13 +77,7 @@ const Category = () => {
         id: "option",
 
         Cell: ({ row: { original } }) => (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
+          <div className="d-flex justify-content-center align-items-center">
             <div className="dropdown">
               <ThreeDots
                 className="dropdown-toggle ActionDots"
@@ -89,9 +90,11 @@ const Category = () => {
                 {(role === "ispOwner" ||
                   managerPermission?.supportTicketCategory) && (
                   <li
-                    data-bs-toggle="modal"
-                    data-bs-target="#editCategoryModal"
-                    onClick={() => setCategory(original)}
+                    onClick={() => {
+                      setCategory(original);
+                      setModalStatus("categoryEdit");
+                      setShow(true);
+                    }}
                   >
                     <div className="dropdown-item">
                       <div className="customerAction">
@@ -117,8 +120,10 @@ const Category = () => {
         <div
           title={t("addCategory")}
           className="header_icon bg-success text-white"
-          data-bs-toggle="modal"
-          data-bs-target="#addCategoryModal"
+          onClick={() => {
+            setModalStatus("createCategory");
+            setShow(true);
+          }}
         >
           <PlusCircle />
         </div>
@@ -135,7 +140,12 @@ const Category = () => {
       ></Table>
 
       {/* Modal Section */}
-      <CategoryPost ispOwner={ispOwner} />
+
+      {/* create category modal */}
+      {modalStatus === "createCategory" && (
+        <CategoryPost show={show} setShow={setShow} ispOwner={ispOwnerId} />
+      )}
+
       <CategoryEdit category={category} />
       {/* Modal Section */}
     </>

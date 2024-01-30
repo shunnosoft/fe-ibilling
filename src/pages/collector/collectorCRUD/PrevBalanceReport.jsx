@@ -1,17 +1,23 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
+
+// internal import
 import { collectorAllPrevBalance } from "../../../features/apiCalls";
 import Table from "../../../components/table/Table";
+import ComponentCustomModal from "../../../components/common/customModal/ComponentCustomModal";
 
-const PrevBalanceReport = ({ collectorId }) => {
+const PrevBalanceReport = ({ show, setShow, collectorId }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
+  // get all prev balance data from redux store
   const allPrevBalance = useSelector((state) => state?.collector?.prevBalance);
 
+  // loading state
   const [isLoading, setIsLoading] = useState(false);
 
+  // api call
   useEffect(() => {
     if (collectorId)
       collectorAllPrevBalance(dispatch, collectorId, setIsLoading);
@@ -57,41 +63,23 @@ const PrevBalanceReport = ({ collectorId }) => {
   );
 
   return (
-    <div
-      className="modal fade"
-      id="collectorPrevMonthBalance"
-      tabIndex="-1"
-      aria-labelledby="customerModalDetails"
-      aria-hidden="true"
-    >
-      <div className="modal-dialog modal-dialog-scrollable modal-xl">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h5
-              style={{ color: "#0abb7a" }}
-              className="modal-title"
-              id="customerModalDetails"
-            >
-              {/* {single?.name}  */}
-              {t("previousBalance")}
-            </h5>
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div className="modal-body">
-            <Table
-              isLoading={isLoading}
-              columns={columns}
-              data={allPrevBalance}
-            ></Table>
-          </div>
+    <>
+      <ComponentCustomModal
+        show={show}
+        setShow={setShow}
+        centered={false}
+        size={"lg"}
+        header={t("previousBalance")}
+      >
+        <div className="modal-body">
+          <Table
+            isLoading={isLoading}
+            columns={columns}
+            data={allPrevBalance}
+          ></Table>
         </div>
-      </div>
-    </div>
+      </ComponentCustomModal>
+    </>
   );
 };
 

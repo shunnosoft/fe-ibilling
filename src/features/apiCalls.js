@@ -2227,7 +2227,12 @@ export const editReseller = async (dispatch, data, setIsLoading, setShow) => {
 
 //update reseller balance
 
-export const updateResellerBalance = async (dispatch, data, setIsLoading) => {
+export const updateResellerBalance = async (
+  dispatch,
+  data,
+  setIsLoading,
+  setShow
+) => {
   setIsLoading(true);
   const { ispId, resellerId, ...rest } = data;
   try {
@@ -2237,8 +2242,8 @@ export const updateResellerBalance = async (dispatch, data, setIsLoading) => {
       rest
     );
     dispatch(editResellerSuccess(res.data));
-    setIsLoading(false);
-    document.querySelector("#resellerBalanceEditModal").click();
+
+    setShow(false);
     langMessage(
       "success",
       "রিসেলার ব্যালেন্স আপডেট সফল হয়েছে ",
@@ -2679,13 +2684,14 @@ export const editBillReport = async (
   dispatch,
   setIsLoading,
   reportId,
-  data
+  data,
+  setShow
 ) => {
   setIsLoading(true);
   try {
     const res = await apiLink.patch(`/bill/monthlyBill/${reportId}`, data);
     dispatch(editBillReportSuccess(res.data));
-    document.getElementById("reportEditModal").click();
+    setShow(false);
     langMessage("success", "নোট এডিট সফল হয়েছে", "Note Edited Successfully");
   } catch (error) {
     toast.error(error.response?.data.message);
@@ -2724,19 +2730,18 @@ export const getCollectorBill = async (dispatch, year, month, setIsLoading) => {
 
 //recharge
 //isp Owner end
-export const recharge = async (data, setIsLoading, dispatch) => {
+export const recharge = async (data, setIsLoading, dispatch, setShow) => {
   setIsLoading(true);
   try {
     const res = await apiLink.post("/reseller/recharge", data);
-
     dispatch(editResellerforRecharge(res.data));
-    setIsLoading(false);
+
+    setShow(false);
     langMessage("success", "রিচার্জ সফল হয়েছে", "Recharge is Successful");
-    document.getElementById("resellerRechargeModal").click();
   } catch (error) {
-    setIsLoading(false);
     toast.error(error.response?.data.message);
   }
+  setIsLoading(false);
 };
 
 export const rechargeHistoryfunc = async (
@@ -3112,32 +3117,36 @@ export const getAllExpenditure = async (dispatch, ispOwnerId, setIsLoading) => {
   setIsLoading(false);
 };
 
-export const addExpenditure = async (dispatch, data, setLoading, resetForm) => {
+export const addExpenditure = async (
+  dispatch,
+  data,
+  setLoading,
+  resetForm,
+  setShow
+) => {
   setLoading(true);
   try {
     const res = await apiLink.post(`/staff/expenditure`, data);
     dispatch(addExpenditureSuccess(res.data));
+    setShow(false);
 
     langMessage("success", "সফল হয়েছে", "Expenditure Add Success");
-
     resetForm();
-    setLoading(false);
-
-    document.querySelector("#createExpenditure").click();
   } catch (error) {
     console.log(error.response?.data?.message);
     langMessage("error", "ব্যার্থ হয়েছে", "Faild");
-    document.querySelector("#createExpenditure").click();
     resetForm();
-    setLoading(false);
   }
+  setLoading(false);
 };
 
 export const editExpenditure = async (
   dispatch,
   data,
   expenditureId,
-  setLoading
+  setLoading,
+  resetForm,
+  setShow
 ) => {
   setLoading(true);
   try {
@@ -3145,20 +3154,19 @@ export const editExpenditure = async (
       `/staff/expenditure/${expenditureId}`,
       data
     );
-    console.log(res.data);
     dispatch(editExpenditureSuccess(res.data));
+    setShow(false);
+
     langMessage(
       "success",
       "খরচ আপডেট সফল হয়েছে",
       "Expenditure Updated Successfully"
     );
-    document.querySelector("#editExpenditure").click();
-    setLoading(false);
+    resetForm();
   } catch (error) {
     toast.error(error.response?.data?.message);
-    // langMessage("error", "খরচ আপডেট ব্যর্থ হয়েছে", "Expenditure Update Failed");
-    setLoading(false);
   }
+  setLoading(false);
 };
 
 export const deleteExpenditure = async (dispatch, expenditureId) => {
@@ -3197,15 +3205,15 @@ export const addExpenditurePourpose = async (
   dispatch,
   data,
   setIsloading,
-  resetForm
+  resetForm,
+  setShow
 ) => {
   setIsloading(true);
   try {
     const res = await apiLink.post(`/staff/expenditurePurpose`, data);
     dispatch(addExpenditureSectorsSuccess(res.data));
-    // console.log(res.data);
-    setIsloading(false);
-    document.querySelector("#createPourpose").click();
+    setShow(false);
+
     langMessage(
       "success",
       "খরচ যুক্ত সফল হয়েছে",
@@ -3213,12 +3221,17 @@ export const addExpenditurePourpose = async (
     );
     resetForm();
   } catch (error) {
-    setIsloading(false);
     langMessage("error", "খরচ যুক্ত ব্যার্থ হয়েছে", "Expenditure Add Failed");
-    resetForm();
   }
+  setIsloading(false);
 };
-export const editExpenditurePourpose = async (dispatch, data, setIsloading) => {
+export const editExpenditurePourpose = async (
+  dispatch,
+  data,
+  setIsloading,
+  resetForm,
+  setShow
+) => {
   setIsloading(true);
   try {
     const res = await apiLink.patch(
@@ -3226,21 +3239,22 @@ export const editExpenditurePourpose = async (dispatch, data, setIsloading) => {
       data
     );
     dispatch(editExpenditureSectorsSuccess(res.data));
-    setIsloading(false);
-    document.querySelector("#editPurpose").click();
+    setShow(false);
+
     langMessage(
       "success",
       "খরচ খাত সফলভাবে আপডেট হয়েছে",
       "Expenditure Type Updated Successfully"
     );
+    resetForm();
   } catch (error) {
-    setIsloading(false);
     langMessage(
       "error",
       "খরচ খাত যুক্ত ব্যার্থ হয়েছে",
       "Expenditure Type Added Failed"
     );
   }
+  setIsloading(false);
 };
 
 //add netFee support

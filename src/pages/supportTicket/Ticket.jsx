@@ -1,13 +1,18 @@
 import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import Table from "../../components/table/Table";
 import moment from "moment";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { getAllSupportTickets } from "../../features/supportTicketApi";
 import { useSelector } from "react-redux";
 import { ArchiveFill, PenFill, ThreeDots } from "react-bootstrap-icons";
+
+// custom hooks import
+import useISPowner from "../../hooks/useISPOwner";
+
+// internal import
+import Table from "../../components/table/Table";
+import { getAllSupportTickets } from "../../features/supportTicketApi";
 import SupportTicketEdit from "./modal/SupportTicketEdit";
 import SupportTicketDelete from "./modal/SupportTicketDelete";
 import { badge } from "../../components/common/Utils";
@@ -18,14 +23,12 @@ const Ticket = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
+  // get user & current user data form useISPOwner hooks
+  const { role, ispOwnerId } = useISPowner();
+
   // get support ticket
   const supportTickets = useSelector(
     (state) => state.supportTicket.supportTickets
-  );
-
-  //get ispOwner id
-  const ispOwner = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerId
   );
 
   // get manager
@@ -39,9 +42,6 @@ const Ticket = () => {
     (state) => state.supportTicket.ticketCategory
   );
 
-  // get all role
-  const role = useSelector((state) => state.persistedReducer.auth.role);
-
   // declare state
   const [isLoading, setIsLoading] = useState(false);
   const [supportTicketId, setSupportTicketId] = useState("");
@@ -53,10 +53,14 @@ const Ticket = () => {
   const [category, setCategory] = useState("");
   const [staff, setStaff] = useState("");
 
+  // modal close handler
+  const [modalStatus, setModalStatus] = useState("");
+  const [show, setShow] = useState(false);
+
   //get all support ticket
   useEffect(() => {
-    getAllSupportTickets(dispatch, ispOwner, setIsLoading);
-    getOwnerUsers(dispatch, ispOwner);
+    getAllSupportTickets(dispatch, ispOwnerId, setIsLoading);
+    getOwnerUsers(dispatch, ispOwnerId);
   }, []);
 
   //set main data
@@ -66,7 +70,7 @@ const Ticket = () => {
 
   //getting all collector
   useEffect(async () => {
-    const res = await apiLink.get(`/ispOwner/collector/${ispOwner}`);
+    const res = await apiLink.get(`/ispOwner/collector/${ispOwnerId}`);
     setAllCollector([...res.data]);
   }, []);
 
@@ -169,13 +173,7 @@ const Ticket = () => {
         id: "option",
 
         Cell: ({ row: { original } }) => (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
+          <div className="d-flex justify-content-center align-items-center">
             <div className="dropdown">
               <ThreeDots
                 className="dropdown-toggle ActionDots"
@@ -186,10 +184,10 @@ const Ticket = () => {
               />
               <ul className="dropdown-menu" aria-labelledby="customerDrop">
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#editModal"
                   onClick={() => {
                     handlesupportTicketEditId(original?.id);
+                    setModalStatus("ticketEdit");
+                    setShow(true);
                   }}
                 >
                   <div className="dropdown-item">
@@ -200,10 +198,10 @@ const Ticket = () => {
                   </div>
                 </li>
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#deleteModal"
                   onClick={() => {
                     handlesupportTicketDeleteId(original?.id);
+                    setModalStatus("delete");
+                    setShow(true);
                   }}
                 >
                   <div className="dropdown-item">
@@ -319,21 +317,26 @@ const Ticket = () => {
           </button>
         </div>
       </div>
-      <Table
-        isLoading={isLoading}
-        //customComponent={customComponent}
-        columns={columns}
-        data={mainData}
-      ></Table>
+      <Table isLoading={isLoading} columns={columns} data={mainData}></Table>
 
       {/* Edit Modal Start */}
-      <SupportTicketEdit
-        ticketEditId={supportTicketId}
-        allCollector={allCollector}
-      />
+      {modalStatus === "ticketEdit" && (
+        <SupportTicketEdit
+          show={show}
+          setShow={setShow}
+          ticketEditId={supportTicketId}
+          allCollector={allCollector}
+        />
+      )}
 
       {/* Delete Modal Start */}
-      <SupportTicketDelete supportTicketDeleteID={deleteTicketId} />
+      {modalStatus === "delete" && (
+        <SupportTicketDelete
+          show={show}
+          setShow={setShow}
+          supportTicketDeleteID={deleteTicketId}
+        />
+      )}
     </>
   );
 };

@@ -13,6 +13,13 @@ import {
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
+import moment from "moment";
+import ReactToPrint from "react-to-print";
+import { Accordion, Card, Collapse, Tab, Tabs } from "react-bootstrap";
+import { useTranslation } from "react-i18next";
+
+// custom hooks import
+import useISPowner from "../../hooks/useISPOwner";
 
 // internal imports
 import "../collector/collector.css";
@@ -21,7 +28,6 @@ import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
-
 import {
   deleteExpenditure,
   getAllExpenditure,
@@ -29,32 +35,32 @@ import {
 } from "../../features/apiCalls";
 import CreateExpenditure from "./CreateExpenditure";
 import CreatePourpose from "./Createpourpose";
-import moment from "moment";
 import EditExpenditure from "./ExpenditureEdit";
 import EditPourpose from "./EditPourpose";
 import PrintExpenditure from "./expenditurePDF";
-import ReactToPrint from "react-to-print";
 import Table from "../../components/table/Table";
-import { Accordion, Card, Collapse, Tab, Tabs } from "react-bootstrap";
-import { useTranslation } from "react-i18next";
 import { getOwnerUsers } from "../../features/getIspOwnerUsersApi";
 import Loader from "../../components/common/Loader";
 import FormatNumber from "../../components/common/NumberFormat";
 
-export default function Expenditure() {
+const Expenditure = () => {
   const { t } = useTranslation();
   const componentRef = useRef();
   const dispatch = useDispatch();
 
-  // get ispOwner id
-  const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerId
-  );
+  // get current date
+  var today = new Date();
+  var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
 
-  // get bp setting
-  const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
-  );
+  // set time
+  firstDay.setHours(0, 0, 0, 0);
+  today.setHours(23, 59, 59, 999);
+
+  // get user & current user data form useISPOwner hooks
+  const { role, ispOwnerId, userData, bpSettings } = useISPowner();
+
+  // get owner users from redux store
+  const ownerUsers = useSelector((state) => state?.ownerUsers?.ownerUser);
 
   // get expenditure
   const expenditures = useSelector(
@@ -66,22 +72,10 @@ export default function Expenditure() {
     (state) => state.expenditure.expenditurePourposes
   );
 
-  // get current date
-  var today = new Date();
-  var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
-
-  // set time
-  firstDay.setHours(0, 0, 0, 0);
-  today.setHours(23, 59, 59, 999);
-
-  // get owner users
-  const ownerUsers = useSelector((state) => state?.ownerUsers?.ownerUser);
-
-  // get user data
-  const userData = useSelector((state) => state.persistedReducer.auth.userData);
-
-  // get all role
-  const role = useSelector((state) => state.persistedReducer.auth.role);
+  // loading state
+  const [isLoading, setIsloading] = useState(false);
+  const [expenditureLoading, setExpenditureLoading] = useState(false);
+  const [open, setOpen] = useState(false);
 
   // filter Accordion handle state
   const [activeKeys, setActiveKeys] = useState("");
@@ -95,10 +89,9 @@ export default function Expenditure() {
   // single expenditure purpose state
   const [singlePurpose, setSinglePurpose] = useState({});
 
-  // loading state
-  const [isLoading, setIsloading] = useState(false);
-  const [expenditureLoading, setExpenditureLoading] = useState(false);
-  const [open, setOpen] = useState(false);
+  // modal close handler
+  const [modalStatus, setModalStatus] = useState("");
+  const [show, setShow] = useState(false);
 
   // start date state
   const [dateStart, setStartDate] = useState(firstDay);
@@ -239,10 +232,10 @@ export default function Expenditure() {
                 original.user.match(userData.user)) ||
                 role !== "collector") && (
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#editExpenditure"
                   onClick={() => {
                     setSingleExp(original);
+                    setModalStatus("expenditureEdit");
+                    setShow(true);
                   }}
                 >
                   <div className="dropdown-item">
@@ -253,6 +246,7 @@ export default function Expenditure() {
                   </div>
                 </li>
               )}
+
               {role === "ispOwner" &&
                 bpSettings.expenditureDelete &&
                 new Date(original.createdAt).getMonth() ===
@@ -327,10 +321,10 @@ export default function Expenditure() {
               <ul className="dropdown-menu" aria-labelledby="customerDrop">
                 {role !== "collector" && (
                   <li
-                    data-bs-toggle="modal"
-                    data-bs-target="#editPurpose"
                     onClick={() => {
                       setSinglePurpose(original);
+                      setModalStatus("editPurpose");
+                      setShow(true);
                     }}
                   >
                     <div className="dropdown-item">
@@ -435,13 +429,8 @@ export default function Expenditure() {
   return (
     <>
       <Sidebar />
-
-      {/* import modal  */}
-      <CreateExpenditure />
-      <CreatePourpose />
-      <EditExpenditure singleExp={singleExp} />
-      <EditPourpose singlePurpose={singlePurpose} />
       <ToastContainer position="top-right" theme="colored" />
+
       <div className={useDash.dashboardWrapper}>
         <div className="container-fluied collector">
           <div className="container">
@@ -485,19 +474,25 @@ export default function Expenditure() {
                           <div title={t("addExpense")}>
                             <PlusCircleDotted
                               className="addcutmButton"
-                              data-bs-toggle="modal"
-                              data-bs-target="#createExpenditure"
+                              onClick={() => {
+                                setModalStatus("createExpenditure");
+                                setShow(true);
+                              }}
                             />
                           </div>
+
                           {role !== "collector" && (
                             <div title={t("addExpenseSector")}>
                               <PlusCircleFill
                                 className="addcutmButton"
-                                data-bs-toggle="modal"
-                                data-bs-target="#createPourpose"
+                                onClick={() => {
+                                  setModalStatus("createPourpose");
+                                  setShow(true);
+                                }}
                               />
                             </div>
                           )}
+
                           <div title={t("print")}>
                             <ReactToPrint
                               documentTitle={t("expenseReport")}
@@ -690,6 +685,32 @@ export default function Expenditure() {
           </div>
         </div>
       </div>
+
+      {/* create expenditure modal */}
+      {modalStatus === "createExpenditure" && (
+        <CreateExpenditure show={show} setShow={setShow} />
+      )}
+
+      {/* edit expenditure modal */}
+      {modalStatus === "expenditureEdit" && (
+        <EditExpenditure show={show} setShow={setShow} singleExp={singleExp} />
+      )}
+
+      {/* create expenditure purpose modal */}
+      {modalStatus === "createPourpose" && (
+        <CreatePourpose show={show} setShow={setShow} />
+      )}
+
+      {/* edit expenditure purpose modal */}
+      {modalStatus === "editPurpose" && (
+        <EditPourpose
+          show={show}
+          setShow={setShow}
+          singlePurpose={singlePurpose}
+        />
+      )}
     </>
   );
-}
+};
+
+export default Expenditure;

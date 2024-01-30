@@ -57,12 +57,14 @@ export const getAllSupportTickets = async (
 export const getTicketCategoryApi = async (
   dispatch,
   ispOwnerId,
-  setIsLoading
+  setIsLoading,
+  setShow
 ) => {
   setIsLoading(true);
   try {
     const res = await apiLink.get(`ispOwner/get/ticket/category/${ispOwnerId}`);
     dispatch(getTicketCategory(res.data));
+    setShow(false);
   } catch (error) {
     toast.error(error.res?.data.message);
   }
@@ -70,13 +72,19 @@ export const getTicketCategoryApi = async (
 };
 
 //add ticket Category api
-export const addTicketCategoryApi = async (dispatch, data, setIsLoading) => {
+export const addTicketCategoryApi = async (
+  dispatch,
+  data,
+  setIsLoading,
+  setShow
+) => {
   setIsLoading(true);
   try {
     const res = await apiLink.post(`ispOwner/create/ticket/category`, data);
     dispatch(createTicketCategory(res.data));
+    setShow(false);
+
     toast.success("Ticket Category Created Successfully");
-    document.getElementById("addCategoryModal").click();
   } catch (error) {
     toast.error(error.res?.data.message);
   }
@@ -148,7 +156,8 @@ export const supportTicketsEditApi = async (
   dispatch,
   data,
   ticketId,
-  setIsLoading
+  setIsLoading,
+  setShow
 ) => {
   setIsLoading(true);
   try {
@@ -157,7 +166,8 @@ export const supportTicketsEditApi = async (
       data
     );
     dispatch(editSupportTickets(response.data.supportTicket));
-    document.getElementById("editModal").click();
+    setShow(false);
+
     toast.success("Support Ticket Edit Success");
   } catch (error) {
     toast.error(error.response?.data.message);
@@ -184,15 +194,17 @@ export const collectorSupportTicketsEditApi = async (
 };
 
 // Support Tickets Delete Api
-export const supportTicketsDeleteApi = async (dispatch, ticketId) => {
+export const supportTicketsDeleteApi = async (dispatch, ticketId, setShow) => {
   try {
     const response = await apiLink.delete(`customer/supportTicket/${ticketId}`);
     dispatch(deleteSupportTickets(ticketId));
+    setShow(false);
     toast.success(response.data.message);
   } catch (error) {
     toast.error(error.response?.data.message);
   }
 };
+
 //Collector Support Tickets Delete Api
 export const collectorSupportTicketsDeleteApi = async (dispatch, ticketId) => {
   try {

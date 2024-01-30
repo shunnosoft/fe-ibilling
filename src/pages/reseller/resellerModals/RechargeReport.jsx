@@ -7,15 +7,24 @@ import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import ReactToPrint from "react-to-print";
+
+// internal import
 import FormatNumber from "../../../components/common/NumberFormat";
 import TdLoader from "../../../components/common/TdLoader";
 import { getResellerRechargeHistioty } from "../../../features/apiCalls";
 import PrintReport from "./ReportPDF";
+import ComponentCustomModal from "../../../components/common/customModal/ComponentCustomModal";
 
-const RechargeReport = ({ resellerId }) => {
+const RechargeReport = ({ show, setShow, resellerId }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const componentRef = useRef();
+
+  // get Current date
+  const today = new Date();
+
+  // get first date of month
+  const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
 
   //get recharge history
   let data = useSelector((state) => state.recharge.singleHistory);
@@ -23,11 +32,8 @@ const RechargeReport = ({ resellerId }) => {
   // get all reseller
   const reseller = useSelector((state) => state?.reseller?.reseller);
 
-  // get Current date
-  const today = new Date();
-
-  // get first date of month
-  const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+  // find select reseller
+  const findName = reseller.find((item) => item?.id === resellerId);
 
   // start date state
   const [startDate, setStartDate] = useState(firstDay);
@@ -41,8 +47,11 @@ const RechargeReport = ({ resellerId }) => {
   // report data state
   const [mainData, setMainData] = useState([]);
 
-  // find select reseller
-  const findName = reseller.find((item) => item?.id === resellerId);
+  useEffect(() => {
+    if (resellerId) {
+      getResellerRechargeHistioty(resellerId, setIsLoading, dispatch);
+    }
+  }, [resellerId]);
 
   useEffect(() => {
     setMainData(data);
@@ -62,124 +71,101 @@ const RechargeReport = ({ resellerId }) => {
     setMainData(filterData);
   };
 
-  useEffect(() => {
-    if (resellerId) {
-      getResellerRechargeHistioty(resellerId, setIsLoading, dispatch);
-    }
-  }, [resellerId]);
-
   return (
     <>
-      <div
-        className="modal fade"
-        id="rechargeReport"
-        tabIndex="-1"
-        aria-labelledby="customerModalDetails"
-        aria-hidden="true"
+      <ComponentCustomModal
+        show={show}
+        setShow={setShow}
+        centered={false}
+        size={"md"}
+        header={findName?.name + " " + t("report")}
+        printr={
+          <div className="float-end">
+            <ReactToPrint
+              documentTitle={t("rechargeHistory")}
+              trigger={() => (
+                <PrinterFill title={t("print")} className="addcutmButton" />
+              )}
+              content={() => componentRef.current}
+            />
+          </div>
+        }
       >
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5
-                style={{ color: "#0abb7a" }}
-                className="modal-title"
-                id="customerModalDetails"
-              >
-                {findName?.name} {t("report")}
-              </h5>
-              <ReactToPrint
-                documentTitle={t("rechargeHistory")}
-                trigger={() => (
-                  <PrinterFill title={t("print")} className="addcutmButton" />
-                )}
-                content={() => componentRef.current}
-              />
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body">
-              {/* filter selector */}
-              <div className="selectFilteringg">
-                <div>
-                  <ReactDatePicker
-                    className="form-control mw-100"
-                    selected={startDate}
-                    onChange={(date) => setStartDate(date)}
-                    dateFormat="MMM dd yyyy"
-                    placeholderText={t("selectBillDate")}
-                  />
-                </div>
-                <div className="mx-2">
-                  <ReactDatePicker
-                    className="form-control mw-100"
-                    selected={endDate}
-                    onChange={(date) => setEndDate(date)}
-                    dateFormat="MMM dd yyyy"
-                    placeholderText={t("selectBillDate")}
-                  />
-                </div>
-                <div className="">
-                  <button
-                    className="btn btn-outline-primary w-140 "
-                    type="button"
-                    onClick={onClickFilter}
-                  >
-                    {t("filter")}
-                  </button>
-                </div>
-              </div>
-              <div className="table-section">
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th scope="col">#</th>
-                      <th scope="col">{t("amount")}</th>
-                      <th scope="col">{t("date")}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {isLoading ? (
-                      <TdLoader colspan={4} />
-                    ) : mainData?.length > 0 ? (
-                      mainData?.map((item, index) => {
-                        return (
-                          <>
-                            <tr key={index}>
-                              <th scope="row">{index + 1}</th>
-                              <td>{FormatNumber(item.amount)}</td>
-                              <td>
-                                {moment(item.createdAt).format(
-                                  "MMM DD YYYY hh:mm a"
-                                )}
-                              </td>
-                            </tr>
-                          </>
-                        );
-                      })
-                    ) : (
-                      <td colSpan={4}>
-                        <h5 className="text-center">{t("doNotGetAnyData")}</h5>
-                      </td>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
+        <div className="displayGrid3">
+          <div>
+            <ReactDatePicker
+              className="form-control mw-100"
+              selected={startDate}
+              onChange={(date) => setStartDate(date)}
+              dateFormat="MMM dd yyyy"
+              placeholderText={t("selectBillDate")}
+            />
+          </div>
+
+          <div>
+            <ReactDatePicker
+              className="form-control mw-100"
+              selected={endDate}
+              onChange={(date) => setEndDate(date)}
+              dateFormat="MMM dd yyyy"
+              placeholderText={t("selectBillDate")}
+            />
+          </div>
+
+          <button
+            className="btn btn-outline-primary w-140 "
+            type="button"
+            onClick={onClickFilter}
+          >
+            {t("filter")}
+          </button>
+        </div>
+
+        <div className="table-section">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">{t("amount")}</th>
+                <th scope="col">{t("medium")}</th>
+                <th scope="col">{t("date")}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {isLoading ? (
+                <TdLoader colspan={4} />
+              ) : mainData?.length > 0 ? (
+                mainData?.map((item, index) => {
+                  return (
+                    <>
+                      <tr key={index}>
+                        <th scope="row">{index + 1}</th>
+                        <td>{FormatNumber(item.amount)}</td>
+                        <td>{item?.medium}</td>
+                        <td>
+                          {moment(item.createdAt).format("MMM DD YYYY hh:mm a")}
+                        </td>
+                      </tr>
+                    </>
+                  );
+                })
+              ) : (
+                <td colSpan={4}>
+                  <h5 className="text-center">{t("doNotGetAnyData")}</h5>
+                </td>
+              )}
+            </tbody>
+          </table>
+
+          <div style={{ display: "none" }}>
+            <PrintReport
+              currentCustomers={data}
+              name={findName?.name}
+              ref={componentRef}
+            />
           </div>
         </div>
-      </div>
-      <div style={{ display: "none" }}>
-        <PrintReport
-          currentCustomers={data}
-          name={findName?.name}
-          ref={componentRef}
-        />
-      </div>
-      {/* print report end*/}
+      </ComponentCustomModal>
     </>
   );
 };

@@ -1,10 +1,12 @@
+import { useTranslation } from "react-i18next";
+import { ToastContainer } from "react-toastify";
+import { Tab, Tabs } from "react-bootstrap";
+
+// internal import
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { FontColor, FourGround } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
 import useDash from "../../assets/css/dash.module.css";
-import { useTranslation } from "react-i18next";
-import { ToastContainer } from "react-toastify";
-import { Tab, Tabs } from "react-bootstrap";
 import Ticket from "./Ticket";
 import Category from "./Category";
 
@@ -14,15 +16,14 @@ const SupportTicket = () => {
     <>
       <Sidebar />
       <ToastContainer position="top-right" theme="colored" />
+
       <div className={useDash.dashboardWrapper}>
         <div className="container-fluied collector">
           <div className="container">
             <FontColor>
               <FourGround>
-                <div className="collectorTitle d-flex justify-content-between px-5">
-                  <div className="d-flex">
-                    <div>{t("supportTicket")}</div>
-                  </div>
+                <div className="collectorTitle d-flex justify-content-between px-4">
+                  <div>{t("supportTicket")}</div>
                 </div>
               </FourGround>
 
