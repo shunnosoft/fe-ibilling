@@ -10,6 +10,7 @@ import { useEffect } from "react";
 import { Card } from "react-bootstrap";
 import { CashStack } from "react-bootstrap-icons";
 import { toast } from "react-toastify";
+import ReactToPrint from "react-to-print";
 
 // custom hooks import
 import useISPowner from "../../../hooks/useISPOwner";
@@ -20,7 +21,6 @@ import { FtextField } from "../../../components/common/FtextField";
 import { billCollect } from "../../../features/apiCalls";
 import Loader from "../../../components/common/Loader";
 import RechargePrintInvoice from "./bulkOpration/RechargePrintInvoice";
-import ReactToPrint from "react-to-print";
 
 // custom function import
 import customerBillMonth from "./customerBillMonth";
@@ -90,9 +90,6 @@ const CustomerBillCollect = ({ single, status, page, setShow }) => {
   const [selectedMonth, setSelectedMonth] = useState(null);
   const [billAmount, setBillAmount] = useState();
 
-  //
-  const [connectionFeeDue, setConnectionFeeDue] = useState(0);
-
   // note check & note
   const [noteCheck, setNoteCheck] = useState(false);
   const [note, setNote] = useState("");
@@ -133,31 +130,13 @@ const CustomerBillCollect = ({ single, status, page, setShow }) => {
       .integer(t("decimalNumberNotAcceptable")),
   });
 
-  //form resetFunction
-  const resetForm = () => {
-    setStartDate(false);
-    setEndDate(false);
-    setNote("");
-    setNoteCheck(false);
-    setSelectedMonth(null);
-    setBillAmount(
-      data?.balance > 0 && data?.balance <= data?.monthlyFee
-        ? data?.monthlyFee - data?.balance
-        : data?.monthlyFee
-    );
-  };
-
+  // set customer bill amount & due
   useEffect(() => {
     setBalanceDue(data?.balance < 0 ? Math.abs(data?.balance) : 0);
     setBillAmount(
       data?.balance > 0 && data?.balance <= data?.monthlyFee
         ? data?.monthlyFee - data?.balance
         : data?.monthlyFee
-    );
-
-    //
-    setConnectionFeeDue(
-      data?.connectionFee ? data?.connectionFee - paidConnectionFee : 0
     );
 
     // set customer bill month
@@ -178,6 +157,20 @@ const CustomerBillCollect = ({ single, status, page, setShow }) => {
       }
     }
   }, [test]);
+
+  //form resetFunction
+  const resetForm = () => {
+    setStartDate(false);
+    setEndDate(false);
+    setNote("");
+    setNoteCheck(false);
+    setSelectedMonth(null);
+    setBillAmount(
+      data?.balance > 0 && data?.balance <= data?.monthlyFee
+        ? data?.monthlyFee - data?.balance
+        : data?.monthlyFee
+    );
+  };
 
   // handle form customer bill amount & due
   const handleFormValue = (event) => {
@@ -265,7 +258,7 @@ const CustomerBillCollect = ({ single, status, page, setShow }) => {
       <Card.Body className={page === "recharge" ? "pt-0" : ""}>
         <Formik
           initialValues={{
-            amount: billType === "bill" ? billAmount : connectionFeeDue,
+            amount: billType === "bill" ? billAmount : totalAmount,
             due: balanceDue,
             discount: 0,
           }}

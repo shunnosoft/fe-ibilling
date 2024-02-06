@@ -1,11 +1,10 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 
-// internal import
-import RootBulkModal from "./bulkModal";
-import BulkPackageUpdateRecharge from "../../../pages/Customer/customerCRUD/bulkOpration/PackageUpdateRecharge";
+// custom hooks import
+import useISPowner from "../../../hooks/useISPOwner";
 
 // custom function import
 import {
@@ -13,14 +12,25 @@ import {
   getCustomerDayLeft,
 } from "../../../pages/Customer/customerCRUD/customerBillDayPromiseDate";
 
+// internal import
+import RootBulkModal from "./bulkModal";
+import { bulkPackageEdit } from "../../../features/actions/bulkOperationApi";
+
 const BulkPackageEdit = ({ bulkCustomer, show, setShow }) => {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
+
+  // get user & current user data form useISPOwner
+  const { hasMikrotik } = useISPowner();
 
   // get mikrotik
   const Getmikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
 
   // get mikrotik package from redux
   const pppoePackage = useSelector((state) => state?.mikrotik?.pppoePackage);
+
+  // loading state
+  const [isLoading, setIsLoading] = useState(false);
 
   // package recharge modal handle state
   const [modalStatus, setModalStatus] = useState("");
@@ -75,7 +85,7 @@ const BulkPackageEdit = ({ bulkCustomer, show, setShow }) => {
     const homeUser = crr.original;
 
     // home user billing date
-    const billingDate = new Date(crr.original.billingCycle);
+    const billingDate = new Date(homeUser.billingCycle);
 
     // customer bill month days
     const monthDate = new Date(
@@ -101,81 +111,79 @@ const BulkPackageEdit = ({ bulkCustomer, show, setShow }) => {
     const currentPackgeUsedDayAmount =
       (homeUser.monthlyFee / monthDate) * daysUsed;
 
-    console.log(currentPackgeUsedDayAmount);
-
     // customer current package day left amount
-    // const currentPackgeBalance =
-    //   homeUser.monthlyFee - currentPackgeUsedDayAmount;
+    const currentPackgeBalance =
+      homeUser.monthlyFee - currentPackgeUsedDayAmount;
 
-    // customer day left amount
+    // customer day left amountcurrentPackgeBalance
     const changePackageDayLeftAmount =
       (mikrotikPackage?.rate / monthDate) * dayLeft;
 
-    console.log(changePackageDayLeftAmount);
+    // customer change package amount after day left change in current date
+    let changePackageAmount = 0;
 
-    if (homeUser.paymentStatus === "paid") {
-      const changePackageAmount =
-        changePackageDayLeftAmount - currentPackgeUsedDayAmount;
+    if (homeUser.status === "active" && homeUser.paymentStatus === "paid") {
+      // customer current package change before current package and after balance
+      if (homeUser.mikrotikPackage === mikrotikPackage?.id) {
+        changePackageAmount = homeUser.balance ? homeUser.balance : 0;
+      } else {
+        changePackageAmount =
+          currentPackgeBalance - changePackageDayLeftAmount + homeUser.balance;
+      }
+    } else if (
+      homeUser.status === "active" &&
+      homeUser.paymentStatus === "unpaid"
+    ) {
+      // customer current package change before current package
+      if (homeUser.mikrotikPackage === mikrotikPackage?.id) {
+        changePackageAmount = homeUser.balance ? homeUser.balance : 0;
+      } else {
+        // customer privious package and crrent package used amount
+        changePackageAmount = -(
+          currentPackgeUsedDayAmount +
+          changePackageDayLeftAmount -
+          homeUser.balance
+        );
+
+        // customer change package amount after day left change in current date
+        changePackageAmount = homeUser.balance - changePackageDayLeftAmount;
+      }
+    } else {
+      // for inactive or expired user change package monthly fee
+      changePackageAmount = -mikrotikPackage?.rate;
     }
 
-    const packageAmount = Math.floor(
-      currentPackgeUsedDayAmount - changePackageDayLeftAmount
-    );
-    console.log(packageAmount);
+    // with or without mikrotik check customers package change
+    if (hasMikrotik && homeUser.mikrotik === singleMikrotik) {
+      acc[homeUser.id] = Math.round(changePackageAmount);
+    } else {
+      acc[homeUser.id] = Math.round(changePackageAmount);
+    }
 
-    // return { currentPackgeBalance, changePackageDayLeftAmount };
+    return acc;
   }, {});
 
   // customer package change and recharge
   const customersPackageUpdateHandle = (e) => {
     e.preventDefault();
 
-    // let otherCusetomerCount = 0;
+    // customers sending data to api
+    if (mikrotikPackage) {
+      const data = {
+        customerIds: Object.keys(customer),
+        customerBalance: customer,
+        mikrotikPackage: mikrotikPackage.id,
+      };
 
-    // const customer = bulkCustomer.reduce((acc, current) => {
-    //   if (current.original.mikrotik === singleMikrotik) {
-    //     acc.push(current);
-    //   } else {
-    //     otherCusetomerCount++;
-    //   }
-    //   return acc;
-    // }, []);
-    // console.log(customer);
+      const confirm = window.confirm(
+        Object.keys(customer).length + t("updateCustomerPackage")
+      );
 
-    // let otherCusetomerCount = 0;
-    // let customers;
-    // if (singleMikrotik) {
-    //   customers = bulkCustomer.reduce((acc, current) => {
-    //     if (current.original.mikrotik === singleMikrotik) {
-    //       acc.push(current);
-    //     } else {
-    //       otherCusetomerCount++;
-    //     }
-    //     return acc;
-    //   }, []);
-    // } else {
-    //   alert(t("selectMikrotik"));
-    // }
-
-    // if (singleMikrotik && mikrotikPackage) {
-    //   const data = {
-    //     customerIds: customers.map((item) => item.original.id),
-    //     mikrotikPackage,
-    //   };
-    //   const confirm = window.confirm(
-    //     t("areYouWantToUpdateStatus") +
-    //       customers.length +
-    //       t("updateCustomerPackage") +
-    //       "\n" +
-    //       otherCusetomerCount +
-    //       t("otherMtkUsers")
-    //   );
-    //   if (confirm) {
-    //     // bulkPackageEdit(dispatch, data, setIsLoading, setShow);
-    //   }
-    // } else {
-    //   alert(t("selectPackage"));
-    // }
+      // bulkcustomers pakcage update api
+      if (confirm) bulkPackageEdit(dispatch, data, setIsLoading);
+    } else {
+      alert(t("selectPackage"));
+    }
   };
 
   return (
@@ -233,7 +241,7 @@ const BulkPackageEdit = ({ bulkCustomer, show, setShow }) => {
               {t("selectPackage")} <span className="text-danger">*</span>
             </label>
             <select
-              className="form-select mb-3 mw-100 mt-0"
+              className="form-select mw-100 mt-0"
               aria-label="Default select example"
               onChange={selectMikrotikPackage}
             >
@@ -251,7 +259,7 @@ const BulkPackageEdit = ({ bulkCustomer, show, setShow }) => {
           </div>
         )}
 
-        <div className="modal-footer" style={{ border: "none" }}>
+        <div className="displayGrid1 float-end mt-4">
           <button
             type="button"
             className="btn btn-secondary"

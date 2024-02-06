@@ -280,7 +280,7 @@
   "informationEdit": "এর তথ্য এডিট করুন",
   "editManager": "এডিট ম্যানেজার",
   "newStaticPackage": "নতুন স্ট্যাটিক প্যাকেজ",
-  "automaticConnectionOff": "অটোমেটিক সংযোগ বন্ধ",
+  "automaticConnectionOff": "অটোমেটিক সংযোগ চালু/বন্ধ",
   "autoConnectionOff": "অটোমেটিক সংযোগ বন্ধ",
   "billNotAcceptable": "বিল গ্রহন যোগ্য নয়",
   "decimalNumberNotAcceptable": "দশামিক গ্রহনযোগ্য নয়",
@@ -929,5 +929,7 @@
   "totalSalary": "মোট বেতন",
   "offlinePaymentCustomer": "অফলাইন পেমেন্ট গ্রাহক",
   "onlinePaymentCustomer": "অনলাইন পেমেন্ট গ্রাহক",
-  "hotspotCustomerSync": "হটস্পট গ্রাহক সিঙ্ক"
+  "hotspotCustomerSync": "হটস্পট গ্রাহক সিঙ্ক",
+  "willContinue": "চলতে থাকবে",
+  "nextMonth": "পরবর্তী মাস"
 }

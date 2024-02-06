@@ -5,17 +5,19 @@ import { useState } from "react";
 import ReactDatePicker from "react-datepicker";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
+import { useRef } from "react";
+
+// internal import
 import Loader from "../../../components/common/Loader";
 import {
   fetchMikrotik,
   fetchPackagefromDatabase,
-  fetchpppoePackage,
 } from "../../../features/apiCalls";
 import { editResellerCustomer } from "../../../features/resellerCustomerAdminApi";
-import { useTranslation } from "react-i18next";
-import { useRef } from "react";
+import ComponentCustomModal from "../../../components/common/customModal/ComponentCustomModal";
 
-const ResellerCustomerEdit = ({ customerId, allCustomer }) => {
+const ResellerCustomerEdit = ({ show, setShow, customerId, allCustomer }) => {
   const { t } = useTranslation();
   // import dispatch
   const dispatch = useDispatch();
@@ -109,7 +111,6 @@ const ResellerCustomerEdit = ({ customerId, allCustomer }) => {
       };
 
       // get package api call
-      // fetchpppoePackage(dispatch, IDs, singleMikrotik?.name);
       fetchPackagefromDatabase(
         dispatch,
         IDs,
@@ -165,194 +166,168 @@ const ResellerCustomerEdit = ({ customerId, allCustomer }) => {
   };
 
   return (
-    <div
-      className="modal fade "
-      id="CustomerEditModal"
-      tabIndex="-1"
-      aria-labelledby="exampleModalLabel"
-      aria-hidden="true"
-    >
-      <div className="modal-dialog">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h5 className="modal-title" id="exampleModalLabel">
-              {data?.name} {t("edit")}
-            </h5>
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
+    <>
+      <ComponentCustomModal
+        show={show}
+        setShow={setShow}
+        centered={false}
+        size={"md"}
+        header={data?.name + " " + t("edit")}
+      >
+        <div className="displayGrid">
+          <div>
+            <label class="form-label mb-0"> {t("selectMikrotik")} </label>
+
+            <select
+              className="form-select mt-0 mw-100"
+              aria-label="Default select example"
+              disabled
+              value={data?.mikrotik || ""}
+            >
+              <option value={singleMikrotik?.id || ""}>
+                {singleMikrotik?.name || ""}
+              </option>
+            </select>
           </div>
-          <div className="modal-body">
-            <div className="wrapper-body">
-              <div class="align-items-center">
-                <div class="col-auto">
-                  <label class="form-label mb-0"> {t("selectMikrotik")} </label>
-                </div>
-                <div className="col-auto">
-                  <select
-                    className="form-select mt-0 mb-3 mw-100"
-                    aria-label="Default select example"
-                    disabled
-                    value={data?.mikrotik || ""}
+
+          <div>
+            <label class="form-label mb-0"> {t("selectPackage")} </label>
+
+            <select
+              className="form-select mt-0 mw-100"
+              aria-label="Default select example"
+              onChange={(event) => setPackageId(event.target.value)}
+            >
+              {ppPackage &&
+                ppPackage?.map((item, key) => (
+                  <option
+                    selected={item.id === data?.mikrotikPackage}
+                    key={key}
+                    disabled={item.rate > findPackage?.rate}
+                    value={item.id || ""}
                   >
-                    <option value={singleMikrotik?.id || ""}>
-                      {singleMikrotik?.name || ""}
-                    </option>
-                  </select>
-                </div>
-              </div>
+                    {item.name}
+                  </option>
+                ))}
+            </select>
+          </div>
 
-              <div class=" align-items-center">
-                <div class="col-auto">
-                  <label class="form-label mb-0"> {t("selectPackage")} </label>
-                </div>
-                <div className="col-auto">
-                  <select
-                    className="form-select mb-3 mt-0 mw-100"
-                    aria-label="Default select example"
-                    onChange={(event) => setPackageId(event.target.value)}
-                  >
-                    {ppPackage &&
-                      ppPackage?.map((item, key) => (
-                        <option
-                          selected={item.id === data?.mikrotikPackage}
-                          key={key}
-                          disabled={item.rate > findPackage?.rate}
-                          value={item.id || ""}
-                        >
-                          {item.name}
-                        </option>
-                      ))}
-                  </select>
-                </div>
-              </div>
+          <div>
+            <label class="form-label mb-0"> {t("monthFee")} </label>
 
-              <div class="align-items-center">
-                <div class="col-auto">
-                  <label class="form-label mb-0"> {t("monthFee")} </label>
-                </div>
-                <div class="col-auto">
-                  <input
-                    type="text"
-                    class="form-control"
-                    value={monthlyFee}
-                    onChange={(e) => setMonthlyFee(e.target.value)}
-                    ref={monthlyFeeRef}
-                  />
-                </div>
-              </div>
+            <input
+              type="text"
+              class="form-control"
+              value={monthlyFee}
+              onChange={(e) => setMonthlyFee(e.target.value)}
+              ref={monthlyFeeRef}
+            />
+          </div>
 
-              <div className="billCycle">
-                <div className="mt-2">
-                  <label className="form-control-label">
-                    {t("billingCycle")}
-                  </label>
-                  <ReactDatePicker
-                    className="form-control"
-                    selected={billDate}
-                    onChange={(date) => setBillDate(date)}
-                    dateFormat="MMM dd yyyy h:mm"
-                    showTimeSelect
-                    minDate={billDate}
-                  />
-                </div>
-              </div>
+          <div>
+            <label className="form-control-label">{t("billingCycle")}</label>
+            <ReactDatePicker
+              className="form-control"
+              selected={billDate}
+              onChange={(date) => setBillDate(date)}
+              dateFormat="MMM dd yyyy h:mm"
+              showTimeSelect
+              minDate={billDate}
+            />
+          </div>
 
-              <div className="mt-2">
-                <label className="form-control-label">{t("promiseDate")}</label>
-                <ReactDatePicker
-                  className="form-control"
-                  selected={promiseDate}
-                  onChange={(date) => setPromiseDate(date)}
-                  dateFormat="MMM dd yyyy h:mm"
-                  showTimeSelect
-                  minDate={promiseDate}
+          <div>
+            <label className="form-control-label">{t("promiseDate")}</label>
+            <ReactDatePicker
+              className="form-control"
+              selected={promiseDate}
+              onChange={(date) => setPromiseDate(date)}
+              dateFormat="MMM dd yyyy h:mm"
+              showTimeSelect
+              minDate={promiseDate}
+            />
+          </div>
+
+          <div className="d-flex justify-content-between align-items-center">
+            <div className="pppoeStatus d-flex">
+              <div className="form-check  ">
+                <input
+                  className="form-check-input"
+                  type="radio"
+                  name="staus"
+                  value={"active"}
+                  onChange={(e) => setStatus(e.target.value)}
+                  checked={status === "active"}
+                  id="activeStatus"
                 />
+                <label className="form-check-label" htmlFor="activeStatus">
+                  {t("active")}
+                </label>
               </div>
 
-              <div className="d-flex justify-content-evenly align-items-center">
-                <div className="pppoeStatus mt-4 d-flex">
-                  {/* <p>স্ট্যাটাস পরিবর্তন</p> */}
-                  <div className="form-check  ">
-                    <input
-                      className="form-check-input"
-                      type="radio"
-                      name="staus"
-                      value={"active"}
-                      onChange={(e) => setStatus(e.target.value)}
-                      checked={status === "active"}
-                      id="activeStatus"
-                    />
-                    <label className="form-check-label" htmlFor="activeStatus">
-                      {t("active")}
-                    </label>
-                  </div>
-                  <div className="form-check ">
-                    <input
-                      className="form-check-input"
-                      type="radio"
-                      id="inlineRadio2"
-                      value={"inactive"}
-                      onChange={(e) => setStatus(e.target.value)}
-                      checked={status === "inactive"}
-                      disabled
-                    />
-                    <label className="form-check-label" htmlFor="inlineRadio2">
-                      {t("in active")}
-                    </label>
-                  </div>
-                  {data?.status === "expired" && (
-                    <div className="form-check ">
-                      <input
-                        className="form-check-input"
-                        type="radio"
-                        id="expired"
-                        disabled
-                        checked={status === "expired"}
-                      />
-                      <label className="form-check-label" htmlFor="expired">
-                        {t("expired")}
-                      </label>
-                    </div>
-                  )}
-                </div>
-                <div className="autoDisable mt-4 m-75">
-                  <label htmlFor="auto_disabled">
-                    {t("autoConnectionOff")}
-                  </label>
-                  <input
-                    id="auto_disabled"
-                    type="checkBox"
-                    checked={autoDisable}
-                    onChange={(e) => setAutoDisable(e.target.checked)}
-                  />
-                </div>
+              <div className="form-check ">
+                <input
+                  className="form-check-input"
+                  type="radio"
+                  id="inlineRadio2"
+                  value={"inactive"}
+                  onChange={(e) => setStatus(e.target.value)}
+                  checked={status === "inactive"}
+                  disabled
+                />
+                <label className="form-check-label" htmlFor="inlineRadio2">
+                  {t("in active")}
+                </label>
               </div>
+
+              {data?.status === "expired" && (
+                <div className="form-check ">
+                  <input
+                    className="form-check-input"
+                    type="radio"
+                    id="expired"
+                    disabled
+                    checked={status === "expired"}
+                  />
+                  <label className="form-check-label" htmlFor="expired">
+                    {t("expired")}
+                  </label>
+                </div>
+              )}
+            </div>
+
+            <div className="autoDisable">
+              <label htmlFor="auto_disabled">{t("autoConnectionOff")}</label>
+              <input
+                id="auto_disabled"
+                type="checkBox"
+                checked={autoDisable}
+                onChange={(e) => setAutoDisable(e.target.checked)}
+              />
             </div>
           </div>
-          <div className="modal-footer">
-            <button
-              type="button"
-              className="btn btn-secondary"
-              data-bs-dismiss="modal"
-              disabled={isLoading}
-            >
-              {t("cancel")}
-            </button>
-            <button
-              onClick={handleSubmit}
-              className="btn btn-success"
-              disabled={isLoading}
-            >
-              {isLoading ? <Loader /> : t("submit")}
-            </button>
-          </div>
         </div>
-      </div>
-    </div>
+
+        <div className="displayGrid1 float-end mt-4">
+          <button
+            type="button"
+            className="btn btn-secondary"
+            disabled={isLoading}
+            onClick={() => setShow(false)}
+          >
+            {t("cancel")}
+          </button>
+
+          <button
+            onClick={handleSubmit}
+            className="btn btn-success"
+            disabled={isLoading}
+          >
+            {isLoading ? <Loader /> : t("submit")}
+          </button>
+        </div>
+      </ComponentCustomModal>
+    </>
   );
 };
 

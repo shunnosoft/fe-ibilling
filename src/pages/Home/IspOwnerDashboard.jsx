@@ -20,6 +20,7 @@ import useAreaPackage from "../../hooks/useAreaPackage";
 import "./home.css";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import {
+  fetchReseller,
   getAllPackages,
   getArea,
   getCollector,
@@ -110,6 +111,9 @@ const IspOwnerDashboard = () => {
   //get graph data
   const ChartsData = useSelector((state) => state.chart.charts);
 
+  //get reseller data from redux store
+  const reseller = useSelector((state) => state.reseller);
+
   //get payment invoice to check expiration
   const invoice = useSelector((state) => state.invoice.invoice);
 
@@ -168,9 +172,13 @@ const IspOwnerDashboard = () => {
     // get all manager api
     Object.keys(manager)?.length === 0 && getManger(dispatch, ispOwnerId);
 
-    // // get all collector api
+    // get all collector api
     allCollector?.length === 0 &&
       getCollector(dispatch, ispOwnerId, setIsloading);
+
+    // get all reseller api
+    reseller?.reseller.length === 0 &&
+      fetchReseller(dispatch, ispOwnerId, setIsloading);
 
     // get area api
     areas.length === 0 && getArea(dispatch, ispOwnerId, setPackageLoading);

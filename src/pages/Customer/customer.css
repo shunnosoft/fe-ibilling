@@ -299,3 +299,14 @@ span.button_title {
 .recharge_title {
   background-color: #b1b1b11b;
 }
+
+.customerAutoDisable {
+  /* background: #efefef; */
+  /* width: fit-content; */
+  /* height: 37px; */
+  /* padding: 5px 15px; */
+  /* border-radius: 5px; */
+  display: flex;
+  justify-content: start;
+  align-self: center;
+}

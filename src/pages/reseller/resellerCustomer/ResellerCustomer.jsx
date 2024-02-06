@@ -94,9 +94,6 @@ const ResellerCustomer = () => {
     (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
   );
 
-  // get all packages
-  // const allPackages = useSelector((state) => state.package.allPackages);
-
   const packages = useSelector(
     (state) => state.reseller.allMikrotikPakages?.packages
   );
@@ -114,8 +111,6 @@ const ResellerCustomer = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [areaLoading, setAreaLoading] = useState(false);
-  const [packageLoading, setPackageLoading] = useState(false);
-
   // status local state
   const [filterStatus, setFilterStatus] = useState(null);
 
@@ -142,6 +137,7 @@ const ResellerCustomer = () => {
 
   // bulk modal handle state
   const [bulkStatus, setBulkStatus] = useState("");
+  const [modalStatus, setModalStatus] = useState("");
   const [show, setShow] = useState(false);
 
   const resellerInfo = reseller.find((res) => res.id === resellerId);
@@ -515,10 +511,10 @@ const ResellerCustomer = () => {
                 </li>
 
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#CustomerEditModal"
                   onClick={() => {
                     getSpecificCustomer(original.id);
+                    setModalStatus("edit");
+                    setShow(true);
                   }}
                 >
                   <div className="dropdown-item">
@@ -530,10 +526,10 @@ const ResellerCustomer = () => {
                 </li>
 
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#showCustomerReport"
                   onClick={() => {
                     getSpecificCustomerReport(original);
+                    setModalStatus("report");
+                    setShow(true);
                   }}
                 >
                   <div className="dropdown-item">
@@ -545,10 +541,10 @@ const ResellerCustomer = () => {
                 </li>
 
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#customerDelete"
                   onClick={() => {
                     customerDelete(original.id);
+                    setModalStatus("delete");
+                    setShow(true);
                   }}
                 >
                   <div className="dropdown-item">
@@ -810,13 +806,36 @@ const ResellerCustomer = () => {
           </div>
         </div>
       </div>
+
+      {/* customer details modal */}
       <ResellerCustomerDetails
         single={singleCustomer}
         resellerCount={"singleReseller"}
       />
-      <CustomerReport single={customerReportId} />
-      <ResellerCustomerEdit allCustomer={false} customerId={singleCustomer} />
+
+      {/* customer report modal */}
+      {modalStatus === "report" && (
+        <CustomerReport
+          show={show}
+          setShow={setShow}
+          single={customerReportId}
+        />
+      )}
+
+      {/* edit customer mdoal */}
+      {modalStatus === "edit" && (
+        <ResellerCustomerEdit
+          show={show}
+          setShow={setShow}
+          allCustomer={false}
+          customerId={singleCustomer}
+        />
+      )}
+
+      {/* delete customer modal */}
       <CustomerDelete
+        show={show}
+        setShow={setShow}
         customerId={customerId}
         mikrotikCheck={mikrotikCheck}
         setMikrotikCheck={setMikrotikCheck}

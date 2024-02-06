@@ -321,7 +321,7 @@
   "informationEdit": "'s Information Edit",
   "editManager": "Edit Manager",
   "addStaff": "Add Staff",
-  "automaticConnectionOff": "Automatic Connection Off",
+  "automaticConnectionOff": "Automatic Connection On/Off",
   "autoConnectionOff": "Auto Connection Off",
   "billNotAcceptable": "Bill Not Acceptable",
   "decimalNumberNotAcceptable": "Decimals are not acceptable",
@@ -923,5 +923,7 @@
   "totalSalary": "Total Salary",
   "offlinePaymentCustomer": "Offline Payment Customer",
   "onlinePaymentCustomer": "Online Payment Customer",
-  "hotspotCustomerSync": "Hotspot Customer Sync"
+  "hotspotCustomerSync": "Hotspot Customer Sync",
+  "willContinue": "Will continue",
+  "nextMonth": "Next Month"
 }
