@@ -3,26 +3,21 @@ import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
-import {
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
-  ModalTitle,
-  Tab,
-  Tabs,
-} from "react-bootstrap";
+import { Tab, Tabs } from "react-bootstrap";
+
+// custom hooks impot
+import useISPowner from "../../../hooks/useISPOwner";
+import useDataInputOption from "../../../hooks/useDataInputOption";
 
 // internal importsp
 import Loader from "../../../components/common/Loader";
-import { RADIO, collectorData } from "../CollectorInputs";
 import { FtextField } from "../../../components/common/FtextField";
 import { editCollector } from "../../../features/apiCalls";
 import { collectorPermission } from "./collectorPermission";
-import useISPowner from "../../../hooks/useISPOwner";
 import InformationTooltip from "../../../components/common/tooltipInformation/InformationTooltip";
 import { toast } from "react-toastify";
 import { areasSubareasChecked } from "../../staff/staffCustomFucn";
+import ComponentCustomModal from "../../../components/common/customModal/ComponentCustomModal";
 
 const CollectorEdit = ({ show, setShow, collectorId }) => {
   const { t } = useTranslation();
@@ -40,6 +35,21 @@ const CollectorEdit = ({ show, setShow, collectorId }) => {
     nid: Yup.string().required(t("enterNID")),
     status: Yup.string().required(t("enterStatus")),
   });
+
+  // call the data input option function
+  const inputPermission = {
+    name: true,
+    mobile: true,
+    address: true,
+    email: true,
+    nid: true,
+    status: true,
+    addStaff: true,
+    salary: true,
+  };
+
+  // get data input option from useDataInputOption hook
+  const dataInputOption = useDataInputOption(inputPermission, null);
 
   // get user & current user data form useISPOwner
   const { role, bpSettings, permissions } = useISPowner();
@@ -147,18 +157,21 @@ const CollectorEdit = ({ show, setShow, collectorId }) => {
       return;
     }
 
+    // temporary state set collector single & multiple permission
     let temp = {};
 
     collectorPermissions.forEach((val) => {
       temp[val.value] = val.isChecked;
     });
 
+    // temporary state set collector single & multiple permission
     const newP = {
       ...single.permissions,
       ...temp,
     };
 
     if (single.ispOwner) {
+      // send data for api
       const sendingData = {
         ...data,
         areas: areaSubareas.filter((val) => val.isChecked).map((val) => val.id),
@@ -168,204 +181,20 @@ const CollectorEdit = ({ show, setShow, collectorId }) => {
         permissions: newP,
       };
 
+      // edit collector api call
       editCollector(dispatch, sendingData, setIsLoading, setShow);
     }
   };
 
   return (
     <>
-      <Modal
+      <ComponentCustomModal
         show={show}
-        onHide={handleClose}
-        backdrop="static"
-        keyboard={false}
+        setShow={setShow}
         size="xl"
-      >
-        <ModalHeader closeButton>
-          <ModalTitle>
-            <h5 className="modal-title text-secondary">
-              {single?.name} {t("editProfile")}
-            </h5>
-          </ModalTitle>
-        </ModalHeader>
-        <ModalBody>
-          <Formik
-            initialValues={{
-              name: single?.name || "",
-              mobile: single?.mobile || "",
-              address: single?.address || "",
-              email: single?.email || "",
-              nid: single?.nid || "",
-              status: single?.status || "",
-            }}
-            validationSchema={collectorValidator}
-            onSubmit={(values) => {
-              collectorEditHandler(values);
-            }}
-            enableReinitialize
-          >
-            {() => (
-              <Form id="collectorEdit">
-                <Tabs
-                  defaultActiveKey={"basic"}
-                  id="uncontrolled-tab-example"
-                  className="mb-3"
-                >
-                  {/* collector profile data tab start*/}
-                  <Tab eventKey="basic" title={t("profile")}>
-                    <div className="d-flex justify-content-center">
-                      <div className="displayGrid col-6">
-                        {collectorData.map((val, key) => (
-                          <FtextField
-                            key={key}
-                            type={val.type}
-                            label={val.label}
-                            name={val.name}
-                            validation={"true"}
-                          />
-                        ))}
-
-                        <div className="collectorStatus">
-                          <label className="form-control-label changeLabelFontColor">
-                            {t("status")}
-                            <span className="text-danger">*</span>
-                          </label>
-
-                          <div className="d-flex">
-                            {RADIO?.map((val, key) => (
-                              <div key={key} className="form-check">
-                                <FtextField
-                                  label={val.label}
-                                  className="form-check-input"
-                                  type="radio"
-                                  name="status"
-                                  value={val.value}
-                                />
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </Tab>
-                  {/* collector profile data tab end*/}
-
-                  {/* collector area tab start*/}
-                  <Tab eventKey="area" title={t("area")}>
-                    <div className="AllAreaClass">
-                      {area?.map((val, key) => (
-                        <div key={key}>
-                          <div className="form-check">
-                            <input
-                              type="checkbox"
-                              className="form-check-input"
-                              name="area"
-                              id={val.id}
-                              onChange={areaSubareaSelectHandler}
-                              checked={
-                                areaSubareas &&
-                                areasSubareasChecked(val.id, areaSubareas)
-                              }
-                            />
-
-                            <label htmlFor={val.id} className="areaParent ms-1">
-                              {val.name}
-                            </label>
-                          </div>
-
-                          {areaSubareas?.map(
-                            (subArea, k) =>
-                              subArea.area === val.id && (
-                                <div key={k} className="displayFlex">
-                                  <input
-                                    type="checkbox"
-                                    id={subArea.id}
-                                    checked={subArea.isChecked}
-                                    onChange={areaSubareaSelectHandler}
-                                  />
-                                  <label
-                                    htmlFor={subArea.id}
-                                    className="text-secondary"
-                                  >
-                                    {subArea.name}
-                                  </label>
-                                </div>
-                              )
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  </Tab>
-                  {/* collector area tab end*/}
-
-                  {/* collector permissions tab start*/}
-                  <Tab
-                    eventKey="changePermission"
-                    title={t("changePermission")}
-                  >
-                    <b className="mt-2"> {t("changePermission")} </b>
-                    <div className="displayGrid3">
-                      <div className="CheckboxContainer">
-                        <input
-                          type="checkbox"
-                          className="CheckBox"
-                          name="allPermissions"
-                          onChange={collectorPermissionHandler}
-                          id="editAllPermissions"
-                          checked={collectorPermissions.every(
-                            (item) => item.isChecked
-                          )}
-                        />
-                        <label
-                          htmlFor="editAllPermissions"
-                          className="checkboxLabel text-info fw-bold"
-                        >
-                          {t("allPermission")}
-                        </label>
-                      </div>
-                      {collectorPermissions?.map(
-                        (val, key) =>
-                          !val.disabled && (
-                            <div
-                              className={
-                                !val?.disabled &&
-                                "CheckboxContainer d-flex justify-content-between"
-                              }
-                              key={key}
-                            >
-                              <div>
-                                <input
-                                  type="checkbox"
-                                  className="CheckBox"
-                                  name={val.value}
-                                  checked={val.isChecked}
-                                  onChange={collectorPermissionHandler}
-                                  id={val.value + key}
-                                />
-
-                                <label
-                                  htmlFor={val.value + key}
-                                  className="checkboxLabel"
-                                >
-                                  {val.label}
-                                </label>
-                              </div>
-
-                              {/* there is information to grant permission tooltip */}
-                              {val?.info && <InformationTooltip data={val} />}
-                            </div>
-                          )
-                      )}
-                    </div>
-                  </Tab>
-                  {/* collector permissions tab end*/}
-                </Tabs>
-              </Form>
-            )}
-          </Formik>
-        </ModalBody>
-        <ModalFooter>
-          <div className="displayGrid1">
+        header={single?.name + " " + t("editProfile")}
+        footer={
+          <div className="displayGrid1 float-end">
             <button
               type="button"
               className="btn btn-secondary"
@@ -384,8 +213,170 @@ const CollectorEdit = ({ show, setShow, collectorId }) => {
               {isLoading ? <Loader /> : t("save")}
             </button>
           </div>
-        </ModalFooter>
-      </Modal>
+        }
+      >
+        <Formik
+          initialValues={{
+            name: single?.name || "",
+            mobile: single?.mobile || "",
+            address: single?.address || "",
+            email: single?.email || "",
+            nid: single?.nid || "",
+            status: single?.status || "",
+            addStaff: single?.addStaff || false,
+            salary: single?.salary || "",
+          }}
+          validationSchema={collectorValidator}
+          onSubmit={(values) => {
+            collectorEditHandler(values);
+          }}
+          enableReinitialize
+        >
+          {() => (
+            <Form id="collectorEdit">
+              <Tabs
+                defaultActiveKey={"basic"}
+                id="uncontrolled-tab-example"
+                className="mb-3"
+              >
+                {/* collector profile data tab start*/}
+                <Tab eventKey="basic" title={t("profile")}>
+                  <div className="d-flex justify-content-center">
+                    <div className="displayGrid col-6">
+                      {dataInputOption?.map(
+                        (item) =>
+                          item?.isVisible && (
+                            <FtextField
+                              name={item?.name}
+                              type={item?.type}
+                              disabled={item.disabled}
+                              validation={item.validation}
+                              label={item?.label}
+                              placeholder={item?.placeholder}
+                              options={item.options}
+                              value={item?.value}
+                              onChange={item?.onChange}
+                              component={item?.component}
+                              inputField={item?.inputField}
+                            />
+                          )
+                      )}
+                    </div>
+                  </div>
+                </Tab>
+                {/* collector profile data tab end*/}
+
+                {/* collector area tab start*/}
+                <Tab eventKey="area" title={t("area")}>
+                  <div className="AllAreaClass">
+                    {area?.map((val, key) => (
+                      <div key={key}>
+                        <div className="form-check">
+                          <input
+                            type="checkbox"
+                            className="form-check-input"
+                            name="area"
+                            id={val.id}
+                            onChange={areaSubareaSelectHandler}
+                            checked={
+                              areaSubareas &&
+                              areasSubareasChecked(val.id, areaSubareas)
+                            }
+                          />
+
+                          <label htmlFor={val.id} className="areaParent ms-1">
+                            {val.name}
+                          </label>
+                        </div>
+
+                        {areaSubareas?.map(
+                          (subArea, k) =>
+                            subArea.area === val.id && (
+                              <div key={k} className="displayFlex">
+                                <input
+                                  type="checkbox"
+                                  id={subArea.id}
+                                  checked={subArea.isChecked}
+                                  onChange={areaSubareaSelectHandler}
+                                />
+                                <label
+                                  htmlFor={subArea.id}
+                                  className="text-secondary"
+                                >
+                                  {subArea.name}
+                                </label>
+                              </div>
+                            )
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </Tab>
+                {/* collector area tab end*/}
+
+                {/* collector permissions tab start*/}
+                <Tab eventKey="changePermission" title={t("changePermission")}>
+                  <b className="mt-2"> {t("changePermission")} </b>
+                  <div className="displayGrid3">
+                    <div className="CheckboxContainer">
+                      <input
+                        type="checkbox"
+                        className="CheckBox"
+                        name="allPermissions"
+                        onChange={collectorPermissionHandler}
+                        id="editAllPermissions"
+                        checked={collectorPermissions.every(
+                          (item) => item.isChecked
+                        )}
+                      />
+                      <label
+                        htmlFor="editAllPermissions"
+                        className="checkboxLabel text-info fw-bold"
+                      >
+                        {t("allPermission")}
+                      </label>
+                    </div>
+                    {collectorPermissions?.map(
+                      (val, key) =>
+                        !val.disabled && (
+                          <div
+                            className={
+                              !val?.disabled &&
+                              "CheckboxContainer d-flex justify-content-between"
+                            }
+                            key={key}
+                          >
+                            <div>
+                              <input
+                                type="checkbox"
+                                className="CheckBox"
+                                name={val.value}
+                                checked={val.isChecked}
+                                onChange={collectorPermissionHandler}
+                                id={val.value + key}
+                              />
+
+                              <label
+                                htmlFor={val.value + key}
+                                className="checkboxLabel"
+                              >
+                                {val.label}
+                              </label>
+                            </div>
+
+                            {/* there is information to grant permission tooltip */}
+                            {val?.info && <InformationTooltip data={val} />}
+                          </div>
+                        )
+                    )}
+                  </div>
+                </Tab>
+                {/* collector permissions tab end*/}
+              </Tabs>
+            </Form>
+          )}
+        </Formik>
+      </ComponentCustomModal>
     </>
   );
 };

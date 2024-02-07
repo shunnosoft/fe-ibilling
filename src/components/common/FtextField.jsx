@@ -37,21 +37,51 @@ export const FtextField = ({ label, validation, ...props }) => {
             </InputGroup.Text>
           </InputGroup>
         ) : props.component === "customerStatus" ? (
+          <div
+            className={`${
+              props?.className ? props?.className : "displayGrid3"
+            }`}
+          >
+            {props?.inputField.map(
+              (option) =>
+                option?.isVisible && (
+                  <div className="form-check form-check-inline mt-0">
+                    <Field
+                      className="form-check-input"
+                      {...field}
+                      {...option}
+                      onChange={() => setValue(option?.value)}
+                      autoComplete="off"
+                    />
+                    <label className="form-check-label" htmlFor={option?.id}>
+                      {option?.label}
+                    </label>
+                  </div>
+                )
+            )}
+          </div>
+        ) : props.component === "addStaff" ? (
           <div className="displayGrid3">
-            {props?.inputField.map((option) => (
-              <div className="form-check form-check-inline mt-0">
-                <Field
-                  className="form-check-input"
-                  {...field}
-                  {...option}
-                  onChange={() => setValue(option?.value)}
-                  autoComplete="off"
-                />
-                <label className="form-check-label" htmlFor={option?.id}>
-                  {option?.label}
-                </label>
-              </div>
-            ))}
+            {props?.inputField.map(
+              (option) =>
+                option?.isVisible && (
+                  <div className="form-check form-check-inline mt-0">
+                    <Field
+                      className="form-check-input"
+                      {...field}
+                      {...option}
+                      onChange={(e) => {
+                        field.onChange(e);
+                        props?.onChange(e);
+                      }}
+                      autoComplete="off"
+                    />
+                    <label className="form-check-label" htmlFor={option?.id}>
+                      {option?.label}
+                    </label>
+                  </div>
+                )
+            )}
           </div>
         ) : props.component === "autoDisable" ? (
           <div className="displayGrid2">
@@ -109,6 +139,7 @@ export const FtextField = ({ label, validation, ...props }) => {
           }`}
           {...field}
           {...(props !== undefined)}
+          value={props?.value ? props?.value : field?.value}
           autoComplete="off"
         ></Field>
       )}

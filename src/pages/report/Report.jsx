@@ -804,6 +804,7 @@ const Report = () => {
                             <option value="onlinePayment">
                               {t("onlinePayment")}
                             </option>
+                            <option value="bKash"> {t("bKash")} </option>
                             <option value="rocket"> {t("rocket")} </option>
                             <option value="nagad"> {t("nagad")} </option>
                             <option value="others"> {t("others")} </option>

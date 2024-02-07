@@ -833,13 +833,15 @@ const ResellerCustomer = () => {
       )}
 
       {/* delete customer modal */}
-      <CustomerDelete
-        show={show}
-        setShow={setShow}
-        customerId={customerId}
-        mikrotikCheck={mikrotikCheck}
-        setMikrotikCheck={setMikrotikCheck}
-      />
+      {modalStatus === "delete" && (
+        <CustomerDelete
+          show={show}
+          setShow={setShow}
+          customerId={customerId}
+          mikrotikCheck={mikrotikCheck}
+          setMikrotikCheck={setMikrotikCheck}
+        />
+      )}
 
       {bulkStatus === "returnCustomer" && (
         <BulkCustomerReturn

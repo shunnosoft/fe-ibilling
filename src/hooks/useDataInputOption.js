@@ -24,7 +24,7 @@ const useDataInputOption = (inputPermission, page, data) => {
   const ppPackage = useSelector((state) =>
     page === "pppoe"
       ? hasMikrotik
-        ? state?.mikrotik?.packagefromDatabase
+        ? state?.package?.pppoePackages
         : state?.package?.packages
       : ""
   );
@@ -44,6 +44,9 @@ const useDataInputOption = (inputPermission, page, data) => {
   // set package id in state
   const [packageId, setPackageId] = useState("");
 
+  // set package rate in state
+  const [packageRate, setPackageRate] = useState("");
+
   // set area id in state
   const [areaId, setAreaId] = useState("");
 
@@ -60,6 +63,18 @@ const useDataInputOption = (inputPermission, page, data) => {
 
   // set next month auto disable in state
   const [nextMonthAutoDisable, setNextMonthAutoDisable] = useState(false);
+
+  // set add staff status
+  const [addStaffStatus, setAddStaffStatus] = useState(false);
+
+  // set isp owner & reseller commission type in state
+  const [commissionType, setCommissionType] = useState("");
+
+  const packageChangeHandler = async (id) => {
+    const singlePackage = ppPackage.find((val) => val.id === id);
+    setPackageId(singlePackage.id);
+    setPackageRate(singlePackage.rate);
+  };
 
   useEffect(() => {
     setMikrotikId(data?.mikrotik);
@@ -84,7 +99,7 @@ const useDataInputOption = (inputPermission, page, data) => {
       name: "customerId",
       type: "text",
       id: "customerId",
-      isVisible: !bpSettings.genCustomerId && inputPermission.customerId,
+      isVisible: bpSettings.genCustomerId && inputPermission.customerId,
       disabled: false,
       validation: bpSettings.genCustomerId,
       label: t("customerId"),
@@ -119,12 +134,13 @@ const useDataInputOption = (inputPermission, page, data) => {
       firstOptions: t("selectPackage"),
       textAccessor: "name",
       valueAccessor: "id",
-      options: bpSettings.hasMikrotik
-        ? ppPackage.filter((pack) => pack.mikrotik === mikrotikId)
-        : ppPackage,
+      options:
+        bpSettings.hasMikrotik && page
+          ? ppPackage?.filter((pack) => pack.mikrotik === mikrotikId)
+          : ppPackage,
       value: packageId,
       onChange: (e) => {
-        setPackageId(e.target.value);
+        packageChangeHandler(e.target.value);
       },
     },
     {
@@ -135,6 +151,7 @@ const useDataInputOption = (inputPermission, page, data) => {
       disabled: false,
       validation: true,
       label: t("monthlyFee"),
+      value: packageRate,
     },
     {
       name: "balance",
@@ -176,7 +193,6 @@ const useDataInputOption = (inputPermission, page, data) => {
       textAccessor: "name",
       valueAccessor: "id",
       options: areas,
-      value: areaId,
       onChange: (e) => {
         setAreaId(e.target.value);
       },
@@ -193,8 +209,7 @@ const useDataInputOption = (inputPermission, page, data) => {
       firstOptions: t("selectSubArea"),
       textAccessor: "name",
       valueAccessor: "id",
-      options: subAreas?.filter((item) => item?.area === areaId),
-      value: subAreaId,
+      options: subAreas.filter((item) => item?.area === areaId),
       onChange: (e) => {
         setSubareaId(e.target.value);
       },
@@ -228,7 +243,7 @@ const useDataInputOption = (inputPermission, page, data) => {
       id: "mobile",
       isVisible: inputPermission.mobile,
       disabled: !permission?.customerMobileEdit && role === "collector",
-      validation: bpSettings?.addCustomerWithMobile,
+      validation: page ? bpSettings?.addCustomerWithMobile : true,
       label: t("mobile"),
     },
     {
@@ -237,8 +252,22 @@ const useDataInputOption = (inputPermission, page, data) => {
       id: "nid",
       isVisible: inputPermission.nid,
       disabled: false,
-      validation: false,
+      validation: page ? false : true,
       label: t("NIDno"),
+    },
+    {
+      name: "birthDate",
+      type: "date",
+      id: "birthDate",
+      isVisible: inputPermission.birthDate,
+      disabled: false,
+      validation: false,
+      label: t("birthDate"),
+      component: "DatePicker",
+      dateFormat: "MMM dd yyyy hh:mm a",
+      showYearDropdown: "showYearDropdown",
+      scrollableYearDropdown: "scrollableYearDropdown",
+      yearDropdownItemNumber: 150,
     },
     {
       name: "address",
@@ -246,7 +275,7 @@ const useDataInputOption = (inputPermission, page, data) => {
       id: "address",
       isVisible: inputPermission.address,
       disabled: false,
-      validation: false,
+      validation: page ? false : true,
       label: t("address"),
     },
     {
@@ -255,7 +284,7 @@ const useDataInputOption = (inputPermission, page, data) => {
       id: "email",
       isVisible: inputPermission.email,
       disabled: false,
-      validation: false,
+      validation: page ? false : true,
       label: t("email"),
       placeholder: "***@gmail.com",
     },
@@ -398,13 +427,14 @@ const useDataInputOption = (inputPermission, page, data) => {
       name: "status",
       isVisible: inputPermission.status,
       disabled: false,
-      validation: false,
+      validation: true,
       label: t("status"),
       component: "customerStatus",
       inputField: [
         {
           type: "radio",
           id: "activeCustomer",
+          isVisible: true,
           disabled: false,
           label: t("active"),
           value: "active",
@@ -412,6 +442,7 @@ const useDataInputOption = (inputPermission, page, data) => {
         {
           type: "radio",
           id: "inactiveCustomer",
+          isVisible: true,
           disabled: false,
           label: t("inactive"),
           value: "inactive",
@@ -419,6 +450,7 @@ const useDataInputOption = (inputPermission, page, data) => {
         {
           type: "radio",
           id: "expiredCustomer",
+          isVisible: page ? true : false,
           disabled: true,
           label: t("expired"),
           value: "expired",
@@ -461,6 +493,91 @@ const useDataInputOption = (inputPermission, page, data) => {
     //       },
     //     },
     //   ],
+    // },
+    {
+      name: "addStaff",
+      isVisible: inputPermission.addStaff,
+      disabled: false,
+      validation: false,
+      label: t("addStaff"),
+      component: "addStaff",
+      onChange: (e) => {
+        setAddStaffStatus(e.target.checked);
+      },
+      inputField: [
+        {
+          type: "checkbox",
+          id: "addStaff",
+          isVisible: true,
+          disabled: false,
+          label: t("addStaff"),
+          checked: addStaffStatus,
+          value: addStaffStatus,
+        },
+      ],
+    },
+    {
+      name: "salary",
+      type: "number",
+      id: "salary",
+      isVisible: addStaffStatus && inputPermission.salary,
+      disabled: false,
+      validation: false,
+      label: t("salary"),
+    },
+    {
+      name: "website",
+      type: "text",
+      id: "website",
+      isVisible: inputPermission.website,
+      disabled: false,
+      validation: true,
+      label: t("website"),
+    },
+    // {
+    //   name: "commissionType",
+    //   className: "displayGrid2",
+    //   isVisible: inputPermission.commissionType,
+    //   disabled: false,
+    //   validation: true,
+    //   label: t("commissionType"),
+    //   component: "customerStatus",
+    //   inputField: [
+    //     {
+    //       type: "radio",
+    //       id: "globalPakcage",
+    //       isVisible: true,
+    //       disabled: false,
+    //       label: t("globalCommission"),
+    //       value: "global",
+    //     },
+    //     {
+    //       type: "radio",
+    //       id: "fixedPackage",
+    //       isVisible: true,
+    //       disabled: false,
+    //       label: t("packageBased"),
+    //       value: "packageBased",
+    //     },
+    //   ],
+    // },
+    // {
+    //   name: "commissionRate",
+    //   type: "number",
+    //   id: "commissionRate",
+    //   isVisible: commissionType === "global" && inputPermission.commissionRate,
+    //   disabled: false,
+    //   validation: true,
+    //   label: t("website"),
+    // },
+    // {
+    //   name: "isp",
+    //   type: "number",
+    //   id: "isp",
+    //   isVisible: commissionType === "global" && inputPermission.isp,
+    //   disabled: false,
+    //   validation: true,
+    //   label: t("ispOwner"),
     // },
   ];
 

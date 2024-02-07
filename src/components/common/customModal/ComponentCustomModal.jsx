@@ -1,5 +1,11 @@
 import React from "react";
-import { Modal, ModalBody, ModalHeader, ModalTitle } from "react-bootstrap";
+import {
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  ModalTitle,
+} from "react-bootstrap";
 
 const ComponentCustomModal = ({
   show,
@@ -9,6 +15,7 @@ const ComponentCustomModal = ({
   header,
   printr,
   children,
+  footer,
 }) => {
   // modal close handler
   const handleClose = () => setShow(false);
@@ -31,6 +38,7 @@ const ComponentCustomModal = ({
         </ModalTitle>
       </ModalHeader>
       <ModalBody>{children}</ModalBody>
+      <ModalFooter>{footer}</ModalFooter>
     </Modal>
   );
 };

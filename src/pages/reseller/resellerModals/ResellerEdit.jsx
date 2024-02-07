@@ -7,7 +7,7 @@ import * as Yup from "yup";
 import "../reseller.css";
 import "../../collector/collector.css";
 import { FtextField } from "../../../components/common/FtextField";
-import { RADIO, RPD } from "../resellerData";
+// import { RADIO, RPD } from "../resellerData";
 import Loader from "../../../components/common/Loader";
 import {
   editReseller,
@@ -33,6 +33,7 @@ import GlobalPackageEditWithOutMkt, {
 import { resellerPermissions } from "./resellerPermission";
 import InformationTooltip from "../../../components/common/tooltipInformation/InformationTooltip";
 import { areasSubareasChecked } from "../../staff/staffCustomFucn";
+import useDataInputOption from "../../../hooks/useDataInputOption";
 
 const ResellerEdit = ({ show, setShow, resellerId }) => {
   const { t } = useTranslation();
@@ -56,6 +57,20 @@ const ResellerEdit = ({ show, setShow, resellerId }) => {
       .max(99, t("maximumShare"))
       .required(t("enterResellerShare")),
   });
+
+  // call the data input option function
+  const inputPermission = {
+    name: true,
+    mobile: true,
+    address: true,
+    email: true,
+    nid: true,
+    website: true,
+    status: true,
+  };
+
+  // get data input option from useDataInputOption hook
+  const dataInputOption = useDataInputOption(inputPermission, null);
 
   const auth = useSelector((state) => state.persistedReducer.auth.currentUser);
   const area = useSelector((state) => state.area.area);
@@ -397,15 +412,14 @@ const ResellerEdit = ({ show, setShow, resellerId }) => {
         <ModalBody>
           <Formik
             initialValues={{
-              // ispOwner:
               name: reseller?.name || "",
               mobile: reseller?.mobile || "",
-              email: reseller?.email || "",
               nid: reseller?.nid || "",
-              website: reseller?.website || "",
               address: reseller?.address || "",
-              commissionRate: reseller?.commissionRate?.reseller || 1,
+              email: reseller?.email || "",
+              website: reseller?.website || "",
               status: reseller?.status || "",
+              commissionRate: reseller?.commissionRate?.reseller || 1,
             }}
             validationSchema={resellerValidator}
             onSubmit={(values) => {
@@ -424,87 +438,24 @@ const ResellerEdit = ({ show, setShow, resellerId }) => {
                   <Tab eventKey="basic" title={t("profile")}>
                     <div className="d-flex justify-content-center">
                       <div className="displayGrid col-6">
-                        {RPD.map((val, key) => (
-                          <FtextField
-                            key={key}
-                            type={val.type}
-                            label={val.label}
-                            name={val.name}
-                          />
-                        ))}
-
-                        {/* <div>
-                          <p className="radioTitle">{t("customerType")}</p>
-                          <div className="d-inline-flex">
-                            <div className="form-check me-3">
-                              <Field
-                                className="form-check-input"
-                                type="checkbox"
-                                id="pppoe-customer"
-                                value="pppoe"
-                                checked={customerType.includes("pppoe")}
-                                onChange={customerTypeHandler}
+                        {dataInputOption?.map(
+                          (item) =>
+                            item?.isVisible && (
+                              <FtextField
+                                name={item?.name}
+                                type={item?.type}
+                                disabled={item.disabled}
+                                validation={item.validation}
+                                label={item?.label}
+                                placeholder={item?.placeholder}
+                                options={item.options}
+                                value={item?.value}
+                                onChange={item?.onChange}
+                                component={item?.component}
+                                inputField={item?.inputField}
                               />
-                              <label
-                                className="form-check-label"
-                                for="pppoe-customer"
-                              >
-                                {t("pppoe")}
-                              </label>
-                            </div>
-                            <div className="form-check me-3">
-                              <Field
-                                className="form-check-input"
-                                type="checkbox"
-                                id="static-customer"
-                                value="static"
-                                checked={customerType.includes("static")}
-                                onChange={customerTypeHandler}
-                              />
-                              <label
-                                className="form-check-label"
-                                for="static-customer"
-                              >
-                                {t("static")}
-                              </label>
-                            </div>
-                            <div className="form-check">
-                              <Field
-                                className="form-check-input"
-                                type="checkbox"
-                                id="hotspot-customer"
-                                value="hotspot"
-                                checked={customerType.includes("hotspot")}
-                                onChange={customerTypeHandler}
-                              />
-                              <label
-                                className="form-check-label"
-                                for="hotspot-customer"
-                              >
-                                {t("hotspot")}
-                              </label>
-                            </div>
-                          </div>
-                        </div> */}
-
-                        <div>
-                          <p className="radioTitle">{t("status")}</p>
-                          <div className="form-check ps-0">
-                            <div className="d-flex">
-                              {RADIO.map((val, key) => (
-                                <div key={key} className="form-check">
-                                  <FtextField
-                                    label={val.label}
-                                    className="form-check-input"
-                                    type="radio"
-                                    name="status"
-                                    value={val.value}
-                                  />
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
+                            )
+                        )}
                       </div>
                     </div>
                   </Tab>
@@ -566,9 +517,8 @@ const ResellerEdit = ({ show, setShow, resellerId }) => {
                       <div className="form-check ">
                         <p className="radioTitle">{t("commissionType")}</p>
                         <div className="d-flex">
-                          <div className="form-check">
-                            <FtextField
-                              label={t("globalCommission")}
+                          <div className="form-check form-check-inline mt-0">
+                            <input
                               id="global"
                               className="form-check-input"
                               type="radio"
@@ -579,10 +529,17 @@ const ResellerEdit = ({ show, setShow, resellerId }) => {
                                 setCommissionType(e.target.value)
                               }
                             />
+
+                            <label
+                              className="form-check-label"
+                              htmlFor="global"
+                            >
+                              {t("globalCommission")}
+                            </label>
                           </div>
-                          <div className="form-check">
-                            <FtextField
-                              label={t("packageBased")}
+
+                          <div className="form-check form-check-inline mt-0">
+                            <input
                               id="packageBased"
                               className="form-check-input"
                               type="radio"
@@ -593,18 +550,24 @@ const ResellerEdit = ({ show, setShow, resellerId }) => {
                                 setCommissionType(e.target.value)
                               }
                             />
+
+                            <label
+                              className="form-check-label"
+                              htmlFor="packageBased"
+                            >
+                              {t("packageBased")}
+                            </label>
                           </div>
                         </div>
                       </div>
                     </div>
-                    <div className="d-flex justify-content-center">
+
+                    <div className="d-flex justify-content-center mt-3">
                       {commissionType === "global" && (
                         <div className="d-flex w-50">
                           <div className="form-check">
-                            <p className="radioTitle"> {t("share")} </p>
-
                             <FtextField
-                              style={{ marginTop: "-25px" }}
+                              label={t("share")}
                               key="commissionRate"
                               type="number"
                               name="commissionRate"
@@ -613,10 +576,8 @@ const ResellerEdit = ({ show, setShow, resellerId }) => {
                           </div>
 
                           <div className="form-check">
-                            <p className="radioTitle">{t("ispOwner")} (%)</p>
-
                             <FtextField
-                              style={{ marginTop: "-25px" }}
+                              label={t("ispOwner")}
                               key="isp"
                               type="number"
                               name="isp"
@@ -627,6 +588,7 @@ const ResellerEdit = ({ show, setShow, resellerId }) => {
                           </div>
                         </div>
                       )}
+
                       {commissionType === "packageBased" && (
                         <div className="form-check w-50">
                           <p className="radioTitle">{t("ispOwnerShare")}</p>
