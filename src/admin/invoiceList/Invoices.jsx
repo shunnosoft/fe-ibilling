@@ -19,6 +19,8 @@ import InvoiceEditModal from "./modal/InvoiceEditModal";
 import InvoiceCreate from "./modal/InvoiceCreate";
 import { Modal, ModalBody, ModalHeader, ModalTitle } from "react-bootstrap";
 import SelectField from "../../components/common/SelectField";
+import DatePicker from "react-datepicker";
+import { setIspOwnerData } from "../../features/authSlice";
 
 const Invoices = ({ ownerId, companyName, isOpen, setIsOpen }) => {
   // import dispatch
@@ -41,10 +43,20 @@ const Invoices = ({ ownerId, companyName, isOpen, setIsOpen }) => {
   // modal show state
   const [show, setShow] = useState(false);
 
+  //
+  const [invoiceDate, setInvoiceDate] = useState();
+
   // dispatch data to api
   useEffect(() => {
     if (ownerId) getIspOwnerInvoice(ownerId, dispatch, setIsLoading);
   }, [ownerId]);
+
+  useEffect(() => {
+    const singleInvoice = invoiceList.find(
+      (item) => item.id === invoiceeEditId
+    );
+    setInvoiceDate(singleInvoice?.dueDate && new Date(singleInvoice?.dueDate));
+  }, [invoiceeEditId]);
 
   // edit section
 
@@ -68,7 +80,7 @@ const Invoices = ({ ownerId, companyName, isOpen, setIsOpen }) => {
     // handle submit
     handleSubmit = (values) => {
       const data = {
-        dueDate: moment(values.dueDate + " " + values.time).toISOString(),
+        dueDate: invoiceDate.toISOString(),
       };
 
       if (role === "superadmin") {
@@ -251,11 +263,11 @@ const Invoices = ({ ownerId, companyName, isOpen, setIsOpen }) => {
                   initialValues={{
                     amount: ispOwnerInvoice?.amount,
                     paymentStatus: ispOwnerInvoice?.status,
-                    dueDate: moment(ispOwnerInvoice?.dueDate).format(
-                      "YYYY-MM-DD"
-                    ),
+                    // dueDate: moment(ispOwnerInvoice?.dueDate).format(
+                    //   "MMM dd yyyy hh:mm a"
+                    // ),
 
-                    time: moment(ispOwnerInvoice?.dueDate).format("HH:mm"),
+                    // time: moment(ispOwnerInvoice?.dueDate).format("HH:mm"),
                   }}
                   validationSchema={invoiceEditFieldValidator}
                   enableReinitialize
@@ -285,9 +297,32 @@ const Invoices = ({ ownerId, companyName, isOpen, setIsOpen }) => {
                             </SelectField>
                           </>
 
-                          <FtextField type="date" name="dueDate" label="Date" />
+                          <div>
+                            <label className="form-control-label changeLabelFontColor">
+                              Invoice Date
+                            </label>
 
-                          <FtextField type="time" name="time" label="Time" />
+                            <DatePicker
+                              className="form-control mw-100"
+                              selected={invoiceDate}
+                              onChange={(date) => setInvoiceDate(date)}
+                              dateFormat="MMM dd yyyy hh:mm a"
+                              timeIntervals
+                              showTimeSelect
+                            />
+                          </div>
+
+                          {/* <FtextField
+                            name="dueDate"
+                            label="Date"
+                            type="date"
+                            component="Datepicker"
+                            dateFormat="MMM dd yyyy hh:mm a"
+                            timeIntervals
+                            showTimeSelect
+                          /> */}
+
+                          {/* <FtextField name="time" label="Time" type="date" /> */}
 
                           <div className="invoiceAction">
                             <button

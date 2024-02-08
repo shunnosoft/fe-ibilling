@@ -111,7 +111,7 @@ const EditPPPoECustomer = ({ show, setShow, single }) => {
     password: true,
     area: true,
     subArea: true,
-    polebox: true,
+    poleBox: true,
     name: true,
     mobile: true,
     birthDate: true,
@@ -132,31 +132,32 @@ const EditPPPoECustomer = ({ show, setShow, single }) => {
 
   // customer validator
   const customerValidator = Yup.object({
-    name: Yup.string().required(t("writeCustomerName")),
-    mobile: Yup.string()
-      .matches(/^(01){1}[3456789]{1}(\d){8}$/, t("incorrectMobile"))
-      .min(11, t("write11DigitMobileNumber"))
-      .max(11, t("over11DigitMobileNumber")),
     address: Yup.string(),
-    email: Yup.string().email(t("incorrectEmail")),
-    nid: Yup.string(),
-    monthlyFee: Yup.number()
-      .integer()
-      .min(0, t("minimumPackageRate"))
-      .required(t("enterPackageRate")),
-    pppoeName: Yup.string().required(t("writePPPoEName")),
-    password: Yup.string().required(t("writePPPoEPassword")),
     comment: Yup.string(),
     customerBillingType: Yup.string().required(t("select billing type")),
     connectionFee: Yup.number(),
     customerId:
       bpSettings?.genCustomerId && Yup.string().required(t("selectCustomer")),
+    email: Yup.string().email(t("incorrectEmail")),
+    mobile: Yup.string()
+      .matches(/^(01){1}[3456789]{1}(\d){8}$/, t("incorrectMobile"))
+      .min(11, t("write11DigitMobileNumber"))
+      .max(11, t("over11DigitMobileNumber")),
+    monthlyFee: Yup.number()
+      .integer()
+      .min(0, t("minimumPackageRate"))
+      .required(t("enterPackageRate")),
+    nid: Yup.string().matches(/^(?:\d{10}|\d{13}|\d{17})$/, t("invalidNID")),
+    name: Yup.string().required(t("writeCustomerName")),
+    pppoeName: Yup.string().required(t("writePPPoEName")),
+    password: Yup.string().required(t("writePPPoEPassword")),
   });
 
   // get data input option from useDataInputOption hook
   const dataInputOption = useDataInputOption(
     inputPermission,
     "pppoe",
+    "edit",
     customerModifiedData
   );
 
@@ -173,6 +174,7 @@ const EditPPPoECustomer = ({ show, setShow, single }) => {
       password,
       comment,
       mobile,
+      monthlyFee,
       mikrotikPackage,
       promiseDate,
       poleBox,
@@ -181,7 +183,7 @@ const EditPPPoECustomer = ({ show, setShow, single }) => {
     } = formValue;
 
     // find single mikrotik package in pppoe package list
-    const Pprofile = ppPackage.find((val) => val.id === mikrotikPackage)?.name;
+    const Pprofile = ppPackage.find((val) => val.id === mikrotikPackage);
 
     // if customer id is empty then alert write customer id
     if (!bpSettings.genCustomerId) {
@@ -221,6 +223,7 @@ const EditPPPoECustomer = ({ show, setShow, single }) => {
       autoDisable,
       nextMonthAutoDisable,
       mobile,
+      monthlyFee: Pprofile?.rate,
       billingCycle: billingCycle.toISOString(),
       promiseDate: promiseDate.toISOString(),
       birthDate: birthDate,
@@ -231,7 +234,7 @@ const EditPPPoECustomer = ({ show, setShow, single }) => {
         password: password,
         service: "pppoe",
         comment: comment,
-        profile: Pprofile,
+        profile: Pprofile?.name,
         disabled: data?.pppoe.disabled,
       },
     };
@@ -325,13 +328,14 @@ const EditPPPoECustomer = ({ show, setShow, single }) => {
             subArea: data?.subArea,
             mikrotik: data?.mikrotik || "",
             mikrotikPackage: data?.mikrotikPackage,
-            mobile: data?.mobile || "N/A",
+            mobile: data?.mobile || "",
             monthlyFee: data?.monthlyFee || 0,
             name: data?.name,
-            nid: data?.nid || "N/A",
+            nid: data?.nid || "",
             pppoeName: data?.pppoe?.name || "",
             promiseDate: new Date(data?.promiseDate),
             password: data?.pppoe?.password || "",
+            poleBox: data?.poleBox || "",
             status: data?.status || "",
             thana: divisionalArea.thana || "",
           }}
@@ -349,12 +353,14 @@ const EditPPPoECustomer = ({ show, setShow, single }) => {
                     item?.isVisible && (
                       <FtextField
                         as={item.as}
+                        info={item?.info}
                         name={item?.name}
                         type={item?.type}
                         disabled={item.disabled}
                         validation={item.validation}
                         label={item?.label}
                         placeholder={item?.placeholder}
+                        placeholderText={item?.placeholderText}
                         firstOptions={item?.firstOptions}
                         textAccessor={item.textAccessor}
                         valueAccessor={item.valueAccessor}

@@ -931,5 +931,6 @@
   "onlinePaymentCustomer": "অনলাইন পেমেন্ট গ্রাহক",
   "hotspotCustomerSync": "হটস্পট গ্রাহক সিঙ্ক",
   "willContinue": "চলতে থাকবে",
-  "nextMonth": "পরবর্তী মাস"
+  "nextMonth": "পরবর্তী মাস",
+  "invalidNID": "অবৈধ NID"
 }

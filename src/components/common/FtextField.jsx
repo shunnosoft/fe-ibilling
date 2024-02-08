@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { InputGroup } from "react-bootstrap";
 import { Eye, EyeSlash } from "react-bootstrap-icons";
 import DatePicker from "react-datepicker";
+import InformationTooltip from "./tooltipInformation/InformationTooltip";
 
 export const FtextField = ({ label, validation, ...props }) => {
   const [field, meta, { setValue }] = useField(props);
@@ -13,7 +14,8 @@ export const FtextField = ({ label, validation, ...props }) => {
   return (
     <div>
       <label htmlFor={field.name} className="changeLabelFontColor">
-        {label} {validation && <span className="text-danger">*</span>}
+        {label} {validation && <span className="text-danger me-4">*</span>}
+        {props?.info && <InformationTooltip data={props?.info} />}
       </label>
 
       {/* field as key base */}
@@ -139,7 +141,12 @@ export const FtextField = ({ label, validation, ...props }) => {
           }`}
           {...field}
           {...(props !== undefined)}
-          value={props?.value ? props?.value : field?.value}
+          value={props?.value ? props.value : field.value}
+          onChange={(e) => {
+            field.onChange(e);
+            props?.onChange(e);
+          }}
+          placeholder={props?.placeholder}
           autoComplete="off"
         ></Field>
       )}

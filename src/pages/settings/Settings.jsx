@@ -27,6 +27,7 @@ import CustomerTicketSmsTemplate from "./template/CustomerTicketSmsTemplate";
 import CustomerManualEdit from "./template/CustomerManualEdit";
 import StaffAssignTicketSMSTemplate from "./template/StaffAssignTicketSMSTemplate";
 import CustomerTicketAssignSmsTemplate from "./template/CustomerAssignTicketSmsTemplate";
+import ConnectionFeeSMSTemplate from "./template/ConnectionFeeSMSTemplate";
 export default function Settings() {
   const { t } = useTranslation();
 
@@ -82,6 +83,16 @@ export default function Settings() {
                         <BillConfirmationSmsTemplate />
                       </FourGround>
                     </Tab>
+                    {/* 
+                    <Tab
+                      className="mt-5"
+                      eventKey="connectionFee"
+                      title={t("connectionFee")}
+                    >
+                      <FourGround>
+                        <ConnectionFeeSMSTemplate />
+                      </FourGround>
+                    </Tab> */}
 
                     <Tab
                       className="mt-5"

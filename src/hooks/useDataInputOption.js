@@ -10,8 +10,9 @@ import divisionsJSON from "../bdAddress/bd-divisions.json";
 import districtsJSON from "../bdAddress/bd-districts.json";
 import thanaJSON from "../bdAddress/bd-upazilas.json";
 import { getNameId } from "../utils/getLocationName";
+import { informationEnBn } from "../components/common/tooltipInformation/informationEnBn";
 
-const useDataInputOption = (inputPermission, page, data) => {
+const useDataInputOption = (inputPermission, page, status, data) => {
   const { t } = useTranslation();
 
   // get user & current user data form useISPOwner hook
@@ -66,6 +67,7 @@ const useDataInputOption = (inputPermission, page, data) => {
 
   // set add staff status
   const [addStaffStatus, setAddStaffStatus] = useState(false);
+  const [birthDate, setBirthDate] = useState();
 
   // set isp owner & reseller commission type in state
   const [commissionType, setCommissionType] = useState("");
@@ -82,6 +84,7 @@ const useDataInputOption = (inputPermission, page, data) => {
     setAreaId(data?.area);
     setAutoDisable(data?.autoDisable);
     setNextMonthAutoDisable(data?.nextMonthAutoDisable);
+    setPackageRate(data?.monthlyFee);
     // setSubareaId(data?.subAreaId);
 
     const division_id = getNameId(divisionsJSON.divisions, data?.division)?.id;
@@ -99,9 +102,9 @@ const useDataInputOption = (inputPermission, page, data) => {
       name: "customerId",
       type: "text",
       id: "customerId",
-      isVisible: bpSettings.genCustomerId && inputPermission.customerId,
+      isVisible: !bpSettings.genCustomerId && inputPermission.customerId,
       disabled: false,
-      validation: bpSettings.genCustomerId,
+      validation: !bpSettings.genCustomerId,
       label: t("customerId"),
     },
     {
@@ -110,7 +113,7 @@ const useDataInputOption = (inputPermission, page, data) => {
       type: "select",
       id: "mikrotik",
       isVisible: bpSettings.hasMikrotik && inputPermission.mikrotik,
-      disabled: false,
+      disabled: status === "edit" ? true : false,
       validation: true,
       label: t("selectMikrotik"),
       firstOptions: t("selectMikrotik"),
@@ -121,6 +124,7 @@ const useDataInputOption = (inputPermission, page, data) => {
       onChange: (e) => {
         setMikrotikId(e.target.value);
       },
+      info: informationEnBn()?.[2],
     },
     {
       name: "mikrotikPackage",
@@ -152,6 +156,9 @@ const useDataInputOption = (inputPermission, page, data) => {
       validation: true,
       label: t("monthlyFee"),
       value: packageRate,
+      onChange: (e) => {
+        setPackageRate(e.target.value);
+      },
     },
     {
       name: "balance",
@@ -215,11 +222,11 @@ const useDataInputOption = (inputPermission, page, data) => {
       },
     },
     {
-      name: "polebox",
+      name: "poleBox",
       as: "select",
       type: "select",
-      id: "polebox",
-      isVisible: bpSettings.poleBox && inputPermission.polebox,
+      id: "poleBox",
+      isVisible: bpSettings.poleBox && inputPermission.poleBox,
       disabled: false,
       validation: false,
       label: t("selectPoleBox"),
@@ -245,6 +252,7 @@ const useDataInputOption = (inputPermission, page, data) => {
       disabled: !permission?.customerMobileEdit && role === "collector",
       validation: page ? bpSettings?.addCustomerWithMobile : true,
       label: t("mobile"),
+      placeholder: "+8801XXXXXXXXX",
     },
     {
       name: "nid",
@@ -254,6 +262,7 @@ const useDataInputOption = (inputPermission, page, data) => {
       disabled: false,
       validation: page ? false : true,
       label: t("NIDno"),
+      placeholder: "e.g. 10,13 or 17 digits",
     },
     {
       name: "birthDate",
@@ -263,11 +272,16 @@ const useDataInputOption = (inputPermission, page, data) => {
       disabled: false,
       validation: false,
       label: t("birthDate"),
+      placeholderText: "YYYY MM DD",
       component: "DatePicker",
-      dateFormat: "MMM dd yyyy hh:mm a",
+      dateFormat: "yyyy MM dd",
       showYearDropdown: "showYearDropdown",
       scrollableYearDropdown: "scrollableYearDropdown",
       yearDropdownItemNumber: 150,
+      value: birthDate,
+      onChange: (e) => {
+        setBirthDate(e.target.value);
+      },
     },
     {
       name: "address",
@@ -286,7 +300,7 @@ const useDataInputOption = (inputPermission, page, data) => {
       disabled: false,
       validation: page ? false : true,
       label: t("email"),
-      placeholder: "***@gmail.com",
+      placeholder: "***@mail.com",
     },
     {
       name: "billingCycle",
@@ -294,10 +308,11 @@ const useDataInputOption = (inputPermission, page, data) => {
       id: "billingCycle",
       isVisible: inputPermission.billingCycle,
       disabled: false,
-      validation: false,
+      validation: true,
       label: t("billingCycle"),
+      placeholderText: "YYYY MM DD HH:mm A",
       component: "DatePicker",
-      dateFormat: "MMM dd yyyy hh:mm a",
+      dateFormat: "yyyy MM dd hh:mm a",
       timeIntervals: 60,
       showTimeSelect: "showTimeSelect",
     },
@@ -305,12 +320,13 @@ const useDataInputOption = (inputPermission, page, data) => {
       name: "promiseDate",
       type: "date",
       id: "promiseDate",
-      isVisible: inputPermission.promiseDate,
+      isVisible: bpSettings?.promiseDate && inputPermission.promiseDate,
       disabled: false,
       validation: false,
       label: t("promiseDate"),
+      placeholderText: "YYYY MM DD HH:mm A",
       component: "DatePicker",
-      dateFormat: "MMM dd yyyy hh:mm a",
+      dateFormat: "yyyy MM dd hh:mm a",
       timeIntervals: 60,
       showTimeSelect: "showTimeSelect",
     },
@@ -322,8 +338,9 @@ const useDataInputOption = (inputPermission, page, data) => {
       disabled: false,
       validation: false,
       label: t("connectionDate"),
+      placeholderText: "YYYY MM DD HH:mm A",
       component: "DatePicker",
-      dateFormat: "MMM dd yyyy hh:mm a",
+      dateFormat: "yyyy MM dd hh:mm a",
       timeIntervals: 60,
       showTimeSelect: "showTimeSelect",
     },
@@ -494,6 +511,8 @@ const useDataInputOption = (inputPermission, page, data) => {
     //     },
     //   ],
     // },
+
+    // staff add input option
     {
       name: "addStaff",
       isVisible: inputPermission.addStaff,
