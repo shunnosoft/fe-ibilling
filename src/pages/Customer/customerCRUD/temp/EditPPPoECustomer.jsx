@@ -213,6 +213,24 @@ const EditPPPoECustomer = ({ show, setShow, single }) => {
       }
     }
 
+    // calculate customer monthly fee package based
+    let customerMonthlyFee = 0;
+    if (Pprofile?.name === data?.pppoe.profile) {
+      customerMonthlyFee = Number(monthlyFee);
+    } else if (Pprofile?.name !== data?.pppoe.profile) {
+      customerMonthlyFee = Pprofile?.rate;
+    } else if (
+      Pprofile?.name !== data?.pppoe.profile &&
+      Pprofile?.rate === monthlyFee
+    ) {
+      customerMonthlyFee = Pprofile?.rate;
+    } else if (
+      Pprofile?.name !== data?.pppoe.profile &&
+      Pprofile?.rate !== monthlyFee
+    ) {
+      customerMonthlyFee = Number(monthlyFee);
+    }
+
     // customer modification sending data to api
     const mainData = {
       customerId,
@@ -223,7 +241,7 @@ const EditPPPoECustomer = ({ show, setShow, single }) => {
       autoDisable,
       nextMonthAutoDisable,
       mobile,
-      monthlyFee: Pprofile?.rate,
+      monthlyFee: customerMonthlyFee,
       billingCycle: billingCycle.toISOString(),
       promiseDate: promiseDate.toISOString(),
       birthDate: birthDate,
