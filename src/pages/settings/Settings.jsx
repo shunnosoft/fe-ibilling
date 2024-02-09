@@ -83,7 +83,7 @@ export default function Settings() {
                         <BillConfirmationSmsTemplate />
                       </FourGround>
                     </Tab>
-                    {/* 
+
                     <Tab
                       className="mt-5"
                       eventKey="connectionFee"
@@ -92,7 +92,7 @@ export default function Settings() {
                       <FourGround>
                         <ConnectionFeeSMSTemplate />
                       </FourGround>
-                    </Tab> */}
+                    </Tab>
 
                     <Tab
                       className="mt-5"

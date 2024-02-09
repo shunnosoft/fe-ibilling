@@ -932,5 +932,6 @@
   "hotspotCustomerSync": "হটস্পট গ্রাহক সিঙ্ক",
   "willContinue": "চলতে থাকবে",
   "nextMonth": "পরবর্তী মাস",
-  "invalidNID": "অবৈধ NID"
+  "invalidNID": "অবৈধ NID",
+  "connectionFeeSMSTemplate": "সংযোগ ফি রিচার্জ কনফার্মেশন SMS টেমপ্লেট"
 }

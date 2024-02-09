@@ -926,5 +926,6 @@
   "hotspotCustomerSync": "Hotspot Customer Sync",
   "willContinue": "Will continue",
   "nextMonth": "Next Month",
-  "invalidNID": "Invalid NID"
+  "invalidNID": "Invalid NID",
+  "connectionFeeSMSTemplate": "Connection Fee Recharge Confirmation SMS Template"
 }

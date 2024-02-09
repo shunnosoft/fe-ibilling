@@ -56,7 +56,6 @@ const ConnectionFeeSMSTemplate = () => {
       "NAME: CUSTOMER_NAME",
       "AMOUNT: CONNECTION_FEE",
       "DUE: DUE_CONNECTION_FEE",
-      "PAID AT: PAID_AT",
     ];
     var found = [];
 
@@ -65,8 +64,7 @@ const ConnectionFeeSMSTemplate = () => {
       .replace("ID: CUSTOMER_ID", "")
       .replace("NAME: CUSTOMER_NAME", "")
       .replace("AMOUNT: CONNECTION_FEE", "")
-      .replace("DUE: DUE_CONNECTION_FEE", "")
-      .replace("PAID AT: PAID_AT", "");
+      .replace("DUE: DUE_CONNECTION_FEE", "");
 
     let temp = messageBoxStr !== "undefined" ? messageBoxStr?.split("\n") : "";
 
@@ -173,11 +171,11 @@ const ConnectionFeeSMSTemplate = () => {
   };
 
   return (
-    <div className="py-4">
+    <div className="pb-4">
       <div className="writeMessageSection">
         <div className="messageStatus d-flex justify-content-between">
           <div className="sending-status">
-            <h4> {t("customerTicketTemplate")} </h4>
+            <h4> {t("connectionFeeSMSTemplate")} </h4>
             <div className="displayGrid1 mb-3">
               <div className="message_radio">
                 <input
@@ -342,22 +340,6 @@ const ConnectionFeeSMSTemplate = () => {
               />
               <label className="templatelabel" htmlFor="due_connection_fee">
                 {"DUE: DUE_CONNECTION_FEE"}
-              </label>
-            </div>
-
-            <div className="checkboxSelect">
-              <input
-                id="paid_at"
-                type="checkbox"
-                className="getValueUsingClass"
-                value={"PAID AT: PAID_AT"}
-                checked={matchFound.includes("PAID AT: PAID_AT")}
-                onChange={(e) => {
-                  itemSettingHandler(e.target.value);
-                }}
-              />
-              <label className="templatelabel" htmlFor="paid_at">
-                {"PAID AT: PAID_AT"}
               </label>
             </div>
           </div>
