@@ -328,7 +328,7 @@ const EditPPPoECustomer = ({ show, setShow, single }) => {
         <Formik
           initialValues={{
             area: customerModifiedData?.area,
-            address: data?.address || "N/A",
+            address: data?.address || "",
             billingCycle: new Date(data?.billingCycle),
             balance: data?.balance || 0,
             birthDate: data?.birthDate ? new Date(data?.birthDate) : "",
@@ -339,7 +339,7 @@ const EditPPPoECustomer = ({ show, setShow, single }) => {
             connectionDate: data?.connectionDate
               ? new Date(data?.connectionDate)
               : "",
-            comment: data?.pppoe?.comment || "N/A",
+            comment: data?.pppoe?.comment || "",
             division: divisionalArea.division || "",
             district: divisionalArea.district || "",
             email: data?.email || "",

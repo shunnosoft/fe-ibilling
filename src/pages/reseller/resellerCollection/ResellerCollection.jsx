@@ -102,8 +102,12 @@ const ResellerCollection = () => {
   );
 
   useEffect(() => {
-    fetchReseller(dispatch, ispOwnerId, setDataLoader);
-    getAllPackages(dispatch, ispOwnerId, setPackageLoading);
+    // get reseller api
+    reseller.length === 0 && fetchReseller(dispatch, ispOwnerId, setDataLoader);
+
+    // get ispOwner all pakcages api
+    allPackages.length === 0 &&
+      getAllPackages(dispatch, ispOwnerId, setPackageLoading);
   }, []);
 
   useEffect(() => {
@@ -212,6 +216,58 @@ const ResellerCollection = () => {
     return findPack;
   };
 
+  // admin reseller commission handler function
+  const adminResellerCommission = (data) => {
+    // single reseller find in customer report data
+    const singleReseller = reseller.find((item) => item.id === data.reseller);
+
+    // customer bill amount
+    let commissionAmount = data.amount;
+
+    // customer bill amount ispOwner commission and reseller commission
+    let ispOwnerCommission = 0;
+    let resellerCommission = 0;
+
+    if (
+      commissionAmount != 0 &&
+      data.medium !== "cash" &&
+      data.billType === "bill"
+    ) {
+      // handle packageBased resellers
+      if (singleReseller?.commissionType === "packageBased") {
+        // find reseller packages rate
+        const resellerPackageRate = singleReseller?.resellerPackageRates.find(
+          (pack) => pack.mikrotikPackage === data?.customer.mikrotikPackage
+        );
+
+        // check commission style is percentage or fixedRate
+        if (singleReseller?.commissionStyle === "percentage") {
+          ispOwnerCommission =
+            (resellerPackageRate?.ispOwnerRate * Number(commissionAmount)) /
+            100;
+          resellerCommission = commissionAmount - ispOwnerCommission;
+        }
+        if (singleReseller?.commissionStyle === "fixedRate") {
+          ispOwnerCommission = resellerPackageRate?.ispOwnerRate;
+          resellerCommission = commissionAmount - ispOwnerCommission;
+        }
+      } else {
+        // handle other resellers
+        ispOwnerCommission =
+          (singleReseller.commissionRate.isp * Number(commissionAmount)) / 100;
+        resellerCommission = commissionAmount - ispOwnerCommission;
+      }
+    } else {
+      ispOwnerCommission = data.ispOwnerCommission;
+      resellerCommission = data.resellerCommission;
+    }
+    // set ispOwner & reseller commission
+    return {
+      resellerCommission,
+      ispOwnerCommission,
+    };
+  };
+
   const columns = useMemo(
     () => [
       {
@@ -252,15 +308,20 @@ const ResellerCollection = () => {
         Header: t("collector"),
         accessor: "name",
       },
+
       {
         width: "10%",
-        Header: t("resellerCommission"),
-        accessor: "resellerCommission",
+        Header: t("admin"),
+        Cell: ({ row: { original } }) => (
+          <div>{adminResellerCommission(original)?.ispOwnerCommission}</div>
+        ),
       },
       {
         width: "10%",
-        Header: t("ispOwnerCommission"),
-        accessor: "ispOwnerCommission",
+        Header: t("reseller"),
+        Cell: ({ row: { original } }) => (
+          <div>{adminResellerCommission(original)?.resellerCommission}</div>
+        ),
       },
       {
         width: "6%",
@@ -431,21 +492,21 @@ const ResellerCollection = () => {
       style={{ fontSize: "18px", fontWeight: "500", display: "flex" }}
     >
       {totalSum()?.amount > 0 && (
-        <div className="mx-3">
-          {t("totalBill")} :
-          <span className="fw-bold">৳ {FormatNumber(totalSum().amount)}</span>
+        <div>
+          {t("collection")} :
+          <span className="fw-bold"> ৳{FormatNumber(totalSum().amount)}</span>
         </div>
       )}
-      <div className="me-3">
-        {t("resellerCommission")} :
+      <div className="mx-3">
+        {t("admin")} :
         <span className="fw-bold">
-          ৳ {FormatNumber(totalSum().resellerCommission)}
+          &nbsp; ৳{FormatNumber(totalSum().ispOwnerCommission)}
         </span>
       </div>
       <div>
-        {t("ispOwnerCommission")} :
+        {t("reseller")} :
         <span className="fw-bold">
-          ৳ {FormatNumber(totalSum().ispOwnerCommission)}
+          &nbsp;৳{FormatNumber(totalSum().resellerCommission)}
         </span>
       </div>
     </div>

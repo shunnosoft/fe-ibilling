@@ -319,12 +319,14 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
                         {FormatNumber(dashboardCard.totalMonthlyConnectionFee)}
                       </h2>
                     </div>
-                    <p class="m-b-0">
-                      {t("todayConnectionFee")}
-                      <span class="f-right">
-                        {FormatNumber(dashboardCard.todayTotalConnectionFee)}
-                      </span>
-                    </p>
+                    {role === "ispOwner" && (
+                      <p class="m-b-0">
+                        {t("todayConnectionFee")}
+                        <span class="f-right">
+                          {FormatNumber(dashboardCard.todayTotalConnectionFee)}
+                        </span>
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>

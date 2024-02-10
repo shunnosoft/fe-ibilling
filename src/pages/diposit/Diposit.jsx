@@ -14,6 +14,9 @@ import {
 } from "react-bootstrap-icons";
 import ReactToPrint from "react-to-print";
 
+// custom hooks import
+import useISPowner from "../../hooks/useISPOwner";
+
 // internal import
 import "./diposit.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
@@ -35,26 +38,19 @@ import NoteDetailsModal from "./NoteDetailsModal";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
 
-export default function Diposit() {
+const Diposit = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const componentRef = useRef(); //reference of pdf export component
+
+  // get user & current user data form useISPOwner hooks
+  const { ispOwnerId, userData } = useISPowner();
 
   // get all deposit form redux
   const allDeposit = useSelector((state) => state?.payment?.allDeposit);
 
   // get manager from redux
   const manager = useSelector((state) => state?.manager?.manager);
-
-  // get isp owner id from redux
-  const ispOwner = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerId
-  );
-
-  // get current user from redux
-  const userData = useSelector(
-    (state) => state.persistedReducer.auth?.currentUser
-  );
 
   // get all collector form redux
   const allCollector = useSelector((state) => state?.collector?.collector);
@@ -88,7 +84,7 @@ export default function Diposit() {
   const [activeKeys, setActiveKeys] = useState("");
 
   //select depositor id
-  const [collectorIds, setCollectorIds] = useState("all");
+  const [collectorIds, setCollectorIds] = useState("");
   const [depositedName, setDepositedName] = useState("");
 
   // filter date state
@@ -99,8 +95,8 @@ export default function Diposit() {
   const [dateEnd, setEndDate] = useState(today);
 
   // current month start & end date
-  var selectDate = new Date(filterDate.getFullYear(), filterDate.getMonth(), 1);
-  var lastDate = new Date(
+  let selectDate = new Date(filterDate.getFullYear(), filterDate.getMonth(), 1);
+  let lastDate = new Date(
     filterDate.getFullYear(),
     filterDate.getMonth() + 1,
     0
@@ -118,7 +114,7 @@ export default function Diposit() {
     filterDate.getMonth() + 1 &&
       getDeposit(
         dispatch,
-        ispOwner,
+        ispOwnerId,
         filterDate.getFullYear(),
         filterDate.getMonth() + 1,
         setIsLoading
@@ -126,9 +122,10 @@ export default function Diposit() {
   }, [filterDate]);
 
   useEffect(() => {
-    allCollector.length === 0 && getCollector(dispatch, ispOwner, setIsLoading);
-    manager.length === 0 && getManger(dispatch, ispOwner);
-    ownerUsers.length === 0 && getOwnerUsers(dispatch, ispOwner);
+    allCollector.length === 0 &&
+      getCollector(dispatch, ispOwnerId, setIsLoading);
+    manager.length === 0 && getManger(dispatch, ispOwnerId);
+    ownerUsers.length === 0 && getOwnerUsers(dispatch, ispOwnerId);
     Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
   }, []);
 
@@ -140,7 +137,7 @@ export default function Diposit() {
   const reloadHandler = () => {
     getDeposit(
       dispatch,
-      ispOwner,
+      ispOwnerId,
       filterDate.getFullYear(),
       filterDate.getMonth() + 1,
       setIsLoading
@@ -164,7 +161,7 @@ export default function Diposit() {
   const onClickFilter = () => {
     let arr = [...allDeposit];
 
-    if (collectorIds !== "all") {
+    if (collectorIds) {
       arr = arr.filter((bill) => bill.user === collectorIds);
     } else {
       arr = arr;
@@ -186,6 +183,58 @@ export default function Diposit() {
     startDate: moment(dateStart).format("YYYY-MM-DD"),
     endDate: moment(dateEnd).format("YYYY-MM-DD"),
   };
+
+  // total deposit calculation
+  //function to calculate total Commissions and other amount
+  const getTotalOwnDeposit = useCallback(() => {
+    let collectionDeposit;
+    let previousDeposit;
+
+    // current month depostit filter
+    collectionDeposit = mainData.filter(
+      (item) => item.status === "accepted" && !item.month
+    );
+
+    // previous month deposit filter
+    previousDeposit = mainData.filter(
+      (item) => item.status === "accepted" && item.month
+    );
+
+    const initialValue = 0;
+
+    // current month colleciton deposti
+    const collectionDepositSum = collectionDeposit.reduce(
+      (previousValue, currentValue) => previousValue + currentValue.amount,
+      initialValue
+    );
+
+    // previous balance deposti
+    const previousDepositSum = previousDeposit.reduce(
+      (previousValue, currentValue) => previousValue + currentValue.amount,
+      initialValue
+    );
+
+    return { collectionDepositSum, previousDepositSum };
+  }, [mainData]);
+
+  // send sum own deposits of table
+  const allDepositSum = (
+    <div style={{ fontSize: "18px", display: "flex", alignItems: "center" }}>
+      {getTotalOwnDeposit()?.collectionDepositSum > 0 && (
+        <div>
+          {t("collectionDeposit")}: ৳
+          {FormatNumber(getTotalOwnDeposit()?.collectionDepositSum)}
+        </div>
+      )}
+      &nbsp; &nbsp;
+      {getTotalOwnDeposit()?.previousDepositSum > 0 && (
+        <div>
+          {t("previousMonthDeposit")}: ৳
+          {FormatNumber(getTotalOwnDeposit()?.previousDepositSum)}
+        </div>
+      )}
+    </div>
+  );
 
   // deposit report column
   const columns = React.useMemo(
@@ -341,58 +390,6 @@ export default function Diposit() {
     [t, ownerUsers, manager]
   );
 
-  // total deposit calculation
-  //function to calculate total Commissions and other amount
-  const getTotalOwnDeposit = useCallback(() => {
-    let collectionDeposit;
-    let previousDeposit;
-
-    // current month depostit filter
-    collectionDeposit = allDeposit.filter(
-      (item) => item.status === "accepted" && !item.month
-    );
-
-    // previous month deposit filter
-    previousDeposit = allDeposit.filter(
-      (item) => item.status === "accepted" && item.month
-    );
-
-    const initialValue = 0;
-
-    // current month colleciton deposti
-    const collectionDepositSum = collectionDeposit.reduce(
-      (previousValue, currentValue) => previousValue + currentValue.amount,
-      initialValue
-    );
-
-    // previous balance deposti
-    const previousDepositSum = previousDeposit.reduce(
-      (previousValue, currentValue) => previousValue + currentValue.amount,
-      initialValue
-    );
-
-    return { collectionDepositSum, previousDepositSum };
-  }, [allDeposit]);
-
-  // send sum own deposits of table
-  const allDepositSum = (
-    <div style={{ fontSize: "18px", display: "flex", alignItems: "center" }}>
-      {getTotalOwnDeposit()?.collectionDepositSum > 0 && (
-        <div>
-          {t("collectionDeposit")}: ৳
-          {FormatNumber(getTotalOwnDeposit()?.collectionDepositSum)}
-        </div>
-      )}
-      &nbsp; &nbsp;
-      {getTotalOwnDeposit()?.previousDepositSum > 0 && (
-        <div>
-          {t("previousMonthDeposit")}: ৳
-          {FormatNumber(getTotalOwnDeposit()?.previousDepositSum)}
-        </div>
-      )}
-    </div>
-  );
-
   return (
     <>
       <Sidebar />
@@ -469,9 +466,7 @@ export default function Diposit() {
                             className="form-select mt-0"
                             onChange={depositorHandler}
                           >
-                            <option value="all" defaultValue>
-                              {t("all collector")}
-                            </option>
+                            <option defaultValue>{t("all collector")}</option>
                             {manager.map((val) => (
                               <option name={val.name} value={val?.user}>
                                 {val?.name} (Manager)
@@ -567,4 +562,6 @@ export default function Diposit() {
       <NoteDetailsModal message={message} />
     </>
   );
-}
+};
+
+export default Diposit;
