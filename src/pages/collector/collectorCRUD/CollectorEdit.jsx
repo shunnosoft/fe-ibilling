@@ -88,7 +88,7 @@ const CollectorEdit = ({ show, setShow, collectorId }) => {
     let temp = [];
 
     storeSubArea?.map((sub) => {
-      if (single.areas?.includes(sub?.id)) {
+      if (single?.areas.includes(sub?.id)) {
         let subarea = {
           ...sub,
           isChecked: true,
@@ -243,7 +243,7 @@ const CollectorEdit = ({ show, setShow, collectorId }) => {
                 <Tab eventKey="basic" title={t("profile")}>
                   <div className="d-flex justify-content-center">
                     <div className="displayGrid col-6">
-                      {dataInputOption?.map(
+                      {dataInputOption?.inputOption.map(
                         (item) =>
                           item?.isVisible && (
                             <FtextField

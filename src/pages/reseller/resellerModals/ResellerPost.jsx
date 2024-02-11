@@ -357,7 +357,7 @@ const ResellerPost = ({ show, setShow }) => {
                   <Tab eventKey="basic" title={t("profile")}>
                     <div className="d-flex justify-content-center">
                       <div className="displayGrid col-6">
-                        {dataInputOption?.map(
+                        {dataInputOption?.inputOption.map(
                           (item) =>
                             item?.isVisible && (
                               <FtextField

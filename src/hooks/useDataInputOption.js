@@ -48,6 +48,28 @@ const useDataInputOption = (inputPermission, page, status, data) => {
   // set package rate in state
   const [packageRate, setPackageRate] = useState("");
 
+  // set mikrotik package name in state
+  const [packageName, setPackageName] = useState("");
+
+  // set billing cycle date in state
+  const [billingCycleDate, setBillingCycleDate] = useState(new Date());
+
+  // set date of birth in state
+  const [dateOFbirth, setDateOFBirth] = useState(new Date());
+
+  // set connection date in state
+  const [connectionDate, setConnectionDate] = useState(new Date());
+
+  // set promise date in state
+  const [promiseDate, setPromiseDate] = useState(new Date());
+
+  // set divisional area in state
+  const [divisionalArea, setDivisionalArea] = useState({
+    division: "",
+    district: "",
+    thana: "",
+  });
+
   // set area id in state
   const [areaId, setAreaId] = useState("");
 
@@ -74,19 +96,55 @@ const useDataInputOption = (inputPermission, page, status, data) => {
 
   const packageChangeHandler = async (id) => {
     const singlePackage = ppPackage.find((val) => val.id === id);
+
+    // set package id in state
     setPackageId(singlePackage.id);
+
+    // set package rate in state
     setPackageRate(singlePackage.rate);
+
+    // set package name in state
+    setPackageName(singlePackage.name);
   };
 
   useEffect(() => {
-    setMikrotikId(data?.mikrotik);
-    setPackageId(data?.mikrotikPackage);
-    setAreaId(data?.area);
-    setAutoDisable(data?.autoDisable);
-    setNextMonthAutoDisable(data?.nextMonthAutoDisable);
-    setPackageRate(data?.monthlyFee);
-    // setSubareaId(data?.subAreaId);
+    // set billing cycle date in state
+    setBillingCycleDate(data?.billingCycle);
 
+    // set date of birth in state
+    setDateOFBirth(data?.birthDate);
+
+    // set connection date in state
+    setConnectionDate(data?.connectionDate);
+
+    // set mikrotik id in state
+    setMikrotikId(data?.mikrotik);
+
+    // set package id in state
+    setPackageId(data?.mikrotikPackage);
+
+    // set area id in state
+    setAreaId(data?.area);
+
+    // set auto disable in state
+    setAutoDisable(data?.autoDisable);
+
+    // set next month auto disable in state
+    setNextMonthAutoDisable(data?.nextMonthAutoDisable);
+
+    // set package rate in state
+    setPackageRate(data?.monthlyFee);
+
+    // set promise date in state
+    setPromiseDate(data?.promiseDate);
+
+    // set package name in state
+    setPackageName(data?.pppoe?.profile);
+
+    // set subarea id in state
+    setSubareaId(data?.subAreaId);
+
+    // set division district and thana in state
     const division_id = getNameId(divisionsJSON.divisions, data?.division)?.id;
     const district_id = getNameId(districtsJSON.districts, data?.district)?.id;
     const thana_id = getNameId(thanaJSON.thana, data?.thana)?.id;
@@ -95,6 +153,36 @@ const useDataInputOption = (inputPermission, page, status, data) => {
     setDistrictId(district_id);
     setThanaId(thana_id);
   }, [data]);
+
+  // input initial values
+  const inputInitialValues = {
+    address: data?.address || "",
+    billingCycle: billingCycleDate,
+    balance: data?.balance || 0,
+    birthDate: dateOFbirth,
+    customerId: !bpSettings.genCustomerId && data?.customerId,
+    connectionFee: data?.connectionFee || 0,
+    customerBillingType: data?.customerBillingType || "prepaid",
+    connectionDate: connectionDate,
+    comment: data?.pppoe?.comment || "",
+    division: divisionalArea.division || "",
+    district: divisionalArea.district || "",
+    email: data?.email || "",
+    monthlyFee: Number(packageRate),
+    mikrotik: data?.mikrotik || "",
+    mikrotikPackage: data?.mikrotikPackage || "",
+    mobile: data?.mobile || "",
+    name: data?.name || "",
+    nid: data?.nid || "",
+    pppoeName: data?.pppoe?.name || "",
+    promiseDate: promiseDate,
+    password: data?.pppoe?.password || "",
+    poleBox: data?.poleBox || "",
+    subArea: data?.subArea || "",
+    status: data?.status || "",
+    thana: divisionalArea.thana || "",
+    profile: packageName,
+  };
 
   // data input options
   const inputOption = [
@@ -233,7 +321,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       firstOptions: t("selectPoleBox"),
       textAccessor: "name",
       valueAccessor: "id",
-      options: poleBox.filter((item) => item?.area === subAreaId),
+      options: poleBox.filter((item) => item?.subArea === subAreaId),
     },
     {
       name: "name",
@@ -600,7 +688,10 @@ const useDataInputOption = (inputPermission, page, status, data) => {
     // },
   ];
 
-  return inputOption;
+  return {
+    inputOption,
+    inputInitialValues,
+  };
 };
 
 export default useDataInputOption;

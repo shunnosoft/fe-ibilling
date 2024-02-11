@@ -24,7 +24,7 @@ import ComponentCustomModal from "../../../../components/common/customModal/Comp
 import divisionsJSON from "../../../../bdAddress/bd-divisions.json";
 import districtsJSON from "../../../../bdAddress/bd-districts.json";
 import thanaJSON from "../../../../bdAddress/bd-upazilas.json";
-import getName, { getNameId } from "../../../../utils/getLocationName";
+import getName from "../../../../utils/getLocationName";
 
 const divisions = divisionsJSON.divisions;
 const districts = districtsJSON.districts;
@@ -43,11 +43,6 @@ const EditPPPoECustomer = ({ show, setShow, single }) => {
   // get all subAreas
   const storeSubArea = useSelector((state) => state.area?.subArea);
 
-  // get pppoe package
-  const ppPackage = useSelector((state) =>
-    hasMikrotik ? state?.package?.pppoePackages : state?.package?.packages
-  );
-
   // find editable data
   const data = customer.find((item) => item.id === single);
 
@@ -62,13 +57,6 @@ const EditPPPoECustomer = ({ show, setShow, single }) => {
 
   // customer next month auto disable state
   const [nextMonthAutoDisable, setNextMonthAutoDisable] = useState(false);
-
-  // set divisional area in state
-  const [divisionalArea, setDivisionalArea] = useState({
-    division: "",
-    district: "",
-    thana: "",
-  });
 
   // data set to state
   useEffect(() => {
@@ -87,16 +75,6 @@ const EditPPPoECustomer = ({ show, setShow, single }) => {
         };
         setCustomerModifiedData(customerData);
       }
-    });
-
-    // set divisional area in state
-    const division_id = getNameId(divisions, data?.division)?.id;
-    const district_id = getNameId(districts, data?.district)?.id;
-    const thana_id = getNameId(thanas, data?.thana)?.id;
-    setDivisionalArea({
-      division: division_id,
-      district: district_id,
-      thana: thana_id,
     });
   }, [data]);
 
@@ -164,7 +142,6 @@ const EditPPPoECustomer = ({ show, setShow, single }) => {
   // sending data to backed
   const customerHandler = async (formValue) => {
     const {
-      billingCycle,
       birthDate,
       customerId,
       customerBillingType,
@@ -172,18 +149,14 @@ const EditPPPoECustomer = ({ show, setShow, single }) => {
       division,
       pppoeName,
       password,
+      profile,
       comment,
       mobile,
-      monthlyFee,
       mikrotikPackage,
-      promiseDate,
       poleBox,
       thana,
       ...rest
     } = formValue;
-
-    // find single mikrotik package in pppoe package list
-    const Pprofile = ppPackage.find((val) => val.id === mikrotikPackage);
 
     // if customer id is empty then alert write customer id
     if (!bpSettings.genCustomerId) {
@@ -213,24 +186,6 @@ const EditPPPoECustomer = ({ show, setShow, single }) => {
       }
     }
 
-    // calculate customer monthly fee package based
-    let customerMonthlyFee = 0;
-    if (Pprofile?.name === data?.pppoe.profile) {
-      customerMonthlyFee = Number(monthlyFee);
-    } else if (Pprofile?.name !== data?.pppoe.profile) {
-      customerMonthlyFee = Pprofile?.rate;
-    } else if (
-      Pprofile?.name !== data?.pppoe.profile &&
-      Pprofile?.rate === monthlyFee
-    ) {
-      customerMonthlyFee = Pprofile?.rate;
-    } else if (
-      Pprofile?.name !== data?.pppoe.profile &&
-      Pprofile?.rate !== monthlyFee
-    ) {
-      customerMonthlyFee = Number(monthlyFee);
-    }
-
     // customer modification sending data to api
     const mainData = {
       customerId,
@@ -241,9 +196,6 @@ const EditPPPoECustomer = ({ show, setShow, single }) => {
       autoDisable,
       nextMonthAutoDisable,
       mobile,
-      monthlyFee: customerMonthlyFee,
-      billingCycle: billingCycle.toISOString(),
-      promiseDate: promiseDate.toISOString(),
       birthDate: birthDate,
       poleBox,
       ...rest,
@@ -252,7 +204,7 @@ const EditPPPoECustomer = ({ show, setShow, single }) => {
         password: password,
         service: "pppoe",
         comment: comment,
-        profile: Pprofile?.name,
+        profile: profile,
         disabled: data?.pppoe.disabled,
       },
     };
@@ -327,35 +279,8 @@ const EditPPPoECustomer = ({ show, setShow, single }) => {
       >
         <Formik
           initialValues={{
+            ...dataInputOption?.inputInitialValues,
             area: customerModifiedData?.area,
-            address: data?.address || "",
-            billingCycle: new Date(data?.billingCycle),
-            balance: data?.balance || 0,
-            birthDate: data?.birthDate ? new Date(data?.birthDate) : "",
-            customerId: bpSettings?.genCustomerId && data?.customerId,
-            connectionFee: data?.connectionFee || 0,
-            customerBillingType: data?.customerBillingType || "",
-            customerId: data?.customerId,
-            connectionDate: data?.connectionDate
-              ? new Date(data?.connectionDate)
-              : "",
-            comment: data?.pppoe?.comment || "",
-            division: divisionalArea.division || "",
-            district: divisionalArea.district || "",
-            email: data?.email || "",
-            subArea: data?.subArea,
-            mikrotik: data?.mikrotik || "",
-            mikrotikPackage: data?.mikrotikPackage,
-            mobile: data?.mobile || "",
-            monthlyFee: data?.monthlyFee || 0,
-            name: data?.name,
-            nid: data?.nid || "",
-            pppoeName: data?.pppoe?.name || "",
-            promiseDate: new Date(data?.promiseDate),
-            password: data?.pppoe?.password || "",
-            poleBox: data?.poleBox || "",
-            status: data?.status || "",
-            thana: divisionalArea.thana || "",
           }}
           validationSchema={customerValidator}
           onSubmit={(values) => {
@@ -366,7 +291,7 @@ const EditPPPoECustomer = ({ show, setShow, single }) => {
           {() => (
             <Form id="customerEdit">
               <div className="displayGrid3">
-                {dataInputOption?.map(
+                {dataInputOption?.inputOption.map(
                   (item) =>
                     item?.isVisible && (
                       <FtextField

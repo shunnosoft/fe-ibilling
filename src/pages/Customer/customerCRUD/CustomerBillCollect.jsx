@@ -47,15 +47,8 @@ const CustomerBillCollect = ({ single, status, page, setShow }) => {
   ];
 
   // get user & current user data form useISPOwner hooks
-  const {
-    role,
-    ispOwnerId,
-    bpSettings,
-    userData,
-    currentUser,
-    permissions,
-    permission,
-  } = useISPowner();
+  const { role, ispOwnerId, bpSettings, userData, currentUser, permissions } =
+    useISPowner();
 
   // get all customer
   const customer = useSelector((state) =>
@@ -149,7 +142,7 @@ const CustomerBillCollect = ({ single, status, page, setShow }) => {
       if (
         (role === "ispOwner" && bpSettings?.instantRechargeBillPrint) ||
         ((role === "manager" || role === "collector") &&
-          permission?.instantRechargeBillPrint &&
+          permissions?.instantRechargeBillPrint &&
           bpSettings?.instantRechargeBillPrint)
       ) {
         document.getElementById("printButton").click();
@@ -221,6 +214,7 @@ const CustomerBillCollect = ({ single, status, page, setShow }) => {
       sendingData.end = endDate.toISOString();
     }
 
+    // month value according to customer bill type
     if (billType === "connectionFee") {
       sendingData.month = "Connection Fee";
     } else {
@@ -235,6 +229,7 @@ const CustomerBillCollect = ({ single, status, page, setShow }) => {
       }
     }
 
+    // customer bill collect api
     billCollect(
       dispatch,
       sendingData,
@@ -292,12 +287,13 @@ const CustomerBillCollect = ({ single, status, page, setShow }) => {
                       onChange={(e) => setBillType(e.target.value)}
                     >
                       <option value="bill"> {t("bill")} </option>
-                      {permission?.connectionFee ||
-                        (role !== "collector" && (
-                          <option value="connectionFee">
-                            {t("connectionFee")}
-                          </option>
-                        ))}
+                      {(role === "ispOwner" ||
+                        role === "manager" ||
+                        permissions?.connectionFee) && (
+                        <option value="connectionFee">
+                          {t("connectionFee")}
+                        </option>
+                      )}
                     </select>
                   </div>
 
@@ -427,7 +423,7 @@ const CustomerBillCollect = ({ single, status, page, setShow }) => {
                 {((role === "ispOwner" &&
                   bpSettings?.instantRechargeBillPrint) ||
                   ((role === "manager" || role === "collector") &&
-                    permission?.instantRechargeBillPrint &&
+                    permissions?.instantRechargeBillPrint &&
                     bpSettings?.instantRechargeBillPrint)) && (
                   <div className="d-none">
                     <RechargePrintInvoice

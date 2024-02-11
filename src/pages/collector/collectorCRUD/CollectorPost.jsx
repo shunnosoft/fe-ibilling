@@ -161,7 +161,7 @@ const CollectorPost = ({ show, setShow }) => {
                 <Tab eventKey="details" title={t("profile")}>
                   <div className="d-flex justify-content-center">
                     <div className="displayGrid col-6">
-                      {dataInputOption?.map(
+                      {dataInputOption?.inputOption.map(
                         (item) =>
                           item?.isVisible && (
                             <FtextField
