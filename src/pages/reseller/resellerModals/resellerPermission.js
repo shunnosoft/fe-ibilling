@@ -135,6 +135,7 @@ export const resellerPermissions = (permission, bpSettings) => {
       value: "dailyRechargeFeature",
       isChecked: permission?.dailyRechargeFeature,
       disabled: !bpSettings?.dailyRechargeFeature,
+      info: "After paying the customer's bill, the bill amount will not be deducted from the reseller's balance immediately. The daily amount of the customer's monthly bill will be deducted from the daily reseller balance.",
     },
     {
       id: 20,
@@ -310,6 +311,7 @@ export const resellerPermissions = (permission, bpSettings) => {
       value: "dailyRechargeFeature",
       isChecked: permission?.dailyRechargeFeature,
       disabled: !bpSettings?.dailyRechargeFeature,
+      info: "গ্রাহকের বিল পরিশোধ করার পর, তৎক্ষণাৎ বিলের টাকা রিসেলারের ব্যালেন্স থেকে কাটা হবে না। দৈনিক রিসেলার ব্যালেন্স থেকে গ্রাহকের মাসিক বিলের, দৈনিক টাকা কেটে নেওয়া হবে।",
     },
     {
       id: 20,
