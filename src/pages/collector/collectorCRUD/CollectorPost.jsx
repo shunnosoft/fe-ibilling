@@ -40,6 +40,8 @@ const CollectorPost = ({ show, setShow }) => {
     email: true,
     nid: true,
     status: true,
+    addStaff: true,
+    salary: true,
   };
 
   // get data input option from useDataInputOption hook

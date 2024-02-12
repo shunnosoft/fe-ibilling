@@ -1,14 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
+
+// internal import
 import apiLink from "../../../api/apiLink";
 import Loader from "../../../components/common/Loader";
 import { smsSettingUpdateIsp } from "../../../features/authSlice";
 import { smsCount } from "../../../components/common/UtilityMethods";
-import { useTranslation } from "react-i18next";
 import useISPowner from "../../../hooks/useISPOwner";
 
-function CreateCustomerSmsTemplate() {
+const CreateCustomerSmsTemplate = () => {
   const { t } = useTranslation();
 
   // get user & current user data form useISPOwner
@@ -125,8 +127,9 @@ function CreateCustomerSmsTemplate() {
     });
 
     setUpperText(theText);
-    setTotalText(upperText + bottomText + paymentLink);
+    setTotalText(upperText + bottomText);
   }, [matchFound, bottomText, upperText]);
+
   useEffect(() => {
     const fixedvalues = [
       "USER: USERNAME",
@@ -135,6 +138,7 @@ function CreateCustomerSmsTemplate() {
       "NAME: CUSTOMER_NAME",
       "BILL: AMOUNT",
       "LAST DATE: BILL_DATE",
+      customerPaymentLink,
     ];
     var found = [];
 
@@ -144,9 +148,9 @@ function CreateCustomerSmsTemplate() {
       .replace("PASSWORD: PASSWORD", "")
       .replace("NAME: CUSTOMER_NAME", "")
       .replace("BILL: AMOUNT", "")
-      .replace("LAST DATE: BILL_DATE", "");
+      .replace("LAST DATE: BILL_DATE", "")
+      .replace(customerPaymentLink, "");
 
-    // setBottomText(messageBoxStr !== "undefined" ? messageBoxStr?.trim() : "");
     let temp = messageBoxStr !== "undefined" ? messageBoxStr?.split("\n") : "";
 
     if (temp?.length > 0) {
@@ -161,7 +165,7 @@ function CreateCustomerSmsTemplate() {
       setBottomText(temptxt);
     }
 
-    fixedvalues.map((i) => {
+    fixedvalues?.map((i) => {
       if (settings?.sms?.template?.createCustomer?.includes(i)) {
         found.push(i);
       }
@@ -199,24 +203,24 @@ function CreateCustomerSmsTemplate() {
                   <input
                     type="radio"
                     name="billConfirmation"
-                    id="onTemplate"
+                    id="onTemplate_04"
                     value={"on"}
                     checked={billConfirmation === "on"}
                     onChange={radioCheckHandler}
                   />
-                  <label htmlFor="onTemplate">{t("ON")}</label>
+                  <label htmlFor="onTemplate_04">{t("ON")}</label>
                 </div>
 
                 <div className="message_radio">
                   <input
                     type="radio"
                     name="billConfirmation"
-                    id="offTemplate"
+                    id="offTemplate_04"
                     value={"off"}
                     checked={billConfirmation === "off"}
                     onChange={radioCheckHandler}
                   />
-                  <label htmlFor="offTemplate">{t("OFF")}</label>
+                  <label htmlFor="offTemplate_04">{t("OFF")}</label>
                 </div>
               </div>
 
@@ -231,32 +235,46 @@ function CreateCustomerSmsTemplate() {
                 />
               </div>
             </div>
+
             <div className="message-sending-type">
               <h4> {t("sendingMessageType")} </h4>
-              <input
-                name="messageSendingType"
-                type="radio"
-                checked={sendingType === "nonMasking"}
-                value={"nonMasking"}
-                onChange={(event) => setSendingType(event.target.value)}
-              />{" "}
-              {t("nonMasking")} {"              "}
-              <input
-                name="messageSendingType"
-                type="radio"
-                checked={sendingType === "masking"}
-                value={"masking"}
-                onChange={(event) => setSendingType(event.target.value)}
-              />{" "}
-              {t("masking")} {"              "}
-              <input
-                name="messageSendingType"
-                type="radio"
-                checked={sendingType === "fixedNumber"}
-                value={"fixedNumber"}
-                onChange={(event) => setSendingType(event.target.value)}
-              />{" "}
-              {t("fixedNumber")} {"              "}
+              <div className="smsType">
+                <div className="message_radio">
+                  <input
+                    type="radio"
+                    id="non_Masking_04"
+                    checked={sendingType === "nonMasking"}
+                    value={"nonMasking"}
+                    onChange={(event) => setSendingType(event.target.value)}
+                  />
+
+                  <label htmlFor="non_Masking_04"> {t("nonMasking")}</label>
+                </div>
+
+                <div className="message_radio">
+                  <input
+                    type="radio"
+                    id="_masking_04"
+                    checked={sendingType === "masking"}
+                    value={"masking"}
+                    onChange={(event) => setSendingType(event.target.value)}
+                  />
+
+                  <label htmlFor="_masking_04"> {t("masking")}</label>
+                </div>
+
+                <div className="message_radio">
+                  <input
+                    type="radio"
+                    id="fixed_Number_04"
+                    checked={sendingType === "fixedNumber"}
+                    value={"fixedNumber"}
+                    onChange={(event) => setSendingType(event.target.value)}
+                  />
+
+                  <label htmlFor="fixed_Number_04"> {t("fixedNumber")}</label>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -268,7 +286,6 @@ function CreateCustomerSmsTemplate() {
               })}
 
               <p className="endingtext">{bottomText}</p>
-              {paymentLink && <p className="text-primary">{paymentLink}</p>}
             </div>
             <div className="displayFlexx">
               <div className="radioselect">
@@ -369,7 +386,10 @@ function CreateCustomerSmsTemplate() {
                     type="checkbox"
                     className="getValueUsingClass"
                     value={customerPaymentLink}
-                    onChange={paymentLinkHandler}
+                    checked={matchFound.includes(customerPaymentLink)}
+                    onChange={(e) => {
+                      itemSettingHandler(e.target.value);
+                    }}
                   />
                   <label className="templatelabel" htmlFor="Payment_Link">
                     {"PAYMENT_LINK"}
@@ -381,11 +401,10 @@ function CreateCustomerSmsTemplate() {
           <div className="smsCount">
             <span className="smsLength">
               {t("letter")}
-              {(fontText + matchFound + bottomText + paymentLink).length}
+              {(fontText + matchFound + bottomText).length}
             </span>
-            <span>
-              SMS: {smsCount(fontText + matchFound + bottomText + paymentLink)}
-            </span>
+
+            <span>SMS: {smsCount(fontText + matchFound + bottomText)}</span>
           </div>
 
           <textarea
@@ -395,24 +414,17 @@ function CreateCustomerSmsTemplate() {
             placeholder={t("messageLikhun")}
             ref={textRef}
             value={bottomText}
-            // onClick={insertMyText}
             maxLength={335 - upperText.length}
             onChange={(e) => setBottomText(e.target.value)}
-          >
-            {" "}
-          </textarea>
-          <hr />
-          <button
-            type="submit"
-            // onClick={handleSendMessage}
-            className="btn btn-success"
-          >
+          ></textarea>
+
+          <button type="submit" className="btn btn-success mt-4">
             {loading ? <Loader></Loader> : t("save")}
           </button>
         </div>
       </form>
     </div>
   );
-}
+};
 
 export default CreateCustomerSmsTemplate;

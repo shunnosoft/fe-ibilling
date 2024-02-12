@@ -85,9 +85,11 @@ export const FtextField = ({ label, validation, ...props }) => {
                 )
             )}
           </div>
-        ) : props.component === "autoDisable" ? (
+        ) : ["autoDisable", "nextMonthAutoDisable"].includes(
+            props?.component
+          ) ? (
           <div className="displayGrid2">
-            {/* <div className="customerAutoDisable">
+            <div className="customerAutoDisable">
               <Field
                 className="form-check-input me-2"
                 {...field}
@@ -97,7 +99,7 @@ export const FtextField = ({ label, validation, ...props }) => {
               <label className="form-check-label" htmlFor={props?.id}>
                 {props?.label}
               </label>
-            </div> */}
+            </div>
           </div>
         ) : (
           <DatePicker
@@ -144,7 +146,7 @@ export const FtextField = ({ label, validation, ...props }) => {
           value={props?.value ? props.value : field.value}
           onChange={(e) => {
             field.onChange(e);
-            props?.onChange(e);
+            props?.onChange && props?.onChange(e);
           }}
           placeholder={props?.placeholder}
           autoComplete="off"

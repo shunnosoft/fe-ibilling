@@ -1,14 +1,16 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
+
+// internal import
 import apiLink from "../../../api/apiLink";
 import Loader from "../../../components/common/Loader";
 import { smsCount } from "../../../components/common/UtilityMethods";
 import { smsSettingUpdateIsp } from "../../../features/authSlice";
-import { useTranslation } from "react-i18next";
 import useISPowner from "../../../hooks/useISPOwner";
 
-function AlertSmsTemplate() {
+const AlertSmsTemplate = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const textRef = useRef();
@@ -31,17 +33,12 @@ function AlertSmsTemplate() {
   const [days, setDays] = useState([]);
 
   const [billConfirmation, setBillConfirmation] = useState("");
-  // const [billconfarmationparametres, setbillconparametres] = useState([]);
-  // const [matchFound, setMatchFound] = useState([]);
 
   const [sendingType, setSendingType] = useState();
 
   const [smsTemplet, setTemplet] = useState([]);
 
   const [alertNum, setAlertNum] = useState("");
-
-  // payment link state
-  const [paymentLink, setPaymentLink] = useState("");
 
   // ispOwner payment gateway payment link
   const customerPaymentLink = `Payment Link: https://netfeebd.com/isp/${ispOwnerData?.netFeeId}`;
@@ -54,8 +51,7 @@ function AlertSmsTemplate() {
       }
     } else {
       if (
-        (fontValue + "\n" + upperText + "\n" + bottomText + "\n" + paymentLink)
-          .length +
+        (fontValue + "\n" + upperText + "\n" + bottomText).length +
           item.length >
         334
       ) {
@@ -112,15 +108,6 @@ function AlertSmsTemplate() {
     setDays(tempDays);
   };
 
-  // customer payment link handler
-  const paymentLinkHandler = (e) => {
-    if (paymentLink) {
-      setPaymentLink("");
-    } else {
-      setPaymentLink(e.target.value);
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     const temp = upperText.split("\n");
@@ -139,14 +126,10 @@ function AlertSmsTemplate() {
       template: {
         ...settings?.sms?.template,
         alert: newUpperText + "\n" + bottomText,
-        [alertNum]:
-          fontValue + newUpperText + "\n" + bottomText + "\n" + paymentLink,
+        [alertNum]: fontValue + newUpperText + "\n" + bottomText,
       },
     };
-    // if (!alertNum) {
-    //   toast.warn("অনুগ্রহ করে টেমপ্লেট সিলেক্ট করুন");
-    //   return 0;
-    // }
+
     setLoading(true);
 
     try {
@@ -158,11 +141,8 @@ function AlertSmsTemplate() {
       setLoading(false);
       toast.success(t("alertSMStemplateSaveAlert"));
     } catch (error) {
-      console.log(error);
       setLoading(false);
     }
-
-    // formRef.current.reset();
   };
 
   const smstempletDay = useMemo(() => {
@@ -204,21 +184,26 @@ function AlertSmsTemplate() {
       .replace("ইউজার আইডিঃ USERID", "")
       .replace("গ্রাহকঃ NAME", "")
       .replace("বিলঃ AMOUNT", "")
-      .replace("তারিখঃ DATE", "");
+      .replace("তারিখঃ DATE", "")
+      .replace("Payment_link", customerPaymentLink);
+
     let temp = temp2.split("\n");
-    temp.splice(-2);
-    const temp9 = temp;
-    const temp10 = temp9.filter((i) =>
+    temp.splice(-1);
+
+    const temp10 = temp.filter((i) =>
       [
         "USER: USERNAME",
         "ID: CUSTOMER_ID",
         "NAME: CUSTOMER_NAME",
         "BILL: AMOUNT",
         "LAST DATE: BILL_DATE",
+        customerPaymentLink,
       ].includes(i)
     );
+
     setTemplet(temp10);
     setAlertNum(temp2.split("\n").splice(-1)[0]);
+
     if (!e.target.value) {
       setTemplet(temp);
     }
@@ -228,18 +213,11 @@ function AlertSmsTemplate() {
       .replace("ID: CUSTOMER_ID", "")
       .replace("NAME: CUSTOMER_NAME", "")
       .replace("BILL: AMOUNT", "")
-      .replace("LAST DATE: BILL_DATE", "");
+      .replace("LAST DATE: BILL_DATE", "")
+      .replace(customerPaymentLink, "");
+
     let temp4 = messageBoxStr.split("\n");
     temp4.splice(-1);
-    // let temp5 = "";
-    // temp4.map((i) => {
-    //   if (i !== "") {
-    //     temp5 = temp5 + i + "\n";
-    //   }
-    //   return temp5;
-    // });
-
-    // setBottomText(temp5);
 
     var theText = "";
     temp.map((i) => {
@@ -302,30 +280,43 @@ function AlertSmsTemplate() {
 
             <div className="message-sending-type">
               <h4> {t("sendingMessageType")} </h4>
-              <input
-                name="messageSendingType"
-                type="radio"
-                checked={sendingType === "nonMasking"}
-                value={"nonMasking"}
-                onChange={(event) => setSendingType(event.target.value)}
-              />
-              {t("nonMasking")}
-              <input
-                name="messageSendingType"
-                type="radio"
-                checked={sendingType === "masking"}
-                value={"masking"}
-                onChange={(event) => setSendingType(event.target.value)}
-              />
-              {t("masking")}
-              <input
-                name="messageSendingType"
-                type="radio"
-                checked={sendingType === "fixedNumber"}
-                value={"fixedNumber"}
-                onChange={(event) => setSendingType(event.target.value)}
-              />
-              {t("fixedNumber")}
+              <div className="smsType">
+                <div className="message_radio">
+                  <input
+                    type="radio"
+                    id="non_Masking_03"
+                    checked={sendingType === "nonMasking"}
+                    value={"nonMasking"}
+                    onChange={(event) => setSendingType(event.target.value)}
+                  />
+
+                  <label htmlFor="non_Masking_03"> {t("nonMasking")}</label>
+                </div>
+
+                <div className="message_radio">
+                  <input
+                    type="radio"
+                    id="_masking_03"
+                    checked={sendingType === "masking"}
+                    value={"masking"}
+                    onChange={(event) => setSendingType(event.target.value)}
+                  />
+
+                  <label htmlFor="_masking_03"> {t("masking")}</label>
+                </div>
+
+                <div className="message_radio">
+                  <input
+                    type="radio"
+                    id="fixed_Number_03"
+                    checked={sendingType === "fixedNumber"}
+                    value={"fixedNumber"}
+                    onChange={(event) => setSendingType(event.target.value)}
+                  />
+
+                  <label htmlFor="fixed_Number_03"> {t("fixedNumber")}</label>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -337,7 +328,6 @@ function AlertSmsTemplate() {
               })}
 
               <p className="endingtext">{bottomText}</p>
-              {paymentLink && <p className="text-primary">{paymentLink}</p>}
             </div>
 
             <div className="displayGrid">
@@ -428,7 +418,10 @@ function AlertSmsTemplate() {
                     type="checkbox"
                     className="getValueUsingClass"
                     value={customerPaymentLink}
-                    onChange={paymentLinkHandler}
+                    checked={smsTemplet?.includes(customerPaymentLink)}
+                    onChange={(e) => {
+                      itemSettingHandler(e.target.value);
+                    }}
                   />
                   <label className="templatelabel" htmlFor="PAYMENT_LINK">
                     {"PAYMENT_LINK"}
@@ -570,11 +563,11 @@ function AlertSmsTemplate() {
           <div className="smsCount">
             <span className="smsLength">
               {t("letter")}
-              {(fontValue + smsTemplet + bottomText + paymentLink).length}
+              {(fontValue + smsTemplet + bottomText).length}
             </span>
             <span>
               SMS:
-              {smsCount(fontValue + smsTemplet + bottomText + paymentLink)}
+              {smsCount(fontValue + smsTemplet + bottomText)}
             </span>
           </div>
 
@@ -585,22 +578,17 @@ function AlertSmsTemplate() {
             placeholder={t("messageLikhun")}
             ref={textRef}
             value={bottomText}
-            // onClick={insertMyText}
             maxLength={335 - upperText.length}
             onChange={(e) => setBottomText(e.target.value)}
           ></textarea>
-          <hr />
-          <button
-            type="submit"
-            // onClick={handleSendMessage}
-            className="btn btn-success"
-          >
+
+          <button type="submit" className="btn btn-success mt-4">
             {loading ? <Loader></Loader> : t("save")}
           </button>
         </div>
       </form>
     </div>
   );
-}
+};
 
 export default AlertSmsTemplate;

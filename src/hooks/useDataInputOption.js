@@ -39,149 +39,94 @@ const useDataInputOption = (inputPermission, page, status, data) => {
   // get subareas poleBox form redux store
   const poleBox = useSelector((state) => state.area?.poleBox);
 
-  // set mikrotik id in state
-  const [mikrotikId, setMikrotikId] = useState("");
-
-  // set package id in state
-  const [packageId, setPackageId] = useState("");
-
-  // set package rate in state
-  const [packageRate, setPackageRate] = useState("");
-
-  // set mikrotik package name in state
-  const [packageName, setPackageName] = useState("");
-
-  // set billing cycle date in state
-  const [billingCycleDate, setBillingCycleDate] = useState(new Date());
-
-  // set date of birth in state
-  const [dateOFbirth, setDateOFBirth] = useState(new Date());
-
-  // set connection date in state
-  const [connectionDate, setConnectionDate] = useState(new Date());
-
-  // set promise date in state
-  const [promiseDate, setPromiseDate] = useState(new Date());
-
-  // set divisional area in state
-  const [divisionalArea, setDivisionalArea] = useState({
+  // set change form data in state
+  const [formData, setFormData] = useState({
+    areaId: "",
+    autoDisable: false,
+    addStaff: false,
+    billingCycleDate: new Date(),
+    connectionDate: new Date(),
+    dateOFbirth: new Date(),
     division: "",
     district: "",
+    mikrotikId: "",
+    nextMonthAutoDisable: false,
+    packageId: "",
+    packageRate: "",
+    packageName: "",
+    promiseDate: new Date(),
+    subAreaId: "",
     thana: "",
   });
 
-  // set area id in state
-  const [areaId, setAreaId] = useState("");
-
-  // set subArea id in state
-  const [subAreaId, setSubareaId] = useState("");
-
-  // set division district and thana in state
-  const [divisionId, setDivisionId] = useState("");
-  const [districtId, setDistrictId] = useState("");
-  const [thanaId, setThanaId] = useState("");
-
-  // set auto disable in state
-  const [autoDisable, setAutoDisable] = useState(false);
-
-  // set next month auto disable in state
-  const [nextMonthAutoDisable, setNextMonthAutoDisable] = useState(false);
-
-  // set add staff status
-  const [addStaffStatus, setAddStaffStatus] = useState(false);
-  const [birthDate, setBirthDate] = useState();
-
-  // set isp owner & reseller commission type in state
-  const [commissionType, setCommissionType] = useState("");
-
   const packageChangeHandler = async (id) => {
+    // find mikrotik package in pppoe packages
     const singlePackage = ppPackage.find((val) => val.id === id);
 
-    // set package id in state
-    setPackageId(singlePackage.id);
-
-    // set package rate in state
-    setPackageRate(singlePackage.rate);
-
-    // set package name in state
-    setPackageName(singlePackage.name);
+    // set single package data
+    setFormData({
+      ...formData,
+      packageId: singlePackage.id,
+      packageRate: singlePackage.rate,
+      packageName: singlePackage.name,
+    });
   };
 
   useEffect(() => {
-    // set billing cycle date in state
-    setBillingCycleDate(data?.billingCycle);
-
-    // set date of birth in state
-    setDateOFBirth(data?.birthDate);
-
-    // set connection date in state
-    setConnectionDate(data?.connectionDate);
-
-    // set mikrotik id in state
-    setMikrotikId(data?.mikrotik);
-
-    // set package id in state
-    setPackageId(data?.mikrotikPackage);
-
-    // set area id in state
-    setAreaId(data?.area);
-
-    // set auto disable in state
-    setAutoDisable(data?.autoDisable);
-
-    // set next month auto disable in state
-    setNextMonthAutoDisable(data?.nextMonthAutoDisable);
-
-    // set package rate in state
-    setPackageRate(data?.monthlyFee);
-
-    // set promise date in state
-    setPromiseDate(data?.promiseDate);
-
-    // set package name in state
-    setPackageName(data?.pppoe?.profile);
-
-    // set subarea id in state
-    setSubareaId(data?.subAreaId);
-
     // set division district and thana in state
-    const division_id = getNameId(divisionsJSON.divisions, data?.division)?.id;
-    const district_id = getNameId(districtsJSON.districts, data?.district)?.id;
-    const thana_id = getNameId(thanaJSON.thana, data?.thana)?.id;
+    const divisionId = getNameId(divisionsJSON.divisions, data?.division)?.id;
+    const districtId = getNameId(districtsJSON.districts, data?.district)?.id;
+    const thanaId = getNameId(thanaJSON.thana, data?.thana)?.id;
 
-    setDivisionId(division_id);
-    setDistrictId(district_id);
-    setThanaId(thana_id);
+    // set customer initial data
+    setFormData({
+      ...formData,
+      areaId: data?.area,
+      autoDisable: data?.autoDisable,
+      billingCycleDate: new Date(data?.billingCycle),
+      connectionDate: new Date(data?.connectionDate),
+      dateOFbirth: new Date(data?.birthDate),
+      division: divisionId,
+      district: districtId,
+      mikrotikId: data?.mikrotik,
+      nextMonthAutoDisable: data?.nextMonthAutoDisable,
+      packageId: data?.mikrotikPackage,
+      packageRate: data?.monthlyFee,
+      packageName: data?.pppoe?.profile,
+      promiseDate: new Date(data?.promiseDate),
+      subAreaId: data?.subArea,
+      thana: thanaId,
+    });
   }, [data]);
 
   // input initial values
   const inputInitialValues = {
     address: data?.address || "",
-    billingCycle: billingCycleDate,
+    billingCycle: formData.billingCycleDate,
     balance: data?.balance || 0,
-    birthDate: dateOFbirth,
-    customerId: !bpSettings.genCustomerId && data?.customerId,
+    birthDate: formData.dateOFbirth,
+    customerId: data?.customerId || "",
     connectionFee: data?.connectionFee || 0,
     customerBillingType: data?.customerBillingType || "prepaid",
-    connectionDate: connectionDate,
+    connectionDate: formData.connectionDate,
     comment: data?.pppoe?.comment || "",
-    division: divisionalArea.division || "",
-    district: divisionalArea.district || "",
+    division: formData.division || "",
+    district: formData.district || "",
     email: data?.email || "",
-    monthlyFee: Number(packageRate),
+    monthlyFee: Number(formData.packageRate),
     mikrotik: data?.mikrotik || "",
     mikrotikPackage: data?.mikrotikPackage || "",
     mobile: data?.mobile || "",
     name: data?.name || "",
     nid: data?.nid || "",
     pppoeName: data?.pppoe?.name || "",
-    promiseDate: promiseDate,
+    promiseDate: formData.promiseDate,
     password: data?.pppoe?.password || "",
     poleBox: data?.poleBox || "",
     subArea: data?.subArea || "",
     status: data?.status || "",
-    thana: divisionalArea.thana || "",
-    profile: packageName,
+    thana: formData.thana || "",
+    profile: formData.packageName,
   };
 
   // data input options
@@ -208,9 +153,12 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       textAccessor: "name",
       valueAccessor: "id",
       options: mikrotiks,
-      value: mikrotikId,
+      value: formData.mikrotikId,
       onChange: (e) => {
-        setMikrotikId(e.target.value);
+        setFormData({
+          ...formData,
+          mikrotikId: e.target.value,
+        });
       },
       info: informationEnBn()?.[2],
     },
@@ -228,9 +176,9 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       valueAccessor: "id",
       options:
         bpSettings.hasMikrotik && page
-          ? ppPackage?.filter((pack) => pack.mikrotik === mikrotikId)
+          ? ppPackage?.filter((pack) => pack.mikrotik === formData.mikrotikId)
           : ppPackage,
-      value: packageId,
+      value: formData.packageId,
       onChange: (e) => {
         packageChangeHandler(e.target.value);
       },
@@ -243,9 +191,12 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       disabled: false,
       validation: true,
       label: t("monthlyFee"),
-      value: packageRate,
+      value: formData.packageRate,
       onChange: (e) => {
-        setPackageRate(e.target.value);
+        setFormData({
+          ...formData,
+          packageRate: e.target.value,
+        });
       },
     },
     {
@@ -289,7 +240,10 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       valueAccessor: "id",
       options: areas,
       onChange: (e) => {
-        setAreaId(e.target.value);
+        setFormData({
+          ...formData,
+          areaId: e.target.value,
+        });
       },
     },
     {
@@ -304,9 +258,12 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       firstOptions: t("selectSubArea"),
       textAccessor: "name",
       valueAccessor: "id",
-      options: subAreas.filter((item) => item?.area === areaId),
+      options: subAreas.filter((item) => item?.area === formData.areaId),
       onChange: (e) => {
-        setSubareaId(e.target.value);
+        setFormData({
+          ...formData,
+          subAreaId: e.target.value,
+        });
       },
     },
     {
@@ -321,7 +278,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       firstOptions: t("selectPoleBox"),
       textAccessor: "name",
       valueAccessor: "id",
-      options: poleBox.filter((item) => item?.subArea === subAreaId),
+      options: poleBox.filter((item) => item?.subArea === formData.subAreaId),
     },
     {
       name: "name",
@@ -366,9 +323,12 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       showYearDropdown: "showYearDropdown",
       scrollableYearDropdown: "scrollableYearDropdown",
       yearDropdownItemNumber: 150,
-      value: birthDate,
+      value: formData.dateOFbirth,
       onChange: (e) => {
-        setBirthDate(e.target.value);
+        setFormData({
+          ...formData,
+          dateOFbirth: e.target.value,
+        });
       },
     },
     {
@@ -478,7 +438,10 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       valueAccessor: "id",
       options: divisionsJSON.divisions,
       onChange: (e) => {
-        setDivisionId(e.target.value);
+        setFormData({
+          ...formData,
+          division: e.target.value,
+        });
       },
     },
     {
@@ -494,10 +457,13 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       textAccessor: "name",
       valueAccessor: "id",
       options: districtsJSON?.districts.filter(
-        (item) => item.division_id === divisionId
+        (item) => item.division_id === formData.division
       ),
       onChange: (e) => {
-        setDistrictId(e.target.value);
+        setFormData({
+          ...formData,
+          district: e.target.value,
+        });
       },
     },
     {
@@ -513,10 +479,13 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       textAccessor: "name",
       valueAccessor: "id",
       options: thanaJSON?.thana.filter(
-        (item) => item.district_id === districtId
+        (item) => item.district_id === formData.district
       ),
       onChange: (e) => {
-        setThanaId(e.target.value);
+        setFormData({
+          ...formData,
+          thana: e.target.value,
+        });
       },
     },
     {
@@ -563,41 +532,34 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       ],
     },
     // {
-    //   name: {
-    //     autoDisable: "autoDisable",
-    //     nextMonthAutoDisable: "nextMonthAutoDisable",
-    //   },
+    //   name: "autoDisable",
+    //   type: "checkbox",
+    //   id: "autoDisable",
     //   isVisible: bpSettings.hasMikrotik && inputPermission.autoDisable,
-    //   disabled: false,
-    //   validation: false,
-    //   label: t("automaticConnectionOff"),
+    //   disabled: formData.nextMonthAutoDisable,
+    //   label: t("willContinue"),
     //   component: "autoDisable",
-    //   inputField: [
-    //     {
-    //       name: "autoDisable",
-    //       type: "checkbox",
-    //       id: "autoDisable",
-    //       disabled: nextMonthAutoDisable,
-    //       label: t("willContinue"),
-    //       checked: autoDisable,
-    //       value: autoDisable,
-    //       onChange: (e) => {
-    //         setAutoDisable(e.target.checked);
-    //       },
-    //     },
-    //     {
-    //       name: "nextMonthAutoDisable",
-    //       type: "checkbox",
-    //       id: "nextMonthAutoDisable",
-    //       disabled: autoDisable,
-    //       label: t("nextMonth"),
-    //       checked: nextMonthAutoDisable,
-    //       value: nextMonthAutoDisable,
-    //       onChange: (e) => {
-    //         setNextMonthAutoDisable(e.target.checked);
-    //       },
-    //     },
-    //   ],
+    //   onChange: (e) => {
+    //     setFormData({
+    //       ...formData,
+    //       autoDisable: e.target.checked,
+    //     });
+    //   },
+    // },
+    // {
+    //   name: "nextMonthAutoDisable",
+    //   type: "checkbox",
+    //   id: "nextMonthAutoDisable",
+    //   isVisible: bpSettings.hasMikrotik && inputPermission.nextMonthAutoDisable,
+    //   disabled: formData.autoDisable,
+    //   label: t("nextMonth"),
+    //   component: "nextMonthAutoDisable",
+    //   onChange: (e) => {
+    //     setFormData({
+    //       ...formData,
+    //       nextMonthAutoDisable: e.target.checked,
+    //     });
+    //   },
     // },
 
     // staff add input option
@@ -609,7 +571,9 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       label: t("addStaff"),
       component: "addStaff",
       onChange: (e) => {
-        setAddStaffStatus(e.target.checked);
+        setFormData({
+          addStaff: e.target.checked,
+        });
       },
       inputField: [
         {
@@ -618,8 +582,8 @@ const useDataInputOption = (inputPermission, page, status, data) => {
           isVisible: true,
           disabled: false,
           label: t("addStaff"),
-          checked: addStaffStatus,
-          value: addStaffStatus,
+          checked: formData.addStaff,
+          value: formData.addStaff,
         },
       ],
     },
@@ -627,7 +591,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       name: "salary",
       type: "number",
       id: "salary",
-      isVisible: addStaffStatus && inputPermission.salary,
+      isVisible: formData.addStaff && inputPermission.salary,
       disabled: false,
       validation: false,
       label: t("salary"),

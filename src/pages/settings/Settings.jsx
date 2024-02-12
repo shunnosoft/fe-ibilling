@@ -68,7 +68,7 @@ export default function Settings() {
               </FourGround>
 
               <FourGround>
-                <div className="collectorWrapper">
+                <div className="collectorWrapper mt-2 pb-2">
                   <Tabs
                     defaultActiveKey="billConfirmation"
                     id="uncontrolled-tab-example"
