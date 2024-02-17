@@ -108,29 +108,6 @@ const EditPPPoECustomer = ({ show, setShow, single }) => {
     status: true,
   };
 
-  // customer validator
-  const customerValidator = Yup.object({
-    address: Yup.string(),
-    comment: Yup.string(),
-    customerBillingType: Yup.string().required(t("select billing type")),
-    connectionFee: Yup.number(),
-    customerId:
-      bpSettings?.genCustomerId && Yup.string().required(t("selectCustomer")),
-    email: Yup.string().email(t("incorrectEmail")),
-    mobile: Yup.string()
-      .matches(/^(01){1}[3456789]{1}(\d){8}$/, t("incorrectMobile"))
-      .min(11, t("write11DigitMobileNumber"))
-      .max(11, t("over11DigitMobileNumber")),
-    monthlyFee: Yup.number()
-      .integer()
-      .min(0, t("minimumPackageRate"))
-      .required(t("enterPackageRate")),
-    nid: Yup.string().matches(/^(?:\d{10}|\d{13}|\d{17})$/, t("invalidNID")),
-    name: Yup.string().required(t("writeCustomerName")),
-    pppoeName: Yup.string().required(t("writePPPoEName")),
-    password: Yup.string().required(t("writePPPoEPassword")),
-  });
-
   // get data input option from useDataInputOption hook
   const dataInputOption = useDataInputOption(
     inputPermission,
@@ -142,7 +119,8 @@ const EditPPPoECustomer = ({ show, setShow, single }) => {
   // sending data to backed
   const customerHandler = async (formValue) => {
     const {
-      birthDate,
+      balance,
+      billingCycle,
       customerId,
       customerBillingType,
       district,
@@ -152,8 +130,8 @@ const EditPPPoECustomer = ({ show, setShow, single }) => {
       profile,
       comment,
       mobile,
-      mikrotikPackage,
       poleBox,
+      promiseDate,
       thana,
       ...rest
     } = formValue;
@@ -188,15 +166,16 @@ const EditPPPoECustomer = ({ show, setShow, single }) => {
 
     // customer modification sending data to api
     const mainData = {
-      customerId,
-      customerBillingType,
+      balance: -balance,
       singleCustomerID: data?.id,
       ispOwner: ispOwnerId,
-      mikrotikPackage,
+      billingCycle,
+      promiseDate,
+      customerId,
+      customerBillingType,
       autoDisable,
       nextMonthAutoDisable,
       mobile,
-      birthDate: birthDate,
       poleBox,
       ...rest,
       pppoe: {
@@ -208,6 +187,11 @@ const EditPPPoECustomer = ({ show, setShow, single }) => {
         disabled: data?.pppoe.disabled,
       },
     };
+
+    // if billingCycle is greater than promiseDate then set promiseDate
+    if (Date.parse(billingCycle) > Date.parse(promiseDate)) {
+      mainData.promiseDate = billingCycle;
+    }
 
     // set the value of division district and thana dynamically
     if (district || division || thana) {
@@ -235,14 +219,14 @@ const EditPPPoECustomer = ({ show, setShow, single }) => {
       mainData.customerId = customerId;
     }
 
-    // if poleBox is empty then delete poleBox
-    if (!poleBox) {
-      delete mainData.poleBox;
-    }
-
     // if has mikrotik is empty then delete mikrotik
     if (!bpSettings?.hasMikrotik) {
       delete mainData.mikrotik;
+    }
+
+    // if poleBox is empty then delete poleBox
+    if (!poleBox) {
+      delete mainData.poleBox;
     }
 
     // sending data to api
@@ -280,9 +264,8 @@ const EditPPPoECustomer = ({ show, setShow, single }) => {
         <Formik
           initialValues={{
             ...dataInputOption?.inputInitialValues,
-            area: customerModifiedData?.area,
           }}
-          validationSchema={customerValidator}
+          validationSchema={dataInputOption?.validationSchema}
           onSubmit={(values) => {
             customerHandler(values);
           }}
@@ -293,34 +276,7 @@ const EditPPPoECustomer = ({ show, setShow, single }) => {
               <div className="displayGrid3">
                 {dataInputOption?.inputOption.map(
                   (item) =>
-                    item?.isVisible && (
-                      <FtextField
-                        as={item.as}
-                        info={item?.info}
-                        name={item?.name}
-                        type={item?.type}
-                        disabled={item.disabled}
-                        validation={item.validation}
-                        label={item?.label}
-                        placeholder={item?.placeholder}
-                        placeholderText={item?.placeholderText}
-                        firstOptions={item?.firstOptions}
-                        textAccessor={item.textAccessor}
-                        valueAccessor={item.valueAccessor}
-                        options={item.options}
-                        value={item?.value}
-                        onChange={item?.onChange}
-                        component={item?.component}
-                        inputField={item?.inputField}
-                        selected={item?.selected}
-                        dateFormat={item?.dateFormat}
-                        timeIntervals={item?.timeIntervals}
-                        showTimeSelect={item?.showTimeSelect}
-                        showYearDropdown={item?.showYearDropdown}
-                        scrollableYearDropdown={item?.scrollableYearDropdown}
-                        yearDropdownItemNumbers={item?.yearDropdownItemNumbers}
-                      />
-                    )
+                    item?.isVisible && <FtextField {...item} as={item.as} />
                 )}
 
                 {bpSettings?.hasMikrotik && (

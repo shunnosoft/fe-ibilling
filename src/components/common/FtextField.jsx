@@ -1,15 +1,10 @@
 import { ErrorMessage, Field, useField } from "formik";
-import React, { useState } from "react";
-import { InputGroup } from "react-bootstrap";
-import { Eye, EyeSlash } from "react-bootstrap-icons";
+import React from "react";
 import DatePicker from "react-datepicker";
 import InformationTooltip from "./tooltipInformation/InformationTooltip";
 
 export const FtextField = ({ label, validation, ...props }) => {
   const [field, meta, { setValue }] = useField(props);
-
-  // password type default password
-  const [passType, setPassType] = useState("password");
 
   return (
     <div>
@@ -20,25 +15,7 @@ export const FtextField = ({ label, validation, ...props }) => {
 
       {/* field as key base */}
       {props?.component ? (
-        props.component === "password" ? (
-          <InputGroup>
-            <Field
-              className="form-control shadow-none"
-              type={passType}
-              name="password"
-            />
-
-            <InputGroup.Text style={{ cursor: "pointer" }}>
-              <div>
-                {passType === "password" ? (
-                  <EyeSlash size={22} onClick={(e) => setPassType("text")} />
-                ) : (
-                  <Eye size={22} onClick={(e) => setPassType("password")} />
-                )}
-              </div>
-            </InputGroup.Text>
-          </InputGroup>
-        ) : props.component === "customerStatus" ? (
+        props.component === "customerStatus" ? (
           <div
             className={`${
               props?.className ? props?.className : "displayGrid3"
@@ -52,7 +29,10 @@ export const FtextField = ({ label, validation, ...props }) => {
                       className="form-check-input"
                       {...field}
                       {...option}
-                      onChange={() => setValue(option?.value)}
+                      onChange={(e) => {
+                        field.onChange(e);
+                        props?.onChange(e);
+                      }}
                       autoComplete="off"
                     />
                     <label className="form-check-label" htmlFor={option?.id}>
@@ -85,31 +65,13 @@ export const FtextField = ({ label, validation, ...props }) => {
                 )
             )}
           </div>
-        ) : ["autoDisable", "nextMonthAutoDisable"].includes(
-            props?.component
-          ) ? (
-          <div className="displayGrid2">
-            <div className="customerAutoDisable">
-              <Field
-                className="form-check-input me-2"
-                {...field}
-                {...props}
-                autoComplete="off"
-              />
-              <label className="form-check-label" htmlFor={props?.id}>
-                {props?.label}
-              </label>
-            </div>
-          </div>
         ) : (
           <DatePicker
             className="form-control mw-100"
             {...field}
             {...props}
             selected={(field.value && new Date(field.value)) || null}
-            onChange={(val) => {
-              setValue(val);
-            }}
+            onChange={props?.onChange}
             autoComplete="off"
           />
         )
@@ -123,7 +85,7 @@ export const FtextField = ({ label, validation, ...props }) => {
           autoComplete="off"
           onChange={(e) => {
             field.onChange(e);
-            props?.onChange(e);
+            props?.onChange && props?.onChange(e);
           }}
         >
           <option selected>{props.firstOptions}</option>
@@ -143,6 +105,7 @@ export const FtextField = ({ label, validation, ...props }) => {
           }`}
           {...field}
           {...(props !== undefined)}
+          disabled={props?.disabled}
           value={props?.value ? props.value : field.value}
           onChange={(e) => {
             field.onChange(e);

@@ -322,7 +322,8 @@ const Report = () => {
             paymentStatus.medium === "sslcommerz" ||
             paymentStatus.medium === "uddoktapay" ||
             paymentStatus.medium === "sslpay" ||
-            paymentStatus.medium === "bKashPG"
+            paymentStatus.medium === "bKashPG" ||
+            paymentStatus.medium === "Webhook"
         );
       } else {
         arr = arr.filter((item) => item.medium === medium);

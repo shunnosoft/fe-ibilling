@@ -312,7 +312,7 @@
   "name": "Name",
   "mobile": "Mobile",
   "address": "Address",
-  "email": "Email",
+  "email": "E-mail",
   "userType": "User Type",
   "monthlyPayment": "Monthly Payment",
   "paymentType": "Payment Type",
@@ -927,5 +927,6 @@
   "willContinue": "Will continue",
   "nextMonth": "Next Month",
   "invalidNID": "Invalid NID",
-  "connectionFeeSMSTemplate": "Connection Fee Recharge Confirmation SMS Template"
+  "connectionFeeSMSTemplate": "Connection Fee Recharge Confirmation SMS Template",
+  "allCustomerCollection": "Total Bill & Connection Fee"
 }

@@ -271,7 +271,7 @@
   "name": "নাম",
   "mobile": "মোবাইল",
   "address": "ঠিকানা",
-  "email": "ইমেইল",
+  "email": "ই-মেইল",
   "userType": "ইউজারের ধরণ",
   "monthlyPayment": "মাসিক বেতন",
   "paymentType": "পরিশোধের ধরণ",
@@ -933,5 +933,6 @@
   "willContinue": "চলতে থাকবে",
   "nextMonth": "পরবর্তী মাস",
   "invalidNID": "অবৈধ NID",
-  "connectionFeeSMSTemplate": "সংযোগ ফি রিচার্জ কনফার্মেশন SMS টেমপ্লেট"
+  "connectionFeeSMSTemplate": "সংযোগ ফি রিচার্জ কনফার্মেশন SMS টেমপ্লেট",
+  "allCustomerCollection": "মোট বিল এবং সংযোগ ফি"
 }

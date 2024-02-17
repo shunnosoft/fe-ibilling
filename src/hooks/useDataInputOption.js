@@ -1,19 +1,25 @@
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
+import * as Yup from "yup";
+import { useEffect, useState } from "react";
 
 // custom hook import
 import useISPowner from "./useISPOwner";
-import { useEffect, useState } from "react";
 
 //divisional location
 import divisionsJSON from "../bdAddress/bd-divisions.json";
 import districtsJSON from "../bdAddress/bd-districts.json";
 import thanaJSON from "../bdAddress/bd-upazilas.json";
 import { getNameId } from "../utils/getLocationName";
+
+// internal import
 import { informationEnBn } from "../components/common/tooltipInformation/informationEnBn";
 
 const useDataInputOption = (inputPermission, page, status, data) => {
   const { t } = useTranslation();
+
+  // current date
+  const today = new Date();
 
   // get user & current user data form useISPOwner hook
   const { role, bpSettings, hasMikrotik, permission } = useISPowner();
@@ -42,20 +48,36 @@ const useDataInputOption = (inputPermission, page, status, data) => {
   // set change form data in state
   const [formData, setFormData] = useState({
     areaId: "",
-    autoDisable: false,
+    address: "",
+    autoDisable: "",
     addStaff: false,
-    billingCycleDate: new Date(),
-    connectionDate: new Date(),
-    dateOFbirth: new Date(),
+    balance: "",
+    billingCycleDate: "",
+    customerId: "",
+    connectionDate: "",
+    customerBillingType: "",
+    connectionFee: "",
+    comment: "",
+    dateOFbirth: "",
     division: "",
     district: "",
+    email: "",
     mikrotikId: "",
-    nextMonthAutoDisable: false,
+    mobile: "",
+    name: "",
+    nid: "",
+    nextMonthAutoDisable: "",
+    pppoeName: "",
+    password: "",
     packageId: "",
     packageRate: "",
     packageName: "",
-    promiseDate: new Date(),
+    promiseDate: "",
+    poleBoxId: "",
+    referenceName: "",
+    referenceMobile: "",
     subAreaId: "",
+    status: "",
     thana: "",
   });
 
@@ -82,49 +104,98 @@ const useDataInputOption = (inputPermission, page, status, data) => {
     setFormData({
       ...formData,
       areaId: data?.area,
+      address: data?.address,
       autoDisable: data?.autoDisable,
-      billingCycleDate: data?.billingCycle,
-      connectionDate: data?.connectionDate,
+      balance: data?.balance,
+      billingCycleDate: Date.parse(data?.billingCycle),
+      customerId: data?.customerId,
+      connectionDate: Date.parse(data?.connectionDate),
+      customerBillingType: data?.customerBillingType,
+      connectionFee: data?.connectionFee,
+      comment: data?.pppoe?.comment,
       dateOFbirth: Date.parse(data?.birthDate),
       division: divisionId,
       district: districtId,
+      email: data?.email,
       mikrotikId: data?.mikrotik,
+      mobile: data?.mobile,
+      name: data?.name,
+      nid: data?.nid,
       nextMonthAutoDisable: data?.nextMonthAutoDisable,
+      pppoeName: data?.pppoe?.name,
+      password: data?.pppoe?.password,
       packageId: data?.mikrotikPackage,
       packageRate: data?.monthlyFee,
       packageName: data?.pppoe?.profile,
-      promiseDate: data?.promiseDate,
+      promiseDate: Date.parse(data?.promiseDate),
+      poleBoxId: data?.poleBox,
+      referenceName: data?.referenceName,
+      referenceMobile: data?.referenceMobile,
       subAreaId: data?.subArea,
+      status: data?.status,
       thana: thanaId,
     });
   }, [data]);
 
+  // option validation schema
+  const validationSchema = Yup.object({
+    address: Yup.string(),
+    customerId:
+      !bpSettings?.genCustomerId && Yup.string().required(t("selectCustomer")),
+    connectionFee: Yup.number(),
+    customerBillingType: Yup.string().required(t("select billing type")),
+    comment: Yup.string(),
+    email: Yup.string().email(t("incorrectEmail")),
+    monthlyFee: Yup.number().integer().min(0, t("minimumPackageRate")),
+    mobile: bpSettings?.addCustomerWithMobile
+      ? Yup.string()
+          .matches(/^(01){1}[3456789]{1}(\d){8}$/, t("incorrectMobile"))
+          .min(11, t("write11DigitMobileNumber"))
+          .max(11, t("over11DigitMobileNumber"))
+          .required(t("writeMobileNumber"))
+      : Yup.string()
+          .matches(/^(01){1}[3456789]{1}(\d){8}$/, t("incorrectMobile"))
+          .min(11, t("write11DigitMobileNumber"))
+          .max(11, t("over11DigitMobileNumber")),
+    name: Yup.string().required(t("writeCustomerName")),
+    nid: Yup.string().matches(/^(?:\d{10}|\d{13}|\d{17})$/, t("invalidNID")),
+    pppoeName: Yup.string().required(t("writePPPoEName")),
+    password: Yup.string().required(t("writePPPoEPassword")),
+    referenceMobile: Yup.string()
+      .matches(/^(01){1}[3456789]{1}(\d){8}$/, t("incorrectMobile"))
+      .min(11, t("write11DigitMobileNumber"))
+      .max(11, t("over11DigitMobileNumber")),
+  });
+
   // input initial values
   const inputInitialValues = {
-    address: data?.address || "",
-    billingCycle: formData.billingCycleDate,
-    balance: data?.balance || 0,
-    birthDate: formData.dateOFbirth,
-    customerId: data?.customerId || "",
-    connectionFee: data?.connectionFee || 0,
-    customerBillingType: data?.customerBillingType || "prepaid",
-    connectionDate: formData.connectionDate,
-    comment: data?.pppoe?.comment || "",
+    area: formData.areaId || "",
+    address: formData.address || "",
+    billingCycle: formData.billingCycleDate || today,
+    balance: Number(formData.balance) || 0,
+    birthDate: formData.dateOFbirth || today,
+    customerId: formData.customerId || "",
+    connectionFee: Number(formData.connectionFee) || 0,
+    customerBillingType: formData.customerBillingType || "prepaid",
+    connectionDate: formData.connectionDate || today,
+    comment: formData.comment || "",
     division: formData.division || "",
     district: formData.district || "",
-    email: data?.email || "",
-    monthlyFee: Number(formData.packageRate),
-    mikrotik: data?.mikrotik || "",
-    mikrotikPackage: data?.mikrotikPackage || "",
-    mobile: data?.mobile || "",
-    name: data?.name || "",
-    nid: data?.nid || "",
-    pppoeName: data?.pppoe?.name || "",
-    promiseDate: formData.promiseDate,
-    password: data?.pppoe?.password || "",
-    poleBox: data?.poleBox || "",
-    subArea: data?.subArea || "",
-    status: data?.status || "",
+    email: formData.email || "",
+    monthlyFee: Number(formData.packageRate) || 0,
+    mikrotik: formData.mikrotikId || "",
+    mikrotikPackage: formData.packageId || "",
+    mobile: formData.mobile || "",
+    name: formData.name || "",
+    nid: formData.nid || "",
+    pppoeName: formData.pppoeName || "",
+    promiseDate: formData.promiseDate || today,
+    password: formData.password || "",
+    poleBox: formData.poleBoxId || "",
+    referenceName: formData.referenceName || "",
+    referenceMobile: formData.referenceMobile || "",
+    subArea: formData.subAreaId || "",
+    status: formData.status || "active",
     thana: formData.thana || "",
     profile: formData.packageName,
   };
@@ -139,6 +210,13 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       disabled: false,
       validation: !bpSettings.genCustomerId,
       label: t("customerId"),
+      placeholder: "e.g. ID: ABC-123-XYZ",
+      onChange: (e) => {
+        setFormData({
+          ...formData,
+          customerId: e.target.value,
+        });
+      },
     },
     {
       name: "mikrotik",
@@ -153,14 +231,13 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       textAccessor: "name",
       valueAccessor: "id",
       options: mikrotiks,
-      value: formData.mikrotikId,
       onChange: (e) => {
         setFormData({
           ...formData,
           mikrotikId: e.target.value,
         });
       },
-      info: informationEnBn()?.[2],
+      info: status === "edit" && informationEnBn()?.[2],
     },
     {
       name: "mikrotikPackage",
@@ -168,7 +245,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       type: "select",
       id: "mikrotikPackage",
       isVisible: inputPermission.mikrotikPackage,
-      disabled: false,
+      disabled: !formData.mikrotikId,
       validation: true,
       label: t("selectPackage"),
       firstOptions: t("selectPackage"),
@@ -178,7 +255,6 @@ const useDataInputOption = (inputPermission, page, status, data) => {
         bpSettings.hasMikrotik && page
           ? ppPackage?.filter((pack) => pack.mikrotik === formData.mikrotikId)
           : ppPackage,
-      value: formData.packageId,
       onChange: (e) => {
         packageChangeHandler(e.target.value);
       },
@@ -188,10 +264,10 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       type: "number",
       id: "monthlyFee",
       isVisible: inputPermission.monthlyFee,
-      disabled: false,
+      disabled: status ? !formData.packageId : false,
       validation: true,
       label: t("monthlyFee"),
-      value: formData.packageRate,
+      placeholder: "0",
       onChange: (e) => {
         setFormData({
           ...formData,
@@ -203,28 +279,49 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       name: "balance",
       type: "number",
       id: "balance",
-      isVisible: !bpSettings.hasMikrotik && inputPermission.balance,
-      disabled: false,
+      isVisible: inputPermission.balance,
+      disabled: status ? !formData.packageId : false,
+      validation: false,
       label: t("balance"),
+      placeholder: "0",
+      onChange: (e) => {
+        setFormData({
+          ...formData,
+          balance: e.target.value,
+        });
+      },
     },
     {
       name: "pppoeName",
       type: "text",
       id: "pppoeName",
       isVisible: inputPermission.pppoeName,
-      disabled: false,
+      disabled: status ? !formData.packageId : false,
       validation: true,
       label: t("PPPoEName"),
+      placeholder: "e.g. PPPoE-Name",
+      onChange: (e) => {
+        setFormData({
+          ...formData,
+          pppoeName: e.target.value,
+        });
+      },
     },
     {
       name: "password",
       type: "text",
       id: "password",
       isVisible: inputPermission.password,
-      disabled: false,
+      disabled: status ? !formData.packageId : false,
       validation: true,
       label: t("password"),
-      component: "password", // input as password type field base on component
+      placeholder: "e.g. Password: ********",
+      onChange: (e) => {
+        setFormData({
+          ...formData,
+          password: e.target.value,
+        });
+      },
     },
     {
       name: "area",
@@ -232,7 +329,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       type: "select",
       id: "area",
       isVisible: inputPermission.area,
-      disabled: false,
+      disabled: status ? !formData.packageId : false,
       validation: true,
       label: t("selectArea"),
       firstOptions: t("selectArea"),
@@ -252,7 +349,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       type: "select",
       id: "subArea",
       isVisible: inputPermission.subArea,
-      disabled: false,
+      disabled: status ? !formData.packageId : false,
       validation: true,
       label: t("selectSubArea"),
       firstOptions: t("selectSubArea"),
@@ -272,49 +369,76 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       type: "select",
       id: "poleBox",
       isVisible: bpSettings.poleBox && inputPermission.poleBox,
-      disabled: false,
+      disabled: status ? !formData.packageId : false,
       validation: false,
       label: t("selectPoleBox"),
       firstOptions: t("selectPoleBox"),
       textAccessor: "name",
       valueAccessor: "id",
       options: poleBox.filter((item) => item?.subArea === formData.subAreaId),
+      onChange: (e) => {
+        setFormData({
+          ...formData,
+          poleBoxId: e.target.value,
+        });
+      },
     },
     {
       name: "name",
       type: "text",
       id: "name",
       isVisible: inputPermission.name,
-      disabled: false,
+      disabled: status ? !formData.packageId : false,
       validation: true,
       label: t("name"),
+      placeholder: "e.g. Name",
+      onChange: (e) => {
+        setFormData({
+          ...formData,
+          name: e.target.value,
+        });
+      },
     },
     {
       name: "mobile",
       type: "text",
       id: "mobile",
       isVisible: inputPermission.mobile,
-      disabled: !permission?.customerMobileEdit && role === "collector",
+      disabled: status
+        ? !formData.packageId
+        : false || (!permission?.customerMobileEdit && role === "collector"),
       validation: page ? bpSettings?.addCustomerWithMobile : true,
       label: t("mobile"),
       placeholder: "+8801XXXXXXXXX",
+      onChange: (e) => {
+        setFormData({
+          ...formData,
+          mobile: e.target.value,
+        });
+      },
     },
     {
       name: "nid",
       type: "text",
       id: "nid",
       isVisible: inputPermission.nid,
-      disabled: false,
+      disabled: status ? !formData.packageId : false,
       validation: page ? false : true,
       label: t("NIDno"),
       placeholder: "e.g. 10,13 or 17 digits",
+      onChange: (e) => {
+        setFormData({
+          ...formData,
+          nid: e.target.value,
+        });
+      },
     },
     {
       name: "birthDate",
       type: "date",
       id: "birthDate",
       isVisible: inputPermission.birthDate,
-      disabled: false,
+      disabled: status ? !formData.packageId : false,
       validation: false,
       label: t("birthDate"),
       placeholderText: "YYYY MM DD",
@@ -323,11 +447,10 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       showYearDropdown: "showYearDropdown",
       scrollableYearDropdown: "scrollableYearDropdown",
       yearDropdownItemNumber: 150,
-      value: formData.dateOFbirth,
-      onChange: (e) => {
+      onChange: (date) => {
         setFormData({
           ...formData,
-          dateOFbirth: e.target.value,
+          dateOFbirth: date,
         });
       },
     },
@@ -336,26 +459,38 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       type: "text",
       id: "address",
       isVisible: inputPermission.address,
-      disabled: false,
+      disabled: status ? !formData.packageId : false,
       validation: page ? false : true,
       label: t("address"),
+      onChange: (e) => {
+        setFormData({
+          ...formData,
+          address: e.target.value,
+        });
+      },
     },
     {
       name: "email",
       type: "text",
       id: "email",
       isVisible: inputPermission.email,
-      disabled: false,
+      disabled: status ? !formData.packageId : false,
       validation: page ? false : true,
       label: t("email"),
       placeholder: "***@mail.com",
+      onChange: (e) => {
+        setFormData({
+          ...formData,
+          email: e.target.value,
+        });
+      },
     },
     {
       name: "billingCycle",
       type: "date",
       id: "billingCycle",
       isVisible: inputPermission.billingCycle,
-      disabled: false,
+      disabled: status ? !formData.packageId : false,
       validation: true,
       label: t("billingCycle"),
       placeholderText: "YYYY MM DD HH:mm A",
@@ -363,13 +498,19 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       dateFormat: "yyyy MM dd hh:mm a",
       timeIntervals: 60,
       showTimeSelect: "showTimeSelect",
+      onChange: (date) => {
+        setFormData({
+          ...formData,
+          billingCycleDate: date,
+        });
+      },
     },
     {
       name: "promiseDate",
       type: "date",
       id: "promiseDate",
       isVisible: bpSettings?.promiseDate && inputPermission.promiseDate,
-      disabled: false,
+      disabled: status ? !formData.packageId : false,
       validation: false,
       label: t("promiseDate"),
       placeholderText: "YYYY MM DD HH:mm A",
@@ -377,13 +518,19 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       dateFormat: "yyyy MM dd hh:mm a",
       timeIntervals: 60,
       showTimeSelect: "showTimeSelect",
+      onChange: (date) => {
+        setFormData({
+          ...formData,
+          billingCycleDate: date,
+        });
+      },
     },
     {
       name: "connectionDate",
       type: "date",
       id: "connectionDate",
       isVisible: inputPermission.connectionDate,
-      disabled: false,
+      disabled: status ? !formData.packageId : false,
       validation: false,
       label: t("connectionDate"),
       placeholderText: "YYYY MM DD HH:mm A",
@@ -391,15 +538,27 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       dateFormat: "yyyy MM dd hh:mm a",
       timeIntervals: 60,
       showTimeSelect: "showTimeSelect",
+      onChange: (date) => {
+        setFormData({
+          ...formData,
+          connectionDate: date,
+        });
+      },
     },
     {
       name: "connectionFee",
       type: "number",
       id: "connectionFee",
       isVisible: inputPermission.connectionFee,
-      disabled: false,
+      disabled: status ? !formData.packageId : false,
       validation: false,
       label: t("connectionFee"),
+      onChange: (e) => {
+        setFormData({
+          ...formData,
+          connectionFee: e.target.value,
+        });
+      },
     },
     {
       name: "customerBillingType",
@@ -407,7 +566,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       type: "select",
       id: "customerBillingType",
       isVisible: inputPermission.customerBillingType,
-      disabled: false,
+      disabled: status ? !formData.packageId : false,
       validation: true,
       label: t("customerBillType"),
       firstOptions: t("customerBillType"),
@@ -423,6 +582,12 @@ const useDataInputOption = (inputPermission, page, status, data) => {
           name: t("postPaid"),
         },
       ],
+      onChange: (e) => {
+        setFormData({
+          ...formData,
+          customerBillingType: e.target.value,
+        });
+      },
     },
     {
       name: "division",
@@ -430,7 +595,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       type: "select",
       id: "division",
       isVisible: inputPermission.division,
-      disabled: false,
+      disabled: status ? !formData.packageId : false,
       validation: false,
       label: t("selectDivision"),
       firstOptions: t("selectDivision"),
@@ -450,7 +615,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       type: "select",
       id: "district",
       isVisible: inputPermission.district,
-      disabled: false,
+      disabled: status ? !formData.packageId : false,
       validation: false,
       label: t("selectDistrict"),
       firstOptions: t("selectDistrict"),
@@ -472,7 +637,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       type: "select",
       id: "thana",
       isVisible: inputPermission.thana,
-      disabled: false,
+      disabled: status ? !formData.packageId : false,
       validation: false,
       label: t("selectThana"),
       firstOptions: t("selectThana"),
@@ -493,9 +658,15 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       type: "text",
       id: "comment",
       isVisible: inputPermission.comment,
-      disabled: false,
+      disabled: status ? !formData.packageId : false,
       validation: false,
       label: t("comment"),
+      onChange: (e) => {
+        setFormData({
+          ...formData,
+          comment: e.target.value,
+        });
+      },
     },
     {
       name: "status",
@@ -530,6 +701,44 @@ const useDataInputOption = (inputPermission, page, status, data) => {
           value: "expired",
         },
       ],
+      onChange: (e) => {
+        setFormData({
+          ...formData,
+          status: e.target.value,
+        });
+      },
+    },
+    {
+      name: "referenceName",
+      type: "text",
+      id: "referenceName",
+      isVisible: inputPermission.referenceName,
+      disabled: status ? !formData.packageId : false,
+      validation: false,
+      label: t("referenceName"),
+      placeholder: "e.g. Name",
+      onChange: (e) => {
+        setFormData({
+          ...formData,
+          referenceName: e.target.value,
+        });
+      },
+    },
+    {
+      name: "referenceMobile",
+      type: "text",
+      id: "referenceMobile",
+      isVisible: inputPermission.referenceMobile,
+      disabled: status ? !formData.packageId : false,
+      validation: false,
+      label: t("referenceMobile"),
+      placeholder: "+8801XXXXXXXXX",
+      onChange: (e) => {
+        setFormData({
+          ...formData,
+          referenceMobile: e.target.value,
+        });
+      },
     },
     // {
     //   name: "autoDisable",
@@ -537,8 +746,8 @@ const useDataInputOption = (inputPermission, page, status, data) => {
     //   id: "autoDisable",
     //   isVisible: bpSettings.hasMikrotik && inputPermission.autoDisable,
     //   disabled: formData.nextMonthAutoDisable,
-    //   label: t("willContinue"),
-    //   component: "autoDisable",
+    //   label: t("autoConnectionOnOf"),
+    //   component: "willContinue",
     //   onChange: (e) => {
     //     setFormData({
     //       ...formData,
@@ -552,8 +761,8 @@ const useDataInputOption = (inputPermission, page, status, data) => {
     //   id: "nextMonthAutoDisable",
     //   isVisible: bpSettings.hasMikrotik && inputPermission.nextMonthAutoDisable,
     //   disabled: formData.autoDisable,
-    //   label: t("nextMonth"),
-    //   component: "nextMonthAutoDisable",
+    //   // label: t("autoConnectionOnOf"),
+    //   component: "nextMonth",
     //   onChange: (e) => {
     //     setFormData({
     //       ...formData,
@@ -655,6 +864,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
   return {
     inputOption,
     inputInitialValues,
+    validationSchema,
   };
 };
 

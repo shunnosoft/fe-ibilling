@@ -19,6 +19,7 @@ import {
   PersonX,
   Phone,
   Reception3,
+  Reception4,
   Wallet,
 } from "react-bootstrap-icons";
 import { Link } from "react-router-dom";
@@ -42,6 +43,7 @@ import Reseller from "../dataComponent/Reseller";
 
 const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
   const { t } = useTranslation();
+  console.log(dashboardCard);
 
   // get user & current user data form useISPOwner hooks
   const { role, ispOwnerId, bpSettings, permissions, currentUser } =
@@ -356,8 +358,7 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
               </div>
             )}
 
-            {(role === "reseller" ||
-              (role === "collector" && currentUser.collector.reseller)) &&
+            {(role === "ispOwner" || role === "reseller") &&
               bpSettings?.hasPG && (
                 <div class="col-md-4 col-xl-3">
                   <div class="card bg-card-13 order-card">
@@ -524,6 +525,24 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
                         <CashStack />
                       </p>
                       <h2>{FormatNumber(dashboardCard.totalSalary)}</h2>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {role === "ispOwner" && (
+              <div class="col-md-4 col-xl-3">
+                <div class="card bg-card-38 order-card">
+                  <div class="card-block display_card">
+                    <p class="m-b-20">{t("allCustomerCollection")}</p>
+                    <div class="d-flex align-items-center">
+                      <p className="card_Icon">
+                        <Reception4 />
+                      </p>
+                      <h2>
+                        {FormatNumber(dashboardCard.allCustomerCollection)}
+                      </h2>
                     </div>
                   </div>
                 </div>
@@ -851,6 +870,24 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
           </div>
 
           <div class="col-md-4 col-xl-3">
+            <div class="card bg-card-20 order-card">
+              <div class="card-block display_card">
+                <p class="m-b-20">{t("totalDiscount")}</p>
+                <div class="d-flex align-items-center">
+                  <p className="card_Icon">%</p>
+                  <h2>
+                    {isLoading ? (
+                      <DotLoder />
+                    ) : (
+                      FormatNumber(dashboardCard.monthlyDiscount)
+                    )}
+                  </h2>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4 col-xl-3">
             <div class="card bg-card-29 order-card">
               <div class="card-block display_card">
                 <p class="m-b-20">{t("totalExpenditure")}</p>
@@ -982,6 +1019,26 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
                       <DotLoder />
                     ) : (
                       FormatNumber(dashboardCard.deposit)
+                    )}
+                  </h2>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4 col-xl-3">
+            <div class="card bg-card-30 order-card">
+              <div class="card-block display_card">
+                <p class="m-b-20">{t("cost")}</p>
+                <div class="d-flex align-items-center">
+                  <p className="card_Icon">
+                    <GraphDown />
+                  </p>
+                  <h2>
+                    {isLoading ? (
+                      <DotLoder />
+                    ) : (
+                      FormatNumber(dashboardCard.expenditure)
                     )}
                   </h2>
                 </div>
