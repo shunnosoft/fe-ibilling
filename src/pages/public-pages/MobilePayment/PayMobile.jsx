@@ -77,6 +77,7 @@ const PayMobile = (props) => {
       medium: userData.ispOwner.bpSettings?.paymentGateway?.gatewayType,
       paymentStatus: "pending",
       mikrotikPackage: userData.mikrotikPackage,
+      collectorId: userData.ispOwner.id,
     };
 
     if (totalAmount < userData.monthlyFee) {
@@ -132,6 +133,7 @@ const PayMobile = (props) => {
           month: selectedMonth?.map((item) => item.value).join(","),
           paymentStatus: "pending",
           collectedBy: "customer",
+          collectorId: userData.ispOwner.id,
         },
         createRequest: async function (request) {
           try {

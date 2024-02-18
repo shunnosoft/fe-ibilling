@@ -173,7 +173,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
     address: formData.address || "",
     billingCycle: formData.billingCycleDate || today,
     balance: Number(formData.balance) || 0,
-    birthDate: formData.dateOFbirth || today,
+    birthDate: formData.dateOFbirth || "",
     customerId: formData.customerId || "",
     connectionFee: Number(formData.connectionFee) || 0,
     customerBillingType: formData.customerBillingType || "prepaid",
@@ -521,7 +521,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       onChange: (date) => {
         setFormData({
           ...formData,
-          billingCycleDate: date,
+          promiseDate: date,
         });
       },
     },

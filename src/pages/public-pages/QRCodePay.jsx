@@ -7,7 +7,6 @@ import PaymentModal from "../../ownerCustomer/paymentModal";
 
 const QRCodePay = () => {
   const [ispInfo, setIspInfo] = useState(null);
-  console.log(ispInfo);
   const [customerInfo, setCustomerInfo] = useState(null);
   const [input, setInput] = useState("");
 

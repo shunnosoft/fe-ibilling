@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Form, Formik } from "formik";
-import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
@@ -35,7 +34,7 @@ const EditPPPoECustomer = ({ show, setShow, single }) => {
   const dispatch = useDispatch();
 
   // get user & current user data form useISPOwner hook
-  const { ispOwnerId, bpSettings, hasMikrotik } = useISPowner();
+  const { ispOwnerId, bpSettings } = useISPowner();
 
   // get all customer
   const customer = useSelector((state) => state?.customer?.customer);
