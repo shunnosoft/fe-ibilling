@@ -118,7 +118,6 @@ const EditPPPoECustomer = ({ show, setShow, single }) => {
   // sending data to backed
   const customerHandler = async (formValue) => {
     const {
-      balance,
       billingCycle,
       customerId,
       customerBillingType,
@@ -165,7 +164,6 @@ const EditPPPoECustomer = ({ show, setShow, single }) => {
 
     // customer modification sending data to api
     const mainData = {
-      balance: -balance,
       singleCustomerID: data?.id,
       ispOwner: ispOwnerId,
       billingCycle,

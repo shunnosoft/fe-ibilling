@@ -88,7 +88,6 @@ const CustomerModal = ({ show, setShow }) => {
   // sending data to backed
   const customerHandler = async (formValue, resetForm) => {
     const {
-      balance,
       customerId,
       district,
       division,
@@ -102,7 +101,6 @@ const CustomerModal = ({ show, setShow }) => {
     } = formValue;
 
     const mainData = {
-      balance: -balance,
       paymentStatus: "unpaid",
       ispOwner: ispOwnerId,
       autoDisable: autoDisable,

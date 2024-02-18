@@ -147,7 +147,6 @@ const PaymentModal = (props) => {
           month: selectedMonth?.map((item) => item.value).join(","),
           paymentStatus: "pending",
           collectedBy: "customer",
-          collectorId: userData.ispOwner.id,
         },
 
         createRequest: async function (request) {
@@ -184,6 +183,7 @@ const PaymentModal = (props) => {
             month: selectedMonth?.map((item) => item.value).join(","),
             paymentStatus: "pending",
             mikrotikPackage: userData.mikrotikPackage,
+            collectorId: userData.ispOwner.id,
           };
 
           try {
