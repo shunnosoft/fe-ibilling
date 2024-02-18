@@ -245,7 +245,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       type: "select",
       id: "mikrotikPackage",
       isVisible: inputPermission.mikrotikPackage,
-      disabled: !formData.mikrotikId,
+      disabled: bpSettings.hasMikrotik ? !formData.mikrotikId : false,
       validation: true,
       label: t("selectPackage"),
       firstOptions: t("selectPackage"),
