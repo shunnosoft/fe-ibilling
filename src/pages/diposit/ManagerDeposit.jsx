@@ -15,6 +15,7 @@ import * as Yup from "yup";
 import {
   ArrowClockwise,
   FilterCircle,
+  Pencil,
   PrinterFill,
 } from "react-bootstrap-icons";
 import ReactToPrint from "react-to-print";
@@ -536,6 +537,21 @@ const ManagerDeposit = () => {
         Cell: ({ cell: { value } }) => {
           return moment(value).format("YYYY/MM/DD hh:mm a");
         },
+      },
+      {
+        width: "10%",
+        Header: t("action"),
+        Cell: ({ row: { original } }) => (
+          <div className="d-flex justify-content-center align-items-center">
+            <button
+              className="btn btn-sm btn-outline-primary p-1"
+              title={t("update")}
+              onClick={""}
+            >
+              <Pencil size={19} />
+            </button>
+          </div>
+        ),
       },
     ],
     [t]

@@ -4036,3 +4036,20 @@ export const deleteBillReport = async (dispatch, reportId) => {
     toast.error(error.response?.data?.message);
   }
 };
+
+//  deposit update api
+export const depositReportAmountUpdate = async (
+  dispatch,
+  depositId,
+  data,
+  setIsLoading
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.patch(`/deposit/update/${depositId}`, data);
+    // dispatch(getmyDepositSucces(res.data));
+  } catch (error) {
+    console.log(error?.response?.data.message);
+  }
+  setIsLoading(false);
+};
