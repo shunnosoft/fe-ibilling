@@ -6,8 +6,9 @@ import DetailsForm from "./DetailsForm";
 import PaymentGateway from "./PaymentGateway";
 import { getSingleIspOwner } from "../../../features/apiCallAdmin";
 import TdLoader from "../../../components/common/TdLoader";
+import ComponentCustomModal from "../../../components/common/customModal/ComponentCustomModal";
 
-const ISPOwnerEditModal = ({ ownerId }) => {
+const ISPOwnerEditModal = ({ show, setShow, ownerId }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
@@ -24,69 +25,55 @@ const ISPOwnerEditModal = ({ ownerId }) => {
   }, [ownerId]);
 
   return (
-    <div>
-      <div
-        className="modal fade modal-dialog-scrollable "
-        id="clientEditModal"
-        tabIndex="-1"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog modal-xl">
-          <div className="modal-content">
-            <div className="modal-header">
-              <div className="modal-title" id="exampleModalLabel">
-                <div className="d-flex">
-                  <h5>
-                    netFee Id:
-                    <span className="text-success"> {ispData?.netFeeId} </span>
-                  </h5>
-                  <h5 className="ms-3">
-                    Id: <span className="text-success"> {ispData?.id} </span>
-                  </h5>
-                  <h5 className="ms-3">
-                    Mobile:
-                    <span className="text-success"> {ispData?.mobile}</span>
-                  </h5>
-                  <h5 className="ms-3">
-                    Company:
-                    <span className="text-success"> {ispData?.company}</span>
-                  </h5>
-                  <h5 className="ms-3">
-                    Name:
-                    <span className="text-success"> {ispData?.name}</span>
-                  </h5>
-                </div>
-              </div>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body">
-              <Tabs
-                defaultActiveKey={"Owner"}
-                id="uncontrolled-tab-example"
-                className="mb-3"
-              >
-                <Tab eventKey="Owner" title="ISP Owner">
-                  {isLoading ? (
-                    <TdLoader />
-                  ) : (
-                    <DetailsForm ispOwner={ispData} />
-                  )}
-                </Tab>
-                <Tab eventKey="paymentGateway" title="Payment Gateway">
-                  <PaymentGateway ispOwner={ispData} />
-                </Tab>
-              </Tabs>
-            </div>
+    <>
+      <ComponentCustomModal
+        show={show}
+        setShow={setShow}
+        centered={false}
+        size="xl"
+        header={
+          <div className="d-flex">
+            <h5>
+              netFee Id:
+              <span className="text-success"> {ispData?.netFeeId} </span>
+            </h5>
+            <h5 className="ms-3">
+              Id: <span className="text-success"> {ispData?.id} </span>
+            </h5>
+            <h5 className="ms-3">
+              Mobile:
+              <span className="text-success"> {ispData?.mobile}</span>
+            </h5>
+            <h5 className="ms-3">
+              Company:
+              <span className="text-success"> {ispData?.company}</span>
+            </h5>
+            <h5 className="ms-3">
+              Name:
+              <span className="text-success"> {ispData?.name}</span>
+            </h5>
           </div>
-        </div>
-      </div>
-    </div>
+        }
+      >
+        <Tabs
+          defaultActiveKey={"Owner"}
+          id="uncontrolled-tab-example"
+          className="mb-3"
+        >
+          <Tab eventKey="Owner" title="ISP Owner">
+            {isLoading ? (
+              <TdLoader />
+            ) : (
+              <DetailsForm setShow={setShow} ispOwner={ispData} />
+            )}
+          </Tab>
+
+          <Tab eventKey="paymentGateway" title="Payment Gateway">
+            <PaymentGateway setShow={setShow} ispOwner={ispData} />
+          </Tab>
+        </Tabs>
+      </ComponentCustomModal>
+    </>
   );
 };
 

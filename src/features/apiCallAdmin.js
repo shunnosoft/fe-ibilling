@@ -104,14 +104,14 @@ export const updateOwner = async (
   data,
   setIsLoading,
   dispatch,
-  setIsPermission
+  setShow
 ) => {
   setIsLoading(true);
   try {
     const res = await apiLink.patch("/ispOwner/" + ispOwnerId, data);
     dispatch(editOwner(res.data));
-    document.querySelector("#clientEditModal").click();
-    setIsPermission(false);
+
+    setShow(false);
     toast.success(`${data.company} IspOwner update success`);
   } catch (err) {
     console.log(err);
@@ -442,5 +442,18 @@ export const getCreateCsutomerLoginCredential = async (mobile) => {
     alert(res?.data?.msg);
   } catch (error) {
     console.log(error.response.data);
+  }
+};
+
+// get reseller bulletin
+export const csutomerWebhookRegister = async (data) => {
+  try {
+    const res = await apiLink.post(
+      `http://139.84.135.222:4600/api/v1/auth/register`,
+      data
+    );
+    res && toast.success(res?.data?.message);
+  } catch (error) {
+    toast.error(error.response.data);
   }
 };

@@ -31,6 +31,12 @@ const paymentSlice = createSlice({
       state.myDeposit.push(action.payload);
     },
 
+    depositUpdateSuccess: (state, action) => {
+      state.myDeposit[
+        state.myDeposit.findIndex((item) => item.id === action.payload.id)
+      ] = action.payload;
+    },
+
     updateDepositSuccess: (state, action) => {
       state.allDeposit[
         state.allDeposit.findIndex((item) => item.id === action.payload.id)
@@ -120,6 +126,7 @@ export const {
   getDepositSuccess,
   updateDepositSuccess,
   addDepositSucces,
+  depositUpdateSuccess,
   getCollectorDeposite,
   getCustomerInvoice,
   updateCustomerInvoice,

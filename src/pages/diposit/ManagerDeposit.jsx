@@ -43,6 +43,7 @@ import Footer from "../../components/admin/footer/Footer";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import NoteDetailsModal from "./NoteDetailsModal";
+import UpdateDeposit from "./UpdateDeposit";
 
 const ManagerDeposit = () => {
   const { t } = useTranslation();
@@ -130,6 +131,13 @@ const ManagerDeposit = () => {
 
   // deposit note details state
   const [message, setMessage] = useState();
+
+  // update deposit report data
+  const [depositData, setDepositData] = useState();
+
+  // modal handler
+  const [modalStatus, setModalStatus] = useState("");
+  const [show, setShow] = useState(false);
 
   // current month start & end date
   var selectDate = new Date(filterDate.getFullYear(), filterDate.getMonth(), 1);
@@ -520,9 +528,11 @@ const ManagerDeposit = () => {
               {original?.note && original?.note?.slice(0, 70)}
               <span
                 className="text-primary see-more"
-                data-bs-toggle="modal"
-                data-bs-target="#dipositNoteDetailsModal"
-                onClick={() => setMessage(original?.note)}
+                onClick={() => {
+                  setMessage(original?.note);
+                  setModalStatus("noteDetails");
+                  setShow(true);
+                }}
               >
                 {original?.note?.length > 70 ? "...see more" : ""}
               </span>
@@ -543,13 +553,19 @@ const ManagerDeposit = () => {
         Header: t("action"),
         Cell: ({ row: { original } }) => (
           <div className="d-flex justify-content-center align-items-center">
-            <button
-              className="btn btn-sm btn-outline-primary p-1"
-              title={t("update")}
-              onClick={""}
-            >
-              <Pencil size={19} />
-            </button>
+            {original.status === "accepted" && (
+              <button
+                className="btn btn-sm btn-outline-primary p-1"
+                title={t("update")}
+                onClick={() => {
+                  setDepositData(original);
+                  setModalStatus("updateDeposit");
+                  setShow(true);
+                }}
+              >
+                <Pencil size={19} />
+              </button>
+            )}
           </div>
         ),
       },
@@ -874,7 +890,14 @@ const ManagerDeposit = () => {
       </div>
 
       {/* deposit comment note details modal */}
-      <NoteDetailsModal message={message} />
+      {modalStatus === "noteDetails" && (
+        <NoteDetailsModal show={show} setShow={setShow} message={message} />
+      )}
+
+      {/* deposit report update modal */}
+      {modalStatus === "updateDeposit" && (
+        <UpdateDeposit show={show} setShow={setShow} deposit={depositData} />
+      )}
     </>
   );
 };

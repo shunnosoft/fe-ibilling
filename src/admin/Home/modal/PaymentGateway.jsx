@@ -3,7 +3,7 @@ import BkashForm from "./netFeePaymentGateway/BkashForm";
 import SSLCommerz from "./netFeePaymentGateway/SSLCommerz";
 import UddoktaPayForm from "./netFeePaymentGateway/UddoktaPayForm";
 
-const PaymentGateway = ({ ispOwner }) => {
+const PaymentGateway = ({ setShow, ispOwner }) => {
   //payment gateway state
   const [paymentGatewayName, setPaymentGatewayName] = useState("bKashPG");
 
@@ -61,21 +61,21 @@ const PaymentGateway = ({ ispOwner }) => {
       <div>
         {/* bkash payment page */}
         {paymentGatewayName === "bKashPG" ? (
-          <BkashForm ispOwner={ispOwner} />
+          <BkashForm setShow={setShow} ispOwner={ispOwner} />
         ) : (
           ""
         )}
 
         {/* uddoktaPays payment page */}
         {paymentGatewayName === "uddoktapay" ? (
-          <UddoktaPayForm ispOwner={ispOwner} />
+          <UddoktaPayForm setShow={setShow} ispOwner={ispOwner} />
         ) : (
           ""
         )}
 
         {/* SSLCommerz payment page */}
         {paymentGatewayName === "sslCommerz" ? (
-          <SSLCommerz ispOwner={ispOwner} />
+          <SSLCommerz setShow={setShow} ispOwner={ispOwner} />
         ) : (
           ""
         )}

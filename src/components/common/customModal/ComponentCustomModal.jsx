@@ -38,7 +38,7 @@ const ComponentCustomModal = ({
         </ModalTitle>
       </ModalHeader>
       <ModalBody>{children}</ModalBody>
-      <ModalFooter>{footer}</ModalFooter>
+      {footer && <ModalFooter>{footer}</ModalFooter>}
     </Modal>
   );
 };

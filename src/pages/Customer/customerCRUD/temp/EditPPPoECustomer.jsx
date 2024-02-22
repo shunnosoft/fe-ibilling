@@ -118,9 +118,11 @@ const EditPPPoECustomer = ({ show, setShow, single }) => {
   // sending data to backed
   const customerHandler = async (formValue) => {
     const {
+      birthDate,
       billingCycle,
       customerId,
       customerBillingType,
+      connectionDate,
       district,
       division,
       pppoeName,
@@ -166,8 +168,10 @@ const EditPPPoECustomer = ({ show, setShow, single }) => {
     const mainData = {
       singleCustomerID: data?.id,
       ispOwner: ispOwnerId,
-      billingCycle,
-      promiseDate,
+      birthDate: new Date(birthDate).toISOString(),
+      billingCycle: new Date(billingCycle).toISOString(),
+      promiseDate: new Date(promiseDate).toISOString(),
+      connectionDate: new Date(connectionDate).toISOString(),
       customerId,
       customerBillingType,
       autoDisable,

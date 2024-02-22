@@ -1,21 +1,23 @@
 import { Form, Formik, Field } from "formik";
 import React from "react";
-import { FtextField } from "../../../../components/common/FtextField";
-import Loader from "../../../../components/common/Loader";
 import * as Yup from "yup";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+
+// internal import
+import { FtextField } from "../../../../components/common/FtextField";
+import Loader from "../../../../components/common/Loader";
 import { updateOwner } from "../../../../features/apiCallAdmin";
 
-const UddoktaPayForm = ({ ispOwner }) => {
+const UddoktaPayForm = ({ setShow, ispOwner }) => {
+  const { t } = useTranslation();
+  const dispatch = useDispatch();
+
   //  loading local state
   const [isLoading, setIsLoading] = useState(false);
-  const { t } = useTranslation();
-  // import dispatch from react redux
-  const dispatch = useDispatch();
-  const role = useSelector((state) => state.persistedReducer.auth?.role);
 
+  // initial values for form
   let initialValues = {
     apiKey: "",
     apiUrl: "",
@@ -58,7 +60,7 @@ const UddoktaPayForm = ({ ispOwner }) => {
       },
     };
 
-    updateOwner(ispOwner.id, postBody, setIsLoading, dispatch);
+    updateOwner(ispOwner.id, postBody, setIsLoading, dispatch, setShow);
   };
 
   return (
@@ -92,21 +94,22 @@ const UddoktaPayForm = ({ ispOwner }) => {
             </div>
           </div>
 
-          <div className="modal-footer" style={{ border: "none" }}>
+          <div className="displayGrid1 float-end mt-4">
+            <button
+              type="button"
+              className="btn btn-secondary"
+              disabled={isLoading}
+              onClick={() => setShow(false)}
+            >
+              Cancel
+            </button>
+
             <button
               type="submit"
               className="btn btn-success"
               disabled={isLoading}
             >
               {isLoading ? <Loader /> : "Submit"}
-            </button>
-            <button
-              type="button"
-              className="btn btn-secondary"
-              data-bs-dismiss="modal"
-              disabled={isLoading}
-            >
-              Cancel
             </button>
           </div>
         </Form>

@@ -88,6 +88,9 @@ const CustomerModal = ({ show, setShow }) => {
   // sending data to backed
   const customerHandler = async (formValue, resetForm) => {
     const {
+      birthDate,
+      billingCycle,
+      connectionDate,
       customerId,
       district,
       division,
@@ -96,15 +99,20 @@ const CustomerModal = ({ show, setShow }) => {
       profile,
       comment,
       poleBox,
+      promiseDate,
       thana,
       ...rest
     } = formValue;
 
     const mainData = {
-      paymentStatus: "unpaid",
-      ispOwner: ispOwnerId,
+      birthDate: new Date(birthDate).toISOString(),
+      billingCycle: new Date(billingCycle).toISOString(),
+      promiseDate: new Date(promiseDate).toISOString(),
+      connectionDate: new Date(connectionDate).toISOString(),
       autoDisable: autoDisable,
+      ispOwner: ispOwnerId,
       nextMonthAutoDisable: nextMonthAutoDisable,
+      paymentStatus: "unpaid",
       ...rest,
       pppoe: {
         name: pppoeName,

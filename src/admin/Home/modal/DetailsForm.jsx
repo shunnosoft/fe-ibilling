@@ -2,24 +2,26 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
+import moment from "moment";
+import { useTranslation } from "react-i18next";
+import DatePicker from "react-datepicker";
+
+// internal import
 import { FtextField } from "../../../components/common/FtextField";
 import { updateOwner } from "../../../features/apiCallAdmin";
 import Loader from "../../../components/common/Loader";
-import moment from "moment";
 
 //divisional location
 import divisionsJSON from "../../../bdAddress/bd-divisions.json";
 import districtsJSON from "../../../bdAddress/bd-districts.json";
 import thanaJSON from "../../../bdAddress/bd-upazilas.json";
 import getName, { getNameId } from "../../../utils/getLocationName";
-import { useTranslation } from "react-i18next";
-import DatePicker from "react-datepicker";
 
 const divisions = divisionsJSON.divisions;
 const districts = districtsJSON.districts;
 const thana = thanaJSON.thana;
 
-const DetailsForm = ({ ispOwner }) => {
+const DetailsForm = ({ setShow, ispOwner }) => {
   const { t } = useTranslation();
 
   // import dispatch from react redux
@@ -179,7 +181,7 @@ const DetailsForm = ({ ispOwner }) => {
     }
 
     // api call
-    updateOwner(ispOwner.id, data, setIsLoading, dispatch);
+    updateOwner(ispOwner.id, data, setIsLoading, dispatch, setShow);
   };
 
   //ispOwner customer type handler
@@ -462,7 +464,7 @@ const DetailsForm = ({ ispOwner }) => {
               name="referenceMobile"
             />
 
-            <div className="mt-3">
+            <div>
               <lable>Customer Type</lable>
               <div className="d-inline-flex mb-4">
                 <div className="form-check me-3">
@@ -507,7 +509,7 @@ const DetailsForm = ({ ispOwner }) => {
               </div>
             </div>
 
-            <div className="d-flex justify-content-between mt-4">
+            <div className="d-flex align-items-center justify-content-between">
               <div className="form-check my-2">
                 <Field
                   className="form-check-input"
@@ -534,21 +536,22 @@ const DetailsForm = ({ ispOwner }) => {
             </div>
           </div>
 
-          <div className="modal-footer" style={{ border: "none" }}>
+          <div className="displayGrid1 float-end mt-4">
+            <button
+              type="button"
+              className="btn btn-secondary"
+              disabled={isLoading}
+              onClick={() => setShow(false)}
+            >
+              Cancel
+            </button>
+
             <button
               type="submit"
               className="btn btn-success"
               disabled={isLoading}
             >
               {isLoading ? <Loader /> : "Submit"}
-            </button>
-            <button
-              type="button"
-              className="btn btn-secondary"
-              data-bs-dismiss="modal"
-              disabled={isLoading}
-            >
-              Cancel
             </button>
           </div>
         </Form>

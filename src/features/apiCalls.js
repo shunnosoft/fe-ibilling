@@ -104,6 +104,7 @@ import {
   getCustomerBillReport,
   deleteCustomerBillReport,
   deleteBillReportSuccess,
+  depositUpdateSuccess,
 } from "./paymentSlice";
 import {
   getChartSuccess,
@@ -4042,12 +4043,20 @@ export const depositReportAmountUpdate = async (
   dispatch,
   depositId,
   data,
-  setIsLoading
+  setIsLoading,
+  setShow
 ) => {
   setIsLoading(true);
   try {
     const res = await apiLink.patch(`/deposit/update/${depositId}`, data);
-    // dispatch(getmyDepositSucces(res.data));
+    dispatch(depositUpdateSuccess(res.data));
+
+    langMessage(
+      "success",
+      "জমা করা পরিমাণ আপডেট সফল হয়েছে",
+      "Deposit amount update successful"
+    );
+    setShow(false);
   } catch (error) {
     console.log(error?.response?.data.message);
   }

@@ -934,5 +934,6 @@
   "nextMonth": "পরবর্তী মাস",
   "invalidNID": "অবৈধ NID",
   "connectionFeeSMSTemplate": "সংযোগ ফি রিচার্জ কনফার্মেশন SMS টেমপ্লেট",
-  "allCustomerCollection": "মোট বিল এবং সংযোগ ফি"
+  "allCustomerCollection": "মোট বিল এবং সংযোগ ফি",
+  "depositAmountEdit": "জমা করা পরিমাণ আপডেট করুন"
 }

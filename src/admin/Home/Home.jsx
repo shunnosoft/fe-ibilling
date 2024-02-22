@@ -22,8 +22,10 @@ import {
   Award,
   FiletypeCsv,
   TrashFill,
+  FiletypePy,
 } from "react-bootstrap-icons";
 import {
+  csutomerWebhookRegister,
   getCreateCsutomerLoginCredential,
   getIspOwner,
   getIspOwners,
@@ -249,6 +251,19 @@ export default function Home() {
     getCreateCsutomerLoginCredential(ispOwner?.mobile);
   };
 
+  // create customer webhook
+  const createCustomerWebhookHandler = (ispOwner) => {
+    const sendingData = {
+      name: ispOwner.name,
+      shunnoId: Number(ispOwner.netFeeId).toString(),
+      clientApp: "NETFEE",
+      password: `${ispOwner.mobile}NF`,
+    };
+
+    // webhook api call
+    csutomerWebhookRegister(sendingData);
+  };
+
   // ispOwner export data csv table header
   const ispOwnerForCsVTableInfoHeader = [
     { label: "Id", key: "netFeeId" },
@@ -453,10 +468,10 @@ export default function Home() {
                     </div>
                   </li>
                   <li
-                    data-bs-toggle="modal"
-                    data-bs-target="#clientEditModal"
                     onClick={() => {
                       editModal(original.id);
+                      setModalStatus("edit");
+                      setShow(true);
                     }}
                   >
                     <div className="dropdown-item">
@@ -655,6 +670,19 @@ export default function Home() {
                         <p className="actionP">
                           Create Customer Login Credential
                         </p>
+                      </div>
+                    </div>
+                  </li>
+
+                  <li
+                    onClick={() => {
+                      createCustomerWebhookHandler(original);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <FiletypePy />
+                        <p className="actionP">Create Customer Webhook</p>
                       </div>
                     </div>
                   </li>
@@ -892,13 +920,16 @@ export default function Home() {
               {/* owner permissions  */}
               {modalStatus === "permission" && (
                 <Permissions
+                  show={show}
+                  setShow={setShow}
                   ownerId={permissionId}
-                  isPermission={show}
-                  setIsPermission={setShow}
                 />
               )}
 
-              <EditModal ownerId={ownerId} />
+              {modalStatus === "edit" && (
+                <EditModal show={show} setShow={setShow} ownerId={ownerId} />
+              )}
+
               <DetailsModal ownerId={ownerId} />
               <AddProprietorModal ownerId={ownerId} />
 
