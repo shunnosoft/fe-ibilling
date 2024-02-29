@@ -724,10 +724,10 @@ const Customer = () => {
                 )}
                 {permission?.customerDelete && (
                   <li
-                    data-bs-toggle="modal"
-                    data-bs-target="#customerDelete"
                     onClick={() => {
                       customerDelete(original.id);
+                      setModalStatus("delete");
+                      setShow(true);
                     }}
                   >
                     <div className="dropdown-item">
@@ -1016,13 +1016,17 @@ const Customer = () => {
       <CustomersNumber showModal={numberModalShow} />
 
       {/* customer delete modal  */}
-      <CustomerDelete
-        single={customerId}
-        mikrotikCheck={checkMikrotik}
-        setMikrotikCheck={setMikrotikCheck}
-        status="customerDelete"
-        page="reseller"
-      />
+      {modalStatus === "delete" && (
+        <CustomerDelete
+          show={show}
+          setShow={setShow}
+          single={customerId}
+          mikrotikCheck={checkMikrotik}
+          setMikrotikCheck={setMikrotikCheck}
+          status="pppoe"
+          page="reseller"
+        />
+      )}
 
       {/* customers data table print option modal */}
       {modalStatus === "printOptions" && (

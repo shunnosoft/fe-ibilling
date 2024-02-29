@@ -63,7 +63,7 @@ const UpdateDeposit = ({ show, setShow, deposit }) => {
         setShow={setShow}
         centered={false}
         size={"md"}
-        header={t("editArea")}
+        header={t("depositAmountEdit")}
       >
         <Formik
           initialValues={{

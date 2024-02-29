@@ -46,11 +46,20 @@ export const resellerPermissions = (permission, bpSettings) => {
       disabled: false,
     },
     {
+      id: 25,
+      label: "Customer Active",
+      value: "customerActive",
+      isChecked: permission?.customerActive,
+      disabled: false,
+      info: "Can Activate Inactive or Expired Customers.",
+    },
+    {
       id: 7,
       label: "Customer Minus Balance Inactive",
       value: "logicalInactive",
       isChecked: permission?.logicalInactive,
       disabled: false,
+      info: "If the option is enabled, the customer can do In-Active if has advance balance and if the option is removed, the customer can do In-Active if has minus balance (Default: False).",
     },
     {
       id: 8,
@@ -222,11 +231,20 @@ export const resellerPermissions = (permission, bpSettings) => {
       disabled: false,
     },
     {
+      id: 25,
+      label: "গ্রাহক এক্টিভ",
+      value: "customerActive",
+      isChecked: permission?.customerActive,
+      disabled: false,
+      info: "ইন-এক্টিভ অথবা এক্সপায়ার্ড গ্রাহকদের এক্টিভ করতে পারবে।",
+    },
+    {
       id: 7,
       label: "গ্রাহক মাইনাস ব্যালেন্স ইন-এক্টিভ",
       value: "logicalInactive",
       isChecked: permission?.logicalInactive,
       disabled: false,
+      info: "অপশনটি দিলে, গ্রাহকের অগ্রিম ব্যালেন্স থাকলে ইন-এক্টিভ করতে পারবে এবং অপশনটি তুলে নিলে, গ্রাহকের মাইনাস ব্যালেন্স থাকলে ইন-এক্টিভ করতে পারবে (ডিফল্ট: ফেলসে)।",
     },
     {
       id: 8,

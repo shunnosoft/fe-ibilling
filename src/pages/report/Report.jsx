@@ -29,8 +29,6 @@ import {
   getAllBills,
   getAllManagerBills,
   getArea,
-  getCollector,
-  getManger,
 } from "../../features/apiCalls";
 import Footer from "../../components/admin/footer/Footer";
 import "../Customer/customer.css";
@@ -48,6 +46,7 @@ import { getSubAreasApi } from "../../features/actions/customerApiCall";
 import { managerFetchSuccess } from "../../features/managerSlice";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
+import { userStaffs } from "../../features/getIspOwnerUsersApi";
 
 const Report = () => {
   const { t } = useTranslation();
@@ -55,8 +54,7 @@ const Report = () => {
   const componentRef = useRef();
 
   // get user & current user data form useISPOwner hooks
-  const { role, ispOwnerId, userData, permissions, currentUser } =
-    useISPowner();
+  const { role, ispOwnerId, userData, permissions } = useISPowner();
 
   // get all area package data from useAreaPackage hooks
   const { areas, subAreas } = useAreaPackage();
@@ -64,11 +62,8 @@ const Report = () => {
   // get customer bill collection data from redux store
   const allBills = useSelector((state) => state?.payment?.allBills);
 
-  // get all manager data from redux store
-  const manager = useSelector((state) => state?.manager?.manager);
-
-  // get all collector data from redux store
-  const allCollector = useSelector((state) => state?.collector?.collector);
+  // get user staff data from redux store
+  const staffs = useSelector((state) => state?.ownerUsers?.userStaff);
 
   // get bulletin permission
   const butPermission = useSelector(
@@ -88,7 +83,6 @@ const Report = () => {
   // loading state
   const [isLoading, setIsLoading] = useState(false);
   const [areaLoading, setAreaLoading] = useState(false);
-  const [collectorLoading, setCollectorLoading] = useState(false);
 
   const [singleArea, setArea] = useState({});
   const [subareas, setSubAreas] = useState([]);
@@ -96,8 +90,6 @@ const Report = () => {
 
   const [mainData, setMainData] = useState(allBills);
 
-  const [collectors, setCollectors] = useState([]);
-  const [collectorIds, setCollectorIds] = useState([]);
   const [collectedBy, setCollectedBy] = useState();
   const [billType, setBillType] = useState("");
   const [medium, setMedium] = useState("");
@@ -127,17 +119,14 @@ const Report = () => {
 
   // api call
   useEffect(() => {
-    if (role === "ispOwner") getManger(dispatch, ispOwnerId);
+    // get user staffs api
+    staffs.length === 0 && userStaffs(dispatch);
 
-    if (role === "manager") {
-      dispatch(managerFetchSuccess(userData));
-    }
-
+    // get area api
     areas.length === 0 && getArea(dispatch, ispOwnerId, setAreaLoading);
-    subAreas.length === 0 && getSubAreasApi(dispatch, ispOwnerId);
 
-    if (allCollector.length === 0)
-      getCollector(dispatch, ispOwnerId, setCollectorLoading);
+    // get sub area api
+    subAreas.length === 0 && getSubAreasApi(dispatch, ispOwnerId);
 
     // get netfee bulletin permission api
     Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
@@ -173,53 +162,7 @@ const Report = () => {
           setIsLoading
         );
     }
-
-    let collectors = [];
-
-    allCollector.map((item) =>
-      collectors.push({ name: item.name, user: item.user, id: item.id })
-    );
-
-    if (collectors.length === allCollector.length) {
-      if (role === "ispOwner") {
-        // const { user, name, id } = manager;
-        let allManager = [];
-        let manager1 = {};
-        manager?.forEach((man) => {
-          manager1 = {
-            user: man.user,
-            name: man.name + " (ম্যানেজার)",
-            id: man.id,
-          };
-          allManager.push(manager1);
-        });
-
-        const isp = {
-          user: currentUser.user.id,
-          name: currentUser.ispOwner.name + " (এডমিন)",
-          id: currentUser.ispOwner.id,
-        };
-
-        collectors.unshift(...allManager);
-        collectors.unshift(isp);
-      } else {
-        // const { user, name, id } = manager;
-        const manager1 = {
-          user: manager?.manager?.user,
-          name: manager?.manager?.name + "(Manager)",
-          id: manager?.manager?.id,
-        };
-
-        collectors.unshift(manager1);
-      }
-    }
-
-    setCollectors(collectors);
-
-    let collectorUserIdsArr = [];
-    collectors.map((item) => collectorUserIdsArr.push(item.user));
-    setCollectorIds(collectorUserIdsArr);
-  }, [allCollector, manager, filterDate]);
+  }, [filterDate]);
 
   // set data in state
   useEffect(() => {
@@ -303,12 +246,8 @@ const Report = () => {
       );
     }
 
-    if (collectedBy && collectedBy !== "other") {
+    if (collectedBy) {
       arr = arr.filter((collected) => collected.collectorId === collectedBy);
-    }
-
-    if (collectedBy && collectedBy === "other") {
-      arr = arr.filter((collected) => collected.collectorId !== collectedBy);
     }
 
     if (billType) {
@@ -349,10 +288,6 @@ const Report = () => {
   let subArea, collector;
   if (singleArea && subAreaIds.length === 1) {
     subArea = subAreas?.find((item) => item.id === subAreaIds[0]);
-  }
-
-  if (collectorIds.length === 1 && collectors.length > 0) {
-    collector = collectors.find((item) => item.user === collectorIds[0]);
   }
 
   const filterData = {
@@ -771,12 +706,11 @@ const Report = () => {
                               <option value="" defaultValue>
                                 {t("all collector")}
                               </option>
-                              {collectors?.map((c, key) => (
+                              {staffs?.map((c, key) => (
                                 <option key={key} value={c.id}>
                                   {c.name}
                                 </option>
                               ))}
-                              <option value="other">Other</option>
                             </select>
                           )}
 

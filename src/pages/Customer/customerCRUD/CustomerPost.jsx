@@ -105,7 +105,7 @@ const CustomerModal = ({ show, setShow }) => {
     } = formValue;
 
     const mainData = {
-      birthDate: new Date(birthDate).toISOString(),
+      birthDate: birthDate ? new Date(birthDate).toISOString() : birthDate,
       billingCycle: new Date(billingCycle).toISOString(),
       promiseDate: new Date(promiseDate).toISOString(),
       connectionDate: new Date(connectionDate).toISOString(),

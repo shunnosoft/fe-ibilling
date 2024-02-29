@@ -674,18 +674,20 @@ export default function Home() {
                     </div>
                   </li>
 
-                  <li
-                    onClick={() => {
-                      createCustomerWebhookHandler(original);
-                    }}
-                  >
-                    <div className="dropdown-item">
-                      <div className="customerAction">
-                        <FiletypePy />
-                        <p className="actionP">Create Customer Webhook</p>
+                  {userRole === "superadmin" && (
+                    <li
+                      onClick={() => {
+                        createCustomerWebhookHandler(original);
+                      }}
+                    >
+                      <div className="dropdown-item">
+                        <div className="customerAction">
+                          <FiletypePy />
+                          <p className="actionP">Create Customer Webhook</p>
+                        </div>
                       </div>
-                    </div>
-                  </li>
+                    </li>
+                  )}
                 </ul>
               </div>
             </div>

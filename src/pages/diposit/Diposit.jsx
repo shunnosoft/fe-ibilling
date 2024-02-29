@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next";
 import {
   ArrowClockwise,
   FilterCircle,
+  Pencil,
   PrinterFill,
 } from "react-bootstrap-icons";
 import ReactToPrint from "react-to-print";
@@ -37,6 +38,7 @@ import PrintCustomer from "./customerPDF";
 import NoteDetailsModal from "./NoteDetailsModal";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
+import UpdateDeposit from "./UpdateDeposit";
 
 const Diposit = () => {
   const { t } = useTranslation();
@@ -44,7 +46,8 @@ const Diposit = () => {
   const componentRef = useRef(); //reference of pdf export component
 
   // get user & current user data form useISPOwner hooks
-  const { ispOwnerId, userData } = useISPowner();
+  const { ispOwnerId, bpSettings, userData } = useISPowner();
+  console.log(bpSettings.depositUpdate);
 
   // get all deposit form redux
   const allDeposit = useSelector((state) => state?.payment?.allDeposit);
@@ -86,6 +89,13 @@ const Diposit = () => {
   //select depositor id
   const [collectorIds, setCollectorIds] = useState("");
   const [depositedName, setDepositedName] = useState("");
+
+  // modal handler
+  const [modalStatus, setModalStatus] = useState("");
+  const [show, setShow] = useState(false);
+
+  // update deposit report data
+  const [depositData, setDepositData] = useState();
 
   // filter date state
   const [filterDate, setFilterDate] = useState(firstDay);
@@ -262,7 +272,7 @@ const Diposit = () => {
         },
       },
       {
-        width: "15%",
+        width: "10%",
         Header: t("total"),
         accessor: "amount",
         Cell: ({ row: { original } }) => (
@@ -270,7 +280,7 @@ const Diposit = () => {
         ),
       },
       {
-        width: "15%",
+        width: "10%",
         Header: t("receivedBy"),
         Cell: ({ row: { original } }) => {
           const performer = manager?.find(
@@ -281,8 +291,8 @@ const Diposit = () => {
         },
       },
       {
-        width: "20%",
-        Header: t("action"),
+        width: "15%",
+        Header: t("status"),
 
         Cell: ({ row: { original } }) => (
           <div className="d-flex justify-content-center align-items-center">
@@ -359,7 +369,7 @@ const Diposit = () => {
         ),
       },
       {
-        width: "15%",
+        width: "20%",
         Header: t("note"),
         accessor: "note",
         Cell: ({ row: { original } }) => {
@@ -368,9 +378,11 @@ const Diposit = () => {
               {original?.note && original?.note?.slice(0, 70)}
               <span
                 className="text-primary see-more"
-                data-bs-toggle="modal"
-                data-bs-target="#dipositNoteDetailsModal"
-                onClick={() => setMessage(original?.note)}
+                onClick={() => {
+                  setMessage(original?.note);
+                  setModalStatus("noteDetails");
+                  setShow(true);
+                }}
               >
                 {original?.note?.length > 70 ? "...see more" : ""}
               </span>
@@ -385,6 +397,28 @@ const Diposit = () => {
         Cell: ({ cell: { value } }) => {
           return moment(value).format("YYYY/MM/DD hh:mm A");
         },
+      },
+      {
+        width: bpSettings?.depositUpdate ? "10%" : "0%",
+        Header: bpSettings?.depositUpdate && <div>{t("action")}</div>,
+        id: "option1",
+        Cell: ({ row: { original } }) => (
+          <div className="d-flex justify-content-center align-items-center">
+            {original.status === "accepted" && bpSettings?.depositUpdate && (
+              <button
+                className="btn btn-sm btn-outline-primary p-1"
+                title={t("update")}
+                onClick={() => {
+                  setDepositData(original);
+                  setModalStatus("updateDeposit");
+                  setShow(true);
+                }}
+              >
+                <Pencil size={19} />
+              </button>
+            )}
+          </div>
+        ),
       },
     ],
     [t, ownerUsers, manager]
@@ -559,7 +593,14 @@ const Diposit = () => {
       </div>
 
       {/* modals */}
-      <NoteDetailsModal message={message} />
+      {modalStatus === "noteDetails" && (
+        <NoteDetailsModal show={show} setShow={setShow} message={message} />
+      )}
+
+      {/* deposit report update modal */}
+      {modalStatus === "updateDeposit" && (
+        <UpdateDeposit show={show} setShow={setShow} deposit={depositData} />
+      )}
     </>
   );
 };

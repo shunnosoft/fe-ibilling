@@ -258,21 +258,26 @@ export const deleteResellerCustomer = async (
   dispatch,
   data,
   setIsLoading,
-  setModalShow
+  setShow
 ) => {
   setIsLoading(true);
   try {
     await apiLink.delete(
       `/reseller/customer/${data.reseller}/${data.customerID}?removeFromMikrotik=${data.mikrotik}`
     );
-    dispatch(deleteStaticCustomerSuccess(data.customerID));
-    document.querySelector("#customerDelete").click();
+    // delete customer from owner
+    if (data.userType === "pppoe") {
+      dispatch(deleteCustomerSuccess(data.customerID));
+    } else {
+      dispatch(deleteStaticCustomerSuccess(data.customerID));
+    }
+
+    setShow(false);
     langMessage(
       "success",
       "কাস্টমার ডিলিট সফল হয়েছে!",
       "Customer Deleted Successfully"
     );
-    setModalShow(false);
   } catch (err) {
     if (err.response) {
       toast.error(err.response.data.message);

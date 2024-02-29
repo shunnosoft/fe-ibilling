@@ -166,9 +166,9 @@ const EditPPPoECustomer = ({ show, setShow, single }) => {
 
     // customer modification sending data to api
     const mainData = {
-      singleCustomerID: data?.id,
+      singleCustomerID: customerModifiedData?.id,
       ispOwner: ispOwnerId,
-      birthDate: new Date(birthDate).toISOString(),
+      birthDate: birthDate ? new Date(birthDate).toISOString() : birthDate,
       billingCycle: new Date(billingCycle).toISOString(),
       promiseDate: new Date(promiseDate).toISOString(),
       connectionDate: new Date(connectionDate).toISOString(),

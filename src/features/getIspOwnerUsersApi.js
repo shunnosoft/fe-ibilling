@@ -5,7 +5,10 @@ import {
   getAllPaymentHistory,
   getAllSupportTicket,
 } from "./finalClientSlice";
-import { getOwnerUserSuccess } from "./getIspOwnerUsersSlice";
+import {
+  getOwnerUserSuccess,
+  getUserStaffSuccess,
+} from "./getIspOwnerUsersSlice";
 import { getHotspotPackageSuccess, getpackageSuccess } from "./packageSlice";
 // get isp owner all user
 export const getOwnerUsers = async (dispatch, ispOwnerId) => {
@@ -141,5 +144,16 @@ export const hotspotCustomerPackage = async (dispatch, ispOwnerId) => {
     dispatch(getHotspotPackageSuccess(res.data?.hotspotPackages));
   } catch (error) {
     console.log(error);
+  }
+};
+
+// user staff
+export const userStaffs = async (dispatch) => {
+  try {
+    const res = await apiLink.get(`/ispOwner/staffs`);
+    console.log(res.data);
+    dispatch(getUserStaffSuccess(res.data));
+  } catch (error) {
+    console.log(error.response.data.message);
   }
 };

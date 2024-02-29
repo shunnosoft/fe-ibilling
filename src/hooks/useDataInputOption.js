@@ -14,6 +14,7 @@ import { getNameId } from "../utils/getLocationName";
 
 // internal import
 import { informationEnBn } from "../components/common/tooltipInformation/informationEnBn";
+import { getResellerPackageRate } from "../features/apiCallReseller";
 
 const useDataInputOption = (inputPermission, page, status, data) => {
   const { t } = useTranslation();
@@ -22,7 +23,30 @@ const useDataInputOption = (inputPermission, page, status, data) => {
   const today = new Date();
 
   // get user & current user data form useISPOwner hook
-  const { role, bpSettings, hasMikrotik, permission } = useISPowner();
+  const {
+    role,
+    bpSettings,
+    hasMikrotik,
+    resellerData,
+    userData,
+    permission,
+    permissions,
+  } = useISPowner();
+
+  // admin staff user role permission
+  const adminUser =
+    role === "ispOwner" ||
+    role === "manager" ||
+    (role === "collector" && !userData.reseller);
+
+  // reseller staff user role permission
+  const rsRole = role === "reseller";
+  const rscRole = role === "collector" && userData.reseller;
+  const resellerUser =
+    role === "reseller" || (role === "collector" && userData.reseller);
+
+  // reseller id from role base
+  const resellerId = role === "collector" ? userData.reseller : userData.id;
 
   // get all mikrotik from redux store
   const mikrotiks = useSelector((state) => state?.mikrotik?.mikrotik);
@@ -31,7 +55,9 @@ const useDataInputOption = (inputPermission, page, status, data) => {
   const ppPackage = useSelector((state) =>
     page === "pppoe"
       ? hasMikrotik
-        ? state?.package?.pppoePackages
+        ? adminUser
+          ? state?.package?.pppoePackages
+          : state?.mikrotik?.pppoePackage
         : state?.package?.packages
       : ""
   );
@@ -40,7 +66,9 @@ const useDataInputOption = (inputPermission, page, status, data) => {
   const areas = useSelector((state) => state?.area?.area);
 
   // get areas subarea form redux store
-  const subAreas = useSelector((state) => state.area?.subArea);
+  const subAreas = useSelector((state) =>
+    adminUser ? state.area?.subArea : state?.area?.area
+  );
 
   // get subareas poleBox form redux store
   const poleBox = useSelector((state) => state.area?.poleBox);
@@ -83,18 +111,8 @@ const useDataInputOption = (inputPermission, page, status, data) => {
     thana: "",
   });
 
-  const packageChangeHandler = async (id) => {
-    // find mikrotik package in pppoe packages
-    const singlePackage = ppPackage.find((val) => val.id === id);
-
-    // set single package data
-    setFormData({
-      ...formData,
-      packageId: singlePackage.id,
-      packageRate: singlePackage.rate,
-      packageName: singlePackage.name,
-    });
-  };
+  // set ispOwner package commission in state
+  const [packageCommission, setPackageCommission] = useState();
 
   useEffect(() => {
     // set division district and thana in state
@@ -141,12 +159,42 @@ const useDataInputOption = (inputPermission, page, status, data) => {
     });
   }, [data]);
 
+  // get package commission rate based on commission type
+  useEffect(() => {
+    const packageId = formData.packageId;
+
+    // get ispOwner package rate
+    packageId &&
+      userData?.commissionType === "packageBased" &&
+      userData?.commissionStyle === "fixedRate" &&
+      getResellerPackageRate(resellerId, packageId, setPackageCommission);
+  }, [formData?.packageId]);
+
+  // single mikrotik package change handler
+  const packageChangeHandler = async (id) => {
+    // find mikrotik package in pppoe packages
+    const singlePackage = ppPackage.find((val) => val.id === id);
+
+    // set single package data
+    setFormData({
+      ...formData,
+      packageId: singlePackage.id,
+      packageRate: singlePackage.rate,
+      packageName: singlePackage.name,
+    });
+  };
+
   // input validation array of object with name, validation, isVisible
   const validationArrayofInput = [
     {
       name: "amount",
       validation: Yup.number().required(t("enterAmount")),
       isVisible: inputPermission.amount,
+    },
+    {
+      name: "area",
+      validation: Yup.string().required(t("selectArea")),
+      isVisible: inputPermission.area,
     },
     {
       name: "address",
@@ -182,21 +230,34 @@ const useDataInputOption = (inputPermission, page, status, data) => {
     },
     {
       name: "monthlyFee",
-      validation: Yup.number().integer().min(0, t("minimumPackageRate")),
+      validation: adminUser
+        ? Yup.number().integer().min(0, t("minimumPackageRate"))
+        : Yup.number()
+            .required(t("writeMonthFee"))
+            .min(
+              userData?.commissionType === "packageBased" &&
+                userData?.commissionStyle === "fixedRate"
+                ? packageCommission?.ispOwnerRate
+                : formData.packageRate,
+              t("packageRateMustBeUpToIspOwnerCommission")
+            ),
       isVisible: inputPermission.monthlyFee,
     },
     {
       name: "mobile",
-      validation: bpSettings?.addCustomerWithMobile
-        ? Yup.string()
-            .matches(/^(01){1}[3456789]{1}(\d){8}$/, t("incorrectMobile"))
-            .min(11, t("write11DigitMobileNumber"))
-            .max(11, t("over11DigitMobileNumber"))
-            .required(t("writeMobileNumber"))
-        : Yup.string()
-            .matches(/^(01){1}[3456789]{1}(\d){8}$/, t("incorrectMobile"))
-            .min(11, t("write11DigitMobileNumber"))
-            .max(11, t("over11DigitMobileNumber")),
+      validation:
+        bpSettings?.addCustomerWithMobile ||
+        permission?.addCustomerWithMobile ||
+        resellerData?.permission?.addCustomerWithMobile
+          ? Yup.string()
+              .matches(/^(01){1}[3456789]{1}(\d){8}$/, t("incorrectMobile"))
+              .min(11, t("write11DigitMobileNumber"))
+              .max(11, t("over11DigitMobileNumber"))
+              .required(t("writeMobileNumber"))
+          : Yup.string()
+              .matches(/^(01){1}[3456789]{1}(\d){8}$/, t("incorrectMobile"))
+              .min(11, t("write11DigitMobileNumber"))
+              .max(11, t("over11DigitMobileNumber")),
       isVisible: inputPermission.mobile,
     },
     {
@@ -211,6 +272,11 @@ const useDataInputOption = (inputPermission, page, status, data) => {
         t("invalidNID")
       ),
       isVisible: inputPermission.nid,
+    },
+    {
+      name: "mikrotikPackage",
+      validation: Yup.string().required(t("selectMikrotikPackage")),
+      isVisible: inputPermission.mikrotikPackage,
     },
     {
       name: "pppoeName",
@@ -229,6 +295,11 @@ const useDataInputOption = (inputPermission, page, status, data) => {
         .min(11, t("write11DigitMobileNumber"))
         .max(11, t("over11DigitMobileNumber")),
       isVisible: inputPermission.referenceMobile,
+    },
+    {
+      name: "subArea",
+      validation: Yup.string().required(t("selectSubArea")),
+      isVisible: inputPermission.subArea,
     },
   ];
 
@@ -485,7 +556,11 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       type: "select",
       id: "mikrotikPackage",
       isVisible: inputPermission.mikrotikPackage,
-      disabled: bpSettings.hasMikrotik ? !formData.mikrotikId : false,
+      disabled: bpSettings.hasMikrotik
+        ? status === "post"
+          ? !formData.mikrotikId
+          : resellerUser && !permission?.customerMikrotikPackageEdit
+        : false,
       validation: true,
       label: t("selectPackage"),
       firstOptions: t("selectPackage"),
@@ -493,7 +568,11 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       valueAccessor: "id",
       options:
         bpSettings.hasMikrotik && page
-          ? ppPackage?.filter((pack) => pack.mikrotik === formData.mikrotikId)
+          ? ppPackage?.filter(
+              (pack) =>
+                pack.packageType === "pppoe" &&
+                pack.mikrotik === formData.mikrotikId
+            )
           : ppPackage,
       onChange: (e) => {
         packageChangeHandler(e.target.value);
@@ -504,7 +583,10 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       type: "number",
       id: "monthlyFee",
       isVisible: inputPermission.monthlyFee,
-      disabled: status ? !formData.packageId : false,
+      disabled:
+        status === "post"
+          ? !formData.packageId
+          : (resellerUser && !permission?.monthlyFeeEdit) || false,
       validation: true,
       label: t("monthlyFee"),
       placeholder: "0",
@@ -595,7 +677,9 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       firstOptions: t("selectSubArea"),
       textAccessor: "name",
       valueAccessor: "id",
-      options: subAreas.filter((item) => item?.area === formData.areaId),
+      options: adminUser
+        ? subAreas.filter((item) => item?.area === formData.areaId)
+        : subAreas,
       onChange: (e) => {
         setFormData({
           ...formData,
@@ -644,10 +728,17 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       type: "text",
       id: "mobile",
       isVisible: inputPermission.mobile,
-      disabled: status
-        ? !formData.packageId
-        : false || (!permission?.customerMobileEdit && role === "collector"),
-      validation: page ? bpSettings?.addCustomerWithMobile : true,
+      disabled:
+        status === "post"
+          ? !formData.packageId
+          : (rsRole && !permission?.singleCustomerNumberEdit) ||
+            (rscRole && !resellerData?.permission?.customerMobileEdit) ||
+            false,
+      validation: page
+        ? bpSettings?.addCustomerWithMobile ||
+          permission?.addCustomerWithMobile ||
+          resellerData?.permission?.addCustomerWithMobile
+        : true,
       label: t("mobile"),
       placeholder: "+8801XXXXXXXXX",
       onChange: (e) => {
@@ -920,7 +1011,12 @@ const useDataInputOption = (inputPermission, page, status, data) => {
           type: "radio",
           id: "activeCustomer",
           isVisible: true,
-          disabled: false,
+          disabled:
+            status === "post"
+              ? false
+              : (rsRole && !permission?.customerStatusEdit) ||
+                (rscRole && !permissions?.customerActivate) ||
+                false,
           label: t("active"),
           value: "active",
         },
@@ -928,7 +1024,14 @@ const useDataInputOption = (inputPermission, page, status, data) => {
           type: "radio",
           id: "inactiveCustomer",
           isVisible: true,
-          disabled: false,
+          disabled:
+            status === "post"
+              ? false
+              : (rsRole &&
+                  ((!permission?.logicalInactive && formData.balance > 0) ||
+                    !permission?.customerStatusEdit)) ||
+                (rscRole && !permissions?.customerDeactivate) ||
+                false,
           label: t("inactive"),
           value: "inactive",
         },

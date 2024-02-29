@@ -7,6 +7,7 @@ import Loader from "../../../components/common/Loader";
 import { deleteACustomer } from "../../../features/apiCalls";
 import { deleteResellerCustomer } from "../../../features/apiCallReseller";
 import ComponentCustomModal from "../../../components/common/customModal/ComponentCustomModal";
+import useISPowner from "../../../hooks/useISPOwner";
 
 const CustomerDelete = ({
   show,
@@ -20,15 +21,8 @@ const CustomerDelete = ({
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
-  // get isp owner id
-  const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerId
-  );
-
-  // get ispOwner bp settings
-  const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
-  );
+  // get user & current user data form useISPOwner hooks
+  const { ispOwnerId, bpSettings } = useISPowner();
 
   // get all customer
   const customers = useSelector((state) =>
@@ -53,23 +47,24 @@ const CustomerDelete = ({
 
     // send data for api
     const data = {
-      ispID: ispOwnerId,
       customerID: customerId,
       mikrotik: mikrotikCheck,
       userType: singleData.userType,
     };
 
-    const resellerCusData = {
-      reseller: singleData.reseller,
-      customerID: customerId,
-      mikrotik: mikrotikCheck,
-    };
-
     // api call
-    if (checkCondition && page !== "reseller") {
-      deleteACustomer(dispatch, data, setIsLoading, null, setShow);
-    } else {
-      deleteResellerCustomer(dispatch, resellerCusData, setIsLoading);
+    if (checkCondition) {
+      if (page !== "reseller") {
+        data.ispID = ispOwnerId; // set owner id for delete
+
+        // isp owner customer delete api
+        deleteACustomer(dispatch, data, setIsLoading, null, setShow);
+      } else {
+        data.reseller = singleData.reseller; // set reseller id for delete
+
+        // reseller customer delete api
+        deleteResellerCustomer(dispatch, data, setIsLoading, setShow);
+      }
     }
   };
 

@@ -9,6 +9,7 @@ import { ispOwnerPermission } from "../ispOwnerPermission/Permission";
 import { updateOwner } from "../../../features/apiCallAdmin";
 import Loader from "../../../components/common/Loader";
 import ComponentCustomModal from "../../../components/common/customModal/ComponentCustomModal";
+import InformationTooltip from "../../../components/common/tooltipInformation/InformationTooltip";
 
 const Permissions = ({ show, setShow, ownerId }) => {
   const dispatch = useDispatch();
@@ -23,6 +24,9 @@ const Permissions = ({ show, setShow, ownerId }) => {
 
   // permission state
   const [permissions, setPermissions] = useState([]);
+
+  // get netFee language
+  const netFeeLang = localStorage.getItem("netFee:lang");
 
   // set permission in state
   useEffect(() => {
@@ -109,18 +113,26 @@ const Permissions = ({ show, setShow, ownerId }) => {
       >
         <div className="displayGrid3">
           {permissions?.map((val, key) => (
-            <div className="CheckboxContainer" key={key}>
-              <input
-                type="checkbox"
-                className="CheckBox"
-                name={val.value}
-                checked={val.isChecked}
-                onChange={handleChange}
-                id={val.value + key}
-              />
-              <label htmlFor={val.value + key} className="checkboxLabel ">
-                {val.label}
-              </label>
+            <div
+              className="CheckboxContainer justify-content-between"
+              key={key}
+            >
+              <div className="d-flex">
+                <input
+                  type="checkbox"
+                  className="CheckBox"
+                  name={val.value}
+                  checked={val.isChecked}
+                  onChange={handleChange}
+                  id={val.value + key}
+                />
+                <label htmlFor={val.value + key} className="checkboxLabel ">
+                  {val.label}
+                </label>
+              </div>
+
+              {/* there is information to grant permission tooltip */}
+              {val?.info && <InformationTooltip data={val} />}
             </div>
           ))}
         </div>

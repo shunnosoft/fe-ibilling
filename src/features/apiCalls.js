@@ -1351,7 +1351,6 @@ export const addCustomer = async (
     if (err.response) {
       setIsloading(false);
       toast.error(err.response.data.message);
-      // resetForm()
     }
   }
 };
@@ -4049,7 +4048,7 @@ export const depositReportAmountUpdate = async (
   setIsLoading(true);
   try {
     const res = await apiLink.patch(`/deposit/update/${depositId}`, data);
-    dispatch(depositUpdateSuccess(res.data));
+    dispatch(updateDepositSuccess(res.data));
 
     langMessage(
       "success",

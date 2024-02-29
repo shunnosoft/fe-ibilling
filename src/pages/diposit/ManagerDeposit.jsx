@@ -15,7 +15,6 @@ import * as Yup from "yup";
 import {
   ArrowClockwise,
   FilterCircle,
-  Pencil,
   PrinterFill,
 } from "react-bootstrap-icons";
 import ReactToPrint from "react-to-print";
@@ -43,7 +42,7 @@ import Footer from "../../components/admin/footer/Footer";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import NoteDetailsModal from "./NoteDetailsModal";
-import UpdateDeposit from "./UpdateDeposit";
+import useISPowner from "../../hooks/useISPOwner";
 
 const ManagerDeposit = () => {
   const { t } = useTranslation();
@@ -64,15 +63,8 @@ const ManagerDeposit = () => {
       .required("Please insert amount."),
   });
 
-  // get isp owner id from redux
-  const ispOwner = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerId
-  );
-
-  // get user data form redux
-  const userData = useSelector(
-    (state) => state.persistedReducer.auth.currentUser
-  );
+  // get user & current user data form useISPOwner
+  const { ispOwnerId, userData } = useISPowner();
 
   // get balance from redux
   const balance = useSelector((state) => state?.payment?.balance);
@@ -132,9 +124,6 @@ const ManagerDeposit = () => {
   // deposit note details state
   const [message, setMessage] = useState();
 
-  // update deposit report data
-  const [depositData, setDepositData] = useState();
-
   // modal handler
   const [modalStatus, setModalStatus] = useState("");
   const [show, setShow] = useState(false);
@@ -175,15 +164,15 @@ const ManagerDeposit = () => {
       filterDate.getMonth() + 1 &&
         getDepositReport(
           dispatch,
-          userData.manager?.id,
+          userData?.id,
           filterDate.getFullYear(),
           filterDate.getMonth() + 1,
           setIsLoading
         );
 
-      ownerUsers.length === 0 && getOwnerUsers(dispatch, ispOwner);
+      ownerUsers.length === 0 && getOwnerUsers(dispatch, ispOwnerId);
       allCollector.length === 0 &&
-        getCollector(dispatch, ispOwner, setIsLoading);
+        getCollector(dispatch, ispOwnerId, setIsLoading);
     }
 
     if (tabEventKey === "ownDeposit" && ownFilter) {
@@ -215,10 +204,10 @@ const ManagerDeposit = () => {
     let monthDeposit = [...ownDeposits];
     monthDeposit = monthDeposit.filter(
       (original) =>
-        new Date(moment(original.createdAt).format("YYYY-MM-DD")).getTime() >=
-          new Date(moment(ownDepositStart).format("YYYY-MM-DD")).getTime() &&
-        new Date(moment(original.createdAt).format("YYYY-MM-DD")).getTime() <=
-          new Date(moment(ownDepositEnd).format("YYYY-MM-DD")).getTime()
+        new Date(original.createdAt) >=
+          new Date(ownDepositStart).setHours(0, 0, 0, 0) &&
+        new Date(original.createdAt) <=
+          new Date(ownDepositEnd).setHours(23, 59, 59, 999)
     );
 
     setOwnDepositData(monthDeposit);
@@ -227,16 +216,20 @@ const ManagerDeposit = () => {
   // reload handler
   const reloadHandler = () => {
     if (tabEventKey === "depositReport") {
+      // get deposit report api
       getDepositReport(
         dispatch,
-        userData.manager?.id,
+        userData?.id,
         filterDate.getFullYear(),
         filterDate.getMonth() + 1,
         setIsLoading
       );
 
-      getOwnerUsers(dispatch, ispOwner);
-      getCollector(dispatch, ispOwner, setIsLoading);
+      // get owner users api
+      getOwnerUsers(dispatch, ispOwnerId);
+
+      // get all collector api
+      getCollector(dispatch, ispOwnerId, setIsLoading);
     }
 
     if (tabEventKey === "ownDeposit") {
@@ -256,14 +249,21 @@ const ManagerDeposit = () => {
       return;
     }
 
+    if (balance <= data.amount) {
+      toast.warn(t("youDoNotHaveEnoughCollectionBalance"));
+      return;
+    }
+
     const sendingData = {
-      depositBy: userData?.user.role,
+      depositBy: userData?.role,
       amount: data.amount,
       balance: data.balance,
-      user: userData?.user.id,
-      ispOwner: ispOwner,
+      user: userData?.id,
+      ispOwner: ispOwnerId,
       note: data.note,
     };
+
+    // add deposit api
     addDeposit(dispatch, sendingData, setIsLoading);
     data.amount = "";
   };
@@ -285,10 +285,10 @@ const ManagerDeposit = () => {
     // date filter
     arr = arr.filter(
       (original) =>
-        new Date(moment(original.createdAt).format("YYYY-MM-DD")).getTime() >=
-          new Date(moment(dateStart).format("YYYY-MM-DD")).getTime() &&
-        new Date(moment(original.createdAt).format("YYYY-MM-DD")).getTime() <=
-          new Date(moment(dateEnd).format("YYYY-MM-DD")).getTime()
+        new Date(original.createdAt) >=
+          new Date(dateStart).setHours(0, 0, 0, 0) &&
+        new Date(original.createdAt) <=
+          new Date(dateEnd).setHours(23, 59, 59, 999)
     );
     setMainData(arr);
   };
@@ -298,10 +298,10 @@ const ManagerDeposit = () => {
     let monthDeposit = [...ownDeposits];
     monthDeposit = monthDeposit.filter(
       (original) =>
-        new Date(moment(original.createdAt).format("YYYY-MM-DD")).getTime() >=
-          new Date(moment(ownDepositStart).format("YYYY-MM-DD")).getTime() &&
-        new Date(moment(original.createdAt).format("YYYY-MM-DD")).getTime() <=
-          new Date(moment(ownDepositEnd).format("YYYY-MM-DD")).getTime()
+        new Date(original.createdAt) >=
+          new Date(ownDepositStart).setHours(0, 0, 0, 0) &&
+        new Date(original.createdAt) <=
+          new Date(ownDepositEnd).setHours(23, 59, 59, 999)
     );
 
     setOwnDepositData(monthDeposit);
@@ -463,9 +463,11 @@ const ManagerDeposit = () => {
               {original?.note && original?.note?.slice(0, 70)}
               <span
                 className="text-primary see-more"
-                data-bs-toggle="modal"
-                data-bs-target="#dipositNoteDetailsModal"
-                onClick={() => setMessage(original?.note)}
+                onClick={() => {
+                  setMessage(original?.note);
+                  setModalStatus("noteDetails");
+                  setShow(true);
+                }}
               >
                 {original?.note?.length > 70 ? "...see more" : ""}
               </span>
@@ -547,27 +549,6 @@ const ManagerDeposit = () => {
         Cell: ({ cell: { value } }) => {
           return moment(value).format("YYYY/MM/DD hh:mm a");
         },
-      },
-      {
-        width: "10%",
-        Header: t("action"),
-        Cell: ({ row: { original } }) => (
-          <div className="d-flex justify-content-center align-items-center">
-            {original.status === "accepted" && (
-              <button
-                className="btn btn-sm btn-outline-primary p-1"
-                title={t("update")}
-                onClick={() => {
-                  setDepositData(original);
-                  setModalStatus("updateDeposit");
-                  setShow(true);
-                }}
-              >
-                <Pencil size={19} />
-              </button>
-            )}
-          </div>
-        ),
       },
     ],
     [t]
@@ -892,11 +873,6 @@ const ManagerDeposit = () => {
       {/* deposit comment note details modal */}
       {modalStatus === "noteDetails" && (
         <NoteDetailsModal show={show} setShow={setShow} message={message} />
-      )}
-
-      {/* deposit report update modal */}
-      {modalStatus === "updateDeposit" && (
-        <UpdateDeposit show={show} setShow={setShow} deposit={depositData} />
       )}
     </>
   );

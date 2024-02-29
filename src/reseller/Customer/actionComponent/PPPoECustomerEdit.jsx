@@ -1,7 +1,12 @@
 import { useState } from "react";
 import { Form, Formik } from "formik";
-import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
+
+// custom hooks import
+import useISPowner from "../../../hooks/useISPOwner";
+import useDataInputOption from "../../../hooks/useDataInputOption";
 
 // internal imports
 import "../../collector/collector.css";
@@ -9,747 +14,276 @@ import "../customer.css";
 import { FtextField } from "../../../components/common/FtextField";
 import Loader from "../../../components/common/Loader";
 import { editCustomer } from "../../../features/apiCallReseller";
-import { useEffect } from "react";
-import apiLink from "../../../api/apiLink";
-import moment from "moment";
-import { useTranslation } from "react-i18next";
-import DatePicker from "react-datepicker";
-
-import getName from "../../../utils/getLocationName";
-import useISPowner from "../../../hooks/useISPOwner";
+import ComponentCustomModal from "../../../components/common/customModal/ComponentCustomModal";
+import InformationTooltip from "../../../components/common/tooltipInformation/InformationTooltip";
+import { informationEnBn } from "../../../components/common/tooltipInformation/informationEnBn";
 
 //divisional location
 import divisionsJSON from "../../../bdAddress/bd-divisions.json";
 import districtsJSON from "../../../bdAddress/bd-districts.json";
 import thanaJSON from "../../../bdAddress/bd-upazilas.json";
-import SelectField from "../../../components/common/SelectField";
-import {
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
-  ModalTitle,
-} from "react-bootstrap";
+import getName from "../../../utils/getLocationName";
 
 const divisions = divisionsJSON.divisions;
 const districts = districtsJSON.districts;
-const thana = thanaJSON.thana;
+const thanas = thanaJSON.thana;
 
-export default function PPPoECustomerEdit({ show, setShow, single }) {
+const PPPoECustomerEdit = ({ show, setShow, single }) => {
   const { t } = useTranslation();
-  const { ispOwnerId } = useISPowner();
+  const dispatch = useDispatch();
+
+  // get user & current user data form useISPOwner hooks
+  const { role, bpSettings, resellerData, userData, permission } =
+    useISPowner();
+
+  // reseller all areas customer from redux store
   const customer = useSelector((state) => state?.customer?.customer);
 
+  // get reseller subAreas form reseller data
+  const storeSubArea = useSelector((state) => state?.area?.area);
+
+  // find single customer data
   const data = customer.find((item) => item.id === single);
 
-  // const ispOwnerId = useSelector(
-  //   (state) => state.persistedReducer.auth?.userData?.ispOwner
-  // );
+  // reseller id from role base
+  const resellerId = role === "collector" ? userData.reseller : userData.id;
 
-  const role = useSelector((state) => state.persistedReducer.auth?.role);
-
-  const resellerId = useSelector((state) =>
-    role === "reseller"
-      ? state.persistedReducer.auth?.userData?.id
-      : state.persistedReducer.auth?.userData?.reseller
-  );
-
-  const permission = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.permission
-  );
-
-  const collectorPermission = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.permissions
-  );
-
-  const bpSetting = useSelector(
-    (state) =>
-      state.persistedReducer.auth?.ispOwnerData?.bpSettings?.hasMikrotik
-  );
-  // get mikrotik package from redux
-  const withOutMtkPackage = useSelector(
-    (state) => state?.mikrotik?.pppoePackage
-  );
-
-  // get area from redux
-  const area = useSelector((state) => state?.area?.area);
-
-  // const area = useSelector(
-  //   (state) => state.persistedReducer.auth?.userData.areas
-  // );
-  const Getmikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
-
-  const collectorResellerInfo = useSelector(
-    (state) => state.resellerProfile.reseller
-  );
-
-  const [ppPackage, setppPackage] = useState([]);
-
-  const [packageRate, setPackageRate] = useState("");
+  // loading state
   const [isLoading, setIsloading] = useState(false);
-  const [mikrotikPackage, setMikrotikPackage] = useState(data?.mikrotikPackage);
-  const [autoDisable, setAutoDisable] = useState(data?.autoDisable);
-  const [subArea, setSubArea] = useState("");
-  const dispatch = useDispatch();
-  const [activeStatus, setActiveStatus] = useState(data?.pppoe?.disabled);
-  const [mikrotikName, setmikrotikName] = useState("");
-  const [areaID, setAreaID] = useState("");
-  const [billDate, setBillDate] = useState();
-  const [billTime, setBilltime] = useState();
-  const [status, setStatus] = useState("");
-  // initial package rate
-  const [dataPackageRate, setDataPackageRate] = useState();
 
-  const [divisionalArea, setDivisionalArea] = useState({
-    division: "",
-    district: "",
-    thana: "",
-  });
+  // set customer modified data
+  const [customerModifiedData, setCustomerModifiedData] = useState({});
 
-  // initial fix package rate
-  const [fixPackageRate, setFixPackageRate] = useState();
+  // customer auto disable state
+  const [autoDisable, setAutoDisable] = useState(true);
+
+  // customer next month auto disable state
+  const [nextMonthAutoDisable, setNextMonthAutoDisable] = useState(false);
 
   useEffect(() => {
-    setAreaID(data?.subArea);
-    setStatus(data?.status);
+    // set customer auto disable
     setAutoDisable(data?.autoDisable);
-    setDataPackageRate(data?.mikrotikPackage);
-    setSubArea(data?.subArea);
 
-    if (data) setBillDate(new Date(data?.billingCycle));
+    // set customer next month auto disable
+    setNextMonthAutoDisable(data?.nextMonthAutoDisable);
 
-    // setBilltime(moment(data?.billingCycle).format("HH:mm"));
-    const temp = Getmikrotik?.find((val) => val.id === data?.mikrotik);
-    setmikrotikName(temp);
-    if (!bpSetting) {
-      setppPackage(withOutMtkPackage);
-    }
-    const IDs = {
-      ispOwner: ispOwnerId,
-      mikrotikId: data?.mikrotik,
-    };
-    const fetchPac = async () => {
-      try {
-        const res = await apiLink.get(
-          `/mikrotik/ppp/package/${IDs.mikrotikId}`
-        );
-        setppPackage(res.data);
-      } catch (error) {
-        console.log(error);
+    // set customer data area id
+    storeSubArea?.map((sub) => {
+      if (sub?.id === data?.subArea) {
+        const customerData = {
+          ...data,
+          area: sub.area,
+        };
+        setCustomerModifiedData(customerData);
       }
-    };
-    data?.mikrotik && fetchPac();
-    //select customer district,division and thana for sync with state
-    const divisionalInfo = {};
-    if (data?.division) {
-      const division = divisions.find((item) => item.name === data.division);
-      divisionalInfo.division = division.id;
-    }
-    if (data?.district) {
-      const district = districts.find((item) => item.name === data.district);
-      divisionalInfo.district = district.id;
-    }
-    if (data?.thana) {
-      const findThana = thana.find(
-        (item) =>
-          item.name === data.thana &&
-          item.district_id === divisionalInfo.district
-      );
-      divisionalInfo.thana = findThana?.id;
-    }
-    setDivisionalArea({
-      ...divisionalArea,
-      ...divisionalInfo,
     });
-  }, [Getmikrotik, data, ispOwnerId]);
+  }, [data]);
 
-  // useEffect(() => {
-  //   const IDs = {
-  //     ispOwner: ispOwnerId,
-  //     mikrotikId: data?.mikrotik,
-  //   };
-  //   const fetchPac = async () => {
-  //     try {
-  //       const res = await apiLink.get(
-  //         `/mikrotik/ppp/package/${IDs.mikrotikId}`
-  //       );
-  //       setppPackage(res.data);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-  //   data?.mikrotik && fetchPac();
-  // }, [ispOwnerId, data]);
-
-  // customer validator
-  const customerValidator = Yup.object({
-    name: Yup.string().required(t("writeCustomerName")),
-    mobile: Yup.string()
-      // .matches(/^(01){1}[3456789]{1}(\d){8}$/, "মোবাইল নম্বর সঠিক নয়")
-      .min(11, t("write11DigitMobileNumber"))
-      .max(11, t("over11DigitMobileNumber")),
-    address: Yup.string(),
-    email: Yup.string().email(t("incorrectEmail")),
-    nid: Yup.string(),
-    monthlyFee: Yup.string().required(t("writeMonthFee")),
-    Pname: Yup.string().required(t("writePPPoEName")),
-    Ppassword: Yup.string().required(t("writePPPoEPassword")),
-    Pcomment: Yup.string(),
-    customerBillingType: Yup.string().required(t("select billing type")),
-  });
-
-  // select Mikrotik Package
-  const selectMikrotikPackage = (e) => {
-    const mikrotikPackageId = e.target.value;
-    setMikrotikPackage(mikrotikPackageId);
-    const temp = ppPackage.find((val) => val.id === mikrotikPackageId);
-    setPackageRate(temp);
-  };
-  useEffect(() => {
-    //todo
-    const mikrotikPackageId = data?.mikrotikPackage;
-    setMikrotikPackage(mikrotikPackageId);
-    const temp = ppPackage.find((val) => val.id === mikrotikPackageId);
-    setPackageRate(temp);
-  }, [data, ppPackage]);
-
-  // select subArea
-  const selectSubArea = (data) => {
-    setSubArea(data.target.value);
-    setAreaID(data.target.value);
-    // setAreaID(single?.subArea);
+  // call the data input option function
+  const inputPermission = {
+    mikrotik: true,
+    mikrotikPackage: true,
+    monthlyFee: true,
+    pppoeName: true,
+    password: true,
+    subArea: true,
+    name: true,
+    mobile: true,
+    birthDate: true,
+    nid: true,
+    address: true,
+    email: true,
+    billingCycle: true,
+    connectionDate: true,
+    connectionFee: true,
+    customerBillingType: true,
+    division: true,
+    district: true,
+    thana: true,
+    comment: true,
+    status: true,
   };
 
-  // find profile package
-  const findPackage = ppPackage.find((item) => item.id === dataPackageRate);
-
-  // set package rate in state
-  useEffect(() => {
-    setFixPackageRate(findPackage?.rate);
-  }, [findPackage?.rate]);
-
-  // modal close handler
-  const handleClose = () => setShow(false);
+  // get data input option from useDataInputOption hook
+  const dataInputOption = useDataInputOption(
+    inputPermission,
+    "pppoe",
+    "edit",
+    customerModifiedData
+  );
 
   // sending data to backed
   const customerHandler = async (formValue) => {
-    const { Pname, Ppassword, Pprofile, Pcomment, monthlyFee, ...rest } =
-      formValue;
-    if (
-      mikrotikPackage === data?.mikrotikPackage &&
-      data?.monthlyFee === monthlyFee
-    ) {
-      //
-    } else if (Number(monthlyFee) < Number(packageRate.rate)) {
-      return alert(t("billCannotBeReduced"));
-    }
-
-    if (
-      (role === "reseller" && permission.addCustomerWithMobile) ||
-      (role === "collector" &&
-        collectorResellerInfo.permission?.addCustomerWithMobile)
-    ) {
-      if (formValue.mobile === "") {
-        setIsloading(false);
-        return alert(t("writeMobileNumber"));
-      }
-    }
+    const {
+      birthDate,
+      billingCycle,
+      connectionDate,
+      customerId,
+      district,
+      division,
+      pppoeName,
+      password,
+      profile,
+      comment,
+      thana,
+      ...rest
+    } = formValue;
 
     const mainData = {
-      singleCustomerID: data?.id,
-      subArea: subArea,
-      ispOwner: ispOwnerId,
-      mikrotik: data?.mikrotik,
-      mikrotikPackage: packageRate?.id,
-      monthlyFee,
+      autoDisable: autoDisable,
+      birthDate: birthDate ? new Date(birthDate).toISOString() : birthDate,
+      billingCycle: new Date(billingCycle).toISOString(),
+      connectionDate: new Date(connectionDate).toISOString(),
+      ispOwner: userData?.ispOwner,
+      nextMonthAutoDisable: nextMonthAutoDisable,
+      paymentStatus: "unpaid",
+      singleCustomerID: customerModifiedData?.id,
       reseller: resellerId,
-      billingCycle: moment(billDate).format("YYYY-MM-DDTHH:mm:ss.ms[Z]"),
-      pppoe: {
-        name: Pname,
-        password: Ppassword,
-        service: "pppoe",
-        comment: Pcomment,
-        profile: Pprofile,
-        disabled: activeStatus,
-      },
       ...rest,
-
-      status,
+      pppoe: {
+        name: pppoeName,
+        password: password,
+        service: "pppoe",
+        comment: comment,
+        profile: profile,
+        disabled: data?.pppoe.disabled,
+      },
     };
-    if (data?.monthlyFee < packageRate?.rate) {
-      const result = packageRate?.rate - data?.monthlyFee;
-      if (result < 0) {
-        mainData.balance = data?.balance - -result;
-      } else {
-        mainData.balance = data?.balance - result;
-      }
-      if (mainData.balance < data?.monthlyFee) {
-        mainData.paymentStatus = "unpaid";
-      }
-    }
 
-    if (Getmikrotik.length > 0) {
-      mainData.mikrotik = data?.mikrotik;
-      mainData.autoDisable = autoDisable;
-    }
+    // set the value of division district and thana dynamically
+    if (district || division || thana) {
+      const divisionName = getName(divisions, division)?.name;
+      const districtName = getName(districts, district)?.name;
+      const thanaName = getName(thanas, thana)?.name;
 
-    if (
-      divisionalArea.district ||
-      divisionalArea.division ||
-      divisionalArea.thana
-    ) {
-      const divisionName = getName(divisions, divisionalArea.division)?.name;
-      const districtName = getName(districts, divisionalArea.district)?.name;
-      const thanaName = getName(thana, divisionalArea.thana)?.name;
       //if  exist add the data
       if (divisionName) mainData.division = divisionName;
       if (districtName) mainData.district = districtName;
       if (thanaName) mainData.thana = thanaName;
     }
 
+    // if has mikrotik is empty then delete mikrotik
+    if (!bpSettings?.hasMikrotik) {
+      delete mainData.mikrotik;
+    }
+
+    // sending data to api
     editCustomer(dispatch, mainData, setIsloading, setShow);
-  };
-  //divisional area formula
-  const divisionalAreaFormData = [
-    {
-      text: t("selectDivision"),
-      name: "division",
-      id: "division",
-      value: divisionalArea.division,
-      data: divisions,
-    },
-    {
-      text: t("selectDistrict"),
-      name: "district",
-      id: "district",
-      value: divisionalArea.district,
-      data: districts.filter(
-        (item) => item.division_id === divisionalArea.division
-      ),
-    },
-    {
-      text: t("selectThana"),
-      name: "thana",
-      id: "thana",
-      value: divisionalArea.thana,
-      data: thana.filter(
-        (item) => item.district_id === divisionalArea.district
-      ),
-    },
-  ];
-  // this function control the division district and thana change input
-  const onDivisionalAreaChange = ({ target }) => {
-    const { name, value } = target;
-    //set the value of division district and thana dynamically
-    setDivisionalArea({
-      ...divisionalArea,
-      [name]: value,
-    });
   };
 
   return (
     <>
-      <Modal
+      <ComponentCustomModal
         show={show}
-        onHide={handleClose}
-        backdrop="static"
-        keyboard={false}
+        setShow={setShow}
+        centered={false}
         size="xl"
+        header={data?.name + " " + t("editProfile")}
+        footer={
+          <div className="displayGrid1 float-end">
+            <button
+              type="button"
+              className="btn btn-secondary"
+              disabled={isLoading}
+              onClick={() => setShow(false)}
+            >
+              {t("cancel")}
+            </button>
+            <button
+              type="submit"
+              form="customerEdit"
+              className="btn btn-success"
+              disabled={isLoading}
+            >
+              {isLoading ? <Loader /> : t("save")}
+            </button>
+          </div>
+        }
       >
-        <ModalHeader closeButton>
-          <ModalTitle>
-            <h5 className="modal-title" id="exampleModalLabel">
-              {data?.name} - {t("editProfile")}
-            </h5>
-          </ModalTitle>
-        </ModalHeader>
-        <ModalBody>
-          <Formik
-            initialValues={{
-              name: data?.name || "",
-              mobile: data?.mobile || "",
-              address: data?.address || "",
-              email: data?.email || "",
-              nid: data?.nid || "",
-              Pcomment: data?.pppoe?.comment || "",
-              monthlyFee:
-                mikrotikPackage === data?.mikrotikPackage
-                  ? data?.monthlyFee
-                  : packageRate?.rate,
-              Pname: data?.pppoe?.name || "",
-              Pprofile: packageRate?.name || data?.pppoe?.profile || "",
-              Ppassword: data?.pppoe?.password || "",
-              customerBillingType: data?.customerBillingType,
-            }}
-            validationSchema={customerValidator}
-            onSubmit={(values) => {
-              customerHandler(values);
-            }}
-            enableReinitialize
-          >
-            {() => (
-              <Form id="customerEdit">
-                <div className="displayGrid3">
-                  {Getmikrotik.length > 0 && (
-                    <div>
-                      <label className="form-control-label changeLabelFontColor">
-                        {t("selectMikrotik")}
-                        <span className="text-danger">*</span>
-                      </label>
-                      <select
-                        className="form-select mw-100 mt-0"
-                        aria-label="Default select example"
-                        disabled
-                        value={data?.mikrotik || ""}
-                      >
-                        <option value={mikrotikName?.id || ""}>
-                          {mikrotikName?.name || ""}
-                        </option>
-                      </select>
-                    </div>
-                  )}
+        <Formik
+          initialValues={{
+            ...dataInputOption.inputInitialValues,
+          }}
+          validationSchema={dataInputOption.validationSchema}
+          onSubmit={(values) => {
+            customerHandler(values);
+          }}
+          enableReinitialize
+        >
+          {() => (
+            <Form id="customerEdit">
+              <div className="displayGrid3">
+                {dataInputOption.inputOption?.map(
+                  (item) => item.isVisible && <FtextField {...item} />
+                )}
 
+                {bpSettings?.hasMikrotik && (
                   <div>
-                    <label className="form-control-label changeLabelFontColor">
-                      {t("selectPackage")}
-                      <span className="text-danger">*</span>
+                    <label className="changeLabelFontColor">
+                      {t("automaticConnectionOff")}
                     </label>
-                    <select
-                      className="form-select mw-100 mt-0"
-                      aria-label="Default select example"
-                      onChange={selectMikrotikPackage}
-                      value={mikrotikPackage}
-                      disabled={!permission?.customerMikrotikPackageEdit}
-                    >
-                      {ppPackage &&
-                        ppPackage?.map((val, key) => (
-                          <option
-                            selected={val.id === packageRate?.id}
-                            disabled={val.rate < findPackage?.rate}
-                            key={key}
-                            value={val.id || ""}
-                          >
-                            {val.name}
-                          </option>
-                        ))}
-                    </select>
-                  </div>
 
-                  <FtextField
-                    type="text"
-                    label={t("monthFee")}
-                    name="monthlyFee"
-                    min={packageRate?.rate || data?.monthlyFee}
-                    disabled={!permission?.monthlyFeeEdit}
-                    validation={"true"}
-                  />
-
-                  {role === "collector" ? (
-                    <FtextField
-                      type="text"
-                      label={t("PPPoEName")}
-                      name="Pname"
-                      validation={"true"}
-                      disabled
-                    />
-                  ) : (
-                    <FtextField
-                      type="text"
-                      label={t("PPPoEName")}
-                      name="Pname"
-                      validation={"true"}
-                    />
-                  )}
-
-                  {role === "collector" ? (
-                    <FtextField
-                      type="text"
-                      label={t("password")}
-                      name="Ppassword"
-                      disabled
-                      validation={"true"}
-                    />
-                  ) : (
-                    <FtextField
-                      type="text"
-                      label={t("password")}
-                      name="Ppassword"
-                      validation={"true"}
-                    />
-                  )}
-
-                  {role === "collector" ? (
-                    <FtextField
-                      type="text"
-                      label={t("comment")}
-                      name="Pcomment"
-                      disabled
-                    />
-                  ) : (
-                    <FtextField
-                      type="text"
-                      label={t("comment")}
-                      name="Pcomment"
-                    />
-                  )}
-
-                  <div>
-                    <label className="form-control-label changeLabelFontColor">
-                      {t("selectArea")} <span className="text-danger">*</span>
-                    </label>
-                    <select
-                      className="form-select mw-100 mt-0"
-                      aria-label="Default select example"
-                      onChange={selectSubArea}
-                    >
-                      {area?.length !== undefined &&
-                        area?.map((val, key) => (
-                          <option
-                            selected={val.id === areaID}
-                            key={key}
-                            value={val.id || ""}
-                          >
-                            {val.name}
-                          </option>
-                        ))}
-                    </select>
-                  </div>
-
-                  <FtextField type="text" label={t("NIDno")} name="nid" />
-
-                  <FtextField
-                    type="text"
-                    label={t("name")}
-                    name="name"
-                    validation={"true"}
-                  />
-
-                  <FtextField
-                    disabled={
-                      !collectorPermission?.customerMobileEdit &&
-                      role === "collector"
-                    }
-                    validation={
-                      permission?.addCustomerWithMobile ||
-                      collectorResellerInfo.permission?.addCustomerWithMobile
-                    }
-                    type="text"
-                    label={t("mobile")}
-                    name="mobile"
-                  />
-
-                  <FtextField type="text" label={t("address")} name="address" />
-
-                  <FtextField type="text" label={t("email")} name="email" />
-
-                  {divisionalAreaFormData.map((item) => (
-                    <div>
-                      <label className="form-control-label changeLabelFontColor">
-                        {item.text}
-                      </label>
-                      <select
-                        className="form-select mw-100 mt-0"
-                        aria-label="Default select example"
-                        name={item.name}
-                        id={item.id}
-                        disabled={!mikrotikPackage}
-                        onChange={onDivisionalAreaChange}
-                        value={item.value}
-                      >
-                        <option value="">...</option>
-                        {item.data.map((item) => (
-                          <option value={item.id}>{item.name}</option>
-                        ))}
-                      </select>
-                    </div>
-                  ))}
-
-                  <SelectField
-                    label={t("customerBillType")}
-                    id="exampleSelect"
-                    name="customerBillingType"
-                    className="form-select mw-100 mt-0"
-                    validation={"true"}
-                  >
-                    <option value="">{t("customerBillType")}</option>
-
-                    <option value="prepaid">{t("prepaid")}</option>
-                    <option value="postpaid">{t("postPaid")}</option>
-                  </SelectField>
-
-                  {status !== "expired" && (
-                    <>
-                      <div className="billCycle">
-                        <p className="customerFieldsTitle">
-                          {t("billingCycle")}
-                        </p>
-
-                        {role === "collector" ? (
-                          <div className="timeDate">
-                            <DatePicker
-                              className="form-control mw-100"
-                              selected={billDate}
-                              onChange={(data) => setBillDate(data)}
-                              showTimeSelect
-                              dateFormat="dd/MM/yyyy:hh:mm"
-                              minDate={new Date()}
-                              disabled={permission?.billingCycleEdit === false}
-                            />
-                            {/* <input
-                                  value={billDate}
-                                  onChange={(e) => setBillDate(e.target.value)}
-                                  type="date"
-                                  min={moment().format("YYYY-MM-DD")}
-                                  disabled
-                                />
-                                <input
-                                  className="billTime"
-                                  value={billTime}
-                                  onChange={(e) => setBilltime(e.target.value)}
-                                  type="time"
-                                  disabled
-                                /> */}
-                          </div>
-                        ) : (
-                          <div className="timeDate">
-                            <DatePicker
-                              className="form-control mw-100"
-                              selected={billDate}
-                              onChange={(data) => setBillDate(data)}
-                              timeIntervals={60}
-                              showTimeSelect
-                              dateFormat="dd/MM/yyyy:hh:mm"
-                              minDate={new Date()}
-                              disabled={permission?.billingCycleEdit === false}
-                            />
-                            {/* <input
-                                  value={billDate}
-                                  onChange={(e) => setBillDate(e.target.value)}
-                                  type="date"
-                                  min={moment().format("YYYY-MM-DD")}
-                                  disabled={!permission?.billingCycleEdit}
-                                />
-                                <input
-                                  className="billTime"
-                                  value={billTime}
-                                  onChange={(e) => setBilltime(e.target.value)}
-                                  type="time"
-                                  disabled={!permission?.billingCycleEdit}
-                                /> */}
-                          </div>
-                        )}
-                      </div>
-                    </>
-                  )}
-
-                  {Getmikrotik.length > 0 &&
-                    (permission?.customerAutoDisableEdit ||
-                      collectorResellerInfo.permission
-                        ?.customerAutoDisableEdit) && (
-                      <div className="autoDisable">
-                        <label> {t("automaticConnectionOff")} </label>
+                    <div className="displayGrid2">
+                      <div className="customerAutoDisable">
                         <input
-                          type="checkBox"
+                          className="form-check-input me-2"
+                          type="checkbox"
+                          name="autoDisable"
+                          id="autoDisable"
                           checked={autoDisable}
-                          onChange={(e) => setAutoDisable(e.target.checked)}
-                        />
-                      </div>
-                    )}
-
-                  {status !== "expired" && (
-                    <div className="pppoeStatus">
-                      <p className="p-0 mt-2">{t("status")}</p>
-                      <div className="form-check form-check-inline">
-                        <input
-                          className="form-check-input"
-                          type="radio"
-                          name="staus"
-                          value={"active"}
-                          id="changeToActive"
-                          onChange={(e) => setStatus(e.target.value)}
-                          checked={status === "active"}
                           disabled={
-                            permission?.customerStatusEdit
-                              ? !permission?.customerStatusEdit
-                              : !collectorPermission?.customerActivate
+                            nextMonthAutoDisable ||
+                            !(
+                              permission?.customerAutoDisableEdit ||
+                              resellerData.permission?.customerAutoDisableEdit
+                            )
                           }
+                          onChange={(e) => setAutoDisable(e.target.checked)}
                         />
                         <label
                           className="form-check-label"
-                          htmlFor="changeToActive"
+                          htmlFor="autoDisable"
                         >
-                          {t("active")}
+                          {t("willContinue")}
                         </label>
                       </div>
 
-                      {((0 < data?.balance && !permission?.logicalInactive) ||
-                        permission?.logicalInactive) && (
-                        <div className="form-check form-check-inline">
+                      <div className="d-flex align-items-center">
+                        <div className="customerAutoDisable">
                           <input
-                            className="form-check-input"
-                            type="radio"
-                            id="inlineRadio2"
-                            value={"inactive"}
-                            onChange={(e) => setStatus(e.target.value)}
-                            checked={status === "inactive"}
-                            disabled={
-                              permission?.customerStatusEdit
-                                ? !permission?.customerStatusEdit
-                                : !collectorPermission?.customerDeactivate
+                            className="form-check-input me-2"
+                            type="checkbox"
+                            name="autoDisable"
+                            id="nextMonthAutoDisable"
+                            checked={nextMonthAutoDisable}
+                            disabled={autoDisable}
+                            onChange={(e) =>
+                              setNextMonthAutoDisable(e.target.checked)
                             }
                           />
                           <label
                             className="form-check-label"
-                            htmlFor="inlineRadio2"
+                            htmlFor="nextMonthAutoDisable"
                           >
-                            {t("in active")}
+                            {t("nextMonth")}
                           </label>
                         </div>
-                      )}
 
-                      {data?.status === "expired" && (
-                        <div className="form-check form-check-inline">
-                          <input
-                            className="form-check-input"
-                            type="radio"
-                            id="inlineRadio2"
-                            disabled
-                            checked={status === "expired"}
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor="inlineRadio2"
-                          >
-                            {t("expired")}
-                          </label>
-                        </div>
-                      )}
+                        {/* there is information to grant permission tooltip */}
+                        {informationEnBn()?.[1] && (
+                          <InformationTooltip data={informationEnBn()?.[1]} />
+                        )}
+                      </div>
                     </div>
-                  )}
-                </div>
-              </Form>
-            )}
-          </Formik>
-        </ModalBody>
-        <ModalFooter>
-          <button
-            type="button"
-            className="btn btn-secondary"
-            disabled={isLoading}
-            onClick={handleClose}
-          >
-            {t("cancel")}
-          </button>
-          <button
-            type="submit"
-            form="customerEdit"
-            className="btn btn-success"
-            disabled={isLoading}
-          >
-            {isLoading ? <Loader /> : t("save")}
-          </button>
-        </ModalFooter>
-      </Modal>
+                  </div>
+                )}
+              </div>
+            </Form>
+          )}
+        </Formik>
+      </ComponentCustomModal>
     </>
   );
-}
+};
+
+export default PPPoECustomerEdit;
