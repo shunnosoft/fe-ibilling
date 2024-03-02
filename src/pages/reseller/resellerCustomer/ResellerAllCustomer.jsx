@@ -126,6 +126,7 @@ const AllResellerCustomer = () => {
   const [bulkCustomer, setBulkCustomer] = useState([]);
 
   // bulk modal handle state
+  const [modalStatus, setModalStatus] = useState("");
   const [bulkStatus, setBulkStatus] = useState("");
   const [show, setShow] = useState(false);
 
@@ -543,10 +544,10 @@ const AllResellerCustomer = () => {
                 </li>
 
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#CustomerEditModal"
                   onClick={() => {
                     getSpecificCustomer(original.id);
+                    setModalStatus("edit");
+                    setShow(true);
                   }}
                 >
                   <div className="dropdown-item">
@@ -558,10 +559,10 @@ const AllResellerCustomer = () => {
                 </li>
 
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#showCustomerReport"
                   onClick={() => {
                     getSpecificCustomerReport(original);
+                    setModalStatus("report");
+                    setShow(true);
                   }}
                 >
                   <div className="dropdown-item">
@@ -573,10 +574,10 @@ const AllResellerCustomer = () => {
                 </li>
 
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#customerDelete"
                   onClick={() => {
                     customerDelete(original.id);
+                    setModalStatus("delete");
+                    setShow(true);
                   }}
                 >
                   <div className="dropdown-item">
@@ -819,17 +820,46 @@ const AllResellerCustomer = () => {
           </div>
         </div>
       </div>
+      {/* single modal state */}
+
+      {/* customer details */}
       <ResellerCustomerDetails
         single={singleCustomer}
         resellerCount={"allReseller"}
       />
-      <CustomerReport hideReportDelete={true} single={customerReportId} />
-      <ResellerCustomerEdit allCustomer={true} customerId={singleCustomer} />
-      <CustomerDelete
-        customerId={customerId}
-        mikrotikCheck={mikrotikCheck}
-        setMikrotikCheck={setMikrotikCheck}
-      />
+
+      {/* edit customer modal */}
+      {modalStatus === "edit" && (
+        <ResellerCustomerEdit
+          show={show}
+          setShow={setShow}
+          allCustomer={true}
+          customerId={singleCustomer}
+        />
+      )}
+
+      {/* customer report modal */}
+      {modalStatus === "report" && (
+        <CustomerReport
+          show={show}
+          setShow={setShow}
+          hideReportDelete={true}
+          single={customerReportId}
+        />
+      )}
+
+      {/* customer delete modal */}
+      {modalStatus === "delete" && (
+        <CustomerDelete
+          show={show}
+          setShow={setShow}
+          customerId={customerId}
+          mikrotikCheck={mikrotikCheck}
+          setMikrotikCheck={setMikrotikCheck}
+        />
+      )}
+
+      {/* single modal end */}
 
       {/* bulk modal start */}
       {bulkStatus === "returnCustomer" && (
