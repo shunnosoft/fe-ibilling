@@ -4,8 +4,9 @@ import Loader from "../../../components/common/Loader";
 import { useTranslation } from "react-i18next";
 import { deleteSalary } from "../../../features/apiCallStaff";
 import { useDispatch } from "react-redux";
+import ComponentCustomModal from "../../../components/common/customModal/ComponentCustomModal";
 
-const SalaryDeleteModal = ({ salaryId }) => {
+const SalaryDeleteModal = ({ show, setShow, salaryId }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
@@ -14,53 +15,40 @@ const SalaryDeleteModal = ({ salaryId }) => {
 
   // delete salary handler
   const deleteSalaryHandler = () => {
-    deleteSalary(dispatch, setIsLoading, salaryId);
+    deleteSalary(dispatch, setIsLoading, salaryId, setShow);
   };
 
   return (
-    <div
-      className="modal fade modal-dialog-scrollable "
-      id="deleteSalaryModal"
-      tabIndex="-1"
-      aria-labelledby="exampleModalLabel"
-      aria-hidden="true"
-    >
-      <div className="modal-dialog">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h5 className="modal-title" id="exampleModalLabel">
-              {t("salaryDelete")}
-            </h5>
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div className="modal-body">
-            <p>{t("salaryDeleteAlert")}</p>
-          </div>
-          <div className="modal-footer">
-            <button
-              onClick={deleteSalaryHandler}
-              className="btn btn-success"
-              disabled={isLoading}
-            >
-              {isLoading ? <Loader /> : t("submit")}
-            </button>
-            <button
-              type="button"
-              className="btn btn-secondary"
-              data-bs-dismiss="modal"
-              disabled={isLoading}
-            >
-              {t("cancel")}
-            </button>
-          </div>
+    <>
+      <ComponentCustomModal
+        show={show}
+        setShow={setShow}
+        centered={false}
+        size="md"
+        header={t("salaryDelete")}
+      >
+        <p>{t("salaryDeleteAlert")}</p>
+
+        <div className="displayGrid1 float-end mt-4">
+          <button
+            onClick={deleteSalaryHandler}
+            className="btn btn-success"
+            disabled={isLoading}
+          >
+            {isLoading ? <Loader /> : t("submit")}
+          </button>
+
+          <button
+            type="button"
+            className="btn btn-secondary"
+            disabled={isLoading}
+            onClick={() => setShow(false)}
+          >
+            {t("cancel")}
+          </button>
         </div>
-      </div>
-    </div>
+      </ComponentCustomModal>
+    </>
   );
 };
 

@@ -249,7 +249,7 @@ const ManagerDeposit = () => {
       return;
     }
 
-    if (balance <= data.amount) {
+    if (balance < data.amount) {
       toast.warn(t("youDoNotHaveEnoughCollectionBalance"));
       return;
     }

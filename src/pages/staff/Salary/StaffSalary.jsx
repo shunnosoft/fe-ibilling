@@ -49,6 +49,10 @@ export default function StaffSalary() {
   const [salaryId, setSalaryId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  // modal close handler
+  const [modalStatus, setModalStatus] = useState("");
+  const [show, setShow] = useState(false);
+
   useEffect(() => {
     getSalaryApi(dispatch, staffId, setIsLoading);
     getStaffs(dispatch, ispOwner, setIsLoading);
@@ -132,10 +136,10 @@ export default function StaffSalary() {
                 new Date().getMonth() &&
                 userRole === "ispOwner" && (
                   <li
-                    data-bs-toggle="modal"
-                    data-bs-target="#deleteSalaryModal"
                     onClick={() => {
                       setSalaryId(original.id);
+                      setModalStatus("delete");
+                      setShow(true);
                     }}
                   >
                     <div className="dropdown-item actionManager">
@@ -175,10 +179,12 @@ export default function StaffSalary() {
                     <span>{t("staffProfile")}</span>
                   </div>
                   <button
-                    onClick={() => setSalaryId(staff.id)}
-                    data-bs-toggle="modal"
-                    data-bs-target="#addSalaryPostModal"
                     className="btn btn-outline-light"
+                    onClick={() => {
+                      setSalaryId(staff.id);
+                      setModalStatus("paySalary");
+                      setShow(true);
+                    }}
                   >
                     <span className="fw-bold">৳</span> {t("paySalary")}
                   </button>
@@ -207,9 +213,6 @@ export default function StaffSalary() {
                       data={getSalaries}
                     />
                   </div>
-
-                  <StaffSalaryPostModal staffId={staffId} />
-                  <SalaryDeleteModal salaryId={salaryId} />
                 </div>
               </FourGround>
               <Footer />
@@ -217,6 +220,15 @@ export default function StaffSalary() {
           </div>
         </div>
       </div>
+      {/* employee salary modal */}
+      {modalStatus === "paySalary" && (
+        <StaffSalaryPostModal show={show} setShow={setShow} staffId={staffId} />
+      )}
+
+      {/* delete salary modal */}
+      {modalStatus === "delete" && (
+        <SalaryDeleteModal show={show} setShow={setShow} salaryId={salaryId} />
+      )}
     </>
   );
 }

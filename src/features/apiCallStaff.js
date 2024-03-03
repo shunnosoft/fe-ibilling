@@ -108,13 +108,19 @@ export const deleteStaffApi = async (dispatch, staffId, setIsLoading) => {
   setIsLoading(false);
 };
 
-export const addSalaryApi = async (dispatch, data, resetForm, setIsLoading) => {
+export const addSalaryApi = async (
+  dispatch,
+  data,
+  resetForm,
+  setIsLoading,
+  setShow
+) => {
   setIsLoading(true);
   try {
     const res = await apiLink.post("/staff/salary", data);
     dispatch(addSalarySuccess(res.data));
-    setIsLoading(false);
-    document.querySelector("#addSalaryPostModal").click();
+
+    setShow(false);
     langMessage(
       "success",
       "স্যালারি অ্যাড সফল হয়েছে",
@@ -143,12 +149,18 @@ export const getSalaryApi = async (dispatch, staffId, setIsLoading) => {
   setIsLoading(false);
 };
 
-export const deleteSalary = async (dispatch, setIsLoading, salaryId) => {
+export const deleteSalary = async (
+  dispatch,
+  setIsLoading,
+  salaryId,
+  setShow
+) => {
   setIsLoading(true);
   try {
-    const res = await apiLink.delete("/staff/salary/" + salaryId);
+    await apiLink.delete("/staff/salary/" + salaryId);
     dispatch(deleteSalarySuccess(salaryId));
-    document.querySelector("#deleteSalaryModal").click();
+
+    setShow(false);
     langMessage(
       "success",
       "স্যালারি ডিলিট সফল হয়েছে",

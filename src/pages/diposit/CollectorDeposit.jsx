@@ -60,7 +60,6 @@ const CollectorDeposit = () => {
 
   // get balance from redux
   const balance = useSelector((state) => state?.payment?.balance);
-  console.log(balance);
 
   // get own deposit from redux
   let ownDeposits = useSelector((state) => state?.payment?.myDeposit);
@@ -160,7 +159,7 @@ const CollectorDeposit = () => {
       return;
     }
 
-    if (balance <= data.amount) {
+    if (balance < data.amount) {
       toast.warn(t("youDoNotHaveEnoughCollectionBalance"));
       return;
     }

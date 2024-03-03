@@ -11,8 +11,9 @@ import { addSalaryApi, getStaffs } from "../../../features/apiCallStaff";
 import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
 import moment from "moment";
+import ComponentCustomModal from "../../../components/common/customModal/ComponentCustomModal";
 
-export default function StaffSalaryPostModal({ staffId }) {
+const StaffSalaryPostModal = ({ show, setShow, staffId }) => {
   const { t } = useTranslation();
 
   const staff = useSelector((state) =>
@@ -43,6 +44,7 @@ export default function StaffSalaryPostModal({ staffId }) {
     remarks: Yup.string(),
   });
 
+  // add salary handler function
   const staffSalaryHandler = (data, resetForm) => {
     const { remarks, amount } = data;
     const date = newDate.split("-");
@@ -58,103 +60,92 @@ export default function StaffSalaryPostModal({ staffId }) {
       staff: staffId,
       user: currentUser.user.id,
     };
-    addSalaryApi(dispatch, sendingData, resetForm, setIsLoading);
+
+    addSalaryApi(dispatch, sendingData, resetForm, setIsLoading, setShow);
   };
 
   return (
-    <div>
-      <div
-        className="modal fade modal-dialog-scrollable "
-        id="addSalaryPostModal"
-        tabIndex="-1"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
+    <>
+      <ComponentCustomModal
+        show={show}
+        setShow={setShow}
+        centered={false}
+        size="md"
+        header={t("addSalary")}
       >
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLabel">
-                {t("addSalary")}
-              </h5>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body">
-              {/* model body here */}
-              <Formik
-                initialValues={{
-                  amount: "",
-                  remarks: "",
-                }}
-                validationSchema={salaryValidaiton}
-                onSubmit={(values, { resetForm }) => {
-                  staffSalaryHandler(values, resetForm);
-                }}
-                enableReinitialize
-              >
-                {(formik) => (
-                  <Form>
-                    <div className="px-3">
-                      <h6 class="form-label">{t("salary")}</h6>
-                      <input
-                        className="form-control mb-3"
-                        disabled
-                        type="number"
-                        value={staff?.salary}
-                      />
+        <Formik
+          initialValues={{
+            amount: staff?.salary,
+            remarks: "",
+          }}
+          validationSchema={salaryValidaiton}
+          onSubmit={(values, { resetForm }) => {
+            staffSalaryHandler(values, resetForm);
+          }}
+          enableReinitialize
+        >
+          {() => (
+            <Form>
+              <div className="displayGrid">
+                <div>
+                  <label class="form-control-label changeLabelFontColor">
+                    {t("salary")}
+                  </label>
+                  <input
+                    className="form-control"
+                    disabled
+                    type="number"
+                    value={staff?.salary}
+                  />
+                </div>
 
-                      <FtextField
-                        label={t("amount")}
-                        type="number"
-                        name="amount"
-                      />
+                <FtextField
+                  label={t("amount")}
+                  type="number"
+                  name="amount"
+                  validation={true}
+                />
 
-                      <label className="form-control-label changeLabelFontColor">
-                        {t("selectMonthAndYear")}
-                      </label>
+                <div>
+                  <label className="form-control-label changeLabelFontColor">
+                    {t("selectMonthAndYear")}
+                  </label>
 
-                      <input
-                        className="form-control mb-3"
-                        type="date"
-                        value={newDate}
-                        onChange={(e) => setNewDate(e.target.value)}
-                      />
+                  <input
+                    className="form-control"
+                    type="date"
+                    value={newDate}
+                    onChange={(e) => setNewDate(e.target.value)}
+                  />
+                </div>
 
-                      <FtextField
-                        type="text"
-                        label={t("comment")}
-                        name="remarks"
-                      />
-                    </div>
+                <FtextField type="text" label={t("comment")} name="remarks" />
+              </div>
 
-                    <div className="modal-footer border-none">
-                      <button
-                        type="button"
-                        className="btn btn-secondary"
-                        data-bs-dismiss="modal"
-                        disabled={isLoading}
-                      >
-                        {t("cancel")}
-                      </button>
-                      <button
-                        type="submit"
-                        className="btn btn-success"
-                        disabled={isLoading}
-                      >
-                        {isLoading ? <Loader /> : t("save")}
-                      </button>
-                    </div>
-                  </Form>
-                )}
-              </Formik>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+              <div className="displayGrid1 float-end mt-4">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  disabled={isLoading}
+                  onClick={() => setShow(false)}
+                >
+                  {t("cancel")}
+                </button>
+
+                <button
+                  type="submit"
+                  className="btn btn-success"
+                  disabled={isLoading}
+                >
+                  {isLoading ? <Loader /> : t("save")}
+                </button>
+              </div>
+            </Form>
+          )}
+        </Formik>
+      </ComponentCustomModal>
+    </>
   );
-}
+};
+
+export default StaffSalaryPostModal;
