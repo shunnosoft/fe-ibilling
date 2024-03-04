@@ -64,7 +64,7 @@ const ManagerDeposit = () => {
   });
 
   // get user & current user data form useISPOwner
-  const { ispOwnerId, userData } = useISPowner();
+  const { ispOwnerId, userData, currentUser } = useISPowner();
 
   // get balance from redux
   const balance = useSelector((state) => state?.payment?.balance);
@@ -164,7 +164,7 @@ const ManagerDeposit = () => {
       filterDate.getMonth() + 1 &&
         getDepositReport(
           dispatch,
-          userData?.id,
+          currentUser.manager?.id,
           filterDate.getFullYear(),
           filterDate.getMonth() + 1,
           setIsLoading
@@ -219,7 +219,7 @@ const ManagerDeposit = () => {
       // get deposit report api
       getDepositReport(
         dispatch,
-        userData?.id,
+        currentUser.manager?.id,
         filterDate.getFullYear(),
         filterDate.getMonth() + 1,
         setIsLoading
@@ -255,10 +255,10 @@ const ManagerDeposit = () => {
     }
 
     const sendingData = {
-      depositBy: userData?.role,
+      depositBy: currentUser?.user.role,
       amount: data.amount,
       balance: data.balance,
-      user: userData?.id,
+      user: currentUser?.user.id,
       ispOwner: ispOwnerId,
       note: data.note,
     };

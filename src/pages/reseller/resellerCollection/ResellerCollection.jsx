@@ -472,14 +472,12 @@ const ResellerCollection = () => {
       previous.amount += current.amount;
 
       // sum of all reseller commission
-      previous.resellerCommission += current.resellerCommission
-        ? current.resellerCommission
-        : 0;
+      previous.resellerCommission +=
+        adminResellerCommission(current)?.resellerCommission;
 
       // sum of all ispOwner commission
-      previous.ispOwnerCommission += current.ispOwnerCommission
-        ? current.ispOwnerCommission
-        : 0;
+      previous.ispOwnerCommission +=
+        adminResellerCommission(current)?.ispOwnerCommission;
 
       return previous;
     }, initialValue);
