@@ -112,6 +112,7 @@ const SingleMessage = ({ show, setShow, single, sendCustomer }) => {
   // handle submit
   const handleSubmit = async (event) => {
     event.preventDefault();
+
     if (messageLength) {
       // send data for api body
       const sendingData = {
@@ -143,8 +144,16 @@ const SingleMessage = ({ show, setShow, single, sendCustomer }) => {
           );
         }
 
+        // get sms balance
+        let smsBalance =
+          sendingType === "nonMasking"
+            ? owner?.data.smsBalance
+            : sendingType === "masking"
+            ? owner?.data.maskingSmsBalance
+            : owner?.data.fixedNumberSmsBalance;
+
         alert(`${t("sampleSMS")} :\n\n${messageLength}`);
-        if (owner.data.smsBalance >= smsAmount) {
+        if (smsBalance >= smsAmount) {
           // message confirm alert
           let condition = window.confirm(
             `${data.name}  ${t("getSMS")} ${smsAmount} ${t("expenseSMS")} `
