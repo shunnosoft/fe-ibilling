@@ -48,62 +48,66 @@ export const getStaffs = async (dispatch, ownerId, setTableLoading) => {
 };
 
 // add new staff
-export const addStaff = async (dispatch, data, setIsLoading) => {
+export const addStaff = async (dispatch, data, setIsLoading, setShow) => {
   setIsLoading(true);
   try {
     const res = await apiLink.post("/staff", data);
     dispatch(addStaffSuccess(res.data));
-    setIsLoading(false);
-    document.querySelector("#staffModal").click();
+
+    setShow(false);
     langMessage(
       "success",
       "কর্মচারী এড সফল হয়েছে!",
       "Staff Added Successfully"
     );
   } catch (err) {
-    console.log(err);
-    if (err.response) {
-      setIsLoading(false);
-      toast.error(err.response.data.message);
-    }
+    toast.error(err.response.data.message);
   }
+  setIsLoading(false);
 };
 
-export const updateStaffApi = async (dispatch, staffId, data, setIsLoading) => {
+export const updateStaffApi = async (
+  dispatch,
+  staffId,
+  data,
+  setIsLoading,
+  setShow
+) => {
   setIsLoading(true);
   try {
     const res = await apiLink.patch("/staff/" + staffId, data);
     dispatch(editStaff(res.data));
-    setIsLoading(false);
-    document.querySelector("#staffEditModal").click();
+
+    setShow(false);
     langMessage(
       "success",
       "কর্মচারী আপডেট সফল হয়েছে",
       "Staff Updated Successfully"
     );
   } catch (err) {
-    if (err.response) {
-      setIsLoading(false);
-      toast.error(err.response.data.message);
-    }
+    toast.error(err.response.data.message);
   }
+  setIsLoading(false);
 };
-export const deleteStaffApi = async (dispatch, staffId, setIsLoading) => {
+export const deleteStaffApi = async (
+  dispatch,
+  staffId,
+  setIsLoading,
+  setShow
+) => {
   setIsLoading(true);
   try {
     const res = await apiLink.delete("/staff/" + staffId);
-    console.log(res.data);
     dispatch(deleteStaffSuccess(staffId));
-    document.querySelector("#deleteStaff").click();
+
+    setShow(false);
     langMessage(
       "success",
       "কর্মচারী ডিলিট সফল হয়েছে",
       "Staff Deleted Successfully"
     );
   } catch (err) {
-    if (err.response) {
-      toast.error(err.response.data.message);
-    }
+    toast.error(err.response.data.message);
   }
   setIsLoading(false);
 };

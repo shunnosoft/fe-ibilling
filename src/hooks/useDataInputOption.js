@@ -94,7 +94,9 @@ const useDataInputOption = (inputPermission, page, status, data) => {
     dateOFbirth: "",
     division: "",
     district: "",
+    due: "",
     email: "",
+    fatherName: "",
     mikrotikId: "",
     mobile: "",
     name: "",
@@ -112,6 +114,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
     referenceMobile: "",
     subAreaId: "",
     status: "",
+    salary: "",
     thana: "",
   });
 
@@ -141,7 +144,9 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       dateOFbirth: Date.parse(data?.birthDate),
       division: divisionId,
       district: districtId,
+      due: data?.due,
       email: data?.email,
+      fatherName: data?.fatherName,
       mikrotikId: data?.mikrotik,
       mobile: data?.mobile,
       name: data?.name,
@@ -159,6 +164,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       referenceMobile: data?.referenceMobile,
       subAreaId: data?.subArea,
       status: data?.status,
+      salary: data?.salary,
       thana: thanaId,
     });
   }, [data]);
@@ -384,10 +390,22 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       isVisible: inputPermission.district,
     },
     {
+      id: 27,
+      name: "due",
+      value: Number(formData.due) || 0,
+      isVisible: inputPermission.due,
+    },
+    {
       id: 13,
       name: "email",
       value: formData.email || "",
       isVisible: inputPermission.email,
+    },
+    {
+      id: 24,
+      name: "fatherName",
+      value: formData.fatherName || "",
+      isVisible: inputPermission.fatherName,
     },
     {
       id: 14,
@@ -478,6 +496,12 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       name: "status",
       value: formData.status || "active",
       isVisible: inputPermission.status,
+    },
+    {
+      id: 26,
+      name: "salary",
+      value: Number(formData.salary) || 0,
+      isVisible: inputPermission.salary,
     },
     {
       id: 22,
@@ -630,7 +654,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       textAccessor: "name",
       valueAccessor: "id",
       options:
-        bpSettings.hasMikrotik && page
+        bpSettings.hasMikrotik && page === "pppoe"
           ? ppPackage?.filter(
               (pack) =>
                 pack.packageType === "pppoe" &&
@@ -797,7 +821,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
           : (rsRole && !permission?.singleCustomerNumberEdit) ||
             (rscRole && !resellerData?.permission?.customerMobileEdit) ||
             false,
-      validation: page
+      validation: ["pppoe"].includes(page)
         ? bpSettings?.addCustomerWithMobile ||
           permission?.addCustomerWithMobile ||
           resellerData?.permission?.addCustomerWithMobile
@@ -1072,6 +1096,14 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       inputField: [
         {
           type: "radio",
+          id: "newCustomer",
+          isVisible: ["staff"].includes(page) ? true : false,
+          disabled: false,
+          label: t("new"),
+          value: "new",
+        },
+        {
+          type: "radio",
           id: "activeCustomer",
           isVisible: true,
           disabled:
@@ -1101,16 +1133,48 @@ const useDataInputOption = (inputPermission, page, status, data) => {
         {
           type: "radio",
           id: "expiredCustomer",
-          isVisible: page ? true : false,
+          isVisible: ["pppoe"].includes(page) ? true : false,
           disabled: true,
           label: t("expired"),
           value: "expired",
+        },
+        {
+          type: "radio",
+          id: "bannedCustomer",
+          isVisible: ["staff"].includes(page) ? true : false,
+          disabled: false,
+          label: t("banned"),
+          value: "banned",
+        },
+        {
+          type: "radio",
+          id: "deletedCustomer",
+          isVisible: ["staff"].includes(page) ? true : false,
+          disabled: false,
+          label: t("deleted"),
+          value: "deleted",
         },
       ],
       onChange: (e) => {
         setFormData({
           ...formData,
           status: e.target.value,
+        });
+      },
+    },
+    {
+      name: "fatherName",
+      type: "text",
+      id: "fatherName",
+      isVisible: inputPermission.fatherName,
+      disabled: false,
+      validation: false,
+      label: t("parentName"),
+      placeholder: "e.g. Father Name",
+      onChange: (e) => {
+        setFormData({
+          ...formData,
+          fatherName: e.target.value,
         });
       },
     },
@@ -1206,10 +1270,36 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       name: "salary",
       type: "number",
       id: "salary",
-      isVisible: formData.addStaff && inputPermission.salary,
+      isVisible:
+        page !== "staff"
+          ? formData.addStaff && inputPermission.salary
+          : inputPermission.salary,
+      disabled: false,
+      validation: true,
+      label: t("salary"),
+      placeholder: "0",
+      onChange: (e) => {
+        setFormData({
+          ...formData,
+          salary: e.target.value,
+        });
+      },
+    },
+    {
+      name: "due",
+      type: "number",
+      id: "due",
+      isVisible: inputPermission.due,
       disabled: false,
       validation: false,
-      label: t("salary"),
+      label: t("due"),
+      placeholder: "0",
+      onChange: (e) => {
+        setFormData({
+          ...formData,
+          due: e.target.value,
+        });
+      },
     },
     {
       name: "website",

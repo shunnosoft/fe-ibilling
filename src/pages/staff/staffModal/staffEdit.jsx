@@ -1,240 +1,186 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Form, Formik } from "formik";
 import { useSelector, useDispatch } from "react-redux";
-import * as Yup from "yup";
+import { Card } from "react-bootstrap";
+import { useTranslation } from "react-i18next";
+
+// custom hooks import
+import useDataInputOption from "../../../hooks/useDataInputOption";
 
 // internal imports
 import "../../collector/collector.css";
 import { FtextField } from "../../../components/common/FtextField";
 import Loader from "../../../components/common/Loader";
-import { Card } from "react-bootstrap";
-import { addStaff, updateStaffApi } from "../../../features/apiCallStaff";
-import { useTranslation } from "react-i18next";
+import { updateStaffApi } from "../../../features/apiCallStaff";
+import ComponentCustomModal from "../../../components/common/customModal/ComponentCustomModal";
 
-export default function StaffEdit({ staffId }) {
+const StaffEdit = ({ show, setShow, staffId }) => {
   const { t } = useTranslation();
-  const [isLoading, setIsLoading] = useState(false);
-  const auth = useSelector((state) => state.persistedReducer.auth.currentUser);
   const dispatch = useDispatch();
-  const ispOwner = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerId
+
+  // get ispOwner all staffs
+  const staffs = useSelector((state) => state.staff.staff);
+
+  // find single staff
+  const data = staffs.find((item) => item.id === staffId);
+
+  // call the data input option function
+  const inputPermission = {
+    name: true,
+    mobile: true,
+    nid: true,
+    address: true,
+    email: true,
+    fatherName: true,
+    salary: true,
+    due: true,
+    status: true,
+  };
+
+  // get data input option from useDataInputOption hook
+  const dataInputOption = useDataInputOption(
+    inputPermission,
+    "staff",
+    null,
+    data
   );
 
-  const staffData = useSelector((state) =>
-    state.staff.staff.find((item) => item.id === staffId)
-  );
+  // loading state
+  const [isLoading, setIsLoading] = useState(false);
 
-  //validator
-  const resellerValidator = Yup.object({
-    name: Yup.string().required(t("enterName")),
-    mobile: Yup.string()
-      .min(11, t("write11DigitMobileNumber"))
-      .max(11, t("over11DigitMobileNumber"))
-      .required(t("writeMobileNumber")),
-    salary: Yup.number().required(t("salary")),
-    due: Yup.number().required(t("due")),
-    email: Yup.string().email(t("incorrectEmail")),
-    nid: Yup.string(),
-    website: Yup.string(),
-    address: Yup.string(),
-  });
+  // staff data update function handler
+  const staffHandler = (formVlue) => {
+    const {
+      refName,
+      refMobile,
+      refEmail,
+      refAddress,
+      refRelation,
+      refNid,
+      ...rest
+    } = formVlue;
 
-  const staffHandler = (data, resetForm) => {
     const sendingData = {
-      name: data.name,
-      mobile: data.mobile,
-      salary: data.salary,
-      due: data.due,
-      email: data.email,
-      fatherName: data.fatherName,
-      address: data.address,
-      nid: data.nid,
-      status: data.status,
+      ...rest,
       reference: {
-        name: data.refName,
-        mobile: data.refMobile,
-        email: data.refEmail,
-        address: data.refAddress,
-        relation: data.refRelation,
-        nid: data.refNid,
+        name: refName,
+        mobile: refMobile,
+        email: refEmail,
+        address: refAddress,
+        relation: refRelation,
+        nid: refNid,
       },
     };
-    updateStaffApi(dispatch, staffId, sendingData, setIsLoading);
+
+    // staff update api call
+    updateStaffApi(dispatch, staffId, sendingData, setIsLoading, setShow);
   };
-  const status = ["new", "active", "inactive", "banned", "deleted"];
 
   return (
-    <div>
-      <div
-        className="modal fade modal-dialog-scrollable "
-        id="staffEditModal"
-        tabIndex="-1"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog modal-xl">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLabel">
-                {t("updateStaff")}
-              </h5>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body">
-              {/* model body here */}
-              <Formik
-                initialValues={{
-                  name: staffData?.name || "",
-                  mobile: staffData?.mobile || "",
-                  salary: staffData?.salary || 0,
-                  due: staffData?.due || 0,
-                  email: staffData?.email || "",
-                  fatherName: staffData?.name || "",
-                  nid: staffData?.nid || "",
-                  address: staffData?.address || "",
-                  refName: staffData?.reference?.name || "",
-                  refMobile: staffData?.reference?.mobile || "",
-                  refEmail: staffData?.reference?.email || "",
-                  refAddress: staffData?.reference?.address || "",
-                  refRelation: staffData?.reference?.relation || "",
-                  refNid: staffData?.reference?.data || "",
-                  status: staffData?.status,
-                }}
-                validationSchema={resellerValidator}
-                onSubmit={(values, { resetForm }) => {
-                  staffHandler(values, resetForm);
-                }}
-                enableReinitialize
-              >
-                {(formik) => (
-                  <Form>
-                    {/* first part */}
+    <>
+      <ComponentCustomModal
+        show={show}
+        setShow={setShow}
+        centered={false}
+        size="xl"
+        header={t("updateStaff")}
+        footer={
+          <div className="displayGrid1 float-end">
+            <button
+              type="button"
+              className="btn btn-secondary"
+              disabled={isLoading}
+              onClick={() => setShow(false)}
+            >
+              {t("cancel")}
+            </button>
 
-                    <div className="displayGrid3">
-                      <FtextField
-                        type="text"
-                        label={t("name")}
-                        name="name"
-                        validation={"true"}
-                      />
-                      <FtextField
-                        type="text"
-                        label={t("mobile")}
-                        name="mobile"
-                        validation={"true"}
-                      />
-                      <FtextField
-                        type="number"
-                        label={t("salary")}
-                        name="salary"
-                        validation={"true"}
-                      />
-                    </div>
-
-                    <div className="displayGrid3">
-                      <FtextField type="number" label={t("due")} name="due" />
-                      <FtextField type="text" label={t("email")} name="email" />
-                      <FtextField
-                        type="text"
-                        label={t("parentName")}
-                        name="fatherName"
-                      />
-                    </div>
-                    <div className="displayGrid3">
-                      <FtextField type="text" label={t("NIDno")} name="nid" />
-                      <FtextField
-                        type="text"
-                        label={t("address")}
-                        name="address"
-                      />
-                    </div>
-                    <p className="radioTitle"> {t("status")} </p>
-                    <div className="form-check d-flex">
-                      {status.map((value, key) => (
-                        <div key={key} className="form-check">
-                          <FtextField
-                            label={value}
-                            className="form-check-input"
-                            type="radio"
-                            name="status"
-                            value={value}
-                          />
-                        </div>
-                      ))}
-                    </div>
-
-                    <Card>
-                      <Card.Body>
-                        <Card.Title> {t("referenceInformation")} </Card.Title>
-                        <Card.Text>
-                          <div className="displayGrid3">
-                            <FtextField
-                              type="text"
-                              label={t("referenceName")}
-                              name="refName"
-                            />
-                            <FtextField
-                              type="text"
-                              label={t("referenceMobile")}
-                              name="refMobile"
-                            />
-                            <FtextField
-                              type="text"
-                              label={t("referenceEmail")}
-                              name="refEmail"
-                            />
-                          </div>
-
-                          <div className="displayGrid3">
-                            <FtextField
-                              type="text"
-                              label={t("referenceNID")}
-                              name="refNid"
-                            />
-                            <FtextField
-                              type="text"
-                              label={t("referenceAddress")}
-                              name="refAddress"
-                            />
-                            <FtextField
-                              type="text"
-                              label={t("referenceRelation")}
-                              name="refRelation"
-                            />
-                          </div>
-                        </Card.Text>
-                      </Card.Body>
-                    </Card>
-
-                    <div className="modal-footer modalFooterEdit">
-                      <button
-                        type="submit"
-                        className="btn btn-success"
-                        disabled={isLoading}
-                      >
-                        {isLoading ? <Loader /> : t("save")}
-                      </button>
-                      <button
-                        type="button"
-                        className="btn btn-secondary"
-                        data-bs-dismiss="modal"
-                        disabled={isLoading}
-                      >
-                        {t("cancel")}
-                      </button>
-                    </div>
-                  </Form>
-                )}
-              </Formik>
-            </div>
+            <button
+              type="submit"
+              form="staffEdit"
+              className="btn btn-success"
+              disabled={isLoading}
+            >
+              {isLoading ? <Loader /> : t("submit")}
+            </button>
           </div>
-        </div>
-      </div>
-    </div>
+        }
+      >
+        <Formik
+          initialValues={{
+            ...dataInputOption?.inputInitialValues,
+            refName: data?.reference?.name || "",
+            refMobile: data?.reference?.mobile || "",
+            refEmail: data?.reference?.email || "",
+            refAddress: data?.reference?.address || "",
+            refRelation: data?.reference?.relation || "",
+            refNid: data?.reference?.nid || "",
+          }}
+          validationSchema={dataInputOption?.validationSchema}
+          onSubmit={(values) => {
+            staffHandler(values);
+          }}
+          enableReinitialize
+        >
+          {() => (
+            <Form id="staffEdit">
+              <div className="d-flex justify-content-center">
+                <div className="displayGrid col-6">
+                  {dataInputOption?.inputOption.map(
+                    (item) => item?.isVisible && <FtextField {...item} />
+                  )}
+                </div>
+              </div>
+
+              {/* reference information start */}
+              <Card className="mt-3 bg-light">
+                <Card.Body>
+                  <Card.Title className="inputLabelFontColor">
+                    {t("referenceInformation")}
+                  </Card.Title>
+                  <Card.Text>
+                    <div className="displayGrid3">
+                      <FtextField
+                        type="text"
+                        label={t("referenceName")}
+                        name="refName"
+                      />
+                      <FtextField
+                        type="text"
+                        label={t("referenceMobile")}
+                        name="refMobile"
+                      />
+                      <FtextField
+                        type="text"
+                        label={t("referenceEmail")}
+                        name="refEmail"
+                      />
+                      <FtextField
+                        type="text"
+                        label={t("referenceNID")}
+                        name="refNid"
+                      />
+                      <FtextField
+                        type="text"
+                        label={t("referenceAddress")}
+                        name="refAddress"
+                      />
+                      <FtextField
+                        type="text"
+                        label={t("referenceRelation")}
+                        name="refRelation"
+                      />
+                    </div>
+                  </Card.Text>
+                </Card.Body>
+              </Card>
+              {/* reference information end */}
+            </Form>
+          )}
+        </Formik>
+      </ComponentCustomModal>
+    </>
   );
-}
+};
+
+export default StaffEdit;
