@@ -6,6 +6,7 @@ import {
   ModalHeader,
   ModalTitle,
 } from "react-bootstrap";
+import { badge } from "../Utils";
 
 const ComponentCustomModal = ({
   show,
@@ -13,6 +14,8 @@ const ComponentCustomModal = ({
   centered,
   size,
   header,
+  status,
+  paymentStatus,
   printr,
   children,
   footer,
@@ -31,9 +34,11 @@ const ComponentCustomModal = ({
     >
       <ModalHeader closeButton>
         <ModalTitle>
-          <div className="d-flex">
-            <h5 className="modal-title">{header}</h5>
-            <div className="ms-2">{printr && printr}</div>
+          <div className="d-flex gap-2">
+            <p>{header}</p>
+            <div>{printr && printr}</div>
+            <small>{badge(status)}</small>
+            <small>{badge(paymentStatus)}</small>
           </div>
         </ModalTitle>
       </ModalHeader>

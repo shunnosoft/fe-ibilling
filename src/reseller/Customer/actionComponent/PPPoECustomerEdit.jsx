@@ -84,6 +84,7 @@ const PPPoECustomerEdit = ({ show, setShow, single }) => {
     mikrotik: true,
     mikrotikPackage: true,
     monthlyFee: true,
+    balance: true,
     pppoeName: true,
     password: true,
     subArea: true,
@@ -179,6 +180,8 @@ const PPPoECustomerEdit = ({ show, setShow, single }) => {
         centered={false}
         size="xl"
         header={data?.name + " " + t("editProfile")}
+        status={data?.status}
+        paymentStatus={data?.paymentStatus}
         footer={
           <div className="displayGrid1 float-end">
             <button

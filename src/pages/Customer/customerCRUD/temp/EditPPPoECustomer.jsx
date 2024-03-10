@@ -241,6 +241,8 @@ const EditPPPoECustomer = ({ show, setShow, single }) => {
         setShow={setShow}
         size="xl"
         header={data?.name + " " + t("editProfile")}
+        status={data?.status}
+        paymentStatus={data?.paymentStatus}
         footer={
           <div className="displayGrid1 float-end">
             <button

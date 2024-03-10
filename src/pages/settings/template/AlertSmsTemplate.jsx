@@ -220,7 +220,7 @@ const AlertSmsTemplate = () => {
     temp4.splice(-1);
 
     var theText = "";
-    temp.map((i) => {
+    temp10.map((i) => {
       return (theText = theText + "\n" + i);
     });
 

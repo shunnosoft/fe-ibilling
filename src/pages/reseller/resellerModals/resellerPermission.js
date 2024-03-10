@@ -7,7 +7,6 @@ export const resellerPermissions = (permission, bpSettings) => {
       isChecked: permission?.customerAdd,
       disabled: false,
     },
-
     {
       id: 2,
       label: "Customer Edit",
@@ -22,7 +21,6 @@ export const resellerPermissions = (permission, bpSettings) => {
       isChecked: permission?.addCustomerWithMobile,
       disabled: bpSettings?.addCustomerWithMobile,
     },
-
     {
       id: 4,
       label: "Edit monthly Fee",
@@ -30,13 +28,13 @@ export const resellerPermissions = (permission, bpSettings) => {
       isChecked: permission?.monthlyFeeEdit,
       disabled: false,
     },
-
     {
       id: 5,
       label: "Package Edit",
       value: "customerMikrotikPackageEdit",
       isChecked: permission?.customerMikrotikPackageEdit,
       disabled: false,
+      info: "Can your Reseller, Single customer package and Multiple customer package change.",
     },
     {
       id: 6,
@@ -191,7 +189,6 @@ export const resellerPermissions = (permission, bpSettings) => {
       isChecked: permission?.customerAdd,
       disabled: false,
     },
-
     {
       id: 2,
       label: "কাস্টমার এডিট",
@@ -199,7 +196,6 @@ export const resellerPermissions = (permission, bpSettings) => {
       isChecked: permission?.customerEdit,
       disabled: false,
     },
-
     {
       id: 3,
       label: "মোবাইল নাম্বার সহ কাস্টমার অ্যাড",
@@ -215,13 +211,13 @@ export const resellerPermissions = (permission, bpSettings) => {
       isChecked: permission?.monthlyFeeEdit,
       disabled: false,
     },
-
     {
       id: 5,
       label: "প্যাকেজ এডিট",
       value: "customerMikrotikPackageEdit",
       isChecked: permission?.customerMikrotikPackageEdit,
       disabled: false,
+      info: "আপনার রিসেলার, একটি গ্রাহকের প্যাকেজ এবং একাধিক গ্রাহকের প্যাকেজ পরিবর্তন করতে পারবেন।",
     },
     {
       id: 6,

@@ -15,6 +15,10 @@ import { getNameId } from "../utils/getLocationName";
 // internal import
 import { informationEnBn } from "../components/common/tooltipInformation/informationEnBn";
 import { getResellerPackageRate } from "../features/apiCallReseller";
+import {
+  getCustomerDayLeft,
+  getMonthStartDay,
+} from "../pages/Customer/customerCRUD/customerBillDayPromiseDate";
 
 const useDataInputOption = (inputPermission, page, status, data) => {
   const { t } = useTranslation();
@@ -169,20 +173,6 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       userData?.commissionStyle === "fixedRate" &&
       getResellerPackageRate(resellerId, packageId, setPackageCommission);
   }, [formData?.packageId]);
-
-  // single mikrotik package change handler
-  const packageChangeHandler = async (id) => {
-    // find mikrotik package in pppoe packages
-    const singlePackage = ppPackage.find((val) => val.id === id);
-
-    // set single package data
-    setFormData({
-      ...formData,
-      packageId: singlePackage.id,
-      packageRate: singlePackage.rate,
-      packageName: singlePackage.name,
-    });
-  };
 
   // input validation array of object with name, validation, isVisible
   const validationArrayofInput = [
@@ -511,6 +501,79 @@ const useDataInputOption = (inputPermission, page, status, data) => {
     return acc;
   }, {});
 
+  // single mikrotik package change handler
+  const packageChangeHandler = async (id) => {
+    // find mikrotik package in pppoe packages
+    const singlePackage = ppPackage.find((val) => val.id === id);
+
+    // home user billing date
+    const billingDate = new Date(data.billingCycle);
+
+    // customer bill month days
+    const monthDate = new Date(
+      billingDate.getFullYear(),
+      billingDate.getMonth(),
+      0
+    ).getDate();
+
+    // customer bill month day
+    const monthDay = new Date(
+      billingDate.getFullYear(),
+      billingDate.getMonth() - 1,
+      billingDate.getDate()
+    );
+
+    // customer useds day in current date
+    const daysUsed = getMonthStartDay(monthDay);
+
+    // customer bill day left
+    const dayLeft = getCustomerDayLeft(data.billingCycle);
+
+    // customer current package useds day amount
+    const currentPackgeUsedDayAmount = (data.monthlyFee / monthDate) * daysUsed;
+
+    // customer current package day left amount
+    const currentPackgeBalance = data.monthlyFee - currentPackgeUsedDayAmount;
+
+    // customer day left amountcurrentPackgeBalance
+    const changePackageDayLeftAmount =
+      (singlePackage?.rate / monthDate) * dayLeft;
+
+    // customer change package amount after day left change in current date
+    let changePackageAmount = 0;
+
+    if (data.status === "active" && billingDate >= today && data) {
+      // customer current package change before current package and after balance
+      if (data.mikrotikPackage === singlePackage.id) {
+        changePackageAmount = data.balance;
+      } else {
+        if (data.balance < 0) {
+          // customer privious package and crrent package used amount
+          changePackageAmount = -(
+            currentPackgeUsedDayAmount +
+            changePackageDayLeftAmount -
+            data.balance
+          );
+        } else {
+          changePackageAmount =
+            currentPackgeBalance - changePackageDayLeftAmount + data.balance;
+        }
+      }
+    } else {
+      // for inactive or expired user change package monthly fee
+      changePackageAmount = -singlePackage?.rate + data.balance;
+    }
+
+    // set single package data
+    setFormData({
+      ...formData,
+      packageId: singlePackage.id,
+      packageRate: singlePackage.rate,
+      packageName: singlePackage.name,
+      balance: Math.round(changePackageAmount),
+    });
+  };
+
   // data input options
   const inputOption = [
     {
@@ -602,7 +665,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       type: "number",
       id: "balance",
       isVisible: inputPermission.balance,
-      disabled: status ? !formData.packageId : false,
+      disabled: adminUser ? (status ? !formData.packageId : false) : true,
       validation: false,
       label: t("balance"),
       placeholder: "0",
