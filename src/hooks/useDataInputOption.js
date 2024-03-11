@@ -530,62 +530,71 @@ const useDataInputOption = (inputPermission, page, status, data) => {
     // find mikrotik package in pppoe packages
     const singlePackage = ppPackage.find((val) => val.id === id);
 
-    // home user billing date
-    const billingDate = new Date(data.billingCycle);
+    if (status === "edit") {
+      // home user billing date
+      const billingDate = new Date(data?.billingCycle);
 
-    // customer bill month days
-    const monthDate = new Date(
-      billingDate.getFullYear(),
-      billingDate.getMonth(),
-      0
-    ).getDate();
+      // customer bill month days
+      const monthDate = new Date(
+        billingDate.getFullYear(),
+        billingDate.getMonth(),
+        0
+      ).getDate();
 
-    // customer bill month day
-    const monthDay = new Date(
-      billingDate.getFullYear(),
-      billingDate.getMonth() - 1,
-      billingDate.getDate()
-    );
+      // customer bill month day
+      const monthDay = new Date(
+        billingDate.getFullYear(),
+        billingDate.getMonth() - 1,
+        billingDate.getDate()
+      );
 
-    // customer useds day in current date
-    const daysUsed = getMonthStartDay(monthDay);
+      // customer useds day in current date
+      const daysUsed = getMonthStartDay(monthDay);
 
-    // customer bill day left
-    const dayLeft = getCustomerDayLeft(data.billingCycle);
+      // customer bill day left
+      const dayLeft = getCustomerDayLeft(data.billingCycle);
 
-    // customer current package useds day amount
-    const currentPackgeUsedDayAmount = (data.monthlyFee / monthDate) * daysUsed;
+      // customer current package useds day amount
+      const currentPackgeUsedDayAmount =
+        (data.monthlyFee / monthDate) * daysUsed;
 
-    // customer current package day left amount
-    const currentPackgeBalance = data.monthlyFee - currentPackgeUsedDayAmount;
+      // customer current package day left amount
+      const currentPackgeBalance = data.monthlyFee - currentPackgeUsedDayAmount;
 
-    // customer day left amountcurrentPackgeBalance
-    const changePackageDayLeftAmount =
-      (singlePackage?.rate / monthDate) * dayLeft;
+      // customer day left amountcurrentPackgeBalance
+      const changePackageDayLeftAmount =
+        (singlePackage?.rate / monthDate) * dayLeft;
 
-    // customer change package amount after day left change in current date
-    let changePackageAmount = 0;
+      // customer change package amount after day left change in current date
+      let changePackageAmount = 0;
 
-    if (data.status === "active" && billingDate >= today && data) {
-      // customer current package change before current package and after balance
-      if (data.mikrotikPackage === singlePackage.id) {
-        changePackageAmount = data.balance;
-      } else {
-        if (data.balance < 0) {
-          // customer privious package and crrent package used amount
-          changePackageAmount = -(
-            currentPackgeUsedDayAmount +
-            changePackageDayLeftAmount -
-            data.balance
-          );
+      if (data.status === "active" && billingDate >= today && data) {
+        // customer current package change before current package and after balance
+        if (data.mikrotikPackage === singlePackage.id) {
+          changePackageAmount = data.balance;
         } else {
-          changePackageAmount =
-            currentPackgeBalance - changePackageDayLeftAmount + data.balance;
+          if (data.balance < 0) {
+            // customer privious package and crrent package used amount
+            changePackageAmount = -(
+              currentPackgeUsedDayAmount +
+              changePackageDayLeftAmount -
+              data.balance
+            );
+          } else {
+            changePackageAmount =
+              currentPackgeBalance - changePackageDayLeftAmount + data.balance;
+          }
         }
+      } else {
+        // for inactive or expired user change package monthly fee
+        changePackageAmount = -singlePackage?.rate + data.balance;
       }
-    } else {
-      // for inactive or expired user change package monthly fee
-      changePackageAmount = -singlePackage?.rate + data.balance;
+
+      // set single package change balance
+      setFormData({
+        ...formData,
+        balance: Math.round(changePackageAmount),
+      });
     }
 
     // set single package data
@@ -594,7 +603,6 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       packageId: singlePackage.id,
       packageRate: singlePackage.rate,
       packageName: singlePackage.name,
-      balance: Math.round(changePackageAmount),
     });
   };
 
@@ -670,10 +678,9 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       type: "number",
       id: "monthlyFee",
       isVisible: inputPermission.monthlyFee,
-      disabled:
-        status === "post"
-          ? !formData.packageId
-          : (resellerUser && !permission?.monthlyFeeEdit) || false,
+      disabled: status
+        ? !formData.packageId
+        : (resellerUser && !permission?.monthlyFeeEdit) || false,
       validation: true,
       label: t("monthlyFee"),
       placeholder: "0",
