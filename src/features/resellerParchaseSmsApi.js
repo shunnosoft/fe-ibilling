@@ -57,25 +57,22 @@ export const getInvoiceHistory = async (resellerId, dispatch, setIsLoading) => {
 };
 
 // parchase SMS
-export const parchaseSms = async (data, setIsLoading, dispatch) => {
+export const purchaseSMS = async (data, setIsLoading, dispatch, setShow) => {
   setIsLoading(true);
   try {
     const res = await apiLink.post("/reseller/smsPurchase", data);
     dispatch(parchaseSmsSuccess(res.data.resellerSmsPurchase));
-    setIsLoading(false);
+
+    setShow(false);
     langMessage(
       "success",
-      "সাবমিট সফল হয়েছে",
-      "Expenditure Type Added Successfully"
+      "এসএমএস-এর জন্য মালিকের কাছে অনুরোধ পাঠানো হয়েছে।",
+      "Request sent to Admin for SMS."
     );
-    document.querySelector("#smsRechargeModal").click();
   } catch (err) {
-    console.log(err);
-    if (err.response) {
-      setIsLoading(false);
-      toast.error(err.response.data.message);
-    }
+    toast.error(err.response.data.message);
   }
+  setIsLoading(false);
 };
 
 export const purchaseSmsNetfee = async (data, setIsloading, dispatch) => {
@@ -83,7 +80,7 @@ export const purchaseSmsNetfee = async (data, setIsloading, dispatch) => {
   try {
     const res = await apiLink.post(`/sms`, data);
     dispatch(parchaseSmsNetFeeSuccess(res.data));
-    document.querySelector("#smsRechargeModal").click();
+    // document.querySelector("#smsRechargeModal").click();
     setIsloading(false);
     langMessage(
       "success",

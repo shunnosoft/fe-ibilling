@@ -2854,22 +2854,17 @@ export const initiatePayment = async (invoice, setIsloading) => {
   }
 };
 
-export const purchaseSms = async (data, setIsloading) => {
+export const purchaseSms = async (data, setIsloading, dispatch, setShow) => {
   setIsloading(true);
   try {
     const res = await apiLink.post(`/sms`, data);
+    dispatch(showModal(res.data));
 
-    setIsloading(false);
-    langMessage(
-      "success",
-      "এসএমএস ইনভয়েস তৈরি সফল হয়েছে। কনফার্ম করতে হলে পেমেন্ট করুন।",
-      "SMS Invoice Generation is Successful. Make Payment to Confirm"
-    );
-    window.location.href = "/invoice";
+    setShow(false);
   } catch (err) {
-    setIsloading(false);
     console.log("SMS purchase error: ", err);
   }
+  setIsloading(false);
 };
 
 export const getUnpaidInvoice = async (dispatch, ispOwnerId) => {

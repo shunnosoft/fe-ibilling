@@ -1,47 +1,70 @@
 import React, { useEffect, useState } from "react";
-import { Button, Modal } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+
+// custom hooks
+import useISPowner from "../../hooks/useISPOwner";
+
+// internal imports
 import Loader from "../../components/common/Loader";
 import { purchaseSms } from "../../features/apiCalls";
+import ComponentCustomModal from "../../components/common/customModal/ComponentCustomModal";
+import {
+  getParchaseHistory,
+  purchaseSMS,
+} from "../../features/resellerParchaseSmsApi";
 
 const SMSPurchase = ({ show, setShow }) => {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
 
-  // modal close handler
-  const handleClose = () => setShow(false);
+  // get user & current user data form useISPOwner hook
+  const { role, ispOwnerData, userData } = useISPowner();
 
-  //user role
-  const userRole = useSelector((state) => state.persistedReducer.auth.role);
+  // get reseller sms purchase history
+  const data = useSelector((state) => state?.smsHistory?.smsParchase);
+
+  // get accept status
+  const invoiceStatus = data.filter((item) => item.status === "pending");
 
   //user Data
-  const userData = useSelector((state) =>
-    userRole === "manager"
-      ? state.persistedReducer.auth.ispOwnerData
-      : state.persistedReducer.auth.userData
-  );
+  const user = role === "manager" ? ispOwnerData : userData;
 
-  //states
+  // loading state
   const [isLoading, setIsloading] = useState(false);
 
+  // sms purchase amount
   const [amount, setAmount] = useState(120);
 
-  const [count, setCount] = useState(Number(amount) / userData.smsRate);
+  // sms purchase count
+  const [count, setCount] = useState(Number(amount) / user.smsRate);
 
+  // buy place status
+  const [buyStatus, setBuyStatus] = useState("netFee");
+
+  // sms purchase message type
   const [messageType, setMessageType] = useState(
     "nonMasking" || "masking" || "fixedNumber"
   );
 
+  // get api clled function
+  useEffect(() => {
+    role === "reseller" &&
+      getParchaseHistory(userData.id, dispatch, setIsloading);
+  }, [role]);
+
   //SMS count function
   const changeHandler = (numOfSms) => {
     if (messageType === "nonMasking") {
-      setAmount(Math.ceil(userData.smsRate * numOfSms));
+      setAmount(Math.ceil(user.smsRate * numOfSms));
     } else if (messageType === "masking") {
-      setAmount(Math.ceil(userData.maskingSmsRate * numOfSms));
+      setAmount(Math.ceil(user.maskingSmsRate * numOfSms));
     } else if (messageType === "fixedNumber") {
-      setAmount(Math.ceil(userData.fixedNumberSmsRate * numOfSms));
+      setAmount(Math.ceil(user.fixedNumberSmsRate * numOfSms));
     }
 
+    // set purchase sms count
     setCount(numOfSms);
   };
 
@@ -49,51 +72,93 @@ const SMSPurchase = ({ show, setShow }) => {
   const tkHandler = (money) => {
     money = Math.ceil(money);
     if (messageType === "nonMasking") {
-      setCount(Math.ceil(money / userData.smsRate));
+      setCount(Math.ceil(money / user.smsRate));
     } else if (messageType === "masking") {
-      setCount(Math.ceil(money / userData.maskingSmsRate));
+      setCount(Math.ceil(money / user.maskingSmsRate));
     } else if (messageType === "fixedNumber") {
-      setCount(Math.ceil(money / userData.fixedNumberSmsRate));
+      setCount(Math.ceil(money / user.fixedNumberSmsRate));
     }
 
+    // set purchase sms amount
     setAmount(money);
   };
 
   //form submit handler
-  const submitHandler = (e) => {
+  const submitHandler = () => {
     if (count < 400) {
-      alert(t("unsuccessSMSalertPurchageModal"));
+      toast.error(t("unsuccessSMSalertPurchageModal"));
     } else {
-      let data = {
-        amount: Math.ceil(amount),
-        numberOfSms: Number.parseInt(count),
-        ispOwner: userData.id,
-        user: userData.user,
-        type: "smsPurchase",
-        smsPurchaseType: messageType,
-      };
+      if (
+        ["ispOwner", "manager"].includes(role) ||
+        (role === "reseller" && buyStatus === "netFee")
+      ) {
+        const sendData = {
+          amount: Math.ceil(amount),
+          numberOfSms: Number.parseInt(count),
+          ispOwner: user.id,
+          user: user.user,
+          type: "smsPurchase",
+          smsPurchaseType: messageType,
+        };
 
-      purchaseSms(data, setIsloading);
+        // id for role based
+        if (role === "reseller") {
+          delete sendData.ispOwner;
+          sendData.reseller = userData.id;
+        }
+
+        // netfee sms purchase api call
+        purchaseSms(sendData, setIsloading, dispatch, setShow);
+      } else {
+        if (invoiceStatus.length === 0) {
+          const sendData = {
+            smsAmount: Number.parseInt(count),
+            smsParchaseType: messageType,
+          };
+
+          // andmin sms purchase api call
+          purchaseSMS(sendData, setIsloading, dispatch, setShow);
+        } else {
+          toast.error(t("statusCannotBePending"));
+        }
+      }
     }
   };
 
+  // set sms purchase amount and count on message type
   useEffect(() => {
     // message purchase
     if (messageType === "nonMasking") {
-      setAmount(Math.ceil(userData.smsRate * count));
+      setAmount(Math.ceil(user.smsRate * count));
     } else if (messageType === "masking") {
-      setAmount(Math.ceil(userData.maskingSmsRate * count));
+      setAmount(Math.ceil(user.maskingSmsRate * count));
     } else if (messageType === "fixedNumber") {
-      setAmount(Math.ceil(userData.fixedNumberSmsRate * count));
+      setAmount(Math.ceil(user.fixedNumberSmsRate * count));
     }
   }, [messageType]);
 
   return (
-    <Modal show={show} onHide={handleClose} backdrop="static" keyboard={false}>
-      <Modal.Header closeButton>
-        <Modal.Title> {t("smsPurchageBoard")}</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
+    <>
+      <ComponentCustomModal
+        show={show}
+        setShow={setShow}
+        header={t("smsPurchageBoard")}
+        centered={true}
+        size="md"
+        footer={
+          <div className="displayGrid1 float-end">
+            <button
+              className="btn btn-secondary"
+              onClick={() => setShow(false)}
+            >
+              {t("cancel")}
+            </button>
+            <button className="btn btn-success" onClick={submitHandler}>
+              {isLoading ? <Loader /> : t("buySMS")}
+            </button>
+          </div>
+        }
+      >
         <div className="container">
           {/* <div className="shadow border p-1 mb-5 bg-white rounded position-relative">
             <span className="position-absolute end-0 badge bg-primary text-white">
@@ -148,16 +213,20 @@ const SMSPurchase = ({ show, setShow }) => {
               </div>
             </div>
           </div> */}
-          <div className="text-center">
+          <div className="monthlyBill text-center">
             <span className="fw-bold"> {t("purchagePrice")} </span>
             <span className="price">
               <strong>৳{Math.ceil(amount)}</strong>
             </span>
           </div>
 
-          <form>
-            <div className="form-group ">
-              <label> {t("smsType")} </label>
+          <form className="displayGrid">
+            <div>
+              <label class="form-control-label text-secondary">
+                {t("smsType")}&nbsp;
+                <span className="text-danger">*</span>
+              </label>
+
               <select
                 className="form-select mw-100 mt-0"
                 onChange={(e) => setMessageType(e.target.value)}
@@ -170,8 +239,12 @@ const SMSPurchase = ({ show, setShow }) => {
               </select>
             </div>
 
-            <div className="form-group mt-3">
-              <label> {t("sms")} </label>
+            <div>
+              <label class="form-control-label text-secondary">
+                {t("SMS") + " " + t("count")}&nbsp;
+                <span className="text-danger">*</span>
+              </label>
+
               <input
                 onChange={(e) => changeHandler(e.target.value)}
                 className="form-control"
@@ -181,28 +254,42 @@ const SMSPurchase = ({ show, setShow }) => {
               />
             </div>
 
-            <div className="form-group mt-3">
-              <label> {t("tk")} </label>
+            <div>
+              <label className="form-control-label text-secondary">
+                {t("smsAmunt")}&nbsp;
+                <span className="text-danger">*</span>
+              </label>
               <input
                 onChange={(e) => tkHandler(e.target.value)}
                 className="form-control"
                 type="number"
-                value={amount ? amount : ""}
+                value={amount && amount}
                 min={100}
               />
             </div>
+
+            {role === "reseller" && (
+              <div>
+                <label className="form-control-label text-secondary">
+                  {t("selectPlace")}&nbsp;
+                  <span className="text-danger">*</span>
+                </label>
+
+                <select
+                  className="form-select mw-100 mt-0"
+                  onChange={(e) => setBuyStatus(e.target.value)}
+                >
+                  <option value="netFee" selected>
+                    NetFee
+                  </option>
+                  <option value="ispOwner">Isp Owner</option>
+                </select>
+              </div>
+            )}
           </form>
         </div>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="danger" onClick={handleClose}>
-          {t("cancel")}
-        </Button>
-        <Button variant="success" onClick={(e) => submitHandler(e)}>
-          {isLoading ? <Loader /> : t("buySMS")}
-        </Button>
-      </Modal.Footer>
-    </Modal>
+      </ComponentCustomModal>
+    </>
   );
 };
 

@@ -85,7 +85,22 @@ const QRCodePay = () => {
                       <tr>
                         <td>Monthly Fee</td>
                         <td>
-                          <strong>: {customerInfo.monthlyFee} TK</strong>{" "}
+                          : <strong>{customerInfo.monthlyFee} TK</strong>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Balance</td>
+                        <td>
+                          :&nbsp;
+                          <strong
+                            className={
+                              customerInfo.balance < 0
+                                ? "text-danger"
+                                : "text-success"
+                            }
+                          >
+                            {customerInfo.balance} TK
+                          </strong>
                         </td>
                       </tr>
                       <tr>

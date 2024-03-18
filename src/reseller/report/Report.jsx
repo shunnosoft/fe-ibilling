@@ -70,6 +70,7 @@ const Report = () => {
 
   // get reseller, collector collection all bills
   const allBills = useSelector((state) => state.payment.allBills);
+  console.log(allBills);
 
   // get all area subArea
   const subAreas = useSelector((state) => state.area.area);
@@ -321,6 +322,7 @@ const Report = () => {
             start: data.start,
             end: data.end,
             month: data.month,
+            form: data.billCollectedFrom,
           };
         },
         Cell: ({ cell: { value } }) => {
@@ -337,7 +339,7 @@ const Report = () => {
                 </span>
               )}
               <p>
-                {value?.month && value.month.slice(0, 15)}{" "}
+                {value?.month && value.month.slice(0, 15)}({value?.form}){" "}
                 <span>
                   {value?.month && value?.month?.length > 15 && "..."}
                 </span>

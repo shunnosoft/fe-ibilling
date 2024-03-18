@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { FourGround } from "../../../assets/js/theme";
 import { useSelector } from "react-redux";
-import { Link, NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import {
   ArrowClockwise,
   BoxArrowLeft,
-  Paypal,
+  EnvelopePlus,
+  MoonFill,
   PersonFill,
+  SunFill,
 } from "react-bootstrap-icons";
 
 // internal imports
 import "./header.css";
-// import { logOut } from "../../../features/authSlice";
 import { useDispatch } from "react-redux";
 import { userLogout } from "../../../features/actions/authAsyncAction";
 import Loader from "../../common/Loader";
@@ -24,10 +25,10 @@ import i18n from "../../../language/i18n/i18n";
 import FormatNumber from "../../common/NumberFormat";
 import { useTranslation } from "react-i18next";
 import ResellerOnlinePayment from "../../../reseller/onlinePayment/ResellerOnlinePayment";
+import SMSPurchase from "../../../pages/message/SMSPurchase";
 
 export default function Header(props) {
   const { t } = useTranslation();
-  // const userRole = useSelector(state => state.persistedReducer.auth.role);
   const [isRefrsh, setIsrefresh] = useState(false);
   const [isLoading, setLoading] = useState(false);
 
@@ -61,6 +62,10 @@ export default function Header(props) {
   const previousBalancee = useSelector(
     (state) => state?.payment?.previousBalance
   );
+
+  // modal show handler
+  const [modalStatus, setModalStatus] = useState("");
+  const [show, setShow] = useState(false);
 
   const dispatch = useDispatch();
   // const navigate = useNavigate();
@@ -109,16 +114,7 @@ export default function Header(props) {
   };
   // end change language settings
 
-  const icon =
-    props.theme === "light" ? (
-      <i className="fas fa-moon"></i>
-    ) : (
-      <i className="fas fa-sun"></i>
-    );
-
-  // const getResellerBalance = ()=>{
-  //   setIsrefresh(true)
-  // }
+  const icon = props.theme === "light" ? <MoonFill /> : <SunFill />;
 
   // reseller ispOwner online payment modal
   const resellerOnlinePayment = () => {
@@ -148,17 +144,15 @@ export default function Header(props) {
               {/* <img src="./assets/img/logo.png" alt="" /> */}
             </div>
 
-            <div className="headerLinks">
+            <div className="headerLinks gap-1">
               {(userRole === "ispOwner" || userRole === "manager") && (
                 <div
-                  style={{ cursor: "pointer", width: "190px" }}
-                  className="me-1 phone_view_none"
+                  className="openSupportTicket phone_view_none"
                   title={t("supportTicket")}
                 >
                   <a
                     href={`http://45.77.47.252:5601/support-ticket/create?&netfeeID=${ispOwnerData?.netFeeId}`}
                     target="_blank"
-                    className="fw-bold text-primary"
                   >
                     {t("supportTicket")}
                   </a>
@@ -166,10 +160,7 @@ export default function Header(props) {
               )}
 
               {currentUser && userRole === "ispOwner" ? (
-                <div
-                  style={{ marginRight: "20px" }}
-                  className="refreshDiv phone_view_none"
-                >
+                <div className="refreshDiv phone_view_none">
                   <div
                     style={{ backgroundColor: "inherit" }}
                     className="balancetext"
@@ -205,18 +196,12 @@ export default function Header(props) {
                   {(ispOwner?.smsBalance ||
                     ispOwner?.maskingSmsBalance ||
                     ispOwner?.fixedNumberSmsBalance) > 0 && (
-                    <div
-                      title={t("refresh")}
-                      style={{
-                        borderRadius: "10%",
-                        backgroundColor: "#F7E9D7",
-                      }}
-                      className="refreshIcon"
-                    >
+                    <div title={t("refresh")} className="headerIcon">
                       {isLoading ? (
                         <Loader />
                       ) : (
                         <ArrowClockwise
+                          className="fs-5"
                           onClick={() =>
                             getIspOwnerWitSMS(
                               ispOwnerId,
@@ -224,7 +209,7 @@ export default function Header(props) {
                               setLoading
                             )
                           }
-                        ></ArrowClockwise>
+                        />
                       )}
                     </div>
                   )}
@@ -233,8 +218,8 @@ export default function Header(props) {
                 ""
               )}
 
-              {currentUser && userRole === "reseller" ? (
-                <div style={{ marginRight: "20px" }} className="refreshDiv">
+              {currentUser && userRole === "reseller" && (
+                <div className="refreshDiv">
                   {/* <div
                     style={{ backgroundColor: "inherit" }}
                     className="balancetext"
@@ -261,15 +246,12 @@ export default function Header(props) {
                     </strong>
                   </div>
 
-                  <div
-                    title={t("refresh")}
-                    style={{ borderRadius: "10%", backgroundColor: "#F7E9D7" }}
-                    className="refreshIcon"
-                  >
+                  <div title={t("refresh")} className="headerIcon">
                     {isRefrsh ? (
                       <Loader />
                     ) : (
                       <ArrowClockwise
+                        className="fs-5"
                         onClick={() =>
                           getResellerBalance(
                             userData.id,
@@ -278,17 +260,15 @@ export default function Header(props) {
                             setIsrefresh
                           )
                         }
-                      ></ArrowClockwise>
+                      />
                     )}
                   </div>
                 </div>
-              ) : (
-                ""
               )}
 
               {currentUser &&
               (userRole === "manager" || userRole === "collector") ? (
-                <div style={{ marginRight: "20px" }} className="refreshDiv">
+                <div className="refreshDiv">
                   <div
                     style={{ backgroundColor: "inherit" }}
                     className="balancetext"
@@ -307,17 +287,15 @@ export default function Header(props) {
                       {FormatNumber(previousBalancee)}
                     </strong>
                   </div> */}
-                  <div
-                    title={t("refresh")}
-                    style={{ borderRadius: "10%", backgroundColor: "#F7E9D7" }}
-                    className="refreshIcon"
-                  >
+
+                  <div className="headerIcon" title={t("refresh")}>
                     {isLoading ? (
                       <Loader />
                     ) : (
                       <ArrowClockwise
+                        className="fs-5"
                         onClick={() => getTotalbal(dispatch, setLoading)}
-                      ></ArrowClockwise>
+                      />
                     )}
                   </div>
                 </div>
@@ -325,14 +303,24 @@ export default function Header(props) {
                 ""
               )}
 
-              <div className="darkLight phone_view_none" onClick={changeTHeme}>
+              <div
+                className="headerIcon"
+                onClick={() => {
+                  setModalStatus("buySMS");
+                  setShow(true);
+                }}
+              >
+                <EnvelopePlus size={22} />
+              </div>
+
+              <div className="headerIcon phone_view_none" onClick={changeTHeme}>
                 {icon}
               </div>
 
               {/* change language select box */}
               <select
                 onChange={selectLanguage}
-                className="me-2"
+                className="mw-2"
                 style={{
                   border: "none",
                   fontSize: "15px",
@@ -463,6 +451,14 @@ export default function Header(props) {
           </header>
         </div>
       </FourGround>
+
+      {/* component modals */}
+
+      {/* sms purchase modal */}
+      {modalStatus === "buySMS" && (
+        <SMSPurchase show={show} setShow={setShow} />
+      )}
+
       <ResellerOnlinePayment show={paymentShow} setShow={setPaymentShow} />
       {/* <MessageAlert ispOwner={ispOwner} /> */}
     </div>

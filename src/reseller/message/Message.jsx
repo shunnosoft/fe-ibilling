@@ -3,33 +3,23 @@ import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { useDispatch, useSelector } from "react-redux";
 import { toast, ToastContainer } from "react-toastify";
 import moment from "moment";
-
-// internal import
 import { useCallback } from "react";
 import { ArrowClockwise, EnvelopePlus } from "react-bootstrap-icons";
-import { FontColor, FourGround } from "../../assets/js/theme";
-
-import Footer from "../../components/admin/footer/Footer";
-import SmsParchase from "./smsParchaseModal";
-import Loader from "../../components/common/Loader";
-
-import "./message.css";
-import useDash from "../../assets/css/dash.module.css";
-
-import apiLink from "../../api/apiLink";
-import { isBangla, smsCount } from "../../components/common/UtilityMethods";
-import { getSubAreas } from "../../features/apiCallReseller";
 import { useTranslation } from "react-i18next";
+
+// internal import
+import "./message.css";
+import { FontColor, FourGround } from "../../assets/js/theme";
+import Footer from "../../components/admin/footer/Footer";
+import Loader from "../../components/common/Loader";
+import useDash from "../../assets/css/dash.module.css";
+import apiLink from "../../api/apiLink";
+import { smsCount } from "../../components/common/UtilityMethods";
+import { getSubAreas } from "../../features/apiCallReseller";
 import FormatNumber from "../../components/common/NumberFormat";
-import RechargeModal from "../../pages/reseller/smsRecharge/modal/RechargeModal";
-import { getParchaseHistory } from "../../features/resellerParchaseSmsApi";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
-
-const useForceUpdate = () => {
-  const [value, setValue] = useState(0); // integer state
-  return () => setValue((value) => value + 1); // update the state to force render
-};
+import SMSPurchase from "../../pages/message/SMSPurchase";
 
 const makeMessageObj = (template, ispOwnerId, customer, subAreaIds = null) => {
   if (subAreaIds.includes(customer.subArea)) {
@@ -68,35 +58,30 @@ const makeMessageObj = (template, ispOwnerId, customer, subAreaIds = null) => {
 
 export default function RMessage() {
   const { t } = useTranslation();
-  const reset = useForceUpdate();
-  const userRole = useSelector((state) => state.persistedReducer.auth.role);
 
-  // get data
-  const data = useSelector((state) => state?.smsHistory?.smsParchase);
+  // get user role
+  const userRole = useSelector((state) => state.persistedReducer.auth.role);
 
   // get bulletin permission
   const butPermission = useSelector(
     (state) => state.adminNetFeeSupport?.bulletinPermission
   );
 
-  // get accept status
-  const acceptStatus = data.filter((item) => item.status === "pending");
-
   const [sms, setSms] = useState("");
+
+  // modal show handler
+  const [modalStatus, setModalStatus] = useState("");
+  const [show, setShow] = useState(false);
 
   // Loading state
   const [isChecked, setisChecked] = useState(false);
   const [isAllChecked, setisAllChecked] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const [status, setStatus] = useState("");
-  const [payment, setPayment] = useState("");
   const [smsTemplet, setTemplet] = useState([]);
 
   const [bottomText, setBottomText] = useState("");
   const [upperText, setUpperText] = useState("");
-  // const [totalText, setTotalText] = useState("");
-  // console.log(upperText + "\n" + bottomText);
 
   const [isRefrsh, setIsrefresh] = useState(false);
   const area = useSelector((state) => state.area.area);
@@ -108,9 +93,6 @@ export default function RMessage() {
 
   const resellerId = useSelector(
     (state) => state.persistedReducer.auth.currentUser.reseller.id
-  );
-  const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerId
   );
 
   const maskingId = useSelector(
@@ -136,7 +118,6 @@ export default function RMessage() {
     if (userRole === "reseller") {
       getResellerNow();
       getSubAreas(dispatch, resellerId);
-      getParchaseHistory(resellerId, dispatch, setIsLoading);
 
       Object.keys(butPermission)?.length === 0 &&
         getBulletinPermission(dispatch);
@@ -163,12 +144,6 @@ export default function RMessage() {
 
     setDays(days);
   };
-
-  // const customers = useSelector(
-  //   (state) => state.customer.customer
-  // );
-
-  // const [loading, setIsLoading] = useState(false);
 
   const handleSendMessage = async () => {
     let messageTemplate = upperText + "\n" + bottomText;
@@ -417,7 +392,6 @@ export default function RMessage() {
   };
   return (
     <>
-      <SmsParchase />
       <Sidebar />
       <ToastContainer position="top-right" theme="colored" />
       <div className={useDash.dashboardWrapper}>
@@ -431,8 +405,10 @@ export default function RMessage() {
                   <div className="d-flex align-items-center">
                     <div
                       className="textButton"
-                      data-bs-toggle="modal"
-                      data-bs-target="#smsRechargeModal"
+                      onClick={() => {
+                        setModalStatus("buySMS");
+                        setShow(true);
+                      }}
                     >
                       <EnvelopePlus className="text_icons" /> {t("buySms")}
                     </div>
@@ -506,16 +482,6 @@ export default function RMessage() {
                         />{" "}
                         {t("fixedNumber")} {"              "}
                       </div>
-
-                      {userRole === "ispOwner" && (
-                        <button
-                          data-bs-toggle="modal"
-                          data-bs-target="#smsparchase"
-                          className="buysms"
-                        >
-                          {t("buySMS")}
-                        </button>
-                      )}
                     </div>
 
                     <div className="writeMessageSection">
@@ -913,7 +879,13 @@ export default function RMessage() {
           </div>
         </div>
       </div>
-      <RechargeModal status={acceptStatus} />
+
+      {/* component modals */}
+
+      {/* sms purchase modal */}
+      {modalStatus === "buySMS" && (
+        <SMSPurchase show={show} setShow={setShow} />
+      )}
     </>
   );
 }

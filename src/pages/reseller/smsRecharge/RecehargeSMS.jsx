@@ -1,20 +1,9 @@
 import React, { useEffect } from "react";
-import Sidebar from "../../../components/admin/sidebar/Sidebar";
-import useDash from "../../../assets/css/dash.module.css";
-import { FourGround, FontColor } from "../../../assets/js/theme";
-// import
-import { ToastContainer } from "react-toastify";
-import RechargeModal from "./modal/RechargeModal";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  getInvoiceHistory,
-  getParchaseHistory,
-} from "../../../features/resellerParchaseSmsApi";
 import moment from "moment";
-import Table from "../../../components/table/Table";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
-import Loader from "../../../components/common/Loader";
+import { ToastContainer } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
 import {
   ArrowClockwise,
   CurrencyDollar,
@@ -22,12 +11,24 @@ import {
   ThreeDots,
 } from "react-bootstrap-icons";
 import { Tab, Tabs } from "react-bootstrap";
+
+// internal import
+import Sidebar from "../../../components/admin/sidebar/Sidebar";
+import useDash from "../../../assets/css/dash.module.css";
+import { FourGround, FontColor } from "../../../assets/js/theme";
+import {
+  getInvoiceHistory,
+  getParchaseHistory,
+} from "../../../features/resellerParchaseSmsApi";
+import Table from "../../../components/table/Table";
+import Loader from "../../../components/common/Loader";
 import { badge } from "../../../components/common/Utils";
 import FormatNumber from "../../../components/common/NumberFormat";
 import { showModal } from "../../../features/uiSlice";
+import SMSPurchase from "../../message/SMSPurchase";
+
 const RecehargeSMS = () => {
   const { t } = useTranslation();
-  // import dispatch
   const dispatch = useDispatch();
 
   // ger resller id
@@ -49,8 +50,9 @@ const RecehargeSMS = () => {
   // history loading state
   const [historyLoading, setHistoryLoading] = useState(false);
 
-  // get accept status
-  const acceptStatus = data.filter((item) => item.status === "pending");
+  // modal show handler
+  const [modalStatus, setModalStatus] = useState("");
+  const [show, setShow] = useState(false);
 
   // reload handler
   const reloadHandler = () => {
@@ -161,13 +163,7 @@ const RecehargeSMS = () => {
         id: "option",
 
         Cell: ({ row: { original } }) => (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
+          <div className="d-flex justify-content-center align-items-center">
             <div className="dropdown">
               <ThreeDots
                 className="dropdown-toggle ActionDots"
@@ -191,18 +187,6 @@ const RecehargeSMS = () => {
                     </div>
                   </li>
                 )}
-                {/* {original.type === "smsPurchase" &&
-                  original.status &&
-                  "unpaid" && (
-                    <li onClick={() => deleteInvoiceHandler(original.id)}>
-                      <div className="dropdown-item">
-                        <div className="customerAction">
-                          <CurrencyDollar />
-                          <p className="actionP">{t("delete")}</p>
-                        </div>
-                      </div>
-                    </li>
-                  )} */}
               </ul>
             </div>
           </div>
@@ -233,14 +217,16 @@ const RecehargeSMS = () => {
                           className="arrowClock"
                           title={t("refresh")}
                           onClick={() => reloadHandler()}
-                        ></ArrowClockwise>
+                        />
                       )}
                     </div>
 
                     <div
                       className="d-flex align-items-center"
-                      data-bs-toggle="modal"
-                      data-bs-target="#smsRechargeModal"
+                      onClick={() => {
+                        setModalStatus("buySMS");
+                        setShow(true);
+                      }}
                     >
                       <div className="textButton">
                         <EnvelopePlus className="text_icons" /> {t("buySms")}
@@ -281,7 +267,13 @@ const RecehargeSMS = () => {
           </div>
         </div>
       </div>
-      <RechargeModal status={acceptStatus} />
+
+      {/* component modals */}
+
+      {/* sms purchase modal */}
+      {modalStatus === "buySMS" && (
+        <SMSPurchase show={show} setShow={setShow} />
+      )}
     </>
   );
 };

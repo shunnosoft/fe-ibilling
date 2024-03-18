@@ -117,6 +117,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
     salary: "",
     thana: "",
   });
+  console.log(formData);
 
   // set ispOwner package commission in state
   const [packageCommission, setPackageCommission] = useState();
@@ -591,10 +592,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       }
 
       // set single package change balance
-      setFormData({
-        ...formData,
-        balance: Math.round(changePackageAmount),
-      });
+      setFormData((formData.balance = Math.round(changePackageAmount)));
     }
 
     // set single package data
