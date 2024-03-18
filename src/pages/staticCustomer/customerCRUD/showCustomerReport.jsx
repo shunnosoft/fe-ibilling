@@ -392,23 +392,28 @@ const CustomerReport = ({ show, setShow, single }) => {
                           ) : (
                             ""
                           )}
-                          {(role === "ispOwner" && bpSettings?.reportDelete) ||
-                          (role === "manager" && permission?.reportDelete) ? (
-                            <div title={t("deleteReport")}>
-                              <button
-                                className="border-0 bg-transparent me-4"
-                                onClick={() => deletReport(val.id)}
-                              >
-                                <TrashFill
-                                  color="#dc3545"
-                                  style={{ cursor: "pointer" }}
-                                />
-                                <span> {t("deleteReport")}</span>
-                              </button>
-                            </div>
-                          ) : (
-                            ""
-                          )}
+                          {((role === "ispOwner" && bpSettings?.reportDelete) ||
+                            (role === "manager" && permission?.reportDelete)) &&
+                            ![
+                              "sslcommerz",
+                              "uddoktapay",
+                              "sslpay",
+                              "bKashPG",
+                              "Webhook",
+                            ].includes(val.medium) && (
+                              <div title={t("deleteReport")}>
+                                <button
+                                  className="border-0 bg-transparent me-4"
+                                  onClick={() => deletReport(val.id)}
+                                >
+                                  <TrashFill
+                                    color="#dc3545"
+                                    style={{ cursor: "pointer" }}
+                                  />
+                                  <span> {t("deleteReport")}</span>
+                                </button>
+                              </div>
+                            )}
                         </td>
                       )}
                     </tr>

@@ -112,34 +112,34 @@ const CustomerReport = ({ show, setShow, single }) => {
                     <tr className="spetialSortingRow" key={index}>
                       <td>
                         <p>
-                          {t("bandWith")}{" "}
+                          {t("bandWith")}
                           <b className="text-secondary">
                             {single.pppoe.profile}
                           </b>
                         </p>
                         <p>
-                          {t("amount")}{" "}
+                          {t("amount")}
                           <b className="text-secondary">
                             {FormatNumber(val.amount)}
                           </b>
                         </p>
                         <p>
-                          {t("type")}{" "}
+                          {t("type")}
                           <b className="text-secondary">{val.billType}</b>
                         </p>
                         <p>
-                          {t("medium")}{" "}
+                          {t("medium")}
                           <b className="text-secondary">{val.medium}</b>
                         </p>
                       </td>
 
                       <td>
                         <p>
-                          {t("collected")}{" "}
+                          {t("collected")}
                           <b className="text-secondary">{val.name}</b>
                         </p>
                         <p>
-                          {t("createdAt")}{" "}
+                          {t("createdAt")}
                           <b className="text-secondary">
                             {moment(val.createdAt).format(
                               "MMM DD YYYY hh:mm a"
@@ -149,25 +149,25 @@ const CustomerReport = ({ show, setShow, single }) => {
                       </td>
                       <td>
                         <p>
-                          {t("discount")}{" "}
+                          {t("discount")}
                           <b className="text-secondary">
                             {FormatNumber(val?.discount)}
                           </b>
                         </p>
                         <p>
-                          {t("due")}{" "}
+                          {t("due")}
                           <b className="text-secondary">
                             {FormatNumber(val.due)}
                           </b>
                         </p>
                         <p>
-                          {t("previousBalance")}{" "}
+                          {t("previousBalance")}
                           <b className="text-secondary">
                             {FormatNumber(val?.prevState?.balance)}
                           </b>
                         </p>
                         <p>
-                          {t("currentBalance")}{" "}
+                          {t("currentBalance")}
                           <b className="text-secondary">
                             {FormatNumber(val?.currentState?.balance)}
                           </b>
@@ -175,7 +175,7 @@ const CustomerReport = ({ show, setShow, single }) => {
                       </td>
                       <td>
                         <p>
-                          {t("billDate")}{" "}
+                          {t("billDate")}
                           <b className="text-secondary">
                             {moment(val.prevState?.billingCycle).format(
                               "MMM DD YYYY hh:mm a"
@@ -183,7 +183,7 @@ const CustomerReport = ({ show, setShow, single }) => {
                           </b>
                         </p>
                         <p>
-                          {t("promiseDate")}{" "}
+                          {t("promiseDate")}
                           <b className="text-secondary">
                             {moment(val.prevState?.promiseDate).format(
                               "MMM DD YYYY hh:mm a"
@@ -193,7 +193,7 @@ const CustomerReport = ({ show, setShow, single }) => {
                       </td>
                       <td>
                         <p>
-                          {t("billDate")}{" "}
+                          {t("billDate")}
                           <b className="text-secondary">
                             {moment(val.currentState?.billingCycle).format(
                               "MMM DD YYYY hh:mm a"
@@ -201,7 +201,7 @@ const CustomerReport = ({ show, setShow, single }) => {
                           </b>
                         </p>
                         <p>
-                          {t("promiseDate")}{" "}
+                          {t("promiseDate")}
                           <b className="text-secondary">
                             {moment(val.currentState?.promiseDate).format(
                               "MMM DD YYYY hh:mm a"
@@ -383,25 +383,31 @@ const CustomerReport = ({ show, setShow, single }) => {
                             ) : (
                               ""
                             )}
-                            {(role === "ispOwner" &&
+                            {((role === "ispOwner" &&
                               bpSettings?.reportDelete) ||
-                            (role === "manager" && permissions?.reportDelete) ||
-                            (role === "collector" &&
-                              bpSettings?.reportDelete &&
-                              permissions?.billDelete) ? (
-                              <button
-                                className="border-0 bg-transparent me-4"
-                                onClick={() => deletReport(val.id)}
-                              >
-                                <TrashFill
-                                  color="#dc3545"
-                                  style={{ cursor: "pointer" }}
-                                />{" "}
-                                <span> {t("delete")}</span>
-                              </button>
-                            ) : (
-                              ""
-                            )}
+                              (role === "manager" &&
+                                permissions?.reportDelete) ||
+                              (role === "collector" &&
+                                bpSettings?.reportDelete &&
+                                permissions?.billDelete)) &&
+                              ![
+                                "sslcommerz",
+                                "uddoktapay",
+                                "sslpay",
+                                "bKashPG",
+                                "Webhook",
+                              ].includes(val.medium) && (
+                                <button
+                                  className="border-0 bg-transparent me-4"
+                                  onClick={() => deletReport(val.id)}
+                                >
+                                  <TrashFill
+                                    color="#dc3545"
+                                    style={{ cursor: "pointer" }}
+                                  />
+                                  <span> {t("delete")}</span>
+                                </button>
+                              )}
                           </div>
                         </td>
                       )}

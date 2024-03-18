@@ -322,14 +322,13 @@ const Report = () => {
             start: data.start,
             end: data.end,
             month: data.month,
-            form: data.billCollectedFrom,
           };
         },
         Cell: ({ cell: { value } }) => {
           return (
             <>
               <p>
-                {value.note && value.note.slice(0, 15)}{" "}
+                {value.note && value.note.slice(0, 15)}
                 <span>{value?.note && value?.note?.length > 15 && "..."}</span>
               </p>
               {value?.start && value?.end && (
@@ -339,7 +338,7 @@ const Report = () => {
                 </span>
               )}
               <p>
-                {value?.month && value.month.slice(0, 15)}({value?.form}){" "}
+                {value?.month && value.month.slice(0, 15)}
                 <span>
                   {value?.month && value?.month?.length > 15 && "..."}
                 </span>
@@ -504,7 +503,7 @@ const Report = () => {
                               onChange={(e) => setCollectorIds(e.target.value)}
                             >
                               <option value="" defaultValue>
-                                {t("all collector")}{" "}
+                                {t("all collector")}
                               </option>
                               {resellerUsers?.map((coll, key) => (
                                 <option key={key} value={coll.user}>

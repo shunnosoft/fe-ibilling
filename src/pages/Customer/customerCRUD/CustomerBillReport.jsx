@@ -107,14 +107,21 @@ const CustomerBillReport = ({ customerId, customerData }) => {
                         (role === "manager" && permissions?.reportDelete) ||
                         (role === "collector" &&
                           bpSettings?.reportDelete &&
-                          permissions?.billDelete)) && (
-                        <TrashFill
-                          size={19}
-                          className="text-danger ms-2"
-                          title={t("delete")}
-                          onClick={() => singleReportDelete(val?.id)}
-                        />
-                      )}
+                          permissions?.billDelete)) &&
+                        ![
+                          "sslcommerz",
+                          "uddoktapay",
+                          "sslpay",
+                          "bKashPG",
+                          "Webhook",
+                        ].includes(val.medium) && (
+                          <TrashFill
+                            size={19}
+                            className="text-danger ms-2"
+                            title={t("delete")}
+                            onClick={() => singleReportDelete(val?.id)}
+                          />
+                        )}
                     </div>
                   </div>
 
