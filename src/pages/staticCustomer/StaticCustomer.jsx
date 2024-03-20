@@ -101,6 +101,7 @@ import {
 import { getOwnerUsers } from "../../features/getIspOwnerUsersApi";
 import CustomerDelete from "../Customer/customerCRUD/CustomerDelete";
 import TransferToReseller from "../Customer/customerCRUD/TransferToReseller";
+import BulkOptions from "../Customer/customerCRUD/bulkOpration/BulkOptions";
 
 const Customer = () => {
   //call hooks
@@ -1140,7 +1141,7 @@ const Customer = () => {
   );
 
   //bulk operations
-  const [bulkCustomer, setBulkCustomer] = useState([]);
+  const [bulkCustomers, setBulkCustomer] = useState([]);
 
   //total monthly fee and due calculation
   const dueMonthlyFee = useMemo(() => {
@@ -1752,7 +1753,7 @@ const Customer = () => {
                       <Table
                         isLoading={customerLoading}
                         customComponent={customComponent}
-                        bulkLength={bulkCustomer?.length}
+                        bulkLength={bulkCustomers?.length}
                         columns={columns}
                         data={Customers1}
                         bulkState={{
@@ -1770,613 +1771,148 @@ const Customer = () => {
                 )}
               </FourGround>
 
-              {/* Model start */}
-
-              {/* customer profile details modal */}
-              {modalStatus === "profile" && (
-                <CustomerDetails
-                  show={show}
-                  setShow={setShow}
-                  customerId={singleCustomer}
-                />
-              )}
-
-              {/* customer create modal */}
-              {modalStatus === "customerPost" && (
-                <AddStaticCustomer show={show} setShow={setShow} />
-              )}
-
-              {/* single customer update */}
-              {modalStatus === "customerEdit" && (
-                <EditStaticCustomer
-                  show={show}
-                  setShow={setShow}
-                  single={singleCustomer}
-                  handleActiveFilter={handleActiveFilter}
-                />
-              )}
-
-              {/* customer bill collection */}
-              {modalStatus === "customerRecharge" && (
-                <RechargeCustomer
-                  show={show}
-                  setShow={setShow}
-                  single={singleCustomer}
-                  customerData={customerReportData}
-                />
-              )}
-
-              {/* customer report modal */}
-              {modalStatus === "report" && (
-                <CustomerReport
-                  show={show}
-                  setShow={setShow}
-                  single={customerReportData}
-                />
-              )}
-
-              {/* customer note modal */}
-              {modalStatus === "note" && (
-                <CustomerNote
-                  show={show}
-                  setShow={setShow}
-                  customerId={customerNoteId}
-                  customerName={customerName}
-                />
-              )}
-
-              {/* customer delete modal */}
-              {modalStatus === "delete" && (
-                <CustomerDelete
-                  show={show}
-                  setShow={setShow}
-                  single={singleData}
-                  mikrotikCheck={mikrotikCheck}
-                  setMikrotikCheck={setMikrotikCheck}
-                />
-              )}
-
-              {/* static customer message */}
-              {modalStatus === "message" && (
-                <SingleMessage
-                  show={show}
-                  setShow={setShow}
-                  single={singleCustomer}
-                  sendCustomer="staticCustomer"
-                />
-              )}
-
-              {/* transferReseller modal */}
-              {modalStatus === "resellerTransfer" && (
-                <TransferToReseller
-                  show={show}
-                  setShow={setShow}
-                  customerId={singleCustomer}
-                  page="static"
-                />
-              )}
-
-              {/* password reset modal */}
-              {modalStatus === "password" && (
-                <PasswordReset show={show} setShow={setShow} userId={userId} />
-              )}
-
-              {/* support ticket modal */}
-              {modalStatus === "supportTicket" && (
-                <CreateSupportTicket
-                  show={show}
-                  setShow={setShow}
-                  collectors={collectors}
-                  manager={manager}
-                  customer={singleCustomer}
-                  ispOwner={ispOwnerId}
-                  reseller=""
-                />
-              )}
-
-              {/* customers number update or delete modal */}
-              <CustomersNumber showModal={numberModalShow} />
-
-              {/* fire wall filter ip drop control */}
-              {modalStatus === "IPDrop" && (
-                <FireWallFilterIpDropControl show={show} setShow={setShow} />
-              )}
-
-              {/* print option modal */}
-              {modalStatus === "print" && (
-                <PrintOptions
-                  show={show}
-                  setShow={setShow}
-                  filterData={filterData}
-                  tableData={Customers1}
-                  page="customer"
-                  printData={printData}
-                />
-              )}
-
-              {/* Model finish */}
-
-              {/* static customer create invoice */}
-              <StaticCreateInvoice
-                show={isOpen}
-                setShow={setIsOpen}
-                single={singleCustomer}
-                customerData={customerData}
-              />
-
-              {/* bulk modal start */}
-              {bulkStatus === "customerBulkEdit" && (
-                <BulkSubAreaEdit
-                  bulkCustomer={bulkCustomer}
-                  show={isShow}
-                  setShow={setIsShow}
-                />
-              )}
-
-              {bulkStatus === "customerBillingCycle" && (
-                <BulkBillingCycleEdit
-                  bulkCustomer={bulkCustomer}
-                  show={isShow}
-                  setShow={setIsShow}
-                />
-              )}
-
-              {bulkStatus === "bulkPromiseDateEdit" && (
-                <BulkPromiseDateEdit
-                  bulkCustomer={bulkCustomer}
-                  show={isShow}
-                  setShow={setIsShow}
-                />
-              )}
-
-              {bulkStatus === "bulkStatusEdit" && (
-                <BulkStatusEdit
-                  bulkCustomer={bulkCustomer}
-                  show={isShow}
-                  setShow={setIsShow}
-                />
-              )}
-
-              {bpSettings?.hasMikrotik && bulkStatus === "bulkMikrotikEdit" && (
-                <BulkMikrotikEdit
-                  bulkCustomer={bulkCustomer}
-                  show={isShow}
-                  setShow={setIsShow}
-                />
-              )}
-
-              {bulkStatus === "bulkPackageEdit" && (
-                <BulkPackageEdit
-                  bulkCustomer={bulkCustomer}
-                  show={isShow}
-                  setShow={setIsShow}
-                  status="static"
-                />
-              )}
-
-              {bulkStatus === "bulkRecharge" && (
-                <BulkRecharge
-                  bulkCustomer={bulkCustomer}
-                  show={isShow}
-                  setShow={setIsShow}
-                />
-              )}
-
-              {bulkStatus === "customerBalanceEdit" && (
-                <BulkBalanceEdit
-                  bulkCustomer={bulkCustomer}
-                  show={isShow}
-                  setShow={setIsShow}
-                />
-              )}
-
-              {bulkStatus === "bulkDeleteCustomer" && (
-                <BulkCustomerDelete
-                  bulkCustomer={bulkCustomer}
-                  show={isShow}
-                  setShow={setIsShow}
-                />
-              )}
-
-              {bulkStatus === "autoDisableEditModal" && (
-                <BulkAutoConnectionEdit
-                  bulkCustomer={bulkCustomer}
-                  show={isShow}
-                  setShow={setIsShow}
-                />
-              )}
-
-              {bulkStatus === "bulkTransferToReseller" && (
-                <BulkCustomerTransfer
-                  bulkCustomer={bulkCustomer}
-                  show={isShow}
-                  setShow={setIsShow}
-                />
-              )}
-
-              {bulkStatus === "bulkPaymentStatusEdit" && (
-                <BulkPaymentStatusEdit
-                  bulkCustomer={bulkCustomer}
-                  show={isShow}
-                  setShow={setIsShow}
-                />
-              )}
-
-              {/* bulk Modal end */}
-
               <Footer />
             </FontColor>
           </div>
         </div>
       </div>
-      {bulkCustomer.length > 0 && (
-        <div className="client_wraper2">
-          <div
-            className={`settings_wraper2 ${
-              isMenuOpen ? "show-menu2" : "hide-menu2"
-            }`}
-          >
-            <ul className="client_service_list2 ps-0">
-              {((role === "ispOwner" && bpSettings?.bulkAreaEdit) ||
-                (bpSettings?.bulkAreaEdit &&
-                  permissions?.bulkAreaEdit &&
-                  role !== "manager")) && (
-                <li
-                  type="button"
-                  className="p-1"
-                  onClick={() => {
-                    setBulkStatus("customerBulkEdit");
-                    setIsShow(true);
-                  }}
-                >
-                  <div className="menu_icon2">
-                    <button
-                      className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-primary"
-                      title={t("editArea")}
-                    >
-                      <i class="fas fa-map-marked-alt fa-xs"></i>
-                      <span className="button_title">{t("editArea")}</span>
-                    </button>
-                  </div>
-                  <div className="menu_label2">{t("editArea")}</div>
-                </li>
-              )}
 
-              <hr className="mt-0 mb-0" />
+      {/* Model start */}
 
-              {((role === "ispOwner" && bpSettings?.bulkStatusEdit) ||
-                (bpSettings?.bulkStatusEdit &&
-                  permissions?.bulkStatusEdit &&
-                  role === "manager")) && (
-                <li
-                  type="button"
-                  className="p-1"
-                  onClick={() => {
-                    setBulkStatus("bulkStatusEdit");
-                    setIsShow(true);
-                  }}
-                >
-                  <div className="menu_icon2">
-                    <button
-                      className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-info"
-                      title={t("editStatus")}
-                    >
-                      <i className="fas fa-edit fa-xs  "></i>
-                      <span className="button_title"> {t("editStatus")}</span>
-                    </button>
-                  </div>
-                  <div className="menu_label2">{t("editStatus")}</div>
-                </li>
-              )}
-
-              <hr className="mt-0 mb-0" />
-
-              {((role === "ispOwner" && bpSettings?.bulkPaymentStatusEdit) ||
-                (bpSettings?.bulkPaymentStatusEdit &&
-                  permissions?.bulkPaymentStatusEdit &&
-                  role === "manager")) && (
-                <li
-                  type="button"
-                  className="p-1"
-                  onClick={() => {
-                    setBulkStatus("bulkPaymentStatusEdit");
-                    setIsShow(true);
-                  }}
-                >
-                  <div className="menu_icon2">
-                    <button
-                      className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-info"
-                      title={t("editPaymentStatus")}
-                    >
-                      <i className="fas fa-edit fa-xs  "></i>
-                      <span className="button_title">
-                        {t("editPaymentStatus")}
-                      </span>
-                    </button>
-                  </div>
-                  <div className="menu_label2">{t("editPaymentStatus")}</div>
-                </li>
-              )}
-
-              <hr className="mt-0 mb-0" />
-
-              {((role === "ispOwner" && bpSettings?.bulkBillingCycleEdit) ||
-                (bpSettings?.bulkBillingCycleEdit &&
-                  permissions?.bulkBillingCycleEdit &&
-                  role === "manager")) && (
-                <li
-                  type="button"
-                  className="p-1"
-                  onClick={() => {
-                    setBulkStatus("customerBillingCycle");
-                    setIsShow(true);
-                  }}
-                >
-                  <div className="menu_icon2">
-                    <button
-                      className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-2 bg-secondary"
-                      title={t("editBillingCycle")}
-                    >
-                      <i class="far fa-calendar-alt fa-xs"></i>
-                      <span className="button_title">
-                        {" "}
-                        {t("editBillingCycle")}{" "}
-                      </span>
-                    </button>
-                  </div>
-                  <div className="menu_label2">{t("editBillingCycle")}</div>
-                </li>
-              )}
-
-              <hr className="mt-0 mb-0" />
-
-              {((role === "ispOwner" && bpSettings?.bulkPromiseDateEdit) ||
-                (bpSettings?.bulkPromiseDateEdit &&
-                  permissions?.bulkPromiseDateEdit &&
-                  role === "manager")) && (
-                <li
-                  type="button"
-                  className="p-1"
-                  onClick={() => {
-                    setBulkStatus("bulkPromiseDateEdit");
-                    setIsShow(true);
-                  }}
-                >
-                  <div className="menu_icon2">
-                    <button
-                      className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-success"
-                      title={t("editPromiseDate")}
-                    >
-                      <i class="fas fa-calendar-week fa-xs"></i>
-                      <span className="button_title">
-                        {" "}
-                        {t("editPromiseDate")}{" "}
-                      </span>
-                    </button>
-                  </div>
-                  <div className="menu_label2">{t("editPromiseDate")}</div>
-                </li>
-              )}
-
-              <hr className="mt-0 mb-0" />
-              {((role === "ispOwner" && bpSettings?.updateCustomerBalance) ||
-                (bpSettings?.updateCustomerBalance &&
-                  permissions?.updateCustomerBalance &&
-                  role === "manager")) && (
-                <li
-                  type="button"
-                  className="p-1"
-                  onClick={() => {
-                    setBulkStatus("customerBalanceEdit");
-                    setIsShow(true);
-                  }}
-                >
-                  <div className="menu_icon2">
-                    <button
-                      className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-2 bg-warning"
-                      title={t("editBalance")}
-                    >
-                      <i className="fas fa-dollar fa-xs "></i>
-                      <span className="button_title">{t("editBalance")}</span>
-                    </button>
-                  </div>
-                  <div className="menu_label2">{t("editBalance")}</div>
-                </li>
-              )}
-
-              <hr className="mt-0 mb-0" />
-              {bpSettings?.hasMikrotik &&
-                ((role === "ispOwner" &&
-                  bpSettings?.bulkCustomerMikrotikUpdate) ||
-                  (bpSettings?.bulkCustomerMikrotikUpdate &&
-                    permissions?.bulkCustomerMikrotikUpdate &&
-                    role === "manager")) && (
-                  <li
-                    type="button"
-                    className="p-1"
-                    onClick={() => {
-                      setBulkStatus("bulkMikrotikEdit");
-                      setIsShow(true);
-                    }}
-                  >
-                    <div className="menu_icon2">
-                      <button
-                        className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-danger"
-                        title={t("package")}
-                      >
-                        <i class="fas fa-server fa-xs"></i>
-                        <span className="button_title">
-                          {t("changeMikrotik")}
-                        </span>
-                      </button>
-                    </div>
-                    <div className="menu_label2">{t("changeMikrotik")}</div>
-                  </li>
-                )}
-
-              <hr className="mt-0 mb-0" />
-              {bpSettings.hasMikrotik &&
-                ((role === "ispOwner" && bpSettings?.bulkPackageEdit) ||
-                  (bpSettings?.bulkPackageEdit &&
-                    permissions?.bulkPackageEdit &&
-                    role === "manager")) && (
-                  <li
-                    type="button"
-                    className="p-1"
-                    onClick={() => {
-                      setBulkStatus("bulkPackageEdit");
-                      setIsShow(true);
-                    }}
-                  >
-                    <div className="menu_icon2">
-                      <button
-                        className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-primary"
-                        title={t("package")}
-                      >
-                        <i class="fas fa-wifi fa-xs"></i>
-                        <span className="button_title">
-                          {t("updatePackage")}
-                        </span>
-                      </button>
-                    </div>
-                    <div className="menu_label2">{t("updatePackage")}</div>
-                  </li>
-                )}
-
-              <hr className="mt-0 mb-0" />
-              {bpSettings.hasMikrotik &&
-                ((role === "ispOwner" && bpSettings?.bulkCustomerRecharge) ||
-                  (bpSettings?.bulkCustomerRecharge &&
-                    permissions?.bulkCustomerRecharge &&
-                    role === "manager")) && (
-                  <li
-                    type="button"
-                    className="p-1"
-                    onClick={() => {
-                      setBulkStatus("bulkRecharge");
-                      setIsShow(true);
-                    }}
-                  >
-                    <div className="menu_icon2">
-                      <button
-                        className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-2 bg-warning"
-                        title={t("package")}
-                      >
-                        <i className="fas fa-dollar fa-xs "></i>
-                        <span className="button_title">
-                          {t("bulkRecharge")}
-                        </span>
-                      </button>
-                    </div>
-                    <div className="menu_label2">{t("bulkRecharge")}</div>
-                  </li>
-                )}
-
-              <hr className="mt-0 mb-0" />
-
-              {bpSettings?.hasMikrotik &&
-                ((role === "ispOwner" && bpSettings?.bulkAutoDisableEdit) ||
-                  (bpSettings?.bulkAutoDisableEdit &&
-                    permissions?.bulkAutoDisableEdit &&
-                    role === "manager")) && (
-                  <li
-                    type="button"
-                    className="p-1"
-                    onClick={() => {
-                      setBulkStatus("autoDisableEditModal");
-                      setIsShow(true);
-                    }}
-                  >
-                    <div className="menu_icon2">
-                      <button
-                        className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-secondary"
-                        title={t("autoConnectOnOff")}
-                      >
-                        <i class="fas fa-power-off fa-xs"></i>
-                        <span className="button_title">
-                          {t("automaticConnectionOff")}
-                        </span>
-                      </button>
-                    </div>
-                    <div className="menu_label2">
-                      {" "}
-                      {t("automaticConnectionOff")}
-                    </div>
-                  </li>
-                )}
-
-              <hr className="mt-0 mb-0" />
-
-              {((role === "ispOwner" && bpSettings?.bulkTransferToReseller) ||
-                (bpSettings?.bulkTransferToReseller &&
-                  permissions?.bulkTransferToReseller &&
-                  role === "collector")) && (
-                <li
-                  type="button"
-                  className="p-1"
-                  onClick={() => {
-                    setBulkStatus("bulkTransferToReseller");
-                    setIsShow(true);
-                  }}
-                >
-                  <div className="menu_icon2">
-                    <button
-                      className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-info"
-                      title={t("transferReseller")}
-                    >
-                      <i className="fa-solid fa-right-left fa-xs "></i>
-                      <span className="button_title">
-                        {" "}
-                        {t("transferReseller")}{" "}
-                      </span>
-                    </button>
-                  </div>
-                  <div className="menu_label2">{t("transferReseller")}</div>
-                </li>
-              )}
-
-              <hr className="mt-0 mb-0" />
-
-              {((role === "ispOwner" && bpSettings?.bulkCustomerDelete) ||
-                (bpSettings?.bulkCustomerDelete &&
-                  permissions?.bulkCustomerDelete &&
-                  role === "collector")) && (
-                <li
-                  type="button"
-                  className="p-1"
-                  onClick={() => {
-                    setBulkStatus("bulkDeleteCustomer");
-                    setIsShow(true);
-                  }}
-                >
-                  <div className="menu_icon2">
-                    <button
-                      className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-danger"
-                      title={t("customerDelete")}
-                    >
-                      <i className="fas fa-trash-alt fa-xs "></i>
-                      <span className="button_title">
-                        {" "}
-                        {t("customerDelete")}{" "}
-                      </span>
-                    </button>
-                  </div>
-                  <div className="menu_label2">{t("customerDelete")}</div>
-                </li>
-              )}
-            </ul>
-
-            <div className="setting_icon_wraper2">
-              <div
-                onClick={() => setMenuOpen(!isMenuOpen)}
-                className="client_setting_icon2"
-              >
-                <GearFill />
-              </div>
-            </div>
-          </div>
-        </div>
+      {/* customer profile details modal */}
+      {modalStatus === "profile" && (
+        <CustomerDetails
+          show={show}
+          setShow={setShow}
+          customerId={singleCustomer}
+        />
       )}
+
+      {/* customer create modal */}
+      {modalStatus === "customerPost" && (
+        <AddStaticCustomer show={show} setShow={setShow} />
+      )}
+
+      {/* single customer update */}
+      {modalStatus === "customerEdit" && (
+        <EditStaticCustomer
+          show={show}
+          setShow={setShow}
+          single={singleCustomer}
+          handleActiveFilter={handleActiveFilter}
+        />
+      )}
+
+      {/* customer bill collection */}
+      {modalStatus === "customerRecharge" && (
+        <RechargeCustomer
+          show={show}
+          setShow={setShow}
+          single={singleCustomer}
+          customerData={customerReportData}
+        />
+      )}
+
+      {/* customer report modal */}
+      {modalStatus === "report" && (
+        <CustomerReport
+          show={show}
+          setShow={setShow}
+          single={customerReportData}
+        />
+      )}
+
+      {/* customer note modal */}
+      {modalStatus === "note" && (
+        <CustomerNote
+          show={show}
+          setShow={setShow}
+          customerId={customerNoteId}
+          customerName={customerName}
+        />
+      )}
+
+      {/* customer delete modal */}
+      {modalStatus === "delete" && (
+        <CustomerDelete
+          show={show}
+          setShow={setShow}
+          single={singleData}
+          mikrotikCheck={mikrotikCheck}
+          setMikrotikCheck={setMikrotikCheck}
+        />
+      )}
+
+      {/* static customer message */}
+      {modalStatus === "message" && (
+        <SingleMessage
+          show={show}
+          setShow={setShow}
+          single={singleCustomer}
+          sendCustomer="staticCustomer"
+        />
+      )}
+
+      {/* transferReseller modal */}
+      {modalStatus === "resellerTransfer" && (
+        <TransferToReseller
+          show={show}
+          setShow={setShow}
+          customerId={singleCustomer}
+          page="static"
+        />
+      )}
+
+      {/* password reset modal */}
+      {modalStatus === "password" && (
+        <PasswordReset show={show} setShow={setShow} userId={userId} />
+      )}
+
+      {/* support ticket modal */}
+      {modalStatus === "supportTicket" && (
+        <CreateSupportTicket
+          show={show}
+          setShow={setShow}
+          collectors={collectors}
+          manager={manager}
+          customer={singleCustomer}
+          ispOwner={ispOwnerId}
+          reseller=""
+        />
+      )}
+
+      {/* customers number update or delete modal */}
+      <CustomersNumber showModal={numberModalShow} />
+
+      {/* fire wall filter ip drop control */}
+      {modalStatus === "IPDrop" && (
+        <FireWallFilterIpDropControl show={show} setShow={setShow} />
+      )}
+
+      {/* print option modal */}
+      {modalStatus === "print" && (
+        <PrintOptions
+          show={show}
+          setShow={setShow}
+          filterData={filterData}
+          tableData={Customers1}
+          page="customer"
+          printData={printData}
+        />
+      )}
+
+      {/* static customer create invoice */}
+      <StaticCreateInvoice
+        show={isOpen}
+        setShow={setIsOpen}
+        single={singleCustomer}
+        customerData={customerData}
+      />
+
+      {/* Model finish */}
+
+      {/* bulk options modal  */}
+      <BulkOptions bulkCustomers={bulkCustomers} page="static" />
     </>
   );
 };

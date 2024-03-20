@@ -63,6 +63,12 @@ const useDataInputOption = (inputPermission, page, status, data) => {
           ? state?.package?.pppoePackages
           : state?.mikrotik?.pppoePackage
         : state?.package?.packages
+      : page === "static"
+      ? hasMikrotik
+        ? adminUser
+          ? state?.package?.packages
+          : ""
+        : state?.package?.packages
       : ""
   );
 
@@ -117,7 +123,6 @@ const useDataInputOption = (inputPermission, page, status, data) => {
     salary: "",
     thana: "",
   });
-  console.log(formData);
 
   // set ispOwner package commission in state
   const [packageCommission, setPackageCommission] = useState();
@@ -660,13 +665,23 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       textAccessor: "name",
       valueAccessor: "id",
       options:
-        bpSettings.hasMikrotik && page === "pppoe"
-          ? ppPackage?.filter(
-              (pack) =>
-                pack.packageType === "pppoe" &&
-                pack.mikrotik === formData.mikrotikId
-            )
-          : ppPackage,
+        page === "pppoe"
+          ? bpSettings.hasMikrotik
+            ? ppPackage?.filter(
+                (pack) =>
+                  pack.packageType === "pppoe" &&
+                  pack.mikrotik === formData.mikrotikId
+              )
+            : ppPackage
+          : page === "static"
+          ? bpSettings.hasMikrotik
+            ? ppPackage?.filter(
+                (pack) =>
+                  pack.packageType === "queue" &&
+                  pack.mikrotik === formData.mikrotikId
+              )
+            : ppPackage
+          : "",
       onChange: (e) => {
         packageChangeHandler(e.target.value);
       },
