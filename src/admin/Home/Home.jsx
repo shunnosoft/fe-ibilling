@@ -352,8 +352,15 @@ export default function Home() {
       },
       {
         width: "8%",
-        accessor: "smsBalance",
         Header: "SMS",
+        accessor: "smsBalance",
+        Cell: ({ row: { original } }) => (
+          <div>
+            {original.smsBalance +
+              original.maskingSmsBalance +
+              original.fixedNumberSmsBalance}
+          </div>
+        ),
       },
       {
         width: "8%",

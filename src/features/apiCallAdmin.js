@@ -25,6 +25,7 @@ import {
   updateAdminSupport,
   updateIspOwnerSupport,
 } from "./adminNetFeeSupportSlice";
+import axios from "axios";
 
 // get owners
 export const getIspOwners = async (dispatch, setIsLoading) => {
@@ -448,7 +449,7 @@ export const getCreateCsutomerLoginCredential = async (mobile) => {
 // get reseller bulletin
 export const csutomerWebhookRegister = async (data) => {
   try {
-    const res = await apiLink.post(
+    const res = await axios.post(
       `http://139.84.135.222:4600/api/v1/auth/register`,
       data
     );

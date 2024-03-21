@@ -17,7 +17,6 @@ import {
   CardChecklist,
   Newspaper,
   ArrowRightSquareFill,
-  GearFill,
   FilterCircle,
   BoxSeam,
   FiletypeCsv,
@@ -64,31 +63,19 @@ import { badge } from "../../components/common/Utils";
 import Table from "../../components/table/Table";
 import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
 import AddStaticCustomer from "./customerCRUD/AddStaticCustomer";
-import BulkSubAreaEdit from "../Customer/customerCRUD/bulkOpration/bulkSubAreaEdit";
-import BulkBillingCycleEdit from "../Customer/customerCRUD/bulkOpration/bulkBillingCycleEdit";
-import BulkPromiseDateEdit from "../Customer/customerCRUD/bulkOpration/BulkPromiseDateEdit";
-import BulkStatusEdit from "../Customer/customerCRUD/bulkOpration/bulkStatusEdit";
-import BulkCustomerDelete from "../Customer/customerCRUD/bulkOpration/BulkdeleteModal";
 import IndeterminateCheckbox from "../../components/table/bulkCheckbox";
-import BulkAutoConnectionEdit from "../Customer/customerCRUD/bulkOpration/bulkAutoConnectionEdit";
 import Loader from "../../components/common/Loader";
 import FormatNumber from "../../components/common/NumberFormat";
 import PasswordReset from "../../components/modals/passwordReset/PasswordReset";
 import CustomerNote from "./customerCRUD/CustomerNote";
 import CreateSupportTicket from "../../components/modals/CreateSupportTicket";
-import BulkCustomerTransfer from "../Customer/customerCRUD/bulkOpration/bulkCustomerTransfer";
 import {
   getPoleBoxApi,
   getSubAreasApi,
 } from "../../features/actions/customerApiCall";
 import FireWallFilterIpDropControl from "./FireWallFilterIpDropControl";
 import CustomersNumber from "../Customer/CustomersNumber";
-import BulkMikrotikEdit from "../Customer/customerCRUD/bulkOpration/bulkMikrotikEdit";
-import BulkBalanceEdit from "../Customer/customerCRUD/bulkOpration/BulkBalanceEdit";
-import BulkPackageEdit from "../Customer/customerCRUD/bulkOpration/bulkPackageEdit";
-import BulkRecharge from "../Customer/customerCRUD/bulkOpration/BulkRecharge";
 import StaticCreateInvoice from "./StaticCreateInvoice";
-import BulkPaymentStatusEdit from "../Customer/customerCRUD/bulkOpration/BulkPaymentStatusEdit";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
 import EditStaticCustomer from "./customerCRUD/temp/EditStaticCustomer";
@@ -202,9 +189,6 @@ const Customer = () => {
   // check mikrotik checkbox
   const [mikrotikCheck, setMikrotikCheck] = useState(false);
 
-  //bulk menu show and hide
-  const [isMenuOpen, setMenuOpen] = useState(false);
-
   const [open, setOpen] = useState(false);
 
   // optional modal state
@@ -221,7 +205,6 @@ const Customer = () => {
   const [currentPoleBox, setCurrentPoleBox] = useState([]);
 
   // bulk modal handle state
-  const [bulkStatus, setBulkStatus] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
   const [filterOptions, setFilterOption] = useState({

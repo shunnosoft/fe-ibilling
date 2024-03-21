@@ -108,6 +108,12 @@ export default function Header(props) {
     i18n.changeLanguage(localStorage.getItem("netFee:lang"));
   }, [getLang]);
 
+  // ispOwner sms balance
+  const messageBalance =
+    ispOwner.smsBalance +
+    ispOwner.maskingSmsBalance +
+    ispOwner.fixedNumberSmsBalance;
+
   const selectLanguage = (event) => {
     setGetLang(event.target.value);
     localStorage.setItem("netFee:lang", event.target.value);
@@ -303,15 +309,24 @@ export default function Header(props) {
                 ""
               )}
 
-              <div
-                className="headerIcon"
-                onClick={() => {
-                  setModalStatus("buySMS");
-                  setShow(true);
-                }}
-              >
-                <EnvelopePlus size={22} />
-              </div>
+              {["ispOwner", "manager", "reseller", "collector"].includes(
+                userRole
+              ) && (
+                <div
+                  className="headerIcon"
+                  onClick={() => {
+                    setModalStatus("buySMS");
+                    setShow(true);
+                  }}
+                >
+                  <div className="messageBalance">
+                    <EnvelopePlus size={22} />
+                    <span class="badge">
+                      {messageBalance > 1000 ? "999+" : messageBalance}
+                    </span>
+                  </div>
+                </div>
+              )}
 
               <div className="headerIcon phone_view_none" onClick={changeTHeme}>
                 {icon}

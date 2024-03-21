@@ -72,8 +72,8 @@ export default function RSettings() {
 
                     <Tab
                       className="mt-5"
-                      eventKey="inactiveCustomer"
-                      title={t("customerInactiveSMS")}
+                      eventKey="expiredCustomer"
+                      title={t("expiredCustomer")}
                     >
                       <FourGround>
                         <CustomerInactiveSmsTemplate />
