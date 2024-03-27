@@ -302,11 +302,6 @@ const Client = () => {
                                     </span>
                                   </h5>
                                   <p className="text-muted">{item.desc}</p>
-
-                                  {/* <a href="home-internet" className="text-primary">
-                                 Read More{" "}
-                                 <i className="uil uil-angle-right-b align-middle"></i>
-                               </a> */}
                                 </div>
                               </div>
                             </div>
@@ -329,13 +324,13 @@ const Client = () => {
               the best! We guarantee high-quality customer support service with
               high-speed broadband connection all over the country.
             </div>
-            {/* <div className="col-md-4">Page Map</div> */}
+
             <div style={{ flex: 6 }}>
               <h3>Contract</h3>
               <hr />
               <p>Mobile: {userData.ispOwner.mobile}</p>
               <p>Office: {userData.ispOwner.address}</p>
-              <p>Email: {userData.ispOwner.Email}</p>
+              <p>Email: {userData.ispOwner.email}</p>
             </div>
           </div>
         </footer>

@@ -105,47 +105,47 @@ export const getCollector = async (dispatch, resellerId) => {
   }
 };
 
-export const addCollector = async (dispatch, data, setIsLoading) => {
+export const addCollector = async (dispatch, data, setIsLoading, setShow) => {
   setIsLoading(true);
   try {
     const res = await apiLink.post(`reseller/collector/${data.reseller}`, data);
     dispatch(addCollectorSuccess(res.data));
-    setIsLoading(false);
+    setShow(false);
     langMessage(
       "success",
       "কালেক্টর সংযুক্ত সফল হয়েছে!",
       "Collector Added Successfully"
     );
-    document.querySelector("#collectorModal").click();
   } catch (err) {
     if (err.response) {
-      setIsLoading(false);
       toast.error(err.response.data.message);
     }
   }
+  setIsLoading(false);
 };
 
-export const editCollector = async (dispatch, data, setIsLoading) => {
+export const editCollector = async (dispatch, data, setIsLoading, setShow) => {
   const { resellerId, collectorId, ...rest } = data;
+  setIsLoading(true);
   try {
     const res = await apiLink.patch(
       `reseller/collector/${resellerId}/${collectorId}`,
       rest
     );
     dispatch(editCollectorSuccess(res.data));
-    setIsLoading(false);
+
+    setShow(false);
     langMessage(
       "success",
       "কালেক্টর এডিট সফল হয়েছে!",
       "Collector Updated Successfully!"
     );
-    document.querySelector("#collectorEditModal").click();
   } catch (err) {
     if (err.response) {
-      setIsLoading(false);
       toast.error(err.response.data.message);
     }
   }
+  setIsLoading(false);
 };
 
 export const deleteCollector = async (dispatch, ids, setIsDeleting) => {

@@ -1129,9 +1129,10 @@ const useDataInputOption = (inputPermission, page, status, data) => {
           disabled:
             status === "post"
               ? false
-              : (rsRole && !permission?.customerStatusEdit) ||
-                (rscRole && !permissions?.customerActivate) ||
-                false,
+              : status === "edit"
+              ? (rsRole && !permission?.customerStatusEdit) ||
+                (rscRole && !permissions?.customerActivate)
+              : false,
           label: t("active"),
           value: "active",
         },
@@ -1142,11 +1143,12 @@ const useDataInputOption = (inputPermission, page, status, data) => {
           disabled:
             status === "post"
               ? false
-              : (rsRole &&
+              : status === "edit"
+              ? (rsRole &&
                   ((!permission?.logicalInactive && formData.balance > 0) ||
                     !permission?.customerStatusEdit)) ||
-                (rscRole && !permissions?.customerDeactivate) ||
-                false,
+                (rscRole && !permissions?.customerDeactivate)
+              : false,
           label: t("inactive"),
           value: "inactive",
         },

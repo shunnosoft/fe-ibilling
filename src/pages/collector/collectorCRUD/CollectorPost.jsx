@@ -19,19 +19,6 @@ const CollectorPost = ({ show, setShow }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
-  //validator
-  const collectorValidator = Yup.object({
-    name: Yup.string().required(t("enterName")),
-    mobile: Yup.string()
-      .min(11, t("write11DigitMobileNumber"))
-      .max(11, t("over11DigitMobileNumber"))
-      .required(t("enterMobile")),
-    address: Yup.string().required(t("enterAddress")),
-    email: Yup.string().email(t("incorrectEmail")).required(t("enterEmail")),
-    nid: Yup.string().required(t("enterNID")),
-    status: Yup.string().required(t("enterStatus")),
-  });
-
   // call the data input option function
   const inputPermission = {
     name: true,
@@ -137,16 +124,9 @@ const CollectorPost = ({ show, setShow }) => {
       >
         <Formik
           initialValues={{
-            name: "",
-            mobile: "",
-            address: "",
-            email: "",
-            nid: "",
-            status: "active",
-            addStaff: false,
-            salary: 0,
+            ...dataInputOption?.inputInitialValues,
           }}
-          validationSchema={collectorValidator}
+          validationSchema={dataInputOption?.validationSchema}
           onSubmit={(values) => {
             collectorPostHandler(values);
           }}
@@ -164,22 +144,7 @@ const CollectorPost = ({ show, setShow }) => {
                   <div className="d-flex justify-content-center">
                     <div className="displayGrid col-6">
                       {dataInputOption?.inputOption.map(
-                        (item) =>
-                          item?.isVisible && (
-                            <FtextField
-                              name={item?.name}
-                              type={item?.type}
-                              disabled={item.disabled}
-                              validation={item.validation}
-                              label={item?.label}
-                              placeholder={item?.placeholder}
-                              options={item.options}
-                              value={item?.value}
-                              onChange={item?.onChange}
-                              component={item?.component}
-                              inputField={item?.inputField}
-                            />
-                          )
+                        (item) => item?.isVisible && <FtextField {...item} />
                       )}
                     </div>
                   </div>

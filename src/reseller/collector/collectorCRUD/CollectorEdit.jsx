@@ -1,91 +1,82 @@
 import React, { useEffect, useState } from "react";
 import { Form, Formik } from "formik";
-import * as Yup from "yup";
-import Loader from "../../../components/common/Loader";
 import { useSelector, useDispatch } from "react-redux";
+import { Card } from "react-bootstrap";
+import { useTranslation } from "react-i18next";
+
+// custom hooks import
+import useDataInputOption from "../../../hooks/useDataInputOption";
+import useISPowner from "../../../hooks/useISPOwner";
 
 // internal importsp
-import { collectorData } from "../CollectorInputs";
 import { FtextField } from "../../../components/common/FtextField";
+import Loader from "../../../components/common/Loader";
 import { editCollector } from "../../../features/apiCallReseller";
 import { collectorPermission } from "./collectorPermission";
-import { useTranslation } from "react-i18next";
-// import { getArea } from "../../../features/areaSlice";
-// import {
-//   editCollector,
-//   fetchCollector,
-// } from "../../../features/collectorSlice";
+import ComponentCustomModal from "../../../components/common/customModal/ComponentCustomModal";
 
-export default function CollectorEdit({ collectorId }) {
+const CollectorEdit = ({ show, setShow, collectorId }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  // get all collector from redux
-  const collector = useSelector((state) => state?.collector?.collector);
-  const single = collector.find((item) => item.id === collectorId);
 
+  // get user & current user data form useISPOwner hook
+  const { userData, permission } = useISPowner();
+
+  // get reseller all collector from redux store
+  const collectors = useSelector((state) => state?.collector?.collector);
+
+  // get reseller area data from redux store
   const area = useSelector((state) => state.area.area);
-  const [allowedAreas, setAllowedAreas] = useState([]);
+
+  // reseller id from reseller profile
+  const resellerId = userData?.id;
+
+  // find single collector data
+  const data = collectors.find((item) => item.id === collectorId);
+
+  // call the data input option function
+  const inputPermission = {
+    name: true,
+    mobile: true,
+    nid: true,
+    address: true,
+    email: true,
+    status: true,
+  };
+
+  // get data input option from useDataInputOption hook
+  const dataInputOption = useDataInputOption(inputPermission, null, null, data);
+
+  // loading state
   const [isLoading, setIsLoading] = useState(false);
+
+  // collector permission state
   const [permissions, setPermissions] = useState([]);
-  const resellerId = useSelector(
-    (state) => state.persistedReducer.auth?.userData.id
-  );
 
-  const permission = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.permission
-  );
+  // collector area id state
+  const [areaIds, setAreaIds] = useState([]);
 
+  // set collector permission
   useEffect(() => {
-    if (single) {
-      setAllowedAreas(single?.areas);
-      setPermissions(collectorPermission(single.permissions, permission));
-    }
-  }, [single]);
+    if (data) {
+      // set area id for the collector
+      setAreaIds(data?.areas);
 
-  //validator
-  const collectorValidator = Yup.object({
-    name: Yup.string().required(t("writeCustomerName")),
-    mobile: Yup.string()
-      .min(11, t("write11DigitMobileNumber"))
-      .max(11, t("over11DigitMobileNumber"))
-      .required(t("writeMobileNumber")),
-    address: Yup.string(),
-    email: Yup.string().email(t("incorrectEmail")),
-    nid: Yup.string(),
-    status: Yup.string(),
-  });
-
-  const setAreaHandler = () => {
-    const temp = document.querySelectorAll(".getValueUsingClass_Edit");
-    let IDS_temp = [];
-    for (let i = 0; i < temp.length; i++) {
-      if (temp[i].checked === true) {
-        IDS_temp.push(temp[i].value);
-      }
+      // set collector permission
+      setPermissions(collectorPermission(data.permissions, permission));
     }
-    setAllowedAreas(IDS_temp);
+  }, [data]);
+
+  // area select handler function
+  const setAreaHandler = (e) => {
+    if (!areaIds.includes(e.target.value)) {
+      setAreaIds([...areaIds, e.target.value]);
+    } else {
+      setAreaIds(areaIds.filter((val) => val !== e.target.value));
+    }
   };
 
-  const collectorEditHandler = async (data) => {
-    setIsLoading(true);
-    let temp = {};
-    permissions.forEach((val) => {
-      temp[val.value] = val.isChecked;
-    });
-    const newPermission = {
-      ...single.permissions,
-      ...temp,
-    };
-    const sendingData = {
-      ...data,
-      areas: allowedAreas,
-      collectorId: single.id,
-      resellerId: resellerId,
-      permissions: newPermission,
-    };
-    editCollector(dispatch, sendingData, setIsLoading);
-  };
-
+  // collector permission handler function
   const handleChange = (e) => {
     const { name, checked } = e.target;
     let temp = permissions.map((val) =>
@@ -94,120 +85,120 @@ export default function CollectorEdit({ collectorId }) {
     setPermissions(temp);
   };
 
+  // collector edit handler
+  const collectorEditHandler = async (formValue) => {
+    let temp = {};
+
+    permissions.forEach((val) => {
+      temp[val.value] = val.isChecked;
+    });
+
+    const newPermission = {
+      ...data.permissions,
+      ...temp,
+    };
+
+    const sendingData = {
+      ...formValue,
+      areas: areaIds,
+      collectorId: data?.id,
+      resellerId: resellerId,
+      permissions: newPermission,
+    };
+
+    // edit collector api
+    editCollector(dispatch, sendingData, setIsLoading, setShow);
+  };
+
   return (
-    <div>
-      {/* Model start */}
-      <div
-        className="modal fade modal-dialog-scrollable "
-        id="collectorEditModal"
-        tabIndex="-1"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
+    <>
+      <ComponentCustomModal
+        show={show}
+        setShow={setShow}
+        centered={false}
+        size="xl"
+        header={data.name + " " + t("editProfile")}
+        footer={
+          <div className="displayGrid1 float-end">
+            <button
+              type="button"
+              className="btn btn-secondary"
+              disabled={isLoading}
+              onClick={() => setShow(false)}
+            >
+              {t("cancel")}
+            </button>
+
+            <button
+              type="submit"
+              form="collectorEdit"
+              className="btn btn-success customBtn"
+              disabled={isLoading}
+            >
+              {isLoading ? <Loader /> : t("save")}
+            </button>
+          </div>
+        }
       >
-        <div className="modal-dialog modal-xl">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLabel">
-                {single?.name} - {t("editProfile")}
-              </h5>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body">
-              <Formik
-                initialValues={{
-                  name: single?.name || "",
-                  mobile: single?.mobile || "",
-                  address: single?.address || "",
-                  email: single?.email || "",
-                  nid: single?.nid || "",
-                  status: single?.status || "",
-                  //   refName: "N/A" || "",
-                  //   refMobile: "N/A" || "",
-                  // areas: single?.areas || [],
-                }}
-                validationSchema={collectorValidator}
-                onSubmit={(values) => {
-                  collectorEditHandler(values);
-                }}
-                enableReinitialize
-              >
-                {(formik) => (
-                  <Form>
-                    <div className="collectorInputs">
-                      {collectorData.map((val, key) => (
-                        <FtextField
-                          // disabled={val.name === "mobile"}
-                          key={key}
-                          type={val.type}
-                          label={val.label}
-                          name={val.name}
-                          disabled={val.disabled}
-                        />
-                      ))}
+        <Formik
+          initialValues={{
+            ...dataInputOption?.inputInitialValues,
+          }}
+          validationSchema={dataInputOption?.validationSchema}
+          onSubmit={(values) => {
+            collectorEditHandler(values);
+          }}
+          enableReinitialize
+        >
+          {() => (
+            <Form id="collectorEdit">
+              <div className="d-flex justify-content-center">
+                <div className="displayGrid col-6">
+                  {dataInputOption?.inputOption.map(
+                    (item) => item?.isVisible && <FtextField {...item} />
+                  )}
+                </div>
+              </div>
 
-                      {/* status */}
-                      <div className="form-check customerFormCheck">
-                        <p>{t("status")}</p>
-                        <div className="form-check form-check-inline">
-                          <FtextField
-                            label="Active"
-                            className="form-check-input"
-                            type="radio"
-                            name="status"
-                            value="active"
-                          />
-                        </div>
-                        <div className="form-check form-check-inline">
-                          <FtextField
-                            label="Inactive"
-                            className="form-check-input"
-                            type="radio"
-                            name="status"
-                            value="inactive"
-                          />
-                        </div>
-                      </div>
-                      {/* status */}
-                    </div>
-
-                    {/* area */}
-                    <b className="mt-2">{t("selectArea")}</b>
-                    <div className="AllAreaClass mb-3">
+              {/* collector area select option */}
+              <Card className="mt-3 bg-light">
+                <Card.Body>
+                  <Card.Title className="inputLabelFontColor">
+                    {t("selectArea")}
+                  </Card.Title>
+                  <Card.Text>
+                    <div className="displayGrid4">
                       {area?.map((val, key) => (
-                        <div key={key}>
-                          <div key={key} className="displayFlex">
-                            <input
-                              id={val.id + "AllArea"}
-                              type="checkbox"
-                              className="getValueUsingClass_Edit"
-                              value={val.id}
-                              checked={
-                                allowedAreas?.includes(val.id) ? true : false
-                              }
-                              onChange={setAreaHandler}
-                            />
-                            <label htmlFor={val.id + "AllArea"}>
-                              {val.name}
-                            </label>
-                          </div>
+                        <div key={key} className="form-check">
+                          <input
+                            id={val.id}
+                            type="checkbox"
+                            className="form-check-input"
+                            value={val.id}
+                            onChange={setAreaHandler}
+                            checked={areaIds.includes(val.id)}
+                          />
+                          <label className="areaParent ms-1" htmlFor={val.id}>
+                            {val.name}
+                          </label>
                         </div>
                       ))}
                     </div>
+                  </Card.Text>
+                </Card.Body>
+              </Card>
 
-                    <b className="mt-2">{t("changePermission")}</b>
-                    <div className="AllAreaClass">
+              <Card className="mt-3 bg-light">
+                <Card.Body>
+                  <Card.Title className="inputLabelFontColor">
+                    {t("changePermission")}
+                  </Card.Title>
+                  <Card.Text>
+                    <div className="displayGrid3">
                       {permissions.map(
                         (val, key) =>
-                          // {
-                          //   console.log(val?.isDisabled);
-                          // }
                           !val?.isDisabled && (
-                            <div className="CheckboxContainer p-1" key={key}>
+                            <div className="CheckboxContainer" key={key}>
                               <input
                                 type="checkbox"
                                 className="CheckBox"
@@ -227,34 +218,15 @@ export default function CollectorEdit({ collectorId }) {
                           )
                       )}
                     </div>
-                    {/* area */}
-
-                    <div className="modal-footer">
-                      <button
-                        type="button"
-                        className="btn btn-secondary"
-                        data-bs-dismiss="modal"
-                        disabled={isLoading}
-                      >
-                        {t("cancel")}
-                      </button>
-                      <button
-                        type="submit"
-                        className="btn btn-success customBtn"
-                        disabled={isLoading}
-                      >
-                        {isLoading ? <Loader /> : t("save")}
-                      </button>
-                    </div>
-                  </Form>
-                )}
-              </Formik>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Model finish */}
-    </div>
+                  </Card.Text>
+                </Card.Body>
+              </Card>
+            </Form>
+          )}
+        </Formik>
+      </ComponentCustomModal>
+    </>
   );
-}
+};
+
+export default CollectorEdit;

@@ -108,12 +108,6 @@ export default function Header(props) {
     i18n.changeLanguage(localStorage.getItem("netFee:lang"));
   }, [getLang]);
 
-  // ispOwner sms balance
-  const messageBalance =
-    ispOwner.smsBalance +
-    ispOwner.maskingSmsBalance +
-    ispOwner.fixedNumberSmsBalance;
-
   const selectLanguage = (event) => {
     setGetLang(event.target.value);
     localStorage.setItem("netFee:lang", event.target.value);
@@ -319,12 +313,7 @@ export default function Header(props) {
                     setShow(true);
                   }}
                 >
-                  <div className="messageBalance">
-                    <EnvelopePlus size={22} />
-                    <span class="badge">
-                      {messageBalance > 1000 ? "999+" : messageBalance}
-                    </span>
-                  </div>
+                  <EnvelopePlus size={22} />
                 </div>
               )}
 

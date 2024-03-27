@@ -1,195 +1,153 @@
 import React, { useState } from "react";
 import { Form, Formik } from "formik";
-import * as Yup from "yup";
-import Loader from "../../../components/common/Loader";
 import { useSelector, useDispatch } from "react-redux";
-
-// internal imports
-import { collectorData } from "../CollectorInputs";
-import "../../Customer/customer.css";
-import { FtextField } from "../../../components/common/FtextField";
-import { addCollector } from "../../../features/apiCallReseller";
-// import { addCollector } from "../../../features/apiCalls";
-// import { getArea, fetchArea } from "../../../features/areaSlice";
-// import {
-//   postCollector,
-//   fetchCollector,
-// } from "../../../features/collectorSlice";
+import { Card } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 
-export default function CollectorPost() {
+// custom hooks import
+import useDataInputOption from "../../../hooks/useDataInputOption";
+import useISPowner from "../../../hooks/useISPOwner";
+
+// internal imports
+import "../../Customer/customer.css";
+import Loader from "../../../components/common/Loader";
+import { FtextField } from "../../../components/common/FtextField";
+import { addCollector } from "../../../features/apiCallReseller";
+import ComponentCustomModal from "../../../components/common/customModal/ComponentCustomModal";
+
+const CollectorPost = ({ show, setShow }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const area = useSelector((state) => state.area.area);
-  const [areaIds, setAreaIds] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const auth = useSelector((state) => state.persistedReducer.auth.currentUser);
-  const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerId
-  );
-  //validator
-  const collectorValidator = Yup.object({
-    name: Yup.string().required(`${t("name")}`),
-    mobile: Yup.string()
-      .min(11, `${t("write11DigitMobileNumber")}`)
-      .max(11, t("over11DigitMobileNumber"))
-      .required(`${t("writeMobileNumber")} ***`),
-    address: Yup.string(),
-    email: Yup.string().email(t("incorrectEmail")),
-    nid: Yup.string(),
-    status: Yup.string(),
 
-    // refName: Yup.string().required("রেফারেন্স নাম"),
-    // refMobile: Yup.string()
-    //   .min(11, "এগারো  ডিজিট এর সঠিক নম্বর দিন ")
-    //   .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে ")
-    //   .required("মোবাইল নম্বর দিন "),
-  });
-
-  const setAreaHandler = () => {
-    const temp = document.querySelectorAll(".getValueUsingClass");
-    let IDS_temp = [];
-    for (let i = 0; i < temp.length; i++) {
-      if (temp[i].checked === true) {
-        IDS_temp.push(temp[i].value);
-      }
-    }
-    // console.log("IDS: ", IDS_temp);
-    setAreaIds(IDS_temp);
+  // call the data input option function
+  const inputPermission = {
+    name: true,
+    mobile: true,
+    nid: true,
+    address: true,
+    email: true,
+    status: true,
   };
 
-  const collectorPostHandler = async (data) => {
-    // console.log(data);
+  // get data input option from useDataInputOption hook
+  const dataInputOption = useDataInputOption(inputPermission, null);
 
+  // get user & current user data form useISPOwner hook
+  const { ispOwnerId, currentUser } = useISPowner();
+
+  // get reseller area data from redux store
+  const area = useSelector((state) => state.area.area);
+
+  // loading state
+  const [isLoading, setIsLoading] = useState(false);
+
+  // area id state
+  const [areaIds, setAreaIds] = useState([]);
+
+  // area select handler function
+  const setAreaHandler = (e) => {
+    if (!areaIds.includes(e.target.value)) {
+      setAreaIds([...areaIds, e.target.value]);
+    } else {
+      setAreaIds(areaIds.filter((val) => val !== e.target.value));
+    }
+  };
+
+  // collector create function handler
+  const collectorPostHandler = async (data) => {
     const sendingData = {
       ...data,
       areas: areaIds,
-      reseller: auth.reseller.id,
+      reseller: currentUser.reseller.id,
       ispOwner: ispOwnerId,
     };
-    addCollector(dispatch, sendingData, setIsLoading);
+
+    // call the add collector api
+    addCollector(dispatch, sendingData, setIsLoading, setShow);
   };
 
   return (
-    <div>
-      {/* Model start */}
-      <div
-        className="modal fade modal-dialog-scrollable "
-        id="collectorModal"
-        tabIndex="-1"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
+    <>
+      <ComponentCustomModal
+        show={show}
+        setShow={setShow}
+        centered={false}
+        size={"xl"}
+        header={t("addNewCollector")}
+        footer={
+          <div className="displayGrid1 float-end">
+            <button
+              type="button"
+              className="btn btn-secondary"
+              disabled={isLoading}
+              onClick={() => setShow(false)}
+            >
+              {t("cancel")}
+            </button>
+
+            <button
+              type="submit"
+              form="collectorPost"
+              className="btn btn-success"
+              disabled={isLoading}
+            >
+              {isLoading ? <Loader /> : t("submit")}
+            </button>
+          </div>
+        }
       >
-        <div className="modal-dialog modal-xl">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLabel">
-                {t("addNewCollector")}
-              </h5>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body">
-              <Formik
-                initialValues={{
-                  name: "",
-                  mobile: "",
-                  address: "",
-                  email: "",
-                  nid: "",
-                  status: "active",
-                }}
-                validationSchema={collectorValidator}
-                onSubmit={(values) => {
-                  collectorPostHandler(values);
-                }}
-                enableReinitialize
-              >
-                {() => (
-                  <Form>
-                    <div className="collectorInputs">
-                      {collectorData.map((val, key) => (
-                        <FtextField
-                          key={key}
-                          type={val.type}
-                          label={val.label}
-                          name={val.name}
-                        />
-                      ))}
+        <Formik
+          initialValues={{
+            ...dataInputOption?.inputInitialValues,
+          }}
+          validationSchema={dataInputOption?.validationSchema}
+          onSubmit={(values) => {
+            collectorPostHandler(values);
+          }}
+          enableReinitialize
+        >
+          {() => (
+            <Form id="collectorPost">
+              <div className="d-flex justify-content-center">
+                <div className="displayGrid col-6">
+                  {dataInputOption?.inputOption.map(
+                    (item) => item?.isVisible && <FtextField {...item} />
+                  )}
+                </div>
+              </div>
 
-                      {/* status */}
-                      <div className="form-check customerFormCheck">
-                        <p>{t("status")}</p>
-                        <div className="form-check form-check-inline">
-                          <FtextField
-                            label="Active"
-                            className="form-check-input"
-                            type="radio"
-                            name="status"
-                            value="active"
-                          />
-                        </div>
-                        <div className="form-check form-check-inline">
-                          <FtextField
-                            label="Inactive"
-                            className="form-check-input"
-                            type="radio"
-                            name="status"
-                            value="inactive"
-                          />
-                        </div>
-                      </div>
-                      {/* status */}
-                    </div>
-
-                    {/* area */}
-                    {/* area section*/}
-                    <b className="mt-2">{t("selectArea")}</b>
-                    <div className="AllAreaClass">
+              {/* collector area select option */}
+              <Card className="mt-3 bg-light">
+                <Card.Body>
+                  <Card.Title className="inputLabelFontColor">
+                    {t("selectArea")}
+                  </Card.Title>
+                  <Card.Text>
+                    <div className="displayGrid4">
                       {area?.map((val, key) => (
-                        <div key={key} className="displayFlex">
+                        <div key={key} className="form-check">
                           <input
-                            id={val.id + "Area"}
+                            id={val.id}
                             type="checkbox"
-                            className="getValueUsingClass"
+                            className="form-check-input"
                             value={val.id}
                             onChange={setAreaHandler}
                           />
-                          <label htmlFor={val.id + "Area"}>{val.name}</label>
+                          <label className="areaParent ms-1" htmlFor={val.id}>
+                            {val.name}
+                          </label>
                         </div>
                       ))}
                     </div>
-                    {/* area */}
-                    <div className="modal-footer">
-                      <button
-                        type="button"
-                        className="btn btn-secondary"
-                        data-bs-dismiss="modal"
-                        disabled={isLoading}
-                      >
-                        {t("cancel")}
-                      </button>
-                      <button
-                        type="submit"
-                        className="btn btn-success customBtn"
-                        disabled={isLoading}
-                      >
-                        {isLoading ? <Loader /> : t("save")}
-                      </button>
-                    </div>
-                  </Form>
-                )}
-              </Formik>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Model finish */}
-    </div>
+                  </Card.Text>
+                </Card.Body>
+              </Card>
+            </Form>
+          )}
+        </Formik>
+      </ComponentCustomModal>
+    </>
   );
-}
+};
+
+export default CollectorPost;

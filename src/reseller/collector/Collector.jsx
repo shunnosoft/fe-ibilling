@@ -18,10 +18,7 @@ import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
 import CollectorPost from "./collectorCRUD/CollectorPost";
-// import Loader from "../../components/common/Loader";
-import Pagination from "../../components/Pagination";
 
-import TdLoader from "../../components/common/TdLoader";
 import CollectorDetails from "./collectorCRUD/CollectorDetails";
 import CollectorEdit from "./collectorCRUD/CollectorEdit";
 import { getCollector, getSubAreas } from "../../features/apiCallReseller";
@@ -31,7 +28,7 @@ import Loader from "../../components/common/Loader";
 import PasswordReset from "../../components/modals/passwordReset/PasswordReset";
 import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
 
-export default function Collector() {
+const Collector = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const [collSearch, setCollSearch] = useState("");
@@ -57,6 +54,9 @@ export default function Collector() {
   const [modalStatus, setModalStatus] = useState("");
   const [show, setShow] = useState(false);
 
+  // single collector id state
+  const [collectorId, setCollectorId] = useState("");
+
   // reload handler
   const reloadHandler = () => {
     getCollector(dispatch, userData.id, setIsloading);
@@ -68,11 +68,6 @@ export default function Collector() {
     }
     getSubAreas(dispatch, userData.id);
   }, [userData, dispatch]);
-
-  const [singleCollector, setSingleCollector] = useState("");
-  const getSpecificCollector = (id) => {
-    setSingleCollector(id);
-  };
 
   useEffect(() => {
     const keys = ["name", "mobile", "email"];
@@ -127,13 +122,7 @@ export default function Collector() {
         id: "option",
 
         Cell: ({ row: { original } }) => (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
+          <div className="d-flex justify-content-center align-items-center">
             <ThreeDots
               className="dropdown-toggle ActionDots"
               id="areaDropdown"
@@ -146,7 +135,7 @@ export default function Collector() {
                 data-bs-toggle="modal"
                 data-bs-target="#showCollectorDetails"
                 onClick={() => {
-                  getSpecificCollector(original.id);
+                  setCollectorId(original.id);
                 }}
               >
                 <div className="dropdown-item">
@@ -158,10 +147,10 @@ export default function Collector() {
               </li>
               {(permission?.collectorEdit || role === "reseller") && (
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#collectorEditModal"
                   onClick={() => {
-                    getSpecificCollector(original.id);
+                    setCollectorId(original.id);
+                    setModalStatus("edit");
+                    setShow(true);
                   }}
                 >
                   <div className="dropdown-item">
@@ -175,8 +164,6 @@ export default function Collector() {
 
               {role === "reseller" && (
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#resetPassword"
                   onClick={() => {
                     setUserId(original.user);
                     setModalStatus("password");
@@ -194,10 +181,10 @@ export default function Collector() {
 
               {original.mobile && (
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#customerMessageModal"
                   onClick={() => {
-                    getSpecificCollector(original.id);
+                    setCollectorId(original.id);
+                    setModalStatus("message");
+                    setShow(true);
                   }}
                 >
                   <div className="dropdown-item">
@@ -219,58 +206,44 @@ export default function Collector() {
     <>
       <Sidebar />
       <ToastContainer position="top-right" theme="colored" />
+
       <div className={useDash.dashboardWrapper}>
         <div className="container-fluied collector">
           <div className="container">
             <FontColor>
               <div className="collectorTitle d-flex justify-content-between px-4">
-                <div className="d-flex">
-                  <h2>{t("collector")}</h2>
-                </div>
+                <div>{t("collector")}</div>
 
                 <div className="d-flex justify-content-center align-items-center">
                   <div className="reloadBtn">
                     {isLoading ? (
-                      <Loader></Loader>
+                      <Loader />
                     ) : (
                       <ArrowClockwise
                         className="arrowClock"
                         title={t("refresh")}
                         onClick={() => reloadHandler()}
-                      ></ArrowClockwise>
+                      />
                     )}
                   </div>
-                  {userData.permission?.customerAdd || role === "ispOwner" ? (
+
+                  {(userData.permission?.customerAdd ||
+                    role === "ispOwner") && (
                     <div
-                      data-bs-toggle="modal"
-                      data-bs-target="#collectorModal"
+                      title={t("collector")}
+                      onClick={() => {
+                        setModalStatus("post");
+                        setShow(true);
+                      }}
                     >
                       <PersonPlusFill className="addcutmButton" />
                     </div>
-                  ) : (
-                    ""
                   )}
                 </div>
               </div>
 
-              {/* modals */}
-              <CollectorPost />
-              <CollectorDetails single={singleCollector} />
-              <CollectorEdit collectorId={singleCollector} />
-
-              {/* collector password reset */}
-              {modalStatus === "password" && (
-                <PasswordReset show={show} setShow={setShow} userId={userId} />
-              )}
-
-              <SingleMessage
-                single={singleCollector}
-                sendCustomer="collector"
-              />
-
               <FourGround>
                 <div className="collectorWrapper mt-2 py-2">
-                  {/* table */}
                   <div className="table-section">
                     <Table
                       isLoading={isLoading}
@@ -285,6 +258,42 @@ export default function Collector() {
           </div>
         </div>
       </div>
+
+      {/* component modals  */}
+
+      {/* collector details modal */}
+      <CollectorDetails single={collectorId} />
+
+      {/* collector post modal */}
+      {modalStatus === "post" && (
+        <CollectorPost show={show} setShow={setShow} />
+      )}
+
+      {/* collector edit modal */}
+      {modalStatus === "edit" && (
+        <CollectorEdit
+          show={show}
+          setShow={setShow}
+          collectorId={collectorId}
+        />
+      )}
+
+      {/* collector password reset */}
+      {modalStatus === "password" && (
+        <PasswordReset show={show} setShow={setShow} userId={userId} />
+      )}
+
+      {/* single message modal */}
+      {modalStatus === "message" && (
+        <SingleMessage
+          show={show}
+          setShow={setShow}
+          single={collectorId}
+          sendCustomer="collector"
+        />
+      )}
     </>
   );
-}
+};
+
+export default Collector;
