@@ -24,7 +24,8 @@ const BulkOptions = ({ bulkCustomers, page }) => {
   const { t } = useTranslation();
 
   // get user & current user data form useISPOwner hook
-  const { role, bpSettings, hasMikrotik, permissions } = useISPowner();
+  const { role, bpSettings, hasMikrotik, permissions, permission } =
+    useISPowner();
 
   //bulk menu show and hide
   const [isMenuOpen, setMenuOpen] = useState(false);
@@ -64,7 +65,8 @@ const BulkOptions = ({ bulkCustomers, page }) => {
       isVisiable:
         bpSettings?.bulkBillingCycleEdit &&
         (role === "ispOwner" ||
-          (role === "manager" && permissions?.bulkBillingCycleEdit)),
+          (role === "manager" && permissions?.bulkBillingCycleEdit) ||
+          (role === "reseller" && permission?.bulkCustomerBillingCycleEdit)),
       icon: <i class="far fa-calendar-alt fa-xs" />,
       value: "editBillingCycle",
     },
@@ -87,7 +89,8 @@ const BulkOptions = ({ bulkCustomers, page }) => {
       isVisiable:
         bpSettings?.bulkAreaEdit &&
         (role === "ispOwner" ||
-          (role === "manager" && permissions?.bulkAreaEdit)),
+          (role === "manager" && permissions?.bulkAreaEdit) ||
+          (role === "reseller" && permission?.bulkAreaEdit)),
       icon: <i class="fas fa-map-marked-alt fa-xs" />,
       value: "editArea",
     },
@@ -99,7 +102,8 @@ const BulkOptions = ({ bulkCustomers, page }) => {
         bpSettings?.bulkStatusEdit &&
         (role === "ispOwner" ||
           (["manager", "collector"].includes(role) &&
-            permissions?.bulkStatusEdit)),
+            permissions?.bulkStatusEdit) ||
+          (role === "reseller" && permission?.bulkCustomerStatusEdit)),
       icon: <i className="fas fa-edit fa-xs" />,
       value: "editStatus",
     },
@@ -122,6 +126,7 @@ const BulkOptions = ({ bulkCustomers, page }) => {
         bpSettings?.bulkCustomerRecharge &&
         (role === "ispOwner" ||
           (role === "manager" && permissions?.bulkCustomerRecharge)),
+      // ||(role === "reseller" && permission?.bulkCustomerRecharge)
       icon: <i className="fas fa-dollar fa-xs" />,
       value: "bulkRecharge",
     },
@@ -143,7 +148,8 @@ const BulkOptions = ({ bulkCustomers, page }) => {
       isVisiable:
         bpSettings?.bulkPackageEdit &&
         (role === "ispOwner" ||
-          (role === "manager" && permissions?.bulkPackageEdit)),
+          (role === "manager" && permissions?.bulkPackageEdit) ||
+          (role === "reseller" && permission?.customerMikrotikPackageEdit)),
       icon: <i class="fas fa-wifi fa-xs" />,
       value: "updatePackage",
     },
@@ -155,7 +161,8 @@ const BulkOptions = ({ bulkCustomers, page }) => {
         hasMikrotik &&
         bpSettings?.bulkAutoDisableEdit &&
         (role === "ispOwner" ||
-          (role === "manager" && permissions?.bulkAutoDisableEdit)),
+          (role === "manager" && permissions?.bulkAutoDisableEdit) ||
+          (role === "reseller" && permission?.customerAutoDisableEdit)),
       icon: <i class="fas fa-power-off fa-xs" />,
       value: "automaticConnectionOff",
     },

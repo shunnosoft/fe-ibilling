@@ -10,8 +10,9 @@ import { billPayment } from "../features/getIspOwnerUsersApi";
 import apiLink from "../api/apiLink";
 import { publicRequest } from "../api/apiLink";
 import customerBillMonth from "../pages/Customer/customerCRUD/customerBillMonth";
+import ComponentCustomModal from "../components/common/customModal/ComponentCustomModal";
 
-const PaymentModal = (props) => {
+const PaymentModal = ({ show, setShow, customerData, isPublic }) => {
   // twelve month options
   const options = [
     { value: "January", label: "January" },
@@ -29,7 +30,7 @@ const PaymentModal = (props) => {
   ];
 
   // get customer data form redux store
-  const customerData = useSelector(
+  const customer = useSelector(
     (state) => state.persistedReducer.auth?.currentUser?.customer
   );
 
@@ -44,7 +45,23 @@ const PaymentModal = (props) => {
   const [selectedMonth, setSelectedMonth] = useState([]);
 
   useEffect(() => {
-    if (!props.customerData && customerData) {
+    if (customer) {
+      setPaymentAmount(
+        customer?.balance > 0 && customer?.balance < customer?.monthlyFee
+          ? customer?.monthlyFee - customer?.balance
+          : customer?.balance < 0
+          ? customer?.monthlyFee + Math.abs(customer?.balance)
+          : customer?.monthlyFee
+      );
+
+      setUserData(customer);
+
+      // set customer bill month
+      setSelectedMonth(customerBillMonth(customer));
+    }
+
+    //for handling qr payment
+    if (customerData) {
       setPaymentAmount(
         customerData?.balance > 0 &&
           customerData?.balance < customerData?.monthlyFee
@@ -59,25 +76,7 @@ const PaymentModal = (props) => {
       // set customer bill month
       setSelectedMonth(customerBillMonth(customerData));
     }
-
-    //for handling qr payment
-    if (props.customerData) {
-      setPaymentAmount(
-        props.customerData?.balance > 0 &&
-          props.customerData?.balance < props.customerData?.monthlyFee
-          ? props.customerData?.monthlyFee - props.customerData?.balance
-          : props.customerData?.balance < 0
-          ? props.customerData?.monthlyFee +
-            Math.abs(props.customerData?.balance)
-          : props.customerData?.monthlyFee
-      );
-
-      setUserData(props.customerData);
-
-      // set customer bill month
-      setSelectedMonth(customerBillMonth(props.customerData));
-    }
-  }, [customerData, props.customerData]);
+  }, [customer, customerData]);
 
   const billPaymentController = async () => {
     const data = {
@@ -119,7 +118,7 @@ const PaymentModal = (props) => {
     execute: "bkash/executePayment",
     baseURL: apiLink,
   };
-  if (props.isPublic) {
+  if (isPublic) {
     URL = {
       create: "bkash/createPublicPayment",
       execute: "bkash/executePublicPayment",
@@ -212,70 +211,23 @@ const PaymentModal = (props) => {
     userData?.ispOwner?.bpSettings?.paymentGateway?.gatewayType;
 
   return (
-    <div className="modal fade" id="billPaymentModal" tabIndex="-1">
-      <div className="modal-dialog modal-dialog-centered">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h5 className="modal-title text-black">Payment Amount</h5>
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div className="modal-body displayGrid">
-            <div>
-              <label className="form-check-label changeLabelFontColor">
-                Total Bill Amount <span className="text-danger">*</span>
-              </label>
-
-              <input
-                onChange={(e) => setPaymentAmount(e.target.value)}
-                min={userData?.monthlyFee}
-                className="form-control "
-                type="number"
-                value={paymentAmount}
-              />
-            </div>
-
-            <div>
-              <label className="form-check-label changeLabelFontColor">
-                Select Bill Month <span className="text-danger">*</span>
-              </label>
-
-              <Select
-                className="mt-0 text-dark"
-                value={selectedMonth}
-                onChange={(data) => setSelectedMonth(data)}
-                options={options}
-                isMulti={true}
-                placeholder={"Select Bill Month"}
-                isSearchable
-              />
-            </div>
-
-            <div class="form-check mt-2">
-              <input
-                onChange={(e) => setAgreement(e.target.checked)}
-                min={userData?.monthlyFee}
-                className="form-check-input "
-                type="checkbox"
-                id="agreement"
-              />
-              <label htmlFor="agreement">
-                Do you agree our terms and conditions?
-              </label>
-            </div>
-          </div>
-          <div className="modal-footer">
+    <>
+      <ComponentCustomModal
+        show={show}
+        setShow={setShow}
+        centered={true}
+        size="md"
+        header="Pay Your Monthly Bill"
+        footer={
+          <div className="displayGrid1 float-end">
             <button
               type="button"
               className="btn btn-secondary"
-              data-bs-dismiss="modal"
+              onClick={() => setShow(false)}
             >
               Cancel
             </button>
+
             <button
               id={gatewayType === "bKashPG" ? "bKash_button" : ""}
               onClick={
@@ -288,9 +240,54 @@ const PaymentModal = (props) => {
               {loading ? <Loader /> : "Pay"}
             </button>
           </div>
+        }
+      >
+        <div className="displayGrid">
+          <div>
+            <label className="form-check-label changeLabelFontColor">
+              Total Bill Amount <span className="text-danger">*</span>
+            </label>
+
+            <input
+              onChange={(e) => setPaymentAmount(e.target.value)}
+              min={userData?.monthlyFee}
+              className="form-control "
+              type="number"
+              value={paymentAmount}
+            />
+          </div>
+
+          <div>
+            <label className="form-check-label changeLabelFontColor">
+              Select Bill Month <span className="text-danger">*</span>
+            </label>
+
+            <Select
+              className="mt-0 text-dark"
+              value={selectedMonth}
+              onChange={(data) => setSelectedMonth(data)}
+              options={options}
+              isMulti={true}
+              placeholder={"Select Bill Month"}
+              isSearchable
+            />
+          </div>
+
+          <div class="form-check mt-2">
+            <input
+              onChange={(e) => setAgreement(e.target.checked)}
+              min={userData?.monthlyFee}
+              className="form-check-input "
+              type="checkbox"
+              id="agreement"
+            />
+            <label htmlFor="agreement" className="inputLabelFontColor">
+              Do you agree our terms and conditions?
+            </label>
+          </div>
         </div>
-      </div>
-    </div>
+      </ComponentCustomModal>
+    </>
   );
 };
 

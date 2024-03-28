@@ -9,9 +9,7 @@ import {
   PrinterFill,
   ArrowClockwise,
   ChatText,
-  CurrencyDollar,
   Server,
-  GearFill,
   FilterCircle,
   PencilSquare,
   FiletypeCsv,
@@ -52,14 +50,8 @@ import { badge } from "../../components/common/Utils";
 import Table from "../../components/table/Table";
 import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
 import IndeterminateCheckbox from "../../components/table/bulkCheckbox";
-import BulkBillingCycleEdit from "./bulkOpration/bulkBillingCycleEdit";
-import BulkStatusEdit from "./bulkOpration/bulkStatusEdit";
-import BulkSubAreaEdit from "./bulkOpration/bulkSubAreaEdit";
 import FormatNumber from "../../components/common/NumberFormat";
 import BandwidthModal from "../../pages/Customer/BandwidthModal";
-import BulkResellerRecharge from "./bulkOpration/BulkResellerRecharge";
-import ResellerBulkAutoConnectionEdit from "./bulkOpration/ResellerBulkAutoConnectionEdit";
-import BulkPackageEdit from "./bulkOpration/bulkPackageEdit";
 import CustomersNumber from "../../pages/Customer/CustomersNumber";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
@@ -72,6 +64,7 @@ import PPPoECustomerEdit from "./actionComponent/PPPoECustomerEdit";
 import { getOwnerUsers } from "../../features/getIspOwnerUsersApi";
 import RechargeCustomer from "./actionComponent/RechargeCustomer";
 import PrintOptions from "../../components/common/PrintOptions";
+import BulkOptions from "../../pages/Customer/customerCRUD/bulkOpration/BulkOptions";
 
 const Customer = () => {
   const { t } = useTranslation();
@@ -725,7 +718,7 @@ const Customer = () => {
                 {permission?.customerDelete && (
                   <li
                     onClick={() => {
-                      customerDelete(original.id);
+                      setCustomerId(original.id);
                       setModalStatus("delete");
                       setShow(true);
                     }}
@@ -741,10 +734,10 @@ const Customer = () => {
                 {original.mobile &&
                   (permissions?.sendSMS || role !== "collector") && (
                     <li
-                      data-bs-toggle="modal"
-                      data-bs-target="#customerMessageModal"
                       onClick={() => {
-                        getSpecificCustomer(original.id);
+                        setCustomerId(original.id);
+                        setModalStatus("message");
+                        setShow(true);
                       }}
                     >
                       <div className="dropdown-item">
@@ -974,7 +967,7 @@ const Customer = () => {
         </div>
       </div>
 
-      {/* Model start */}
+      {/* component model start */}
 
       {/* customer profile details modal */}
       {modalStatus === "profile" && (
@@ -1009,8 +1002,18 @@ const Customer = () => {
         />
       )}
 
+      {/* customer report modal */}
       <CustomerReport single={customerReportData} />
-      <SingleMessage single={singleCustomer} sendCustomer="customer" />
+
+      {/* customer message modal */}
+      {modalStatus === "message" && (
+        <SingleMessage
+          show={show}
+          setShow={setShow}
+          single={customerId}
+          sendCustomer="customer"
+        />
+      )}
 
       {/* customers number update or delete modal */}
       <CustomersNumber showModal={numberModalShow} />
@@ -1028,6 +1031,11 @@ const Customer = () => {
         />
       )}
 
+      {/* component model end */}
+
+      {/* bulk options modal  */}
+      <BulkOptions bulkCustomers={bulkCustomer} page="pppoe" />
+
       {/* customers data table print option modal */}
       {modalStatus === "printOptions" && (
         <PrintOptions
@@ -1039,312 +1047,6 @@ const Customer = () => {
           printData={printData}
         />
       )}
-
-      {/* Model finish */}
-
-      {/* bulk operation modal section */}
-      {modalStatus === "customerBulkEdit" && (
-        <BulkSubAreaEdit
-          bulkCustomer={bulkCustomer}
-          show={show}
-          setShow={setShow}
-        />
-      )}
-
-      {modalStatus === "bulkResellerRecharge" && (
-        <BulkResellerRecharge
-          bulkCustomer={bulkCustomer}
-          show={show}
-          setShow={setShow}
-        />
-      )}
-
-      {modalStatus === "customerBillingCycle" && (
-        <BulkBillingCycleEdit
-          bulkCustomer={bulkCustomer}
-          show={show}
-          setShow={setShow}
-        />
-      )}
-
-      {modalStatus === "editStatus" && (
-        <BulkStatusEdit
-          bulkCustomer={bulkCustomer}
-          show={show}
-          setShow={setShow}
-        />
-      )}
-
-      {modalStatus === "autoDisableEditModal" && (
-        <ResellerBulkAutoConnectionEdit
-          bulkCustomer={bulkCustomer}
-          show={show}
-          setShow={setShow}
-        />
-      )}
-
-      {modalStatus === "bulkPackageEdit" && (
-        <BulkPackageEdit
-          bulkCustomer={bulkCustomer}
-          show={show}
-          setShow={setShow}
-        />
-      )}
-      {/*  bulk operation modal section */}
-
-      {bulkCustomer.length > 0 && (
-        <div className="client_wraper2">
-          <div
-            className={`settings_wraper2 ${
-              isMenuOpen ? "show-menu2" : "hide-menu2"
-            }`}
-          >
-            <ul className="client_service_list2 ps-0">
-              {permission?.bulkAreaEdit && (
-                <li
-                  type="button"
-                  className="p-1"
-                  onClick={() => {
-                    setModalStatus("customerBulkEdit");
-                    setShow(true);
-                  }}
-                >
-                  <div className="menu_icon2">
-                    <button
-                      className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-primary"
-                      title={t("editArea")}
-                    >
-                      <i class="fas fa-map-marked-alt fa-xs"></i>
-                      <span className="button_title">{t("editArea")}</span>
-                    </button>
-                  </div>
-                  <div className="menu_label2">{t("editArea")}</div>
-                </li>
-              )}
-
-              <hr className="mt-0 mb-0" />
-
-              {permission?.bulkCustomerRecharge && (
-                <li
-                  type="button"
-                  className="p-1"
-                  onClick={() => {
-                    setModalStatus("bulkResellerRecharge");
-                    setShow(true);
-                  }}
-                >
-                  <div className="menu_icon2">
-                    <button
-                      className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-2 bg-warning"
-                      title={t("package")}
-                    >
-                      <i className="fas fa-dollar fa-xs "></i>
-                      <span className="button_title">{t("bulkRecharge")}</span>
-                    </button>
-                  </div>
-                  <div className="menu_label2">{t("bulkRecharge")}</div>
-                </li>
-              )}
-
-              <hr className="mt-0 mb-0" />
-
-              {(permission?.bulkCustomerStatusEdit ||
-                permissions?.bulkStatusEdit) && (
-                <li
-                  type="button"
-                  className="p-1"
-                  onClick={() => {
-                    setModalStatus("editStatus");
-                    setShow(true);
-                  }}
-                >
-                  <div className="menu_icon2">
-                    <button
-                      className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-info"
-                      title={t("editStatus")}
-                    >
-                      <i className="fas fa-edit fa-xs  "></i>
-                      <span className="button_title"> {t("editStatus")}</span>
-                    </button>
-                  </div>
-                  <div className="menu_label2">{t("editStatus")}</div>
-                </li>
-              )}
-              <hr className="mt-0 mb-0" />
-
-              {permission?.bulkCustomerBillingCycleEdit && (
-                <li
-                  type="button"
-                  className="p-1"
-                  onClick={() => {
-                    setModalStatus("customerBillingCycle");
-                    setShow(true);
-                  }}
-                >
-                  <div className="menu_icon2">
-                    <button
-                      className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-2 bg-secondary"
-                      title={t("editBillingCycle")}
-                    >
-                      <i class="far fa-calendar-alt fa-xs"></i>
-                      <span className="button_title">
-                        {t("editBillingCycle")}{" "}
-                      </span>
-                    </button>
-                  </div>
-                  <div className="menu_label2">{t("editBillingCycle")}</div>
-                </li>
-              )}
-
-              <hr className="mt-0 mb-0" />
-
-              {ispOwnerData?.bpSettings?.hasMikrotik &&
-                permission?.customerAutoDisableEdit && (
-                  <li
-                    type="button"
-                    className="p-1"
-                    onClick={() => {
-                      setModalStatus("autoDisableEditModal");
-                      setShow(true);
-                    }}
-                  >
-                    <div className="menu_icon2">
-                      <button
-                        className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-secondary"
-                        title={t("autoConnectOnOff")}
-                      >
-                        <i class="fas fa-power-off fa-xs"></i>
-                        <span className="button_title">
-                          {t("automaticConnectionOff")}
-                        </span>
-                      </button>
-                    </div>
-                    <div className="menu_label2">
-                      {t("automaticConnectionOff")}
-                    </div>
-                  </li>
-                )}
-
-              <hr className="mt-0 mb-0" />
-
-              {permission?.customerMikrotikPackageEdit && (
-                <li
-                  type="button"
-                  className="p-1"
-                  onClick={() => {
-                    setModalStatus("bulkPackageEdit");
-                    setShow(true);
-                  }}
-                >
-                  <div className="menu_icon2">
-                    <button
-                      className="bulk_action_button btn btn-primary btn-floating btn-sm py-0 px-1 bg-primary"
-                      title={t("package")}
-                    >
-                      <i class="fas fa-wifi fa-xs"></i>
-                      <span className="button_title">{t("updatePackage")}</span>
-                    </button>
-                  </div>
-                  <div className="menu_label2">{t("updatePackage")}</div>
-                </li>
-              )}
-            </ul>
-
-            <div className="setting_icon_wraper2">
-              <div
-                onClick={() => setMenuOpen(!isMenuOpen)}
-                className="client_setting_icon2"
-              >
-                <GearFill />
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-      {/* {bulkCustomer.length > 0 && (
-        <div className="bulkActionButton">
-          {permission?.bulkAreaEdit && (
-            <button
-              className="bulk_action_button"
-              title={t("editArea")}
-              data-bs-toggle="modal"
-              data-bs-target="#customerBulkEdit"
-              type="button"
-              class="btn btn-primary btn-floating btn-sm"
-            >
-              <i class="fas fa-edit"></i>
-              <span className="button_title">{t("editArea")}</span>
-            </button>
-          )}
-          {permission?.bulkCustomerRecharge && (
-            <button
-              className="bulk_action_button btn btn-warning btn-floating btn-sm"
-              title={t("package")}
-              data-bs-toggle="modal"
-              data-bs-target="#bulkResellerRecharge"
-              type="button"
-              class="btn btn-primary btn-floating btn-sm"
-            >
-              <i className="fas fa-dollar"></i>
-              <span className="button_title">{t("bulkRecharge")}</span>
-            </button>
-          )}
-          {permission?.bulkCustomerStatusEdit && (
-            <button
-              className="bulk_action_button"
-              title={t("editStatus")}
-              data-bs-toggle="modal"
-              data-bs-target="#modalStatusEdit"
-              type="button"
-              class="btn btn-dark btn-floating btn-sm"
-            >
-              <i class="fas fa-edit"></i>
-              <span className="button_title"> {t("editStatus")}</span>
-            </button>
-          )}
-          {permission?.bulkCustomerBillingCycleEdit && (
-            <button
-              className="bulk_action_button"
-              title={t("editBillingCycle")}
-              data-bs-toggle="modal"
-              data-bs-target="#customerBillingCycle"
-              type="button"
-              class="btn btn-warning btn-floating btn-sm"
-            >
-              <i class="fas fa-edit"></i>
-              <span className="button_title"> {t("editBillingCycle")} </span>
-            </button>
-          )}
-
-          {permission?.customerAutoDisableEdit && (
-            <button
-              className="bulk_action_button btn btn-primary btn-floating btn-sm"
-              title={t("autoConnectOnOff")}
-              data-bs-toggle="modal"
-              data-bs-target="#autoDisableEditModal"
-              type="button"
-            >
-              <i className="fas fa-edit"></i>
-              <span className="button_title">
-                {t("automaticConnectionOff")}
-              </span>
-            </button>
-          )}
-
-          {permission?.customerMikrotikPackageEdit && (
-            <button
-              className="bulk_action_button btn btn-warning btn-floating btn-sm"
-              title={t("package")}
-              data-bs-toggle="modal"
-              data-bs-target="#bulkPackageEdit"
-              type="button"
-            >
-              <i className="fas fa-edit"></i>
-              <span className="button_title">{t("updatePackage")}</span>
-            </button>
-          )}
-        </div>
-      )} */}
 
       <BandwidthModal
         setModalShow={setBandWidthModal}

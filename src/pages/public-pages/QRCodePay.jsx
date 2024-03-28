@@ -13,6 +13,9 @@ const QRCodePay = () => {
   const { ispId } = useParams();
   const [isLoading, setIsLoading] = useState(false);
 
+  // modal handle state
+  const [show, setShow] = useState(false);
+
   useEffect(() => {
     getIspOwner(ispId, setIsLoading, setIspInfo);
   }, [ispId]);
@@ -134,9 +137,10 @@ const QRCodePay = () => {
                     </button>
                   ) : (
                     <button
-                      data-bs-toggle="modal"
-                      data-bs-target="#billPaymentModal"
                       className="btn btn-sm btn-success  shadow-none"
+                      onClick={() => {
+                        setShow(true);
+                      }}
                     >
                       {isLoading ? "Loading" : "Pay"}
                     </button>
@@ -147,7 +151,14 @@ const QRCodePay = () => {
           </div>
         </div>
       </div>
-      {customerInfo && <PaymentModal customerData={customerInfo} isPublic />}
+      {customerInfo && (
+        <PaymentModal
+          show={show}
+          setShow={setShow}
+          customerData={customerInfo}
+          isPublic
+        />
+      )}
     </>
   );
 };

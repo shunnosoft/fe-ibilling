@@ -4,7 +4,6 @@ import moment from "moment";
 import useDash from "../../assets/css/dash.module.css";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import {
-  Wallet,
   ThreeDots,
   PersonFill,
   PrinterFill,
@@ -667,10 +666,10 @@ export default function RstaticCustomer() {
 
                 {permission?.customerDelete && (
                   <li
-                    data-bs-toggle="modal"
-                    data-bs-target="#customerDelete"
                     onClick={() => {
                       customerDelete(original.id);
+                      setModalStatus("delete");
+                      setShow(true);
                     }}
                   >
                     <div className="dropdown-item">
@@ -683,10 +682,10 @@ export default function RstaticCustomer() {
                 )}
                 {original.mobile && (
                   <li
-                    data-bs-toggle="modal"
-                    data-bs-target="#customerMessageModal"
                     onClick={() => {
                       getSpecificCustomer(original.id);
+                      setModalStatus("message");
+                      setShow(true);
                     }}
                   >
                     <div className="dropdown-item">
@@ -960,15 +959,26 @@ export default function RstaticCustomer() {
       <StaticCustomerEdit single={singleCustomer} />
 
       {/* single customer message */}
-      <SingleMessage single={singleCustomer} sendCustomer="staticCustomer" />
+      {modalStatus === "message" && (
+        <SingleMessage
+          show={show}
+          setShow={setShow}
+          single={singleCustomer}
+          sendCustomer="staticCustomer"
+        />
+      )}
 
       {/* customer delete modal  */}
-      <CustomerDelete
-        single={customerId}
-        mikrotikCheck={checkMikrotik}
-        setMikrotikCheck={setMikrotikCheck}
-        page="reseller"
-      />
+      {modalStatus === "delete" && (
+        <CustomerDelete
+          show={show}
+          setShow={setShow}
+          single={customerId}
+          mikrotikCheck={checkMikrotik}
+          setMikrotikCheck={setMikrotikCheck}
+          page="reseller"
+        />
+      )}
 
       {modalStatus === "printOptions" && (
         <PrintOptions

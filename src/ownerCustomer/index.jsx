@@ -278,41 +278,40 @@ const Client = () => {
           <div className="services p-5">
             <h2>Services</h2>
             <hr />
-            <div className="service_wraper">
-              <section className="section" id="courses">
-                <div className="container">
-                  <div className="row justify-content-center">
-                    <div className="col-lg-12">
-                      <div className="features-absolute">
-                        <div className="row mb-2">
-                          {serviceData.map((item) => (
-                            <div
-                              key={item}
-                              className="col-lg-3 col-md-6 col-12 mb-3"
-                            >
-                              <div className="card features feature-clean explore-feature p-4 px-md-3 border-0 rounded-md shadow text-center bg-dark ">
-                                <div className="icons text-primary text-center mx-auto">
-                                  <i className="uil uil-home d-block rounded h3 mb-0"></i>
-                                </div>
 
-                                <div className="card-body p-0 content ">
-                                  <h5 className="mt-4">
-                                    <span className="title text-white">
-                                      {item.header}
-                                    </span>
-                                  </h5>
-                                  <p className="text-muted">{item.desc}</p>
-                                </div>
+            <section className="section" id="courses">
+              <div className="container">
+                <div className="row justify-content-center">
+                  <div className="col-lg-12">
+                    <div className="features-absolute">
+                      <div className="row mb-2">
+                        {serviceData.map((item) => (
+                          <div
+                            key={item}
+                            className="col-lg-3 col-md-6 col-12 mb-3"
+                          >
+                            <div className="card features feature-clean explore-feature p-4 px-md-3 border-0 rounded-md shadow text-center bg-dark ">
+                              <div className="icons text-primary text-center mx-auto">
+                                <i className="uil uil-home d-block rounded h3 mb-0"></i>
+                              </div>
+
+                              <div className="card-body p-0 content ">
+                                <h5 className="mt-4">
+                                  <span className="title text-white">
+                                    {item.header}
+                                  </span>
+                                </h5>
+                                <p className="text-muted">{item.desc}</p>
                               </div>
                             </div>
-                          ))}
-                        </div>
+                          </div>
+                        ))}
                       </div>
                     </div>
                   </div>
                 </div>
-              </section>
-            </div>
+              </div>
+            </section>
           </div>
         )}
 
