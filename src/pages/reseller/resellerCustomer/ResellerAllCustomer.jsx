@@ -50,6 +50,7 @@ import {
   getCustomerDayLeft,
   getCustomerPromiseDate,
 } from "../../Customer/customerCRUD/customerBillDayPromiseDate";
+import DataFilter from "../../common/DataFilter";
 
 const AllResellerCustomer = () => {
   const { t } = useTranslation();
@@ -156,47 +157,6 @@ const AllResellerCustomer = () => {
     setMikrotikCheck(false);
 
     setCustomerId(customerId);
-  };
-
-  let tempCustomer = [...resellerCustomer];
-  const filterClick = () => {
-    // reseller filter
-    if (resellerId) {
-      if (resellerId !== "all") {
-        tempCustomer = tempCustomer.filter(
-          (customer) => customer.reseller.id === resellerId
-        );
-      }
-    }
-
-    // user type filter
-    if (filterUserType !== "all" && filterUserType == "pppoe") {
-      tempCustomer = tempCustomer.filter((value) => value.userType === "pppoe");
-    }
-
-    if (filterUserType !== "all" && filterUserType == "static") {
-      tempCustomer = tempCustomer.filter((value) => value.userType !== "pppoe");
-    }
-
-    // status filter
-    if (filterStatus && filterStatus !== t("status")) {
-      if (filterStatus !== "all") {
-        tempCustomer = tempCustomer.filter(
-          (value) => value.status === filterStatus
-        );
-      }
-    }
-
-    // payment status filter
-    if (filterPayment && filterPayment !== t("payment")) {
-      if (filterPayment !== "all") {
-        tempCustomer = tempCustomer.filter(
-          (value) => value.paymentStatus === filterPayment
-        );
-      }
-    }
-
-    setCustomer(tempCustomer);
   };
 
   // get specific customer
@@ -637,13 +597,13 @@ const AllResellerCustomer = () => {
 
                     <div className="reloadBtn">
                       {isLoading ? (
-                        <Loader></Loader>
+                        <Loader />
                       ) : (
                         <ArrowClockwise
                           className="arrowClock"
                           title={t("refresh")}
                           onClick={() => reloadHandler()}
-                        ></ArrowClockwise>
+                        />
                       )}
                     </div>
 
@@ -718,79 +678,11 @@ const AllResellerCustomer = () => {
                   <Accordion alwaysOpen activeKey={activeKeys}>
                     <Accordion.Item eventKey="filter">
                       <Accordion.Body>
-                        <div className="d-flex flex-row justify-content-center">
-                          {/* status filter */}
-                          <select
-                            className="form-select mt-0"
-                            aria-label="Default select example"
-                            onChange={(event) =>
-                              setResellerId(event.target.value)
-                            }
-                          >
-                            <option selected value="all">
-                              {t("allReseller")}
-                            </option>
-                            {resellers.map((reseller, key) => (
-                              <option key={key} value={reseller.id}>
-                                {reseller.name}
-                              </option>
-                            ))}
-                          </select>
-                          {/* userType filter */}
-                          <select
-                            className="form-select ms-2 mt-0"
-                            aria-label="Default select example"
-                            onChange={(event) =>
-                              setFilterUserType(event.target.value)
-                            }
-                          >
-                            <option selected value="all">
-                              {t("userType")}
-                            </option>
-                            <option value="pppoe"> {t("pppoe")} </option>
-                            <option value="static"> {t("static")} </option>
-                          </select>
-                          {/* end userType filter */}
-                          <select
-                            className="form-select mx-2 mt-0"
-                            aria-label="Default select example"
-                            onChange={(event) =>
-                              setFilterStatus(event.target.value)
-                            }
-                          >
-                            <option selected value="all">
-                              {t("status")}
-                            </option>
-                            <option value="active"> {t("active")} </option>
-                            <option value="inactive"> {t("in active")} </option>
-                            <option value="expired"> {t("expired")} </option>
-                          </select>
-                          {/* end status filter */}
-
-                          {/* payment status filter */}
-                          <select
-                            className="form-select me-2 mt-0"
-                            aria-label="Default select example"
-                            onChange={(event) =>
-                              setFilterPayment(event.target.value)
-                            }
-                          >
-                            <option selected value="all">
-                              {t("paymentStatus")}
-                            </option>
-                            <option value="paid"> {t("paid")} </option>
-                            <option value="unpaid"> {t("unpaid")} </option>
-                          </select>
-                          {/* end payment status filter */}
-                          <div>
-                            <button
-                              className="btn btn-outline-primary w-140"
-                              onClick={filterClick}
-                            >
-                              {t("filter")}
-                            </button>
-                          </div>
-                        </div>
+                        <DataFilter
+                          page="resellerCustomer"
+                          customers={resellerCustomer}
+                          setCustomers={setCustomer}
+                        />
                       </Accordion.Body>
                     </Accordion.Item>
                   </Accordion>
