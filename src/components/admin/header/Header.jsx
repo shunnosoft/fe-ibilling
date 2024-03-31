@@ -63,6 +63,12 @@ export default function Header(props) {
     (state) => state?.payment?.previousBalance
   );
 
+  // admin staff user role permission
+  const adminUser =
+    userRole === "ispOwner" ||
+    userRole === "manager" ||
+    (userRole === "collector" && !userData.reseller);
+
   // modal show handler
   const [modalStatus, setModalStatus] = useState("");
   const [show, setShow] = useState(false);
@@ -107,6 +113,17 @@ export default function Header(props) {
     setGetLang(lang ? lang : localStorage.setItem("netFee:lang", "bn"));
     i18n.changeLanguage(localStorage.getItem("netFee:lang"));
   }, [getLang]);
+
+  // ispOwner and reseller total sms balance
+  let messageBalance = 0;
+  if (["ispOwner", "manager"].includes(userRole)) {
+    messageBalance =
+      ispOwnerData.smsBalance +
+      ispOwnerData.maskingSmsBalance +
+      ispOwnerData.fixedNumberSmsBalance;
+  } else {
+    messageBalance = smsBalance;
+  }
 
   const selectLanguage = (event) => {
     setGetLang(event.target.value);
@@ -159,74 +176,8 @@ export default function Header(props) {
                 </div>
               )}
 
-              {currentUser && userRole === "ispOwner" ? (
-                <div className="refreshDiv phone_view_none">
-                  <div
-                    style={{ backgroundColor: "inherit" }}
-                    className="balancetext"
-                  >
-                    {ispOwner?.smsBalance > 0 && (
-                      <p className="me-2">
-                        {t("nonMasking")}
-                        <strong className="mainsmsbalance">
-                          {FormatNumber(ispOwner.smsBalance)}
-                        </strong>
-                      </p>
-                    )}
-
-                    {ispOwner?.maskingSmsBalance > 0 && (
-                      <p className="me-2">
-                        {t("masking")}
-                        <strong className="mainsmsbalance">
-                          {FormatNumber(ispOwner.maskingSmsBalance)}
-                        </strong>
-                      </p>
-                    )}
-
-                    {ispOwner?.fixedNumberSmsBalance > 0 && (
-                      <p className="me-2">
-                        {t("fixed")}
-                        <strong className="mainsmsbalance">
-                          {FormatNumber(ispOwner.fixedNumberSmsBalance)}
-                        </strong>
-                      </p>
-                    )}
-                  </div>
-
-                  {(ispOwner?.smsBalance ||
-                    ispOwner?.maskingSmsBalance ||
-                    ispOwner?.fixedNumberSmsBalance) > 0 && (
-                    <div title={t("refresh")} className="headerIcon">
-                      {isLoading ? (
-                        <Loader />
-                      ) : (
-                        <ArrowClockwise
-                          className="fs-5"
-                          onClick={() =>
-                            getIspOwnerWitSMS(
-                              ispOwnerId,
-                              setIspOwner,
-                              setLoading
-                            )
-                          }
-                        />
-                      )}
-                    </div>
-                  )}
-                </div>
-              ) : (
-                ""
-              )}
-
               {currentUser && userRole === "reseller" && (
                 <div className="refreshDiv">
-                  {/* <div
-                    style={{ backgroundColor: "inherit" }}
-                    className="balancetext"
-                  >
-                    {t("SMS")}
-                    <strong className="mainsmsbalance">{smsBalance}</strong>
-                  </div> */}
                   <div
                     style={{ backgroundColor: "inherit" }}
                     className="balancetext"
@@ -234,15 +185,6 @@ export default function Header(props) {
                     {t("balance")}
                     <strong className="mainsmsbalance">
                       {FormatNumber(rechargeBalnace?.toFixed())}
-                    </strong>
-                  </div>
-                  <div
-                    style={{ backgroundColor: "inherit" }}
-                    className="balancetext"
-                  >
-                    {t("message")}
-                    <strong className="mainsmsbalance">
-                      {FormatNumber(smsBalance?.toFixed())}
                     </strong>
                   </div>
 
@@ -278,15 +220,6 @@ export default function Header(props) {
                       {FormatNumber(balancee)}
                     </strong>
                   </div>
-                  {/* <div
-                    style={{ backgroundColor: "inherit" }}
-                    className="balancetext"
-                  >
-                    {t("previousBalance")}
-                    <strong className="mainsmsbalance">
-                      {FormatNumber(previousBalancee)}
-                    </strong>
-                  </div> */}
 
                   <div className="headerIcon" title={t("refresh")}>
                     {isLoading ? (
@@ -303,9 +236,7 @@ export default function Header(props) {
                 ""
               )}
 
-              {["ispOwner", "manager", "reseller", "collector"].includes(
-                userRole
-              ) && (
+              {["ispOwner", "manager", "reseller"].includes(userRole) && (
                 <div
                   className="headerIcon"
                   onClick={() => {
@@ -313,7 +244,16 @@ export default function Header(props) {
                     setShow(true);
                   }}
                 >
-                  <EnvelopePlus size={22} />
+                  <div className="messageBalance">
+                    <EnvelopePlus size={22} />
+                    <span
+                      className={`badge bg-${
+                        messageBalance > 0 ? "success" : "danger"
+                      }`}
+                    >
+                      {messageBalance > 1000 ? "999+" : messageBalance}
+                    </span>
+                  </div>
                 </div>
               )}
 

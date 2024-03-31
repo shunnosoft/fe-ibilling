@@ -103,6 +103,30 @@
   text-decoration: none;
 }
 
+.messageBalance {
+  position: relative;
+  display: inline-block;
+}
+
+.messageBalance > span {
+  position: absolute;
+  /* background-color: #008000; */
+  color: #fff;
+  top: -4px;
+  left: 8px;
+  display: inline-block;
+  padding: 0 4px;
+  min-width: 8px;
+  max-width: 33px;
+  height: 16px;
+  border-radius: 22px;
+  text-align: center;
+  font-family: "Roboto", "Arial", sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+}
+
 .goToLoginPage {
   font-size: 16px;
   font-weight: 400;

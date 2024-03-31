@@ -14,6 +14,7 @@ import {
   getParchaseHistory,
   purchaseSMS,
 } from "../../features/resellerParchaseSmsApi";
+import { Card } from "react-bootstrap";
 
 const SMSPurchase = ({ show, setShow }) => {
   const { t } = useTranslation();
@@ -213,80 +214,120 @@ const SMSPurchase = ({ show, setShow }) => {
               </div>
             </div>
           </div> */}
-          <div className="monthlyBill text-center">
-            <span className="fw-bold"> {t("purchagePrice")} </span>
-            <span className="price">
-              <strong>৳{Math.ceil(amount)}</strong>
-            </span>
+
+          <div className="displayGrid3 clintTitle p-2 mb-3">
+            <div>
+              <label className="form-control-label">{t("nonMasking")}</label>
+              <span
+                className={`text-${
+                  user.smsBalance >= 0 ? "success" : "danger"
+                } fw-bold`}
+              >
+                {user.smsBalance}
+              </span>
+            </div>
+            <div>
+              <label className="form-control-label">{t("masking")}</label>
+              <span
+                className={`text-${
+                  user.maskingSmsBalance >= 0 ? "success" : "danger"
+                } fw-bold`}
+              >
+                {user.maskingSmsBalance}
+              </span>
+            </div>
+            <div>
+              <label className="form-control-label">{t("fixedNumber")}</label>
+              <span
+                className={`text-${
+                  user.fixedNumberSmsBalance >= 0 ? "success" : "danger"
+                } fw-bold`}
+              >
+                {user.fixedNumberSmsBalance}
+              </span>
+            </div>
           </div>
 
-          <form className="displayGrid">
-            <div>
-              <label class="form-control-label text-secondary">
-                {t("smsType")}&nbsp;
-                <span className="text-danger">*</span>
-              </label>
+          <Card className="bg-light">
+            <Card.Body>
+              <Card.Text>
+                <div className="monthlyBill text-center">
+                  <span className="fw-bold"> {t("purchagePrice")} </span>
+                  <span className="price">
+                    <strong>৳{Math.ceil(amount)}</strong>
+                  </span>
+                </div>
 
-              <select
-                className="form-select mw-100 mt-0"
-                onChange={(e) => setMessageType(e.target.value)}
-              >
-                <option selected value="nonMasking">
-                  {t("nonMasking")}
-                </option>
-                <option value="masking">{t("masking")}</option>
-                <option value="fixedNumber">{t("fixedNumber")}</option>
-              </select>
-            </div>
+                <form className="displayGrid">
+                  <div>
+                    <label class="form-control-label text-secondary">
+                      {t("smsType")}&nbsp;
+                      <span className="text-danger">*</span>
+                    </label>
 
-            <div>
-              <label class="form-control-label text-secondary">
-                {t("SMS") + " " + t("count")}&nbsp;
-                <span className="text-danger">*</span>
-              </label>
+                    <select
+                      className="form-select mw-100 mt-0 bg-white"
+                      onChange={(e) => setMessageType(e.target.value)}
+                    >
+                      <option selected value="nonMasking">
+                        {t("nonMasking")}
+                      </option>
+                      <option value="masking">{t("masking")}</option>
+                      <option value="fixedNumber">{t("fixedNumber")}</option>
+                    </select>
+                  </div>
 
-              <input
-                onChange={(e) => changeHandler(e.target.value)}
-                className="form-control"
-                type="number"
-                value={count}
-                min={250}
-              />
-            </div>
+                  <div>
+                    <label class="form-control-label text-secondary">
+                      {t("SMS") + " " + t("count")}&nbsp;
+                      <span className="text-danger">*</span>
+                    </label>
 
-            <div>
-              <label className="form-control-label text-secondary">
-                {t("smsAmunt")}&nbsp;
-                <span className="text-danger">*</span>
-              </label>
-              <input
-                onChange={(e) => tkHandler(e.target.value)}
-                className="form-control"
-                type="number"
-                value={amount && amount}
-                min={100}
-              />
-            </div>
+                    <input
+                      onChange={(e) => changeHandler(e.target.value)}
+                      className="form-control bg-white"
+                      type="number"
+                      value={count}
+                      min={250}
+                    />
+                  </div>
 
-            {role === "reseller" && (
-              <div>
-                <label className="form-control-label text-secondary">
-                  {t("selectPlace")}&nbsp;
-                  <span className="text-danger">*</span>
-                </label>
+                  <div>
+                    <label className="form-control-label text-secondary">
+                      {t("smsAmunt")}&nbsp;
+                      <span className="text-danger">*</span>
+                    </label>
+                    <input
+                      onChange={(e) => tkHandler(e.target.value)}
+                      className="form-control bg-white"
+                      type="number"
+                      value={amount && amount}
+                      min={100}
+                    />
+                  </div>
 
-                <select
-                  className="form-select mw-100 mt-0"
-                  onChange={(e) => setBuyStatus(e.target.value)}
-                >
-                  <option value="netFee" selected>
-                    NetFee
-                  </option>
-                  <option value="ispOwner">Isp Owner</option>
-                </select>
-              </div>
-            )}
-          </form>
+                  {role === "reseller" && (
+                    <div>
+                      <label className="form-control-label text-secondary">
+                        {t("selectPlace")}&nbsp;
+                        <span className="text-danger">*</span>
+                      </label>
+
+                      <select
+                        className="form-select mw-100 mt-0 bg-white"
+                        onChange={(e) => setBuyStatus(e.target.value)}
+                      >
+                        <option value="netFee" selected>
+                          NetFee
+                        </option>
+                        <option value="ispOwner">Isp Owner</option>
+                      </select>
+                    </div>
+                  )}
+                </form>
+              </Card.Text>
+            </Card.Body>
+          </Card>
         </div>
       </ComponentCustomModal>
     </>
