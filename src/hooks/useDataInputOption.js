@@ -928,7 +928,16 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       type: "date",
       id: "billingCycle",
       isVisible: inputPermission.billingCycle,
-      disabled: status ? !formData.packageId : false,
+      disabled:
+        status === "post"
+          ? adminUser
+            ? !formData.packageId
+            : true
+          : status === "edit"
+          ? adminUser
+            ? !formData.packageId
+            : !permission?.billingCycleEdit
+          : false,
       validation: true,
       label: t("billingCycle"),
       placeholderText: "YYYY MM DD HH:mm A",
@@ -968,7 +977,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       type: "date",
       id: "connectionDate",
       isVisible: inputPermission.connectionDate,
-      disabled: status ? !formData.packageId : false,
+      disabled: status ? (adminUser ? !formData.packageId : true) : false,
       validation: false,
       label: t("connectionDate"),
       placeholderText: "YYYY MM DD HH:mm A",
