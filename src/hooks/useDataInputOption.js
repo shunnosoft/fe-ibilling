@@ -62,7 +62,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
         ? adminUser
           ? state?.package?.pppoePackages
           : state?.mikrotik?.pppoePackage
-        : state?.package?.packages
+        : state?.mikrotik?.pppoePackage
       : page === "static"
       ? hasMikrotik
         ? adminUser
