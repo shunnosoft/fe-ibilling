@@ -238,7 +238,7 @@ export default function Header(props) {
 
               {["ispOwner", "manager", "reseller"].includes(userRole) && (
                 <div
-                  className="headerIcon"
+                  className="headerIcon phone_view_none"
                   onClick={() => {
                     setModalStatus("buySMS");
                     setShow(true);
