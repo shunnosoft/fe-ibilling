@@ -138,9 +138,8 @@ const QRCodePay = () => {
                   ) : (
                     <button
                       className="btn btn-sm btn-success  shadow-none"
-                      onClick={() => {
-                        setShow(true);
-                      }}
+                      data-bs-toggle="modal"
+                      data-bs-target="#billPaymentModal"
                     >
                       {isLoading ? "Loading" : "Pay"}
                     </button>
@@ -151,14 +150,7 @@ const QRCodePay = () => {
           </div>
         </div>
       </div>
-      {customerInfo && (
-        <PaymentModal
-          show={show}
-          setShow={setShow}
-          customerData={customerInfo}
-          isPublic
-        />
-      )}
+      {customerInfo && <PaymentModal customerData={customerInfo} isPublic />}
     </>
   );
 };

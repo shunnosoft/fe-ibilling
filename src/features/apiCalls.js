@@ -2903,6 +2903,7 @@ export const getUnpaidInvoice = async (dispatch, ispOwnerId) => {
     dispatch(getUnpaidInvoiceSuccess(invoice));
   } catch (err) {
     console.log("unpaid invoice error: ", err);
+    userLogout();
   }
 };
 

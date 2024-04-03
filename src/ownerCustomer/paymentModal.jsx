@@ -12,7 +12,7 @@ import { publicRequest } from "../api/apiLink";
 import customerBillMonth from "../pages/Customer/customerCRUD/customerBillMonth";
 import ComponentCustomModal from "../components/common/customModal/ComponentCustomModal";
 
-const PaymentModal = ({ show, setShow, customerData, isPublic }) => {
+const PaymentModal = ({ customerData, isPublic }) => {
   // twelve month options
   const options = [
     { value: "January", label: "January" },
@@ -212,81 +212,85 @@ const PaymentModal = ({ show, setShow, customerData, isPublic }) => {
 
   return (
     <>
-      <ComponentCustomModal
-        show={show}
-        setShow={setShow}
-        centered={true}
-        size="md"
-        header="Pay Your Monthly Bill"
-        footer={
-          <div className="displayGrid1 float-end">
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={() => setShow(false)}
-            >
-              Cancel
-            </button>
+      <div className="modal fade" id="billPaymentModal" tabIndex="-1">
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title text-black">Payment Amount</h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body displayGrid">
+              <div>
+                <label className="form-check-label changeLabelFontColor">
+                  Total Bill Amount <span className="text-danger">*</span>
+                </label>
 
-            <button
-              id={gatewayType === "bKashPG" ? "bKash_button" : ""}
-              onClick={
-                gatewayType !== "bKashPG" ? billPaymentController : () => {}
-              }
-              type="button"
-              className="btn btn-primary"
-              disabled={!agreement}
-            >
-              {loading ? <Loader /> : "Pay"}
-            </button>
-          </div>
-        }
-      >
-        <div className="displayGrid">
-          <div>
-            <label className="form-check-label changeLabelFontColor">
-              Total Bill Amount <span className="text-danger">*</span>
-            </label>
+                <input
+                  onChange={(e) => setPaymentAmount(e.target.value)}
+                  min={userData?.monthlyFee}
+                  className="form-control "
+                  type="number"
+                  value={paymentAmount}
+                />
+              </div>
 
-            <input
-              onChange={(e) => setPaymentAmount(e.target.value)}
-              min={userData?.monthlyFee}
-              className="form-control "
-              type="number"
-              value={paymentAmount}
-            />
-          </div>
+              <div>
+                <label className="form-check-label changeLabelFontColor">
+                  Select Bill Month <span className="text-danger">*</span>
+                </label>
 
-          <div>
-            <label className="form-check-label changeLabelFontColor">
-              Select Bill Month <span className="text-danger">*</span>
-            </label>
+                <Select
+                  className="mt-0 text-dark"
+                  value={selectedMonth}
+                  onChange={(data) => setSelectedMonth(data)}
+                  options={options}
+                  isMulti={true}
+                  placeholder={"Select Bill Month"}
+                  isSearchable
+                />
+              </div>
 
-            <Select
-              className="mt-0 text-dark"
-              value={selectedMonth}
-              onChange={(data) => setSelectedMonth(data)}
-              options={options}
-              isMulti={true}
-              placeholder={"Select Bill Month"}
-              isSearchable
-            />
-          </div>
-
-          <div class="form-check mt-2">
-            <input
-              onChange={(e) => setAgreement(e.target.checked)}
-              min={userData?.monthlyFee}
-              className="form-check-input "
-              type="checkbox"
-              id="agreement"
-            />
-            <label htmlFor="agreement" className="inputLabelFontColor">
-              Do you agree our terms and conditions?
-            </label>
+              <div class="form-check mt-2">
+                <input
+                  onChange={(e) => setAgreement(e.target.checked)}
+                  min={userData?.monthlyFee}
+                  className="form-check-input "
+                  type="checkbox"
+                  id="agreement"
+                />
+                <label htmlFor="agreement">
+                  Do you agree our terms and conditions?
+                </label>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Cancel
+              </button>
+              <button
+                id={gatewayType === "bKashPG" ? "bKash_button" : ""}
+                onClick={
+                  gatewayType !== "bKashPG" ? billPaymentController : () => {}
+                }
+                type="button"
+                className="btn btn-primary"
+                disabled={!agreement}
+              >
+                {loading ? <Loader /> : "Pay"}
+              </button>
+            </div>
           </div>
         </div>
-      </ComponentCustomModal>
+      </div>
     </>
   );
 };

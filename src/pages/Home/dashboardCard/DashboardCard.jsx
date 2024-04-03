@@ -43,7 +43,6 @@ import Reseller from "../dataComponent/Reseller";
 
 const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
   const { t } = useTranslation();
-  console.log(dashboardCard);
 
   // get user & current user data form useISPOwner hooks
   const { role, ispOwnerId, bpSettings, permissions, currentUser } =

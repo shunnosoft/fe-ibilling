@@ -251,7 +251,7 @@ export default function Header(props) {
                         messageBalance > 0 ? "success" : "danger"
                       }`}
                     >
-                      {messageBalance > 1000 ? "999+" : messageBalance}
+                      {messageBalance > 1000 ? "999+" : messageBalance || 0}
                     </span>
                   </div>
                 </div>

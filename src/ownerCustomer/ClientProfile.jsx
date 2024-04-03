@@ -243,8 +243,9 @@ export default function ClientProfile() {
             {hasPG && (
               <div
                 className="up_down payment"
+                data-bs-toggle="modal"
+                data-bs-target="#billPaymentModal"
                 style={{ cursor: "pointer" }}
-                onClick={() => setShow(true)}
               >
                 <div className="text-center">
                   <img className="w-50" src={bkashImg} alt="" />
@@ -259,7 +260,7 @@ export default function ClientProfile() {
       {/* component modal */}
 
       {/* payment modal */}
-      <PaymentModal show={show} setShow={setShow} />
+      <PaymentModal />
     </>
   );
 }
