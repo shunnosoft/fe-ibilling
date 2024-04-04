@@ -20,6 +20,7 @@ import {
   Phone,
   Reception3,
   Reception4,
+  SendCheck,
   Wallet,
 } from "react-bootstrap-icons";
 import { Link } from "react-router-dom";
@@ -381,6 +382,30 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
                   </div>
                 </div>
               )}
+
+            {(role === "ispOwner" || role === "reseller") && (
+              <div class="col-md-4 col-xl-3">
+                <div class="card bg-card-39 order-card">
+                  <div class="card-block display_card">
+                    <p class="m-b-20">{t("sendMoney")}</p>
+                    <div class="d-flex align-items-center">
+                      <p className="card_Icon">
+                        <SendCheck />
+                      </p>
+                      <h2>
+                        {FormatNumber(
+                          dashboardCard.webhookPaymentCustomerCount
+                        )}
+                      </h2>
+                      &nbsp; &nbsp;
+                      <span className="total_collection_amount">
+                        ৳{FormatNumber(dashboardCard.webhookPaymentAmount)}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {userHandle && (
               <div class="col-md-4 col-xl-3">

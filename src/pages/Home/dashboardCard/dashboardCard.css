@@ -193,6 +193,11 @@
   height: 9rem;
 }
 
+.bg-card-39 {
+  background: linear-gradient(45deg, #83b23a, #8f9b3d);
+  height: 9rem;
+}
+
 .card {
   border-radius: 5px;
   -webkit-box-shadow: 0 1px 2.94px 0.06px rgba(4, 26, 55, 0.16);
