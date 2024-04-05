@@ -187,6 +187,8 @@ import {
   getNetFeeCustomerSuccess,
 } from "./customerCrossCheckSlice";
 import { updatePermissionSuccess } from "./adminNetFeeSupportSlice";
+import { Link, Navigate, redirect } from "react-router-dom";
+import AcountWorning from "../components/modals/error/AcountWorning";
 
 const netFeeLang = localStorage.getItem("netFee:lang");
 const langMessage = (color, bangla, english) => {
@@ -2903,7 +2905,12 @@ export const getUnpaidInvoice = async (dispatch, ispOwnerId) => {
     dispatch(getUnpaidInvoiceSuccess(invoice));
   } catch (err) {
     console.log("unpaid invoice error: ", err);
-    userLogout();
+    dispatch(getUnpaidInvoiceSuccess(err.response?.data.stack.invoice));
+    if (err.response?.data.message === "Account Suspended!") {
+      if (window.location.pathname !== "/acountSuspend") {
+        window.location.href = "/acountSuspend";
+      }
+    }
   }
 };
 
@@ -3842,18 +3849,21 @@ export const postNetFeeSupportNumbers = async (
   dispatch,
   data,
   setIsLoading,
-  setShow
+  setShow,
+  resetForm
 ) => {
   setIsLoading(true);
   try {
     const res = await apiLink.post(`admin/support/number`, data);
     dispatch(postSupportNumbers(res.data));
+
     setShow(false);
     langMessage(
       "success",
       "সাপর্ট নম্বর অ্যাড সফল হয়েছে",
       "Support Number Add successful"
     );
+    resetForm();
   } catch (error) {
     toast.error(error.response?.data?.message);
   }

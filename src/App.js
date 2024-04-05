@@ -123,6 +123,7 @@ import SupportCall from "./pages/netFeeSupport/supportOpration/SupportCall";
 import MobilePayment from "./pages/public-pages/MobilePayment/MobilePayment";
 import QrCodeHotspotCustomer from "./pages/public-pages/hotspotCoustomerQRCode/QrCodeHotspotCustomer";
 import RechargeHistory from "./reseller/rechargeHistory/RechargeHistory";
+import AcountWorning from "./components/modals/error/AcountWorning";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
@@ -153,7 +154,8 @@ function App() {
     if (
       userRole === "ispOwner" ||
       userRole === "manager" ||
-      userRole === "collector"
+      userRole === "collector" ||
+      userRole === "reseller"
     )
       getUnpaidInvoice(dispatch, ispOwnerId);
   }, [ispOwnerId, dispatch, userRole]);
@@ -189,6 +191,11 @@ function App() {
               <Header theme={theme} setTheme={setTheme} />
             )
           : ""}
+
+        {/* for acount suspend */}
+        <Routes>
+          <Route path="/acountSuspend" element={<AcountWorning />} />
+        </Routes>
 
         {/* global routes */}
 
@@ -886,6 +893,7 @@ function App() {
                 )
               }
             />
+
             {/* client page  */}
             <Route path="/*" element={<PrivateOutlet />}>
               <Route path="isp/customer" element={<ClientPage />} />

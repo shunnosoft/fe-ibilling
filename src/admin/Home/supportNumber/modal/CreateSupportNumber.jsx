@@ -1,20 +1,13 @@
 import { Form, Formik } from "formik";
 import React, { useState } from "react";
 import * as Yup from "yup";
-import {
-  Button,
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
-  ModalTitle,
-} from "react-bootstrap";
 import Loader from "../../../../components/common/Loader";
 import { FtextField } from "../../../../components/common/FtextField";
 import { postNetFeeSupportNumbers } from "../../../../features/apiCalls";
 import { useDispatch } from "react-redux";
-import { Plus, Trash } from "react-bootstrap-icons";
-import { error } from "jquery";
+import DatePicker from "react-datepicker";
+import ComponentCustomModal from "../../../../components/common/customModal/ComponentCustomModal";
+import moment from "moment";
 
 const CreateSupportNumber = ({ show, setShow }) => {
   const dispatch = useDispatch();
@@ -31,9 +24,6 @@ const CreateSupportNumber = ({ show, setShow }) => {
       .matches(/^(01){1}[3456789]{1}(\d){8}$/, "Incorrect Mobile Number")
       .min(11, "Write 11 Digit Mobile Number")
       .max(11, "Over 11 Digit Mobile Number"),
-
-    startTime: Yup.string().required("Select Support Start Time"),
-    endTime: Yup.string().required("Select Support End Time"),
   });
 
   // Loading state
@@ -42,132 +32,68 @@ const CreateSupportNumber = ({ show, setShow }) => {
   // supporter is show
   const [isShow, setIsShow] = useState(false);
 
-  // modal close handler
-  const handleClose = () => setShow(false);
-
-  //mobile number handler
-  // const mobileNumbersHandle = (e) => {
-  //   console.log(e.target.value);
-  // };
-
-  // const add = () => {
-  //   const formField = document.getElementById("formField");
-
-  //   if (formField.childElementCount < 2) {
-  //     let newField = document.createElement("input");
-  //     newField.setAttribute("type", "text");
-  //     newField.setAttribute("name", "mobile");
-  //     newField.setAttribute("class", "form-control mt-2");
-  //     newField.setAttribute("placeholder", "Mobile Number");
-  //     newField.setAttribute("onChange", mobileNumbersHandle);
-
-  //     // const main = document.createElement("div");
-  //     // main.setAttribute("class", "childInput");
-
-  //     // const removeBtn = document.createElement("span");
-  //     // removeBtn.setAttribute("class", "addButton");
-  //     // removeBtn.innerText = "D";
-  //     // removeBtn.addEventListener("click", remove);
-
-  //     formField.appendChild(newField);
-  //     // main.appendChild(newField);
-  //     // main.appendChild(removeBtn);
-  //   }
-  // };
-
-  // function remove() {
-  //   const formField = document.getElementById("formField");
-  //   console.log(formField);
-  //   var input_tags = formField.getElementsByTagName("input");
-  //   if (input_tags.length > 2) {
-  //     formField.childNodes.remove(input_tags[input_tags.length - 1]);
-  //   }
-  // }
+  //set customer billing date
+  const [startDate, setStartDate] = useState();
+  const [endDate, setEndDate] = useState();
 
   // support number submit handler
-  const supportNumbersHandler = (values) => {
+  const supportNumbersHandler = (values, resetForm) => {
     const { name, mobile1, mobile2 } = values;
-
-    let currStartTime = "";
-    if (values.startTime) {
-      var [hours, minutes, meridian] = values.startTime.split(":");
-
-      if (hours > 12) {
-        meridian = "PM";
-        hours -= 12;
-      } else if (hours < 12) {
-        meridian = "AM";
-        if (hours == 0) {
-          hours = 12;
-        }
-      } else {
-        meridian = "PM";
-      }
-      currStartTime = hours + ":" + minutes + " " + meridian;
-    }
-
-    let currEndTime = "";
-    if (values.endTime) {
-      var [hours, minutes, meridian] = values.endTime.split(":");
-
-      if (hours > 12) {
-        meridian = "PM";
-        hours -= 12;
-      } else if (hours < 12) {
-        meridian = "AM";
-        if (hours == 0) {
-          hours = 12;
-        }
-      } else {
-        meridian = "PM";
-      }
-      currEndTime = hours + ":" + minutes + " " + meridian;
-    }
 
     const sendingData = {
       name,
       isShow,
       mobile1,
       mobile2,
-      start: currStartTime,
-      end: currEndTime,
+      start: moment(startDate).format("h:mm A"),
+      end: moment(endDate).format("h:mm A"),
     };
-    postNetFeeSupportNumbers(dispatch, sendingData, setIsLoading, setShow);
-    setIsShow(false);
+
+    postNetFeeSupportNumbers(
+      dispatch,
+      sendingData,
+      setIsLoading,
+      setShow,
+      resetForm
+    );
   };
 
   return (
     <>
-      <Modal
+      <ComponentCustomModal
         show={show}
-        onHide={handleClose}
-        backdrop="static"
-        keyboard={false}
-      >
-        <ModalHeader closeButton>
-          <ModalTitle>
-            <h5 className="text-success fw-bold lh-sm">
-              Create Support Number
-            </h5>
-          </ModalTitle>
-        </ModalHeader>
-        <ModalBody>
-          <Formik
-            initialValues={{
-              name: "",
-              mobile1: "",
-              mobile2: "",
-              startTime: "",
-              endTime: "",
-            }}
-            validationSchema={supportNumbers}
-            onSubmit={(values) => {
-              supportNumbersHandler(values);
-            }}
-            enableReinitialize
+        setShow={setShow}
+        centered={true}
+        size="md"
+        header={
+          <h5 className="text-success fw-bold lh-sm">Create Support Number</h5>
+        }
+        footer={
+          <button
+            disabled={isLoading}
+            type="submit"
+            className="btn btn-success"
+            form="support"
           >
-            {() => (
-              <Form id="support">
+            {isLoading ? <Loader /> : "submit"}
+          </button>
+        }
+      >
+        <Formik
+          initialValues={{
+            name: "",
+            mobile1: "",
+            mobile2: "",
+          }}
+          validationSchema={supportNumbers}
+          onSubmit={(values, { resetForm }) => {
+            supportNumbersHandler(values, resetForm);
+          }}
+          enableReinitialize
+        >
+          {() => (
+            <Form id="support">
+              <div className="displayGrid">
                 <FtextField
                   type="text"
                   label="Name"
@@ -184,21 +110,40 @@ const CreateSupportNumber = ({ show, setShow }) => {
 
                 <FtextField type="text" label="Mobile 2" name="mobile2" />
 
-                <FtextField
-                  type="time"
-                  label="Select Support Start Time"
-                  name="startTime"
-                  validation={"true"}
-                />
+                <div>
+                  <label className="form-control-label changeLabelFontColor">
+                    Select Support Start Time
+                    <span className="text-danger ms-2">*</span>
+                  </label>
+                  <DatePicker
+                    className="form-control mw-100"
+                    selected={startDate}
+                    onChange={(date) => setStartDate(date)}
+                    showTimeSelect
+                    showTimeSelectOnly
+                    timeCaption="Time"
+                    dateFormat="h:mm aa"
+                  />
+                </div>
 
-                <FtextField
-                  type="time"
-                  label="Select Support End Time"
-                  name="endTime"
-                  validation={"true"}
-                />
+                <div>
+                  <label className="form-control-label changeLabelFontColor">
+                    Select Support End Time
+                    <span className="text-danger ms-2">*</span>
+                  </label>
 
-                <div className="autoDisable mt-3">
+                  <DatePicker
+                    className="form-control mw-100"
+                    selected={endDate}
+                    onChange={(date) => setEndDate(date)}
+                    showTimeSelect
+                    showTimeSelectOnly
+                    timeCaption="Time"
+                    dateFormat="h:mm aa"
+                  />
+                </div>
+
+                <div className="autoDisable">
                   <input
                     id="isShow"
                     type="checkBox"
@@ -209,21 +154,11 @@ const CreateSupportNumber = ({ show, setShow }) => {
                     Is Show
                   </label>
                 </div>
-              </Form>
-            )}
-          </Formik>
-        </ModalBody>
-        <ModalFooter>
-          <Button
-            disabled={isLoading}
-            type="submit"
-            className="btn btn-success"
-            form="support"
-          >
-            {isLoading ? <Loader /> : "submit"}
-          </Button>
-        </ModalFooter>
-      </Modal>
+              </div>
+            </Form>
+          )}
+        </Formik>
+      </ComponentCustomModal>
     </>
   );
 };

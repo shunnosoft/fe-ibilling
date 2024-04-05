@@ -1,0 +1,78 @@
+.mainContent {
+  width: calc(100%);
+  min-height: 100vh;
+  position: relative;
+  padding: 6rem 0px;
+}
+
+.acount_title {
+  border: solid 4px #ff3333;
+  padding: 8px 10px;
+  color: #ff3333;
+  font-size: 3rem;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  margin: 1% 25%;
+  font-weight: 900;
+}
+
+.support_document {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.support {
+  margin: 2% 30%;
+}
+
+.support_title {
+  font-weight: 600;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  color: #2d86df;
+  background-color: #b1b1b11b;
+}
+
+.support_team {
+  display: flex;
+  justify-content: space-between;
+  align-items: self-end;
+  margin: 0.3rem 0rem;
+  background-color: #b1b1b11b;
+}
+
+.support_person {
+  width: 3rem;
+  height: 3rem;
+  object-fit: cover;
+  border-radius: 50%;
+  margin: 0.5rem 1rem;
+}
+
+.support_info > p {
+  text-align: start;
+  font-family: Verdana, sans-serif;
+  font-size: 1.2rem;
+  font-weight: 300;
+}
+
+.support_media {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.8rem;
+}
+
+.support_icon {
+  font-size: 1.1rem;
+}
+
+@media screen and (max-width: 575px) {
+  .acount_title {
+    font-size: 1.5rem;
+  }
+}
+
+@media only screen and (min-width: 576px) and (max-width: 767px) {
+  .acount_title {
+    font-size: 2rem;
+  }
+}
