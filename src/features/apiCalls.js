@@ -2905,7 +2905,7 @@ export const getUnpaidInvoice = async (dispatch, ispOwnerId) => {
     dispatch(getUnpaidInvoiceSuccess(invoice));
   } catch (err) {
     console.log("unpaid invoice error: ", err);
-    dispatch(getUnpaidInvoiceSuccess(err.response?.data.stack.invoice));
+    dispatch(getUnpaidInvoiceSuccess(err.response?.data.stack?.invoice));
     if (err.response?.data.message === "Account Suspended!") {
       if (window.location.pathname !== "/acountSuspend") {
         window.location.href = "/acountSuspend";
