@@ -10,6 +10,7 @@ const dashboardInformation = createSlice({
     unpaidCustomer: [],
     activeCustomer: [],
     ispOwnerReseller: [],
+    ispOwnerManager: [],
     ispOwnerCollector: [],
     discountCustomer: [],
   },
@@ -35,6 +36,9 @@ const dashboardInformation = createSlice({
     getIspOwnerResellerSuccess: (state, action) => {
       state.ispOwnerReseller = action.payload;
     },
+    getIspOwnerManagerSuccess: (state, action) => {
+      state.ispOwnerManager = action.payload;
+    },
     getIspOwnerCollectorSuccess: (state, action) => {
       state.ispOwnerCollector = action.payload;
     },
@@ -52,6 +56,7 @@ export const {
   getUnpaidCustomerSuccess,
   getActiveCustomerSuccess,
   getIspOwnerResellerSuccess,
+  getIspOwnerManagerSuccess,
   getIspOwnerCollectorSuccess,
   getDiscountCustomerSuccess,
 } = dashboardInformation.actions;

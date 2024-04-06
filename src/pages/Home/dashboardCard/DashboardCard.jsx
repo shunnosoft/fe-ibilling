@@ -41,6 +41,7 @@ import FreeCustomer from "../dataComponent/FreeCustomer";
 import Discount from "../dataComponent/Discount";
 import AllCollector from "../dataComponent/AllCollector";
 import Reseller from "../dataComponent/Reseller";
+import AllManager from "../dataComponent/AllManager";
 
 const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
   const { t } = useTranslation();
@@ -805,7 +806,10 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
                   <p className="card_Icon">
                     <People />
                   </p>
-                  <h2>
+                  <h2
+                    className={adminUser && "clickable"}
+                    onClick={() => adminUser && modlaClickHandler("manager")}
+                  >
                     {isLoading ? (
                       <DotLoder />
                     ) : (
@@ -1384,6 +1388,17 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
       )}
       {status === "discount" && (
         <Discount
+          status={status}
+          modalShow={show}
+          setModalShow={setShow}
+          ispOwnerId={ispOwnerId}
+          year={filterDate.getFullYear()}
+          month={filterDate.getMonth() + 1}
+        />
+      )}
+
+      {status === "manager" && (
+        <AllManager
           status={status}
           modalShow={show}
           setModalShow={setShow}

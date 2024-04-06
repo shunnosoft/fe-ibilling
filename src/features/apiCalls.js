@@ -175,6 +175,7 @@ import {
   getFreeCustomerSuccess,
   getInactiveCustomerSuccess,
   getIspOwnerCollectorSuccess,
+  getIspOwnerManagerSuccess,
   getIspOwnerResellerSuccess,
   getPaidCustomerSuccess,
   getUnpaidCustomerSuccess,
@@ -735,6 +736,27 @@ export const getIspOwnerReseller = async (
     `dashboard/reseller/state/${ispOwnerId}?year=${year}&month=${month}`
   );
   dispatch(getIspOwnerResellerSuccess(res.data));
+  try {
+  } catch (error) {
+    console.log(error.response.data.message);
+  }
+  setIsLoading(false);
+};
+
+// get all manager data
+export const getIspOwnerManager = async (
+  dispatch,
+  ispOwnerId,
+  year,
+  month,
+  setIsLoading
+) => {
+  setIsLoading(true);
+  const res = await apiLink.get(
+    `dashboard/manager/state/${ispOwnerId}?year=${year}&month=${month}`
+  );
+  console.log(res.data);
+  dispatch(getIspOwnerManagerSuccess(res.data));
   try {
   } catch (error) {
     console.log(error.response.data.message);
