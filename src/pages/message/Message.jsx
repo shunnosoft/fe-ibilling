@@ -268,7 +268,7 @@ export default function Message() {
         ) {
           let sms = makeMessageObj(
             messageTemplate,
-            ispOwnerData,
+            ispOwnerId,
             customer,
             subAreaIds
           );

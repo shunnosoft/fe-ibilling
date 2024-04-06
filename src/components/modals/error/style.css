@@ -37,6 +37,7 @@
   align-items: self-end;
   margin: 0.3rem 0rem;
   background-color: #b1b1b11b;
+  padding: 0.5rem 0.5rem;
 }
 
 .support_person {
@@ -44,7 +45,7 @@
   height: 3rem;
   object-fit: cover;
   border-radius: 50%;
-  margin: 0.5rem 1rem;
+  /* margin: 0.5rem 1rem; */
 }
 
 .support_info > p {
@@ -57,8 +58,7 @@
 .support_media {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 0.8rem;
+  justify-content: start;
 }
 
 .support_icon {

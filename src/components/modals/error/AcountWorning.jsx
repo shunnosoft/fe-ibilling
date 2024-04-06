@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Clock, Telephone, Whatsapp } from "react-bootstrap-icons";
+import { Clock, Dash, Telephone, Whatsapp } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
+import { Card } from "react-bootstrap";
 
 // custome hooks import
 import useISPowner from "../../../hooks/useISPOwner";
@@ -13,6 +14,7 @@ import {
   getIspOwnerNetFeeSupport,
 } from "../../../features/apiCalls";
 import { showModal } from "../../../features/uiSlice";
+import { badge } from "../../../components/common/Utils";
 
 const AcountWorning = () => {
   const dispatch = useDispatch();
@@ -30,6 +32,17 @@ const AcountWorning = () => {
 
   // loading state
   const [isLoading, setIsLoading] = useState(false);
+
+  const invoiceType = {
+    monthlyServiceCharge: "Monthly Service Charge",
+    registration: "Registration",
+  };
+
+  const paymentStatus = {
+    paid: "Paid",
+    unpaid: "Unpaid",
+    expired: "Expired",
+  };
 
   // api call
   useEffect(() => {
@@ -54,10 +67,42 @@ const AcountWorning = () => {
 
                   <div className="support_document">
                     <p>
-                      Your account has been suspended for violating our terms of
-                      service.
+                      Your account has been suspended for violating our terms
+                      and service.
                     </p>
                     <p>Please contact support for further assistance.</p>
+
+                    <p className="text-success">Pay to Activate your Account</p>
+
+                    <Card className="support">
+                      <Card.Body>
+                        <Card.Title className="clintTitle p-2">
+                          {invoiceType[invoice?.type]}
+                        </Card.Title>
+                        <Card.Text>
+                          <div>
+                            <div className="displayGridHorizontalFill5_5 profileDetails">
+                              <p>Amount</p>
+                              <p>৳{invoice?.amount}</p>
+                            </div>
+                            <div className="displayGridHorizontalFill5_5 profileDetails">
+                              <p>Payment Status</p>
+                              <p>{badge(paymentStatus[invoice?.status])}</p>
+                            </div>
+                          </div>
+
+                          <button
+                            type="button"
+                            className="btn btn-success border-0 fs-5 fw-bold mt-3"
+                            onClick={() => {
+                              dispatch(showModal(invoice));
+                            }}
+                          >
+                            PAY NOW
+                          </button>
+                        </Card.Text>
+                      </Card.Body>
+                    </Card>
                   </div>
 
                   {["ispOwner", "manager"].includes(role) ? (
@@ -74,22 +119,29 @@ const AcountWorning = () => {
                             />
 
                             <span className="support_info">
-                              <p className="d-flex justify-content-center align-items-center fw-bold ">
-                                {val.name}
-                                <div className="d-flex align-items-center ms-4 gap-1">
-                                  <Clock className="support_icon text-primary" />
-                                  <p className="fw-bold fs-6 text-danger">
-                                    {val.end}
-                                  </p>
-                                </div>
-                              </p>
+                              <p className="fw-bold">{val.name}</p>
                               <p>{val.mobile1}</p>
                             </span>
                           </div>
 
-                          <div className="support_media">
-                            <Telephone className="support_icon text-primary" />
-                            <Whatsapp className="support_icon text-success" />
+                          <div className="d-flex flex-column justify-content-center align-items-end gap-1">
+                            <span className="d-flex align-items-center gap-2">
+                              <Clock className="support_icon text-primary" />
+                              <div className="d-flex align-items-center">
+                                <p className="fw-bold fs-6 text-success">
+                                  {val.start}
+                                </p>
+                                <Dash />
+                                <p className="fw-bold fs-6 text-danger">
+                                  {val.end}
+                                </p>
+                              </div>
+                            </span>
+
+                            <span>
+                              <Telephone className="support_icon text-primary me-3" />
+                              <Whatsapp className="support_icon text-success" />
+                            </span>
                           </div>
                         </div>
                       ))}
@@ -119,20 +171,6 @@ const AcountWorning = () => {
                       </div>
                     </div>
                   )}
-
-                  <div>
-                    <h3>OR</h3>
-
-                    <button
-                      type="button"
-                      className="btn btn-success fs-5 text"
-                      onClick={() => {
-                        dispatch(showModal(invoice));
-                      }}
-                    >
-                      PAY NOW
-                    </button>
-                  </div>
                 </div>
               </FourGround>
             </FontColor>

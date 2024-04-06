@@ -50,6 +50,7 @@ import { getBulletinPermission } from "../../features/apiCallAdmin";
 import ActiveCustomerPDF from "../Customer/ActiveCustomerPrint";
 import ReactToPrint from "react-to-print";
 import useISPowner from "../../hooks/useISPOwner";
+import { btrcHeader, newBTRCReport } from "../common/btrcReport";
 
 export default function ConfigMikrotik() {
   const { t } = useTranslation();
@@ -57,7 +58,8 @@ export default function ConfigMikrotik() {
   const componentRef = useRef();
 
   //calling custom hook here
-  const { role, ispOwnerId, bpSettings, userData } = useISPowner();
+  const { role, ispOwnerData, ispOwnerId, bpSettings, userData } =
+    useISPowner();
 
   // get all mikrotik from redux
   const mikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
@@ -669,9 +671,9 @@ export default function ConfigMikrotik() {
                         <Card className="cardCollapse border-0">
                           <div className="d-flex align-items-center">
                             <CSVLink
-                              data={customerForCsVTableInfo}
+                              data={newBTRCReport(tableData, ispOwnerData)}
                               filename={userData.company}
-                              headers={customerForCsVTableInfoHeader}
+                              headers={btrcHeader}
                               title="Customer BTRC Report New"
                             >
                               <FileExcelFill className="addcutmButton" />
