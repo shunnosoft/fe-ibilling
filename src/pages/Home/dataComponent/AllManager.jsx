@@ -1,9 +1,15 @@
-import React, { useEffect, useMemo, useState } from "react";
-import ComponentCustomModal from "../../../components/common/customModal/ComponentCustomModal";
-import { getIspOwnerManager } from "../../../features/apiCalls";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
+import ReactToPrint from "react-to-print";
+import { PrinterFill } from "react-bootstrap-icons";
+
+// internal import
+import ComponentCustomModal from "../../../components/common/customModal/ComponentCustomModal";
+import { getIspOwnerManager } from "../../../features/apiCalls";
 import Table from "../../../components/table/Table";
+import CollectionOverviewPdf from "../homePdf/CollectionOverviewPdf";
+import SummaryCalculation from "./SummaryCalculation";
 
 const AllManager = ({
   modalShow,
@@ -15,6 +21,7 @@ const AllManager = ({
 }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const componentRef = useRef();
 
   // get manager data
   const managerData = useSelector(
@@ -91,29 +98,42 @@ const AllManager = ({
     ],
     [t]
   );
+
   return (
     <ComponentCustomModal
       show={modalShow}
       setShow={setModalShow}
       centered={false}
       size="xl"
-      header="All Manager"
+      header={t("allManager")}
+      printr={
+        <ReactToPrint
+          documentTitle="Collection Overview"
+          trigger={() => (
+            <PrinterFill
+              className="addcutmButton"
+              style={{ background: "#0EB96A", color: "white" }}
+            />
+          )}
+          content={() => componentRef.current}
+        />
+      }
     >
       <div className="table-section">
         <Table
           isLoading={isLoading}
           columns={column}
           data={managerData}
-          //   customComponent={customComponent}
-        ></Table>
+          customComponent={SummaryCalculation(managerData)}
+        />
       </div>
 
-      {/* <div className="d-none">
+      <div className="d-none">
         <CollectionOverviewPdf
-          allCollectionData={collectorData}
+          allCollectionData={managerData}
           ref={componentRef}
         />
-      </div> */}
+      </div>
     </ComponentCustomModal>
   );
 };

@@ -8,8 +8,8 @@ import ReactToPrint from "react-to-print";
 import Table from "../../../components/table/Table";
 import CollectionOverviewPdf from "../homePdf/CollectionOverviewPdf";
 import { getIspOwnerCollector } from "../../../features/apiCalls";
-import FormatNumber from "../../../components/common/NumberFormat";
 import ComponentCustomModal from "../../../components/common/customModal/ComponentCustomModal";
+import SummaryCalculation from "./SummaryCalculation";
 
 const AllCollector = ({
   modalShow,
@@ -21,8 +21,6 @@ const AllCollector = ({
 }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-
-  // useRef
   const componentRef = useRef();
 
   // get customerStat
@@ -30,16 +28,13 @@ const AllCollector = ({
     (state) => state.dashboardInformation?.ispOwnerCollector
   );
 
-  //get all roles
-  const role = useSelector((state) => state.persistedReducer.auth.role);
-
   // is Loading state
   const [isLoading, setIsLoading] = useState(false);
 
-  // get user permission
-  const permissions = useSelector(
-    (state) => state.persistedReducer.auth?.currentUser?.manager?.permissions
-  );
+  useEffect(() => {
+    status === "collector" &&
+      getIspOwnerCollector(dispatch, ispOwnerId, year, month, setIsLoading);
+  }, [status, year, month]);
 
   const column = useMemo(
     () => [
@@ -104,54 +99,6 @@ const AllCollector = ({
     [t]
   );
 
-  useEffect(() => {
-    status === "collector" &&
-      getIspOwnerCollector(dispatch, ispOwnerId, year, month, setIsLoading);
-  }, [status, year, month]);
-
-  //summary Calculation function
-  const summaryCalculation = useMemo(() => {
-    const initialValue = {
-      totalTodayCollection: 0,
-      totalCollection: 0,
-    };
-
-    const calculatedValue = collectorData.reduce((previous, current) => {
-      // sum of today collection
-      previous.totalTodayCollection += current.todayBillCollection;
-
-      // sum of all bill collection
-      previous.totalCollection += current.totalBillCollected;
-
-      return previous;
-    }, initialValue);
-
-    return calculatedValue;
-  }, [collectorData]);
-
-  //custom table header component
-  const customComponent = (
-    <div
-      className="text-center"
-      style={{ fontSize: "18px", fontWeight: "500", display: "flex" }}
-    >
-      {summaryCalculation?.totalTodayCollection > 0 && (
-        <div>
-          {t("todayCollection")}:-৳
-          {FormatNumber(summaryCalculation?.totalTodayCollection)}
-        </div>
-      )}
-      &nbsp;&nbsp;
-      {(role === "ispOwner" || permissions?.dashboardCollectionData) &&
-        summaryCalculation?.totalCollection > 0 && (
-          <div>
-            {t("totalCollection")}:-৳
-            {FormatNumber(summaryCalculation?.totalCollection)}
-          </div>
-        )}
-    </div>
-  );
-
   return (
     <>
       <ComponentCustomModal
@@ -178,7 +125,7 @@ const AllCollector = ({
             isLoading={isLoading}
             columns={column}
             data={collectorData}
-            customComponent={customComponent}
+            customComponent={SummaryCalculation(collectorData)}
           ></Table>
         </div>
 
