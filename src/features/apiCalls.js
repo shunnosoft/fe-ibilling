@@ -105,6 +105,7 @@ import {
   deleteCustomerBillReport,
   deleteBillReportSuccess,
   depositUpdateSuccess,
+  getCustomerWebhookMessageSuccess,
 } from "./paymentSlice";
 import {
   getChartSuccess,
@@ -190,6 +191,7 @@ import {
 import { updatePermissionSuccess } from "./adminNetFeeSupportSlice";
 import { Link, Navigate, redirect } from "react-router-dom";
 import AcountWorning from "../components/modals/error/AcountWorning";
+import axios from "axios";
 
 const netFeeLang = localStorage.getItem("netFee:lang");
 const langMessage = (color, bangla, english) => {
@@ -4086,6 +4088,26 @@ export const depositReportAmountUpdate = async (
     setShow(false);
   } catch (error) {
     console.log(error?.response?.data.message);
+  }
+  setIsLoading(false);
+};
+
+//  deposit update api
+export const getAllWebhookMessage = async (
+  dispatch,
+  dataGet,
+  setIsLoading,
+  setAllMessage
+) => {
+  setIsLoading(true);
+  try {
+    const res = await axios.get(
+      `https://shunnoit.top/shunno-bkash/api/v1/webhooks/messages?netfeeId=${dataGet.netfeeId}&startDate=${dataGet.startDate}&endDate=${dataGet.endDate}&sort=dsc`
+    );
+    setAllMessage(res?.data.data.data);
+    // dispatch(getCustomerWebhookMessageSuccess(res?.data.data.data));
+  } catch (error) {
+    toast.error(error?.response?.data.message);
   }
   setIsLoading(false);
 };

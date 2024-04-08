@@ -936,5 +936,10 @@
   "connectionFeeSMSTemplate": "সংযোগ ফি রিচার্জ কনফার্মেশন SMS টেমপ্লেট",
   "allCustomerCollection": "মোট বিল এবং সংযোগ ফি",
   "depositAmountEdit": "জমা করা পরিমাণ আপডেট করুন",
-  "sendMoney": "সেন্ড মানি (ওয়েবহুক)"
+  "webhook": "ওয়েবহুক",
+  "sendMoney": "সেন্ড মানি (ওয়েবহুক)",
+  "webhookMessage": "ওয়েবহুক মেসেজ",
+  "sent": "পাঠানো হয়েছে",
+  "unSent": "পাঠানো হয়নি",
+  "trash": "ট্র্যাশ"
 }

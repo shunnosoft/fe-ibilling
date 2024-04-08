@@ -13,6 +13,7 @@ const paymentSlice = createSlice({
     customerInvoice: [],
     withdrawBalance: [],
     billReport: [],
+    webhookMessage: [],
   },
   reducers: {
     getTotalBalanceSuccess: (state, action) => {
@@ -108,6 +109,13 @@ const paymentSlice = createSlice({
       );
     },
   },
+
+  //get customer webhook paymnet message
+  getCustomerWebhookMessageSuccess: (state, action) => {
+    console.log("first");
+    console.log(action);
+    // state.webhookMessage = action.payload;
+  },
 });
 
 export const {
@@ -130,5 +138,6 @@ export const {
   updateDepositReportSuccess,
   getCustomerBillReport,
   deleteCustomerBillReport,
+  getCustomerWebhookMessageSuccess,
 } = paymentSlice.actions;
 export default paymentSlice.reducer;

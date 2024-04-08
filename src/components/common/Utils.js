@@ -49,6 +49,11 @@ const addClass = {
   Paid: "success",
   Unpaid: "warning",
   Expired: "danger",
+
+  SENT: "success",
+  UNSENT: "primary",
+  REJECTED: "danger",
+  TRASH: "warning",
 };
 
 export const badge = (item) => {

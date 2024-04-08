@@ -930,5 +930,10 @@
   "connectionFeeSMSTemplate": "Connection Fee Recharge Confirmation SMS Template",
   "allCustomerCollection": "Total Bill & Connection Fee",
   "depositAmountEdit": "Edit the amount deposited",
-  "sendMoney": "Send Money (Webhook)"
+  "webhook": "Webhook",
+  "sendMoney": "Send Money (Webhook)",
+  "webhookMessage": "Webhook Message",
+  "sent": "Sent",
+  "unSent": "UnSent",
+  "trash": "Trash"
 }

@@ -41,6 +41,7 @@ import {
   Wallet2,
   AppIndicator,
   PersonFill,
+  SendCheck,
 } from "react-bootstrap-icons";
 import { NavLink, Router } from "react-router-dom";
 import activeClass from "../../../assets/css/active.module.css";
@@ -630,6 +631,39 @@ export default function Sidebar() {
                               <div className="sidebarIcon">{<CashCoin />}</div>
                               <span className="sidebarLinksName">
                                 {t("deposit")}
+                              </span>
+                            </li>
+                          </FontColor>
+                        </NavLink>
+
+                        <NavLink
+                          key={38}
+                          to={
+                            userRole === "reseller" ||
+                            (userRole === "collector" &&
+                              user.collector.reseller)
+                              ? "/reseller/webhook/message"
+                              : "/webhook/message"
+                          }
+                          className={(navInfo) =>
+                            navInfo.isActive ? activeClass.active : ""
+                          }
+                        >
+                          <FontColor>
+                            <li
+                              className="sidebarItems"
+                              id={
+                                window.location.pathname ===
+                                (userRole === "reseller"
+                                  ? "/reseller/webhook/message"
+                                  : "/webhook/message")
+                                  ? "active"
+                                  : ""
+                              }
+                            >
+                              <div className="sidebarIcon">{<SendCheck />}</div>
+                              <span className="sidebarLinksName">
+                                {t("webhookMessage")}
                               </span>
                             </li>
                           </FontColor>

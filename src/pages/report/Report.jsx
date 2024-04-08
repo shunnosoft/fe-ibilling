@@ -261,8 +261,7 @@ const Report = () => {
             paymentStatus.medium === "sslcommerz" ||
             paymentStatus.medium === "uddoktapay" ||
             paymentStatus.medium === "sslpay" ||
-            paymentStatus.medium === "bKashPG" ||
-            paymentStatus.medium === "Webhook"
+            paymentStatus.medium === "bKashPG"
         );
       } else {
         arr = arr.filter((item) => item.medium === medium);
@@ -742,6 +741,7 @@ const Report = () => {
                             <option value="bKash"> {t("bKash")} </option>
                             <option value="rocket"> {t("rocket")} </option>
                             <option value="nagad"> {t("nagad")} </option>
+                            <option value="Webhook">{t("webhook")} </option>
                             <option value="others"> {t("others")} </option>
                           </select>
 

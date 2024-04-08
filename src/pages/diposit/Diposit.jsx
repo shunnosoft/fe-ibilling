@@ -47,7 +47,6 @@ const Diposit = () => {
 
   // get user & current user data form useISPOwner hooks
   const { ispOwnerId, bpSettings, userData } = useISPowner();
-  console.log(bpSettings.depositUpdate);
 
   // get all deposit form redux
   const allDeposit = useSelector((state) => state?.payment?.allDeposit);

@@ -124,6 +124,7 @@ import MobilePayment from "./pages/public-pages/MobilePayment/MobilePayment";
 import QrCodeHotspotCustomer from "./pages/public-pages/hotspotCoustomerQRCode/QrCodeHotspotCustomer";
 import RechargeHistory from "./reseller/rechargeHistory/RechargeHistory";
 import AcountWorning from "./components/modals/error/AcountWorning";
+import WebhookMessage from "./pages/report/WebhookMessage";
 
 function App() {
   // const invoice = useSelector(state => state.invoice.invoice);
@@ -724,6 +725,9 @@ function App() {
                 path="reseller/collection/report"
                 element={userRole === "ispOwner" && <ResellerCollection />}
               />
+
+              <Route path="webhook/message" element={<WebhookMessage />} />
+
               {/* <Route path="account" element={<Account />} /> */}
               <Route path="message" element={<Message />} />
               <Route path="expenditure" element={<Expenditure />} />
