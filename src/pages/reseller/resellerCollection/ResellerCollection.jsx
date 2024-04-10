@@ -219,7 +219,7 @@ const ResellerCollection = () => {
   // admin reseller commission handler function
   const adminResellerCommission = (data) => {
     // single reseller find in customer report data
-    const singleReseller = reseller.find((item) => item.id === data.reseller);
+    const singleReseller = reseller?.find((item) => item.id === data.reseller);
 
     // customer bill amount
     let commissionAmount = data.amount;
@@ -236,22 +236,21 @@ const ResellerCollection = () => {
       // handle packageBased resellers
       if (singleReseller?.commissionType === "packageBased") {
         // find reseller packages rate
-        const resellerPackageRate = singleReseller?.resellerPackageRates.find(
-          (pack) => pack.mikrotikPackage === data?.customer.mikrotikPackage
+        const resellerPackageRate = singleReseller.resellerPackageRates.find(
+          (pack) => pack.mikrotikPackage === data.customer.mikrotikPackage
         );
 
         // check commission style is percentage or fixedRate
         if (singleReseller?.commissionStyle === "percentage") {
           ispOwnerCommission =
-            (resellerPackageRate?.ispOwnerRate * Number(commissionAmount)) /
-            100;
+            (resellerPackageRate.ispOwnerRate * Number(commissionAmount)) / 100;
           resellerCommission = commissionAmount - ispOwnerCommission;
         }
         if (singleReseller?.commissionStyle === "fixedRate") {
-          ispOwnerCommission = resellerPackageRate?.ispOwnerRate;
+          ispOwnerCommission = resellerPackageRate.ispOwnerRate;
           resellerCommission = commissionAmount - ispOwnerCommission;
         }
-      } else {
+      } else if (singleReseller?.commissionType === "global") {
         // handle other resellers
         ispOwnerCommission =
           (singleReseller.commissionRate.isp * Number(commissionAmount)) / 100;
