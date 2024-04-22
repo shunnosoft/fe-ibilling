@@ -327,7 +327,7 @@ const Client = () => {
             <div style={{ flex: 6 }}>
               <h3>Contract</h3>
               <hr />
-              <p>Mobile: {userData.ispOwner.mobile}</p>
+              <p>Mobile: {userData.ispOwner.signature}</p>
               <p>Office: {userData.ispOwner.address}</p>
               <p>Email: {userData.ispOwner.email}</p>
             </div>

@@ -145,8 +145,15 @@ const WebhookMessage = () => {
         width: "10%",
         Header: t("status"),
         accessor: "status",
-        Cell: ({ cell: { value } }) => {
-          return badge(value);
+        Cell: ({ row: { original } }) => {
+          if (original.status === "REJECTED") {
+            return (
+              <span className="badge bg-danger">
+                {original.rejectionValue + " " + original.status}
+              </span>
+            );
+          }
+          return badge(original.status);
         },
       },
       {
@@ -156,7 +163,7 @@ const WebhookMessage = () => {
       },
       {
         width: "15%",
-        Header: t("date"),
+        Header: t("createdAt"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
           return moment(value).format("YYYY-MM-DD hh:mm A");

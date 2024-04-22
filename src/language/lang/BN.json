@@ -941,5 +941,7 @@
   "webhookMessage": "ওয়েবহুক মেসেজ",
   "sent": "পাঠানো হয়েছে",
   "unSent": "পাঠানো হয়নি",
-  "trash": "ট্র্যাশ"
+  "trash": "ট্র্যাশ",
+  "writeIPAddress": "আইপি এড্রেস লিখুন",
+  "selectMikrotikPackage": "মাইক্রোটিক প্যাকেজ নির্বাচন করুন"
 }

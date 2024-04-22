@@ -74,35 +74,37 @@ const AcountWorning = () => {
 
                     <p className="text-success">Pay to Activate your Account</p>
 
-                    <Card className="support">
-                      <Card.Body>
-                        <Card.Title className="clintTitle p-2">
-                          {invoiceType[invoice?.type]}
-                        </Card.Title>
-                        <Card.Text>
-                          <div>
-                            <div className="displayGridHorizontalFill5_5 profileDetails">
-                              <p>Amount</p>
-                              <p>৳{invoice?.amount}</p>
+                    {invoice !== null && (
+                      <Card className="support">
+                        <Card.Body>
+                          <Card.Title className="clintTitle p-2">
+                            {invoiceType[invoice?.type]}
+                          </Card.Title>
+                          <Card.Text>
+                            <div>
+                              <div className="displayGridHorizontalFill5_5 profileDetails">
+                                <p>Amount</p>
+                                <p>৳{invoice?.amount}</p>
+                              </div>
+                              <div className="displayGridHorizontalFill5_5 profileDetails">
+                                <p>Payment Status</p>
+                                <p>{badge(paymentStatus[invoice?.status])}</p>
+                              </div>
                             </div>
-                            <div className="displayGridHorizontalFill5_5 profileDetails">
-                              <p>Payment Status</p>
-                              <p>{badge(paymentStatus[invoice?.status])}</p>
-                            </div>
-                          </div>
 
-                          <button
-                            type="button"
-                            className="btn btn-success border-0 fs-5 fw-bold mt-3"
-                            onClick={() => {
-                              dispatch(showModal(invoice));
-                            }}
-                          >
-                            PAY NOW
-                          </button>
-                        </Card.Text>
-                      </Card.Body>
-                    </Card>
+                            <button
+                              type="button"
+                              className="btn btn-success border-0 fs-5 fw-bold mt-3"
+                              onClick={() => {
+                                dispatch(showModal(invoice));
+                              }}
+                            >
+                              PAY NOW
+                            </button>
+                          </Card.Text>
+                        </Card.Body>
+                      </Card>
+                    )}
                   </div>
 
                   {["ispOwner", "manager"].includes(role) ? (
@@ -165,7 +167,7 @@ const AcountWorning = () => {
                         </div>
 
                         <div className="support_media">
-                          <Telephone className="support_icon text-primary" />
+                          <Telephone className="support_icon text-primary me-3" />
                           <Whatsapp className="support_icon text-success" />
                         </div>
                       </div>

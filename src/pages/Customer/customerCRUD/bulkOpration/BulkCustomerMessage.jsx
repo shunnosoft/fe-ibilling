@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
+
+// internal import
 import { smsCount } from "../../../../components/common/UtilityMethods";
 import Loader from "../../../../components/common/Loader";
-import { useSelector } from "react-redux";
 import apiLink from "../../../../api/apiLink";
-import { toast } from "react-toastify";
 import RootBulkModal from "./bulkModal";
 
 const BulkCustomerMessage = ({ bulkCustomer, show, setShow }) => {
@@ -13,6 +15,11 @@ const BulkCustomerMessage = ({ bulkCustomer, show, setShow }) => {
   //get ispOwner Data
   const ispOwnerData = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerData
+  );
+
+  //get role from redux
+  const currentUser = useSelector(
+    (state) => state.persistedReducer.auth?.currentUser
   );
 
   // loading state
@@ -26,6 +33,13 @@ const BulkCustomerMessage = ({ bulkCustomer, show, setShow }) => {
 
   // set error value
   const [errMsg, setErrMsg] = useState("");
+
+  let cureentAuth;
+  if (currentUser?.user?.role === "ispOwner") {
+    cureentAuth = currentUser?.ispOwner;
+  } else if (currentUser?.user?.role === "reseller") {
+    cureentAuth = currentUser?.reseller;
+  }
 
   // handle change
   const handleChange = (event) => {
@@ -62,6 +76,7 @@ const BulkCustomerMessage = ({ bulkCustomer, show, setShow }) => {
         count: smsCount(messageText),
       });
     });
+
     if (messageText) {
       // send data for api body
       const sendingData = {
@@ -69,10 +84,32 @@ const BulkCustomerMessage = ({ bulkCustomer, show, setShow }) => {
         totalSmsCount: smsCount(messageText) * bulkCustomer.length,
         sendBy: sendingType,
       };
+
       try {
+        let owner;
+        if (currentUser?.user?.role === "ispOwner") {
+          owner = await apiLink.get(`/ispOwner/${cureentAuth?.id}`);
+        } else if (currentUser?.user?.role === "manager") {
+          owner = await apiLink.get(
+            `/ispOwner/${currentUser?.manager?.ispOwner}`
+          );
+        } else if (currentUser?.user?.role === "reseller") {
+          owner = await apiLink.get(
+            `/reseller/recharge/balance/${cureentAuth?.id}`
+          );
+        }
+
+        // get sms balance
+        let smsBalance =
+          sendingType === "nonMasking"
+            ? owner?.data.smsBalance
+            : sendingType === "masking"
+            ? owner?.data.maskingSmsBalance
+            : owner?.data.fixedNumberSmsBalance;
+
         alert(`${t("sampleSMS")} :${messageText}`);
 
-        if (ispOwnerData.smsBalance >= smsAmount) {
+        if (smsBalance >= smsAmount) {
           // message confirm alert
           let condition = window.confirm(
             `${bulkCustomer.length} ${t("getSMS")} ${smsAmount} ${t(

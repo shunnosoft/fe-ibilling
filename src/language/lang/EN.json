@@ -935,5 +935,7 @@
   "webhookMessage": "Webhook Message",
   "sent": "Sent",
   "unSent": "UnSent",
-  "trash": "Trash"
+  "trash": "Trash",
+  "writeIPAddress": "Write IP Address",
+  "selectMikrotikPackage": "Select Mikrotik Package"
 }

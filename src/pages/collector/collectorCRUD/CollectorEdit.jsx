@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Form, Formik } from "formik";
-import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { Tab, Tabs } from "react-bootstrap";
@@ -22,34 +21,6 @@ import ComponentCustomModal from "../../../components/common/customModal/Compone
 const CollectorEdit = ({ show, setShow, collectorId }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-
-  //collector information validator
-  const collectorValidator = Yup.object({
-    name: Yup.string().required(t("enterName")),
-    mobile: Yup.string()
-      .min(11, t("write11DigitMobileNumber"))
-      .max(11, t("over11DigitMobileNumber"))
-      .required(t("writeMobileNumber")),
-    address: Yup.string().required(t("enterAddress")),
-    email: Yup.string().email(t("incorrectEmail")).required(t("enterEmail")),
-    nid: Yup.string().required(t("enterNID")),
-    status: Yup.string().required(t("enterStatus")),
-  });
-
-  // call the data input option function
-  const inputPermission = {
-    name: true,
-    mobile: true,
-    address: true,
-    email: true,
-    nid: true,
-    status: true,
-    addStaff: true,
-    salary: true,
-  };
-
-  // get data input option from useDataInputOption hook
-  const dataInputOption = useDataInputOption(inputPermission, null);
 
   // get user & current user data form useISPOwner
   const { role, bpSettings, permissions } = useISPowner();
@@ -75,13 +46,32 @@ const CollectorEdit = ({ show, setShow, collectorId }) => {
   // collector permissions state
   const [collectorPermissions, setCollectorPermissions] = useState([]);
 
+  // call the data input option function
+  const inputPermission = {
+    name: true,
+    mobile: true,
+    address: true,
+    email: true,
+    nid: true,
+    status: true,
+    addStaff: true,
+    salary: true,
+  };
+
+  // get data input option from useDataInputOption hook
+  const dataInputOption = useDataInputOption(
+    inputPermission,
+    null,
+    null,
+    single
+  );
+
+  // set data for single collector
   useEffect(() => {
-    if (single) {
-      setCollectorPermissions(
-        collectorPermission(single.permissions, role, bpSettings, permissions)
-      );
-    }
-  }, [single, collector]);
+    setCollectorPermissions(
+      collectorPermission(single.permissions, role, bpSettings, permissions)
+    );
+  }, [single]);
 
   // ispOwner all areas subarea handle
   useEffect(() => {
@@ -106,9 +96,6 @@ const CollectorEdit = ({ show, setShow, collectorId }) => {
     // set ispOwner subAreas checked key include
     setAreaSubareas(temp);
   }, [single, storeSubArea]);
-
-  //modal close handler
-  const handleClose = () => setShow(false);
 
   // select area handle for the collector
   const areaSubareaSelectHandler = ({ target }) => {
@@ -198,7 +185,7 @@ const CollectorEdit = ({ show, setShow, collectorId }) => {
             <button
               type="button"
               className="btn btn-secondary"
-              onClick={handleClose}
+              onClick={() => setShow(false)}
               disabled={isLoading}
             >
               {t("cancel")}
@@ -217,16 +204,9 @@ const CollectorEdit = ({ show, setShow, collectorId }) => {
       >
         <Formik
           initialValues={{
-            name: single?.name || "",
-            mobile: single?.mobile || "",
-            address: single?.address || "",
-            email: single?.email || "",
-            nid: single?.nid || "",
-            status: single?.status || "",
-            addStaff: single?.addStaff || false,
-            salary: single?.salary || "",
+            ...dataInputOption.inputInitialValues,
           }}
-          validationSchema={collectorValidator}
+          validationSchema={dataInputOption.validationSchema}
           onSubmit={(values) => {
             collectorEditHandler(values);
           }}
@@ -244,22 +224,7 @@ const CollectorEdit = ({ show, setShow, collectorId }) => {
                   <div className="d-flex justify-content-center">
                     <div className="displayGrid col-6">
                       {dataInputOption?.inputOption.map(
-                        (item) =>
-                          item?.isVisible && (
-                            <FtextField
-                              name={item?.name}
-                              type={item?.type}
-                              disabled={item.disabled}
-                              validation={item.validation}
-                              label={item?.label}
-                              placeholder={item?.placeholder}
-                              options={item.options}
-                              value={item?.value}
-                              onChange={item?.onChange}
-                              component={item?.component}
-                              inputField={item?.inputField}
-                            />
-                          )
+                        (item) => item?.isVisible && <FtextField {...item} />
                       )}
                     </div>
                   </div>

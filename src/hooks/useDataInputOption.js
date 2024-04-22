@@ -30,6 +30,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
   const {
     role,
     bpSettings,
+    userType,
     hasMikrotik,
     resellerData,
     userData,
@@ -101,10 +102,14 @@ const useDataInputOption = (inputPermission, page, status, data) => {
     division: "",
     district: "",
     due: "",
+    downloadPackge: "",
     email: "",
     fatherName: "",
+    ipAddress: "",
     mikrotikId: "",
     mobile: "",
+    maxUpLimit: "",
+    maxDownLimit: "",
     name: "",
     nid: "",
     note: "",
@@ -116,12 +121,14 @@ const useDataInputOption = (inputPermission, page, status, data) => {
     packageName: "",
     promiseDate: "",
     poleBoxId: "",
+    queueName: "",
     referenceName: "",
     referenceMobile: "",
     subAreaId: "",
     status: "",
     salary: "",
     thana: "",
+    uploadPackgeId: "",
   });
 
   // set ispOwner package commission in state
@@ -185,351 +192,6 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       userData?.commissionStyle === "fixedRate" &&
       getResellerPackageRate(resellerId, packageId, setPackageCommission);
   }, [formData?.packageId]);
-
-  // input validation array of object with name, validation, isVisible
-  const validationArrayofInput = [
-    {
-      name: "amount",
-      validation: Yup.number().required(t("enterAmount")),
-      isVisible: inputPermission.amount,
-    },
-    {
-      name: "area",
-      validation: Yup.string().required(t("selectArea")),
-      isVisible: inputPermission.area,
-    },
-    {
-      name: "address",
-      validation: Yup.string(),
-      isVisible: inputPermission.address,
-    },
-    {
-      name: "customerId",
-      validation:
-        !bpSettings?.genCustomerId &&
-        Yup.string().required(t("selectCustomer")),
-      isVisible: !bpSettings.genCustomerId && inputPermission.customerId,
-    },
-    {
-      name: "connectionFee",
-      validation: Yup.number(),
-      isVisible: inputPermission.connectionFee,
-    },
-    {
-      name: "customerBillingType",
-      validation: Yup.string().required(t("select billing type")),
-      isVisible: inputPermission.customerBillingType,
-    },
-    {
-      name: "comment",
-      validation: Yup.string(),
-      isVisible: inputPermission.comment,
-    },
-    {
-      name: "email",
-      validation: Yup.string().email(t("incorrectEmail")),
-      isVisible: inputPermission.email,
-    },
-    {
-      name: "monthlyFee",
-      validation: adminUser
-        ? Yup.number().integer().min(0, t("minimumPackageRate"))
-        : Yup.number()
-            .required(t("writeMonthFee"))
-            .min(
-              userData?.commissionType === "packageBased" &&
-                userData?.commissionStyle === "fixedRate"
-                ? packageCommission?.ispOwnerRate
-                : formData.packageRate,
-              t("packageRateMustBeUpToIspOwnerCommission")
-            ),
-      isVisible: inputPermission.monthlyFee,
-    },
-    {
-      name: "mobile",
-      validation:
-        bpSettings?.addCustomerWithMobile ||
-        permission?.addCustomerWithMobile ||
-        resellerData?.permission?.addCustomerWithMobile
-          ? Yup.string()
-              .matches(/^(01){1}[3456789]{1}(\d){8}$/, t("incorrectMobile"))
-              .min(11, t("write11DigitMobileNumber"))
-              .max(11, t("over11DigitMobileNumber"))
-              .required(t("writeMobileNumber"))
-          : Yup.string()
-              .matches(/^(01){1}[3456789]{1}(\d){8}$/, t("incorrectMobile"))
-              .min(11, t("write11DigitMobileNumber"))
-              .max(11, t("over11DigitMobileNumber")),
-      isVisible: inputPermission.mobile,
-    },
-    {
-      name: "name",
-      validation: Yup.string().required(t("writeCustomerName")),
-      isVisible: inputPermission.name,
-    },
-    {
-      name: "nid",
-      validation: Yup.string().matches(
-        /^(?:\d{10}|\d{13}|\d{17})$/,
-        t("invalidNID")
-      ),
-      isVisible: inputPermission.nid,
-    },
-    {
-      name: "mikrotikPackage",
-      validation: Yup.string().required(t("selectMikrotikPackage")),
-      isVisible: inputPermission.mikrotikPackage,
-    },
-    {
-      name: "pppoeName",
-      validation: Yup.string().required(t("writePPPoEName")),
-      isVisible: inputPermission.pppoeName,
-    },
-    {
-      name: "password",
-      validation: Yup.string().required(t("writePPPoEPassword")),
-      isVisible: inputPermission.password,
-    },
-    {
-      name: "referenceMobile",
-      validation: Yup.string()
-        .matches(/^(01){1}[3456789]{1}(\d){8}$/, t("incorrectMobile"))
-        .min(11, t("write11DigitMobileNumber"))
-        .max(11, t("over11DigitMobileNumber")),
-      isVisible: inputPermission.referenceMobile,
-    },
-    {
-      name: "subArea",
-      validation: Yup.string().required(t("selectSubArea")),
-      isVisible: inputPermission.subArea,
-    },
-  ];
-
-  // option validation schema
-  const validationSchema = Yup.object().shape(
-    validationArrayofInput.reduce((acc, curr) => {
-      if (curr.isVisible) {
-        acc[curr.name] = curr.validation && curr.validation;
-      }
-      return acc;
-    }, {})
-  );
-
-  // array of input options
-  const initialValuesArrayofInput = [
-    {
-      id: 1,
-      name: "amount",
-      value: Number(formData.amount) || 0,
-      isVisible: inputPermission.amount,
-    },
-    {
-      id: 1,
-      name: "area",
-      value: formData.areaId || "",
-      isVisible: inputPermission.area,
-    },
-    {
-      id: 2,
-      name: "address",
-      value: formData.address || "",
-      isVisible: inputPermission.address,
-    },
-    {
-      id: 3,
-      name: "billingCycle",
-      value: formData.billingCycleDate || today,
-      isVisible: inputPermission.billingCycle,
-    },
-    {
-      id: 4,
-      name: "balance",
-      value: Number(formData.balance) || 0,
-      isVisible: inputPermission.balance,
-    },
-    {
-      id: 5,
-      name: "birthDate",
-      value: formData.dateOFbirth || "",
-      isVisible: inputPermission.birthDate,
-    },
-    {
-      id: 6,
-      name: "customerId",
-      value: formData.customerId || "",
-      isVisible: inputPermission.customerId,
-    },
-    {
-      id: 7,
-      name: "connectionFee",
-      value: Number(formData.connectionFee) || 0,
-      isVisible: inputPermission.connectionFee,
-    },
-    {
-      id: 8,
-      name: "customerBillingType",
-      value: formData.customerBillingType || "prepaid",
-      isVisible: inputPermission.customerBillingType,
-    },
-    {
-      id: 9,
-      name: "connectionDate",
-      value: formData.connectionDate || today,
-      isVisible: inputPermission.connectionDate,
-    },
-    {
-      id: 10,
-      name: "comment",
-      value: formData.comment || "",
-      isVisible: inputPermission.comment,
-    },
-    {
-      id: 11,
-      name: "division",
-      value: formData.division || "",
-      isVisible: inputPermission.division,
-    },
-    {
-      id: 12,
-      name: "district",
-      value: formData.district || "",
-      isVisible: inputPermission.district,
-    },
-    {
-      id: 27,
-      name: "due",
-      value: Number(formData.due) || 0,
-      isVisible: inputPermission.due,
-    },
-    {
-      id: 13,
-      name: "email",
-      value: formData.email || "",
-      isVisible: inputPermission.email,
-    },
-    {
-      id: 24,
-      name: "fatherName",
-      value: formData.fatherName || "",
-      isVisible: inputPermission.fatherName,
-    },
-    {
-      id: 14,
-      name: "monthlyFee",
-      value: Number(formData.packageRate) || 0,
-      isVisible: inputPermission.monthlyFee,
-    },
-    {
-      id: 14,
-      name: "mikrotik",
-      value: formData.mikrotikId || "",
-      isVisible: inputPermission.mikrotik,
-    },
-    {
-      id: 15,
-      name: "mikrotikPackage",
-      value: formData.packageId || "",
-      isVisible: inputPermission.mikrotikPackage,
-    },
-    {
-      id: 15,
-      name: "mobile",
-      value: formData.mobile || "",
-      isVisible: inputPermission.mobile,
-    },
-    {
-      id: 16,
-      name: "name",
-      value: formData.name || "",
-      isVisible: inputPermission.name,
-    },
-    {
-      id: 17,
-      name: "nid",
-      value: formData.nid || "",
-      isVisible: inputPermission.nid,
-    },
-    {
-      id: 19,
-      name: "note",
-      value: formData.note || "",
-      isVisible: inputPermission.note,
-    },
-    {
-      id: 18,
-      name: "pppoeName",
-      value: formData.pppoeName || "",
-      isVisible: inputPermission.pppoeName,
-    },
-    {
-      id: 19,
-      name: "promiseDate",
-      value: formData.promiseDate || today,
-      isVisible: inputPermission.promiseDate,
-    },
-    {
-      id: 19,
-      name: "password",
-      value: formData.password || "",
-      isVisible: inputPermission.password,
-    },
-    {
-      id: 19,
-      name: "poleBox",
-      value: formData.poleBoxId || "",
-      isVisible: inputPermission.poleBox,
-    },
-    {
-      id: 20,
-      name: "referenceName",
-      value: formData.referenceName || "",
-      isVisible: inputPermission.referenceName,
-    },
-    {
-      id: 21,
-      name: "referenceMobile",
-      value: formData.referenceMobile || "",
-      isVisible: inputPermission.referenceMobile,
-    },
-    {
-      id: 22,
-      name: "subArea",
-      value: formData.subAreaId || "",
-      isVisible: inputPermission.subArea,
-    },
-    {
-      id: 22,
-      name: "status",
-      value: formData.status || "active",
-      isVisible: inputPermission.status,
-    },
-    {
-      id: 26,
-      name: "salary",
-      value: Number(formData.salary) || 0,
-      isVisible: inputPermission.salary,
-    },
-    {
-      id: 22,
-      name: "thana",
-      value: formData.thana || "",
-      isVisible: inputPermission.thana,
-    },
-    {
-      id: 23,
-      name: "profile",
-      value: formData.packageName || "",
-      isVisible: inputPermission.mikrotikPackage,
-    },
-  ];
-
-  // input initial values
-  const inputInitialValues = initialValuesArrayofInput.reduce((acc, curr) => {
-    if (curr.isVisible) {
-      acc[curr.name] = curr.value && curr.value;
-    }
-    return acc;
-  }, {});
 
   // single mikrotik package change handler
   const packageChangeHandler = async (id) => {
@@ -609,6 +271,466 @@ const useDataInputOption = (inputPermission, page, status, data) => {
     });
   };
 
+  // select Mikrotik Package
+  const staticPackageChangeHandler = (target) => {
+    if (target.id === "firewall-queue") {
+      const temp = ppPackage.find((val) => val.id === target.value);
+
+      // package limit set function
+      const getLimit = setPackageLimit(target.value, false);
+
+      // set single package data
+      setFormData({
+        ...formData,
+        packageId: temp.id,
+        packageRate: temp.rate,
+        packageName: temp.name,
+        maxUpLimit: getLimit,
+      });
+    }
+
+    if (target.id === "core-queue") {
+      const temp = ppPackage.find((val) => val.id === target.value);
+
+      // set single package data
+      setFormData({
+        ...formData,
+        packageId: temp.id,
+        packageRate: temp.rate,
+        packageName: temp.name,
+      });
+    }
+
+    if (target.id === "uploadPackge") {
+      // package limit set function
+      const getLimit = setPackageLimit(target.value, false);
+
+      // set single package data
+      setFormData({
+        ...formData,
+        uploadPackgeId: target.value,
+        maxUpLimit: getLimit,
+      });
+    }
+
+    if (target.id === "downloadPackge") {
+      const temp = ppPackage.find((val) => val.id === target.value);
+
+      // package limit set function
+      const getLimit = setPackageLimit(target.value, true);
+
+      // set single package data
+      setFormData({
+        ...formData,
+        packageId: temp.id,
+        packageRate: temp.rate,
+        packageName: temp.name,
+        maxDownLimit: getLimit,
+      });
+    }
+  };
+
+  //function for set 0
+  const setPackageLimit = (value) => {
+    const temp = ppPackage.find((val) => val.id === value);
+
+    if (value === "unlimited") return "0";
+
+    const getLetter = temp.name.toLowerCase();
+    if (getLetter.indexOf("m") !== -1) {
+      const setZero = getLetter.replace("m", "000000");
+      return setZero;
+    }
+
+    if (getLetter.indexOf("k") !== -1) {
+      const setZero = getLetter.replace("k", "000");
+      return setZero;
+    }
+  };
+
+  // input validation array of object with name, validation, isVisible
+  const validationArrayofInput = [
+    {
+      name: "amount",
+      validation: Yup.number().required(t("enterAmount")),
+      isVisible: inputPermission.amount,
+    },
+    {
+      name: "area",
+      validation: Yup.string().required(t("selectArea")),
+      isVisible: inputPermission.area,
+    },
+    {
+      name: "address",
+      validation: Yup.string(),
+      isVisible: inputPermission.address,
+    },
+    {
+      name: "customerId",
+      validation:
+        !bpSettings?.genCustomerId &&
+        Yup.string().required(t("selectCustomer")),
+      isVisible: !bpSettings.genCustomerId && inputPermission.customerId,
+    },
+    {
+      name: "connectionFee",
+      validation: Yup.number(),
+      isVisible: inputPermission.connectionFee,
+    },
+    {
+      name: "customerBillingType",
+      validation: Yup.string().required(t("select billing type")),
+      isVisible: inputPermission.customerBillingType,
+    },
+    {
+      name: "comment",
+      validation: Yup.string(),
+      isVisible: inputPermission.comment,
+    },
+    {
+      name: "email",
+      validation: Yup.string().email(t("incorrectEmail")),
+      isVisible: inputPermission.email,
+    },
+    {
+      name: "monthlyFee",
+      validation: adminUser
+        ? Yup.number().integer().min(0, t("minimumPackageRate"))
+        : Yup.number()
+            .required(t("writeMonthFee"))
+            .min(
+              userData?.commissionType === "packageBased" &&
+                userData?.commissionStyle === "fixedRate"
+                ? packageCommission?.ispOwnerRate
+                : formData.packageRate,
+              t("packageRateMustBeUpToIspOwnerCommission")
+            ),
+      isVisible: inputPermission.monthlyFee,
+    },
+    {
+      name: "mobile",
+      validation:
+        bpSettings?.addCustomerWithMobile ||
+        permission?.addCustomerWithMobile ||
+        resellerData?.permission?.addCustomerWithMobile
+          ? Yup.string()
+              .matches(/^(01){1}[3456789]{1}(\d){8}$/, t("incorrectMobile"))
+              .min(11, t("write11DigitMobileNumber"))
+              .max(11, t("over11DigitMobileNumber"))
+              .required(t("writeMobileNumber"))
+          : Yup.string()
+              .matches(/^(01){1}[3456789]{1}(\d){8}$/, t("incorrectMobile"))
+              .min(11, t("write11DigitMobileNumber"))
+              .max(11, t("over11DigitMobileNumber")),
+      isVisible: inputPermission.mobile,
+    },
+    {
+      name: "ipAddress",
+      validation: Yup.string().required(t("writeIPAddress")),
+      isVisible: inputPermission.ipAddress,
+    },
+    {
+      name: "name",
+      validation: Yup.string().required(t("writeCustomerName")),
+      isVisible: inputPermission.name,
+    },
+    {
+      name: "nid",
+      validation: Yup.string().matches(
+        /^(?:\d{10}|\d{13}|\d{17})$/,
+        t("invalidNID")
+      ),
+      isVisible: inputPermission.nid,
+    },
+    {
+      name: "mikrotikPackage",
+      validation: Yup.string().required(t("selectMikrotikPackage")),
+      isVisible: inputPermission.mikrotikPackage,
+    },
+    {
+      name: "pppoeName",
+      validation: Yup.string().required(t("writePPPoEName")),
+      isVisible: inputPermission.pppoeName,
+    },
+    {
+      name: "password",
+      validation: Yup.string().required(t("writePPPoEPassword")),
+      isVisible: inputPermission.password,
+    },
+    {
+      name: "queueName",
+      validation: Yup.string().required(t("writeCustomerName")),
+      isVisible: inputPermission.queueName,
+    },
+    {
+      name: "referenceMobile",
+      validation: Yup.string()
+        .matches(/^(01){1}[3456789]{1}(\d){8}$/, t("incorrectMobile"))
+        .min(11, t("write11DigitMobileNumber"))
+        .max(11, t("over11DigitMobileNumber")),
+      isVisible: inputPermission.referenceMobile,
+    },
+    {
+      name: "subArea",
+      validation: Yup.string().required(t("selectSubArea")),
+      isVisible: inputPermission.subArea,
+    },
+  ];
+
+  // option validation schema
+  const validationSchema = Yup.object().shape(
+    validationArrayofInput.reduce((acc, curr) => {
+      if (curr.isVisible) {
+        acc[curr.name] = curr.validation && curr.validation;
+      }
+      return acc;
+    }, {})
+  );
+
+  // array of input options
+  const initialValuesArrayofInput = [
+    {
+      id: 1,
+      name: "amount",
+      value: Number(formData.amount) || 0,
+      isVisible: inputPermission.amount,
+    },
+    {
+      id: 1,
+      name: "area",
+      value: formData.areaId || "",
+      isVisible: inputPermission.area,
+    },
+    {
+      id: 2,
+      name: "address",
+      value: formData.address || "",
+      isVisible: inputPermission.address,
+    },
+    {
+      id: 3,
+      name: "billingCycle",
+      value: formData.billingCycleDate || today,
+      isVisible: inputPermission.billingCycle,
+    },
+    {
+      id: 4,
+      name: "balance",
+      value: formData.balance || "",
+      isVisible: inputPermission.balance,
+    },
+    {
+      id: 5,
+      name: "birthDate",
+      value: formData.dateOFbirth || "",
+      isVisible: inputPermission.birthDate,
+    },
+    {
+      id: 6,
+      name: "customerId",
+      value: formData.customerId || "",
+      isVisible: inputPermission.customerId,
+    },
+    {
+      id: 7,
+      name: "connectionFee",
+      value: Number(formData.connectionFee) || 0,
+      isVisible: inputPermission.connectionFee,
+    },
+    {
+      id: 8,
+      name: "customerBillingType",
+      value: formData.customerBillingType || "prepaid",
+      isVisible: inputPermission.customerBillingType,
+    },
+    {
+      id: 9,
+      name: "connectionDate",
+      value: formData.connectionDate || today,
+      isVisible: inputPermission.connectionDate,
+    },
+    {
+      id: 10,
+      name: "comment",
+      value: formData.comment || "",
+      isVisible: inputPermission.comment,
+    },
+    {
+      id: 11,
+      name: "division",
+      value: formData.division || "",
+      isVisible: inputPermission.division,
+    },
+    {
+      id: 12,
+      name: "district",
+      value: formData.district || "",
+      isVisible: inputPermission.district,
+    },
+    {
+      id: 27,
+      name: "due",
+      value: Number(formData.due) || 0,
+      isVisible: inputPermission.due,
+    },
+    {
+      id: 13,
+      name: "email",
+      value: formData.email || "",
+      isVisible: inputPermission.email,
+    },
+    {
+      id: 24,
+      name: "fatherName",
+      value: formData.fatherName || "",
+      isVisible: inputPermission.fatherName,
+    },
+    {
+      id: 29,
+      name: "ipAddress",
+      value: formData.ipAddress || "",
+      isVisible: inputPermission.ipAddress,
+    },
+    {
+      id: 14,
+      name: "monthlyFee",
+      value: Number(formData.packageRate) || 0,
+      isVisible: inputPermission.monthlyFee,
+    },
+    {
+      id: 14,
+      name: "mikrotik",
+      value: formData.mikrotikId || "",
+      isVisible: inputPermission.mikrotik,
+    },
+    {
+      id: 15,
+      name: "mikrotikPackage",
+      value: formData.packageId || "",
+      isVisible: inputPermission.mikrotikPackage,
+    },
+    {
+      id: 15,
+      name: "mobile",
+      value: formData.mobile || "",
+      isVisible: inputPermission.mobile,
+    },
+    {
+      id: 30,
+      name: "maxUpLimit",
+      value: formData.maxUpLimit || "",
+      isVisible:
+        ["firewall-queue", "simple-queue"].includes(userType) &&
+        inputPermission.mikrotikPackage,
+    },
+    {
+      id: 30,
+      name: "maxDownLimit",
+      value: formData.maxDownLimit || "",
+      isVisible:
+        ["firewall-queue", "simple-queue"].includes(userType) &&
+        inputPermission.mikrotikPackage,
+    },
+    {
+      id: 16,
+      name: "name",
+      value: formData.name || "",
+      isVisible: inputPermission.name,
+    },
+    {
+      id: 17,
+      name: "nid",
+      value: formData.nid || "",
+      isVisible: inputPermission.nid,
+    },
+    {
+      id: 19,
+      name: "note",
+      value: formData.note || "",
+      isVisible: inputPermission.note,
+    },
+    {
+      id: 18,
+      name: "pppoeName",
+      value: formData.pppoeName || "",
+      isVisible: inputPermission.pppoeName,
+    },
+    {
+      id: 19,
+      name: "promiseDate",
+      value: formData.promiseDate || today,
+      isVisible: inputPermission.promiseDate,
+    },
+    {
+      id: 19,
+      name: "password",
+      value: formData.password || "",
+      isVisible: inputPermission.password,
+    },
+    {
+      id: 19,
+      name: "poleBox",
+      value: formData.poleBoxId || "",
+      isVisible: inputPermission.poleBox,
+    },
+    {
+      id: 29,
+      name: "queueName",
+      value: formData.queueName || "",
+      isVisible: inputPermission.queueName,
+    },
+    {
+      id: 20,
+      name: "referenceName",
+      value: formData.referenceName || "",
+      isVisible: inputPermission.referenceName,
+    },
+    {
+      id: 21,
+      name: "referenceMobile",
+      value: formData.referenceMobile || "",
+      isVisible: inputPermission.referenceMobile,
+    },
+    {
+      id: 22,
+      name: "subArea",
+      value: formData.subAreaId || "",
+      isVisible: inputPermission.subArea,
+    },
+    {
+      id: 22,
+      name: "status",
+      value: formData.status || "active",
+      isVisible: inputPermission.status,
+    },
+    {
+      id: 26,
+      name: "salary",
+      value: Number(formData.salary) || 0,
+      isVisible: inputPermission.salary,
+    },
+    {
+      id: 22,
+      name: "thana",
+      value: formData.thana || "",
+      isVisible: inputPermission.thana,
+    },
+    {
+      id: 23,
+      name: "profile",
+      value: formData.packageName || "",
+      isVisible: page === "pppoe" && inputPermission.mikrotikPackage,
+    },
+  ];
+
+  // input initial values
+  const inputInitialValues = initialValuesArrayofInput.reduce((acc, curr) => {
+    if (curr.isVisible) {
+      acc[curr.name] = curr.value && curr.value;
+    }
+    return acc;
+  }, {});
+
   // data input options
   const inputOption = [
     {
@@ -653,7 +775,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       as: "select",
       type: "select",
       id: "mikrotikPackage",
-      isVisible: inputPermission.mikrotikPackage,
+      isVisible: page === "pppoe" && inputPermission.mikrotikPackage,
       disabled: bpSettings.hasMikrotik
         ? status === "post"
           ? !formData.mikrotikId
@@ -673,7 +795,32 @@ const useDataInputOption = (inputPermission, page, status, data) => {
                   pack.mikrotik === formData.mikrotikId
               )
             : ppPackage
-          : page === "static"
+          : "",
+      onChange: (e) => {
+        packageChangeHandler(e.target.value);
+      },
+    },
+    {
+      name: "mikrotikPackage",
+      as: "select",
+      type: "select",
+      id: userType,
+      isVisible:
+        page === "static" &&
+        ["firewall-queue", "core-queue"].includes(userType) &&
+        inputPermission.mikrotikPackage,
+      disabled: bpSettings.hasMikrotik
+        ? status === "post"
+          ? !formData.mikrotikId
+          : resellerUser && !permission?.customerMikrotikPackageEdit
+        : false,
+      validation: true,
+      label: t("selectPackage"),
+      firstOptions: t("selectPackage"),
+      textAccessor: "name",
+      valueAccessor: "id",
+      options:
+        page === "static"
           ? bpSettings.hasMikrotik
             ? ppPackage?.filter(
                 (pack) =>
@@ -683,7 +830,57 @@ const useDataInputOption = (inputPermission, page, status, data) => {
             : ppPackage
           : "",
       onChange: (e) => {
-        packageChangeHandler(e.target.value);
+        staticPackageChangeHandler(e.target);
+      },
+    },
+    {
+      name: "uploadPackge",
+      as: "select",
+      type: "select",
+      id: "uploadPackge",
+      isVisible:
+        page === "static" &&
+        userType === "simple-queue" &&
+        inputPermission.mikrotikPackage,
+      disabled: adminUser ? (status ? !formData.mikrotikId : false) : true,
+      validation: true,
+      label: t("uploadPackge"),
+      firstOptions: t("selectPackage"),
+      textAccessor: "name",
+      valueAccessor: "id",
+      value: formData.uploadPackgeId || "",
+      options:
+        bpSettings.hasMikrotik &&
+        ppPackage?.filter(
+          (pack) =>
+            pack.packageType === "queue" &&
+            pack.mikrotik === formData.mikrotikId
+        ),
+      onChange: (e) => {
+        staticPackageChangeHandler(e.target);
+      },
+    },
+    {
+      name: "mikrotikPackage",
+      as: "select",
+      type: "select",
+      id: "downloadPackge",
+      isVisible:
+        page === "static" &&
+        userType === "simple-queue" &&
+        inputPermission.mikrotikPackage,
+      disabled: adminUser ? (status ? !formData.mikrotikId : false) : true,
+      validation: true,
+      label: t("downloadPackge"),
+      firstOptions: t("selectPackage"),
+      textAccessor: "name",
+      valueAccessor: "id",
+      options: ppPackage?.filter(
+        (pack) =>
+          pack.packageType === "queue" && pack.mikrotik === formData.mikrotikId
+      ),
+      onChange: (e) => {
+        staticPackageChangeHandler(e.target);
       },
     },
     {
@@ -706,7 +903,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
     },
     {
       name: "balance",
-      type: "number",
+      type: "text",
       id: "balance",
       isVisible: inputPermission.balance,
       disabled: adminUser ? (status ? !formData.packageId : false) : true,
@@ -717,6 +914,22 @@ const useDataInputOption = (inputPermission, page, status, data) => {
         setFormData({
           ...formData,
           balance: e.target.value,
+        });
+      },
+    },
+    {
+      name: "ipAddress",
+      type: "text",
+      id: "ipAddress",
+      isVisible: inputPermission.ipAddress,
+      disabled: status ? !formData.packageId : false,
+      validation: true,
+      label: t("ipAddress"),
+      placeholder: "e.g. 192.168.0.1",
+      onChange: (e) => {
+        setFormData({
+          ...formData,
+          ipAddress: e.target.value,
         });
       },
     },
@@ -733,6 +946,22 @@ const useDataInputOption = (inputPermission, page, status, data) => {
         setFormData({
           ...formData,
           pppoeName: e.target.value,
+        });
+      },
+    },
+    {
+      name: "queueName",
+      type: "text",
+      id: "queueName",
+      isVisible: inputPermission.queueName,
+      disabled: status ? !formData.packageId : false,
+      validation: true,
+      label: t("queueName"),
+      placeholder: "e.g. Queue-Name",
+      onChange: (e) => {
+        setFormData({
+          ...formData,
+          queueName: e.target.value,
         });
       },
     },
@@ -841,7 +1070,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
           : (rsRole && !permission?.singleCustomerNumberEdit) ||
             (rscRole && !resellerData?.permission?.customerMobileEdit) ||
             false,
-      validation: ["pppoe"].includes(page)
+      validation: ["pppoe", "static"].includes(page)
         ? bpSettings?.addCustomerWithMobile ||
           permission?.addCustomerWithMobile ||
           resellerData?.permission?.addCustomerWithMobile

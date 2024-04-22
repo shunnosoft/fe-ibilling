@@ -2929,12 +2929,6 @@ export const getUnpaidInvoice = async (dispatch, ispOwnerId) => {
     dispatch(getUnpaidInvoiceSuccess(invoice));
   } catch (err) {
     console.log("unpaid invoice error: ", err);
-    dispatch(getUnpaidInvoiceSuccess(err.response?.data.stack?.invoice));
-    if (err.response?.data.message === "Account Suspended!") {
-      if (window.location.pathname !== "/acountSuspend") {
-        window.location.href = "/acountSuspend";
-      }
-    }
   }
 };
 
@@ -3102,6 +3096,23 @@ export const getIspOwnerData = async (
     console.log(error.response?.data.message);
   }
   setIsLoading(false);
+};
+
+// get ispOwner status from netfee
+export const getIspOwnerStatus = async (dispatch, ispOwnerId) => {
+  const res = await apiLink.get(`auth/status/check/${ispOwnerId}`);
+  console.log(res.data);
+
+  if (res?.data.status === "FORBIDDEN") {
+    if (window.location.pathname !== "/acountSuspend") {
+      window.location.href = "/acountSuspend";
+    }
+  }
+  // dispatch(getIspOwnerManagerSuccess(res.data));
+  try {
+  } catch (error) {
+    console.log(error.response.data.message);
+  }
 };
 
 //updated Users

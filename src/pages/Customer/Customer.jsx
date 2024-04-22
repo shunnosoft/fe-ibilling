@@ -712,13 +712,15 @@ const PPPOECustomer = () => {
             <div>
               <p>{getCustomerPromiseDate(original)?.billDate}</p>
 
-              <p
-                className={`d-flex align-self-end text-${
-                  getCustomerPromiseDate(original)?.promiseDateChange
-                }`}
-              >
-                {getCustomerPromiseDate(original)?.promiseDate}
-              </p>
+              {bpSettings?.promiseDate && (
+                <p
+                  className={`d-flex align-self-end text-${
+                    getCustomerPromiseDate(original)?.promiseDateChange
+                  }`}
+                >
+                  {getCustomerPromiseDate(original)?.promiseDate}
+                </p>
+              )}
             </div>
           </div>
         ),

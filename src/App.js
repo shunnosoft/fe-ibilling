@@ -54,7 +54,11 @@ import Privacy from "./pages/public-pages/Privacy";
 import Terms from "./pages/public-pages/Terms";
 import Refund from "./pages/public-pages/Refund";
 
-import { getUnpaidInvoice, getUpdatedUserData } from "./features/apiCalls";
+import {
+  getIspOwnerStatus,
+  getUnpaidInvoice,
+  getUpdatedUserData,
+} from "./features/apiCalls";
 import { useEffect } from "react";
 import ReactModal from "./components/modals/reactModal/ReactModal";
 import Cancel from "./pages/success copy/Success";
@@ -157,8 +161,10 @@ function App() {
       userRole === "manager" ||
       userRole === "collector" ||
       userRole === "reseller"
-    )
+    ) {
       getUnpaidInvoice(dispatch, ispOwnerId);
+      getIspOwnerStatus(dispatch, ispOwnerId);
+    }
   }, [ispOwnerId, dispatch, userRole]);
   const pathName = useLocation().pathname;
 
