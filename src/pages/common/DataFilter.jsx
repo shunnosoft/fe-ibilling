@@ -39,15 +39,7 @@ const DataFilter = ({ page, customers, setCustomers }) => {
   const [mainData, setMainData] = useState([]);
 
   // filter data state
-  const [filterOptions, setFilterOption] = useState({
-    mikrotik: "",
-    mikrotikPackage: "",
-    area: "",
-    subArea: "",
-    poleBox: "",
-    status: "",
-    paymentStatus: "",
-  });
+  const [filterOptions, setFilterOption] = useState({});
 
   // mikrotik packages state
   const [mikrotikPackages, setMikrotikPackages] = useState([]);
@@ -352,15 +344,7 @@ const DataFilter = ({ page, customers, setCustomers }) => {
   // filter reset controller
   const handleFilterReset = () => {
     // set empty filter option
-    setFilterOption({
-      mikrotik: "",
-      mikrotikPackage: "",
-      area: "",
-      subArea: "",
-      poleBox: "",
-      status: "",
-      paymentStatus: "",
-    });
+    setFilterOption({ ...filterOptions });
 
     // set empty mikrotik packages
     setMikrotikPackages([]);

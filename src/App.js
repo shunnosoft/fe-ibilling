@@ -36,11 +36,9 @@ import NotFound from "./pages/NotFound/NotFound";
 import Execute from "./pages/execute/Execute";
 import Success from "./pages/success/Success";
 import Manager from "./pages/manager/Manager";
-// import Reseller from "./pages/reseller/Reseller";
 import Area from "./pages/area/Area";
 import Mikrotik from "./pages/mikrotik/Mikrotik";
 import ConfigMikrotik from "./pages/configMikrotik/ConfigMikrotik";
-// import Account from "./pages/account/Account";
 import Message from "./pages/message/Message";
 import Invoice from "./pages/invoice/Invoice";
 
@@ -60,7 +58,6 @@ import {
   getUpdatedUserData,
 } from "./features/apiCalls";
 import { useEffect } from "react";
-import ReactModal from "./components/modals/reactModal/ReactModal";
 import Cancel from "./pages/success copy/Success";
 import Failed from "./pages/success copy 2/Success";
 import Package from "./pages/package/Package";
@@ -86,29 +83,22 @@ import RstaticCustomer from "./reseller/staticCustomer/StaticCustomer";
 
 import ClientPage from "./ownerCustomer/index";
 import AllResellerCustomer from "./pages/reseller/resellerCustomer/ResellerAllCustomer";
-import NewCustomer from "./pages/newCustomer/NewCustomer";
 import MessageLog from "./pages/messageLog/MessageLog";
-import DueCustomer from "./pages/dueCustomer/DueCustomer";
-import SuccessPaymentSuccess from "./ownerCustomer/CustomerPaymentSuccess";
 import CustomerSupportTicket from "./pages/supportTicket/SupportTicket";
-import Stock from "./pages/Inventory/Stock";
 import CollectorSupportTicket from "./pages/supportTicket/CollectorSupportTicket";
 import ActiveHotspotCustomer from "./pages/hotspot/activeHotspotCustomer/ActiveHotspotCustomer";
 import Summary from "./reseller/summary/Summary";
-import { getUserApi, userLogout } from "./features/actions/authAsyncAction";
+import { getUserApi } from "./features/actions/authAsyncAction";
 import ResellerSummary from "./pages/reseller/resellerSummary/ResellerSummary";
 import OnlinePaymentCustomer from "./pages/reseller/onlinePaymentCustomer/OnlinePayment";
 import ResellerCustomerSupportTicket from "./reseller/supportTicket/SupportTicket";
 import ResellerCollectorCustomerSupportTicket from "./reseller/supportTicket/CollectorSupportTicket";
 import ResellerNetFeeSupport from "./reseller/netFeeSupport/NetFeeSupport";
 import NetFeeSupport from "./pages/netFeeSupport/NetFeeSupport";
-import useCurrentUser from "./hooks/useCurrentUser";
-import useISPowner from "./hooks/useISPOwner";
 import Supports from "./admin/netFeeSupport/Supports";
 import NetFeeIspOwnerSupport from "./admin/netFeeSupport/NetFeeIspOwnerSupport";
 import QRCodePay from "./pages/public-pages/QRCodePay";
 import ActiveStaticCustomer from "./reseller/activeStaticCustomer/ActiveStaticCustomer";
-import InactiveCustomer from "./pages/inactiveCustomer/InactiveCustomer";
 import ResellerCollection from "./pages/reseller/resellerCollection/ResellerCollection";
 import SupportNumbers from "./pages/netFeeSupport/SupportNumbers";
 import PoleBox from "./pages/subArea/PoleBox";
@@ -129,16 +119,12 @@ import QrCodeHotspotCustomer from "./pages/public-pages/hotspotCoustomerQRCode/Q
 import RechargeHistory from "./reseller/rechargeHistory/RechargeHistory";
 import AcountWorning from "./components/modals/error/AcountWorning";
 import WebhookMessage from "./pages/report/WebhookMessage";
+import AcountPayment from "./components/modals/payment/AcountPayment";
 
 function App() {
-  // const invoice = useSelector(state => state.invoice.invoice);
-
   const [theme, setTheme] = useState("light");
   const dispatch = useDispatch();
   const user = useSelector((state) => state.persistedReducer.auth?.currentUser);
-
-  // const { userRole, permissions } = useCurrentUser();
-  // const { ispOwnerId, hasMikrotik, hasReseller } = useISPowner();
 
   const userRole = useSelector((state) => state.persistedReducer.auth?.role);
   const ispOwnerId = useSelector(
@@ -153,8 +139,6 @@ function App() {
     (state) => state.persistedReducer.auth.userData.permissions
   );
 
-  const isModalShowing = useSelector((state) => state.ui?.alertModalShow);
-
   useEffect(() => {
     if (
       userRole === "ispOwner" ||
@@ -165,7 +149,7 @@ function App() {
       getUnpaidInvoice(dispatch, ispOwnerId);
       getIspOwnerStatus(dispatch, ispOwnerId);
     }
-  }, [ispOwnerId, dispatch, userRole]);
+  }, [ispOwnerId, userRole]);
   const pathName = useLocation().pathname;
 
   useEffect(() => {
@@ -192,17 +176,11 @@ function App() {
     <ThemeProvider theme={themes[theme]}>
       <GlobalStyles />
       <div className="App">
-        {isModalShowing && <ReactModal></ReactModal>}
         {pathName === "/login" || pathName === "/register" || user
           ? userRole !== "customer" && (
               <Header theme={theme} setTheme={setTheme} />
             )
           : ""}
-
-        {/* for acount suspend */}
-        <Routes>
-          <Route path="/acountSuspend" element={<AcountWorning />} />
-        </Routes>
 
         {/* global routes */}
 
@@ -213,6 +191,12 @@ function App() {
           <Routes>
             {/* others customer  */}
             <Route path="/other/customer" element={<OtherCustomer />} />
+
+            {/* acount forbidden */}
+            <Route path="/acountSuspend" element={<AcountWorning />} />
+
+            {/* ispOwoner invoice payment */}
+            <Route path="/payment" element={<AcountPayment />} />
           </Routes>
         )}
 

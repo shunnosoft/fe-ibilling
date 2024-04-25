@@ -1,0 +1,37 @@
+.invoice_title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #b1b1b11b;
+}
+
+.invoice_title > h1 {
+  padding: 0.1rem;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  margin: 1% 25%;
+  font-weight: 900;
+  color: #2d86df;
+}
+.payment_card {
+  margin: 2% 35%;
+  background: #2d86df !important;
+  color: white;
+}
+
+.payment_card:hover {
+  background: #3dff67 !important;
+  color: black;
+  transition: 0.2s;
+  transform: scale(1.04);
+}
+
+.payment_title {
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  font-weight: 900;
+  font-size: 1.2rem;
+}
+
+.payment_amount {
+  font-weight: 900;
+  margin-bottom: 0;
+}

@@ -85,51 +85,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
   const poleBox = useSelector((state) => state.area?.poleBox);
 
   // set change form data in state
-  const [formData, setFormData] = useState({
-    amount: "",
-    areaId: "",
-    address: "",
-    autoDisable: "",
-    addStaff: false,
-    balance: "",
-    billingCycleDate: "",
-    customerId: "",
-    connectionDate: "",
-    customerBillingType: "",
-    connectionFee: "",
-    comment: "",
-    dateOFbirth: "",
-    division: "",
-    district: "",
-    due: "",
-    downloadPackge: "",
-    email: "",
-    fatherName: "",
-    ipAddress: "",
-    mikrotikId: "",
-    mobile: "",
-    maxUpLimit: "",
-    maxDownLimit: "",
-    name: "",
-    nid: "",
-    note: "",
-    nextMonthAutoDisable: "",
-    pppoeName: "",
-    password: "",
-    packageId: "",
-    packageRate: "",
-    packageName: "",
-    promiseDate: "",
-    poleBoxId: "",
-    queueName: "",
-    referenceName: "",
-    referenceMobile: "",
-    subAreaId: "",
-    status: "",
-    salary: "",
-    thana: "",
-    uploadPackgeId: "",
-  });
+  const [formData, setFormData] = useState({});
 
   // set ispOwner package commission in state
   const [packageCommission, setPackageCommission] = useState();
@@ -850,6 +806,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       valueAccessor: "id",
       value: formData.uploadPackgeId || "",
       options:
+        page === "static" &&
         bpSettings.hasMikrotik &&
         ppPackage?.filter(
           (pack) =>
@@ -875,10 +832,13 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       firstOptions: t("selectPackage"),
       textAccessor: "name",
       valueAccessor: "id",
-      options: ppPackage?.filter(
-        (pack) =>
-          pack.packageType === "queue" && pack.mikrotik === formData.mikrotikId
-      ),
+      options:
+        page === "static" &&
+        ppPackage?.filter(
+          (pack) =>
+            pack.packageType === "queue" &&
+            pack.mikrotik === formData.mikrotikId
+        ),
       onChange: (e) => {
         staticPackageChangeHandler(e.target);
       },

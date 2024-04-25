@@ -1262,7 +1262,7 @@ export default function Sidebar() {
 
                         {bpSettings?.inventory && userRole !== "collector" && (
                           <a
-                            href={"https://hisabnikash.biz"}
+                            href={"https://hisabnikashbd.com"}
                             target="_blank"
                             className={(navInfo) =>
                               navInfo.isActive ? activeClass.active : ""

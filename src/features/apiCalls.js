@@ -2896,40 +2896,34 @@ export const purchaseSms = async (data, setIsloading, dispatch, setShow) => {
 export const getUnpaidInvoice = async (dispatch, ispOwnerId) => {
   try {
     const res = await apiLink.get(`/dashboard/invoice/unpaid/${ispOwnerId}`);
-
-    const invoice = res.data;
     if (
-      invoice &&
-      new Date(invoice?.dueDate).getTime() < new Date().getTime()
+      res.data &&
+      new Date(res.data?.dueDate).getTime() < new Date().getTime()
     ) {
-      let invoiceType = "";
-      if (invoice.type === "registration") invoiceType = "রেজিস্ট্রেশন ফি";
-      else if (invoice.type === "monthlyServiceCharge")
-        invoiceType = "মাসিক সার্ভিস চার্জ";
-
-      let con = window.confirm(
-        `নেটফি ${invoiceType} ${invoice.amount} Tk পরিশোধের শেষ সময় ${moment(
-          invoice.dueDate
-        ).format(
-          "DD-MM-YYYY hh:mm:ss A"
-        )} অতিবাহিত হয়েছে। অনুগ্রহ করে পেমেন্ট করুন।`
-      );
-
-      if (con || !con) {
-        const res = await apiLink.post(
-          `/payment/generate-payment-url`,
-          invoice
-        );
-
-        dispatch(showModal(res.data));
-        // window.location.href = res.data.paymentUrl;
+      if (
+        window.location.pathname !== "/payment" &&
+        window.location.pathname !== "/acountSuspend"
+      ) {
+        window.location.href = "/payment";
       }
     }
 
-    dispatch(getUnpaidInvoiceSuccess(invoice));
+    dispatch(getUnpaidInvoiceSuccess(res.data));
   } catch (err) {
     console.log("unpaid invoice error: ", err);
   }
+};
+
+export const ispOwnerPayment = async (invoice, setIsLoading) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.post(`/payment/generate-payment-url`, invoice);
+
+    window.location.href = res.data.paymentUrl;
+  } catch (err) {
+    console.log("ispOwnerPayment error: ", err);
+  }
+  setIsLoading(false);
 };
 
 //get ispwoner with
@@ -3101,14 +3095,14 @@ export const getIspOwnerData = async (
 // get ispOwner status from netfee
 export const getIspOwnerStatus = async (dispatch, ispOwnerId) => {
   const res = await apiLink.get(`auth/status/check/${ispOwnerId}`);
-  console.log(res.data);
 
   if (res?.data.status === "FORBIDDEN") {
     if (window.location.pathname !== "/acountSuspend") {
       window.location.href = "/acountSuspend";
     }
   }
-  // dispatch(getIspOwnerManagerSuccess(res.data));
+
+  dispatch(getIspOwnerManagerSuccess(res.data));
   try {
   } catch (error) {
     console.log(error.response.data.message);

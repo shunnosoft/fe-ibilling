@@ -14,7 +14,6 @@ import { FtextField } from "../../../components/common/FtextField";
 import { editCollector } from "../../../features/apiCalls";
 import { collectorPermission } from "./collectorPermission";
 import InformationTooltip from "../../../components/common/tooltipInformation/InformationTooltip";
-import { toast } from "react-toastify";
 import { areasSubareasChecked } from "../../staff/staffCustomFucn";
 import ComponentCustomModal from "../../../components/common/customModal/ComponentCustomModal";
 
@@ -138,12 +137,6 @@ const CollectorEdit = ({ show, setShow, collectorId }) => {
 
   // collector update data submit handler
   const collectorEditHandler = async (data) => {
-    if (areaSubareas.filter((val) => val.isChecked).length === 0) {
-      setIsLoading(false);
-      toast.warn(t("selectArea"));
-      return;
-    }
-
     // temporary state set collector single & multiple permission
     let temp = {};
 

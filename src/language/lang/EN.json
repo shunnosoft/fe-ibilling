@@ -937,5 +937,6 @@
   "unSent": "UnSent",
   "trash": "Trash",
   "writeIPAddress": "Write IP Address",
-  "selectMikrotikPackage": "Select Mikrotik Package"
+  "selectMikrotikPackage": "Select Mikrotik Package",
+  "trxID": "TrxID"
 }

@@ -143,6 +143,11 @@ const WebhookMessage = () => {
       },
       {
         width: "10%",
+        Header: t("trxID"),
+        accessor: "trxID",
+      },
+      {
+        width: "10%",
         Header: t("status"),
         accessor: "status",
         Cell: ({ row: { original } }) => {
@@ -157,12 +162,12 @@ const WebhookMessage = () => {
         },
       },
       {
-        width: "15%",
+        width: "10%",
         Header: t("medium"),
         accessor: "from",
       },
       {
-        width: "15%",
+        width: "10%",
         Header: t("createdAt"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
