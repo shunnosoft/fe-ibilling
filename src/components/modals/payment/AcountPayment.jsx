@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { Card } from "react-bootstrap";
 
 // custome hooks import
@@ -21,6 +21,7 @@ import ActiveSupportNumber from "../../../pages/netFeeSupport/supportOpration/Ac
 const AcountPayment = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { state } = useLocation();
 
   // current date
   const date = new Date();
@@ -29,19 +30,23 @@ const AcountPayment = () => {
   const { ispOwnerId } = useISPowner();
 
   // get ispOwner payment invoice to check expiration
-  const invoice = useSelector((state) => state?.invoice?.invoice);
-
-  // ispOwner invoice due date
-  const invoiceDate = new Date(invoice?.dueDate).getTime() < date.getTime();
+  const ownerInvoice = useSelector((state) => state?.invoice?.invoice);
 
   // loading state
   const [isLoading, setIsloading] = useState(false);
   const [isAgreed, setAgreed] = useState(false);
 
+  // invoice state
+  const [invoice, setInvoice] = useState({});
+
+  // ispOwner invoice due date
+  const invoiceDate = new Date(invoice?.dueDate).getTime() < date.getTime();
+
   // ispOwner payment invoice type
   const invoiceType = {
     monthlyServiceCharge: "Monthly Service Charge",
     registration: "Registration Fee",
+    smsPurchase: "SMS Purchase Price",
   };
 
   // api call
@@ -52,6 +57,14 @@ const AcountPayment = () => {
     // get ispOwner data api
     getIspOwnerData(dispatch, ispOwnerId, setIsloading);
   }, []);
+
+  useEffect(() => {
+    if (ownerInvoice) {
+      setInvoice(ownerInvoice);
+    } else {
+      setInvoice(state);
+    }
+  }, [ownerInvoice, state]);
 
   // ispOwner payment function handler
   const handlePayment = (data) => {
@@ -71,18 +84,28 @@ const AcountPayment = () => {
                   </div>
 
                   <div className="support_document my-3">
-                    <p>
-                      We hope you are well. This message is to remind you that
-                      the payment due date for invoice was&nbsp;
-                      <span className="text-danger">
-                        {moment(invoice.dueDate).format(
-                          "DD-MM-YYYY hh:mm:ss A"
-                        )}
-                      </span>
-                      , and we have not yet received the payment. Please arrange
-                      to pay this invoice as soon as possible to avoid any
-                      disruption to our service.
-                    </p>
+                    {invoice?.type === "smsPurchase" ? (
+                      <p>
+                        Without a package, the per-SMS cost may be higher
+                        compared to purchasing in bulk.This option offers
+                        flexibility as you only for the SMS you actually
+                        use.Thank you for you purchase of SMS. I'm processing
+                        the payment now. We appreciate your business.
+                      </p>
+                    ) : (
+                      <p>
+                        We hope you are well. This message is to remind you that
+                        the payment due date for invoice was&nbsp;
+                        <span className="text-danger">
+                          {moment(invoice.dueDate).format(
+                            "DD-MM-YYYY hh:mm:ss A"
+                          )}
+                        </span>
+                        , and we have not yet received the payment. Please
+                        arrange to pay this invoice as soon as possible to avoid
+                        any disruption to our service.
+                      </p>
+                    )}
                   </div>
 
                   <Card className="payment_card">

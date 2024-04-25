@@ -13,7 +13,11 @@ import DatePicker from "react-datepicker";
 import Footer from "../../components/admin/footer/Footer";
 import { FontColor, FourGround } from "../../assets/js/theme";
 
-import { deleteInvoice, getInvoices } from "../../features/apiCalls";
+import {
+  deleteInvoice,
+  getInvoices,
+  ispOwnerPayment,
+} from "../../features/apiCalls";
 import { showModal } from "../../features/uiSlice";
 import Table from "../../components/table/Table";
 import { badge } from "../../components/common/Utils";
@@ -29,10 +33,14 @@ import {
 import PrintInvoice from "./invoicePDF";
 import Loader from "../../components/common/Loader";
 import { Accordion } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
+import AcountPayment from "../../components/modals/payment/AcountPayment";
 
 function Invoice() {
   const { t } = useTranslation();
   const componentRef = useRef(); //reference of pdf export component
+  const navigate = useNavigate();
+
   const [isLoading, setIsloading] = useState(false);
 
   const invoices = useSelector((state) => state?.invoice?.invoices);
@@ -86,6 +94,11 @@ function Invoice() {
   useEffect(() => {
     if (invoices.length === 0) getInvoices(dispatch, ispOwnerId, setIsloading);
   }, [dispatch, ispOwnerId]);
+
+  // ispOwner payment function handler
+  const handlePayment = (data) => {
+    ispOwnerPayment(data, setIsloading);
+  };
 
   //react memo
   const columns = React.useMemo(
@@ -182,7 +195,7 @@ function Invoice() {
                 {original.status === "unpaid" && (
                   <li
                     onClick={() => {
-                      dispatch(showModal(original));
+                      navigate("/payment", { state: original });
                     }}
                   >
                     <div className="dropdown-item">
@@ -388,6 +401,9 @@ function Invoice() {
           </div>
         </div>
       </div>
+
+      {/* payment component */}
+      {/* <AcountPayment invoiceData={invoiceData} /> */}
     </>
   );
 }
