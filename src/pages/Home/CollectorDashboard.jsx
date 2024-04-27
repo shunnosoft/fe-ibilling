@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { easeQuadIn } from "d3-ease";
 import ReactDatePicker from "react-datepicker";
+import { useNavigate } from "react-router-dom";
 
 // custom hook import
 import useISPowner from "../../hooks/useISPOwner";
@@ -25,7 +26,6 @@ import {
   getCollectorDashboardCharts,
   getIspOwnerData,
 } from "../../features/apiCalls";
-import { showModal } from "../../features/uiSlice";
 import FormatNumber from "../../components/common/NumberFormat";
 import AnimatedProgressProvider from "../../components/common/AnimationProgressProvider";
 import Loader from "../../components/common/Loader";
@@ -38,6 +38,7 @@ import DashboardCard from "./dashboardCard/DashboardCard";
 const CollectorDashboard = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // get user & current user data form useISPOwner
   const { ispOwnerData, ispOwnerId, bpSettings, permissions } = useISPowner();
@@ -270,9 +271,7 @@ const CollectorDashboard = () => {
                   <button
                     type="button"
                     className="btn btn-success fs-5 text"
-                    onClick={() => {
-                      dispatch(showModal(invoice));
-                    }}
+                    onClick={() => navigate("/payment")}
                   >
                     {t("payment")}
                   </button>

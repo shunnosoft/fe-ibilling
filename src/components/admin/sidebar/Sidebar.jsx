@@ -603,6 +603,36 @@ export default function Sidebar() {
                           ""
                         )}
 
+                        {(userRole === "ispOwner" ||
+                          userRole === "manager") && (
+                          <NavLink
+                            key={138}
+                            to={"/webhook/message"}
+                            className={(navInfo) =>
+                              navInfo.isActive ? activeClass.active : ""
+                            }
+                          >
+                            <FontColor>
+                              <li
+                                className="sidebarItems"
+                                id={
+                                  window.location.pathname ===
+                                  "/webhook/message"
+                                    ? "active"
+                                    : ""
+                                }
+                              >
+                                <div className="sidebarIcon">
+                                  {<SendCheck />}
+                                </div>
+                                <span className="sidebarLinksName">
+                                  {t("webhookMessage")}
+                                </span>
+                              </li>
+                            </FontColor>
+                          </NavLink>
+                        )}
+
                         <NavLink
                           key={7}
                           to={
@@ -631,39 +661,6 @@ export default function Sidebar() {
                               <div className="sidebarIcon">{<CashCoin />}</div>
                               <span className="sidebarLinksName">
                                 {t("deposit")}
-                              </span>
-                            </li>
-                          </FontColor>
-                        </NavLink>
-
-                        <NavLink
-                          key={38}
-                          to={
-                            userRole === "reseller" ||
-                            (userRole === "collector" &&
-                              user.collector.reseller)
-                              ? "/reseller/webhook/message"
-                              : "/webhook/message"
-                          }
-                          className={(navInfo) =>
-                            navInfo.isActive ? activeClass.active : ""
-                          }
-                        >
-                          <FontColor>
-                            <li
-                              className="sidebarItems"
-                              id={
-                                window.location.pathname ===
-                                (userRole === "reseller"
-                                  ? "/reseller/webhook/message"
-                                  : "/webhook/message")
-                                  ? "active"
-                                  : ""
-                              }
-                            >
-                              <div className="sidebarIcon">{<SendCheck />}</div>
-                              <span className="sidebarLinksName">
-                                {t("webhookMessage")}
                               </span>
                             </li>
                           </FontColor>
@@ -1262,7 +1259,7 @@ export default function Sidebar() {
 
                         {bpSettings?.inventory && userRole !== "collector" && (
                           <a
-                            href={"https://hisabnikashbd.com"}
+                            href={"https://old.hisabnikashbd.com"}
                             target="_blank"
                             className={(navInfo) =>
                               navInfo.isActive ? activeClass.active : ""

@@ -472,7 +472,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
     {
       id: 4,
       name: "balance",
-      value: formData.balance || "",
+      value: formData.balance || 0,
       isVisible: inputPermission.balance,
     },
     {
@@ -869,7 +869,6 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       disabled: adminUser ? (status ? !formData.packageId : false) : true,
       validation: false,
       label: t("balance"),
-      placeholder: "0",
       onChange: (e) => {
         setFormData({
           ...formData,

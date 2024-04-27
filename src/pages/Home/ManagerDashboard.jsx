@@ -9,6 +9,8 @@ import moment from "moment";
 import { useTranslation } from "react-i18next";
 import { easeQuadIn } from "d3-ease";
 import ReactDatePicker from "react-datepicker";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 // custom hooks import
 import useISPowner from "../../hooks/useISPOwner";
@@ -26,9 +28,7 @@ import {
   getManagerDashboardCharts,
   getManagerDashboardOverViewCardData,
 } from "../../features/apiCalls";
-import { useDispatch, useSelector } from "react-redux";
 import { managerFetchSuccess } from "../../features/managerSlice";
-import { showModal } from "../../features/uiSlice";
 import FormatNumber from "../../components/common/NumberFormat";
 import AnimatedProgressProvider from "../../components/common/AnimationProgressProvider";
 import Loader from "../../components/common/Loader";
@@ -42,6 +42,7 @@ import DashboardCard from "./dashboardCard/DashboardCard";
 const ManagerDashboard = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // get current date
   const getDate = new Date();
@@ -370,9 +371,7 @@ const ManagerDashboard = () => {
                   <button
                     type="button"
                     className="btn btn-success fs-5 text"
-                    onClick={() => {
-                      dispatch(showModal(invoice));
-                    }}
+                    onClick={() => navigate("/payment")}
                   >
                     {t("payment")}
                   </button>
