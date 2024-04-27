@@ -29,6 +29,10 @@ import SMSPurchase from "../../../pages/message/SMSPurchase";
 
 export default function Header(props) {
   const { t } = useTranslation();
+
+  //current date
+  const date = new Date();
+
   const [isRefrsh, setIsrefresh] = useState(false);
   const [isLoading, setLoading] = useState(false);
 
@@ -38,6 +42,9 @@ export default function Header(props) {
   const [rechargeBalnace, setRechargeBalance] = useState(0);
   const [smsBalance, setSmsBalance] = useState(0);
   const [ispOwner, setIspOwner] = useState("");
+
+  // get ispOwner payment invoice to check expiration
+  const invoice = useSelector((state) => state?.invoice?.invoice);
 
   const ispOwnerId = useSelector(
     (state) => state.persistedReducer.auth?.ispOwnerId
@@ -68,6 +75,9 @@ export default function Header(props) {
     userRole === "ispOwner" ||
     userRole === "manager" ||
     (userRole === "collector" && !userData.reseller);
+
+  // ispOwner invoice due date
+  const invoiceDate = new Date(invoice?.dueDate).getTime() < date.getTime();
 
   // modal show handler
   const [modalStatus, setModalStatus] = useState("");
@@ -236,26 +246,27 @@ export default function Header(props) {
                 ""
               )}
 
-              {["ispOwner", "manager", "reseller"].includes(userRole) && (
-                <div
-                  className="headerIcon phone_view_none"
-                  onClick={() => {
-                    setModalStatus("buySMS");
-                    setShow(true);
-                  }}
-                >
-                  <div className="messageBalance">
-                    <EnvelopePlus size={22} />
-                    <span
-                      className={`badge bg-${
-                        messageBalance > 0 ? "success" : "danger"
-                      }`}
-                    >
-                      {messageBalance > 1000 ? "999+" : messageBalance || 0}
-                    </span>
+              {!invoiceDate &&
+                ["ispOwner", "manager", "reseller"].includes(userRole) && (
+                  <div
+                    className="headerIcon phone_view_none"
+                    onClick={() => {
+                      setModalStatus("buySMS");
+                      setShow(true);
+                    }}
+                  >
+                    <div className="messageBalance">
+                      <EnvelopePlus size={22} />
+                      <span
+                        className={`badge bg-${
+                          messageBalance > 0 ? "success" : "danger"
+                        }`}
+                      >
+                        {messageBalance > 1000 ? "999+" : messageBalance || 0}
+                      </span>
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
 
               <div className="headerIcon phone_view_none" onClick={changeTHeme}>
                 {icon}
@@ -302,20 +313,22 @@ export default function Header(props) {
 
                     <ul className="dropdown-menu">
                       <li className="profileList">
-                        <NavLink
-                          to={
-                            userRole === "reseller" ||
-                            currentUser?.collector?.reseller
-                              ? "/reseller/profile"
-                              : "/profile"
-                          }
-                          className="dropdown-item"
-                        >
-                          <span className="dropdownIcon">
-                            <PersonFill />
-                          </span>
-                          {t("profile")}
-                        </NavLink>
+                        {!invoiceDate && (
+                          <NavLink
+                            to={
+                              userRole === "reseller" ||
+                              currentUser?.collector?.reseller
+                                ? "/reseller/profile"
+                                : "/profile"
+                            }
+                            className="dropdown-item"
+                          >
+                            <span className="dropdownIcon">
+                              <PersonFill />
+                            </span>
+                            {t("profile")}
+                          </NavLink>
+                        )}
                       </li>
 
                       {/* {userRole === "ispOwner" || userRole === "manager" ? (

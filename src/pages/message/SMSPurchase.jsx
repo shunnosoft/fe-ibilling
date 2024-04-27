@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
+import { Card } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
 // custom hooks
 import useISPowner from "../../hooks/useISPOwner";
@@ -14,11 +16,11 @@ import {
   getParchaseHistory,
   purchaseSMS,
 } from "../../features/resellerParchaseSmsApi";
-import { Card } from "react-bootstrap";
 
 const SMSPurchase = ({ show, setShow }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // get user & current user data form useISPOwner hook
   const { role, ispOwnerData, userData } = useISPowner();
@@ -109,7 +111,7 @@ const SMSPurchase = ({ show, setShow }) => {
         }
 
         // netfee sms purchase api call
-        purchaseSms(sendData, setIsloading, dispatch, setShow);
+        purchaseSms(sendData, setIsloading, dispatch, setShow, navigate);
       } else {
         if (invoiceStatus.length === 0) {
           const sendData = {

@@ -1,6 +1,5 @@
 import apiLink from "../api/apiLink";
 import { toast } from "react-toastify";
-import moment from "moment";
 
 import {
   getMultipleManagerSuccess,
@@ -194,6 +193,7 @@ import AcountWorning from "../components/modals/error/AcountWorning";
 import axios from "axios";
 
 const netFeeLang = localStorage.getItem("netFee:lang");
+
 const langMessage = (color, bangla, english) => {
   // Notification for english language for
   if (netFeeLang === "bn") {
@@ -2880,13 +2880,20 @@ export const initiatePayment = async (invoice, setIsloading) => {
   }
 };
 
-export const purchaseSms = async (data, setIsloading, dispatch, setShow) => {
+export const purchaseSms = async (
+  data,
+  setIsloading,
+  dispatch,
+  setShow,
+  navigate
+) => {
   setIsloading(true);
   try {
     const res = await apiLink.post(`/sms`, data);
     dispatch(showModal(res.data));
 
     setShow(false);
+    navigate("/payment", { state: res.data });
   } catch (err) {
     console.log("SMS purchase error: ", err);
   }
