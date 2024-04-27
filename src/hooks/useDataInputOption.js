@@ -116,8 +116,16 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       due: data?.due,
       email: data?.email,
       fatherName: data?.fatherName,
+      ipAddress:
+        data?.userType === "firewall-queue"
+          ? data?.queue?.address
+          : data?.userType === "core-queue"
+          ? data?.queue?.srcAddress
+          : data?.queue?.target,
       mikrotikId: data?.mikrotik,
       mobile: data?.mobile,
+      maxUpLimit: data?.queue?.maxLimit?.split("/")[0],
+      maxDownLimit: data?.queue?.maxLimit?.split("/")[1],
       name: data?.name,
       nid: data?.nid,
       note: data?.note,
@@ -129,12 +137,14 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       packageName: data?.pppoe?.profile,
       promiseDate: Date.parse(data?.promiseDate),
       poleBoxId: data?.poleBox,
+      queueName: data?.queue?.name,
       referenceName: data?.referenceName,
       referenceMobile: data?.referenceMobile,
       subAreaId: data?.subArea,
       status: data?.status,
       salary: data?.salary,
       thana: thanaId,
+      uploadPackgeId: data?.mikrotikPackage,
     });
   }, [data]);
 

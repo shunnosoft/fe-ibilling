@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState } from "react";
 import { Form, Formik } from "formik";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 
 // internal imports
 import "../../collector/collector.css";
@@ -34,12 +34,7 @@ const AddStaticCustomer = ({ show, setShow }) => {
   const dispatch = useDispatch();
 
   // get user & current user data form useISPOwner
-  const { ispOwnerId, bpSettings } = useISPowner();
-
-  //get user type
-  const type = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings.queueType
-  );
+  const { ispOwnerId, bpSettings, userType } = useISPowner();
 
   const [isLoading, setIsloading] = useState(false);
 
@@ -146,10 +141,10 @@ const AddStaticCustomer = ({ show, setShow }) => {
       delete mainData.poleBox;
     }
 
-    if (type === "firewall-queue") {
+    if (userType === "firewall-queue") {
       mainData.userType = "firewall-queue";
       mainData.queue = {
-        type: type,
+        type: userType,
         address: ipAddress,
         list: "allow_ip",
       };
@@ -158,19 +153,19 @@ const AddStaticCustomer = ({ show, setShow }) => {
       }
     }
 
-    if (type === "core-queue") {
+    if (userType === "core-queue") {
       mainData.userType = "core-queue";
       mainData.queue = {
-        type: type,
+        type: userType,
         srcAddress: ipAddress,
       };
     }
 
-    if (type === "simple-queue") {
+    if (userType === "simple-queue") {
       mainData.userType = "simple-queue";
       mainData.queue = {
         name: queueName,
-        type: type,
+        type: userType,
         target: ipAddress,
         maxLimit: `${maxUpLimit}/${maxDownLimit}`,
       };
