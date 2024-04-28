@@ -5,13 +5,11 @@ import { Line } from "react-chartjs-2";
 import "chart.js/auto";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
-import moment from "moment";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import ReactDatePicker from "react-datepicker";
 import { easeQuadIn } from "d3-ease";
 import { Accordion } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
 
 // custom hooks import
 import useISPowner from "../../hooks/useISPOwner";
@@ -43,11 +41,11 @@ import { getBulletinPermission } from "../../features/apiCallAdmin";
 import { getHotspotPackage } from "../../features/hotspotApi";
 import { getSubAreasApi } from "../../features/actions/customerApiCall";
 import DashboardCard from "./dashboardCard/DashboardCard";
+import PaymentAlert from "./PaymentAlert";
 
 const IspOwnerDashboard = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   // get current date
   const getDate = new Date();
@@ -403,10 +401,6 @@ const IspOwnerDashboard = () => {
       }
     }
   }
-  const invoiceType = {
-    monthlyServiceCharge: t("monthly"),
-    registration: t("register"),
-  };
 
   // probability amount calculation ispOwner permission wise
   const probabilityAmountCalculation = () => {
@@ -480,23 +474,7 @@ const IspOwnerDashboard = () => {
             {/* card section */}
 
             <div className="row">
-              {invoiceFlag === "UNPAID" && (
-                <div className="col-md-12 mb-3 pt-3 pb-3 badge bg-primary text-wrap fs-5 text">
-                  <div className="mb-1 pt-1 pb-1">{`${t("netFee")} ${
-                    invoiceType[invoice.type]
-                  } ${t("fee")} ${invoice.amount} ${t("expiredFee")} ${moment(
-                    invoice.dueDate
-                  ).format("DD-MM-YYYY hh:mm:ss A")}`}</div>
-
-                  <button
-                    type="button"
-                    className="btn btn-success fs-5 text"
-                    onClick={() => navigate("/payment")}
-                  >
-                    {t("payment")}
-                  </button>
-                </div>
-              )}
+              {invoiceFlag === "UNPAID" && <PaymentAlert invoice={invoice} />}
 
               <div className="col-md-12 mb-3">
                 <div className="row">

@@ -5,12 +5,10 @@ import { Line } from "react-chartjs-2";
 import "chart.js/auto";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
-import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { easeQuadIn } from "d3-ease";
 import ReactDatePicker from "react-datepicker";
-import { useNavigate } from "react-router-dom";
 
 // custom hook import
 import useISPowner from "../../hooks/useISPOwner";
@@ -34,11 +32,11 @@ import { getHotspotPackageSuccess } from "../../features/packageSlice";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
 import DashboardCard from "./dashboardCard/DashboardCard";
+import PaymentAlert from "./PaymentAlert";
 
 const CollectorDashboard = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   // get user & current user data form useISPOwner
   const { ispOwnerData, ispOwnerId, bpSettings, permissions } = useISPowner();
@@ -203,11 +201,6 @@ const CollectorDashboard = () => {
     }
   }
 
-  const invoiceType = {
-    monthlyServiceCharge: t("monthly"),
-    registration: t("register"),
-  };
-
   // probability amount calculation ispOwner permission wise
   const probabilityAmountCalculation = () => {
     if (bpSettings?.dashboardProbabilityAmountWithNewCustomer) {
@@ -260,23 +253,7 @@ const CollectorDashboard = () => {
             {/* card section */}
 
             <div className="row">
-              {invoiceFlag === "UNPAID" && (
-                <div className="col-md-12 mb-3 pt-3 pb-3 badge bg-primary text-wrap fs-5 text">
-                  <div className="mb-1 pt-1 pb-1">{`${t("netFee")} ${
-                    invoiceType[invoice.type]
-                  } ${t("fee")} ${invoice.amount} ${t("expiredFee")} ${moment(
-                    invoice.dueDate
-                  ).format("DD-MM-YYYY hh:mm:ss A")}`}</div>
-
-                  <button
-                    type="button"
-                    className="btn btn-success fs-5 text"
-                    onClick={() => navigate("/payment")}
-                  >
-                    {t("payment")}
-                  </button>
-                </div>
-              )}
+              {invoiceFlag === "UNPAID" && <PaymentAlert invoice={invoice} />}
 
               <div className="col-md-12 mb-3">
                 {permissions?.dashboardCollectionData && (

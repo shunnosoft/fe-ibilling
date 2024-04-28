@@ -59,7 +59,7 @@ const AcountPayment = () => {
   }, []);
 
   useEffect(() => {
-    if (ownerInvoice) {
+    if (new Date(ownerInvoice?.dueDate).getTime() < new Date().getTime()) {
       setInvoice(ownerInvoice);
     } else {
       setInvoice(state);
@@ -80,7 +80,7 @@ const AcountPayment = () => {
               <FourGround>
                 <div className="border border-3 text-center p-4">
                   <div className="invoice_title">
-                    <h1>{invoiceType[invoice.type]}</h1>
+                    <h1>{invoiceType[invoice?.type]}</h1>
                   </div>
 
                   <div className="support_document my-3">
@@ -97,7 +97,7 @@ const AcountPayment = () => {
                         We hope you are well. This message is to remind you that
                         the payment due date for invoice was&nbsp;
                         <span className="text-danger">
-                          {moment(invoice.dueDate).format(
+                          {moment(invoice?.dueDate).format(
                             "DD-MM-YYYY hh:mm:ss A"
                           )}
                         </span>

@@ -51,11 +51,6 @@ const AcountWorning = () => {
     getIspOwnerData(dispatch, ispOwnerId, setIsLoading);
   }, []);
 
-  // ispOwner payment function handler
-  const ispOwnerPaymentHandler = () => {
-    navigate("/payment");
-  };
-
   return (
     <>
       <div className="mainContent">
@@ -96,7 +91,9 @@ const AcountWorning = () => {
                             <button
                               type="button"
                               className="btn btn-success border-0 fs-5 fw-bold mt-3"
-                              onClick={ispOwnerPaymentHandler}
+                              onClick={() =>
+                                navigate("/payment", { state: invoice })
+                              }
                             >
                               PAY NOW
                             </button>
