@@ -28,7 +28,7 @@ const divisions = divisionsJSON.divisions;
 const districts = districtsJSON.districts;
 const thanas = thanaJSON.thana;
 
-const EditStaticCustomer = ({ show, setShow, single, handleActiveFilter }) => {
+const EditStaticCustomer = ({ show, setShow, single }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
@@ -216,14 +216,13 @@ const EditStaticCustomer = ({ show, setShow, single, handleActiveFilter }) => {
 
     // sending data to api
     updateStaticCustomerApi(
-      customerId,
+      customerModifiedData?.id,
       dispatch,
       mainData,
       setIsloading,
       resetForm,
       setShow,
-      null,
-      handleActiveFilter
+      null
     );
   };
 
