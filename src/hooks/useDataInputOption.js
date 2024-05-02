@@ -807,6 +807,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       isVisible:
         page === "static" &&
         userType === "simple-queue" &&
+        bpSettings.hasMikrotik &&
         inputPermission.mikrotikPackage,
       disabled: adminUser ? (status ? !formData.mikrotikId : false) : true,
       validation: true,
@@ -836,19 +837,28 @@ const useDataInputOption = (inputPermission, page, status, data) => {
         page === "static" &&
         userType === "simple-queue" &&
         inputPermission.mikrotikPackage,
-      disabled: adminUser ? (status ? !formData.mikrotikId : false) : true,
+      disabled: bpSettings.hasMikrotik
+        ? adminUser
+          ? status
+            ? !formData.mikrotikId
+            : false
+          : true
+        : false,
       validation: true,
       label: t("downloadPackge"),
       firstOptions: t("selectPackage"),
       textAccessor: "name",
       valueAccessor: "id",
       options:
-        page === "static" &&
-        ppPackage?.filter(
-          (pack) =>
-            pack.packageType === "queue" &&
-            pack.mikrotik === formData.mikrotikId
-        ),
+        page === "static"
+          ? bpSettings.hasMikrotik
+            ? ppPackage?.filter(
+                (pack) =>
+                  pack.packageType === "queue" &&
+                  pack.mikrotik === formData.mikrotikId
+              )
+            : ppPackage
+          : "",
       onChange: (e) => {
         staticPackageChangeHandler(e.target);
       },
@@ -1362,7 +1372,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
         {
           type: "radio",
           id: "expiredCustomer",
-          isVisible: ["pppoe"].includes(page) ? true : false,
+          isVisible: ["pppoe", "static"].includes(page) ? true : false,
           disabled: true,
           label: t("expired"),
           value: "expired",

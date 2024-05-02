@@ -1,40 +1,23 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useMemo, useRef } from "react";
 import { PrinterFill } from "react-bootstrap-icons";
 import { useTranslation } from "react-i18next";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import ReactToPrint from "react-to-print";
 
 // internal import
 import Table from "../../../components/table/Table";
 import CollectionOverviewPdf from "../homePdf/CollectionOverviewPdf";
-import { getIspOwnerCollector } from "../../../features/apiCalls";
 import ComponentCustomModal from "../../../components/common/customModal/ComponentCustomModal";
 import SummaryCalculation from "./SummaryCalculation";
 
-const AllCollector = ({
-  modalShow,
-  setModalShow,
-  ispOwnerId,
-  month,
-  year,
-  status,
-}) => {
+const AllCollector = ({ modalShow, setModalShow, isLoading }) => {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
   const componentRef = useRef();
 
   // get customerStat
   const collectorData = useSelector(
     (state) => state.dashboardInformation?.ispOwnerCollector
   );
-
-  // is Loading state
-  const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    status === "collector" &&
-      getIspOwnerCollector(dispatch, ispOwnerId, year, month, setIsLoading);
-  }, [status, year, month]);
 
   const column = useMemo(
     () => [
@@ -126,7 +109,7 @@ const AllCollector = ({
             columns={column}
             data={collectorData}
             customComponent={SummaryCalculation(collectorData)}
-          ></Table>
+          />
         </div>
 
         <div className="d-none">

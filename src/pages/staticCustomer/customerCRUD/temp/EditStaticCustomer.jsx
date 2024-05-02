@@ -234,6 +234,8 @@ const EditStaticCustomer = ({ show, setShow, single }) => {
         centered={false}
         size="xl"
         header={customerModifiedData?.name + " " + t("updateCustomer")}
+        status={data?.status}
+        paymentStatus={data?.paymentStatus}
         footer={
           <div className="displayGrid1 float-end">
             <button

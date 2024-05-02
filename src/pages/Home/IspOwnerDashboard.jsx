@@ -27,8 +27,10 @@ import {
   getDashboardBelowIspOwnerCardData,
   getDashboardBelowManagerCardData,
   getDashboardBelowResellerCardData,
+  getIspOwnerCollector,
   getIspOwnerDashboardOverViewData,
   getIspOwnerData,
+  getIspOwnerManager,
   getManger,
 } from "../../features/apiCalls";
 import { getIspOwnerCharts } from "../../features/apiCalls";
@@ -254,27 +256,39 @@ const IspOwnerDashboard = () => {
       );
     }
 
-    if (
-      eventKey.includes("manager") &&
-      Object.keys(dashboardBelowManagerCardData).length === 0
-    ) {
+    if (eventKey.includes("manager")) {
       getDashboardBelowManagerCardData(
         dispatch,
         setManagerCardLoading,
         ispOwnerId,
         filterData
       );
+
+      // get all manager api
+      getIspOwnerManager(
+        dispatch,
+        ispOwnerId,
+        filterData?.year,
+        filterData?.month,
+        setManagerCardLoading
+      );
     }
 
-    if (
-      eventKey.includes("collector") &&
-      Object.keys(dashboardBelowCollectorCardData).length === 0
-    ) {
+    if (eventKey.includes("collector")) {
       getDashboardBelowCollectorCardData(
         dispatch,
         setCollectorCardLoading,
         ispOwnerId,
         filterData
+      );
+
+      // get all collector api
+      getIspOwnerCollector(
+        dispatch,
+        ispOwnerId,
+        filterData?.year,
+        filterData?.month,
+        setCollectorCardLoading
       );
     }
 

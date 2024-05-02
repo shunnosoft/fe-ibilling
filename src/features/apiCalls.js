@@ -630,11 +630,11 @@ export const getExpiredCustomer = async (
   setIsLoading
 ) => {
   setIsLoading(true);
-  const res = await apiLink.get(
-    `ispOwner/expired/customer/${ispOwnerId}?month=${month}&year=${year}`
-  );
-  dispatch(getExpiredCustomerSuccess(res.data));
   try {
+    const res = await apiLink.get(
+      `ispOwner/expired/customer/${ispOwnerId}?month=${month}&year=${year}`
+    );
+    dispatch(getExpiredCustomerSuccess(res.data));
   } catch (error) {
     console.log(error.response.data.message);
   }
@@ -651,11 +651,11 @@ export const getFreeCustomer = async (
   setIsLoading
 ) => {
   setIsLoading(true);
-  const res = await apiLink.get(
-    `ispOwner/free/customer/${ispOwnerId}?month=${month}&year=${year}`
-  );
-  dispatch(getFreeCustomerSuccess(res.data));
   try {
+    const res = await apiLink.get(
+      `ispOwner/free/customer/${ispOwnerId}?month=${month}&year=${year}`
+    );
+    dispatch(getFreeCustomerSuccess(res.data));
   } catch (error) {
     console.log(error.response.data.message);
   }
@@ -672,11 +672,11 @@ export const getPaidCustomer = async (
   setIsLoading
 ) => {
   setIsLoading(true);
-  const res = await apiLink.get(
-    `ispOwner/paid/customer/${ispOwnerId}?month=${month}&year=${year}`
-  );
-  dispatch(getPaidCustomerSuccess(res.data));
   try {
+    const res = await apiLink.get(
+      `ispOwner/paid/customer/${ispOwnerId}?month=${month}&year=${year}`
+    );
+    dispatch(getPaidCustomerSuccess(res.data));
   } catch (error) {
     console.log(error.response.data.message);
   }
@@ -693,11 +693,11 @@ export const getUnpaidCustomer = async (
   setIsLoading
 ) => {
   setIsLoading(true);
-  const res = await apiLink.get(
-    `ispOwner/unpaid/customer/${ispOwnerId}?month=${month}&year=${year}`
-  );
-  dispatch(getUnpaidCustomerSuccess(res.data));
   try {
+    const res = await apiLink.get(
+      `ispOwner/unpaid/customer/${ispOwnerId}?month=${month}&year=${year}`
+    );
+    dispatch(getUnpaidCustomerSuccess(res.data));
   } catch (error) {
     console.log(error.response.data.message);
   }
@@ -714,11 +714,11 @@ export const getActiveCustomer = async (
   setIsLoading
 ) => {
   setIsLoading(true);
-  const res = await apiLink.get(
-    `ispOwner/active/customer/${ispOwnerId}?month=${month}&year=${year}`
-  );
-  dispatch(getActiveCustomerSuccess(res.data));
   try {
+    const res = await apiLink.get(
+      `ispOwner/active/customer/${ispOwnerId}?month=${month}&year=${year}`
+    );
+    dispatch(getActiveCustomerSuccess(res.data));
   } catch (error) {
     console.log(error.response.data.message);
   }
@@ -734,11 +734,11 @@ export const getIspOwnerReseller = async (
   setIsLoading
 ) => {
   setIsLoading(true);
-  const res = await apiLink.get(
-    `dashboard/reseller/state/${ispOwnerId}?year=${year}&month=${month}`
-  );
-  dispatch(getIspOwnerResellerSuccess(res.data));
   try {
+    const res = await apiLink.get(
+      `dashboard/reseller/state/${ispOwnerId}?year=${year}&month=${month}`
+    );
+    dispatch(getIspOwnerResellerSuccess(res.data));
   } catch (error) {
     console.log(error.response.data.message);
   }
@@ -754,14 +754,13 @@ export const getIspOwnerManager = async (
   setIsLoading
 ) => {
   setIsLoading(true);
-  const res = await apiLink.get(
-    `dashboard/manager/state/${ispOwnerId}?year=${year}&month=${month}`
-  );
-  console.log(res.data);
-  dispatch(getIspOwnerManagerSuccess(res.data));
   try {
+    const res = await apiLink.get(
+      `dashboard/manager/state/${ispOwnerId}?year=${year}&month=${month}`
+    );
+    dispatch(getIspOwnerManagerSuccess(res.data));
   } catch (error) {
-    console.log(error.response.data.message);
+    console.log(error.response?.data?.message);
   }
   setIsLoading(false);
 };
@@ -774,11 +773,11 @@ export const getIspOwnerCollector = async (
   setIsLoading
 ) => {
   setIsLoading(true);
-  const res = await apiLink.get(
-    `dashboard/collector/state/${ispOwnerId}?year=${year}&month=${month}`
-  );
-  dispatch(getIspOwnerCollectorSuccess(res.data));
   try {
+    const res = await apiLink.get(
+      `dashboard/collector/state/${ispOwnerId}?year=${year}&month=${month}`
+    );
+    dispatch(getIspOwnerCollectorSuccess(res.data));
   } catch (error) {
     console.log(error.response.data.message);
   }
