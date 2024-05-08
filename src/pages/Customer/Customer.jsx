@@ -29,7 +29,6 @@ import moment from "moment";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer } from "react-toastify";
-import DatePicker from "react-datepicker";
 import { Accordion, Card, Collapse } from "react-bootstrap";
 
 // internal import
@@ -82,6 +81,9 @@ import {
 import useISPowner from "../../hooks/useISPOwner";
 import { getOwnerUsers } from "../../features/getIspOwnerUsersApi";
 import BulkOptions from "./customerCRUD/bulkOpration/BulkOptions";
+import DataFilter from "../common/DataFilter";
+import useDataState from "../../hooks/useDataState";
+import { handleActiveFilter } from "../common/activeFilter";
 
 const PPPOECustomer = () => {
   const dispatch = useDispatch();
@@ -95,8 +97,11 @@ const PPPOECustomer = () => {
   firstDate.setHours(0, 0, 0, 0);
   lastDate.setHours(23, 59, 59, 999);
 
-  // get user & current user data form useISPOwner
+  // get user & current user data form useISPOwner hooks
   const { role, ispOwnerId, bpSettings, permissions } = useISPowner();
+
+  // get user data set from useDataState hooks
+  const { filterOptions, setFilterOption } = useDataState();
 
   // get all customer
   const customers = useSelector((state) => state.customer.customer);
@@ -183,15 +188,6 @@ const PPPOECustomer = () => {
   //bandwidth modal state
   const [bandWidthModal, setBandWidthModal] = useState(false);
 
-  // Single area state
-  const [areaId, setAreaId] = useState("");
-
-  // single subArea state
-  const [subAreaId, setSubAreaId] = useState("");
-
-  // mikrotik package state
-  const [mikrotikPackages, setMikrotikPackages] = useState([]);
-
   //collector area
   const [collectorAreas, setCollectorAreas] = useState([]);
 
@@ -200,24 +196,6 @@ const PPPOECustomer = () => {
 
   // get specific customer
   const [singleCustomer, setSingleCustomer] = useState("");
-
-  //filter state
-  const [filterOptions, setFilterOption] = useState({
-    status: "",
-    paymentStatus: "",
-    partialPayment: "",
-    area: "",
-    subArea: "",
-    poleBox: "",
-    package: "",
-    mikrotik: "",
-    freeUser: "",
-    startDate: "",
-    endDate: "",
-    dayFilter: "",
-    changedPromiseDate: "",
-    connection: "",
-  });
 
   // customers number update or delete modal show state
   const [numberModalShow, setNumberModalShow] = useState(false);
@@ -232,7 +210,6 @@ const PPPOECustomer = () => {
   const [showModal, setShowModal] = useState(false);
 
   // bulk modal handle state
-  const [bulkStatus, setBulkStatus] = useState("");
   const [show, setShow] = useState(false);
 
   //initial api calls
@@ -281,9 +258,26 @@ const PPPOECustomer = () => {
 
   // set all customer in state
   useEffect(() => {
-    setPPPoeCustomers(customers);
+    let customerModified = [];
 
-    Object.values(filterOptions) && handleActiveFilter();
+    // add area to customers
+    customers?.map((c) => {
+      subAreas?.map((sub) => {
+        if (sub.id === c.subArea) {
+          customerModified.push({
+            ...c,
+            area: sub.area,
+          });
+        }
+      });
+    });
+
+    // set customers in state
+    setPPPoeCustomers(customerModified);
+
+    // set customer in state for filter
+    Object.values(filterOptions) &&
+      setPPPoeCustomers(handleActiveFilter(customerModified, filterOptions));
   }, [customers]);
 
   //collector area state update
@@ -311,203 +305,9 @@ const PPPOECustomer = () => {
     setCustomerId(customerId);
   };
 
-  // mikrotik handler method
-  const mikrotikHandler = async (id) => {
-    setFilterOption({
-      ...filterOptions,
-      mikrotik: id,
-    });
-    if (!id) {
-      setMikrotikPackages([]);
-    }
-    if (id) {
-      const mikrotikPackage = packages.filter((pack) => pack.mikrotik === id);
-      setMikrotikPackages(mikrotikPackage);
-    }
-  };
-
   // reload handler
   const reloadHandler = () => {
     getCustomer(dispatch, ispOwnerId, setCustomerLoading);
-  };
-
-  // filter and filter reset
-  const handleActiveFilter = () => {
-    let tempCustomers = customers.reduce((acc, c) => {
-      const {
-        area,
-        subArea,
-        poleBox,
-        status,
-        mikrotik,
-        paymentStatus,
-        freeUser,
-        startDate,
-        endDate,
-        dayFilter,
-        changedPromiseDate,
-        connection,
-      } = filterOptions;
-
-      const billingCycle = new Date(
-        moment(c.billingCycle).format("YYYY-MM-DD")
-      ).getTime();
-
-      const promiseDate = new Date(
-        moment(c.promiseDate).format("YYYY-MM-DD")
-      ).getTime();
-
-      let today = new Date();
-      let lastDayOfMonth = new Date(
-        today.getFullYear(),
-        today.getMonth() + 1,
-        0
-      ).getTime();
-
-      const todayDate = new Date(
-        moment(new Date()).format("YYYY-MM-DD")
-      ).getTime();
-
-      const filterStartData = new Date(
-        moment(filterOptions.startDate).format("YYYY-MM-DD")
-      ).getTime();
-
-      const filterEndData = new Date(
-        moment(filterOptions.endDate).format("YYYY-MM-DD")
-      ).getTime();
-
-      // get all subarea
-      var getArea = [];
-      var allSub = [];
-      if (area) {
-        allSub = subAreas.filter((val) => val.area === area);
-        getArea = areas.find((item) => item.id === area);
-      }
-
-      // automaticConnection filter
-      let connectionStatus;
-      if (connection === "true") {
-        connectionStatus = false;
-      } else if (connection === "false") {
-        connectionStatus = true;
-      }
-
-      // make possible conditions objects if the filter value not selected thats return true
-      //if filter value exist then compare
-      const conditions = {
-        area: area ? allSub.some((item) => item.id === c.subArea) : true,
-        subArea: subArea ? c.subArea === subArea : true,
-        poleBox: poleBox ? c.poleBox === poleBox : true,
-        status: status ? c.status === status : true,
-        paid: paymentStatus ? c.paymentStatus === "paid" : true,
-        unpaid: paymentStatus
-          ? c.paymentStatus === "unpaid" && c.monthlyFee !== 0
-          : true,
-        free: paymentStatus ? c.monthlyFee === 0 : true,
-        partial: paymentStatus
-          ? c.paymentStatus === "unpaid" &&
-            c.monthlyFee > c.balance &&
-            c.balance > 0
-          : true,
-        advance: paymentStatus
-          ? c.monthlyFee <= c.balance && c.monthlyFee > 0
-          : true,
-        overDue: paymentStatus
-          ? c.paymentStatus === "unpaid" && c.balance < 0
-          : true,
-        mikrotik: mikrotik ? c.mikrotik === mikrotik : true,
-        freeUser: freeUser ? c.monthlyFee === 0 : true,
-        nonFreeUser: freeUser ? c.monthlyFee !== 0 : true,
-        prepaid: freeUser ? c.customerBillingType === "prepaid" : true,
-        postpaid: freeUser ? c.customerBillingType === "postpaid" : true,
-        package: filterOptions.package
-          ? c.mikrotikPackage === filterOptions.package
-          : true,
-        filterDate:
-          startDate && endDate
-            ? filterStartData <= billingCycle && filterEndData >= billingCycle
-            : true,
-        dayFilter: dayFilter
-          ? moment(c.billingCycle).diff(moment(), "days") ===
-            Number(filterOptions.dayFilter)
-          : true,
-        changedPromiseDate: changedPromiseDate
-          ? billingCycle == todayDate &&
-            billingCycle < promiseDate &&
-            promiseDate < lastDayOfMonth
-          : true,
-
-        connection: connection ? c.autoDisable !== connectionStatus : true,
-      };
-
-      //check if condition pass got for next step or is fail stop operation
-      //if specific filter option value not exist it will return true
-
-      let isPass = false;
-      isPass = conditions["area"];
-      if (!isPass) return acc;
-      isPass = conditions["subArea"];
-      if (!isPass) return acc;
-
-      isPass = conditions["poleBox"];
-      if (!isPass) return acc;
-
-      isPass = conditions["status"];
-      if (!isPass) return acc;
-
-      if (paymentStatus) {
-        isPass = conditions[paymentStatus];
-        if (!isPass) return acc;
-      }
-
-      isPass = conditions["mikrotik"];
-      if (!isPass) return acc;
-
-      if (freeUser) {
-        isPass = conditions[freeUser];
-        if (!isPass) return acc;
-      }
-
-      isPass = conditions["package"];
-      if (!isPass) return acc;
-
-      isPass = conditions["filterDate"];
-      if (!isPass) return acc;
-
-      isPass = conditions["dayFilter"];
-      if (!isPass) return acc;
-
-      isPass = conditions["changedPromiseDate"];
-      if (!isPass) return acc;
-
-      isPass = conditions["connection"];
-      if (!isPass) return acc;
-
-      if (isPass) acc.push(c);
-      return acc;
-    }, []);
-
-    // set filter customer in customer state
-    setPPPoeCustomers(tempCustomers);
-  };
-
-  // filter reset controller
-  const handleFilterReset = () => {
-    setMikrotikPackages([]);
-    setFilterOption({
-      status: "",
-      paymentStatus: "",
-      partialPayment: "",
-      area: "",
-      subArea: "",
-      mikrotik: "",
-      package: "",
-      isFree: "",
-      startDate: "",
-      endDate: "",
-      poleBox: "",
-    });
-    setPPPoeCustomers(customers);
   };
 
   //total monthly fee and due calculation
@@ -1125,233 +925,6 @@ const PPPOECustomer = () => {
     };
   }
 
-  // customer autoDisable connection check & promiseDate handler
-  const changePromiseConnection = (e) => {
-    if (e.target.value !== "changedPromiseDate") {
-      setFilterOption({
-        ...filterOptions,
-        connection: e.target.value,
-      });
-    } else {
-      setFilterOption({
-        ...filterOptions,
-        changedPromiseDate: e.target.value,
-      });
-    }
-  };
-
-  //manual filter options
-  const filterInputs = [
-    {
-      name: "area",
-      type: "select",
-      id: "area",
-      value: filterOptions.area,
-      isVisible: true,
-      disabled: false,
-      onChange: (e) => {
-        setAreaId(e.target.value);
-        setFilterOption({
-          ...filterOptions,
-          area: e.target.value,
-        });
-      },
-      options: role === "collector" ? collectorAreas : areas,
-      firstOptions: t("allArea"),
-      textAccessor: "name",
-      valueAccessor: "id",
-    },
-    {
-      name: "subArea",
-      type: "select",
-      id: "subArea",
-      value: filterOptions.subArea,
-      isVisible: true,
-      disabled: false,
-      onChange: (e) => {
-        setSubAreaId(e.target.value);
-        setFilterOption({
-          ...filterOptions,
-          subArea: e.target.value,
-        });
-      },
-      options: subAreas.filter((item) => item?.area === areaId),
-      firstOptions: t("subArea"),
-      textAccessor: "name",
-      valueAccessor: "id",
-    },
-    {
-      name: "poleBox",
-      type: "select",
-      id: "poleBox",
-      value: filterOptions.poleBox,
-      isVisible: bpSettings?.poleBox,
-      disabled: false,
-      onChange: (e) => {
-        setFilterOption({
-          ...filterOptions,
-          poleBox: e.target.value,
-        });
-      },
-      options: poleBox.filter((item) => item?.subArea === subAreaId),
-      firstOptions: t("poleBox"),
-      textAccessor: "name",
-      valueAccessor: "id",
-    },
-    {
-      name: "status",
-      type: "select",
-      id: "status",
-      value: filterOptions.status,
-      isVisible: true,
-      disabled: false,
-      onChange: (e) => {
-        setFilterOption({
-          ...filterOptions,
-          status: e.target.value,
-        });
-      },
-      options: [
-        {
-          text: t("active"),
-          value: "active",
-        },
-        {
-          text: t("in active"),
-          value: "inactive",
-        },
-        {
-          text: t("expired"),
-          value: "expired",
-        },
-      ],
-      firstOptions: t("status"),
-      textAccessor: "text",
-      valueAccessor: "value",
-    },
-    {
-      name: "paymentStatus",
-      type: "select",
-      id: "paymentStatus",
-      value: filterOptions.paymentStatus,
-      isVisible: true,
-      disabled: false,
-      onChange: (e) => {
-        setFilterOption({
-          ...filterOptions,
-          paymentStatus: e.target.value,
-        });
-      },
-      options: [
-        {
-          text: t("free"),
-          value: "free",
-        },
-        {
-          text: t("paid"),
-          value: "paid",
-        },
-        {
-          text: t("unpaid"),
-          value: "unpaid",
-        },
-        {
-          text: t("partialPayment"),
-          value: "partial",
-        },
-        {
-          text: t("advance"),
-          value: "advance",
-        },
-        {
-          text: t("overDue"),
-          value: "overDue",
-        },
-      ],
-      firstOptions: t("paymentStatus"),
-      textAccessor: "text",
-      valueAccessor: "value",
-    },
-    {
-      name: "mikrotik",
-      type: "select",
-      id: "mikrotik",
-      value: filterOptions.mikrotik,
-      isVisible: bpSettings?.hasMikrotik,
-      disabled: false,
-      onChange: (e) => mikrotikHandler(e.target.value),
-      options: mikrotiks,
-      firstOptions: t("mikrotik"),
-      textAccessor: "name",
-      valueAccessor: "id",
-    },
-    {
-      name: "package",
-      type: "select",
-      id: "package",
-      value: filterOptions.package,
-      isVisible: true,
-      disabled: false,
-      onChange: (e) => {
-        setFilterOption({
-          ...filterOptions,
-          package: e.target.value,
-        });
-      },
-      options: bpSettings?.hasMikrotik
-        ? mikrotikPackages
-        : withOutMikrotikPackages,
-      firstOptions: t("package"),
-      textAccessor: "name",
-      valueAccessor: "id",
-    },
-    {
-      name: "freeUser",
-      type: "select",
-      id: "freeUser",
-      value: filterOptions.freeUser,
-      isVisible: true,
-      disabled: false,
-      onChange: (e) =>
-        setFilterOption({
-          ...filterOptions,
-          freeUser: e.target.value,
-        }),
-      options: [
-        { value: "freeUser", text: t("freeCustomer") },
-        { value: "nonFreeUser", text: t("nonFreeCustomer") },
-        { value: "prepaid", text: t("prepaid") },
-        { value: "postpaid", text: t("postPaid") },
-      ],
-      firstOptions: t("sokolCustomer"),
-      textAccessor: "text",
-      valueAccessor: "value",
-    },
-    {
-      name: "billDayLeft",
-      type: "select",
-      id: "billDayLeft",
-      value: filterOptions.dayFilter,
-      isVisible: true,
-      disabled: false,
-      onChange: (e) =>
-        setFilterOption({
-          ...filterOptions,
-          dayFilter: e.target.value,
-        }),
-      options: [
-        { value: "1", text: t("oneDayLeft") },
-        { value: "2", text: t("twoDayLeft") },
-        { value: "3", text: t("threeDayLeft") },
-        { value: "4", text: t("fourDayLeft") },
-        { value: "7", text: t("sevenDayLeft") },
-      ],
-      firstOptions: t("filterBillDate"),
-      textAccessor: "text",
-      valueAccessor: "value",
-    },
-  ];
-
   return (
     <>
       <Sidebar />
@@ -1499,89 +1072,13 @@ const PPPOECustomer = () => {
                     <Accordion alwaysOpen activeKey={activeKeys}>
                       <Accordion.Item eventKey="filter">
                         <Accordion.Body>
-                          <div className="displayGrid6">
-                            {filterInputs.map(
-                              (item) =>
-                                item.isVisible && (
-                                  <select
-                                    className="form-select shadow-none mt-0"
-                                    onChange={item.onChange}
-                                    value={item.value}
-                                  >
-                                    <option value="">
-                                      {item.firstOptions}
-                                    </option>
-                                    {item.options?.map((opt) => (
-                                      <option value={opt[item.valueAccessor]}>
-                                        {opt[item.textAccessor]}
-                                      </option>
-                                    ))}
-                                  </select>
-                                )
-                            )}
-
-                            {/* date picker for filter billing cycle */}
-                            <div>
-                              <DatePicker
-                                className="form-control mt-0"
-                                selected={filterOptions.startDate}
-                                onChange={(date) =>
-                                  setFilterOption({
-                                    ...filterOptions,
-                                    startDate: date,
-                                  })
-                                }
-                                dateFormat="dd-MM-yyyy"
-                                placeholderText={t("startBillingCycleDate")}
-                              />
-                            </div>
-
-                            <div>
-                              <DatePicker
-                                className="form-control mt-0"
-                                selected={filterOptions.endDate}
-                                onChange={(date) =>
-                                  setFilterOption({
-                                    ...filterOptions,
-                                    endDate: date,
-                                  })
-                                }
-                                dateFormat="dd-MM-yyyy"
-                                placeholderText={t("endBillingCycleDate")}
-                              />
-                            </div>
-
-                            <select
-                              className="form-select shadow-none mt-0"
-                              onChange={changePromiseConnection}
-                            >
-                              <option value="">{t("promiseDateChange")}</option>
-                              <option value="changedPromiseDate">
-                                {t("changedCustomer")}
-                              </option>
-                              <option value="true">{t("connectionOn")}</option>
-                              <option value="false">
-                                {t("connectionOff")}
-                              </option>
-                            </select>
-
-                            <div className="displayGrid1 mt-0">
-                              <button
-                                className="btn btn-outline-primary"
-                                type="button"
-                                onClick={handleActiveFilter}
-                              >
-                                {t("filter")}
-                              </button>
-                              <button
-                                className="btn btn-outline-secondary"
-                                type="button"
-                                onClick={handleFilterReset}
-                              >
-                                {t("reset")}
-                              </button>
-                            </div>
-                          </div>
+                          <DataFilter
+                            page="resellerCustomer"
+                            customers={customers}
+                            setCustomers={setPPPoeCustomers}
+                            filterOptions={filterOptions}
+                            setFilterOption={setFilterOption}
+                          />
                         </Accordion.Body>
                       </Accordion.Item>
                     </Accordion>
@@ -1743,7 +1240,7 @@ const PPPOECustomer = () => {
       <PrintOptions
         show={modalShow}
         setShow={setModalShow}
-        filterData={filterData}
+        // filterData={filterData}
         tableData={tableData}
         page={"customer"}
         printData={printData}

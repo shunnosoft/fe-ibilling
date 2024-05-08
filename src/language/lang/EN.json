@@ -938,5 +938,7 @@
   "trash": "Trash",
   "writeIPAddress": "Write IP Address",
   "selectMikrotikPackage": "Select Mikrotik Package",
-  "trxID": "TrxID"
+  "trxID": "TrxID",
+  "tutorial": "Tutorial",
+  "changeCustomer": "Change Customer"
 }

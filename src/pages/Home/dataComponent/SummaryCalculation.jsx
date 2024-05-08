@@ -17,6 +17,7 @@ const SummaryCalculation = (mainData) => {
   const initialValue = {
     totalTodayCollection: 0,
     totalCollection: 0,
+    totalDue: 0,
   };
 
   const calculatedValue = mainData.reduce((previous, current) => {
@@ -25,6 +26,9 @@ const SummaryCalculation = (mainData) => {
 
     // sum of all bill collection
     previous.totalCollection += current.totalBillCollected;
+
+    // sum of due amount
+    previous.totalDue += current.balance;
 
     return previous;
   }, initialValue);
@@ -36,7 +40,7 @@ const SummaryCalculation = (mainData) => {
     >
       {calculatedValue?.totalTodayCollection > 0 && (
         <div>
-          {t("todayCollection")}:-৳
+          {t("todayCollection")}: ৳
           {FormatNumber(calculatedValue?.totalTodayCollection)}
         </div>
       )}
@@ -44,8 +48,15 @@ const SummaryCalculation = (mainData) => {
       {(role === "ispOwner" || permissions?.dashboardCollectionData) &&
         calculatedValue?.totalCollection > 0 && (
           <div>
-            {t("totalCollection")}:-৳
+            {t("totalCollection")}: ৳
             {FormatNumber(calculatedValue?.totalCollection)}
+          </div>
+        )}
+      &nbsp;&nbsp;
+      {(role === "ispOwner" || permissions?.dashboardCollectionData) &&
+        calculatedValue?.totalDue < 0 && (
+          <div>
+            {t("due")}: ৳{FormatNumber(calculatedValue?.totalDue)}
           </div>
         )}
     </div>

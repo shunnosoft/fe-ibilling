@@ -24,6 +24,7 @@ import {
   getCustomerDayLeft,
   getCustomerPromiseDate,
 } from "../Customer/customerCRUD/customerBillDayPromiseDate";
+import SummaryCalculation from "../Home/dataComponent/SummaryCalculation";
 
 const DueCustomer = ({
   isDueLoading,
@@ -451,6 +452,7 @@ const DueCustomer = ({
             isLoading={isDueLoading}
             columns={columns}
             data={customers}
+            customComponent={SummaryCalculation(dueCustomer)}
           ></Table>
         </div>
       </div>

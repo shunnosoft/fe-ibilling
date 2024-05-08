@@ -120,6 +120,7 @@ import RechargeHistory from "./reseller/rechargeHistory/RechargeHistory";
 import AcountWorning from "./components/modals/error/AcountWorning";
 import WebhookMessage from "./pages/report/WebhookMessage";
 import AcountPayment from "./components/modals/payment/AcountPayment";
+import Tutorial from "./pages/tutorial/Tutorial";
 
 function App() {
   const [theme, setTheme] = useState("light");
@@ -701,6 +702,8 @@ function App() {
                 )
               }
             />
+
+            <Route path="/netFee/tutorial" element={<Tutorial />} />
 
             {/* dashboard */}
             <Route path="/*" element={<PrivateOutlet />}>

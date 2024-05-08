@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
+import DatePicker from "react-datepicker";
 
 // custom hooks
 import useISPowner from "../../hooks/useISPOwner";
@@ -12,13 +13,20 @@ import {
   getArea,
 } from "../../features/apiCalls";
 import { getSubAreasApi } from "../../features/actions/customerApiCall";
+import { handleActiveFilter } from "./activeFilter";
 
-const DataFilter = ({ page, customers, setCustomers }) => {
+const DataFilter = ({
+  page,
+  customers,
+  setCustomers,
+  filterOptions,
+  setFilterOption,
+}) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
   // get user & current user data form useISPOwner hooks
-  const { ispOwnerId, bpSettings } = useISPowner();
+  const { ispOwnerId, bpSettings, hasMikrotik } = useISPowner();
 
   //get mikrotiks from redux store
   const mikrotiks = useSelector((state) => state?.mikrotik?.mikrotik);
@@ -37,9 +45,6 @@ const DataFilter = ({ page, customers, setCustomers }) => {
 
   // customers main data state
   const [mainData, setMainData] = useState([]);
-
-  // filter data state
-  const [filterOptions, setFilterOption] = useState({});
 
   // mikrotik packages state
   const [mikrotikPackages, setMikrotikPackages] = useState([]);
@@ -127,7 +132,7 @@ const DataFilter = ({ page, customers, setCustomers }) => {
           mikrotikPackage: e.target.value,
         });
       },
-      options: mikrotikPackages,
+      options: hasMikrotik ? mikrotikPackages : packages,
       firstOptions: t("package"),
       textAccessor: "name",
       valueAccessor: "id",
@@ -262,89 +267,106 @@ const DataFilter = ({ page, customers, setCustomers }) => {
       textAccessor: "text",
       valueAccessor: "value",
     },
+    {
+      name: "billDayLeft",
+      type: "select",
+      id: "billDayLeft",
+      value: filterOptions.billDayLeft,
+      isVisible: true,
+      disabled: false,
+      onChange: (e) =>
+        setFilterOption({
+          ...filterOptions,
+          billDayLeft: e.target.value,
+        }),
+      options: [
+        { value: "1", text: t("oneDayLeft") },
+        { value: "2", text: t("twoDayLeft") },
+        { value: "3", text: t("threeDayLeft") },
+        { value: "4", text: t("fourDayLeft") },
+        { value: "7", text: t("sevenDayLeft") },
+      ],
+      firstOptions: t("filterBillDate"),
+      textAccessor: "text",
+      valueAccessor: "value",
+    },
+    {
+      name: "startDate",
+      type: "date",
+      id: "startDate",
+      isVisible: true,
+      disabled: false,
+      placeholderText: t("startBillingCycleDate"),
+      component: "DatePicker",
+      dateFormat: "yyyy MM dd hh:mm a",
+      timeIntervals: 60,
+      showTimeSelect: "showTimeSelect",
+      selected: filterOptions.startDate,
+      onChange: (date) => {
+        setFilterOption({
+          ...filterOptions,
+          startDate: date,
+        });
+      },
+    },
+    {
+      name: "endDate",
+      type: "date",
+      id: "endDate",
+      isVisible: true,
+      disabled: false,
+      placeholderText: t("endBillingCycleDate"),
+      component: "DatePicker",
+      dateFormat: "yyyy MM dd hh:mm a",
+      timeIntervals: 60,
+      showTimeSelect: "showTimeSelect",
+      selected: filterOptions.endDate,
+      onChange: (date) => {
+        setFilterOption({
+          ...filterOptions,
+          endDate: date,
+        });
+      },
+    },
+    {
+      name: "changeCustomer",
+      type: "select",
+      id: "changeCustomer",
+      value: filterOptions.changeCustomer,
+      isVisible: true,
+      disabled: false,
+      onChange: (e) => {
+        setFilterOption({
+          ...filterOptions,
+          changeCustomer: e.target.value,
+        });
+      },
+      options: [
+        {
+          text: t("promiseDate"),
+          value: "promiseDate",
+        },
+        {
+          text: t("connectionOn"),
+          value: "true",
+        },
+        {
+          text: t("connectionOff"),
+          value: "false",
+        },
+      ],
+      firstOptions: t("changeCustomer"),
+      textAccessor: "text",
+      valueAccessor: "value",
+    },
   ];
-
-  // customers data filter controller
-  const handleActiveFilter = () => {
-    let findAnyCustomer = mainData.reduce((acc, c) => {
-      const {
-        mikrotik,
-        mikrotikPackage,
-        area,
-        subArea,
-        poleBox,
-        status,
-        paymentStatus,
-      } = filterOptions;
-
-      // make possible conditions objects if the filter value not selected thats return true
-      //if filter value exist then compare
-      const conditions = {
-        mikrotik: mikrotik ? c.mikrotik === mikrotik : true,
-        package: mikrotikPackage ? c.mikrotikPackage === mikrotikPackage : true,
-        area: area ? c.area === area : true,
-        subArea: subArea ? c.subArea === subArea : true,
-        poleBox: poleBox ? c.poleBox === poleBox : true,
-        status: status ? c.status === status : true,
-        paid: paymentStatus ? c.paymentStatus === "paid" : true,
-        unpaid: paymentStatus
-          ? c.paymentStatus === "unpaid" && c.monthlyFee !== 0
-          : true,
-        free: paymentStatus ? c.monthlyFee === 0 : true,
-        partial: paymentStatus
-          ? c.paymentStatus === "unpaid" &&
-            c.monthlyFee > c.balance &&
-            c.balance > 0
-          : true,
-        advance: paymentStatus
-          ? c.monthlyFee <= c.balance && c.monthlyFee > 0
-          : true,
-        overDue: paymentStatus
-          ? c.paymentStatus === "unpaid" && c.balance < 0
-          : true,
-      };
-
-      //check if condition pass got for next step or is fail stop operation
-      //if specific filter option value not exist it will return true
-
-      let isPass = false;
-
-      isPass = conditions["mikrotik"];
-      if (!isPass) return acc;
-
-      isPass = conditions["package"];
-      if (!isPass) return acc;
-
-      isPass = conditions["area"];
-      if (!isPass) return acc;
-
-      isPass = conditions["poleBox"];
-      if (!isPass) return acc;
-
-      isPass = conditions["subArea"];
-      if (!isPass) return acc;
-
-      isPass = conditions["status"];
-      if (!isPass) return acc;
-
-      if (paymentStatus) {
-        isPass = conditions[paymentStatus];
-        if (!isPass) return acc;
-      }
-
-      if (isPass) acc.push(c);
-
-      return acc;
-    }, []);
-
-    // set filter customer in customer state
-    setCustomers(findAnyCustomer);
-  };
 
   // filter reset controller
   const handleFilterReset = () => {
     // set empty filter option
-    setFilterOption({ ...filterOptions });
+    setFilterOption(
+      Object.fromEntries(filterInputs.map((input) => [input.name, ""]))
+    );
 
     // set empty mikrotik packages
     setMikrotikPackages([]);
@@ -356,9 +378,9 @@ const DataFilter = ({ page, customers, setCustomers }) => {
   return (
     <>
       <div className="displayGrid6">
-        {filterInputs.map(
-          (item) =>
-            item.isVisible && (
+        {filterInputs.map((item) => {
+          if (item.isVisible) {
+            return item.type === "select" ? (
               <select
                 className="form-select shadow-none mt-0"
                 onChange={item.onChange}
@@ -371,14 +393,21 @@ const DataFilter = ({ page, customers, setCustomers }) => {
                   </option>
                 ))}
               </select>
-            )
-        )}
+            ) : (
+              <div>
+                <DatePicker className="form-control mt-0" {...item} />
+              </div>
+            );
+          }
+        })}
 
         <div className="displayGrid1">
           <button
             className="btn btn-outline-primary"
             type="button"
-            onClick={handleActiveFilter}
+            onClick={() =>
+              setCustomers(handleActiveFilter(mainData, filterOptions))
+            }
           >
             {t("filter")}
           </button>

@@ -944,5 +944,7 @@
   "trash": "ট্র্যাশ",
   "writeIPAddress": "আইপি এড্রেস লিখুন",
   "selectMikrotikPackage": "মাইক্রোটিক প্যাকেজ নির্বাচন করুন",
-  "trxID": "টিআরএক্স আইডি"
+  "trxID": "টিআরএক্স আইডি",
+  "tutorial": "টিউটোরিয়াল",
+  "changeCustomer": "গ্রাহকের পরিবর্তন"
 }

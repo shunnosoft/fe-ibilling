@@ -114,16 +114,6 @@ const EditStaticCustomer = ({ show, setShow, single }) => {
     });
   }, [data]);
 
-  useEffect(() => {
-    const IDs = {
-      ispOwner: ispOwnerId,
-      mikrotikId: customer?.mikrotik,
-    };
-    if (bpSettings?.hasMikrotik) {
-      fetchPackagefromDatabase(dispatch, IDs, setIsloading);
-    }
-  }, [customer?.mikrotik]);
-
   // sending data to backed
   const customerHandler = async (formValue, resetForm) => {
     const {

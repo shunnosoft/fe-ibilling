@@ -42,6 +42,7 @@ import {
   AppIndicator,
   PersonFill,
   SendCheck,
+  CameraVideoFill,
 } from "react-bootstrap-icons";
 import { NavLink, Router } from "react-router-dom";
 import activeClass from "../../../assets/css/active.module.css";
@@ -1486,6 +1487,28 @@ export default function Sidebar() {
                         </Accordion.Item>
                       </>
                     )}
+
+                    <NavLink
+                      key={16}
+                      to={"/netFee/tutorial"}
+                      className={(navInfo) =>
+                        navInfo.isActive ? activeClass.active : ""
+                      }
+                    >
+                      <FontColor>
+                        <li
+                          className="sidebarItems"
+                          title={t("netFeeSupportTeam")}
+                        >
+                          <div className="sidebarIcon">
+                            {<CameraVideoFill />}
+                          </div>
+                          <span className="sidebarLinksName">
+                            {t("tutorial")}
+                          </span>
+                        </li>
+                      </FontColor>
+                    </NavLink>
                   </Accordion>
                 </div>
               </ul>

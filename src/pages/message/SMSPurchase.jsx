@@ -296,7 +296,7 @@ const SMSPurchase = ({ show, setShow }) => {
 
                   <div>
                     <label className="form-control-label text-secondary">
-                      {t("smsAmunt")}&nbsp;
+                      {t("amount")}&nbsp;
                       <span className="text-danger">*</span>
                     </label>
                     <input
