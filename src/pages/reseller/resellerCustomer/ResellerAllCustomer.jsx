@@ -51,6 +51,7 @@ import {
   getCustomerPromiseDate,
 } from "../../Customer/customerCRUD/customerBillDayPromiseDate";
 import DataFilter from "../../common/DataFilter";
+import useDataState from "../../../hooks/useDataState";
 
 const AllResellerCustomer = () => {
   const { t } = useTranslation();
@@ -61,6 +62,9 @@ const AllResellerCustomer = () => {
 
   // reference of pdf export component
   const componentRef = useRef();
+
+  // get user data set from useDataState hooks
+  const { filterOptions, setFilterOption } = useDataState();
 
   // get all data from redux state
   let resellerCustomer = useSelector(
@@ -682,6 +686,8 @@ const AllResellerCustomer = () => {
                           page="resellerCustomer"
                           customers={resellerCustomer}
                           setCustomers={setCustomer}
+                          filterOptions={filterOptions}
+                          setFilterOption={setFilterOption}
                         />
                       </Accordion.Body>
                     </Accordion.Item>

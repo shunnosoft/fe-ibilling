@@ -10,11 +10,13 @@ export const handleActiveFilter = (mainData, filterOptions) => {
       poleBox,
       status,
       paymentStatus,
+      allCustomer,
       billDayLeft,
       startDate,
       endDate,
       changeCustomer,
     } = filterOptions;
+    console.log(allCustomer);
 
     // make date object
     const billingCycle = new Date(
@@ -66,6 +68,10 @@ export const handleActiveFilter = (mainData, filterOptions) => {
       overDue: paymentStatus
         ? c.paymentStatus === "unpaid" && c.balance < 0
         : true,
+      freeUser: allCustomer ? c.monthlyFee === 0 : true,
+      nonFreeUser: allCustomer ? c.monthlyFee > 0 : true,
+      prepaid: allCustomer ? c.customerBillingType === "prepaid" : true,
+      postpaid: allCustomer ? c.customerBillingType === "postpaid" : true,
       billDayLeft: billDayLeft
         ? moment(c.billingCycle).diff(moment(), "days") === Number(billDayLeft)
         : true,
@@ -105,6 +111,9 @@ export const handleActiveFilter = (mainData, filterOptions) => {
       isPass = conditions[paymentStatus];
       if (!isPass) return acc;
     }
+
+    isPass = conditions[allCustomer];
+    if (!isPass) return acc;
 
     isPass = conditions["billDayLeft"];
     if (!isPass) return acc;

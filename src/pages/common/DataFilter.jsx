@@ -268,6 +268,28 @@ const DataFilter = ({
       valueAccessor: "value",
     },
     {
+      name: "allCustomer",
+      type: "select",
+      id: "allCustomer",
+      value: filterOptions.allCustomer,
+      isVisible: true,
+      disabled: false,
+      onChange: (e) =>
+        setFilterOption({
+          ...filterOptions,
+          allCustomer: e.target.value,
+        }),
+      options: [
+        { value: "freeUser", text: t("freeCustomer") },
+        { value: "nonFreeUser", text: t("nonFreeCustomer") },
+        { value: "prepaid", text: t("prepaid") },
+        { value: "postpaid", text: t("postPaid") },
+      ],
+      firstOptions: t("sokolCustomer"),
+      textAccessor: "text",
+      valueAccessor: "value",
+    },
+    {
       name: "billDayLeft",
       type: "select",
       id: "billDayLeft",
