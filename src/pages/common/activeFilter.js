@@ -16,7 +16,6 @@ export const handleActiveFilter = (mainData, filterOptions) => {
       endDate,
       changeCustomer,
     } = filterOptions;
-    console.log(allCustomer);
 
     // make date object
     const billingCycle = new Date(
@@ -112,8 +111,10 @@ export const handleActiveFilter = (mainData, filterOptions) => {
       if (!isPass) return acc;
     }
 
-    isPass = conditions[allCustomer];
-    if (!isPass) return acc;
+    if (allCustomer) {
+      isPass = conditions[allCustomer];
+      if (!isPass) return acc;
+    }
 
     isPass = conditions["billDayLeft"];
     if (!isPass) return acc;

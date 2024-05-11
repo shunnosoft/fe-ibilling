@@ -669,8 +669,8 @@ export default function Sidebar() {
 
                         {userRole === "reseller" && (
                           <NavLink
-                            key={123}
-                            to={userRole === "reseller" && "/reseller/summary"}
+                            key={127}
+                            to="/reseller/summary"
                             className={(navInfo) =>
                               navInfo.isActive ? activeClass.active : ""
                             }
@@ -868,7 +868,7 @@ export default function Sidebar() {
                       </Accordion.Item>
                     )}
                     {/* রিসেলার */}
-                    {userRole === "ispOwner" && (
+                    {userRole === "ispOwner" && bpSettings?.hasReseller && (
                       <Accordion.Item eventKey="3">
                         <Accordion.Header
                           onClick={() => handleActiveAccordian("3")}
@@ -879,138 +879,116 @@ export default function Sidebar() {
                           </span>
                         </Accordion.Header>
                         <Accordion.Body>
-                          {bpSettings?.hasReseller &&
-                          userRole === "ispOwner" ? (
-                            <NavLink
-                              key={33}
-                              to={"/reseller"}
-                              className={(navInfo) =>
-                                navInfo.isActive ? activeClass.active : ""
-                              }
-                            >
-                              <FontColor>
-                                <li
-                                  className="sidebarItems"
-                                  id={
-                                    window.location.pathname === "/reseller"
-                                      ? "active"
-                                      : ""
-                                  }
-                                >
-                                  <div className="sidebarIcon">
-                                    {<People />}
-                                  </div>
-                                  <span className="sidebarLinksName">
-                                    {t("reseller")}
-                                  </span>
-                                </li>
-                              </FontColor>
-                            </NavLink>
-                          ) : (
-                            ""
-                          )}
+                          <NavLink
+                            key={33}
+                            to={"/reseller"}
+                            className={(navInfo) =>
+                              navInfo.isActive ? activeClass.active : ""
+                            }
+                          >
+                            <FontColor>
+                              <li
+                                className="sidebarItems"
+                                id={
+                                  window.location.pathname === "/reseller"
+                                    ? "active"
+                                    : ""
+                                }
+                              >
+                                <div className="sidebarIcon">{<People />}</div>
+                                <span className="sidebarLinksName">
+                                  {t("reseller")}
+                                </span>
+                              </li>
+                            </FontColor>
+                          </NavLink>
 
-                          {(userRole === "ispOwner" &&
-                            bpSettings?.hasReseller) ||
-                          userRole === "reseller" ? (
-                            <NavLink
-                              key={70}
-                              to={
-                                userRole === "reseller"
-                                  ? "/reseller/recharge"
-                                  : "/recharge"
-                              }
-                              className={(navInfo) =>
-                                navInfo.isActive ? activeClass.active : ""
-                              }
-                            >
-                              <FontColor>
-                                <li
-                                  className="sidebarItems"
-                                  id={
-                                    window.location.pathname ===
-                                    (userRole === "reseller"
-                                      ? "/reseller/recharge"
-                                      : "/recharge")
-                                      ? "active"
-                                      : ""
-                                  }
-                                >
-                                  <div className="sidebarIcon">{<Cash />}</div>
-                                  <span className="sidebarLinksName">
-                                    {t("recharge history")}
-                                  </span>
-                                </li>
-                              </FontColor>
-                            </NavLink>
-                          ) : (
-                            ""
-                          )}
+                          <NavLink
+                            key={70}
+                            to={
+                              userRole === "reseller"
+                                ? "/reseller/recharge"
+                                : "/recharge"
+                            }
+                            className={(navInfo) =>
+                              navInfo.isActive ? activeClass.active : ""
+                            }
+                          >
+                            <FontColor>
+                              <li
+                                className="sidebarItems"
+                                id={
+                                  window.location.pathname ===
+                                  (userRole === "reseller"
+                                    ? "/reseller/recharge"
+                                    : "/recharge")
+                                    ? "active"
+                                    : ""
+                                }
+                              >
+                                <div className="sidebarIcon">{<Cash />}</div>
+                                <span className="sidebarLinksName">
+                                  {t("recharge history")}
+                                </span>
+                              </li>
+                            </FontColor>
+                          </NavLink>
 
-                          {userRole === "ispOwner" ? (
-                            <NavLink
-                              key={91}
-                              to={"/message-request"}
-                              className={(navInfo) =>
-                                navInfo.isActive ? activeClass.active : ""
-                              }
-                            >
-                              <FontColor>
-                                <li
-                                  className="sidebarItems"
-                                  id={
-                                    window.location.pathname ===
-                                    "/message-request"
-                                      ? "active"
-                                      : ""
-                                  }
-                                >
-                                  <div className="sidebarIcon">
-                                    {<ChatSquareDots />}
-                                  </div>
-                                  <span className="sidebarLinksName">
-                                    {t("message request")}
-                                  </span>
-                                </li>
-                              </FontColor>
-                            </NavLink>
-                          ) : (
-                            ""
-                          )}
+                          <NavLink
+                            key={91}
+                            to={"/message-request"}
+                            className={(navInfo) =>
+                              navInfo.isActive ? activeClass.active : ""
+                            }
+                          >
+                            <FontColor>
+                              <li
+                                className="sidebarItems"
+                                id={
+                                  window.location.pathname ===
+                                  "/message-request"
+                                    ? "active"
+                                    : ""
+                                }
+                              >
+                                <div className="sidebarIcon">
+                                  {<ChatSquareDots />}
+                                </div>
+                                <span className="sidebarLinksName">
+                                  {t("message request")}
+                                </span>
+                              </li>
+                            </FontColor>
+                          </NavLink>
 
-                          {userRole === "ispOwner" ? (
-                            <NavLink
-                              key={92}
-                              to={"/withdrawal-request"}
-                              className={(navInfo) =>
-                                navInfo.isActive ? activeClass.active : ""
-                              }
-                            >
-                              <FontColor>
-                                <li
-                                  className="sidebarItems"
-                                  id={
-                                    window.location.pathname ===
-                                    "/withdrawal-request"
-                                      ? "active"
-                                      : ""
-                                  }
-                                >
-                                  <div className="sidebarIcon">
-                                    {<Wallet2 />}
-                                  </div>
-                                  <span className="sidebarLinksName">
-                                    {t("withdrawal request")}
-                                  </span>
-                                </li>
-                              </FontColor>
-                            </NavLink>
-                          ) : (
-                            ""
-                          )}
+                          <NavLink
+                            key={92}
+                            to={"/withdrawal-request"}
+                            className={(navInfo) =>
+                              navInfo.isActive ? activeClass.active : ""
+                            }
+                          >
+                            <FontColor>
+                              <li
+                                className="sidebarItems"
+                                id={
+                                  window.location.pathname ===
+                                  "/withdrawal-request"
+                                    ? "active"
+                                    : ""
+                                }
+                              >
+                                <div className="sidebarIcon">{<Wallet2 />}</div>
+                                <span className="sidebarLinksName">
+                                  {t("withdrawal request")}
+                                </span>
+                              </li>
+                            </FontColor>
+                          </NavLink>
                         </Accordion.Body>
                       </Accordion.Item>
                     )}
+
                     {/* মেসেজ */}
                     {userRole !== "collector" && (
                       <Accordion.Item eventKey="4">

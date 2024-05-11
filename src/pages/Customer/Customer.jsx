@@ -129,18 +129,6 @@ const PPPOECustomer = () => {
   // get all package list
   let packages = useSelector((state) => state?.package?.pppoePackages);
 
-  //get collector areas
-  const collectorSubAreas = useSelector((state) =>
-    role === "collector"
-      ? state.persistedReducer.auth?.currentUser?.collector?.areas
-      : []
-  );
-
-  //without mikrotik packages
-  const withOutMikrotikPackages = useSelector(
-    (state) => state.package.packages
-  );
-
   //get all pole Box
   const poleBox = useSelector((state) => state.area?.poleBox);
 
@@ -187,9 +175,6 @@ const PPPOECustomer = () => {
 
   //bandwidth modal state
   const [bandWidthModal, setBandWidthModal] = useState(false);
-
-  //collector area
-  const [collectorAreas, setCollectorAreas] = useState([]);
 
   // collector loading
   const [collectorLoading, setCollectorLoading] = useState(false);
@@ -262,37 +247,27 @@ const PPPOECustomer = () => {
 
     // add area to customers
     customers?.map((c) => {
-      subAreas?.map((sub) => {
-        if (sub.id === c.subArea) {
-          customerModified.push({
-            ...c,
-            area: sub.area,
-          });
-        }
-      });
+      if (!c.area) {
+        subAreas?.map((sub) => {
+          if (sub.id === c.subArea) {
+            customerModified.push({
+              ...c,
+              area: sub.area,
+            });
+          }
+        });
+      } else {
+        customerModified.push(c);
+      }
     });
 
     // set customers in state
     setPPPoeCustomers(customerModified);
 
     // set customer in state for filter
-    Object.values(filterOptions) &&
+    Object?.values(filterOptions) &&
       setPPPoeCustomers(handleActiveFilter(customerModified, filterOptions));
   }, [customers]);
-
-  //collector area state update
-  useEffect(() => {
-    if (role === "collector") {
-      //loop over areas
-      const tempCollectorAreas = areas.filter((item) => {
-        return collectorSubAreas.some((subArea) => {
-          return item.subAreas.some((s) => s === subArea.id);
-        });
-      });
-      //update the collector area state
-      setCollectorAreas(tempCollectorAreas);
-    }
-  }, [collectorSubAreas, areas, subAreas]);
 
   //get single customer from user action
   const getSpecificCustomer = (customerId) => {
@@ -879,51 +854,17 @@ const PPPOECustomer = () => {
     { label: "selling_bandwidthBDT (Excluding VAT).", key: "monthlyFee" },
   ];
 
-  // filter value for pdf
-  let filterData = {};
-  if (modalShow) {
-    let area, subArea, customerStatus, customerPaymentStatus;
-
-    // area
-    if (filterOptions.area) {
-      area = areas.find((item) => item.id === filterOptions.area);
-    }
-
-    // subarea
-    if (filterOptions.subArea) {
-      subArea = subAreas.find((item) => item.id === filterOptions.subArea);
-    }
-
-    // status
-    if (filterOptions.status) {
-      if (filterOptions.status === "active") {
-        customerStatus = t("active");
-      } else if (filterOptions.status === "inactive") {
-        customerStatus = t("in active");
-      }
-    }
-
-    // payment status
-    if (filterOptions.paymentStatus) {
-      if (filterOptions.paymentStatus === "unpaid") {
-        customerPaymentStatus = t("due");
-      } else if (filterOptions.paymentStatus === "paid") {
-        customerPaymentStatus = t("paid");
-      } else if (filterOptions.paymentStatus === "expired") {
-        customerPaymentStatus = t("expired");
-      }
-    }
-
-    // set filter value in pdf
-    filterData = {
-      area: area?.name ? area?.name : t("allArea"),
-      subArea: subArea?.name ? subArea.name : t("allSubArea"),
-      status: customerStatus ? customerStatus : t("sokolCustomer"),
-      payment: customerPaymentStatus
-        ? customerPaymentStatus
-        : t("sokolCustomer"),
-    };
-  }
+  // set filter value in pdf
+  const filterData = {
+    area: filterOptions.area
+      ? areas.find((item) => item.id === filterOptions.area).name
+      : t("allArea"),
+    subArea: filterOptions.subArea
+      ? subAreas.find((item) => item.id === filterOptions.subArea).name
+      : t("allSubArea"),
+    status: filterOptions.status,
+    payment: filterOptions.paymentStatus,
+  };
 
   return (
     <>
@@ -1073,7 +1014,7 @@ const PPPOECustomer = () => {
                       <Accordion.Item eventKey="filter">
                         <Accordion.Body>
                           <DataFilter
-                            page="resellerCustomer"
+                            page="pppoe"
                             customers={customers}
                             setCustomers={setPPPoeCustomers}
                             filterOptions={filterOptions}
@@ -1240,7 +1181,7 @@ const PPPOECustomer = () => {
       <PrintOptions
         show={modalShow}
         setShow={setModalShow}
-        // filterData={filterData}
+        filterData={filterData}
         tableData={tableData}
         page={"customer"}
         printData={printData}

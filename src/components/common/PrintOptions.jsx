@@ -1,13 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
-import {
-  Button,
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
-  ModalTitle,
-} from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import ReactToPrint from "react-to-print";
 
@@ -18,6 +11,7 @@ import useISPowner from "../../hooks/useISPOwner";
 import { printOptionData } from "../../pages/Customer/customerCRUD/printOptionData";
 import PrintCustomer from "../../pages/Customer/customerPDF";
 import { getAllPackages } from "../../features/apiCalls";
+import ComponentCustomModal from "./customModal/ComponentCustomModal";
 
 const PrintOptions = ({
   show,
@@ -84,77 +78,71 @@ const PrintOptions = ({
 
   return (
     <>
-      <Modal
+      <ComponentCustomModal
         show={show}
-        onHide={closeHandler}
-        backdrop="static"
-        keyboard={false}
+        setShow={setShow}
+        centered={true}
         size="md"
-        centered
-      >
-        <ModalHeader closeButton>
-          <ModalTitle>
-            <h5 className="text-secondary">{t("printOptions")}</h5>
-          </ModalTitle>
-        </ModalHeader>
-        <ModalBody>
-          {/* all report option checked */}
-          <div className="displayGrid3">
-            {printOption?.map((item) => (
-              <div className="form-check">
-                <input
-                  type="checkbox"
-                  className="form-check-input"
-                  id={item.id}
-                  value={item.value}
-                  checked={item.checked}
-                  onChange={printOptionsController}
-                />
-                <label
-                  htmlFor={item.id}
-                  className="form-check-label text-secondary"
-                >
-                  {t(item.label)}
-                </label>
+        header={t("printOptions")}
+        footer={
+          <>
+            {/* print page manually create option checked */}
+            {page === "billReport" && (
+              <div className="d-flex gap-2">
+                {printOptions?.map((item) => (
+                  <div className="form-check">
+                    <input
+                      type="radio"
+                      className="form-check-input"
+                      id={item.id}
+                      value={item.value}
+                      checked={printCopy === item.value}
+                      onChange={printCopyHandle}
+                    />
+                    <label
+                      htmlFor={item.id}
+                      className="form-check-label text-secondary"
+                    >
+                      {t(item.label)}
+                    </label>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        </ModalBody>
-        <ModalFooter className="d-flex justify-content-between align-items-center">
-          {/* print page manually create option checked */}
-          {page === "billReport" && (
-            <div className="d-flex gap-2">
-              {printOptions?.map((item) => (
-                <div className="form-check">
-                  <input
-                    type="radio"
-                    className="form-check-input"
-                    id={item.id}
-                    value={item.value}
-                    checked={printCopy === item.value}
-                    onChange={printCopyHandle}
-                  />
-                  <label
-                    htmlFor={item.id}
-                    className="form-check-label text-secondary"
-                  >
-                    {t(item.label)}
-                  </label>
-                </div>
-              ))}
-            </div>
-          )}
+            )}
 
-          {/* onclick report print handle */}
-          <div onClick={closeHandler}>
-            <ReactToPrint
-              documentTitle={t("print")}
-              trigger={() => <Button variant="primary">{t("print")}</Button>}
-              content={() => componentRef.current}
-            />
-          </div>
-        </ModalFooter>
-      </Modal>
+            {/* onclick report print handle */}
+            <div onClick={closeHandler}>
+              <ReactToPrint
+                documentTitle={t("print")}
+                trigger={() => <Button variant="primary">{t("print")}</Button>}
+                content={() => componentRef.current}
+              />
+            </div>
+          </>
+        }
+      >
+        {/* all report option checked */}
+        <div className="displayGrid3">
+          {printOption?.map((item) => (
+            <div className="form-check">
+              <input
+                type="checkbox"
+                className="form-check-input"
+                id={item.id}
+                value={item.value}
+                checked={item.checked}
+                onChange={printOptionsController}
+              />
+              <label
+                htmlFor={item.id}
+                className="form-check-label text-secondary"
+              >
+                {t(item.label)}
+              </label>
+            </div>
+          ))}
+        </div>
+      </ComponentCustomModal>
 
       {show && (
         <div style={{ display: "none" }}>

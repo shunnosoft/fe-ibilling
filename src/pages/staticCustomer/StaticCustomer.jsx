@@ -33,7 +33,6 @@ import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
 import { Accordion, Card, Collapse } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
-import DatePicker from "react-datepicker";
 
 // custom hooks
 import useISPowner from "../../hooks/useISPOwner";
@@ -89,6 +88,9 @@ import { getOwnerUsers } from "../../features/getIspOwnerUsersApi";
 import CustomerDelete from "../Customer/customerCRUD/CustomerDelete";
 import TransferToReseller from "../Customer/customerCRUD/TransferToReseller";
 import BulkOptions from "../Customer/customerCRUD/bulkOpration/BulkOptions";
+import DataFilter from "../common/DataFilter";
+import useDataState from "../../hooks/useDataState";
+import { handleActiveFilter } from "../common/activeFilter";
 
 const Customer = () => {
   //call hooks
@@ -106,6 +108,9 @@ const Customer = () => {
   // get user & current user data form useISPOwner
   const { role, ispOwnerId, bpSettings, permissions } = useISPowner();
 
+  // get user data set from useDataState hooks
+  const { filterOptions, setFilterOption } = useDataState();
+
   // get ispOwner data form store
   const ispOwnerData = useSelector(
     (state) => state.persistedReducer.auth?.userData
@@ -119,7 +124,7 @@ const Customer = () => {
   const collectors = useSelector((state) => state?.collector?.collector);
 
   // get static customer form redux store
-  const cus = useSelector((state) => state?.customer?.staticCustomer);
+  const customers = useSelector((state) => state?.customer?.staticCustomer);
 
   // ispOwner collector area
   const collectorArea = useSelector((state) =>
@@ -129,10 +134,10 @@ const Customer = () => {
   );
 
   //get ispOwner areas form redux
-  const allareas = useSelector((state) => state?.area?.area);
+  const areas = useSelector((state) => state?.area?.area);
 
   // get all subAreas
-  const storeSubArea = useSelector((state) => state.area?.subArea);
+  const subAreas = useSelector((state) => state.area?.subArea);
 
   //get all pole Box
   const poleBox = useSelector((state) => state.area?.poleBox);
@@ -151,7 +156,6 @@ const Customer = () => {
   //loading state
   const [isLoading, setIsloading] = useState(false);
   const [customerLoading, setCustomerLoading] = useState(false);
-  const [isShow, setIsShow] = useState(false);
 
   //user id
   const [userId, setUserId] = useState();
@@ -159,12 +163,7 @@ const Customer = () => {
   // filter Accordion handle state
   const [activeKeys, setActiveKeys] = useState("");
 
-  const [cusSearch, setCusSearch] = useState("");
-
-  const [mikrotikPac, setMikrotikPac] = useState();
-  const [Customers1, setCustomers1] = useState([]);
-
-  const [Customers2, setCustomers2] = useState([]);
+  const [staticCustomers, setStaticCustomers] = useState([]);
 
   // set customer id in state for note
   const [customerNoteId, setCustomerNoteId] = useState();
@@ -178,10 +177,6 @@ const Customer = () => {
   const [customerData, setCustomerData] = useState({});
 
   const [allArea, setAreas] = useState([]);
-
-  const [subAreaIds, setSubArea] = useState([]);
-  const [singleArea, setArea] = useState({});
-  const [subAreas, setSubAreas] = useState([]);
 
   // get specific customer Report
   const [customerReportData, setId] = useState([]);
@@ -201,31 +196,12 @@ const Customer = () => {
   // pole box filter loding
   const [isLoadingPole, setIsLoadingPole] = useState(false);
 
-  // subArea current poleBox state
-  const [currentPoleBox, setCurrentPoleBox] = useState([]);
-
   // bulk modal handle state
   const [isOpen, setIsOpen] = useState(false);
 
-  const [filterOptions, setFilterOption] = useState({
-    status: "",
-    paymentStatus: "",
-    area: "",
-    subArea: "",
-    poleBox: "",
-    package: "",
-    mikrotik: "",
-    freeUser: "",
-    startDate: "",
-    endDate: "",
-    dayFilter: "",
-    changedPromiseDate: "",
-    connection: "",
-  });
-
   useEffect(() => {
     // ispOwner queue customers get api
-    if (cus.length === 0)
+    if (customers.length === 0)
       getStaticCustomer(dispatch, ispOwnerId, setCustomerLoading);
 
     //ispOwner queue all package get api
@@ -278,37 +254,31 @@ const Customer = () => {
   }, []);
 
   useEffect(() => {
-    let temp = [];
+    let customerModified = [];
 
-    if (cus) {
-      cus.map((customer) => {
-        let areaFound = false;
-        allareas?.map((area) => {
-          area.subAreas.map((sub) => {
-            if (customer.subArea === sub) {
-              areaFound = true;
-              temp.push({
-                ...customer,
-                area: area.id,
-                profile: customer.pppoe.profile,
-              });
-            }
-          });
+    // add area to customers
+    customers?.map((c) => {
+      if (!c.area) {
+        subAreas?.map((sub) => {
+          if (sub.id === c.subArea) {
+            customerModified.push({
+              ...c,
+              area: sub.area,
+            });
+          }
         });
+      } else {
+        customerModified.push(c);
+      }
+    });
 
-        if (!areaFound) {
-          temp.push({
-            ...customer,
-            area: "noArea",
-            profile: customer.pppoe?.profile,
-          });
-        }
-      });
-    }
+    // set customers in state
+    setStaticCustomers(customerModified);
 
-    setCustomers1(temp);
-    setCustomers2(temp);
-  }, [cus]);
+    // set customer in state for filter
+    Object?.values(filterOptions) &&
+      setStaticCustomers(handleActiveFilter(customerModified, filterOptions));
+  }, [customers]);
 
   useEffect(() => {
     if (role === "collector") {
@@ -352,7 +322,6 @@ const Customer = () => {
   // cutomer delete
   const customerDelete = (customerId) => {
     setMikrotikCheck(false);
-    // const singleData = cus?.find((item) => item.id === customerId);
     setSingleData(customerId);
   };
 
@@ -373,265 +342,22 @@ const Customer = () => {
     getStaticCustomer(dispatch, ispOwnerId, setCustomerLoading);
   };
 
-  const onChangeArea = (param) => {
-    let area = JSON.parse(param);
-    const allSub = storeSubArea.filter((val) => val.area === area.id);
-    setSubAreas(allSub);
-    setArea(area);
-    if (
-      area &&
-      Object.keys(area).length === 0 &&
-      Object.getPrototypeOf(area) === Object.prototype
-    ) {
-      setSubArea([]);
-    } else {
-      let subAreaIds = [];
-
-      area?.subAreas.map((sub) => subAreaIds.push(sub));
-
-      setSubArea(subAreaIds);
-    }
-  };
-
-  const handleActiveFilter = () => {
-    let tempCustomers = Customers2.reduce((acc, c) => {
-      const {
-        area,
-        subArea,
-        poleBox,
-        status,
-        mikrotik,
-        paymentStatus,
-        freeUser,
-        startDate,
-        endDate,
-        dayFilter,
-        changedPromiseDate,
-        connection,
-      } = filterOptions;
-
-      const billingCycle = new Date(
-        moment(c.billingCycle).format("YYYY/MM/DD")
-      ).getTime();
-
-      const promiseDate = new Date(
-        moment(c.promiseDate).format("YYYY/MM/DD")
-      ).getTime();
-
-      let today = new Date();
-      let lastDayOfMonth = new Date(
-        today.getFullYear(),
-        today.getMonth() + 1,
-        0
-      ).getTime();
-
-      const todayDate = new Date(
-        moment(new Date()).format("YYYY/MM/DD")
-      ).getTime();
-
-      const filterStartData = new Date(
-        moment(filterOptions.startDate).format("YYYY-MM-DD")
-      ).getTime();
-
-      const filterEndData = new Date(
-        moment(filterOptions.endDate).format("YYYY-MM-DD")
-      ).getTime();
-
-      let getArea = [];
-      if (area) {
-        getArea = allareas.find((item) => item.id === area);
-      }
-
-      // automaticConnection filter
-      let connectionStatus;
-      if (connection === "true") {
-        connectionStatus = false;
-      } else if (connection === "false") {
-        connectionStatus = true;
-      }
-
-      // make possible conditions objects if the filter value not selected thats return true
-      //if filter value exist then compare
-      const conditions = {
-        area: area ? getArea.subAreas.some((item) => item === c.subArea) : true,
-        subArea: subArea ? c.subArea === subArea : true,
-        poleBox: poleBox ? c.poleBox === poleBox : true,
-        status: status ? c.status === status : true,
-        paid: paymentStatus ? c.paymentStatus === "paid" : true,
-        unpaid: paymentStatus
-          ? c.paymentStatus === "unpaid" && c.monthlyFee !== 0
-          : true,
-        free: paymentStatus ? c.monthlyFee === 0 : true,
-        partial: paymentStatus
-          ? c.paymentStatus === "unpaid" &&
-            c.monthlyFee > c.balance &&
-            c.balance > 0
-          : true,
-        advance: paymentStatus
-          ? c.monthlyFee <= c.balance && c.monthlyFee > 0
-          : true,
-        overdue: paymentStatus
-          ? c.paymentStatus === "unpaid" && c.balance < 0
-          : true,
-        mikrotik: mikrotik ? c.mikrotik === mikrotik : true,
-        freeUser: freeUser ? c.monthlyFee === 0 : true,
-        nonFreeUser: freeUser ? c.monthlyFee !== 0 : true,
-        prepaid: freeUser ? c.customerBillingType === "prepaid" : true,
-        postpaid: freeUser ? c.customerBillingType === "postpaid" : true,
-        package: filterOptions.package
-          ? c.mikrotikPackage === filterOptions.package
-          : true,
-        filterDate:
-          startDate && endDate
-            ? filterStartData <= billingCycle && filterEndData >= billingCycle
-            : true,
-        dayFilter: dayFilter
-          ? moment(c.billingCycle).diff(moment(), "days") ===
-            Number(filterOptions.dayFilter)
-          : true,
-        changedPromiseDate: changedPromiseDate
-          ? billingCycle == todayDate &&
-            billingCycle < promiseDate &&
-            promiseDate < lastDayOfMonth
-          : true,
-
-        connection: connection ? c.autoDisable !== connectionStatus : true,
-      };
-
-      //check if condition pass got for next step or is fail stop operation
-      //if specific filter option value not exist it will return true
-
-      let isPass = false;
-      isPass = conditions["area"];
-      if (!isPass) return acc;
-      isPass = conditions["subArea"];
-      if (!isPass) return acc;
-
-      isPass = conditions["poleBox"];
-      if (!isPass) return acc;
-
-      isPass = conditions["status"];
-      if (!isPass) return acc;
-
-      if (paymentStatus) {
-        isPass = conditions[paymentStatus];
-        if (!isPass) return acc;
-      }
-
-      isPass = conditions["mikrotik"];
-      if (!isPass) return acc;
-
-      if (freeUser) {
-        isPass = conditions[freeUser];
-        if (!isPass) return acc;
-      }
-
-      isPass = conditions["package"];
-      if (!isPass) return acc;
-
-      isPass = conditions["filterDate"];
-      if (!isPass) return acc;
-
-      isPass = conditions["dayFilter"];
-      if (!isPass) return acc;
-
-      isPass = conditions["changedPromiseDate"];
-      if (!isPass) return acc;
-
-      isPass = conditions["connection"];
-      if (!isPass) return acc;
-
-      if (isPass) acc.push(c);
-      return acc;
-    }, []);
-
-    // set filter customer in customer state
-    setCustomers1(tempCustomers);
-  };
-
-  const handleFilterReset = () => {
-    setMikrotikPac([]);
-    setFilterOption({
-      status: "",
-      paymentStatus: "",
-      area: "",
-      subArea: "",
-      package: "",
-      startDate: "",
-      endDate: "",
-    });
-    setCustomers1(cus);
-  };
-
-  const onChangeSubArea = (id) => {
-    const subAreaPoleBox = poleBox?.filter((val) => val.subArea === id);
-    setCurrentPoleBox(subAreaPoleBox);
-    setCusSearch(id);
-  };
-
-  let subArea, customerStatus, customerPaymentStatus;
-  if (singleArea && cusSearch) {
-    subArea = singleArea?.subAreas?.find((item) => item.id === subAreaIds[0]);
-  }
-
-  if (filterOptions.status) {
-    if (filterOptions.status === "active") {
-      customerStatus = "এক্টিভ";
-    } else if (filterOptions.status === "inactive") {
-      customerStatus = "ইনএক্টিভ";
-    }
-  }
-
-  if (filterOptions.paymentStatus) {
-    if (filterOptions.paymentStatus === "unpaid") {
-      customerPaymentStatus = "বকেয়া";
-    } else if (filterOptions.paymentStatus === "paid") {
-      customerPaymentStatus = "পরিশোধ";
-    } else if (filterOptions.paymentStatus === "expired") {
-      customerPaymentStatus = "মেয়াদোত্তীর্ণ";
-    }
-  }
-
+  // set filter value in pdf
   const filterData = {
-    area: singleArea?.name ? singleArea.name : t("allArea"),
-    subArea: subArea ? subArea.name : t("allSubArea"),
-    status: customerStatus ? customerStatus : t("allCustomer"),
-    payment: customerPaymentStatus ? customerPaymentStatus : t("allCustomer"),
-  };
-
-  const mikrotikHandler = async (id) => {
-    setFilterOption({
-      ...filterOptions,
-      mikrotik: id,
-    });
-    if (!id) {
-      setMikrotikPac([]);
-    }
-    if (id) {
-      const mikrotikPackage = packages.filter((pack) => pack.mikrotik === id);
-      setMikrotikPac(mikrotikPackage);
-    }
+    area: filterOptions.area
+      ? areas.find((item) => item.id === filterOptions.area).name
+      : t("allArea"),
+    subArea: filterOptions.subArea
+      ? subAreas.find((item) => item.id === filterOptions.subArea).name
+      : t("allSubArea"),
+    status: filterOptions.status,
+    payment: filterOptions.paymentStatus,
   };
 
   // customer current package find
   const customerPackageFind = (pack) => {
     const findPack = allPackages.find((item) => item.id.includes(pack));
     return findPack;
-  };
-
-  // customer autoDisable connection check & promiseDate handler
-  const changePromiseConnection = (e) => {
-    if (e.target.value !== "changedPromiseDate") {
-      setFilterOption({
-        ...filterOptions,
-        connection: e.target.value,
-      });
-    } else {
-      setFilterOption({
-        ...filterOptions,
-        changedPromiseDate: e.target.value,
-      });
-    }
   };
 
   // atuomatic connection on off doble clicked handle
@@ -663,7 +389,7 @@ const Customer = () => {
     checked: true,
   };
 
-  let customerForCsV = Customers1.map((customer) => {
+  let customerForCsV = staticCustomers.map((customer) => {
     return {
       companyName: ispOwnerData.company,
       home: "Home",
@@ -708,7 +434,7 @@ const Customer = () => {
   ];
 
   //export customer data
-  let customerForCsVTableInfo = Customers1.map((customer) => {
+  let customerForCsVTableInfo = staticCustomers.map((customer) => {
     return {
       name: customer.name,
       ip:
@@ -826,7 +552,7 @@ const Customer = () => {
         accessor: (data) => customerPackageFind(data?.mikrotikPackage)?.name,
         Cell: ({ row: { original } }) => (
           <div>
-            {cus && customerPackageFind(original?.mikrotikPackage)?.name}
+            {customers && customerPackageFind(original?.mikrotikPackage)?.name}
           </div>
         ),
       },
@@ -1120,7 +846,7 @@ const Customer = () => {
         ),
       },
     ],
-    [t, cus, allPackages]
+    [t, customers, allPackages]
   );
 
   //bulk operations
@@ -1132,7 +858,7 @@ const Customer = () => {
     let totalSumDue = 0;
     let totalMonthlyFee = 0;
 
-    Customers1.map((item) => {
+    staticCustomers.map((item) => {
       if (item.paymentStatus === "unpaid") {
         // filter due ammount
         dueAmount = item.monthlyFee - item.balance;
@@ -1146,7 +872,7 @@ const Customer = () => {
     });
 
     return { totalSumDue, totalMonthlyFee };
-  }, [Customers1]);
+  }, [staticCustomers]);
 
   //custom table header component
   const customComponent = (
@@ -1207,7 +933,7 @@ const Customer = () => {
                           className="arrowClock"
                           title={t("refresh")}
                           onClick={() => reloadHandler()}
-                        ></ArrowClockwise>
+                        />
                       )}
                     </div>
 
@@ -1344,390 +1070,13 @@ const Customer = () => {
                     <Accordion alwaysOpen activeKey={activeKeys}>
                       <Accordion.Item eventKey="filter">
                         <Accordion.Body>
-                          <div className="displayGrid6">
-                            <select
-                              className="form-select shadow-none mt-0"
-                              onChange={(e) => {
-                                onChangeArea(e.target.value);
-                                setFilterOption({
-                                  ...filterOptions,
-                                  area: JSON.parse(e.target.value).id,
-                                });
-                              }}
-                            >
-                              <option
-                                value={JSON.stringify({
-                                  id: "",
-                                  name: "",
-                                  subAreas: [],
-                                })}
-                                defaultValue
-                                selected={filterOptions.area === ""}
-                              >
-                                {t("allArea")}
-                              </option>
-
-                              {Customers2.some((c) => c.area === "noArea") && (
-                                <option
-                                  value={JSON.stringify({
-                                    id: "noArea",
-                                    name: "",
-                                    subAreas: [],
-                                  })}
-                                  selected={filterOptions.area === "noArea"}
-                                >
-                                  {t("customerWithoutArea")}
-                                </option>
-                              )}
-
-                              {(role === "collector" ? allArea : allareas)?.map(
-                                (area, key) => {
-                                  return (
-                                    <option
-                                      selected={filterOptions.area === area.id}
-                                      key={key}
-                                      value={JSON.stringify(area)}
-                                    >
-                                      {area.name}
-                                    </option>
-                                  );
-                                }
-                              )}
-                            </select>
-
-                            {/* //Todo */}
-                            <select
-                              className="form-select shadow-none mt-0"
-                              onChange={(e) => {
-                                onChangeSubArea(e.target.value);
-                                setFilterOption({
-                                  ...filterOptions,
-                                  subArea: e.target.value,
-                                });
-                              }}
-                            >
-                              <option
-                                selected={filterOptions.subArea === ""}
-                                value=""
-                                defaultValue
-                              >
-                                {t("subArea")}
-                              </option>
-                              {subAreas?.map((sub, key) => (
-                                <option
-                                  selected={filterOptions.subArea === sub.id}
-                                  key={key}
-                                  value={sub.id}
-                                >
-                                  {sub.name}
-                                </option>
-                              ))}
-                            </select>
-
-                            <select
-                              className="form-select shadow-none mt-0"
-                              onChange={(e) => {
-                                setFilterOption({
-                                  ...filterOptions,
-                                  poleBox: e.target.value,
-                                });
-                              }}
-                            >
-                              <option
-                                selected={filterOptions.poleBox === ""}
-                                value=""
-                                defaultValue
-                              >
-                                {t("poleBox")}
-                              </option>
-                              {currentPoleBox?.map((pol, key) => (
-                                <option
-                                  selected={filterOptions.poleBox === pol.id}
-                                  key={key}
-                                  value={pol.id}
-                                >
-                                  {pol.name}
-                                </option>
-                              ))}
-                            </select>
-
-                            <select
-                              className="form-select shadow-none mt-0"
-                              onChange={(e) => {
-                                setFilterOption({
-                                  ...filterOptions,
-                                  status: e.target.value,
-                                });
-                              }}
-                            >
-                              <option
-                                selected={filterOptions.status === ""}
-                                value=""
-                                defaultValue
-                              >
-                                {t("status")}
-                              </option>
-                              <option
-                                selected={filterOptions.status === "active"}
-                                value="active"
-                              >
-                                {t("active")}
-                              </option>
-                              <option
-                                selected={filterOptions.status === "inactive"}
-                                value="inactive"
-                              >
-                                {t("in active")}
-                              </option>
-                              <option
-                                selected={filterOptions.status === "expired"}
-                                value="expired"
-                              >
-                                {t("expired")}
-                              </option>
-                            </select>
-
-                            <select
-                              className="form-select shadow-none mt-0"
-                              onChange={(e) => {
-                                setFilterOption({
-                                  ...filterOptions,
-                                  paymentStatus: e.target.value,
-                                });
-                              }}
-                            >
-                              <option
-                                selected={filterOptions.paymentStatus === ""}
-                                value=""
-                                defaultValue
-                              >
-                                {t("paymentStatus")}
-                              </option>
-                              <option
-                                selected={
-                                  filterOptions.paymentStatus === "free"
-                                }
-                                value="free"
-                              >
-                                {t("free")}
-                              </option>
-                              <option
-                                selected={
-                                  filterOptions.paymentStatus === "paid"
-                                }
-                                value="paid"
-                              >
-                                {t("payPaid")}
-                              </option>
-                              <option
-                                selected={
-                                  filterOptions.paymentStatus === "unpaid"
-                                }
-                                value="unpaid"
-                              >
-                                {t("unpaid")}
-                              </option>
-                              <option
-                                selected={
-                                  filterOptions.paymentStatus === "partial"
-                                }
-                                value="partial"
-                              >
-                                {t("partial")}
-                              </option>
-                              <option
-                                selected={
-                                  filterOptions.paymentStatus === "advance"
-                                }
-                                value="advance"
-                              >
-                                {t("advance")}
-                              </option>
-                              <option
-                                selected={
-                                  filterOptions.paymentStatus === "overdue"
-                                }
-                                value="overdue"
-                              >
-                                {t("overDue")}
-                              </option>
-                            </select>
-                            {bpSettings?.hasMikrotik && (
-                              <select
-                                className="form-select shadow-none mt-0"
-                                onChange={(e) => {
-                                  mikrotikHandler(e.target.value);
-                                }}
-                              >
-                                <option
-                                  selected={filterOptions.mikrotik === ""}
-                                  value=""
-                                  defaultValue
-                                >
-                                  {t("mikrotik")}
-                                </option>
-
-                                {mikrotiks.map((m, i) => {
-                                  return (
-                                    <option
-                                      key={i}
-                                      selected={
-                                        filterOptions.mikrotik === `${m.id}`
-                                      }
-                                      value={m.id}
-                                    >
-                                      {m.name}
-                                    </option>
-                                  );
-                                })}
-                              </select>
-                            )}
-
-                            <select
-                              className="form-select shadow-none mt-0"
-                              onChange={(e) => {
-                                setFilterOption({
-                                  ...filterOptions,
-                                  package: e.target.value,
-                                });
-                              }}
-                            >
-                              <option
-                                selected={filterOptions.mikrotik === ""}
-                                value=""
-                                defaultValue
-                              >
-                                {t("package")}
-                              </option>
-
-                              {mikrotikPac?.map((m, i) => {
-                                return (
-                                  <option
-                                    key={i}
-                                    selected={
-                                      filterOptions.package === `${m.name}`
-                                    }
-                                    value={m.id}
-                                  >
-                                    {m.name}
-                                  </option>
-                                );
-                              })}
-                            </select>
-
-                            <select
-                              onChange={(e) =>
-                                setFilterOption({
-                                  ...filterOptions,
-                                  freeUser: e.target.value,
-                                })
-                              }
-                              className="form-select shadow-none mt-0"
-                            >
-                              <option
-                                selected={filterOptions.freeUser === "allUser"}
-                                value="allUser"
-                              >
-                                {t("sokolCustomer")}
-                              </option>
-                              <option
-                                selected={filterOptions.freeUser === "freeUser"}
-                                value="freeUser"
-                              >
-                                {t("freeCustomer")}
-                              </option>
-                              <option
-                                selected={
-                                  filterOptions.freeUser === "nonFreeUser"
-                                }
-                                value="nonFreeUser"
-                              >
-                                {t("nonFreeCustomer")}
-                              </option>
-                            </select>
-
-                            <select
-                              className="form-select shadow-none mt-0"
-                              onChange={(e) =>
-                                setFilterOption({
-                                  ...filterOptions,
-                                  dayFilter: e.target.value,
-                                })
-                              }
-                            >
-                              <option value="">{t("filterBillDate")}</option>
-                              <option value="1">{t("oneDayLeft")}</option>
-                              <option value="2">{t("twoDayLeft")}</option>
-                              <option value="3">{t("threeDayLeft")}</option>
-                              <option value="4">{t("fourDayLeft")}</option>
-                            </select>
-
-                            <div>
-                              <DatePicker
-                                className="form-control mt-0"
-                                selected={filterOptions.startDate}
-                                onChange={(date) =>
-                                  setFilterOption({
-                                    ...filterOptions,
-                                    startDate: date,
-                                  })
-                                }
-                                dateFormat="dd-MM-yyyy"
-                                placeholderText={t("startBillingCycleDate")}
-                              />
-                            </div>
-
-                            <div>
-                              <DatePicker
-                                className="form-control mt-0"
-                                selected={filterOptions.endDate}
-                                onChange={(date) =>
-                                  setFilterOption({
-                                    ...filterOptions,
-                                    endDate: date,
-                                  })
-                                }
-                                dateFormat="dd-MM-yyyy"
-                                placeholderText={t("endBillingCycleDate")}
-                              />
-                            </div>
-
-                            <select
-                              className="form-select shadow-none mt-0"
-                              onChange={changePromiseConnection}
-                            >
-                              <option value="">{t("promiseDateChange")}</option>
-                              <option value="changedPromiseDate">
-                                {t("changedCustomer")}
-                              </option>
-                              <option value="true">{t("connectionOn")}</option>
-                              <option value="false">
-                                {t("connectionOff")}
-                              </option>
-                            </select>
-
-                            <div
-                              id="customer_filter_button"
-                              className="d-flex justify-content-end align-items-end mt-0"
-                            >
-                              <button
-                                className="btn btn-outline-primary w-6rem h-76"
-                                id="filterBtn"
-                                type="button"
-                                onClick={handleActiveFilter}
-                              >
-                                {t("filter")}
-                              </button>
-                              <button
-                                className="btn btn-outline-secondary w-6rem h-76 ms-2"
-                                id="filter_reset"
-                                type="button"
-                                onClick={handleFilterReset}
-                              >
-                                {t("reset")}
-                              </button>
-                            </div>
-                          </div>
+                          <DataFilter
+                            page="static"
+                            customers={customers}
+                            setCustomers={setStaticCustomers}
+                            filterOptions={filterOptions}
+                            setFilterOption={setFilterOption}
+                          />
                         </Accordion.Body>
                       </Accordion.Item>
                     </Accordion>
@@ -1738,7 +1087,7 @@ const Customer = () => {
                         customComponent={customComponent}
                         bulkLength={bulkCustomers?.length}
                         columns={columns}
-                        data={Customers1}
+                        data={staticCustomers}
                         bulkState={{
                           setBulkCustomer,
                         }}
@@ -1782,7 +1131,6 @@ const Customer = () => {
           show={show}
           setShow={setShow}
           single={singleCustomer}
-          handleActiveFilter={handleActiveFilter}
         />
       )}
 
@@ -1878,7 +1226,7 @@ const Customer = () => {
           show={show}
           setShow={setShow}
           filterData={filterData}
-          tableData={Customers1}
+          tableData={staticCustomers}
           page="customer"
           printData={printData}
         />
