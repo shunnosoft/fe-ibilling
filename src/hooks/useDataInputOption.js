@@ -1164,7 +1164,10 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       name: "promiseDate",
       type: "date",
       id: "promiseDate",
-      isVisible: bpSettings?.promiseDate && inputPermission.promiseDate,
+      isVisible:
+        status === "edit" &&
+        bpSettings?.promiseDate &&
+        inputPermission.promiseDate,
       disabled: status ? !formData.packageId : false,
       validation: false,
       label: t("promiseDate"),

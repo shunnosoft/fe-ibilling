@@ -7,6 +7,7 @@ import CustomerBillCollect from "../CustomerBillCollect";
 import { getConnectionFee } from "../../../../features/apiCalls";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
+import ComponentCustomModal from "../../../../components/common/customModal/ComponentCustomModal";
 
 const RechargeCustomer = ({ show, setShow, single, customerData }) => {
   const { t } = useTranslation();
@@ -28,24 +29,13 @@ const RechargeCustomer = ({ show, setShow, single, customerData }) => {
 
   return (
     <>
-      <Modal
+      <ComponentCustomModal
         show={show}
-        onHide={handleClose}
-        backdrop="static"
-        keyboard={false}
-        centered
+        setShow={setShow}
+        centered={false}
+        size="md"
+        header={t("recharge")}
       >
-        <ModalHeader closeButton>
-          <ModalTitle>
-            <h5
-              style={{ color: "#0abb7a" }}
-              className="modal-title"
-              id="customerModalDetails"
-            >
-              {t("recharge")}
-            </h5>
-          </ModalTitle>
-        </ModalHeader>
         <Card>
           <Card.Body className="pb-0">
             <table
@@ -83,27 +73,21 @@ const RechargeCustomer = ({ show, setShow, single, customerData }) => {
                     <b>{customerData?.balance}</b>
                   </td>
                 </tr>
-                <tr>
+                <tr className="border border-2 border-success bg-light">
                   <td>{t("connectionFee")}</td>
                   <td>
-                    <b>
-                      {customerData?.connectionFee
-                        ? customerData?.connectionFee
-                        : 0}
-                    </b>
+                    <b>{customerData?.connectionFee}</b>
                   </td>
-                  <td>{t("connectionFeeDue")}</td>
+                  <td>{paidConnectionFee ? t("paid") : t("due")}</td>
                   <td>
                     <b
                       className={
-                        customerData?.connectionFee - paidConnectionFee
-                          ? "text-danger"
-                          : "text-success"
+                        paidConnectionFee ? "text-success" : "text-danger"
                       }
                     >
-                      {customerData?.connectionFee
-                        ? customerData?.connectionFee - paidConnectionFee
-                        : 0}
+                      {paidConnectionFee
+                        ? paidConnectionFee
+                        : customerData?.connectionFee}
                     </b>
                   </td>
                 </tr>
@@ -118,7 +102,7 @@ const RechargeCustomer = ({ show, setShow, single, customerData }) => {
             setShow={setShow}
           />
         </Card>
-      </Modal>
+      </ComponentCustomModal>
     </>
   );
 };
