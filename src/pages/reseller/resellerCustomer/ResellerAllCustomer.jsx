@@ -109,23 +109,11 @@ const AllResellerCustomer = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false);
 
-  // status local state
-  const [filterStatus, setFilterStatus] = useState(null);
-
   // customer id state
   const [customerId, setCustomerId] = useState();
 
   // mikrotik check state
   const [mikrotikCheck, setMikrotikCheck] = useState(false);
-
-  // payment status state
-  const [filterPayment, setFilterPayment] = useState(null);
-
-  // user type state
-  const [filterUserType, setFilterUserType] = useState(null);
-
-  // reseller id state
-  const [resellerId, setResellerId] = useState("");
 
   //bulk-operations state
   const [bulkCustomer, setBulkCustomer] = useState([]);
@@ -273,15 +261,19 @@ const AllResellerCustomer = () => {
     { label: "selling_bandwidthBDT (Excluding VAT).", key: "monthlyFee" },
   ];
 
-  // find filter name
-  const resellerName = resellers.find((reseller) => reseller.id === resellerId);
-
   // filter data for pdf
   const filterData = {
-    reseller: resellerName?.name ? resellerName?.name : t("allReseller"),
-    status: filterStatus ? filterStatus : t("sokolCustomer"),
-    payment: filterPayment ? filterPayment : t("sokolCustomer"),
-    userType: filterUserType ? filterUserType : t("sokolCustomer"),
+    reseller: filterOptions.reseller
+      ? resellers.find((reseller) => reseller.id === filterOptions.reseller)
+          .name
+      : t("allReseller"),
+    status: filterOptions.status ? filterOptions.status : t("sokolCustomer"),
+    payment: filterOptions.paymentStatus
+      ? filterOptions.paymentStatus
+      : t("sokolCustomer"),
+    userType: filterOptions.userType
+      ? filterOptions.userType
+      : t("sokolCustomer"),
   };
 
   //export customer data
@@ -683,7 +675,7 @@ const AllResellerCustomer = () => {
                     <Accordion.Item eventKey="filter">
                       <Accordion.Body>
                         <DataFilter
-                          page="resellerCustomer"
+                          page="resellersCustomers"
                           customers={resellerCustomer}
                           setCustomers={setCustomer}
                           filterOptions={filterOptions}

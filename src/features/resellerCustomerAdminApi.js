@@ -45,11 +45,10 @@ export const getAllResellerCustomer = async (
   try {
     const res = await apiLink.get(`/reseller/all-customer/${ispOwner}`);
     dispatch(getAllResellerCustomerSuccess(res.data.customers));
-    setIsloading(false);
   } catch (error) {
     console.log(error.message);
-    setIsloading(false);
   }
+  setIsloading(false);
 };
 
 //Customers

@@ -43,6 +43,9 @@ const DataFilter = ({
   //get all pole Box
   const poleBox = useSelector((state) => state.area?.poleBox);
 
+  // get reseller
+  const resellers = useSelector((state) => state?.reseller.reseller);
+
   // mikrotik packages state
   const [mikrotikPackages, setMikrotikPackages] = useState([]);
 
@@ -245,6 +248,23 @@ const DataFilter = ({
       valueAccessor: "value",
     },
     {
+      name: "reseller",
+      type: "select",
+      id: "reseller",
+      value: filterOptions.reseller,
+      isVisible: ["resellersCustomers"].includes(page) ? true : false,
+      disabled: false,
+      onChange: (e) =>
+        setFilterOption({
+          ...filterOptions,
+          reseller: e.target.value,
+        }),
+      options: resellers,
+      firstOptions: t("allReseller"),
+      textAccessor: "name",
+      valueAccessor: "id",
+    },
+    {
       name: "allCustomer",
       type: "select",
       id: "allCustomer",
@@ -355,6 +375,35 @@ const DataFilter = ({
         },
       ],
       firstOptions: t("changeCustomer"),
+      textAccessor: "text",
+      valueAccessor: "value",
+    },
+    {
+      name: "userType",
+      type: "select",
+      id: "userType",
+      value: filterOptions.userType,
+      isVisible: ["resellersCustomers", "resellerCustomers"].includes(page)
+        ? true
+        : false,
+      disabled: false,
+      onChange: (e) => {
+        setFilterOption({
+          ...filterOptions,
+          userType: e.target.value,
+        });
+      },
+      options: [
+        {
+          text: t("pppoe"),
+          value: "pppoe",
+        },
+        {
+          text: t("static"),
+          value: "static",
+        },
+      ],
+      firstOptions: t("userType"),
       textAccessor: "text",
       valueAccessor: "value",
     },
