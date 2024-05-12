@@ -11,8 +11,11 @@ import apiLink from "../api/apiLink";
 import { publicRequest } from "../api/apiLink";
 import customerBillMonth from "../pages/Customer/customerCRUD/customerBillMonth";
 import ComponentCustomModal from "../components/common/customModal/ComponentCustomModal";
+import { useNavigate } from "react-router-dom";
 
 const PaymentModal = ({ customerData, isPublic }) => {
+  const navigate = useNavigate();
+
   // twelve month options
   const options = [
     { value: "January", label: "January" },
@@ -161,11 +164,17 @@ const PaymentModal = ({ customerData, isPublic }) => {
               bKash.create().onSuccess(data);
             } else {
               bKash.create().onError();
-              window.location.href = "/payment/failed";
+              navigate("/payment/failed", {
+                replace: true,
+                state: { error: data },
+              });
             }
           } catch (error) {
             bKash.create().onError();
-            window.location.href = "/payment/failed";
+            navigate("/payment/failed", {
+              replace: true,
+              state: { error: error },
+            });
             console.log(error);
           }
         },
@@ -190,16 +199,22 @@ const PaymentModal = ({ customerData, isPublic }) => {
               `${URL.execute}?paymentID=${paymentID}`,
               billData
             );
-
+            console.log(data);
             if (data.bill.paymentStatus === "paid") {
               window.location.href = "/payment/success";
             } else {
-              window.location.href = "/payment/failed";
+              navigate("/payment/failed", {
+                replace: true,
+                state: { error: data },
+              });
               bKash.execute().onError();
             }
           } catch (error) {
             bKash.execute().onError();
-            window.location.href = "/payment/failed";
+            navigate("/payment/failed", {
+              replace: true,
+              state: { error: error },
+            });
             console.log(error);
           }
         },

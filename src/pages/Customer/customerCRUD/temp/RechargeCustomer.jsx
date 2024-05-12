@@ -73,24 +73,28 @@ const RechargeCustomer = ({ show, setShow, single, customerData }) => {
                     <b>{customerData?.balance}</b>
                   </td>
                 </tr>
-                <tr className="border border-2 border-success bg-light">
-                  <td>{t("connectionFee")}</td>
-                  <td>
-                    <b>{customerData?.connectionFee}</b>
-                  </td>
-                  <td>{paidConnectionFee ? t("paid") : t("due")}</td>
-                  <td>
-                    <b
-                      className={
-                        paidConnectionFee ? "text-success" : "text-danger"
-                      }
-                    >
-                      {paidConnectionFee
-                        ? paidConnectionFee
-                        : customerData?.connectionFee}
-                    </b>
-                  </td>
-                </tr>
+                {customerData?.connectionFee ? (
+                  <tr className="border border-2 border-success bg-light">
+                    <td>{t("connectionFee")}</td>
+                    <td>
+                      <b>{customerData?.connectionFee}</b>
+                    </td>
+                    <td>{paidConnectionFee ? t("paid") : t("due")}</td>
+                    <td>
+                      <b
+                        className={
+                          paidConnectionFee ? "text-success" : "text-danger"
+                        }
+                      >
+                        {paidConnectionFee
+                          ? paidConnectionFee
+                          : customerData?.connectionFee}
+                      </b>
+                    </td>
+                  </tr>
+                ) : (
+                  ""
+                )}
               </tbody>
             </table>
           </Card.Body>

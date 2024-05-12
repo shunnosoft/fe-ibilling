@@ -59,7 +59,7 @@ import {
 } from "./features/apiCalls";
 import { useEffect } from "react";
 import Cancel from "./pages/success copy/Success";
-import Failed from "./pages/success copy 2/Success";
+import Failed from "./pages/success copy 2/Failed";
 import Package from "./pages/package/Package";
 import Settings from "./pages/settings/Settings";
 import Expenditure from "./pages/expenditure/Expenditure";
