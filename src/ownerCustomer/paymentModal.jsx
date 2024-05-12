@@ -11,11 +11,8 @@ import apiLink from "../api/apiLink";
 import { publicRequest } from "../api/apiLink";
 import customerBillMonth from "../pages/Customer/customerCRUD/customerBillMonth";
 import ComponentCustomModal from "../components/common/customModal/ComponentCustomModal";
-import { useNavigate } from "react-router-dom";
 
 const PaymentModal = ({ customerData, isPublic }) => {
-  const navigate = useNavigate();
-
   // twelve month options
   const options = [
     { value: "January", label: "January" },
@@ -164,17 +161,11 @@ const PaymentModal = ({ customerData, isPublic }) => {
               bKash.create().onSuccess(data);
             } else {
               bKash.create().onError();
-              navigate("/payment/failed", {
-                replace: true,
-                state: { error: data },
-              });
+              window.location.href = "/payment/failed";
             }
           } catch (error) {
             bKash.create().onError();
-            navigate("/payment/failed", {
-              replace: true,
-              state: { error: error },
-            });
+            window.location.href = "/payment/failed";
             console.log(error);
           }
         },
@@ -199,22 +190,16 @@ const PaymentModal = ({ customerData, isPublic }) => {
               `${URL.execute}?paymentID=${paymentID}`,
               billData
             );
-            console.log(data);
+
             if (data.bill.paymentStatus === "paid") {
               window.location.href = "/payment/success";
             } else {
-              navigate("/payment/failed", {
-                replace: true,
-                state: { error: data },
-              });
+              window.location.href = "/payment/failed";
               bKash.execute().onError();
             }
           } catch (error) {
             bKash.execute().onError();
-            navigate("/payment/failed", {
-              replace: true,
-              state: { error: error },
-            });
+            window.location.href = "/payment/failed";
             console.log(error);
           }
         },
