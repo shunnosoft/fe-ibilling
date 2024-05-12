@@ -19,10 +19,8 @@ const ISPOwnerEditModal = ({ show, setShow, ownerId }) => {
   const ispData = useSelector((state) => state.admin?.singleIspOwner);
 
   useEffect(() => {
-    if (ownerId) {
-      getSingleIspOwner(ownerId, dispatch, setIsLoading);
-    }
-  }, [ownerId]);
+    show && getSingleIspOwner(ownerId, dispatch, setIsLoading);
+  }, [show]);
 
   return (
     <>

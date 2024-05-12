@@ -48,8 +48,8 @@ const Invoices = ({ ownerId, companyName, isOpen, setIsOpen }) => {
 
   // dispatch data to api
   useEffect(() => {
-    if (ownerId) getIspOwnerInvoice(ownerId, dispatch, setIsLoading);
-  }, [ownerId]);
+    isOpen && getIspOwnerInvoice(ownerId, dispatch, setIsLoading);
+  }, [isOpen]);
 
   useEffect(() => {
     const singleInvoice = invoiceList.find(
