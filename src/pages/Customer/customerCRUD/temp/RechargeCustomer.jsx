@@ -1,4 +1,4 @@
-import { Card, Modal, ModalHeader, ModalTitle } from "react-bootstrap";
+import { Card } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 
 //internal imports
@@ -15,7 +15,7 @@ const RechargeCustomer = ({ show, setShow, single, customerData }) => {
 
   // get customer connection fee due form redux store
   const paidConnectionFee = useSelector(
-    (state) => state.customer.connectionFeeDue
+    (state) => state?.customer?.connectionFeeDue
   );
 
   // get api calls
@@ -73,27 +73,28 @@ const RechargeCustomer = ({ show, setShow, single, customerData }) => {
                     <b>{customerData?.balance}</b>
                   </td>
                 </tr>
-                {customerData?.connectionFee ? (
+
+                {customerData?.connectionFee > 0 && (
                   <tr className="border border-2 border-success bg-light">
                     <td>{t("connectionFee")}</td>
                     <td>
                       <b>{customerData?.connectionFee}</b>
                     </td>
-                    <td>{paidConnectionFee ? t("paid") : t("due")}</td>
+                    <td>{paidConnectionFee >= 0 ? t("paid") : t("due")}</td>
                     <td>
                       <b
                         className={
-                          paidConnectionFee ? "text-success" : "text-danger"
+                          paidConnectionFee >= 0
+                            ? "text-success"
+                            : "text-danger"
                         }
                       >
-                        {paidConnectionFee
+                        {paidConnectionFee >= 0
                           ? paidConnectionFee
                           : customerData?.connectionFee}
                       </b>
                     </td>
                   </tr>
-                ) : (
-                  ""
                 )}
               </tbody>
             </table>
