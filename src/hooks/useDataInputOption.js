@@ -1055,7 +1055,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
           resellerData?.permission?.addCustomerWithMobile
         : true,
       label: t("mobile"),
-      placeholder: "+8801XXXXXXXXX",
+      placeholder: "e.g. 01XXXXXXXXX",
       onChange: (e) => {
         setFormData({
           ...formData,

@@ -46,6 +46,9 @@ const DataFilter = ({
   // get reseller
   const resellers = useSelector((state) => state?.reseller.reseller);
 
+  // customers main data state
+  const [mainData, setMainData] = useState([]);
+
   // mikrotik packages state
   const [mikrotikPackages, setMikrotikPackages] = useState([]);
 
@@ -67,6 +70,26 @@ const DataFilter = ({
     // get sub area
     if (subAreas.length === 0) getSubAreasApi(dispatch, ispOwnerId);
   }, [page]);
+
+  // set customers in state
+  useEffect(() => {
+    let customerModified = [];
+
+    // add area to customers
+    customers?.map((c) => {
+      subAreas?.map((sub) => {
+        if (sub.id === c.subArea) {
+          customerModified.push({
+            ...c,
+            area: sub.area,
+          });
+        }
+      });
+    });
+
+    // set customers in state
+    setMainData(customerModified);
+  }, [customers, subAreas]);
 
   // mikrotik handler method
   const mikrotikHandler = async (id) => {
@@ -454,7 +477,7 @@ const DataFilter = ({
             className="btn btn-outline-primary"
             type="button"
             onClick={() =>
-              setCustomers(handleActiveFilter(customers, filterOptions))
+              setCustomers(handleActiveFilter(mainData, filterOptions))
             }
           >
             {t("filter")}

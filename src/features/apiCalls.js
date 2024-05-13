@@ -777,6 +777,7 @@ export const getIspOwnerCollector = async (
     const res = await apiLink.get(
       `dashboard/collector/state/${ispOwnerId}?year=${year}&month=${month}`
     );
+    console.log(res.data);
     dispatch(getIspOwnerCollectorSuccess(res.data));
   } catch (error) {
     console.log(error.response.data.message);

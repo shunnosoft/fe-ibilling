@@ -9,6 +9,7 @@ import { useTranslation } from "react-i18next";
 import { easeQuadIn } from "d3-ease";
 import ReactDatePicker from "react-datepicker";
 import { useDispatch, useSelector } from "react-redux";
+import { Accordion } from "react-bootstrap";
 
 // custom hooks import
 import useISPowner from "../../hooks/useISPOwner";
@@ -21,6 +22,8 @@ import { monthsName } from "./homeData";
 import {
   getAllPackages,
   getArea,
+  getDashboardBelowCollectorCardData,
+  getIspOwnerCollector,
   getIspOwnerData,
   getManagerDashboardCardData,
   getManagerDashboardCharts,
@@ -74,6 +77,11 @@ const ManagerDashboard = () => {
     (state) => state.chart.dashboardOverview
   );
 
+  // get dashboard Below collector card data form redux store
+  const dashboardBelowCollectorCardData = useSelector(
+    (state) => state.chart.dashboardBelowCollectorCardData
+  );
+
   //get payment invoice to check expiration
   const invoice = useSelector((state) => state.invoice.invoice);
 
@@ -89,6 +97,8 @@ const ManagerDashboard = () => {
   const [isLoading, setIsloading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [belowCardLoading, setBelowCardLoading] = useState(false);
+  const [managerCardLoading, setManagerCardLoading] = useState(false);
+  const [collectorCardLoading, setCollectorCardLoading] = useState(false);
   const [packageLoading, setPackageLoading] = useState(false);
   const [overViewLoading, setOverViewLoading] = useState(false);
 
@@ -97,6 +107,9 @@ const ManagerDashboard = () => {
   const [collection, setCollection] = useState([]);
   const [count, setCount] = useState([]);
   const [currentCollector, setCurrentCollector] = useState("");
+
+  // accordion eventKey state
+  const [accordionKey, setAccordionKey] = useState([]);
 
   //all dates states
   const date = new Date();
@@ -245,14 +258,45 @@ const ManagerDashboard = () => {
       filterData.month,
       currentCollector
     );
+  };
 
-    // get dashboard below card api
-    getManagerDashboardCardData(
-      dispatch,
-      setBelowCardLoading,
-      managerId,
-      filterData
-    );
+  // dashboard accordion change api call
+  const handleAccordionChange = (eventKey) => {
+    const filterData = {
+      year: filterDate.getFullYear(),
+      month: filterDate.getMonth() + 1,
+    };
+
+    // set accordion key
+    setAccordionKey(eventKey);
+
+    if (eventKey.includes("manager")) {
+      // get dashboard below card api
+      getManagerDashboardCardData(
+        dispatch,
+        setManagerCardLoading,
+        managerId,
+        filterData
+      );
+    }
+
+    if (eventKey.includes("collector")) {
+      getDashboardBelowCollectorCardData(
+        dispatch,
+        setCollectorCardLoading,
+        ispOwnerId,
+        filterData
+      );
+
+      // get all collector api
+      getIspOwnerCollector(
+        dispatch,
+        ispOwnerId,
+        filterData?.year,
+        filterData?.month,
+        setCollectorCardLoading
+      );
+    }
   };
 
   //chartsData for graph
@@ -575,13 +619,43 @@ const ManagerDashboard = () => {
               </FourGround>
             )}
 
-            {/* dashboard below card */}
-            <DashboardCard
-              dashboardCard={customerStat}
-              isLoading={belowCardLoading}
-              filterDate={filterDate}
-              cardRole={"managerBelowCard"}
-            />
+            <Accordion
+              alwaysOpen
+              onSelect={handleAccordionChange}
+              activeKey={accordionKey}
+            >
+              <Accordion.Item eventKey="manager">
+                <Accordion.Header className="shadow-none">
+                  <h4 className="mb-0">{t("roleManager")}</h4>
+                </Accordion.Header>
+                <Accordion.Body>
+                  {/* dashboard below card */}
+                  <DashboardCard
+                    dashboardCard={customerStat}
+                    isLoading={managerCardLoading}
+                    filterDate={filterDate}
+                    cardRole="managerBelowCard"
+                  />
+                </Accordion.Body>
+              </Accordion.Item>
+
+              {dashboardOverView.collectorStat?.length > 0 && (
+                <Accordion.Item eventKey="collector">
+                  <Accordion.Header className="shadow-none">
+                    <h4 className="mb-0">{t("roleCollector")}</h4>
+                  </Accordion.Header>
+                  <Accordion.Body>
+                    {/* dashboard below collector card */}
+                    <DashboardCard
+                      dashboardCard={dashboardBelowCollectorCardData}
+                      isLoading={collectorCardLoading}
+                      filterDate={filterDate}
+                      cardRole="collectorCard"
+                    />
+                  </Accordion.Body>
+                </Accordion.Item>
+              )}
+            </Accordion>
           </div>
           <Footer />
         </FontColor>
