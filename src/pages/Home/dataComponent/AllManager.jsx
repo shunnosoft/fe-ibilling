@@ -29,12 +29,12 @@ const AllManager = ({ modalShow, setModalShow, isLoading }) => {
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        width: "19%",
+        width: "10%",
         Header: t("name"),
         accessor: "name",
       },
       {
-        width: "14%",
+        width: "12%",
         Header: t("todayCollection"),
 
         Cell: ({ row: { original } }) => (
@@ -51,7 +51,8 @@ const AllManager = ({ modalShow, setModalShow, isLoading }) => {
         Header: t("collection"),
         Cell: ({ row: { original } }) => (
           <div>
-            {original?.totalBillCollected}&nbsp;
+            <span className="text-success">{original?.totalBillCollected}</span>
+            &nbsp;
             <span className="text-primary">
               ({original?.totalBillCollectionByManagerCount})
             </span>
@@ -59,19 +60,40 @@ const AllManager = ({ modalShow, setModalShow, isLoading }) => {
         ),
       },
       {
-        width: "14%",
+        width: "10%",
         Header: t("connectionFee"),
         accessor: "totalConnectionFeeCollected",
+        Cell: ({ row: { original } }) => (
+          <span className="text-success">
+            {original?.totalConnectionFeeCollected}
+          </span>
+        ),
       },
       {
-        width: "15%",
+        width: "12%",
+        Header: t("depositCollection"),
+        Cell: ({ row: { original } }) => (
+          <span className="text-success">{original?.depositCollection}</span>
+        ),
+      },
+      {
+        width: "10%",
         Header: t("totalDepositCollector"),
-        accessor: "totalDeposit",
+        Cell: ({ row: { original } }) => (
+          <span className="text-danger">{original?.totalDeposit}</span>
+        ),
       },
       {
-        width: "15%",
+        width: "10%",
+        Header: t("expense"),
+        Cell: ({ row: { original } }) => (
+          <span className="text-danger">{original?.expenditure}</span>
+        ),
+      },
+      {
+        width: "11%",
         Header: t("previousBalance"),
-        accessor: "prevMonthBalance",
+        accessor: "prevMonth.balance",
       },
       {
         width: "10%",

@@ -151,7 +151,6 @@ export const hotspotCustomerPackage = async (dispatch, ispOwnerId) => {
 export const userStaffs = async (dispatch) => {
   try {
     const res = await apiLink.get(`/ispOwner/staffs`);
-    console.log(res.data);
     dispatch(getUserStaffSuccess(res.data));
   } catch (error) {
     console.log(error.response.data.message);

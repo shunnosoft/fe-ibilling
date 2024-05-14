@@ -25,8 +25,19 @@ const DataFilter = ({
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
+  // current month date
+  let today = new Date();
+
+  // current start & end date
+  var firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+  var lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+
+  // current date and time
+  firstDayOfMonth.setHours(0, 0, 0, 0);
+  today.setHours(23, 59, 59, 999);
+
   // get user & current user data form useISPOwner hooks
-  const { ispOwnerId, bpSettings, hasMikrotik } = useISPowner();
+  const { ispOwnerId, bpSettings, hasMikrotik, userData } = useISPowner();
 
   //get mikrotiks from redux store
   const mikrotiks = useSelector((state) => state?.mikrotik?.mikrotik);
@@ -109,6 +120,50 @@ const DataFilter = ({
 
   // filter inputs options
   const filterInputs = [
+    // {
+    //   name: "month",
+    //   type: "date",
+    //   id: "month",
+    //   isVisible: ["newCustomer"].includes(page),
+    //   disabled: false,
+    //   component: "DatePicker",
+    //   dateFormat: "MMM-yyyy",
+    //   showMonthYearPicker: true,
+    //   showFullMonthYearPicker: true,
+    //   minDate: new Date(userData?.createdAt),
+    //   maxDate: firstDayOfMonth,
+    //   selected: filterOptions.month,
+    //   onChange: (date) => {
+    //     setFilterOption({
+    //       ...filterOptions,
+    //       month: date,
+    //     });
+    //   },
+    // },
+    // {
+    //   ...(filterOptions?.startCreateDate !== "Invalid Date" &&
+    //   filterOptions?.startCreateDate !== undefined
+    //     ? {
+    //         name: "startCreateDate",
+    //         type: "date",
+    //         id: "startCreateDate",
+    //         isVisible: ["newCustomer"].includes(page),
+    //         disabled: false,
+    //         placeholderText: t("startBillingCycleDate"),
+    //         component: "DatePicker",
+    //         dateFormat: "MMM dd yyyy",
+    //         // minDate: firstDayOfMonth,
+    //         // maxDate: lastDayOfMonth,
+    //         selected: filterOptions?.startCreateDate,
+    //         onChange: (date) => {
+    //           setFilterOption({
+    //             ...filterOptions,
+    //             startCreateDate: date,
+    //           });
+    //         },
+    //       }
+    //     : ""),
+    // },
     {
       name: "mikrotik",
       type: "select",
@@ -343,6 +398,8 @@ const DataFilter = ({
       dateFormat: "yyyy MM dd hh:mm a",
       timeIntervals: 60,
       showTimeSelect: "showTimeSelect",
+      minDate: firstDayOfMonth,
+      maxDate: lastDayOfMonth,
       selected: filterOptions.startDate,
       onChange: (date) => {
         setFilterOption({
@@ -362,6 +419,8 @@ const DataFilter = ({
       dateFormat: "yyyy MM dd hh:mm a",
       timeIntervals: 60,
       showTimeSelect: "showTimeSelect",
+      minDate: firstDayOfMonth,
+      maxDate: lastDayOfMonth,
       selected: filterOptions.endDate,
       onChange: (date) => {
         setFilterOption({
@@ -436,7 +495,12 @@ const DataFilter = ({
   const handleFilterReset = () => {
     // set empty filter option
     setFilterOption(
-      Object.fromEntries(filterInputs.map((input) => [input.name, ""]))
+      Object.fromEntries(
+        filterInputs.map((input) => [
+          !["month"].includes(input.name) && input.name,
+          "",
+        ])
+      )
     );
 
     // set empty mikrotik packages
