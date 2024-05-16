@@ -294,15 +294,14 @@ const CustomerDetails = ({ show, setShow, customerId }) => {
                         </li>
                       )}
 
-                      {data?.monthlyFee > 0 &&
-                        ((role === "reseller" &&
-                          permission?.customerRecharge) ||
-                          (role === "collector" &&
-                            resellerData.permission?.customerRecharge &&
-                            permissions?.billPosting)) && (
-                          <>
-                            {/* customer bill colleciton */}
-
+                      {data?.monthlyFee > 0 && (
+                        <>
+                          {/* customer bill colleciton */}
+                          {((role === "reseller" &&
+                            permission?.customerRecharge) ||
+                            (role === "collector" &&
+                              resellerData.permission?.customerRecharge &&
+                              permissions?.billPosting)) && (
                             <li
                               className="profileSetting"
                               onClick={() => setProfileOption("recharge")}
@@ -319,26 +318,23 @@ const CustomerDetails = ({ show, setShow, customerId }) => {
                                 {t("recharge")}
                               </span>
                             </li>
+                          )}
 
-                            {/* customer bill collection report */}
-                            <li
-                              className="profileSetting"
-                              onClick={() => setProfileOption("report")}
-                              id={
-                                profileOption === "report"
-                                  ? "activeSetting"
-                                  : ""
-                              }
-                            >
-                              <div className="profileOptions">
-                                <Collection size={22} />
-                              </div>
-                              <span className="options_name">
-                                {t("report")}
-                              </span>
-                            </li>
-                          </>
-                        )}
+                          {/* customer bill collection report */}
+                          <li
+                            className="profileSetting"
+                            onClick={() => setProfileOption("report")}
+                            id={
+                              profileOption === "report" ? "activeSetting" : ""
+                            }
+                          >
+                            <div className="profileOptions">
+                              <Collection size={22} />
+                            </div>
+                            <span className="options_name">{t("report")}</span>
+                          </li>
+                        </>
+                      )}
 
                       {/* customer single message  */}
                       {data?.mobile &&

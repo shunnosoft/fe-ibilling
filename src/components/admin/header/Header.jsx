@@ -8,6 +8,7 @@ import {
   EnvelopePlus,
   MoonFill,
   PersonFill,
+  Recycle,
   SunFill,
 } from "react-bootstrap-icons";
 
@@ -26,6 +27,7 @@ import FormatNumber from "../../common/NumberFormat";
 import { useTranslation } from "react-i18next";
 import ResellerOnlinePayment from "../../../reseller/onlinePayment/ResellerOnlinePayment";
 import SMSPurchase from "../../../pages/message/SMSPurchase";
+import BillingCycle from "./BillingCycle";
 
 export default function Header(props) {
   const { t } = useTranslation();
@@ -246,6 +248,19 @@ export default function Header(props) {
                 ""
               )}
 
+              {userRole === "ispOwner" && !invoiceDate && (
+                <div
+                  title={t("billingCycle")}
+                  className="headerIcon"
+                  onClick={() => {
+                    setModalStatus("billingCycle");
+                    setShow(true);
+                  }}
+                >
+                  <Recycle size={22} />
+                </div>
+              )}
+
               {!invoiceDate &&
                 ["ispOwner", "manager", "reseller"].includes(userRole) && (
                   <div
@@ -414,6 +429,11 @@ export default function Header(props) {
       {/* sms purchase modal */}
       {modalStatus === "buySMS" && (
         <SMSPurchase show={show} setShow={setShow} />
+      )}
+
+      {/* billing cycle modal */}
+      {modalStatus === "billingCycle" && (
+        <BillingCycle show={show} setShow={setShow} ispOwner={ispOwnerData} />
       )}
 
       <ResellerOnlinePayment show={paymentShow} setShow={setPaymentShow} />

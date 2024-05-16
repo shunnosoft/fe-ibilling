@@ -2903,6 +2903,7 @@ export const purchaseSms = async (
 export const getUnpaidInvoice = async (dispatch, ispOwnerId) => {
   try {
     const res = await apiLink.get(`/dashboard/invoice/unpaid/${ispOwnerId}`);
+    console.log(res);
     if (
       res.data &&
       new Date(res.data?.dueDate).getTime() < new Date().getTime()
@@ -3102,13 +3103,27 @@ export const getIspOwnerData = async (
 export const getIspOwnerStatus = async (dispatch, ispOwnerId) => {
   const res = await apiLink.get(`auth/status/check/${ispOwnerId}`);
 
-  if (res?.data.status === "FORBIDDEN") {
+  // ispOwner invoice check due date and redirect
+  if (
+    res?.data.invoice &&
+    new Date(res.data.invoice?.dueDate).getTime() < new Date().getTime()
+  ) {
+    if (
+      window.location.pathname !== "/payment" &&
+      window.location.pathname !== "/acountSuspend"
+    ) {
+      window.location.href = "/payment";
+    }
+  }
+
+  // ispOwner status check and redirect
+  if (res?.data.status === "FORBIDDEN" || res?.data.ispOwner.status === "new") {
     if (window.location.pathname !== "/acountSuspend") {
       window.location.href = "/acountSuspend";
     }
   }
-
-  dispatch(getIspOwnerManagerSuccess(res.data));
+  dispatch(getUnpaidInvoiceSuccess(res?.data.invoice));
+  // dispatch(getIspOwnerManagerSuccess(res.data));
   try {
   } catch (error) {
     console.log(error.response.data.message);

@@ -51,6 +51,7 @@ import ActiveCustomerPDF from "../Customer/ActiveCustomerPrint";
 import ReactToPrint from "react-to-print";
 import useISPowner from "../../hooks/useISPOwner";
 import { btrcHeader, newBTRCReport } from "../common/btrcReport";
+import { badge } from "../../components/common/Utils";
 
 export default function ConfigMikrotik() {
   const { t } = useTranslation();
@@ -343,7 +344,7 @@ export default function ConfigMikrotik() {
         accessor: "customerId",
       },
       {
-        width: "7%",
+        width: "5%",
         Header: t("status"),
         accessor: "running",
         Cell: ({ row: { original } }) => (
@@ -362,7 +363,7 @@ export default function ConfigMikrotik() {
         accessor: "name",
       },
       {
-        width: "12%",
+        width: "10%",
         Header: t("PPPoEName"),
         accessor: "pppoe.name",
       },
@@ -410,7 +411,7 @@ export default function ConfigMikrotik() {
         ),
       },
       {
-        width: "12%",
+        width: "10%",
         Header: "Last Link Up",
         accessor: "lastLinkUpTime",
         Cell: ({ row: { original } }) => (
@@ -421,7 +422,7 @@ export default function ConfigMikrotik() {
         ),
       },
       {
-        width: "12%",
+        width: "10%",
         Header: "Last Logout",
         accessor: "lastLogoutTime",
         Cell: ({ row: { original } }) => (
@@ -430,6 +431,11 @@ export default function ConfigMikrotik() {
               moment(original.lastLogoutTime).format("MMM DD YYYY hh:mm A")}
           </div>
         ),
+      },
+      {
+        width: "10%",
+        Header: t("status"),
+        Cell: ({ row: { original } }) => <div>{badge(original?.status)}</div>,
       },
       {
         width: "5%",

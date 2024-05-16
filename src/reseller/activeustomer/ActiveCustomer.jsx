@@ -28,6 +28,7 @@ import moment from "moment";
 import { Accordion } from "react-bootstrap";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
+import { badge } from "../../components/common/Utils";
 
 const ResellserActiveCustomer = () => {
   const { t } = useTranslation();
@@ -167,14 +168,14 @@ const ResellserActiveCustomer = () => {
   const columns = React.useMemo(
     () => [
       {
-        width: "6%",
+        width: "4%",
         Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        width: "7%",
+        width: "5%",
         Header: t("status"),
         accessor: "running",
         Cell: ({ row: { original } }) => (
@@ -193,17 +194,17 @@ const ResellserActiveCustomer = () => {
         accessor: "name",
       },
       {
-        width: "13%",
+        width: "10%",
         Header: t("PPPoEName"),
         accessor: "pppoe.name",
       },
       {
-        width: "12%",
+        width: "10%",
         Header: t("ip"),
         accessor: "ip",
       },
       {
-        width: "12%",
+        width: "10%",
         Header: t("package"),
         accessor: "pppoe.profile",
       },
@@ -235,7 +236,7 @@ const ResellserActiveCustomer = () => {
         ),
       },
       {
-        width: "12%",
+        width: "10%",
         Header: "Last Link Up",
         accessor: "lastLinkUpTime",
         Cell: ({ row: { original } }) => (
@@ -246,7 +247,7 @@ const ResellserActiveCustomer = () => {
         ),
       },
       {
-        width: "12%",
+        width: "10%",
         Header: "Last Logout",
         accessor: "lastLogoutTime",
         Cell: ({ row: { original } }) => (
@@ -255,6 +256,11 @@ const ResellserActiveCustomer = () => {
               moment(original.lastLogoutTime).format("YYYY/MM/DD hh:mm A")}
           </div>
         ),
+      },
+      {
+        width: "10%",
+        Header: t("status"),
+        Cell: ({ row: { original } }) => <div>{badge(original?.status)}</div>,
       },
       {
         width: "5%",

@@ -4,7 +4,7 @@ import Sidebar from "../../components/admin/sidebar/Sidebar";
 import useDash from "../../assets/css/dash.module.css";
 import { FontColor, FourGround } from "../../assets/js/theme";
 import { useTranslation } from "react-i18next";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import useISPowner from "../../hooks/useISPOwner";
 import { getAllWebhookMessage } from "../../features/apiCalls";
 import Table from "../../components/table/Table";
@@ -29,10 +29,7 @@ const WebhookMessage = () => {
   var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
 
   // get user & current user data form useISPOwner hook
-  const { ispOwnerData, ispOwnerId, bpSettings, userData } = useISPowner();
-
-  // // get customer webhook paymnet message data from redux store
-  // const allMessage = useSelector((state) => state?.payment);
+  const { ispOwnerData, userData } = useISPowner();
 
   // loading state
   const [isLoading, setIsLoading] = useState(false);
@@ -130,14 +127,24 @@ const WebhookMessage = () => {
   const columns = useMemo(
     () => [
       {
-        width: "10%",
+        width: "5%",
         Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        width: "50%",
+        width: "10%",
+        Header: t("mobile"),
+        accessor: "mobile",
+      },
+      {
+        width: "10%",
+        Header: t("amount"),
+        accessor: "amount",
+      },
+      {
+        width: "35%",
         Header: t("message"),
         accessor: "message",
       },
@@ -171,7 +178,7 @@ const WebhookMessage = () => {
         Header: t("createdAt"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("YYYY-MM-DD hh:mm A");
+          return moment(value).format("YYYY/MM/DD");
         },
       },
     ],

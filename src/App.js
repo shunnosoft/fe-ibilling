@@ -147,7 +147,7 @@ function App() {
       userRole === "collector" ||
       userRole === "reseller"
     ) {
-      getUnpaidInvoice(dispatch, ispOwnerId);
+      // getUnpaidInvoice(dispatch, ispOwnerId);
       getIspOwnerStatus(dispatch, ispOwnerId);
     }
   }, [ispOwnerId, userRole]);

@@ -21,7 +21,7 @@ const AcountWorning = () => {
   const navigate = useNavigate();
 
   // get user & current user data form useISPOwner hooks
-  const { ispOwnerId } = useISPowner();
+  const { ispOwnerId, ispOwnerData } = useISPowner();
 
   //get payment invoice to check expiration
   const invoice = useSelector((state) => state.invoice.invoice);
@@ -59,13 +59,25 @@ const AcountWorning = () => {
             <FontColor>
               <FourGround>
                 <div className="border border-3 text-center p-4">
-                  <h2 className="acount_title">ACCOUNT SUSPENDED</h2>
+                  {ispOwnerData.status === "new" ? (
+                    <h2 className="acount_title border-primary text-primary">
+                      PLEASE ACTIVATE
+                    </h2>
+                  ) : (
+                    <h2 className="acount_title">ACCOUNT SUSPENDED</h2>
+                  )}
 
                   <div className="support_document">
-                    <p>
-                      Your account has been suspended for violating our terms
-                      and service.
-                    </p>
+                    {ispOwnerData.status === "new" ? (
+                      <>
+                        <p>Your Acount is not Active yet!</p>
+                      </>
+                    ) : (
+                      <p>
+                        Your account has been suspended for violating our terms
+                        and service.
+                      </p>
+                    )}
                     <p>Please contact support for further assistance.</p>
 
                     <p className="text-success">Pay to Activate your Account</p>
