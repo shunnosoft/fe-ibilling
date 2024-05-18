@@ -15,10 +15,12 @@ import {
   ArrowBarRight,
   ArrowClockwise,
   FilterCircle,
+  PenFill,
 } from "react-bootstrap-icons";
 import Loader from "../../components/common/Loader";
-import { Accordion, Card, Collapse } from "react-bootstrap";
+import { Accordion } from "react-bootstrap";
 import DatePicker from "react-datepicker";
+import ReferenceIDEdit from "./modal/ReferenceIDEdit";
 
 const WebhookMessage = () => {
   const { t } = useTranslation();
@@ -40,6 +42,13 @@ const WebhookMessage = () => {
   // get customer webhook paymnet message data
   const [allMessage, setAllMessage] = useState([]);
   const [mainData, setMainData] = useState([]);
+
+  // modal handle state
+  const [modalStatus, setModalStatus] = useState("");
+  const [show, setShow] = useState(false);
+
+  // message id state
+  const [message, setMessage] = useState("");
 
   // filter Accordion handle state
   const [activeKeys, setActiveKeys] = useState("");
@@ -133,16 +142,16 @@ const WebhookMessage = () => {
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
-      {
-        width: "10%",
-        Header: t("mobile"),
-        accessor: "mobile",
-      },
-      {
-        width: "10%",
-        Header: t("amount"),
-        accessor: "amount",
-      },
+      // {
+      //   width: "10%",
+      //   Header: t("mobile"),
+      //   accessor: "mobile",
+      // },
+      // {
+      //   width: "10%",
+      //   Header: t("amount"),
+      //   accessor: "amount",
+      // },
       {
         width: "35%",
         Header: t("message"),
@@ -179,6 +188,30 @@ const WebhookMessage = () => {
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
           return moment(value).format("YYYY/MM/DD");
+        },
+      },
+      {
+        width: "5%",
+        Header: t("action"),
+        id: "option",
+        Cell: ({ row: { original } }) => {
+          return (
+            <div className="d-flex justify-content-center align-items-center">
+              {original.status === "REJECTED" && (
+                <button
+                  className="btn btn-sm btn-outline-secondary p-1"
+                  title={t("edit")}
+                  onClick={() => {
+                    setModalStatus("reference");
+                    setMessage(original);
+                    setShow(true);
+                  }}
+                >
+                  <PenFill size={20} />
+                </button>
+              )}
+            </div>
+          );
         },
       },
     ],
@@ -226,60 +259,6 @@ const WebhookMessage = () => {
                         />
                       )}
                     </div>
-
-                    {/* <Collapse in={open} dimension="width">
-                      <div id="example-collapse-text">
-                        <Card className="cardCollapse border-0">
-                          <div className="d-flex align-items-center">
-                            <div className="addAndSettingIcon">
-                              <CSVLink
-                                data={reportForCsVTableInfo}
-                                filename={userData.company}
-                                headers={reportForCsVTableInfoHeader}
-                                title="Bill Report"
-                              >
-                                <FiletypeCsv className="addcutmButton" />
-                              </CSVLink>
-                            </div>
-
-                            <div className="addAndSettingIcon">
-                              <ReactToPrint
-                                documentTitle={t("billReport")}
-                                trigger={() => (
-                                  <PrinterFill
-                                    title={t("print")}
-                                    className="addcutmButton"
-                                  />
-                                )}
-                                content={() => componentRef.current}
-                              />
-                            </div>
-                          </div>
-                        </Card>
-                      </div>
-                    </Collapse> */}
-
-                    {!open && (
-                      <ArrowBarLeft
-                        className="ms-1"
-                        size={34}
-                        style={{ cursor: "pointer" }}
-                        onClick={() => setOpen(!open)}
-                        aria-controls="example-collapse-text"
-                        aria-expanded={open}
-                      />
-                    )}
-
-                    {open && (
-                      <ArrowBarRight
-                        className="ms-1"
-                        size={34}
-                        style={{ cursor: "pointer" }}
-                        onClick={() => setOpen(!open)}
-                        aria-controls="example-collapse-text"
-                        aria-expanded={open}
-                      />
-                    )}
                   </div>
                 </div>
               </FourGround>
@@ -401,6 +380,11 @@ const WebhookMessage = () => {
           </div>
         </div>
       </div>
+
+      {/* webhook message reference id edit modal */}
+      {modalStatus === "reference" && (
+        <ReferenceIDEdit show={show} setShow={setShow} message={message} />
+      )}
     </>
   );
 };

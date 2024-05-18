@@ -4118,7 +4118,7 @@ export const depositReportAmountUpdate = async (
   setIsLoading(false);
 };
 
-//  deposit update api
+// get all webhook message
 export const getAllWebhookMessage = async (
   dispatch,
   dataGet,
@@ -4128,9 +4128,42 @@ export const getAllWebhookMessage = async (
   setIsLoading(true);
   try {
     const res = await axios.get(
-      `https://shunnoit.top/shunno-bkash/api/v1/webhooks/messages?netfeeId=${dataGet.netfeeId}&startDate=${dataGet.startDate}&endDate=${dataGet.endDate}&sort=dsc`
+      `https://shunnoit.top/shunno-bkash/api/v1/webhooks/messages?netfeeId=${dataGet.netfeeId}&startDate=${dataGet.startDate}&endDate=${dataGet.endDate}&sort=dsc`,
+      {
+        headers: {
+          originkey: "BJK&!JKNM@",
+        },
+      }
     );
     setAllMessage(res?.data.data.data);
+    // dispatch(getCustomerWebhookMessageSuccess(res?.data.data.data));
+  } catch (error) {
+    toast.error(error?.response?.data.message);
+  }
+  setIsLoading(false);
+};
+
+// webhook message reference id update api
+export const messageReferenceIDUpdate = async (
+  dispatch,
+  data,
+  messageId,
+  setIsLoading,
+  setShow
+) => {
+  setIsLoading(true);
+  try {
+    const res = await axios.put(
+      `https://shunnoit.top/shunno-bkash/api/v1/webhooks/messages/${messageId}`,
+      data,
+      {
+        headers: {
+          originkey: "BJK&!JKNM@",
+        },
+      }
+    );
+    setShow(false);
+    // setAllMessage(res?.data.data.data);
     // dispatch(getCustomerWebhookMessageSuccess(res?.data.data.data));
   } catch (error) {
     toast.error(error?.response?.data.message);

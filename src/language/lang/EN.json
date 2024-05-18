@@ -940,5 +940,7 @@
   "selectMikrotikPackage": "Select Mikrotik Package",
   "trxID": "TrxID",
   "tutorial": "Tutorial",
-  "changeCustomer": "Change Customer"
+  "changeCustomer": "Change Customer",
+  "editReferenceID": "Change the Reference Number",
+  "refNo": "Ref No"
 }
