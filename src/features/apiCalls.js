@@ -103,8 +103,9 @@ import {
   getCustomerBillReport,
   deleteCustomerBillReport,
   deleteBillReportSuccess,
-  depositUpdateSuccess,
-  getCustomerWebhookMessageSuccess,
+  getCustomersWebhookMessageSuccess,
+  getAllWebhookMessageSuccess,
+  updateReferenceIDSuccess,
 } from "./paymentSlice";
 import {
   getChartSuccess,
@@ -188,8 +189,6 @@ import {
   getNetFeeCustomerSuccess,
 } from "./customerCrossCheckSlice";
 import { updatePermissionSuccess } from "./adminNetFeeSupportSlice";
-import { Link, Navigate, redirect } from "react-router-dom";
-import AcountWorning from "../components/modals/error/AcountWorning";
 import axios from "axios";
 
 const netFeeLang = localStorage.getItem("netFee:lang");
@@ -4119,12 +4118,7 @@ export const depositReportAmountUpdate = async (
 };
 
 // get all webhook message
-export const getAllWebhookMessage = async (
-  dispatch,
-  dataGet,
-  setIsLoading,
-  setAllMessage
-) => {
+export const getAllWebhookMessage = async (dispatch, dataGet, setIsLoading) => {
   setIsLoading(true);
   try {
     const res = await axios.get(
@@ -4135,8 +4129,7 @@ export const getAllWebhookMessage = async (
         },
       }
     );
-    setAllMessage(res?.data.data.data);
-    // dispatch(getCustomerWebhookMessageSuccess(res?.data.data.data));
+    dispatch(getAllWebhookMessageSuccess(res?.data.data.data));
   } catch (error) {
     toast.error(error?.response?.data.message);
   }
@@ -4162,9 +4155,9 @@ export const messageReferenceIDUpdate = async (
         },
       }
     );
+    dispatch(updateReferenceIDSuccess(res?.data));
+
     setShow(false);
-    // setAllMessage(res?.data.data.data);
-    // dispatch(getCustomerWebhookMessageSuccess(res?.data.data.data));
   } catch (error) {
     toast.error(error?.response?.data.message);
   }

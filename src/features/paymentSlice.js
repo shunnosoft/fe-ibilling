@@ -108,13 +108,18 @@ const paymentSlice = createSlice({
         (item) => item.id !== action.payload?.monthlyBill.id
       );
     },
-  },
 
-  //get customer webhook paymnet message
-  getCustomerWebhookMessageSuccess: (state, action) => {
-    console.log("first");
-    console.log(action);
-    // state.webhookMessage = action.payload;
+    // webhook message action
+    getAllWebhookMessageSuccess: (state, action) => {
+      state.webhookMessage = action.payload;
+    },
+
+    // update webhook message reference action
+    updateReferenceIDSuccess: (state, action) => {
+      state.webhookMessage[
+        state.webhookMessage.findIndex((item) => item.id === action.payload.id)
+      ] = action.payload;
+    },
   },
 });
 
@@ -138,6 +143,7 @@ export const {
   updateDepositReportSuccess,
   getCustomerBillReport,
   deleteCustomerBillReport,
-  getCustomerWebhookMessageSuccess,
+  getAllWebhookMessageSuccess,
+  updateReferenceIDSuccess,
 } = paymentSlice.actions;
 export default paymentSlice.reducer;

@@ -1,25 +1,26 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { ToastContainer } from "react-toastify";
+import { useTranslation } from "react-i18next";
+import moment from "moment";
+import {
+  ArrowClockwise,
+  FilterCircle,
+  PencilSquare,
+  SendCheck,
+} from "react-bootstrap-icons";
+import { Accordion } from "react-bootstrap";
+import DatePicker from "react-datepicker";
+import { useDispatch, useSelector } from "react-redux";
+
+// internal import
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import useDash from "../../assets/css/dash.module.css";
 import { FontColor, FourGround } from "../../assets/js/theme";
-import { useTranslation } from "react-i18next";
-import { useDispatch } from "react-redux";
 import useISPowner from "../../hooks/useISPOwner";
 import { getAllWebhookMessage } from "../../features/apiCalls";
 import Table from "../../components/table/Table";
 import { badge } from "../../components/common/Utils";
-import moment from "moment";
-import {
-  ArrowBarLeft,
-  ArrowBarRight,
-  ArrowClockwise,
-  FilterCircle,
-  PenFill,
-} from "react-bootstrap-icons";
 import Loader from "../../components/common/Loader";
-import { Accordion } from "react-bootstrap";
-import DatePicker from "react-datepicker";
 import ReferenceIDEdit from "./modal/ReferenceIDEdit";
 
 const WebhookMessage = () => {
@@ -33,14 +34,13 @@ const WebhookMessage = () => {
   // get user & current user data form useISPOwner hook
   const { ispOwnerData, userData } = useISPowner();
 
+  // get customers webhook paymnet message data
+  const messages = useSelector((state) => state?.payment?.webhookMessage);
+
   // loading state
   const [isLoading, setIsLoading] = useState(false);
 
-  // Collapse handle state
-  const [open, setOpen] = useState(false);
-
   // get customer webhook paymnet message data
-  const [allMessage, setAllMessage] = useState([]);
   const [mainData, setMainData] = useState([]);
 
   // modal handle state
@@ -100,21 +100,22 @@ const WebhookMessage = () => {
     }
 
     filterDate.getMonth() + 1 &&
-      getAllWebhookMessage(dispatch, dataGet, setIsLoading, setAllMessage);
+      getAllWebhookMessage(dispatch, dataGet, setIsLoading);
   }, [filterDate]);
 
+  // set webhook message in state
   useEffect(() => {
-    setMainData(allMessage);
-  }, [allMessage]);
+    setMainData(messages);
+  }, [messages]);
 
   // reload handler
   const reloadHandler = () => {
-    getAllWebhookMessage(dispatch, dataGet, setIsLoading, setAllMessage);
+    getAllWebhookMessage(dispatch, dataGet, setIsLoading);
   };
 
   //
   const onClickFilter = () => {
-    let arr = [...allMessage];
+    let arr = [...messages];
 
     if (status) {
       arr = arr.filter((item) => item.status === status);
@@ -197,18 +198,20 @@ const WebhookMessage = () => {
         Cell: ({ row: { original } }) => {
           return (
             <div className="d-flex justify-content-center align-items-center">
-              {original.status === "REJECTED" && (
-                <button
-                  className="btn btn-sm btn-outline-secondary p-1"
+              {original.status === "REJECTED" ? (
+                <PencilSquare
+                  size={20}
+                  color="red"
+                  cursor="pointer"
                   title={t("edit")}
                   onClick={() => {
                     setModalStatus("reference");
                     setMessage(original);
                     setShow(true);
                   }}
-                >
-                  <PenFill size={20} />
-                </button>
+                />
+              ) : (
+                <SendCheck size={20} color="green" />
               )}
             </div>
           );

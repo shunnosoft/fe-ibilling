@@ -942,5 +942,6 @@
   "tutorial": "Tutorial",
   "changeCustomer": "Change Customer",
   "editReferenceID": "Change the Reference Number",
+  "selectBillingCyclePanel": "Select Billing Cycle Panel",
   "refNo": "Ref No"
 }

@@ -1,18 +1,22 @@
 import React, { useState } from "react";
-import ComponentCustomModal from "../../../components/common/customModal/ComponentCustomModal";
 import { useTranslation } from "react-i18next";
 import { Form, Formik } from "formik";
-import { FtextField } from "../../../components/common/FtextField";
 import * as Yup from "yup";
+import { useDispatch } from "react-redux";
+
+// internal imports
+import ComponentCustomModal from "../../../components/common/customModal/ComponentCustomModal";
+import { FtextField } from "../../../components/common/FtextField";
 import { badge } from "../../../components/common/Utils";
 import { informationEnBn } from "../../../components/common/tooltipInformation/informationEnBn";
 import { messageReferenceIDUpdate } from "../../../features/apiCalls";
-import { useDispatch } from "react-redux";
+import Loader from "../../../components/common/Loader";
 
 const ReferenceIDEdit = ({ show, setShow, message }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
+  // loading state
   const [isLoading, setIsLoading] = useState(false);
 
   // customer webhook payment reference id edit function
@@ -20,6 +24,8 @@ const ReferenceIDEdit = ({ show, setShow, message }) => {
     const sendingData = {
       reference: values?.reference,
     };
+
+    // reference id update api
     messageReferenceIDUpdate(
       dispatch,
       sendingData,
@@ -38,7 +44,7 @@ const ReferenceIDEdit = ({ show, setShow, message }) => {
       footer={
         <div>
           <button type="submit" form="messageEdit" className="btn btn-primary">
-            {t("save")}
+            {isLoading ? <Loader /> : t("save")}
           </button>
         </div>
       }
