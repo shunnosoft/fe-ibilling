@@ -281,15 +281,6 @@ const IspOwnerDashboard = () => {
         ispOwnerId,
         filterData
       );
-
-      // get all collector api
-      getIspOwnerCollector(
-        dispatch,
-        ispOwnerId,
-        filterData?.year,
-        filterData?.month,
-        setCollectorCardLoading
-      );
     }
 
     if (

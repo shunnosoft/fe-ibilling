@@ -7,6 +7,7 @@ import {
   FilterCircle,
   PencilSquare,
   SendCheck,
+  SendX,
 } from "react-bootstrap-icons";
 import { Accordion } from "react-bootstrap";
 import DatePicker from "react-datepicker";
@@ -210,8 +211,10 @@ const WebhookMessage = () => {
                     setShow(true);
                   }}
                 />
-              ) : (
+              ) : original.status === "SENT" ? (
                 <SendCheck size={20} color="green" />
+              ) : (
+                <SendX size={20} color="red" />
               )}
             </div>
           );

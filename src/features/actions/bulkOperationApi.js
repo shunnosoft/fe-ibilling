@@ -97,19 +97,19 @@ export const bulkBalanceEdit = async (
   }
 };
 export const bulkStatusEdit = async (dispatch, data, setIsLoading, setShow) => {
+  setIsLoading(true);
   try {
-    setIsLoading(true);
     const res = await apiLink.patch("/customer/bulk-status", data);
-    setShow(false);
     dispatch(bulkUpdate(res.data.data));
+
+    setShow(false);
     toast.success("কাস্টমার স্টাটাস আপডেট সফল হয়েছে!");
-    setIsLoading(false);
   } catch (err) {
     if (err.response) {
-      setIsLoading(false);
       toast.error(err.response.data.message);
     }
   }
+  setIsLoading(false);
 };
 
 // hostpot customer bulk status update

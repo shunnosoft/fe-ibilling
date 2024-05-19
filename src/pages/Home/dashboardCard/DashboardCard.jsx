@@ -1409,7 +1409,10 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
         <AllCollector
           modalShow={show}
           setModalShow={setShow}
-          isLoading={isLoading}
+          ispOwnerId={ispOwnerId}
+          month={filterDate.getMonth() + 1}
+          year={filterDate.getFullYear()}
+          status={status}
         />
       )}
 

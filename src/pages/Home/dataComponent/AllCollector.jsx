@@ -1,7 +1,7 @@
-import React, { useMemo, useRef } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { PrinterFill } from "react-bootstrap-icons";
 import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import ReactToPrint from "react-to-print";
 
 // internal import
@@ -9,16 +9,35 @@ import Table from "../../../components/table/Table";
 import CollectionOverviewPdf from "../homePdf/CollectionOverviewPdf";
 import ComponentCustomModal from "../../../components/common/customModal/ComponentCustomModal";
 import SummaryCalculation from "./SummaryCalculation";
+import { getIspOwnerCollector } from "../../../features/apiCalls";
 
-const AllCollector = ({ modalShow, setModalShow, isLoading }) => {
+const AllCollector = ({
+  modalShow,
+  setModalShow,
+  ispOwnerId,
+  month,
+  year,
+  status,
+}) => {
   const { t } = useTranslation();
   const componentRef = useRef();
+  const dispatch = useDispatch();
 
   // get customerStat
   const collectorData = useSelector(
     (state) => state.dashboardInformation?.ispOwnerCollector
   );
 
+  // is Loading state
+  const [isLoading, setIsLoading] = useState(false);
+
+  // get all collector data
+  useEffect(() => {
+    status === "collector" &&
+      getIspOwnerCollector(dispatch, ispOwnerId, year, month, setIsLoading);
+  }, [status, year, month]);
+
+  // table column
   const column = useMemo(
     () => [
       {
@@ -29,12 +48,12 @@ const AllCollector = ({ modalShow, setModalShow, isLoading }) => {
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        width: "19%",
+        width: "10%",
         Header: t("name"),
         accessor: "name",
       },
       {
-        width: "14%",
+        width: "15%",
         Header: t("todayCollection"),
 
         Cell: ({ row: { original } }) => (
@@ -47,11 +66,12 @@ const AllCollector = ({ modalShow, setModalShow, isLoading }) => {
         ),
       },
       {
-        width: "10%",
+        width: "15%",
         Header: t("collection"),
         Cell: ({ row: { original } }) => (
           <div>
-            {original?.totalBillCollected}&nbsp;
+            <span className="text-success">{original?.totalBillCollected}</span>
+            &nbsp;
             <span className="text-primary">
               ({original?.totalBillCollectionByCollectorCount})
             </span>
@@ -59,14 +79,24 @@ const AllCollector = ({ modalShow, setModalShow, isLoading }) => {
         ),
       },
       {
-        width: "14%",
+        width: "15%",
         Header: t("connectionFee"),
-        accessor: "totalConnectionFeeCollected",
+        Cell: ({ row: { original } }) => (
+          <div>
+            <span className="text-success">
+              {original?.totalConnectionFeeCollected}
+            </span>
+          </div>
+        ),
       },
       {
         width: "15%",
         Header: t("totalDepositCollector"),
-        accessor: "totalDeposit",
+        Cell: ({ row: { original } }) => (
+          <div>
+            <span className="text-danger">{original?.totalDeposit}</span>
+          </div>
+        ),
       },
       {
         width: "15%",
@@ -103,7 +133,7 @@ const AllCollector = ({ modalShow, setModalShow, isLoading }) => {
           />
         }
       >
-        <div className="table-section">
+        <div className="collectorWrapper">
           <Table
             isLoading={isLoading}
             columns={column}

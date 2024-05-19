@@ -114,6 +114,8 @@ export default function Home() {
 
   useEffect(() => {
     setClintData(ispOwners);
+
+    Object?.values(filterOptions) && handleClintFilter();
   }, [ispOwners]);
 
   // edit modal method

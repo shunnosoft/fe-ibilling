@@ -4155,7 +4155,7 @@ export const messageReferenceIDUpdate = async (
         },
       }
     );
-    dispatch(updateReferenceIDSuccess(res?.data));
+    dispatch(updateReferenceIDSuccess(res?.data.data));
 
     setShow(false);
   } catch (error) {
