@@ -14,6 +14,7 @@ import {
 } from "../../features/apiCalls";
 import { getSubAreasApi } from "../../features/actions/customerApiCall";
 import { handleActiveFilter } from "./activeFilter";
+import { userStaffs } from "../../features/getIspOwnerUsersApi";
 
 const DataFilter = ({
   page,
@@ -24,6 +25,7 @@ const DataFilter = ({
 }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const { month } = filterOptions;
 
   // current month date
   let today = new Date();
@@ -31,6 +33,19 @@ const DataFilter = ({
   // current start & end date
   var firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
   var lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+  var prevMonthDay = new Date(today.getFullYear(), today.getMonth() - 1);
+
+  // current start & end date
+  var filterFirstDayOfMonth = new Date(
+    month?.getFullYear(),
+    month?.getMonth(),
+    1
+  );
+  var filterLastDayOfMonth = new Date(
+    month?.getFullYear(),
+    month?.getMonth() + 1,
+    0
+  );
 
   // current date and time
   firstDayOfMonth.setHours(0, 0, 0, 0);
@@ -57,6 +72,9 @@ const DataFilter = ({
   // get reseller
   const resellers = useSelector((state) => state?.reseller.reseller);
 
+  // get user staff data from redux store
+  const staffs = useSelector((state) => state?.ownerUsers?.userStaff);
+
   // customers main data state
   const [mainData, setMainData] = useState([]);
 
@@ -68,6 +86,9 @@ const DataFilter = ({
 
   // api call
   useEffect(() => {
+    // get user staffs api
+    staffs.length === 0 && userStaffs(dispatch);
+
     // get mikrotiks
     if (mikrotiks.length === 0) fetchMikrotik(dispatch, ispOwnerId, setLoading);
 
@@ -120,50 +141,70 @@ const DataFilter = ({
 
   // filter inputs options
   const filterInputs = [
-    // {
-    //   name: "month",
-    //   type: "date",
-    //   id: "month",
-    //   isVisible: ["newCustomer"].includes(page),
-    //   disabled: false,
-    //   component: "DatePicker",
-    //   dateFormat: "MMM-yyyy",
-    //   showMonthYearPicker: true,
-    //   showFullMonthYearPicker: true,
-    //   minDate: new Date(userData?.createdAt),
-    //   maxDate: firstDayOfMonth,
-    //   selected: filterOptions.month,
-    //   onChange: (date) => {
-    //     setFilterOption({
-    //       ...filterOptions,
-    //       month: date,
-    //     });
-    //   },
-    // },
-    // {
-    //   ...(filterOptions?.startCreateDate !== "Invalid Date" &&
-    //   filterOptions?.startCreateDate !== undefined
-    //     ? {
-    //         name: "startCreateDate",
-    //         type: "date",
-    //         id: "startCreateDate",
-    //         isVisible: ["newCustomer"].includes(page),
-    //         disabled: false,
-    //         placeholderText: t("startBillingCycleDate"),
-    //         component: "DatePicker",
-    //         dateFormat: "MMM dd yyyy",
-    //         // minDate: firstDayOfMonth,
-    //         // maxDate: lastDayOfMonth,
-    //         selected: filterOptions?.startCreateDate,
-    //         onChange: (date) => {
-    //           setFilterOption({
-    //             ...filterOptions,
-    //             startCreateDate: date,
-    //           });
-    //         },
-    //       }
-    //     : ""),
-    // },
+    {
+      name: "month",
+      type: "date",
+      id: "month",
+      isVisible: ["newCustomer", "inactiveCustomer", "dueCustomer"].includes(
+        page
+      ),
+      disabled: false,
+      component: "DatePicker",
+      dateFormat: "MMM-yyyy",
+      showMonthYearPicker: true,
+      showFullMonthYearPicker: true,
+      minDate: new Date(userData?.createdAt),
+      maxDate: ["dueCustomer"]?.includes(page) ? prevMonthDay : firstDayOfMonth,
+      selected: filterOptions.month,
+      onChange: (date) => {
+        setFilterOption({
+          ...filterOptions,
+          month: date,
+        });
+      },
+    },
+    {
+      name: "startCreateDate",
+      type: "date",
+      id: "startCreateDate",
+      isVisible: ["newCustomer"].includes(page),
+      disabled: false,
+      component: "DatePicker",
+      dateFormat: "MMM dd yyyy",
+      minDate: filterFirstDayOfMonth,
+      maxDate:
+        month?.getMonth() + 1 === today.getMonth() + 1
+          ? today
+          : filterLastDayOfMonth,
+      selected: filterOptions?.startCreateDate,
+      onChange: (date) => {
+        setFilterOption({
+          ...filterOptions,
+          startCreateDate: date,
+        });
+      },
+    },
+    {
+      name: "endCreateDate",
+      type: "date",
+      id: "endCreateDate",
+      isVisible: ["newCustomer"].includes(page),
+      disabled: false,
+      component: "DatePicker",
+      dateFormat: "MMM dd yyyy",
+      minDate: filterFirstDayOfMonth,
+      maxDate:
+        month?.getMonth() + 1 === today.getMonth() + 1
+          ? today
+          : filterLastDayOfMonth,
+      selected: filterOptions?.endCreateDate,
+      onChange: (date) => {
+        setFilterOption({
+          ...filterOptions,
+          endCreateDate: date,
+        });
+      },
+    },
     {
       name: "mikrotik",
       type: "select",
@@ -343,6 +384,23 @@ const DataFilter = ({
       valueAccessor: "id",
     },
     {
+      name: "staff",
+      type: "select",
+      id: "staff",
+      value: filterOptions.staff,
+      isVisible: ["newCustomer"].includes(page) ? true : false,
+      disabled: false,
+      onChange: (e) =>
+        setFilterOption({
+          ...filterOptions,
+          staff: e.target.value,
+        }),
+      options: staffs,
+      firstOptions: t("all collector"),
+      textAccessor: "name",
+      valueAccessor: "id",
+    },
+    {
       name: "allCustomer",
       type: "select",
       id: "allCustomer",
@@ -465,7 +523,13 @@ const DataFilter = ({
       type: "select",
       id: "userType",
       value: filterOptions.userType,
-      isVisible: ["resellersCustomers", "resellerCustomers"].includes(page)
+      isVisible: [
+        "resellersCustomers",
+        "resellerCustomers",
+        "newCustomer",
+        "inactiveCustomer",
+        "dueCustomer",
+      ].includes(page)
         ? true
         : false,
       disabled: false,
@@ -496,10 +560,16 @@ const DataFilter = ({
     // set empty filter option
     setFilterOption(
       Object.fromEntries(
-        filterInputs.map((input) => [
-          !["month"].includes(input.name) && input.name,
-          "",
-        ])
+        filterInputs.map((input) =>
+          ["month", "startCreateDate", "endCreateDate"].includes(input.name)
+            ? [
+                input.name,
+                ["dueCustomer"].includes(page)
+                  ? (filterOptions[input.name] = prevMonthDay)
+                  : (filterOptions[input.name] = today),
+              ]
+            : [input.name, ""]
+        )
       )
     );
 

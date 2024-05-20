@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import { CSVLink } from "react-csv";
 import { Accordion } from "react-bootstrap";
-import DatePicker from "react-datepicker";
 import { GeoAlt, Person, Phone } from "react-bootstrap-icons";
 
 // internal import
@@ -23,6 +22,8 @@ import {
   getCustomerDayLeft,
   getCustomerPromiseDate,
 } from "../Customer/customerCRUD/customerBillDayPromiseDate";
+import useDataState from "../../hooks/useDataState";
+import DataFilter from "../common/DataFilter";
 
 const InactiveCustomer = ({
   isInactiveLoading,
@@ -44,6 +45,9 @@ const InactiveCustomer = ({
 
   // get user & current user data form useISPOwner
   const { role, ispOwnerData, ispOwnerId, userData } = useISPowner();
+
+  // get user data set from useDataState hooks
+  const { filterOptions, setFilterOption } = useDataState();
 
   // user staff role
   const ispOwnerStaff =
@@ -73,9 +77,6 @@ const InactiveCustomer = ({
   // inactive customer state
   const [inactiveCustomers, setInActiveCustomers] = useState([]);
 
-  //customer type state
-  const [customerType, setCustomerType] = useState("");
-
   // view customer id
   const [customerId, setCustomerId] = useState("");
 
@@ -83,87 +84,46 @@ const InactiveCustomer = ({
   const [modalStatus, setModalStatus] = useState("");
   const [show, setShow] = useState(false);
 
-  //filter state
-  const [filterDate, setFilterDate] = useState(firstDate);
-
-  // current & priv date
-  const [startDate, setStartDate] = useState(firstDate);
-  const [endDate, setEndDate] = useState(new Date());
-
   // reseller id from role base
   const resellerId = role === "collector" ? userData.reseller : userData.id;
 
-  // customer user type
-  const userType =
-    role === "ispOwner" || (role === "collector" && !userData.reseller)
-      ? userData?.bpSettings?.customerType || []
-      : userData.customerType || [];
-
-  // current start & end date
-  var selectDate = new Date(filterDate.getFullYear(), filterDate.getMonth(), 1);
-  var lastDate = new Date(
-    filterDate.getFullYear(),
-    filterDate.getMonth() + 1,
-    0
-  );
-
+  // set first date
   useEffect(() => {
-    setStartDate(selectDate);
+    setFilterOption({
+      ...filterOptions,
+      month: firstDate,
+    });
+  }, []);
 
-    if (lastDate.getMonth() + 1 === today.getMonth() + 1) {
-      setEndDate(today);
-    } else {
-      setEndDate(lastDate);
+  // get customer api call
+  useEffect(() => {
+    if (filterOptions?.month !== undefined) {
+      if (ispOwnerStaff) {
+        filterOptions?.month.getMonth() + 1 &&
+          getInactiveCustomer(
+            dispatch,
+            ispOwnerId,
+            filterOptions?.month.getFullYear(),
+            filterOptions?.month.getMonth() + 1,
+            setIsInactiveLoading
+          );
+      } else {
+        filterOptions?.month.getMonth() + 1 &&
+          getResellerInactiveCustomer(
+            dispatch,
+            resellerId,
+            filterOptions?.month.getFullYear(),
+            filterOptions?.month.getMonth() + 1,
+            setIsInactiveLoading
+          );
+      }
     }
+  }, [filterOptions?.month]);
 
-    if (ispOwnerStaff) {
-      filterDate.getMonth() + 1 &&
-        getInactiveCustomer(
-          dispatch,
-          ispOwnerId,
-          filterDate.getFullYear(),
-          filterDate.getMonth() + 1,
-          setIsInactiveLoading
-        );
-    } else {
-      filterDate.getMonth() + 1 &&
-        getResellerInactiveCustomer(
-          dispatch,
-          resellerId,
-          filterDate.getFullYear(),
-          filterDate.getMonth() + 1,
-          setIsInactiveLoading
-        );
-    }
-  }, [filterDate]);
-
+  // set all customers
   useEffect(() => {
     setInActiveCustomers(allCustomers);
   }, [allCustomers]);
-
-  // filter function
-  const onClickFilter = () => {
-    let arr = [...allCustomers];
-
-    if (!customerType) {
-      arr = arr;
-    } else if (customerType && customerType === "pppoe") {
-      arr = arr.filter((value) => value.userType === "pppoe");
-    } else {
-      arr = arr.filter((value) => value.userType !== "pppoe");
-    }
-
-    // date filter
-    // arr = arr.filter(
-    //   (value) =>
-    //     new Date(moment(value.createdAt).format("YYYY-MM-DD")).getTime() >=
-    //       new Date(moment(startDate).format("YYYY-MM-DD")).getTime() &&
-    //     new Date(moment(value.createdAt).format("YYYY-MM-DD")).getTime() <=
-    //       new Date(moment(endDate).format("YYYY-MM-DD")).getTime()
-    // );
-
-    setInActiveCustomers(arr);
-  };
 
   // customer current package find
   const getCustomerPackage = (value) => {
@@ -225,10 +185,11 @@ const InactiveCustomer = ({
     };
   });
 
+  // inactive customer filter data
   const filterData = {
-    startDate,
-    endDate,
-    customerType,
+    startDate: filterOptions?.startCreateDate,
+    endDate: filterOptions?.endCreateDate,
+    customerType: filterOptions?.userType,
   };
 
   //customer print option
@@ -411,76 +372,13 @@ const InactiveCustomer = ({
         <Accordion alwaysOpen activeKey={activeKeys}>
           <Accordion.Item eventKey="filter" className="accordionBorder">
             <Accordion.Body className="accordionPadding pt-2">
-              <div className="displayGrid6">
-                <div>
-                  <DatePicker
-                    className="form-control mw-100 mt-0"
-                    selected={filterDate}
-                    onChange={(date) => setFilterDate(date)}
-                    dateFormat="MMM-yyyy"
-                    showMonthYearPicker
-                    showFullMonthYearPicker
-                    maxDate={firstDate}
-                    minDate={new Date(userData?.createdAt)}
-                  />
-                </div>
-
-                {userType.length > 0 && (
-                  <select
-                    className="form-select mw-100 mt-0"
-                    onChange={(e) => setCustomerType(e.target.value)}
-                  >
-                    <option selected value="">
-                      {t("userType")}
-                    </option>
-                    {userType.map((cType) => (
-                      <option value={cType}>{t(`${cType}`)}</option>
-                    ))}
-                  </select>
-                )}
-
-                <div>
-                  <DatePicker
-                    className="form-control mw-100"
-                    selected={startDate}
-                    onChange={(date) => setStartDate(date)}
-                    dateFormat="MMM dd yyyy"
-                    minDate={selectDate}
-                    maxDate={
-                      lastDate.getMonth() + 1 === today.getMonth() + 1
-                        ? today
-                        : lastDate
-                    }
-                    placeholderText={t("selectBillDate")}
-                  />
-                </div>
-
-                <div>
-                  <DatePicker
-                    className="form-control mw-100"
-                    selected={endDate}
-                    onChange={(date) => setEndDate(date)}
-                    dateFormat="MMM dd yyyy"
-                    minDate={selectDate}
-                    maxDate={
-                      lastDate.getMonth() + 1 === today.getMonth() + 1
-                        ? today
-                        : lastDate
-                    }
-                    placeholderText={t("selectBillDate")}
-                  />
-                </div>
-
-                <div className="gridButton">
-                  <button
-                    className="btn btn-outline-primary w-140"
-                    type="button"
-                    onClick={onClickFilter}
-                  >
-                    {t("filter")}
-                  </button>
-                </div>
-              </div>
+              <DataFilter
+                page="inactiveCustomer"
+                customers={allCustomers}
+                setCustomers={setInActiveCustomers}
+                filterOptions={filterOptions}
+                setFilterOption={setFilterOption}
+              />
             </Accordion.Body>
           </Accordion.Item>
         </Accordion>

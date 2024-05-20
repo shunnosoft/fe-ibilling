@@ -1,8 +1,11 @@
 import moment from "moment";
 
 export const handleActiveFilter = (mainData, filterOptions) => {
+  console.log(filterOptions);
   let findAnyCustomer = mainData.reduce((acc, c) => {
     const {
+      startCreateDate,
+      endCreateDate,
       mikrotik,
       mikrotikPackage,
       area,
@@ -20,6 +23,10 @@ export const handleActiveFilter = (mainData, filterOptions) => {
     } = filterOptions;
 
     // make date object
+    const createDate = new Date(
+      moment(c.createdAt).format("YYYY-MM-DD hh:mm a")
+    );
+
     const billingCycle = new Date(
       moment(c.billingCycle).format("YYYY-MM-DD hh:mm a")
     );
@@ -36,6 +43,14 @@ export const handleActiveFilter = (mainData, filterOptions) => {
       moment(endDate).format("YYYY-MM-DD hh:mm a")
     );
 
+    const monthCreateDateStart = new Date(
+      moment(startCreateDate).format("YYYY-MM-DD hh:mm a")
+    );
+
+    const monthCreateDateEnd = new Date(
+      moment(endCreateDate).format("YYYY-MM-DD hh:mm a")
+    );
+
     // make connection status true or false
     let connectionStatus;
     if (changeCustomer === "true") {
@@ -47,6 +62,11 @@ export const handleActiveFilter = (mainData, filterOptions) => {
     // make possible conditions objects if the filter value not selected thats return true
     //if filter value exist then compare
     const conditions = {
+      createDate:
+        startCreateDate && endCreateDate
+          ? monthCreateDateStart <= createDate &&
+            monthCreateDateEnd >= createDate
+          : true,
       mikrotik: mikrotik ? c.mikrotik === mikrotik : true,
       package: mikrotikPackage ? c.mikrotikPackage === mikrotikPackage : true,
       area: area ? c.area === area : true,
@@ -91,6 +111,9 @@ export const handleActiveFilter = (mainData, filterOptions) => {
     //if specific filter option value not exist it will return true
 
     let isPass = false;
+
+    isPass = conditions["createDate"];
+    if (!isPass) return acc;
 
     isPass = conditions["mikrotik"];
     if (!isPass) return acc;

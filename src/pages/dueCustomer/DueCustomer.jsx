@@ -1,10 +1,9 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import moment from "moment";
 import { Accordion } from "react-bootstrap";
-import DatePicker from "react-datepicker";
 import { CSVLink } from "react-csv";
 import { GeoAlt, Person, Phone } from "react-bootstrap-icons";
 
@@ -25,6 +24,8 @@ import {
   getCustomerPromiseDate,
 } from "../Customer/customerCRUD/customerBillDayPromiseDate";
 import SummaryCalculation from "../Home/dataComponent/SummaryCalculation";
+import DataFilter from "../common/DataFilter";
+import useDataState from "../../hooks/useDataState";
 
 const DueCustomer = ({
   isDueLoading,
@@ -39,11 +40,13 @@ const DueCustomer = ({
 
   // get current date
   const date = new Date();
-  var currentMonth = new Date(date.getFullYear(), date.getMonth(), 1);
   var firstDate = new Date(date.getFullYear(), date.getMonth() - 1);
 
   // get user & current user data form useISPOwner
   const { role, ispOwnerData, ispOwnerId, userData } = useISPowner();
+
+  // get user data set from useDataState hooks
+  const { filterOptions, setFilterOption } = useDataState();
 
   // user staff role
   const ispOwnerStaff =
@@ -78,61 +81,46 @@ const DueCustomer = ({
   const [modalStatus, setModalStatus] = useState("");
   const [show, setShow] = useState(false);
 
-  //customer type state
-  const [customerType, setCustomerType] = useState("");
-
-  //filter state
-  const [filterDate, setFilterDate] = useState(firstDate);
-
   // reseller id from role base
   const resellerId = role === "collector" ? userData.reseller : userData.id;
 
-  // customer user type
-  const userType =
-    role === "ispOwner" || (role === "collector" && !userData.reseller)
-      ? userData?.bpSettings?.customerType || []
-      : userData.customerType || [];
+  // set first date
+  useEffect(() => {
+    setFilterOption({
+      ...filterOptions,
+      month: firstDate,
+    });
+  }, []);
 
   // get customer api call
   useEffect(() => {
-    if (ispOwnerStaff) {
-      filterDate.getMonth() + 1 &&
-        getDueCustomer(
-          dispatch,
-          ispOwnerId,
-          filterDate.getMonth() + 1,
-          filterDate.getFullYear(),
-          setIsDueLoading
-        );
-    } else {
-      filterDate.getMonth() + 1 &&
-        getResellerDueCustomer(
-          dispatch,
-          resellerId,
-          filterDate.getFullYear(),
-          filterDate.getMonth() + 1,
-          setIsDueLoading
-        );
+    if (filterOptions?.month !== undefined) {
+      if (ispOwnerStaff) {
+        filterOptions?.month.getMonth() + 1 &&
+          getDueCustomer(
+            dispatch,
+            ispOwnerId,
+            filterOptions?.month.getMonth() + 1,
+            filterOptions?.month.getFullYear(),
+            setIsDueLoading
+          );
+      } else {
+        filterOptions?.month.getMonth() + 1 &&
+          getResellerDueCustomer(
+            dispatch,
+            resellerId,
+            filterOptions?.month.getFullYear(),
+            filterOptions?.month.getMonth() + 1,
+            setIsDueLoading
+          );
+      }
     }
-  }, [filterDate]);
+  }, [filterOptions?.month]);
 
+  // set customer state
   useEffect(() => {
     setCustomers(allCustomers);
   }, [allCustomers]);
-
-  // filter function
-  const dueCustomerFilterHandler = () => {
-    let arr = [...allCustomers];
-    if (!customerType) {
-      arr = arr;
-    } else if (customerType && customerType === "pppoe") {
-      arr = arr.filter((value) => value.userType === "pppoe");
-    } else {
-      arr = arr.filter((value) => value.userType !== "pppoe");
-    }
-
-    setCustomers(arr);
-  };
 
   // customer current package find
   const getCustomerPackage = (value) => {
@@ -196,10 +184,11 @@ const DueCustomer = ({
     };
   });
 
+  // due customer filter option
   const filterData = {
-    startDate: currentMonth,
-    endDate: date,
-    customerType,
+    startDate: filterOptions?.startCreateDate,
+    endDate: filterOptions?.endCreateDate,
+    customerType: filterOptions?.userType,
   };
 
   //customer print option
@@ -382,45 +371,13 @@ const DueCustomer = ({
         <Accordion alwaysOpen activeKey={activeKeys}>
           <Accordion.Item eventKey="filter" className="accordionBorder">
             <Accordion.Body className="accordionPadding pt-2">
-              <div className="displayGrid6">
-                <div>
-                  <DatePicker
-                    className="form-control mw-100 mt-0"
-                    selected={filterDate}
-                    onChange={(date) => setFilterDate(date)}
-                    dateFormat="MMM-yyyy"
-                    showMonthYearPicker
-                    showFullMonthYearPicker
-                    maxDate={firstDate}
-                    minDate={new Date(userData?.createdAt)}
-                  />
-                </div>
-
-                {userType.length > 0 && (
-                  <select
-                    className="form-select mw-100 mt-0"
-                    onChange={(e) => setCustomerType(e.target.value)}
-                  >
-                    <option selected value="">
-                      {t("userType")}
-                    </option>
-                    {userType.map((cType) => (
-                      <option value={cType}>{t(`${cType}`)}</option>
-                    ))}
-                  </select>
-                )}
-
-                <div className="gridButton">
-                  <button
-                    className="btn btn-outline-primary w-140 "
-                    type="button"
-                    onClick={dueCustomerFilterHandler}
-                    id="filterBtn"
-                  >
-                    {t("filter")}
-                  </button>
-                </div>
-              </div>
+              <DataFilter
+                page="dueCustomer"
+                customers={allCustomers}
+                setCustomers={setCustomers}
+                filterOptions={filterOptions}
+                setFilterOption={setFilterOption}
+              />
             </Accordion.Body>
           </Accordion.Item>
         </Accordion>
