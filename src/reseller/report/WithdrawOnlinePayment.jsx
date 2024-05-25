@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
-import { Modal, ModalBody, ModalHeader, ModalTitle } from "react-bootstrap";
 import { FtextField } from "../../components/common/FtextField";
 import { useTranslation } from "react-i18next";
 import Loader from "../../components/common/Loader";
@@ -16,8 +15,9 @@ import Table from "../../components/table/Table";
 import moment from "moment";
 import { badge } from "../../components/common/Utils";
 import { toast } from "react-toastify";
+import ComponentCustomModal from "../../components/common/customModal/ComponentCustomModal";
 
-const WithdrawOnlinePayment = ({ show, setShow }) => {
+const WithdrawOnlinePayment = ({ show, setShow, balance }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
@@ -54,9 +54,6 @@ const WithdrawOnlinePayment = ({ show, setShow }) => {
     withdrawReport.length === 0 &&
       getPaymentWithdrawReport(dispatch, resellerId, year, month, setIsLoading);
   }, []);
-
-  //modal close handle
-  const handleClose = () => setShow(false);
 
   // withdraw online payment handle
   const withdrawPaymentAmount = (values) => {
@@ -138,25 +135,20 @@ const WithdrawOnlinePayment = ({ show, setShow }) => {
   );
 
   return (
-    <Modal
-      show={show}
-      onHide={handleClose}
-      backdrop="static"
-      keyboard={false}
-      size="lg"
-    >
-      <ModalHeader closeButton>
-        <ModalTitle>
-          <h5 className="modal-title">{t("onlinePaymentWithdraw")}</h5>
-        </ModalTitle>
-      </ModalHeader>
-      <ModalBody>
+    <>
+      <ComponentCustomModal
+        show={show}
+        setShow={setShow}
+        centered={false}
+        size="lg"
+        header={t("onlinePaymentWithdraw")}
+      >
         <div className="collectorWrapper mt-2 py-2">
           <div className="managerDipositToIsp">
             <Formik
               initialValues={{
                 //put the value from api
-                amount: onlineBalance.amount,
+                amount: Math.floor(balance),
                 status: "pending",
               }}
               validationSchema={paymentWithdraw}
@@ -168,8 +160,8 @@ const WithdrawOnlinePayment = ({ show, setShow }) => {
               {() => (
                 <Form>
                   <h5 className="text-center text-secondary mb-0">
-                    {t("onlinePaymentAmount")} : ৳{" "}
-                    {FormatNumber(onlineBalance.amount)}
+                    {t("onlinePaymentAmount")} : ৳
+                    {FormatNumber(Math.floor(balance))}
                   </h5>
 
                   <div className="displayGridForDiposit d-flex justify-content-center">
@@ -199,8 +191,8 @@ const WithdrawOnlinePayment = ({ show, setShow }) => {
             ></Table>
           </div>
         </div>
-      </ModalBody>
-    </Modal>
+      </ComponentCustomModal>
+    </>
   );
 };
 

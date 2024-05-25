@@ -155,11 +155,18 @@ const useDataInputOption = (inputPermission, page, status, data) => {
 
     // get ispOwner package rate
     if (
-      (userData?.commissionType === "packageBased" &&
-        userData?.commissionStyle === "fixedRate") ||
-      userData?.commissionType === "percentage"
+      packageId &&
+      userData?.commissionType === "packageBased" &&
+      userData?.commissionStyle === "fixedRate"
     ) {
       getResellerPackageRate(resellerId, packageId, setPackageCommission);
+    } else {
+      // find mikrotik package in pppoe packages
+      const singlePackage = ppPackage.find((val) => val.id === packageId);
+
+      setPackageCommission({
+        ispOwnerRate: singlePackage?.rate,
+      });
     }
   }, [formData?.packageId]);
 

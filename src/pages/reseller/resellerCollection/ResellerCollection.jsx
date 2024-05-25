@@ -36,6 +36,7 @@ import ReportView from "../../report/modal/ReportView";
 import EditReport from "../../report/modal/EditReport";
 import FormatNumber from "../../../components/common/NumberFormat";
 import PrintReport from "../../report/ReportPDF";
+import { adminResellerCommission } from "./CommissionShear";
 
 const ResellerCollection = () => {
   const { t } = useTranslation();
@@ -54,7 +55,7 @@ const ResellerCollection = () => {
   // get all packages
   const allPackages = useSelector((state) => state.package.allPackages);
 
-  // get reseller
+  // get all reseller data from redux store
   const reseller = useSelector((state) => state?.reseller?.reseller);
 
   //get reseller collection report data
@@ -217,55 +218,55 @@ const ResellerCollection = () => {
   };
 
   // admin reseller commission handler function
-  const adminResellerCommission = (data) => {
-    // single reseller find in customer report data
-    const singleReseller = reseller?.find((item) => item.id === data.reseller);
+  // const adminResellerCommission = (data) => {
+  //   // single reseller find in customer report data
+  //   const singleReseller = reseller?.find((item) => item.id === data.reseller);
 
-    // customer bill amount
-    let commissionAmount = data.amount;
+  //   // customer bill amount
+  //   let commissionAmount = data.amount;
 
-    // customer bill amount ispOwner commission and reseller commission
-    let ispOwnerCommission = 0;
-    let resellerCommission = 0;
+  //   // customer bill amount ispOwner commission and reseller commission
+  //   let ispOwnerCommission = 0;
+  //   let resellerCommission = 0;
 
-    if (
-      commissionAmount != 0 &&
-      data.medium !== "cash" &&
-      data.billType === "bill"
-    ) {
-      // handle packageBased resellers
-      if (singleReseller?.commissionType === "packageBased") {
-        // find reseller packages rate
-        const resellerPackageRate = singleReseller.resellerPackageRates.find(
-          (pack) => pack.mikrotikPackage === data.customer.mikrotikPackage
-        );
+  //   if (
+  //     commissionAmount != 0 &&
+  //     data.medium !== "cash" &&
+  //     data.billType === "bill"
+  //   ) {
+  //     // handle packageBased resellers
+  //     if (singleReseller?.commissionType === "packageBased") {
+  //       // find reseller packages rate
+  //       const resellerPackageRate = singleReseller.resellerPackageRates.find(
+  //         (pack) => pack.mikrotikPackage === data.customer.mikrotikPackage
+  //       );
 
-        // check commission style is percentage or fixedRate
-        if (singleReseller?.commissionStyle === "percentage") {
-          ispOwnerCommission =
-            (resellerPackageRate.ispOwnerRate * Number(commissionAmount)) / 100;
-          resellerCommission = commissionAmount - ispOwnerCommission;
-        }
-        if (singleReseller?.commissionStyle === "fixedRate") {
-          ispOwnerCommission = resellerPackageRate.ispOwnerRate;
-          resellerCommission = commissionAmount - ispOwnerCommission;
-        }
-      } else if (singleReseller?.commissionType === "global") {
-        // handle other resellers
-        ispOwnerCommission =
-          (singleReseller.commissionRate.isp * Number(commissionAmount)) / 100;
-        resellerCommission = commissionAmount - ispOwnerCommission;
-      }
-    } else {
-      ispOwnerCommission = data.ispOwnerCommission;
-      resellerCommission = data.resellerCommission;
-    }
-    // set ispOwner & reseller commission
-    return {
-      resellerCommission,
-      ispOwnerCommission,
-    };
-  };
+  //       // check commission style is percentage or fixedRate
+  //       if (singleReseller?.commissionStyle === "percentage") {
+  //         ispOwnerCommission =
+  //           (resellerPackageRate.ispOwnerRate * Number(commissionAmount)) / 100;
+  //         resellerCommission = commissionAmount - ispOwnerCommission;
+  //       }
+  //       if (singleReseller?.commissionStyle === "fixedRate") {
+  //         ispOwnerCommission = resellerPackageRate.ispOwnerRate;
+  //         resellerCommission = commissionAmount - ispOwnerCommission;
+  //       }
+  //     } else if (singleReseller?.commissionType === "global") {
+  //       // handle other resellers
+  //       ispOwnerCommission =
+  //         (singleReseller.commissionRate.isp * Number(commissionAmount)) / 100;
+  //       resellerCommission = commissionAmount - ispOwnerCommission;
+  //     }
+  //   } else {
+  //     ispOwnerCommission = data.ispOwnerCommission;
+  //     resellerCommission = data.resellerCommission;
+  //   }
+  //   // set ispOwner & reseller commission
+  //   return {
+  //     resellerCommission,
+  //     ispOwnerCommission,
+  //   };
+  // };
 
   const columns = useMemo(
     () => [
@@ -312,14 +313,18 @@ const ResellerCollection = () => {
         width: "10%",
         Header: t("admin"),
         Cell: ({ row: { original } }) => (
-          <div>{adminResellerCommission(original)?.ispOwnerCommission}</div>
+          <div>
+            {adminResellerCommission(reseller, original)?.ispOwnerCommission}
+          </div>
         ),
       },
       {
         width: "10%",
         Header: t("reseller"),
         Cell: ({ row: { original } }) => (
-          <div>{adminResellerCommission(original)?.resellerCommission}</div>
+          <div>
+            {adminResellerCommission(reseller, original)?.resellerCommission}
+          </div>
         ),
       },
       {
@@ -471,12 +476,16 @@ const ResellerCollection = () => {
       previous.amount += current.amount;
 
       // sum of all reseller commission
-      previous.resellerCommission +=
-        adminResellerCommission(current)?.resellerCommission;
+      previous.resellerCommission += adminResellerCommission(
+        reseller,
+        current
+      )?.resellerCommission;
 
       // sum of all ispOwner commission
-      previous.ispOwnerCommission +=
-        adminResellerCommission(current)?.ispOwnerCommission;
+      previous.ispOwnerCommission += adminResellerCommission(
+        reseller,
+        current
+      )?.ispOwnerCommission;
 
       return previous;
     }, initialValue);

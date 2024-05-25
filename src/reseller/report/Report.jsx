@@ -39,6 +39,8 @@ import { getBulletinPermission } from "../../features/apiCallAdmin";
 import { getAllPackages } from "../../features/apiCalls";
 import ReportView from "../../pages/report/modal/ReportView";
 import { getOwnerUsers } from "../../features/getIspOwnerUsersApi";
+import { adminResellerCommission } from "../../pages/reseller/resellerCollection/CommissionShear";
+import useISPowner from "../../hooks/useISPOwner";
 
 const Report = () => {
   const { t } = useTranslation();
@@ -52,25 +54,19 @@ const Report = () => {
   firstDay.setHours(0, 0, 0, 0);
   today.setHours(23, 59, 59, 999);
 
-  //get ispOwnerId
-  const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerId
-  );
+  // get user & current user data form useISPOwner
+  const { role, ispOwnerId, userData } = useISPowner();
 
   // get isp owner data
   const bpSettings = useSelector(
     (state) => state.persistedReducer.auth.ispOwnerData?.bpSettings
   );
 
-  // get user information
-  const userData = useSelector((state) => state.persistedReducer.auth.userData);
-
   // get owner users
   const ownerUsers = useSelector((state) => state?.ownerUsers?.ownerUser);
 
   // get reseller, collector collection all bills
   const allBills = useSelector((state) => state.payment.allBills);
-  console.log(allBills);
 
   // get all area subArea
   const subAreas = useSelector((state) => state.area.area);
@@ -248,21 +244,6 @@ const Report = () => {
     totalBill: mainData.reduce((prev, current) => prev + current.amount, 0),
   };
 
-  // collection all bill amount count
-  const addAllBills = useCallback(() => {
-    var count = 0;
-    mainData.forEach((item) => {
-      count = count + item.amount;
-    });
-    return FormatNumber(count);
-  }, [mainData]);
-
-  const customComponent = (
-    <div style={{ fontSize: "18px" }}>
-      {t("totalBill")} {addAllBills()} {t("tk")}
-    </div>
-  );
-
   //billing data show columns
   const columns = useMemo(
     () => [
@@ -367,6 +348,79 @@ const Report = () => {
       },
     ],
     [t, allBills, allPackages, ownerUsers]
+  );
+
+  //function to calculate total Commissions and other amount
+  const totalSum = () => {
+    const initialValue = {
+      amount: 0,
+      onlineCollection: 0,
+      resellerCommission: 0,
+      ispOwnerCommission: 0,
+    };
+
+    const calculatedValue = allBills?.reduce((previous, current) => {
+      //total amount
+      previous.amount += current.amount;
+
+      // sum of all reseller online collection
+      if (
+        current.medium === "sslcommerz" ||
+        current.medium === "uddoktapay" ||
+        current.medium === "sslpay" ||
+        current.medium === "bKashPG"
+      ) {
+        previous.onlineCollection += adminResellerCommission(
+          userData,
+          current,
+          role
+        )?.resellerCommission;
+      }
+
+      // sum of all reseller commission
+      previous.resellerCommission += adminResellerCommission(
+        userData,
+        current,
+        role
+      )?.resellerCommission;
+
+      // sum of all ispOwner commission
+      previous.ispOwnerCommission += adminResellerCommission(
+        userData,
+        current,
+        role
+      )?.ispOwnerCommission;
+
+      return previous;
+    }, initialValue);
+
+    return calculatedValue;
+  };
+
+  const customComponent = (
+    <div
+      className="text-center"
+      style={{ fontSize: "18px", fontWeight: "500", display: "flex" }}
+    >
+      {totalSum()?.amount > 0 && (
+        <div>
+          {t("collection")} :
+          <span className="fw-bold"> ৳{FormatNumber(totalSum().amount)}</span>
+        </div>
+      )}
+      <div className="mx-3">
+        {t("admin")} :
+        <span className="fw-bold">
+          &nbsp; ৳{FormatNumber(totalSum().ispOwnerCommission)}
+        </span>
+      </div>
+      <div>
+        {t("reseller")} :
+        <span className="fw-bold">
+          &nbsp;৳{FormatNumber(totalSum().resellerCommission)}
+        </span>
+      </div>
+    </div>
   );
 
   return (
@@ -618,7 +672,11 @@ const Report = () => {
           </div>
         </div>
       </div>
-      <WithdrawOnlinePayment show={show} setShow={setShow} />
+      <WithdrawOnlinePayment
+        show={show}
+        setShow={setShow}
+        balance={totalSum()?.onlineCollection}
+      />
       <ReportView reportId={viewId} status="resellerCollection" />
     </>
   );
