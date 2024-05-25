@@ -52,7 +52,13 @@ const DataFilter = ({
   today.setHours(23, 59, 59, 999);
 
   // get user & current user data form useISPOwner hooks
-  const { ispOwnerId, bpSettings, hasMikrotik, userData } = useISPowner();
+  const { role, ispOwnerId, bpSettings, hasMikrotik, userData } = useISPowner();
+
+  // admin staff user role permission
+  const adminUser =
+    role === "ispOwner" ||
+    role === "manager" ||
+    (role === "collector" && !userData.reseller);
 
   //get mikrotiks from redux store
   const mikrotiks = useSelector((state) => state?.mikrotik?.mikrotik);
@@ -210,7 +216,7 @@ const DataFilter = ({
       type: "select",
       id: "mikrotik",
       value: filterOptions.mikrotik,
-      isVisible: bpSettings?.hasMikrotik,
+      isVisible: bpSettings?.hasMikrotik && adminUser,
       disabled: false,
       onChange: (e) => mikrotikHandler(e.target.value),
       options: mikrotiks,
@@ -223,7 +229,7 @@ const DataFilter = ({
       type: "select",
       id: "package",
       value: filterOptions.mikrotikPackage,
-      isVisible: true,
+      isVisible: adminUser ? true : false,
       disabled: false,
       onChange: (e) => {
         setFilterOption({
@@ -241,7 +247,7 @@ const DataFilter = ({
       type: "select",
       id: "area",
       value: filterOptions.area,
-      isVisible: true,
+      isVisible: adminUser ? true : false,
       disabled: false,
       onChange: (e) => {
         setFilterOption({
@@ -259,7 +265,7 @@ const DataFilter = ({
       type: "select",
       id: "subArea",
       value: filterOptions.subArea,
-      isVisible: true,
+      isVisible: adminUser ? true : false,
       disabled: false,
       onChange: (e) => {
         setFilterOption({
@@ -277,7 +283,7 @@ const DataFilter = ({
       type: "select",
       id: "poleBox",
       value: filterOptions.poleBox,
-      isVisible: bpSettings?.poleBox,
+      isVisible: bpSettings?.poleBox && adminUser,
       disabled: false,
       onChange: (e) => {
         setFilterOption({
@@ -297,7 +303,7 @@ const DataFilter = ({
       type: "select",
       id: "status",
       value: filterOptions.status,
-      isVisible: true,
+      isVisible: adminUser ? true : false,
       disabled: false,
       onChange: (e) => {
         setFilterOption({
@@ -328,7 +334,7 @@ const DataFilter = ({
       type: "select",
       id: "paymentStatus",
       value: filterOptions.paymentStatus,
-      isVisible: true,
+      isVisible: adminUser ? true : false,
       disabled: false,
       onChange: (e) => {
         setFilterOption({
@@ -371,7 +377,8 @@ const DataFilter = ({
       type: "select",
       id: "reseller",
       value: filterOptions.reseller,
-      isVisible: ["resellersCustomers"].includes(page) ? true : false,
+      isVisible:
+        ["resellersCustomers"].includes(page) && adminUser ? true : false,
       disabled: false,
       onChange: (e) =>
         setFilterOption({
@@ -388,7 +395,7 @@ const DataFilter = ({
       type: "select",
       id: "staff",
       value: filterOptions.staff,
-      isVisible: ["newCustomer"].includes(page) ? true : false,
+      isVisible: ["newCustomer"].includes(page) && adminUser ? true : false,
       disabled: false,
       onChange: (e) =>
         setFilterOption({
@@ -405,7 +412,7 @@ const DataFilter = ({
       type: "select",
       id: "allCustomer",
       value: filterOptions.allCustomer,
-      isVisible: true,
+      isVisible: adminUser ? true : false,
       disabled: false,
       onChange: (e) =>
         setFilterOption({
@@ -427,7 +434,7 @@ const DataFilter = ({
       type: "select",
       id: "billDayLeft",
       value: filterOptions.billDayLeft,
-      isVisible: true,
+      isVisible: adminUser ? true : false,
       disabled: false,
       onChange: (e) =>
         setFilterOption({
@@ -449,7 +456,7 @@ const DataFilter = ({
       name: "startDate",
       type: "date",
       id: "startDate",
-      isVisible: true,
+      isVisible: adminUser ? true : false,
       disabled: false,
       placeholderText: t("startBillingCycleDate"),
       component: "DatePicker",
@@ -470,7 +477,7 @@ const DataFilter = ({
       name: "endDate",
       type: "date",
       id: "endDate",
-      isVisible: true,
+      isVisible: adminUser ? true : false,
       disabled: false,
       placeholderText: t("endBillingCycleDate"),
       component: "DatePicker",
@@ -492,7 +499,7 @@ const DataFilter = ({
       type: "select",
       id: "changeCustomer",
       value: filterOptions.changeCustomer,
-      isVisible: true,
+      isVisible: adminUser ? true : false,
       disabled: false,
       onChange: (e) => {
         setFilterOption({

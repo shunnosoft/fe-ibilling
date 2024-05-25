@@ -260,6 +260,7 @@ const ResellserActiveCustomer = () => {
       {
         width: "10%",
         Header: t("status"),
+        accessor: (data) => `${data.status}`,
         Cell: ({ row: { original } }) => <div>{badge(original?.status)}</div>,
       },
       {

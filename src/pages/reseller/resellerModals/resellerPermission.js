@@ -66,13 +66,13 @@ export const resellerPermissions = (permission, bpSettings) => {
       isChecked: permission?.customerAutoDisableEdit,
       disabled: false,
     },
-    {
-      id: 9,
-      label: "Area Delete",
-      value: "areaDelete",
-      isChecked: permission?.areaDelete,
-      disabled: false,
-    },
+    // {
+    //   id: 9,
+    //   label: "Area Delete",
+    //   value: "areaDelete",
+    //   isChecked: permission?.areaDelete,
+    //   disabled: false,
+    // },
     // {
     //   id: 10,
     //   label: "Area Add",

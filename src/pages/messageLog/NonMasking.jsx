@@ -1,5 +1,5 @@
 import moment from "moment";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import ReactDatePicker from "react-datepicker";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,6 +8,7 @@ import Table from "../../components/table/Table";
 import { getMessageLog } from "../../features/messageLogApi";
 import MessageDetails from "./messageModal/MessageDetails";
 import { Accordion } from "react-bootstrap";
+import FormatNumber from "../../components/common/NumberFormat";
 
 const NonMasking = ({
   nonMaskingLoading,
@@ -83,6 +84,27 @@ const NonMasking = ({
 
     setMainData(filterData);
   };
+
+  const calculatedValue = useMemo(() => {
+    let totalCount = 0;
+    mainData?.map((item) => {
+      totalCount = totalCount + item?.count;
+    });
+    return {
+      totalCount,
+    };
+  });
+
+  const customComponet = (
+    <div
+      className="text-center"
+      style={{ fontSize: "18px", fontWeight: "500", display: "flex" }}
+    >
+      <div>
+        {t("count")}: {FormatNumber(calculatedValue?.totalCount)}
+      </div>
+    </div>
+  );
 
   // table column
   const columns = React.useMemo(
@@ -226,6 +248,7 @@ const NonMasking = ({
             isLoading={nonMaskingLoading}
             columns={columns}
             data={mainData}
+            customComponent={customComponet}
           ></Table>
         </div>
       </div>

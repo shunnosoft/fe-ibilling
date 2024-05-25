@@ -140,6 +140,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       queueName: data?.queue?.name,
       referenceName: data?.referenceName,
       referenceMobile: data?.referenceMobile,
+      resellerId: data?.reseller,
       subAreaId: data?.subArea,
       status: data?.status,
       salary: data?.salary,
@@ -153,10 +154,13 @@ const useDataInputOption = (inputPermission, page, status, data) => {
     const packageId = formData.packageId;
 
     // get ispOwner package rate
-    packageId &&
-      userData?.commissionType === "packageBased" &&
-      userData?.commissionStyle === "fixedRate" &&
+    if (
+      (userData?.commissionType === "packageBased" &&
+        userData?.commissionStyle === "fixedRate") ||
+      userData?.commissionType === "percentage"
+    ) {
       getResellerPackageRate(resellerId, packageId, setPackageCommission);
+    }
   }, [formData?.packageId]);
 
   // single mikrotik package change handler
@@ -365,10 +369,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
         : Yup.number()
             .required(t("writeMonthFee"))
             .min(
-              userData?.commissionType === "packageBased" &&
-                userData?.commissionStyle === "fixedRate"
-                ? packageCommission?.ispOwnerRate
-                : formData.packageRate,
+              packageCommission?.ispOwnerRate,
               t("packageRateMustBeUpToIspOwnerCommission")
             ),
       isVisible: inputPermission.monthlyFee,

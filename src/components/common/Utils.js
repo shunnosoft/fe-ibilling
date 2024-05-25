@@ -6,7 +6,7 @@ const addClass = {
   active: "primary",
   inactive: "secondary",
 
-  new: "secondary",
+  new: "info",
   prepaid: "info",
   banned: "warning",
   deleted: "danger",
@@ -41,7 +41,7 @@ const addClass = {
 
   drop: "primary",
   delete: "danger",
-  trial: "secondary",
+  trial: "dark",
   high: "danger",
   medium: "info",
   low: "secondary",
