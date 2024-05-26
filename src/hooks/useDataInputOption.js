@@ -160,7 +160,11 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       userData?.commissionStyle === "fixedRate"
     ) {
       getResellerPackageRate(resellerId, packageId, setPackageCommission);
-    } else {
+    } else if (
+      packageId &&
+      userData?.commissionType === "global" &&
+      userData?.commissionStyle === "percentage"
+    ) {
       // find mikrotik package in pppoe packages
       const singlePackage = ppPackage.find((val) => val.id === packageId);
 
