@@ -564,27 +564,36 @@ const DataFilter = ({
 
   // filter reset controller
   const handleFilterReset = () => {
-    // set empty filter option
-    setFilterOption(
-      Object.fromEntries(
-        filterInputs.map((input) =>
-          ["month", "startCreateDate", "endCreateDate"].includes(input.name)
-            ? [
-                input.name,
-                ["dueCustomer"].includes(page)
-                  ? (filterOptions[input.name] = prevMonthDay)
-                  : (filterOptions[input.name] = today),
-              ]
-            : [input.name, ""]
+    if (Object.keys(filterOptions).length > 0) {
+      // set empty filter option
+      setFilterOption(
+        Object.fromEntries(
+          filterInputs.map((input) =>
+            ["month", "startCreateDate", "endCreateDate"].includes(
+              filterOptions[input.name]
+            )
+              ? [
+                  input.name,
+                  ["dueCustomer"].includes(page)
+                    ? (filterOptions[input.name] = prevMonthDay)
+                    : (filterOptions[input.name] = today),
+                ]
+              : [
+                  !["month", "startCreateDate", "endCreateDate"].includes(
+                    input.name
+                  ) && input.name,
+                  "",
+                ]
+          )
         )
-      )
-    );
+      );
 
-    // set empty mikrotik packages
-    setMikrotikPackages([]);
+      // set empty mikrotik packages
+      setMikrotikPackages([]);
 
-    // set empty customers
-    setCustomers(customers);
+      // set empty customers
+      setCustomers(customers);
+    }
   };
 
   return (

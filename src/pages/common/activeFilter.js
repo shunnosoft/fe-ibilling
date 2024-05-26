@@ -1,6 +1,7 @@
 import moment from "moment";
 
 export const handleActiveFilter = (mainData, filterOptions) => {
+  console.log(filterOptions);
   let findAnyCustomer = mainData.reduce((acc, c) => {
     const {
       startCreateDate,
