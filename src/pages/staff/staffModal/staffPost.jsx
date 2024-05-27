@@ -61,7 +61,7 @@ const StaffPost = ({ show, setShow }) => {
         relation: refRelation,
         nid: refNid,
       },
-      ispOwnerId,
+      ispOwner: ispOwnerId,
       user: currentUser.user.id,
     };
 

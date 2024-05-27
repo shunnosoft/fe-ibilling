@@ -48,6 +48,7 @@ const BulkCustomerTransfer = ({ bulkCustomer, show, setShow }) => {
     if (!resellerId) return alert("Please select a reseler");
     if (!subAreaId) return alert("Please select a Sub Area");
     let temp = [];
+    let temp2 = [];
 
     const data = {
       customerIds: [],
@@ -55,10 +56,21 @@ const BulkCustomerTransfer = ({ bulkCustomer, show, setShow }) => {
       subAreaId,
     };
 
+    //--> check if selected reseller has mikrotik or not
     if (bpSettings?.hasMikrotik) {
       bulkCustomer?.map((item) => {
+        //--> check if selected reseller has mikrotik
         if (selectedReseller?.mikrotiks.includes(item.original.mikrotik)) {
-          data.customerIds.push(item.original.id);
+          //--> check if selected reseller has package
+          if (
+            selectedReseller?.mikrotikPackages.includes(
+              item.original.mikrotikPackage
+            )
+          ) {
+            data.customerIds.push(item.original.id);
+          } else {
+            temp2.push(item.original);
+          }
         } else {
           temp.push(item.original);
         }
@@ -83,6 +95,14 @@ const BulkCustomerTransfer = ({ bulkCustomer, show, setShow }) => {
           " বাকি " +
           temp.length +
           " টি গ্রাহক অন্য একটি মাইক্রোটিকের"
+      );
+    } else if (temp2.length > 0) {
+      confirm = window.confirm(
+        data.customerIds.length +
+          " টি গ্রাহক রিসেলার কে দিতে পারেন" +
+          " বাকি " +
+          temp2.length +
+          " টি গ্রাহক অন্য একটি প্যাকেজের"
       );
     } else {
       confirm = window.confirm(

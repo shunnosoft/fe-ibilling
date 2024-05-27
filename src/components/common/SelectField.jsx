@@ -18,7 +18,7 @@ const SelectField = ({ label, validation, ...props }) => {
 
       <select
         style={{ display: "inline-block" }}
-        className={`form-control shadow-none ${
+        className={`form-select mt-0 shadow-none ${
           meta.touched && meta.error && "is-invalid"
         }`}
         {...field}

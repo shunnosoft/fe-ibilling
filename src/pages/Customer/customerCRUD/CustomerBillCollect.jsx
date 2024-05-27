@@ -176,47 +176,6 @@ const CustomerBillCollect = ({ single, status, page, setShow }) => {
     }
   };
 
-  // set customer bill month
-  // const billMonthSelectHandler = (billMonth) => {
-  //   setSelectedMonth(billMonth);
-
-  //   // customer billing date
-  //   const billingMonth = new Date(data?.billingCycle).getMonth();
-
-  //   // find customer billing cycle month index
-  //   let monthIndex = billMonth.findIndex((month) => {
-  //     return month.value === options[billingMonth].value;
-  //   });
-  //   console.log(monthIndex);
-
-  //   // customer billing cycle date to advance bill month
-  //   const advanceBillMonth = billMonth.slice(monthIndex, billMonth.length);
-  //   console.log(advanceBillMonth);
-
-  //   // customer due bill month
-  //   const dueBillMonth = billMonth.slice(0, monthIndex);
-
-  //   // bill amount
-  //   let amount = 0;
-
-  //   // due amount
-  //   let dueAmount = 0;
-
-  //   if (advanceBillMonth.length >= 0) {
-  //     for (let i = 0; i < advanceBillMonth.length; i++) {
-  //       amount += data?.monthlyFee;
-  //     }
-  //   }
-
-  //   if (dueBillMonth.length >= 0) {
-  //     for (let i = 0; i < dueBillMonth.length; i++) {
-  //       dueAmount += data?.monthlyFee;
-  //     }
-  //   }
-  //   setBillAmount(amount);
-  //   setBalanceDue(dueAmount);
-  // };
-
   // bill amount
   const customerBillHandler = (formValue) => {
     if (balanceDue > (data?.balance < 0 ? Math.abs(data?.balance) : 0)) {
@@ -314,7 +273,7 @@ const CustomerBillCollect = ({ single, status, page, setShow }) => {
 
               <div className="displayGrid">
                 <div className="displayGrid2">
-                  <FtextField type="number" name="amount" label={t("amount")} />
+                  <FtextField type="number" name="amount" label={t("bill")} />
 
                   <FtextField type="number" name="due" label={t("due")} />
                 </div>

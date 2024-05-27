@@ -1236,6 +1236,7 @@ export const getCustomer = async (dispatch, ispOwner, setIsloading) => {
   setIsloading(true);
   try {
     const res = await apiLink.get(`/ispOwner/customer/${ispOwner}`);
+    console.log(res.data);
     dispatch(getCustomerSuccess(res.data));
   } catch (error) {
     console.log(error.message);

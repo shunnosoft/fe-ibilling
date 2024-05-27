@@ -59,7 +59,6 @@ const CustomerBillCollect = ({ customerId, customerData, page, setShow }) => {
     ispOwnerId,
     resellerData,
     userData,
-    permissions,
     permission,
     currentUser,
   } = useISPowner();
@@ -273,7 +272,7 @@ const CustomerBillCollect = ({ customerId, customerData, page, setShow }) => {
         </Card.Title>
       )}
 
-      <Card.Body>
+      <Card.Body className={page === "recharge" ? "pt-0" : ""}>
         <Formik
           initialValues={{
             amount: totalAmount,
@@ -295,7 +294,7 @@ const CustomerBillCollect = ({ customerId, customerData, page, setShow }) => {
 
               <div className="displayGrid">
                 <div className="displayGrid2">
-                  <FtextField type="number" name="amount" label={t("amount")} />
+                  <FtextField type="number" name="amount" label={t("bill")} />
 
                   <div>
                     <SelectField label={t("medium")} name="medium">
@@ -340,11 +339,9 @@ const CustomerBillCollect = ({ customerId, customerData, page, setShow }) => {
                       onChange={(e) => setBillType(e.target.value)}
                     >
                       <option value="bill"> {t("bill")} </option>
-                      {(role === "reseller" || permissions?.connectionFee) && (
-                        <option value="connectionFee">
-                          {t("connectionFee")}
-                        </option>
-                      )}
+                      <option value="connectionFee">
+                        {t("connectionFee")}
+                      </option>
                     </select>
                   </div>
 

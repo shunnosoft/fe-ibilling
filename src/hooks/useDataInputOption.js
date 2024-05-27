@@ -19,6 +19,7 @@ import {
   getCustomerDayLeft,
   getMonthStartDay,
 } from "../pages/Customer/customerCRUD/customerBillDayPromiseDate";
+import { adminResellerCommission } from "../pages/reseller/resellerCollection/CommissionShear";
 
 const useDataInputOption = (inputPermission, page, status, data) => {
   const { t } = useTranslation();
@@ -154,23 +155,29 @@ const useDataInputOption = (inputPermission, page, status, data) => {
     const packageId = formData.packageId;
 
     // get ispOwner package rate
-    if (
-      packageId &&
-      userData?.commissionType === "packageBased" &&
-      userData?.commissionStyle === "fixedRate"
-    ) {
+    if (packageId && userData?.commissionType === "packageBased") {
       getResellerPackageRate(resellerId, packageId, setPackageCommission);
-    } else if (
-      packageId &&
-      userData?.commissionType === "global" &&
-      userData?.commissionStyle === "percentage"
-    ) {
+    } else if (packageId && userData?.commissionType === "global") {
       // find mikrotik package in pppoe packages
       const singlePackage = ppPackage.find((val) => val.id === packageId);
 
-      setPackageCommission({
-        ispOwnerRate: singlePackage?.rate,
-      });
+      if (status === "post") {
+        setPackageCommission({
+          ispOwnerRate: adminResellerCommission(
+            userData,
+            { pageStatus: "post", amount: singlePackage?.rate },
+            role
+          )?.ispOwnerCommission,
+        });
+      } else {
+        setPackageCommission({
+          ispOwnerRate: adminResellerCommission(
+            userData,
+            { ...data, amount: singlePackage?.rate, pageStatus: "edit" },
+            role
+          )?.ispOwnerCommission,
+        });
+      }
     }
   }, [formData?.packageId]);
 

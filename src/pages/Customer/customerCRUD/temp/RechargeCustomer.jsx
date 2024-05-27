@@ -71,11 +71,17 @@ const RechargeCustomer = ({ show, setShow, single, customerData }) => {
                   </tr>
                   <tr>
                     <td>{t("monthly")}</td>
-                    <td className="text-success">
+                    <td className="text-primary">
                       <b>{customerData?.monthlyFee}</b>
                     </td>
                     <td>{t("balance")}</td>
-                    <td className="text-info">
+                    <td
+                      className={
+                        customerData?.balance < 0
+                          ? "text-danger"
+                          : "text-success"
+                      }
+                    >
                       <b>{customerData?.balance}</b>
                     </td>
                   </tr>
