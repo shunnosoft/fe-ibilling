@@ -450,7 +450,7 @@ export const getCreateCsutomerLoginCredential = async (mobile) => {
 export const csutomerWebhookRegister = async (data) => {
   try {
     const res = await axios.post(
-      `http://139.84.135.222:4600/api/v1/auth/register`,
+      `https://shunnoit.top/shunno-bkash/api/v1/auth/register`,
       data
     );
     res && toast.success(res?.data?.message);
