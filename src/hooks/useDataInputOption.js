@@ -27,6 +27,10 @@ const useDataInputOption = (inputPermission, page, status, data) => {
   // current date
   const today = new Date();
 
+  // current start & end date
+  // var firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+  var lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+
   // get user & current user data form useISPOwner hook
   const {
     role,
@@ -1193,6 +1197,8 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       placeholderText: "YYYY MM DD HH:mm A",
       component: "DatePicker",
       dateFormat: "yyyy MM dd hh:mm a",
+      minDate: today,
+      maxDate: lastDayOfMonth,
       timeIntervals: 60,
       showTimeSelect: "showTimeSelect",
       onChange: (date) => {

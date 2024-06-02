@@ -1048,11 +1048,11 @@ const Customer = () => {
         />
       )}
 
-      <BandwidthModal
+      {/* <BandwidthModal
         setModalShow={setBandWidthModal}
         modalShow={bandWidthModal}
         customerId={customerId}
-      />
+      /> */}
     </>
   );
 };

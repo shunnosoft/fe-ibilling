@@ -536,7 +536,7 @@
   "confirm": "Confirm",
   "viewReport": "Report View",
   "salaryType": "Salary Type",
-  "percentage": "percentage",
+  "percentage": "Percentage",
   "promiseDate": "Promise Date",
   "packageAliasName": "Alias Name",
   "online": "Online",
@@ -943,5 +943,7 @@
   "changeCustomer": "Change Customer",
   "editReferenceID": "Change the Reference Number",
   "selectBillingCyclePanel": "Select Billing Cycle Panel",
-  "refNo": "Ref No"
+  "refNo": "Ref No",
+  "packageRateError": "Fill in the package rate.",
+  "packageRateIncorret": "The package rate is not correct."
 }

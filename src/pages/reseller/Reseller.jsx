@@ -29,7 +29,6 @@ import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
 import ResellerPost from "./resellerModals/ResellerPost";
-import ResellerEdit from "./resellerModals/ResellerEdit";
 import Loader from "../../components/common/Loader";
 import { getMikrotikPackages } from "../../features/apiCallReseller";
 import ResellerDetails from "./resellerModals/ResellerDetails";
@@ -37,6 +36,7 @@ import {
   deleteReseller,
   fetchReseller,
   getArea,
+  getPackagewithoutmikrotik,
 } from "../../features/apiCalls";
 import Recharge from "./resellerModals/recharge";
 import Table from "../../components/table/Table";
@@ -47,13 +47,14 @@ import RechargeReport from "./resellerModals/RechargeReport";
 import MonthlyReport from "./resellerModals/MonthlyReport";
 import { getSubAreasApi } from "../../features/actions/customerApiCall";
 import FormatNumber from "../../components/common/NumberFormat";
+import ResellerEdit from "./resellerModals/ResellerEdit/ResellerEdit";
 
 const Reseller = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
   // get user & current user data form useISPOwner hooks
-  const { role, ispOwnerId } = useISPowner();
+  const { role, ispOwnerId, hasMikrotik } = useISPowner();
 
   // get all reseller data form redux store
   const reseller = useSelector((state) => state?.reseller?.reseller);
@@ -91,6 +92,10 @@ const Reseller = () => {
 
     // get mikrotik packages
     getMikrotikPackages(dispatch, ispOwnerId);
+
+    // get package without mikrotik
+    !hasMikrotik &&
+      getPackagewithoutmikrotik(ispOwnerId, dispatch, setIsLoading);
   }, []);
 
   // reload handler

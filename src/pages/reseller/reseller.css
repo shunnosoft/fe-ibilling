@@ -54,6 +54,12 @@
   padding: 15px 0;
 }
 
+.packageBased {
+  display: flex;
+  align-items: self-start;
+  padding: 6px 0;
+}
+
 .recdharge_sms table thead th,
 .recdharge_sms table tbody td {
   text-align: center;

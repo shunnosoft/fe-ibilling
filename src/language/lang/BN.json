@@ -949,5 +949,7 @@
   "changeCustomer": "গ্রাহকের পরিবর্তন",
   "editReferenceID": "রেফারেন্স নম্বর পরিবর্তন করুন",
   "selectBillingCyclePanel": "বিলিং সাইকেল প্যানেল নির্বাচন করুন",
-  "refNo": "রেফারেন্স নম্বর"
+  "refNo": "রেফারেন্স নম্বর",
+  "packageRateError": "প্যাকেজ রেট পূরণ করুন।",
+  "packageRateIncorret": "প্যাকেজ রেট সঠিক নয়।"
 }

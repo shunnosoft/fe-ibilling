@@ -20,20 +20,22 @@ export const adminResellerCommission = (reseller, data, role) => {
   ) {
     // handle packageBased resellers
     if (singleReseller?.commissionType === "packageBased") {
-      // find reseller packages rate
-      const resellerPackageRate = singleReseller.resellerPackageRates.find(
-        (pack) => pack.mikrotikPackage === data.customer.mikrotikPackage
+      const resellerPackageRate = singleReseller.resellerPackageRates?.find(
+        (pack) => pack?.mikrotikPackage === data.customer?.mikrotikPackage
       );
 
       // check commission style is percentage or fixedRate
-      if (singleReseller?.commissionStyle === "percentage") {
-        ispOwnerCommission =
-          (resellerPackageRate.ispOwnerRate * Number(commissionAmount)) / 100;
-        resellerCommission = commissionAmount - ispOwnerCommission;
-      }
-      if (singleReseller?.commissionStyle === "fixedRate") {
-        ispOwnerCommission = resellerPackageRate.ispOwnerRate;
-        resellerCommission = commissionAmount - ispOwnerCommission;
+      if (resellerPackageRate) {
+        if (singleReseller?.commissionStyle === "percentage") {
+          ispOwnerCommission =
+            (resellerPackageRate.ispOwnerRate * Number(commissionAmount)) / 100;
+          resellerCommission = commissionAmount - ispOwnerCommission;
+        }
+
+        if (singleReseller?.commissionStyle === "fixedRate") {
+          ispOwnerCommission = resellerPackageRate?.ispOwnerRate;
+          resellerCommission = commissionAmount - ispOwnerCommission;
+        }
       }
     } else if (singleReseller?.commissionType === "global") {
       // handle other resellers

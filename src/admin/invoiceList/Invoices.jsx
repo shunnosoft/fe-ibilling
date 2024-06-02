@@ -1,12 +1,8 @@
-import { Form, Field, Formik } from "formik";
+import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
-import {
-  FileEarmarkPlusFill,
-  PencilSquare,
-  ThreeDots,
-} from "react-bootstrap-icons";
+import { FileEarmarkPlusFill, PencilSquare } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { FtextField } from "../../components/common/FtextField";
 import Loader from "../../components/common/Loader";
@@ -17,10 +13,9 @@ import {
 } from "../../features/apiCallAdmin";
 import InvoiceEditModal from "./modal/InvoiceEditModal";
 import InvoiceCreate from "./modal/InvoiceCreate";
-import { Modal, ModalBody, ModalHeader, ModalTitle } from "react-bootstrap";
 import SelectField from "../../components/common/SelectField";
 import DatePicker from "react-datepicker";
-import { setIspOwnerData } from "../../features/authSlice";
+import ComponentCustomModal from "../../components/common/customModal/ComponentCustomModal";
 
 const Invoices = ({ ownerId, companyName, isOpen, setIsOpen }) => {
   // import dispatch
@@ -37,14 +32,20 @@ const Invoices = ({ ownerId, companyName, isOpen, setIsOpen }) => {
   // loading state
   let [loadingState, setEditLoading] = useState(false);
 
+  // set invoice
+  const [invocie, setInvocie] = useState([]);
+
   // set invoice id
   const [invoiceeEditId, setInvoiceEditId] = useState("");
 
   // modal show state
   const [show, setShow] = useState(false);
 
-  //
+  // set invoice date
   const [invoiceDate, setInvoiceDate] = useState();
+
+  // set invoice type
+  const [invoiceType, setInvoiceType] = useState("monthlyServiceCharge");
 
   // dispatch data to api
   useEffect(() => {
@@ -58,8 +59,11 @@ const Invoices = ({ ownerId, companyName, isOpen, setIsOpen }) => {
     setInvoiceDate(singleInvoice?.dueDate && new Date(singleInvoice?.dueDate));
   }, [invoiceeEditId]);
 
-  // edit section
+  useEffect(() => {
+    setInvocie(invoiceList);
+  }, [invoiceList]);
 
+  // edit section
   const cancelHandle = () => {
     setInvoiceEditId("");
   };
@@ -99,7 +103,20 @@ const Invoices = ({ ownerId, companyName, isOpen, setIsOpen }) => {
     };
   }
 
-  const handleClose = () => setIsOpen(false);
+  // handle ispowner invoice filter function
+  const handleInvoiceListFilter = () => {
+    let arr = [...invoiceList];
+    if (invoiceType) {
+      arr = arr.filter((item) => item.type === invoiceType);
+    }
+
+    setInvocie(arr);
+  };
+
+  // handle ispowner invoice filter reset function
+  const handleInvoiceListFilterReset = () => {
+    setInvocie(invoiceList);
+  };
 
   // table column
   const columns = React.useMemo(
@@ -191,30 +208,6 @@ const Invoices = ({ ownerId, companyName, isOpen, setIsOpen }) => {
                 >
                   <PencilSquare />
                 </button>
-
-                {/* <ThreeDots
-                className="dropdown-toggle ActionDots"
-                id="areaDropdown"
-                type="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              />
-              <ul className="dropdown-menu" aria-labelledby="areaDropdown">
-                <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#InvoiceEditModal"
-                  onClick={() => {
-                    setInvoiceEditId(original.id);
-                  }}
-                >
-                  <div className="dropdown-item">
-                    <div className="customerAction">
-                      <PenFill />
-                      <p className="actionP">Edit</p>
-                    </div>
-                  </div>
-                </li>
-              </ul> */}
               </>
             </div>
           ),
@@ -225,37 +218,31 @@ const Invoices = ({ ownerId, companyName, isOpen, setIsOpen }) => {
 
   return (
     <>
-      <Modal
+      <ComponentCustomModal
         show={isOpen}
-        onHide={handleClose}
-        backdrop="static"
-        keyboard={false}
+        setShow={setIsOpen}
+        centered={false}
         size="xl"
-      >
-        <ModalHeader closeButton>
-          <ModalTitle>
-            <div className="d-flex px-4">
-              <h5
-                style={{ color: "#0abb7a" }}
-                className="modal-title"
-                id="customerModalDetails"
-              >
-                Company Name: {companyName}
-              </h5>
-              <div
-                title="Invoice Create"
-                className="header_icon mx-3"
-                onClick={() => {
-                  setShow(true);
-                  setIsOpen(false);
-                }}
-              >
-                <FileEarmarkPlusFill />
-              </div>
+        header={
+          <div className="d-flex">
+            <h5>
+              Company Name:
+              <span className="text-success"> {companyName} </span>
+            </h5>
+            <div
+              title="Invoice Create"
+              className="header_icon mx-3"
+              onClick={() => {
+                setShow(true);
+                setIsOpen(false);
+              }}
+            >
+              <FileEarmarkPlusFill />
             </div>
-          </ModalTitle>
-        </ModalHeader>
-        <ModalBody>
+          </div>
+        }
+      >
+        <div className="p-2 ">
           {invoiceeEditId && (
             <>
               <div className="edit-section">
@@ -263,11 +250,6 @@ const Invoices = ({ ownerId, companyName, isOpen, setIsOpen }) => {
                   initialValues={{
                     amount: ispOwnerInvoice?.amount,
                     paymentStatus: ispOwnerInvoice?.status,
-                    // dueDate: moment(ispOwnerInvoice?.dueDate).format(
-                    //   "MMM dd yyyy hh:mm a"
-                    // ),
-
-                    // time: moment(ispOwnerInvoice?.dueDate).format("HH:mm"),
                   }}
                   validationSchema={invoiceEditFieldValidator}
                   enableReinitialize
@@ -278,7 +260,7 @@ const Invoices = ({ ownerId, companyName, isOpen, setIsOpen }) => {
                   {() => (
                     <Form>
                       {role === "superadmin" && (
-                        <div className="displayGrid5">
+                        <div className="displayGrid5 pt-0">
                           <>
                             <FtextField
                               type="number"
@@ -312,18 +294,6 @@ const Invoices = ({ ownerId, companyName, isOpen, setIsOpen }) => {
                             />
                           </div>
 
-                          {/* <FtextField
-                            name="dueDate"
-                            label="Date"
-                            type="date"
-                            component="Datepicker"
-                            dateFormat="MMM dd yyyy hh:mm a"
-                            timeIntervals
-                            showTimeSelect
-                          /> */}
-
-                          {/* <FtextField name="time" label="Time" type="date" /> */}
-
                           <div className="invoiceAction">
                             <button
                               type="submit"
@@ -349,25 +319,59 @@ const Invoices = ({ ownerId, companyName, isOpen, setIsOpen }) => {
               </div>
             </>
           )}
-          <div
-            className="dashboardField"
-            style={{
-              height: "79vh",
-              overflowY: "auto",
-            }}
-          >
-            <div className="invoice">
-              {invoiceList.length > 0 && (
-                <Table
-                  isLoading={isLoading}
-                  columns={columns}
-                  data={invoiceList}
-                />
-              )}
+
+          <div className="displayGrid5 mt-2">
+            <div>
+              <label
+                htmlFor="receiver_type"
+                className="form-control-label changeLabelFontColor"
+              >
+                Invoice Type
+              </label>
+
+              <select
+                as="select"
+                id="receiver_type"
+                className="form-select mt-0 mw-100"
+                aria-label="Default select example"
+                onChange={(e) => setInvoiceType(e.target.value)}
+              >
+                <option value="monthlyServiceCharge">
+                  Monthly Service Charge
+                </option>
+                <option value="smsPurchase">SMS Purchase</option>
+                <option value="registration">Registration</option>
+                <option value="migration">Migration</option>
+              </select>
+            </div>
+
+            <div className="displayGrid1 invoiceAction">
+              <button
+                className="btn btn-outline-primary"
+                type="button"
+                onClick={handleInvoiceListFilter}
+              >
+                Filter
+              </button>
+              <button
+                className="btn btn-outline-primary"
+                type="button"
+                onClick={handleInvoiceListFilterReset}
+              >
+                Reset
+              </button>
             </div>
           </div>
-        </ModalBody>
-      </Modal>
+        </div>
+
+        <div className="dashboardField">
+          <div className="invoice">
+            {invoiceList.length > 0 && (
+              <Table isLoading={isLoading} columns={columns} data={invocie} />
+            )}
+          </div>
+        </div>
+      </ComponentCustomModal>
 
       <InvoiceEditModal invoiceeEditId={invoiceeEditId} />
       <InvoiceCreate ispOwnerId={ownerId} modal={show} />

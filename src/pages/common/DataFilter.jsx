@@ -463,8 +463,6 @@ const DataFilter = ({
       dateFormat: "yyyy MM dd hh:mm a",
       timeIntervals: 60,
       showTimeSelect: "showTimeSelect",
-      minDate: firstDayOfMonth,
-      maxDate: lastDayOfMonth,
       selected: filterOptions.startDate,
       onChange: (date) => {
         setFilterOption({
@@ -484,8 +482,6 @@ const DataFilter = ({
       dateFormat: "yyyy MM dd hh:mm a",
       timeIntervals: 60,
       showTimeSelect: "showTimeSelect",
-      minDate: firstDayOfMonth,
-      maxDate: lastDayOfMonth,
       selected: filterOptions.endDate,
       onChange: (date) => {
         setFilterOption({

@@ -183,6 +183,20 @@ ul.client_service_list2 li {
   font-weight: 100;
 }
 
+.bandwithRxTx {
+  height: 1.3rem;
+  width: 3rem;
+  font-weight: 600;
+  text-align: center;
+  color: #fff;
+  font-size: 1rem;
+}
+
+.bandwithKbps {
+  font-weight: 500;
+  font-family: "Times New Roman", Times, serif;
+}
+
 .profileInfo {
   margin: 0.8rem 1rem;
   font-weight: 600;

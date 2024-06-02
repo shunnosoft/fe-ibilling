@@ -1,183 +1,141 @@
-import { useEffect, useRef } from "react";
-import { useState } from "react";
-import Button from "react-bootstrap/Button";
-import Modal from "react-bootstrap/Modal";
+import { useEffect, useRef, useState } from "react";
 import apiLink from "../../api/apiLink";
 import { toast } from "react-toastify";
-import moment from "moment";
-import FormatNumber from "../../components/common/NumberFormat";
 import { useSelector } from "react-redux";
-import TdLoader from "../../components/common/TdLoader";
-import { Bar } from "react-chartjs-2";
 import { useTranslation } from "react-i18next";
+import { SmoothieChart, TimeSeries } from "smoothie";
+import ComponentCustomModal from "../../components/common/customModal/ComponentCustomModal";
+import { ArrowDownShort, ArrowUpShort } from "react-bootstrap-icons";
 
-// let callCount = 0;
-let err = false;
 const BandwidthModal = ({ modalShow, setModalShow, customerId }) => {
   const { t } = useTranslation();
+
+  const canvasRef = useRef();
+  const line1Ref = useRef(new TimeSeries());
+  const line2Ref = useRef(new TimeSeries());
+
+  // load the current live stream
+  const [streamDone, setStreamDone] = useState(false);
+
   // get all customer
   const customer = useSelector((state) => state?.customer?.customer);
 
   // find editable data
   const data = customer.find((item) => item.id === customerId);
 
-  let [bandwidth, setBandWidth] = useState([]);
-  let [tx, setTx] = useState([]);
+  const getCurrentLiveStream = async (customerId) => {
+    setStreamDone(false);
+    try {
+      const res = await apiLink(
+        `customer/mikrotik/bandwidth?customerId=${customerId}`
+      );
 
-  let [time, setTime] = useState([]);
+      // Get the readable stream from the response
+      const reader = res?.body?.getReader();
 
-  let date = new Date();
-  date = date.toLocaleTimeString("en-US");
-
-  const getCurrentSession = async () => {
-    if (!err) {
-      try {
-        const res = await apiLink(
-          "customer/mikrotik/currentSession?customerId=" + customerId
-        );
-        if (bandwidth.length > 13) {
-          bandwidth.pop();
-          tx.pop();
-          time.pop();
-        }
-        setBandWidth([
-          parseInt(res.data.data[0].rxByte?.toFixed(2) / 1048576),
-          ...bandwidth,
-        ]);
-        setTx([parseInt(res.data.data[0].txByte?.toFixed(2) / 1048576), ...tx]);
-
-        setTime([date, ...time]);
-        // callCount++;
-      } catch (error) {
-        // callCount++;
-        err = true;
-        toast.error(error.message);
-      }
-    }
-  };
-
-  useEffect(() => {
-    let interval;
-    if (modalShow) {
-      interval = setInterval(() => {
-        // if (callCount <= 5) {
-        if (err) {
-          clearInterval(interval);
+      // Function to process each chunk of data
+      const processChunk = ({ done, value }) => {
+        if (done) {
+          setStreamDone(true);
           return;
         }
-        getCurrentSession();
-        // } else {
-        //   clearInterval(interval);
-        // }
-      }, 4000);
-      return () => {
-        clearInterval(interval);
+
+        // Decode the chunk (assuming UTF-8 encoding)
+        const textDecoder = new TextDecoder("utf-8");
+        const chunk = textDecoder?.decode(value, { stream: true });
+
+        const parseChunk = JSON.parse(chunk);
+
+        // -> SETUP  CHUNK DATA SET UP IN SMOOTHIE
+        line1Ref.current.append(
+          new Date().getTime(),
+          parseChunk[0]?.rx / 1024 / 1024
+        );
+
+        line2Ref.current.append(
+          new Date().getTime(),
+          parseChunk[0]?.tx / 1024 / 1024
+        );
+
+        // Continue reading the stream
+        return reader?.read()?.then(processChunk);
       };
-    } else {
-      clearInterval(interval);
+
+      // Start reading the stream
+      reader?.read()?.then(processChunk);
+    } catch (error) {
+      toast.error(error.message);
     }
-  }, [modalShow, bandwidth, tx, time]);
-
-  const resetState = () => {
-    err = false;
-    setBandWidth([]);
-    setTx([]);
-    setTime([]);
   };
-
-  const onCloseModal = () => {
-    setModalShow(false);
-    setTimeout(resetState, 3000);
-  };
-
-  const [chartData, setChartData] = useState({});
 
   useEffect(() => {
-    setChartData({
-      labels: time,
-      datasets: [
-        {
-          label: "Rx",
-          data: bandwidth,
-          backgroundColor: "red",
-          borderWidth: 4,
-          barThickness: 16,
+    if (customerId) {
+      const smoothie = new SmoothieChart({
+        grid: {
+          millisPerPixel: 22,
+          borderVisible: false,
+          verticalSections: 2,
+          lineWidth: 0.3,
         },
-        {
-          label: "Tx",
-          data: tx,
-          backgroundColor: "green",
-          borderWidth: 4,
-          barThickness: 16,
-        },
-      ],
-    });
-  }, [time, bandwidth, tx]);
+        labels: { fontSize: 13 },
+        tooltip: true,
+        tooltipLine: { strokeStyle: "#bbbbbb" },
+      });
+
+      // smoothie?.streamTo(canvasRef?.current, 1000);
+
+      smoothie?.addTimeSeries(line1Ref?.current, {
+        strokeStyle: "#00FF00",
+        lineWidth: 2,
+      });
+
+      smoothie?.addTimeSeries(line2Ref?.current, {
+        strokeStyle: "yellow",
+        lineWidth: 2,
+      });
+
+      // !streamDone &&
+      getCurrentLiveStream(customerId);
+    }
+  }, [customerId, streamDone]);
 
   return (
     <>
-      <Modal
+      <ComponentCustomModal
         show={modalShow}
-        onHide={() => setModalShow(false)}
+        setShow={setModalShow}
+        centered={true}
         size="lg"
-        aria-labelledby="customerBandWidth"
-        centered
-        backdrop="static"
+        header={data?.name + " " + t("bandwidthLive")}
       >
-        <Modal.Header>
-          <Modal.Title id="customerBandWidth">
-            {t("bandwidthLive")}{" "}
-            <span className="text-secondary">{data?.pppoe?.name}</span>
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {!bandwidth.length ? (
-            <div className="d-flex justify-content-center">
-              <TdLoader />
+        <div className="container">
+          <div className="displayGrid2 d-flex justify-content-center align-items-center mb-2">
+            <div className="d-flex gap-2">
+              <p className="bandwithKbps">
+                <ArrowDownShort />
+                100kbps
+              </p>
+              <p className="bg-success bandwithRxTx">Rx</p>
             </div>
-          ) : (
-            <>
-              <div
-                className="bandwidth-graph"
-                style={{ height: "36vh", overflow: "auto" }}
-              >
-                <div className="live-bandwith d-flex justify-content-around">
-                  <div className="dateTime">
-                    <h5>{t("time")}</h5>
-                    {time.map((item, key) => (
-                      <p key={key}>{item}</p>
-                    ))}
-                  </div>
 
-                  <div className="rx">
-                    <h5>Rx</h5>
-                    {bandwidth.map((item, key) => (
-                      <p key={key}>
-                        {FormatNumber(item)}
-                        <span className="text-secondary"> kbps</span>
-                      </p>
-                    ))}
-                  </div>
-
-                  <div className="tx">
-                    <h5>Tx</h5>
-                    {tx.map((item, key) => (
-                      <p key={key}>
-                        {FormatNumber(item)}
-                        <span className="text-secondary"> kbps</span>
-                      </p>
-                    ))}
-                  </div>
-                </div>
-              </div>
-              <Bar data={chartData} />
-            </>
-          )}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button onClick={onCloseModal}>{t("close")}</Button>
-        </Modal.Footer>
-      </Modal>
+            <div className="d-flex gap-2">
+              <p className="bg-danger bandwithRxTx">Tx</p>
+              <p className="bandwithKbps">
+                100kbps
+                <ArrowUpShort />
+              </p>
+            </div>
+          </div>
+          <div className="d-flex justify-content-center align-items-center">
+            <canvas
+              ref={canvasRef}
+              id="chart"
+              width="745"
+              height="300"
+            ></canvas>
+          </div>
+        </div>
+      </ComponentCustomModal>
     </>
   );
 };
