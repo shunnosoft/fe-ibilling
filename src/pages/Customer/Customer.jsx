@@ -1165,11 +1165,11 @@ const PPPOECustomer = () => {
         />
       )}
 
-      <BandwidthModal
+      {/* <BandwidthModal
         setModalShow={setBandWidthModal}
         modalShow={bandWidthModal}
         customerId={customerId}
-      />
+      /> */}
 
       {/* customers number update or delete modal */}
       <CustomersNumber showModal={numberModalShow} />
