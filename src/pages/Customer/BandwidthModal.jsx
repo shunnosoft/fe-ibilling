@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { SmoothieChart, TimeSeries } from "smoothie";
 import ComponentCustomModal from "../../components/common/customModal/ComponentCustomModal";
 import { ArrowDownShort, ArrowUpShort } from "react-bootstrap-icons";
+import axios from "axios";
 
 const BandwidthModal = ({ modalShow, setModalShow, customerId }) => {
   const { t } = useTranslation();
@@ -25,9 +26,15 @@ const BandwidthModal = ({ modalShow, setModalShow, customerId }) => {
 
   const getCurrentLiveStream = async (customerId) => {
     setStreamDone(false);
+    const TOKEN = await JSON.parse(localStorage.getItem("netFeeToken"));
     try {
-      const res = await apiLink(
-        `customer/mikrotik/bandwidth?customerId=${customerId}`
+      const res = await axios.get(
+        `http://45.77.244.36:3131/api/v1/customer/mikrotik/bandwidth?customerId=${customerId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${TOKEN}`,
+          },
+        }
       );
 
       // Get the readable stream from the response
@@ -45,6 +52,7 @@ const BandwidthModal = ({ modalShow, setModalShow, customerId }) => {
         const chunk = textDecoder?.decode(value, { stream: true });
 
         const parseChunk = JSON.parse(chunk);
+        console.log(parseChunk);
 
         // -> SETUP  CHUNK DATA SET UP IN SMOOTHIE
         line1Ref.current.append(
@@ -97,7 +105,7 @@ const BandwidthModal = ({ modalShow, setModalShow, customerId }) => {
       // !streamDone &&
       getCurrentLiveStream(customerId);
     }
-  }, [customerId, streamDone]);
+  }, [customerId]);
 
   return (
     <>

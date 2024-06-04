@@ -268,50 +268,6 @@ export default function ConfigMikrotik() {
 
   const tableData = useMemo(() => sortingCustomer, [allUsers]);
 
-  // csv table header
-  const customerForCsVTableInfoHeader = [
-    { label: "customer_id", key: "customerId" },
-    { label: "name_of_client", key: "name" },
-    { label: "PPPoE_Name", key: "pppoeName" },
-    { label: "Allocated_ip", key: "ip" },
-    { label: "address_of_client", key: "customerAddress" },
-    { label: "activation_date", key: "createdAt" },
-    { label: "bandwidth_allocation MB", key: "package" },
-    { label: "password", key: "password" },
-    { label: "client_phone", key: "mobile" },
-    { label: "status", key: "status" },
-    { label: "payment Status", key: "paymentStatus" },
-    { label: "email", key: "email" },
-    { label: "balance", key: "balance" },
-    { label: "billing_cycle", key: "billingCycle" },
-    { label: "selling_bandwidthBDT (Excluding VAT).", key: "monthlyFee" },
-  ];
-
-  //export customer data
-  let customerForCsVTableInfo = useMemo(
-    () =>
-      tableData.map((customer) => {
-        return {
-          customerId: customer.customerId,
-          name: customer.name,
-          pppoeName: customer.pppoe?.name,
-          ip: customer.ip,
-          customerAddress: customer.address,
-          createdAt: moment(customer.createdAt).format("MM/DD/YYYY"),
-          package: customer?.pppoe?.profile,
-          password: customer?.pppoe?.password,
-          mobile: customer?.mobile || "",
-          status: customer.status,
-          paymentStatus: customer.paymentStatus,
-          email: customer.email || "",
-          monthlyFee: customer.monthlyFee,
-          balance: customer.balance,
-          billingCycle: moment(customer.billingCycle).format("MMM-DD-YYYY"),
-        };
-      }),
-    [allUsers]
-  );
-
   //mac-binding handler
   const macBindingCall = (customerId) => {
     pppoeMACBinding(customerId);

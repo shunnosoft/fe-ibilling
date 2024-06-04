@@ -25,7 +25,7 @@ export const newBTRCReport = (customerData, ispOwnerData) => {
       connectionType: "Wired",
       name: customer.name,
       companyAddress: ispOwnerData.address,
-      connectivity: "Dedicated",
+      connectivity: "Share It",
       createdAt: moment(customer.createdAt).format("YYYY-MM-DD"),
       package: customer.pppoe?.profile,
       ip: customer.ip,

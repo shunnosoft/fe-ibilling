@@ -772,7 +772,7 @@ const PPPOECustomer = () => {
           name: customer.name,
           customerAddress: customer.address,
           connectionType: "Wired",
-          connectivity: "Dedicated",
+          connectivity: "Share It",
           createdAt: moment(customer.createdAt).format("MM/DD/YYYY"),
           package: customer?.pppoe?.profile,
           division: customer?.division || "",
