@@ -244,12 +244,25 @@ const RechargePrintInvoice = React.forwardRef((props, ref) => {
                       {moment(billingData?.billingCycle).format("MMM DD YYYY")}
                     </td>
                   </tr>
-                  {/* <tr>
-                  <th>{t("promiseDate")}</th>
-                  <td>
-                    {moment(billingData?.promiseDate).format("MMM DD YYYY")}
-                  </td>
-                </tr> */}
+                  <tr>
+                    <th>{t("billComment")}</th>
+                    <td>
+                      {billingData?.start && (
+                        <span>
+                          {moment(billingData?.start).format("MMM DD YYYY")} -
+                        </span>
+                      )}
+
+                      {billingData?.end && (
+                        <span>
+                          {moment(billingData?.end).format("MMM DD YYYY")}
+                        </span>
+                      )}
+                      <span>
+                        {billingData?.month} {billingData?.note}
+                      </span>
+                    </td>
+                  </tr>
                 </tbody>
               </Table>
 
