@@ -3135,6 +3135,13 @@ export const getUpdatedUserData = async (dispatch, userRole, userId) => {
   try {
     const res = await apiLink.get(`/${userRole}/${userId}`);
     dispatch(updateUserData(res.data));
+
+    // ispOwner status check and redirect
+    if (res?.data.status === "inactive") {
+      if (window.location.pathname !== "/acountSuspend") {
+        window.location.href = "/acountSuspend";
+      }
+    }
   } catch (error) {
     console.log(error.response?.data.message);
   }

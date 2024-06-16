@@ -327,25 +327,26 @@ export default function Header(props) {
                     </button>
 
                     <ul className="dropdown-menu">
-                      <li className="profileList">
-                        {!invoiceDate && (
-                          <NavLink
-                            to={
-                              userRole === "reseller" ||
-                              currentUser?.collector?.reseller
-                                ? "/reseller/profile"
-                                : "/profile"
-                            }
-                            className="dropdown-item"
-                          >
-                            <span className="dropdownIcon">
-                              <PersonFill />
-                            </span>
-                            {t("profile")}
-                          </NavLink>
-                        )}
-                      </li>
-
+                      {currentUser.collector.status !== "inactive" && (
+                        <li className="profileList">
+                          {!invoiceDate && (
+                            <NavLink
+                              to={
+                                userRole === "reseller" ||
+                                currentUser?.collector?.reseller
+                                  ? "/reseller/profile"
+                                  : "/profile"
+                              }
+                              className="dropdown-item"
+                            >
+                              <span className="dropdownIcon">
+                                <PersonFill />
+                              </span>
+                              {t("profile")}
+                            </NavLink>
+                          )}
+                        </li>
+                      )}
                       {/* {userRole === "ispOwner" || userRole === "manager" ? (
                         <Link to="/activity">
                           <li className="profileList logOutLi">
