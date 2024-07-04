@@ -951,5 +951,7 @@
   "selectBillingCyclePanel": "বিলিং সাইকেল প্যানেল নির্বাচন করুন",
   "refNo": "রেফারেন্স নম্বর",
   "packageRateError": "প্যাকেজ রেট পূরণ করুন।",
-  "packageRateIncorret": "প্যাকেজ রেট সঠিক নয়।"
+  "packageRateIncorret": "প্যাকেজ রেট সঠিক নয়।",
+  "customerDifferentPackage": "গ্রাহকটি অন্য একটি প্যাকেজের।",
+  "customerDifferentMikrotik": "গ্রাহকটি অন্য একটি মাইক্রোটিকের।"
 }

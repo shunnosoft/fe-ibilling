@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import Loader from "../../../components/common/Loader";
 import { transferToResellerApi } from "../../../features/actions/customerApiCall";
 import ComponentCustomModal from "../../../components/common/customModal/ComponentCustomModal";
+import useISPowner from "../../../hooks/useISPOwner";
 
 const TransferToReseller = ({ show, setShow, customerId, page }) => {
   //call dispatch
@@ -14,6 +15,9 @@ const TransferToReseller = ({ show, setShow, customerId, page }) => {
 
   //en bn hook call
   const { t } = useTranslation();
+
+  //===> get user & current user data form useISPOwner hooks
+  const { bpSettings } = useISPowner();
 
   const allSubArea = useSelector((state) => state?.area?.subArea);
 
@@ -49,23 +53,38 @@ const TransferToReseller = ({ show, setShow, customerId, page }) => {
       return alert("Please select a reseller and sub area");
     }
 
-    // find single customer to transfer
+    //---> find single customer to transfer
     const selectedCustomer = customer.find((item) => item.id === customerId);
 
-    if (
-      !selectedReseller?.mikrotiks.some(
-        (val) => val === selectedCustomer.mikrotik
-      )
-    ) {
-      setIsLoading(false);
-      return toast.warn(t("resellerMikrotik"));
+    let data;
+    //---> check if selected reseller has mikrotik or not
+    if (bpSettings?.hasMikrotik) {
+      //---> check if selected reseller has mikrotik
+      if (selectedReseller?.mikrotiks.includes(selectedCustomer.mikrotik)) {
+        //---> check if selected reseller has package
+        if (
+          selectedReseller?.mikrotikPackages.includes(
+            selectedCustomer.mikrotikPackage
+          )
+        ) {
+          data = {
+            ...selectedCustomer,
+            reseller: selectedReseller.id,
+            subArea: subAreaId,
+          };
+        } else {
+          toast.error(t("customerDifferentPackage"));
+        }
+      } else {
+        toast.error(t("customerDifferentMikrotik"));
+      }
+    } else {
+      data = {
+        ...selectedCustomer,
+        reseller: selectedReseller.id,
+        subArea: subAreaId,
+      };
     }
-
-    const data = {
-      ...selectedCustomer,
-      reseller: selectedReseller.id,
-      subArea: subAreaId,
-    };
 
     transferToResellerApi(dispatch, data, setIsLoading, setShow);
   };

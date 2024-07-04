@@ -945,5 +945,7 @@
   "selectBillingCyclePanel": "Select Billing Cycle Panel",
   "refNo": "Ref No",
   "packageRateError": "Fill in the package rate.",
-  "packageRateIncorret": "The package rate is not correct."
+  "packageRateIncorret": "The package rate is not correct.",
+  "customerDifferentPackage": "The customer is of a different package.",
+  "customerDifferentMikrotik": "The customer is another Mikrotik."
 }
