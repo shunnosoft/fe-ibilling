@@ -768,6 +768,8 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       disabled: bpSettings.hasMikrotik
         ? status === "post"
           ? !formData.mikrotikId
+          : data.status === "expired"
+          ? true
           : resellerUser && !permission?.customerMikrotikPackageEdit
         : false,
       validation: true,
