@@ -190,6 +190,7 @@ import {
 } from "./customerCrossCheckSlice";
 import { updatePermissionSuccess } from "./adminNetFeeSupportSlice";
 import axios from "axios";
+import { confing } from "../config";
 
 const netFeeLang = localStorage.getItem("netFee:lang");
 
@@ -4123,10 +4124,10 @@ export const getAllWebhookMessage = async (dispatch, dataGet, setIsLoading) => {
   setIsLoading(true);
   try {
     const res = await axios.get(
-      `https://shunnoit.top/shunno-bkash/api/v1/webhooks/messages?netfeeId=${dataGet.netfeeId}&startDate=${dataGet.startDate}&endDate=${dataGet.endDate}&sort=dsc`,
+      `${confing.shunno_pay_base_url}/webhooks/messages?netfeeId=${dataGet.netfeeId}&startDate=${dataGet.startDate}&endDate=${dataGet.endDate}&sort=dsc`,
       {
         headers: {
-          "X-API-KEY": "BJK-&!JK-NM@",
+          Authorization: "Bearer " + confing.shunno_pay_token,
         },
       }
     );
