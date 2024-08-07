@@ -48,6 +48,7 @@
     "react-to-print": "^2.14.7",
     "react-toastify": "^8.1.0",
     "redux-persist": "^6.0.0",
+    "smoothie": "^1.36.1",
     "styled-components": "^5.3.3",
     "yup": "^0.32.11"
   },

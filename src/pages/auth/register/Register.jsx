@@ -108,7 +108,7 @@ export default function Register() {
       packType: pakage?.packageName,
       customerType,
       reference: {
-        name: refName || "তৌকির হোসেন",
+        name: refName || "নেটফি",
         mobile: refMobile || "01321141785",
       },
     };
