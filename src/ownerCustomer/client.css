@@ -121,6 +121,15 @@ ul.client_service_list li:hover {
   z-index: -100;
 }
 
+.customer_information {
+  padding: 2.5rem, 2.5rem, 0, 0;
+}
+
+.customer_information_table {
+  display: flex;
+  justify-content: space-between;
+}
+
 .menu_icon {
   font-size: 1.5rem;
   color: #3eff00;
@@ -398,6 +407,13 @@ span.navHeaderCompany {
   text-transform: capitalize;
 }
 
+.client_footer {
+  display: flex;
+  flex-direction: row;
+  padding: 2.5rem;
+  column-gap: 2%;
+}
+
 @media screen and (max-width: 580px) {
   .client_wraper {
     position: fixed;
@@ -407,8 +423,17 @@ span.navHeaderCompany {
     width: 100%;
   }
 
+  .customer_information_table {
+    display: flex;
+    flex-direction: column;
+  }
+
   .client_dashboard_section {
     padding: 5rem 1rem;
+  }
+
+  .services {
+    padding: 1rem !important;
   }
 
   .restForm-wraper {
@@ -471,5 +496,24 @@ span.navHeaderCompany {
 
   .support-table-data {
     justify-content: space-evenly;
+  }
+
+  .welcome_title {
+    font-size: 1.5rem;
+  }
+
+  .client_footer {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    row-gap: 1rem;
+  }
+
+  .packages_info_wraper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
   }
 }

@@ -240,8 +240,8 @@ const Client = () => {
           </Container>
         </Navbar>
         <section className="client_dashboard_section">
-          <div className="customer_information px-5">
-            <h1 className="text-center jumbotron">
+          <div className="customer_information">
+            <h1 className="welcome_title text-center">
               Welcome to {userData.ispOwner.company}
             </h1>
             {diffFormBillDate <= 7 && userData.paymentStatus !== "paid" && (
@@ -275,7 +275,7 @@ const Client = () => {
           </div>
         </section>
         {renderText === "profile" && (
-          <div className="services p-5">
+          <div className="container services">
             <h2>Services</h2>
             <hr />
 
@@ -315,9 +315,9 @@ const Client = () => {
           </div>
         )}
 
-        <footer className="client_footer p-5">
-          <div className="d-flex justify-content-center">
-            <div style={{ flex: 6 }} className="p-4">
+        <footer className="footer text-start">
+          <div className="client_footer">
+            <div style={{ flex: 6 }}>
               To get started with us, please go over all of our internet plans
               and other plans to let our operators know which one works for you
               the best! We guarantee high-quality customer support service with

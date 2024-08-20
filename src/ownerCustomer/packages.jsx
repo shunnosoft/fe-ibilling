@@ -51,8 +51,8 @@ export default function Packages() {
     <div className="client_page_packages mx-auto">
       {permission?.showCustomerPanelPackage ? (
         <>
-          <p>Current package:</p>
-          <div className="packages_info_wraper mw-75 ">
+          <h6>Current package:</h6>
+          <div className="packages_info_wraper">
             <p>
               Package:
               {!userData?.reseller && (
