@@ -190,7 +190,7 @@ import {
 } from "./customerCrossCheckSlice";
 import { updatePermissionSuccess } from "./adminNetFeeSupportSlice";
 import axios from "axios";
-import { confing } from "../config";
+import { config } from "../config";
 
 const netFeeLang = localStorage.getItem("netFee:lang");
 
@@ -4124,10 +4124,10 @@ export const getAllWebhookMessage = async (dispatch, dataGet, setIsLoading) => {
   setIsLoading(true);
   try {
     const res = await axios.get(
-      `${confing.shunno_pay_base_url}/webhooks/messages?netfeeId=${dataGet.netfeeId}&startDate=${dataGet.startDate}&endDate=${dataGet.endDate}&sort=dsc`,
+      `${config.shunno_pay_base_url}/webhooks/messages?netfeeId=${dataGet.netfeeId}&startDate=${dataGet.startDate}&endDate=${dataGet.endDate}&sort=dsc`,
       {
         headers: {
-          Authorization: "Bearer " + confing.shunno_pay_token,
+          Authorization: "Bearer " + config.shunno_pay_token,
         },
       }
     );
@@ -4149,7 +4149,7 @@ export const messageReferenceIDUpdate = async (
   setIsLoading(true);
   try {
     const res = await axios.put(
-      `https://shunnoit.top/shunno-payment/api/v1/webhooks/messages/${messageId}`,
+      `${config.shunno_pay_base_url}/webhooks/messages/${messageId}`,
       data,
       {
         headers: {

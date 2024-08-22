@@ -26,6 +26,7 @@ import {
   updateIspOwnerSupport,
 } from "./adminNetFeeSupportSlice";
 import axios from "axios";
+import { config } from "../config";
 
 // get owners
 export const getIspOwners = async (dispatch, setIsLoading) => {
@@ -450,7 +451,7 @@ export const getCreateCsutomerLoginCredential = async (mobile) => {
 export const csutomerWebhookRegister = async (data) => {
   try {
     const res = await axios.post(
-      `https://shunnoit.top/shunno-payment/api/v1/auth/register`,
+      `${config.shunno_pay_base_url}/auth/register`,
       data
     );
     res && toast.success(res?.data?.message);
