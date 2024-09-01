@@ -102,7 +102,7 @@ export default function ConfigMikrotik() {
   const [customerDeleteId, setCustomerDeleteId] = useState("");
 
   // customer id state
-  const [bandWidthCustomerId, setBandWidthCustomerId] = useState("");
+  const [bandWidthCustomerData, setBandWidthCustomerData] = useState();
 
   //bandwidth modal state
   const [bandWidthModal, setBandWidthModal] = useState(false);
@@ -176,8 +176,8 @@ export default function ConfigMikrotik() {
   };
 
   // customer bandwidth handler
-  const bandwidthModalController = (customerID) => {
-    setBandWidthCustomerId(customerID);
+  const bandwidthModalController = (customer) => {
+    setBandWidthCustomerData(customer);
     setBandWidthModal(true);
   };
 
@@ -432,7 +432,7 @@ export default function ConfigMikrotik() {
                   {(role === "ispOwner" || role === "manager") &&
                     bpSettings?.hasMikrotik &&
                     original?.running === true && (
-                      <li onClick={() => bandwidthModalController(original.id)}>
+                      <li onClick={() => bandwidthModalController(original)}>
                         <div className="dropdown-item">
                           <div className="customerAction">
                             <Server />
@@ -836,7 +836,7 @@ export default function ConfigMikrotik() {
       <BandwidthModal
         setModalShow={setBandWidthModal}
         modalShow={bandWidthModal}
-        customerId={bandWidthCustomerId}
+        customer={bandWidthCustomerData}
       />
     </>
   );
