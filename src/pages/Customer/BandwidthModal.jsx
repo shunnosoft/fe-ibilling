@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import ComponentCustomModal from "../../components/common/customModal/ComponentCustomModal";
 import ReactApexChart from "react-apexcharts";
@@ -9,8 +8,10 @@ import { toast } from "react-toastify";
 const BandwidthModal = ({ modalShow, setModalShow, customer }) => {
   const { t } = useTranslation();
 
+  //real time chank data state
   const [chankData, setChankData] = useState([]);
 
+  //chart data state
   const [chartData, setChartData] = useState({
     series: [
       {
@@ -64,27 +65,26 @@ const BandwidthModal = ({ modalShow, setModalShow, customer }) => {
     },
   });
 
-  const getCurrentLiveStream = async () => {
+  const getCurrentLiveStream = async (callCountRef) => {
     try {
       const response = await apiLink.get(
-        `customer/mikrotik/bandwidth?customerId=${customer?.id}`
+        `customer/live-bandwidth/${customer?.id}`
       );
-      setChankData(response.data?.data || []);
+      setChankData(response?.data || []);
 
-      const intervalId = setInterval(() => {
-        getCurrentLiveStream();
-      }, 10000);
-
-      return () => {
-        clearInterval(intervalId);
-      };
+      if (callCountRef.current < 3) {
+        callCountRef.current += 1;
+        setTimeout(() => getCurrentLiveStream(callCountRef), 10000);
+      }
     } catch (error) {
-      toast.error(error);
+      toast.error(error.message);
     }
   };
+
   useEffect(() => {
     if (customer?.id) {
-      getCurrentLiveStream();
+      const callCountRef = { current: 1 };
+      getCurrentLiveStream(callCountRef);
     }
   }, [customer?.id]);
 
@@ -121,7 +121,7 @@ const BandwidthModal = ({ modalShow, setModalShow, customer }) => {
       } else {
         clearInterval(interval);
       }
-    }, 1000);
+    }, 2000);
 
     return () => clearInterval(interval);
   }, [chankData]);
