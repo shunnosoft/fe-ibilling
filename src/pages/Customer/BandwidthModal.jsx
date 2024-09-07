@@ -1,147 +1,139 @@
-import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
-import ComponentCustomModal from "../../components/common/customModal/ComponentCustomModal";
-import ReactApexChart from "react-apexcharts";
-import apiLink from "../../api/apiLink";
+import { useEffect, useState, useMemo } from "react";
 import { toast } from "react-toastify";
+import CanvasJSReact from "@canvasjs/react-charts";
+import apiLink from "../../api/apiLink";
+import ComponentCustomModal from "../../components/common/customModal/ComponentCustomModal";
 
-const BandwidthModal = ({ modalShow, setModalShow, customer }) => {
-  const { t } = useTranslation();
+const CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
-  //real time chank data state
-  const [chankData, setChankData] = useState([]);
+const BandwidthModal = ({ customer, modalShow, setModalShow }) => {
+  const [chunkData, setChunkData] = useState([]);
+  const [dps1, setDps1] = useState([]);
+  const [dps2, setDps2] = useState([]);
+  const [xVal, setXVal] = useState(0); // X-axis values
 
-  //chart data state
-  const [chartData, setChartData] = useState({
-    series: [
-      {
-        name: "TX",
-        data: [],
-      },
-      {
-        name: "RX",
-        data: [],
-      },
-    ],
-    options: {
-      chart: {
-        id: "realtime",
-        type: "line",
-        animations: {
-          enabled: true,
-          easing: "linear",
-          dynamicAnimation: {
-            speed: 2000,
-          },
-        },
-        toolbar: {
-          show: false,
-        },
-        zoom: {
-          enabled: false,
-        },
-      },
-      dataLabels: {
-        enabled: false,
-      },
-      stroke: {
-        curve: "smooth",
-      },
-      title: {
-        text: "Real-time Bandwidth Usage",
-        align: "left",
-      },
-      xaxis: {
-        type: "datetime",
-      },
-      yaxis: {
-        title: {
-          text: "Bandwidth (bps)",
-        },
-      },
-      legend: {
-        position: "top",
-      },
-    },
-  });
+  const dataLength = 80; // Number of visible data points
 
-  const getCurrentLiveStream = async (callCountRef) => {
-    try {
-      const response = await apiLink.get(
-        `customer/live-bandwidth/${customer?.id}`
-      );
-      setChankData(response?.data || []);
-
-      if (callCountRef.current < 3) {
-        callCountRef.current += 1;
-        setTimeout(() => getCurrentLiveStream(callCountRef), 10000);
-      }
-    } catch (error) {
-      toast.error(error.message);
-    }
+  // Helper function to format data to Mbps or Kbps
+  const formatToMbps = (value) => {
+    return value / 1024 / 1024 > 1
+      ? (value / 1024 / 1024).toFixed(1) // Convert to Mbps if > 1MB
+      : (value / 1024).toFixed(1); // Convert to Kbps otherwise
   };
 
   useEffect(() => {
-    if (customer?.id) {
-      const callCountRef = { current: 1 };
-      getCurrentLiveStream(callCountRef);
+    if (!modalShow) {
+      setDps1([]);
+      setDps2([]);
+      setXVal(0);
     }
-  }, [customer?.id]);
+  }, [modalShow]);
 
   useEffect(() => {
-    if (!chankData || chankData.length === 0) return;
+    let fetchInterval;
+    const fetchBandwidthData = async () => {
+      if (!modalShow || !customer?.id) return; // Stop fetching if modal is closed or no customer ID
 
-    const txData = chankData.map((item) => parseInt(item[0]?.tx, 10) || 0);
-    const rxData = chankData.map((item) => parseInt(item[0]?.rx, 10) || 0);
+      try {
+        const response = await apiLink.get(
+          `customer/mikrotik/bandwidth?customerId=${customer?.id}`
+        );
 
-    let index = 0;
-
-    const interval = setInterval(() => {
-      if (index < txData.length) {
-        const currentTime = Date.now();
-
-        const newTxData = { x: currentTime, y: txData[index] };
-        const newRxData = { x: currentTime, y: rxData[index] };
-
-        setChartData((prevChartData) => ({
-          ...prevChartData,
-          series: [
-            {
-              name: "TX",
-              data: [...prevChartData.series[0].data, newTxData],
-            },
-            {
-              name: "RX",
-              data: [...prevChartData.series[1].data, newRxData],
-            },
-          ],
-        }));
-
-        index++;
-      } else {
-        clearInterval(interval);
+        if (response.status === 200) {
+          setChunkData(response.data?.data || []);
+        }
+      } catch (error) {
+        toast.error(`Failed to fetch bandwidth data: ${error.message}`);
       }
-    }, 2000);
+    };
 
-    return () => clearInterval(interval);
-  }, [chankData]);
+    // Fetch data every few seconds while modal is open
+    if (modalShow) {
+      fetchBandwidthData();
+      fetchInterval = setInterval(fetchBandwidthData, 2000); // Fetch every 5 seconds
+    }
+
+    return () => clearInterval(fetchInterval); // Clean up interval when modal closes or component unmounts
+  }, [modalShow, customer?.id]);
+
+  useEffect(() => {
+    if (chunkData.length > 0) {
+      const rxValue = chunkData[0].rx || 0;
+      const txValue = chunkData[1].tx || 0;
+
+      // Update data points for both download and upload
+      setDps1((prevDps1) => {
+        const newDps1 = [
+          ...prevDps1,
+          { x: xVal, y: Number(formatToMbps(rxValue)) },
+        ];
+        console.log(newDps1);
+        return newDps1.length > dataLength ? newDps1.slice(1) : newDps1;
+      });
+
+      setDps2((prevDps2) => {
+        const newDps2 = [
+          ...prevDps2,
+          { x: xVal, y: Number(formatToMbps(txValue)) },
+        ];
+        return newDps2.length > dataLength ? newDps2.slice(1) : newDps2;
+      });
+
+      setXVal((prevXVal) => prevXVal + 1); // Increment xVal for the next update
+    }
+  }, [chunkData]);
+
+  // Memoize chart options for performance optimization
+  const options = useMemo(
+    () => ({
+      exportEnabled: true,
+      title: {
+        text: "Real-time Bandwidth Usage",
+      },
+      axisX: {
+        minimum: xVal - dataLength + 1, // Dynamic x-axis start point
+        maximum: xVal, // Current xVal as end point
+      },
+      data: [
+        {
+          type: "column", // Bar chart for download
+          showInLegend: true,
+          legendText: `Download: ${
+            dps1.length ? dps1[dps1.length - 1]?.y : 0
+          } ${dps1[dps1.length - 1]?.y > 1 ? "Mbps" : "kbps"}`,
+          dataPointWidth: 2,
+          dataPoints: dps1,
+          toolTipContent: `${dps1.length ? dps1[dps1.length - 1]?.y : 0} ${
+            dps1[dps1.length - 1]?.y > 1 ? "Mbps" : "kbps"
+          }`,
+        },
+        {
+          type: "column", // Bar chart for upload
+          showInLegend: true,
+          legendText: `Upload: ${dps2.length ? dps2[dps2.length - 1]?.y : 0} ${
+            dps2[dps2.length - 1]?.y > 1 ? "Mbps" : "kbps"
+          }`,
+          dataPointWidth: 2,
+          dataPoints: dps2,
+          toolTipContent: `${dps1.length ? dps1[dps1.length - 1]?.y : 0} ${
+            dps1[dps1.length - 1]?.y > 1 ? "Mbps" : "kbps"
+          }`,
+        },
+      ],
+    }),
+    [xVal, dps1, dps2]
+  );
 
   return (
     <ComponentCustomModal
       show={modalShow}
       setShow={setModalShow}
       centered
-      size="xl"
-      header={`${customer?.name} ${t("bandwidthLive")}`}
+      size="lg"
+      header={customer?.name} //Real-time Bandwidth Usage
     >
-      <div id="chart">
-        <ReactApexChart
-          id="realtime"
-          options={chartData.options}
-          series={chartData.series}
-          type="line"
-          height={350}
-        />
+      <div>
+        <CanvasJSChart options={options} />
       </div>
     </ComponentCustomModal>
   );

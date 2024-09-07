@@ -429,18 +429,16 @@ export default function ConfigMikrotik() {
                       </li>
                     )}
 
-                  {(role === "ispOwner" || role === "manager") &&
-                    bpSettings?.hasMikrotik &&
-                    original?.running === true && (
-                      <li onClick={() => bandwidthModalController(original)}>
-                        <div className="dropdown-item">
-                          <div className="customerAction">
-                            <Server />
-                            <p className="actionP">{t("bandwidth")}</p>
-                          </div>
+                  {bpSettings?.hasMikrotik && original?.running === true && (
+                    <li onClick={() => bandwidthModalController(original)}>
+                      <div className="dropdown-item">
+                        <div className="customerAction">
+                          <Server />
+                          <p className="actionP">{t("bandwidth")}</p>
                         </div>
-                      </li>
-                    )}
+                      </div>
+                    </li>
+                  )}
 
                   {(role === "ispOwner" || role === "manager") &&
                     bpSettings?.hasMikrotik &&

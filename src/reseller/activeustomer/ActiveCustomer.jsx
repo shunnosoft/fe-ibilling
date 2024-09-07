@@ -17,6 +17,7 @@ import {
   ArrowClockwise,
   FilterCircle,
   Router,
+  Server,
   ThreeDots,
   Wifi,
   WifiOff,
@@ -29,6 +30,7 @@ import { Accordion } from "react-bootstrap";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
 import { badge } from "../../components/common/Utils";
+import BandwidthModal from "../../pages/Customer/BandwidthModal";
 
 const ResellserActiveCustomer = () => {
   const { t } = useTranslation();
@@ -82,9 +84,21 @@ const ResellserActiveCustomer = () => {
   // filter Accordion handle state
   const [activeKeys, setActiveKeys] = useState("");
 
+  //bandwidth modal state
+  const [bandWidthModal, setBandWidthModal] = useState(false);
+
+  // customer id state
+  const [bandWidthCustomerData, setBandWidthCustomerData] = useState();
+
   // select mikrotik handler
   const mikrotiSelectionHandler = (event) => {
     setMikrotikId(event.target.value);
+  };
+
+  // customer bandwidth handler
+  const bandwidthModalController = (customer) => {
+    setBandWidthCustomerData(customer);
+    setBandWidthModal(true);
   };
 
   // customer filter state
@@ -308,6 +322,17 @@ const ResellserActiveCustomer = () => {
                         )}
                       </li>
                     )}
+
+                  {bpSettings?.hasMikrotik && original?.running === true && (
+                    <li onClick={() => bandwidthModalController(original)}>
+                      <div className="dropdown-item">
+                        <div className="customerAction">
+                          <Server />
+                          <p className="actionP">{t("bandwidth")}</p>
+                        </div>
+                      </div>
+                    </li>
+                  )}
                 </ul>
               </div>
             </div>
@@ -447,6 +472,13 @@ const ResellserActiveCustomer = () => {
           </div>
         </div>
       </div>
+
+      {/* Customer live bandwidth modal */}
+      <BandwidthModal
+        setModalShow={setBandWidthModal}
+        modalShow={bandWidthModal}
+        customer={bandWidthCustomerData}
+      />
     </>
   );
 };
