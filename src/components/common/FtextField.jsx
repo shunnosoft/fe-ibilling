@@ -88,15 +88,17 @@ export const FtextField = ({ label, validation, ...props }) => {
             props?.onChange && props?.onChange(e);
           }}
         >
-          <option selected>{props.firstOptions}</option>
-          {props.options?.map((opt) => (
-            <option
-              selected={field?.value === opt[props?.valueAccessor]}
-              value={opt[props?.valueAccessor]}
-            >
-              {opt[props?.textAccessor]}
-            </option>
-          ))}
+          <option>{props.firstOptions}</option>
+          {Array.isArray(props.options) &&
+            props.options.map((opt) => (
+              <option
+                key={opt[props?.valueAccessor]}
+                selected={field?.value === opt[props?.valueAccessor]}
+                value={opt[props?.valueAccessor]}
+              >
+                {opt[props?.textAccessor]}
+              </option>
+            ))}
         </Field>
       ) : (
         <Field

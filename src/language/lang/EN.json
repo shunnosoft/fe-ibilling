@@ -947,5 +947,19 @@
   "packageRateError": "Fill in the package rate.",
   "packageRateIncorret": "The package rate is not correct.",
   "customerDifferentPackage": "The customer is of a different package.",
-  "customerDifferentMikrotik": "The customer is another Mikrotik."
+  "customerDifferentMikrotik": "The customer is another Mikrotik.",
+  "network": "Network",
+  "device": "Device",
+  "diagram": "Diagram",
+  "selectDeviceType": "Select Device Type",
+  "deviceType": "Device Type",
+  "brand": "Brand",
+  "model": "Model",
+  "olt": "OLT",
+  "switch": "Switch",
+  "splitter": "Splitter",
+  "onu": "ONU",
+  "create": "Create",
+  "assign": "Assign",
+  "duplicatePortNameFound": "Duplicate Port Name found!"
 }

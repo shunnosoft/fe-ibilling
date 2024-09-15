@@ -43,6 +43,14 @@ import {
   PersonFill,
   SendCheck,
   CameraVideoFill,
+  HddRackFill,
+  BroadcastPin,
+  Diagram3Fill,
+  Shuffle,
+  UsbSymbol,
+  Broadcast,
+  RouterFill,
+  Ethernet,
 } from "react-bootstrap-icons";
 import { NavLink, Router } from "react-router-dom";
 import activeClass from "../../../assets/css/active.module.css";
@@ -84,6 +92,7 @@ export default function Sidebar() {
 
   const [isOpen, setIsOpen] = useState(false);
   const [activeKey, setActiveKey] = useState();
+  const [childActiveKey, setChildActiveKey] = useState();
   const location = window.location.pathname;
 
   useEffect(() => {
@@ -101,14 +110,25 @@ export default function Sidebar() {
         break;
     }
     setActiveKey(localStorage.getItem("active-key"));
+    setChildActiveKey(localStorage.getItem("child-active-key"));
   }, [location]);
 
   const handleActiveAccordian = (key) => {
     if (key === activeKey) {
       setActiveKey("");
+      setChildActiveKey("");
     } else {
       setActiveKey(key);
       localStorage.setItem("active-key", key);
+    }
+  };
+
+  const handleChildActiveAccordian = (key) => {
+    if (key === childActiveKey) {
+      setChildActiveKey("");
+    } else {
+      setChildActiveKey(key);
+      localStorage.setItem("child-active-key", key);
     }
   };
 
@@ -1160,6 +1180,68 @@ export default function Sidebar() {
                         </Accordion.Body>
                       </Accordion.Item>
                     )}
+
+                    {/* network diagram */}
+                    {(userRole === "ispOwner" || userRole === "manager") && (
+                      <>
+                        <Accordion.Item eventKey="14">
+                          <Accordion.Header
+                            onClick={() => handleActiveAccordian("14")}
+                          >
+                            <div className="sidebarIcon">
+                              {<BroadcastPin />}
+                            </div>
+                            <span className="sidebarLinksName">
+                              {t("network")}
+                            </span>
+                          </Accordion.Header>
+                          <Accordion.Body>
+                            <NavLink key={400} to="/network/device">
+                              <FontColor>
+                                <li
+                                  className="sidebarItems"
+                                  id={
+                                    window.location.pathname ===
+                                    "/network/device"
+                                      ? "active"
+                                      : ""
+                                  }
+                                >
+                                  <div className="sidebarIcon">
+                                    {<HddRackFill />}
+                                  </div>
+                                  <span className="sidebarLinksName">
+                                    {t("device")}
+                                  </span>
+                                </li>
+                              </FontColor>
+                            </NavLink>
+
+                            <NavLink key={400} to="/network/diagram">
+                              <FontColor>
+                                <li
+                                  className="sidebarItems"
+                                  id={
+                                    window.location.pathname ===
+                                    "/network/diagram"
+                                      ? "active"
+                                      : ""
+                                  }
+                                >
+                                  <div className="sidebarIcon">
+                                    {<Diagram3Fill />}
+                                  </div>
+                                  <span className="sidebarLinksName">
+                                    {t("diagram")}
+                                  </span>
+                                </li>
+                              </FontColor>
+                            </NavLink>
+                          </Accordion.Body>
+                        </Accordion.Item>
+                      </>
+                    )}
+
                     {/* একাউন্টস */}
                     {(userRole === "ispOwner" ||
                       userRole === "manager" ||

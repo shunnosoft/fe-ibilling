@@ -305,9 +305,22 @@ const Report = () => {
     let start = data?.start ? moment(data?.start).format("DD/MM/YY") : "";
     let end = data?.end ? moment(data?.end).format("DD/MM/YY") : "";
     return {
+      customerId: data?.hotspotCustomer
+        ? data?.hotspotCustomer?.customerId
+        : data?.customer?.customerId,
       name: data?.hotspotCustomer
         ? data?.hotspotCustomer?.name
         : data?.customer?.name,
+      pppoe:
+        data.customer?.userType === "pppoe"
+          ? data.customer?.pppoe.name
+          : data.customer?.userType === "firewall-queue"
+          ? data.customer?.queue.address
+          : data.customer?.userType === "core-queue"
+          ? data.customer?.queue.srcAddress
+          : data.customer?.userType === "simple-queue"
+          ? data.customer?.queue.target
+          : data?.hotspotCustomer?.hotspot.name,
       package: data?.customer?.mikrotikPackage?.name
         ? data.customer?.mikrotikPackage?.name
         : data.customer?.userType === "pppoe"
@@ -324,7 +337,9 @@ const Report = () => {
 
   // set csv header
   const reportForCsVTableInfoHeader = [
+    { label: "Customer Id", key: "customerId" },
     { label: "Name", key: "name" },
+    { label: "PPPoE", key: "pppoe" },
     { label: "Package", key: "package" },
     { label: "Bill_Amount", key: "amount" },
     { label: "Bill_Due", key: "due" },
@@ -333,7 +348,6 @@ const Report = () => {
     { label: "Comment", key: "comment" },
     { label: "Bill_Collect_Date", key: "createdAt" },
   ];
-  // end csv
 
   const columns = useMemo(
     () => [

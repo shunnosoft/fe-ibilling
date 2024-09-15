@@ -191,6 +191,12 @@ import {
 import { updatePermissionSuccess } from "./adminNetFeeSupportSlice";
 import axios from "axios";
 import { config } from "../config";
+import {
+  getNetworkDeviceSuccess,
+  getNetworkDiagramDeviceSuccess,
+  postNetworkDeviceSuccess,
+  updateNetworkDiagramDeviceSuccess,
+} from "./network.slice";
 
 const netFeeLang = localStorage.getItem("netFee:lang");
 
@@ -4154,10 +4160,99 @@ export const messageReferenceIDUpdate = async (
       {
         headers: {
           "X-API-KEY": "BJK-&!JK-NM@",
+          Authorization: "Bearer " + config.shunno_pay_token,
         },
       }
     );
     dispatch(updateReferenceIDSuccess(res?.data.data));
+
+    setShow(false);
+  } catch (error) {
+    toast.error(error?.response?.data.message);
+  }
+  setIsLoading(false);
+};
+
+// network device create
+export const createNetworkDevice = async (
+  dispatch,
+  data,
+  setIsLoading,
+  setShow
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.post(`network/createNetworkDevice`, data);
+    dispatch(postNetworkDeviceSuccess(res?.data));
+
+    setShow(false);
+  } catch (error) {
+    toast.error(error?.response?.data.message);
+  }
+  setIsLoading(false);
+};
+
+// network device update
+export const updateNetworkDevice = async (
+  dispatch,
+  data,
+  setIsLoading,
+  setShow
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.post(
+      `network/updateNetworkDevice/${data.device}`,
+      data
+    );
+    dispatch(postNetworkDeviceSuccess(res?.data));
+
+    setShow(false);
+  } catch (error) {
+    toast.error(error?.response?.data.message);
+  }
+  setIsLoading(false);
+};
+
+// get ispowner network device
+export const getNetworkDevice = async (dispatch, ispOwnerId, setIsLoading) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.get(`network/getNetworkDevice/${ispOwnerId}`);
+    dispatch(getNetworkDeviceSuccess(res.data?.networkDevices));
+  } catch (error) {
+    toast.error(error?.response?.data.message);
+  }
+  setIsLoading(false);
+};
+
+// network diagram device
+export const getNetworkDiagramDevice = async (
+  dispatch,
+  ispOwnerId,
+  setIsLoading
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.get(`network/getNetworkTree/${ispOwnerId}`);
+
+    dispatch(getNetworkDiagramDeviceSuccess(res?.data));
+  } catch (error) {
+    toast.error(error?.response?.data.message);
+  }
+  setIsLoading(false);
+};
+
+// network device assign
+export const networkDeviceAssign = async (
+  dispatch,
+  data,
+  setIsLoading,
+  setShow
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.post(`network/diagram-assing`, data);
 
     setShow(false);
   } catch (error) {

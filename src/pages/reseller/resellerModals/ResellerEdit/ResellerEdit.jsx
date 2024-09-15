@@ -196,7 +196,7 @@ const ResellerEdit = ({ show, setShow, resellerId }) => {
             let foundPackage = resellerPackage.find(
               (pack) => pack.id === commission.mikrotikPackage
             );
-            console.log(foundPackage.rate, commission);
+
             if (foundPackage.rate < Number(commission.ispOwnerRate)) {
               errorFlag = true;
               msg = t("packageRateIncorret");

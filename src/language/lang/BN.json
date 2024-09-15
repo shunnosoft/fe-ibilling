@@ -953,5 +953,19 @@
   "packageRateError": "প্যাকেজ রেট পূরণ করুন।",
   "packageRateIncorret": "প্যাকেজ রেট সঠিক নয়।",
   "customerDifferentPackage": "গ্রাহকটি অন্য একটি প্যাকেজের।",
-  "customerDifferentMikrotik": "গ্রাহকটি অন্য একটি মাইক্রোটিকের।"
+  "customerDifferentMikrotik": "গ্রাহকটি অন্য একটি মাইক্রোটিকের।",
+  "network": "নেটওয়ার্ক",
+  "device": "ডিভাইস",
+  "diagram": "ডায়াগ্রাম",
+  "selectDeviceType": "সিলেক্ট ডিভাইস টাইপ",
+  "deviceType": "ডিভাইস টাইপ",
+  "brand": "ব্র্যান্ড",
+  "model": "মডেল",
+  "olt": "ওএলটি",
+  "switch": "সুইচ",
+  "splitter": "স্প্লিটার",
+  "onu": "অনু",
+  "create": "ক্রিয়েট",
+  "assign": "এসাইন",
+  "duplicatePortNameFound": "ডুপ্লিকেট পোর্ট নাম পাওয়া গেছে!"
 }

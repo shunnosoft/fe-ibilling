@@ -88,7 +88,9 @@ const CustomerReport = ({ show, setShow, single }) => {
         setShow={setShow}
         centered={false}
         size={"xl"}
-        header={single?.name + " " + t("report")}
+        header={`ID: ${single?.customerId} Name: ${single?.name} ${t(
+          "report"
+        )}`}
       >
         <div className="table-responsive-lg">
           <table className="table table-striped">

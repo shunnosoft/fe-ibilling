@@ -121,6 +121,8 @@ import AcountWorning from "./components/modals/error/AcountWorning";
 import WebhookMessage from "./pages/report/WebhookMessage";
 import AcountPayment from "./components/modals/payment/AcountPayment";
 import Tutorial from "./pages/tutorial/Tutorial";
+import Diagram from "./pages/network/diagram/Diagram";
+import Device from "./pages/network/device/Device";
 
 function App() {
   const [theme, setTheme] = useState("light");
@@ -591,6 +593,7 @@ function App() {
                 )
               }
             />
+
             <Route
               path="mikrotik"
               element={
@@ -601,6 +604,30 @@ function App() {
                 )
               }
             />
+
+            {/* network diagram */}
+            <Route
+              path="network/device"
+              element={
+                (userRole === "ispOwner" || userRole === "manager") && user ? (
+                  <Device />
+                ) : (
+                  <Navigate to={"/home"} />
+                )
+              }
+            />
+
+            <Route
+              path="/network/diagram"
+              element={
+                (userRole === "ispOwner" || userRole === "manager") && user ? (
+                  <Diagram />
+                ) : (
+                  <Navigate to={"/home"} />
+                )
+              }
+            />
+
             <Route
               path="package"
               element={

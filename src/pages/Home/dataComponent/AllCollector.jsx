@@ -100,6 +100,15 @@ const AllCollector = ({
       },
       {
         width: "15%",
+        Header: t("totalExpenditure"),
+        Cell: ({ row: { original } }) => (
+          <div>
+            <span className="text-danger">{original?.totalExpenditure}</span>
+          </div>
+        ),
+      },
+      {
+        width: "15%",
         Header: t("previousBalance"),
         accessor: "prevMonthBalance",
       },
