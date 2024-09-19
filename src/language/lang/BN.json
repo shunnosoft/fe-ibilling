@@ -967,5 +967,9 @@
   "onu": "অনু",
   "create": "ক্রিয়েট",
   "assign": "এসাইন",
-  "duplicatePortNameFound": "ডুপ্লিকেট পোর্ট নাম পাওয়া গেছে!"
+  "duplicatePortNameFound": "ডুপ্লিকেট পোর্ট নাম পাওয়া গেছে!",
+  "numberOfPort": "পোর্টের সংখ্যা লিখুন",
+  "power": "পাওয়ার",
+  "colorCode": "কালার কোড",
+  "deviceLocation": "ডিভাইসের অবস্থান"
 }

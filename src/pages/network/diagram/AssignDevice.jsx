@@ -56,7 +56,7 @@ const AssignDevice = ({ show, setShow, data }) => {
       type: "text",
       id: "location",
       name: "location",
-      label: t("device location"),
+      label: t("deviceLocation"),
       validation: true,
       isVisible: true,
       disabled: false,
@@ -96,11 +96,15 @@ const AssignDevice = ({ show, setShow, data }) => {
       ...values,
       remarks,
       ispOwner: ispOwnerId,
-      parentPath: data?.parentPath
-        ? `${data.parentPath}/${data.documentId}`
-        : `/${ispOwnerId}`,
-      parentId: data?._id || "",
     };
+
+    if (data) {
+      assignData.parentId = data?._id;
+      assignData.parentPath = `${data.parentPath}/${data.documentId}`;
+    } else {
+      delete assignData.parentId;
+      delete assignData.parentPath;
+    }
 
     if (candidateValue !== "onu") {
       delete assignData.customer;
@@ -115,7 +119,9 @@ const AssignDevice = ({ show, setShow, data }) => {
       setShow={() => setShow(false)}
       centered
       size="md"
-      header={`${data?.name} ${t("assign")} ${t("device")}`}
+      header={`${data?.device?.name}-${data?.output?.portName} ${t(
+        "assign"
+      )} ${t("device")}`}
       footer={
         <div className="displayGrid1 float-end">
           <button

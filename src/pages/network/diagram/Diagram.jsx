@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 import Sidebar from "../../../components/admin/sidebar/Sidebar";
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import useDash from "../../../assets/css/dash.module.css";
 import { FontColor, FourGround } from "../../../assets/js/theme";
 import { useTranslation } from "react-i18next";
@@ -44,62 +44,50 @@ const Diagram = () => {
   // Modal handle state
   const [show, setShow] = useState(false);
 
+  // Assign data update handler
+  const [isUpdate, setIsUpdate] = useState(false);
+
   // Device Assign data state
-  const [assignData, setAssignData] = useState(null);
+  const [assignData, setAssignData] = useState({});
 
   useEffect(() => {
-    getNetworkDiagramDevice(dispatch, ispOwnerId, setIsLoading);
+    Object.keys(diagrams).length === 0 &&
+      getNetworkDiagramDevice(dispatch, ispOwnerId, setIsLoading);
 
-    getCustomer(dispatch, ispOwnerId, setIsLoading);
-  }, []);
+    customers.length === 0 && getCustomer(dispatch, ispOwnerId, setIsLoading);
+  }, [ispOwnerId]);
 
   // Single Customer find handler function
   const getSingleCustomerFind = (id) =>
     customers.find((customer) => customer.id === id) || "";
 
   useEffect(() => {
-    if (Object.keys(diagrams).length === 0) return;
-
-    const svg = d3.select(svgRef.current);
-    const g = d3.select(gRef.current);
-
-    const margin = { top: 10, right: 10, bottom: 10, left: 80 };
-    const dx = 30;
     const root = d3.hierarchy(diagrams);
+
+    const marginTop = 10;
+    const marginRight = 10;
+    const marginBottom = 10;
+    const marginLeft = root.data.children ? 90 : 10;
 
     function getMaxDepth(root) {
       let maxDepth = 0;
 
       root.each((node) => {
-        if (node.depth > maxDepth) {
+        if (node.depth + 1 > maxDepth) {
           maxDepth = node.depth + 1;
         }
       });
 
       return maxDepth;
     }
+
     const maxDepth = getMaxDepth(root);
 
     const baseNodeWidth = 250;
     const width = maxDepth * baseNodeWidth;
 
-    const dy = (width - margin.left - margin.right) / (root.height + 1);
-
-    svg
-      .attr("viewBox", [-margin.left, -margin.top, width, dx])
-      .attr("style", "height: 85vh; font: 15px sans-serif; user-select: none;");
-
-    const gLink = g
-      .append("g")
-      .attr("fill", "none")
-      .attr("stroke", "#555")
-      .attr("stroke-opacity", 5)
-      .attr("stroke-width", 2);
-
-    const gNode = g
-      .append("g")
-      .attr("cursor", "pointer")
-      .attr("pointer-events", "all");
+    const dx = 40;
+    const dy = (width - marginLeft - marginRight) / (root.height + 1);
 
     const tree = d3.tree().nodeSize([dx, dy]);
     const diagonal = d3
@@ -107,13 +95,37 @@ const Diagram = () => {
       .x((d) => d.y)
       .y((d) => d.x);
 
-    const zoom = d3.zoom().on("zoom", (event) => {
-      g.attr("transform", event.transform);
-    });
+    const svg = d3
+      .select(svgRef.current)
+      .attr("viewBox", [-marginLeft, -marginTop, width, dx])
+      .attr("style", "height: 85vh; font: 15px sans-serif; user-select: none;");
+
+    const gLink = d3
+      .select(gRef.current)
+      .append("g")
+      .attr("fill", "none")
+      .attr("stroke-opacity", 5)
+      .attr("stroke-width", 2)
+      .attr("stroke", "#80918d");
+
+    const gNode = d3
+      .select(gRef.current)
+      .append("g")
+      .attr("cursor", "pointer")
+      .attr("pointer-events", "all");
+
+    const zoom = d3
+      .zoom()
+      .scaleExtent([0.1, 10])
+      .on("zoom", (event) => {
+        gNode.attr("transform", event.transform);
+        gLink.attr("transform", event.transform);
+      });
 
     svg.call(zoom);
 
-    function update(source) {
+    function update(event, source) {
+      const duration = event?.altKey ? 2500 : 500;
       const nodes = root.descendants().reverse();
       const links = root.links();
 
@@ -121,10 +133,10 @@ const Diagram = () => {
 
       const height =
         root.descendants().reduce((max, d) => Math.max(max, d.x), 0) +
-        margin.top +
-        margin.bottom;
+        marginTop +
+        marginBottom;
 
-      svg.transition().duration(500).attr("height", height);
+      svg.transition().duration(duration).attr("height", height);
 
       const node = gNode.selectAll("g").data(nodes, (d) => d.id);
       const nodeEnter = node
@@ -133,12 +145,23 @@ const Diagram = () => {
         .attr("transform", (d) => `translate(${source.y0},${source.x0})`)
         .on("click", (event, d) => {
           d.children = d.children ? null : d._children;
-          update(d);
+          update(event, d);
         })
         .on("contextmenu", (event, d) => {
           event.preventDefault();
-          setAssignData(d.data);
-          setShow(true);
+          if (!d._children) {
+            if (d.data?.candidateType !== "onu") {
+              setAssignData(d.data);
+              setShow(true);
+              setIsUpdate(d.data?.children ? true : false);
+            } else {
+              toast.error("You do not update ONU");
+            }
+          } else {
+            toast.error(
+              "Already  There have children.You do not assign device"
+            );
+          }
         });
 
       nodeEnter.each(function (d) {
@@ -208,9 +231,9 @@ const Diagram = () => {
         } else {
           selection
             .append("circle")
-            .attr("r", 5)
+            .attr("r", d.data.children ? 5 : 1.5)
             .attr("fill", "red")
-            .attr("stroke-width", 2)
+            .attr("stroke-width", d.data.children ? 2 : 1)
             .attr("stroke", "green");
         }
       });
@@ -228,9 +251,11 @@ const Diagram = () => {
             ? `${device[d.data?.candidateType]} 1:${d.data?.output?.serial}-${
                 d.data?.output?.portName
               }`
-            : `${device[d.data?.candidateType]} 1:${d.data?.children?.length} ${
+            : d.data?.candidateType
+            ? `${device[d.data?.candidateType]} 1:${d.data?.children?.length} ${
                 d.data?.device?.name
               }`
+            : ""
         )
         .style("cursor", "pointer")
         .append("title")
@@ -249,17 +274,17 @@ const Diagram = () => {
       node
         .merge(nodeEnter)
         .transition()
-        .duration(500)
+        .duration(duration)
         .attr("transform", (d) => `translate(${d.y},${d.x})`);
 
       node
         .exit()
         .transition()
+        .duration(duration)
         .remove()
         .attr("transform", (d) => `translate(${source.y},${source.x})`);
 
       const link = gLink.selectAll("path").data(links, (d) => d.target.id);
-
       const linkEnter = link
         .enter()
         .append("path")
@@ -267,15 +292,18 @@ const Diagram = () => {
           const o = { x: source.x0, y: source.y0 };
           return diagonal({ source: o, target: o });
         })
-        .attr("stroke", (d) => {
-          return d.target.data?.output?.color;
-        });
+        .attr("stroke", (d) => d.target.data?.output?.color);
 
-      link.merge(linkEnter).transition().duration(500).attr("d", diagonal);
+      link
+        .merge(linkEnter)
+        .transition()
+        .duration(duration)
+        .attr("d", (d) => diagonal(d));
 
       link
         .exit()
         .transition()
+        .duration(duration)
         .remove()
         .attr("d", (d) => {
           const o = { x: source.x, y: source.y };
@@ -290,13 +318,12 @@ const Diagram = () => {
 
     root.x0 = dx / 2;
     root.y0 = 0;
-
     root.descendants().forEach((d, i) => {
       d.id = i;
       d._children = d.children;
     });
 
-    update(root);
+    update(null, root);
   }, [diagrams]);
 
   return (
@@ -316,17 +343,9 @@ const Diagram = () => {
               </FourGround>
               <FourGround>
                 <div className="mt-2">
-                  <div
-                    style={{
-                      overflow: "auto",
-                      maxHeight: "100vh",
-                      maxWidth: "200%",
-                    }}
-                  >
-                    <svg ref={svgRef} width="100%" height="800">
-                      <g ref={gRef}></g>
-                    </svg>
-                  </div>
+                  <svg ref={svgRef} width="100%" height="800">
+                    <g ref={gRef}></g>
+                  </svg>
                 </div>
               </FourGround>
               <Footer />
@@ -334,6 +353,7 @@ const Diagram = () => {
           </div>
         </div>
       </div>
+
       <AssignDevice show={show} setShow={setShow} data={assignData} />
     </>
   );

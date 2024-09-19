@@ -10,7 +10,7 @@ import {
   createNetworkDevice,
   updateNetworkDevice,
 } from "../../../features/apiCalls";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import useISPowner from "../../../hooks/useISPOwner";
 import { toast } from "react-toastify";
 
@@ -20,6 +20,9 @@ const DeviceForm = ({ show, setShow, isUpdate, title, device }) => {
 
   // get user & current user data form useISPOwner hooks
   const { ispOwnerId } = useISPowner();
+
+  // get network device outputs form redux store
+  const outputs = useSelector((state) => state.network?.outputs);
 
   const [isLoading, setIsLoading] = useState(false);
   const [portItems, setPortItems] = useState([]);
@@ -31,8 +34,8 @@ const DeviceForm = ({ show, setShow, isUpdate, title, device }) => {
     brand: device?.brand || "",
     deviceModel: device?.deviceModel || "",
     ip: device?.ip || "",
-    ratio: device?.ratio || "",
-    outputs: device?.outputs || [], // Default to an empty array if no outputs are provided
+    ratio: portItems?.length || "",
+    outputs: portItems || [], // Default to an empty array if no outputs are provided
   };
 
   // Validation schema for the form
@@ -130,10 +133,31 @@ const DeviceForm = ({ show, setShow, isUpdate, title, device }) => {
   ];
 
   useEffect(() => {
-    if (portItems.length === 0) {
-      setPortItems([]); // Initial empty array
+    // Check if it's an update operation
+    if (isUpdate && device) {
+      // Ensure outputs is available before filtering
+      if (outputs?.length > 0) {
+        const filterOutput = outputs.filter(
+          (item) => item.netWorkDevice === device.id
+        );
+
+        const outputsValue = filterOutput.map((output) => {
+          return {
+            serial: output.serial,
+            portName: output.portName,
+            portPower: output.portPower,
+            color: output.color,
+            _id: output.id,
+          };
+        });
+
+        // Update portItems state with the filtered outputs
+        setPortItems(outputsValue);
+      }
+    } else {
+      setPortItems([]); // Initial empty array if it's not an update
     }
-  }, []);
+  }, [isUpdate, device, outputs]); // Add necessary dependencies
 
   // Function to dynamically generate ports based on watchPort value
   const generatePortItems = (watchPort) => {
@@ -182,7 +206,13 @@ const DeviceForm = ({ show, setShow, isUpdate, title, device }) => {
     }
 
     if (isUpdate) {
-      await updateNetworkDevice(dispatch, deviceData, setIsLoading, setShow);
+      await updateNetworkDevice(
+        dispatch,
+        device.id,
+        deviceData,
+        setIsLoading,
+        setShow
+      );
     } else {
       await createNetworkDevice(dispatch, deviceData, setIsLoading, setShow);
     }
@@ -227,7 +257,7 @@ const DeviceForm = ({ show, setShow, isUpdate, title, device }) => {
                       type="number"
                       name="ratio"
                       className="form-control"
-                      placeholder="Enter number of ports"
+                      placeholder={t("numberOfPort")}
                       onChange={(e) => {
                         handleChange(e);
                         const updatedPorts = generatePortItems(e.target.value);
@@ -254,10 +284,10 @@ const DeviceForm = ({ show, setShow, isUpdate, title, device }) => {
                         <Table>
                           <thead>
                             <tr>
-                              <th>Sl</th>
-                              <th>Port Name</th>
-                              <th>Port Power %</th>
-                              <th>Color</th>
+                              <th>{t("serial")}</th>
+                              <th>{t("port") + " " + t("name")}</th>
+                              <th>{t("port") + " " + t("power")} %</th>
+                              <th>{t("colorCode")}</th>
                             </tr>
                           </thead>
                           <tbody>

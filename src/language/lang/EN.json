@@ -961,5 +961,9 @@
   "onu": "ONU",
   "create": "Create",
   "assign": "Assign",
-  "duplicatePortNameFound": "Duplicate Port Name found!"
+  "duplicatePortNameFound": "Duplicate Port Name found!",
+  "numberOfPort": "Enter number of ports",
+  "power": "Power",
+  "colorCode": "Color Code",
+  "deviceLocation": "Device Location"
 }

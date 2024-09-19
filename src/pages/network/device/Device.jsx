@@ -205,7 +205,7 @@ const Device = () => {
             title: isUpdate
               ? `${t("update")} ${t("mikrotik")}`
               : `${t("create")} ${t("mikrotik")}`,
-            device: deviceData,
+            device: isUpdate ? deviceData : "",
           }}
         />
       )}

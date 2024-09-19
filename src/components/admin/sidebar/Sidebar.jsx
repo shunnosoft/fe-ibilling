@@ -1182,7 +1182,9 @@ export default function Sidebar() {
                     )}
 
                     {/* network diagram */}
-                    {(userRole === "ispOwner" || userRole === "manager") && (
+                    {(userRole === "ispOwner" ||
+                      userRole === "manager" ||
+                      userRole === "reseller") && (
                       <>
                         <Accordion.Item eventKey="14">
                           <Accordion.Header

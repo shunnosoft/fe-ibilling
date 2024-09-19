@@ -192,9 +192,11 @@ import { updatePermissionSuccess } from "./adminNetFeeSupportSlice";
 import axios from "axios";
 import { config } from "../config";
 import {
+  getNetworkDeviceOutputSuccess,
   getNetworkDeviceSuccess,
   getNetworkDiagramDeviceSuccess,
   postNetworkDeviceSuccess,
+  updateNetworkDeviceSuccess,
   updateNetworkDiagramDeviceSuccess,
 } from "./network.slice";
 
@@ -4183,7 +4185,7 @@ export const createNetworkDevice = async (
   setIsLoading(true);
   try {
     const res = await apiLink.post(`network/createNetworkDevice`, data);
-    dispatch(postNetworkDeviceSuccess(res?.data));
+    dispatch(postNetworkDeviceSuccess(res.data?.savedProduct));
 
     setShow(false);
   } catch (error) {
@@ -4195,17 +4197,18 @@ export const createNetworkDevice = async (
 // network device update
 export const updateNetworkDevice = async (
   dispatch,
+  deviceId,
   data,
   setIsLoading,
   setShow
 ) => {
   setIsLoading(true);
   try {
-    const res = await apiLink.post(
-      `network/updateNetworkDevice/${data.device}`,
+    const res = await apiLink.patch(
+      `network/updateNetworkDevice/${deviceId}`,
       data
     );
-    dispatch(postNetworkDeviceSuccess(res?.data));
+    dispatch(updateNetworkDeviceSuccess(res?.data));
 
     setShow(false);
   } catch (error) {
@@ -4220,6 +4223,7 @@ export const getNetworkDevice = async (dispatch, ispOwnerId, setIsLoading) => {
   try {
     const res = await apiLink.get(`network/getNetworkDevice/${ispOwnerId}`);
     dispatch(getNetworkDeviceSuccess(res.data?.networkDevices));
+    dispatch(getNetworkDeviceOutputSuccess(res.data?.networkDeviceOutputs));
   } catch (error) {
     toast.error(error?.response?.data.message);
   }
