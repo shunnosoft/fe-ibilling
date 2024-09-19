@@ -1182,7 +1182,7 @@ export default function Sidebar() {
                     )}
 
                     {/* network diagram */}
-                    {(userRole === "ispOwner" ||
+                    {/* {(userRole === "ispOwner" ||
                       userRole === "manager" ||
                       userRole === "reseller") && (
                       <>
@@ -1242,7 +1242,7 @@ export default function Sidebar() {
                           </Accordion.Body>
                         </Accordion.Item>
                       </>
-                    )}
+                    )} */}
 
                     {/* একাউন্টস */}
                     {(userRole === "ispOwner" ||

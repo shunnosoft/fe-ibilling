@@ -6,6 +6,7 @@ import {
   ArrowClockwise,
   BoxArrowLeft,
   EnvelopePlus,
+  FileEarmarkArrowDownFill,
   MoonFill,
   PersonFill,
   Recycle,
@@ -247,6 +248,24 @@ export default function Header(props) {
               ) : (
                 ""
               )}
+
+              <div
+                className="headerIcon"
+                onClick={() => {
+                  const fileUrl = "apk/WebHookMobileApp_v1.0.1.apk";
+                  const link = document.createElement("a");
+                  link.href = fileUrl;
+                  link.download = "WebHookMobileApp_v1.0.1.apk";
+                  document.body.appendChild(link);
+                  link.click();
+                  document.body.removeChild(link);
+                }}
+              >
+                <FileEarmarkArrowDownFill
+                  title="WebHookMobileApp_v1.0.1.apk"
+                  size={22}
+                />
+              </div>
 
               {userRole === "ispOwner" && !invoiceDate && (
                 <div

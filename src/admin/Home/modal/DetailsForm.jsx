@@ -73,6 +73,7 @@ const DetailsForm = ({ setShow, ispOwner }) => {
     hasMikrotik: Yup.string(),
     inventory: Yup.string(),
     executeBillingCycle: Yup.string(),
+    hasWebHook: Yup.string(),
     customerType: Yup.array(),
   });
 
@@ -97,6 +98,7 @@ const DetailsForm = ({ setShow, ispOwner }) => {
       hasMikrotik: ispOwner?.bpSettings?.hasMikrotik,
       inventory: ispOwner?.bpSettings?.inventory,
       executeBillingCycle: ispOwner?.bpSettings?.executeBillingCycle,
+      hasWebHook: ispOwner?.bpSettings?.hasWebHook,
       pppoe: customerType,
       static: customerType,
       hotspot: customerType,
@@ -127,6 +129,7 @@ const DetailsForm = ({ setShow, ispOwner }) => {
         inventory: values.inventory,
         monthlyDueDate: billDate,
         executeBillingCycle: values.executeBillingCycle,
+        hasWebHook: values.hasWebHook,
         customerType: customerType,
       },
       reference: {
@@ -509,29 +512,44 @@ const DetailsForm = ({ setShow, ispOwner }) => {
               </div>
             </div>
 
-            <div className="d-flex align-items-center justify-content-between">
-              <div className="form-check my-2">
-                <Field
-                  className="form-check-input"
-                  type="checkbox"
-                  id="flexCheckChecked"
-                  name="hasMikrotik"
-                />
-                <label className="form-check-label" for="flexCheckChecked">
-                  Has Mikrotik
-                </label>
-              </div>
+            <div>
+              <lable>Has Modul</lable>
+              <div className="displayGrid3 mt-0">
+                <div className="form-check ">
+                  <Field
+                    className="form-check-input"
+                    type="checkbox"
+                    id="flexCheckChecked"
+                    name="hasMikrotik"
+                  />
+                  <label className="form-check-label" for="flexCheckChecked">
+                    Mikrotik
+                  </label>
+                </div>
 
-              <div className="form-check my-2">
-                <Field
-                  className="form-check-input"
-                  type="checkbox"
-                  id="inventoryChecked"
-                  name="inventory"
-                />
-                <label className="form-check-label" for="inventoryChecked">
-                  Has Inventory
-                </label>
+                <div className="form-check ">
+                  <Field
+                    className="form-check-input"
+                    type="checkbox"
+                    id="inventoryChecked"
+                    name="inventory"
+                  />
+                  <label className="form-check-label" for="inventoryChecked">
+                    Inventory
+                  </label>
+                </div>
+
+                <div className="form-check ">
+                  <Field
+                    className="form-check-input"
+                    type="checkbox"
+                    id="webhookChecked"
+                    name="hasWebHook"
+                  />
+                  <label className="form-check-label" for="webhookChecked">
+                    Webhook
+                  </label>
+                </div>
               </div>
             </div>
           </div>
