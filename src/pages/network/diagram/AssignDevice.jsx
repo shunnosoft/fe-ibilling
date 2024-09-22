@@ -100,7 +100,7 @@ const AssignDevice = ({ show, setShow, data }) => {
 
     if (data) {
       assignData.parentId = data?._id;
-      assignData.parentPath = `${data.parentPath}/${data.documentId}`;
+      assignData.parentPath = data?.path;
     } else {
       delete assignData.parentId;
       delete assignData.parentPath;
