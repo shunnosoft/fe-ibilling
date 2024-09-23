@@ -1182,7 +1182,7 @@ export default function Sidebar() {
                     )}
 
                     {/* network diagram */}
-                    {(userRole === "ispOwner" ||
+                    {((bpSettings?.networkDiagram && userRole === "ispOwner") ||
                       userRole === "manager" ||
                       userRole === "reseller") && (
                       <>

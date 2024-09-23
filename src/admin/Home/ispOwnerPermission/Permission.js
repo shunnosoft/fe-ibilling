@@ -236,6 +236,12 @@ export const ispOwnerPermission = (perm) => {
       info: "ম্যানেজার এবং কালেক্টর আদায়কৃত পরিমাণ ডিপোজিট করার পরে, গ্রাহকের মাসিক বিল রিপোর্ট মুছে ফেলার ফলে মাইনাস ব্যালেন্স তৈরি হবে। তারপর পরে ডিপোজিট করলে দেবে (ত্রুটি/error)। পারমিশনের মাধ্যমে, মাইনাস ব্যালেন্স অবশ্যই ডিপোজিট রিপোর্টের পরিমাণ থেকে বিয়োগ করতে হবে।",
       // info: "After the manager and collector have deposited the amount recovered, Deleting a customer's monthly bill report will result in a minus balance. Then if you deposit later it will give (error). By permission, the minus balance must be subtracted from the deposit report amount.",
     },
+    {
+      id: 40,
+      value: "networkDiagram",
+      label: "Network Diagram",
+      isChecked: perm?.networkDiagram,
+    },
   ];
   return permission;
 };
