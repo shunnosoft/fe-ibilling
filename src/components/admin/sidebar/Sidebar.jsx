@@ -1481,7 +1481,7 @@ export default function Sidebar() {
                           </Accordion.Header>
                           <Accordion.Body>
                             <a
-                              href={`http://45.77.47.252:5601/support-ticket/create?&netfeeID=${getIspOwnerData?.netFeeId}`}
+                              href={`https://support.shunnoit.com/support-ticket/create?&netfeeID=${getIspOwnerData?.netFeeId}`}
                               target="_blank"
                               className={(navInfo) =>
                                 navInfo.isActive ? activeClass.active : ""

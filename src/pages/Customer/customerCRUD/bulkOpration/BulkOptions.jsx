@@ -126,7 +126,8 @@ const BulkOptions = ({ bulkCustomers, page }) => {
         bpSettings?.bulkCustomerRecharge &&
         (role === "ispOwner" ||
           (role === "manager" && permissions?.bulkCustomerRecharge)),
-      // ||(role === "reseller" && permission?.bulkCustomerRecharge)
+      //     ||
+      // (role === "reseller" && permission?.bulkCustomerRecharge),
       icon: <i className="fas fa-dollar fa-xs" />,
       value: "bulkRecharge",
     },
@@ -316,6 +317,7 @@ const BulkOptions = ({ bulkCustomers, page }) => {
       {/* bulk recharge modal */}
       {modalStatus === "bulkRecharge" && (
         <BulkRecharge
+          page={page}
           show={show}
           setShow={setShow}
           bulkCustomer={bulkCustomers}

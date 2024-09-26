@@ -260,6 +260,7 @@ export default function Home() {
       shunnoId: Number(ispOwner.netFeeId).toString(),
       clientApp: "NETFEE",
       password: `${ispOwner.mobile}NF`,
+      role: "WEBHOOK_USER",
     };
 
     // webhook api call

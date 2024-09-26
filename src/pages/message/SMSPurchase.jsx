@@ -88,7 +88,7 @@ const SMSPurchase = ({ show, setShow }) => {
 
   //form submit handler
   const submitHandler = () => {
-    if (count < 400) {
+    if (count < 250) {
       toast.error(t("unsuccessSMSalertPurchageModal"));
     } else {
       if (
