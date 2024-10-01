@@ -164,6 +164,7 @@ const PaymentModal = ({ customerData, isPublic }) => {
               window.location.href = "/payment/failed";
             }
           } catch (error) {
+            localStorage.setItem("paymentError", error);
             bKash.create().onError();
             window.location.href = "/payment/failed";
             console.log(error);
