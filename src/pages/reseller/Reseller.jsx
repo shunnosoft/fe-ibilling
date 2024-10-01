@@ -13,6 +13,7 @@ import {
   KeyFill,
   CashStack,
   Book,
+  FiletypePy,
 } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer } from "react-toastify";
@@ -48,13 +49,14 @@ import MonthlyReport from "./resellerModals/MonthlyReport";
 import { getSubAreasApi } from "../../features/actions/customerApiCall";
 import FormatNumber from "../../components/common/NumberFormat";
 import ResellerEdit from "./resellerModals/ResellerEdit/ResellerEdit";
+import { csutomerWebhookRegister } from "../../features/apiCallAdmin";
 
 const Reseller = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
   // get user & current user data form useISPOwner hooks
-  const { role, ispOwnerId, hasMikrotik } = useISPowner();
+  const { role, ispOwnerData, ispOwnerId, hasMikrotik } = useISPowner();
 
   // get all reseller data form redux store
   const reseller = useSelector((state) => state?.reseller?.reseller);
@@ -120,6 +122,21 @@ const Reseller = () => {
     if (confirm) {
       deleteReseller(dispatch, IDs, setIsLoading);
     }
+  };
+
+  // create customer webhook
+  const createCustomerWebhookHandler = (reseller) => {
+    const sendingData = {
+      name: reseller.name,
+      shunnoId: Number(ispOwnerData.netFeeId).toString(),
+      password: `${reseller.mobile}NF`,
+      resellerMobile: reseller.mobile,
+      clientApp: "NETFEE",
+      role: "WEBHOOK_USER",
+    };
+
+    // webhook api call
+    csutomerWebhookRegister(sendingData);
   };
 
   // table column
@@ -360,6 +377,21 @@ const Reseller = () => {
                     </div>
                   </div>
                 </li>
+
+                {role === "ispOwner" && (
+                  <li
+                    onClick={() => {
+                      createCustomerWebhookHandler(original);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <FiletypePy />
+                        <p className="actionP">Create Reseller Webhook</p>
+                      </div>
+                    </div>
+                  </li>
+                )}
               </ul>
             </div>
           </div>
