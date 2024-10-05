@@ -123,11 +123,10 @@ const BulkOptions = ({ bulkCustomers, page }) => {
       name: "bulkRecharge",
       class: "bg-danger",
       isVisiable:
-        bpSettings?.bulkCustomerRecharge &&
-        (role === "ispOwner" ||
-          (role === "manager" && permissions?.bulkCustomerRecharge)),
-      //     ||
-      // (role === "reseller" && permission?.bulkCustomerRecharge),
+        (bpSettings?.bulkCustomerRecharge &&
+          (role === "ispOwner" ||
+            (role === "manager" && permissions?.bulkCustomerRecharge))) ||
+        (role === "reseller" && permission?.bulkCustomerRecharge),
       icon: <i className="fas fa-dollar fa-xs" />,
       value: "bulkRecharge",
     },

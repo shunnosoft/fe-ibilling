@@ -16,9 +16,7 @@ const BandwidthModal = ({ customer, modalShow, setModalShow }) => {
 
   // Helper function to format data to Mbps or Kbps
   const formatToMbps = (value) => {
-    return value / 1024 / 1024 > 1
-      ? (value / 1024 / 1024).toFixed(1) // Convert to Mbps if > 1MB
-      : (value / 1024).toFixed(1); // Convert to Kbps otherwise
+    return (value / 1024).toFixed(2); // Convert to Kbps otherwise
   };
 
   useEffect(() => {
@@ -41,6 +39,7 @@ const BandwidthModal = ({ customer, modalShow, setModalShow }) => {
 
         if (response.status === 200) {
           setChunkData(response.data?.data || []);
+          fetchBandwidthData();
         }
       } catch (error) {
         toast.error(`Failed to fetch bandwidth data: ${error.message}`);
@@ -50,7 +49,7 @@ const BandwidthModal = ({ customer, modalShow, setModalShow }) => {
     // Fetch data every few seconds while modal is open
     if (modalShow) {
       fetchBandwidthData();
-      fetchInterval = setInterval(fetchBandwidthData, 2000); // Fetch every 5 seconds
+      // fetchInterval = setInterval(fetchBandwidthData, 2000); // Fetch every 5 seconds
     }
 
     return () => clearInterval(fetchInterval); // Clean up interval when modal closes or component unmounts
@@ -67,7 +66,6 @@ const BandwidthModal = ({ customer, modalShow, setModalShow }) => {
           ...prevDps1,
           { x: xVal, y: Number(formatToMbps(rxValue)) },
         ];
-        console.log(newDps1);
         return newDps1.length > dataLength ? newDps1.slice(1) : newDps1;
       });
 
@@ -100,24 +98,34 @@ const BandwidthModal = ({ customer, modalShow, setModalShow }) => {
           showInLegend: true,
           legendText: `Download: ${
             dps1.length ? dps1[dps1.length - 1]?.y : 0
-          } ${dps1[dps1.length - 1]?.y > 1 ? "Mbps" : "kbps"}`,
+          } ${
+            Number(formatToMbps(dps1[dps1.length - 1]?.y) / 1024) > 0
+              ? "Mbps"
+              : "kbps"
+          }`,
           dataPointWidth: 2,
           dataPoints: dps1,
-          toolTipContent: `${dps1.length ? dps1[dps1.length - 1]?.y : 0} ${
-            dps1[dps1.length - 1]?.y > 1 ? "Mbps" : "kbps"
-          }`,
+          // toolTipContent: `${dps1.length ? dps1[dps1.length - 1]?.y : 0} ${
+          //   Number(formatToMbps(dps1[dps1.length - 1]?.y) / 1024) > 0
+          //     ? "Mbps"
+          //     : "kbps"
+          // }`,
         },
         {
           type: "column", // Bar chart for upload
           showInLegend: true,
           legendText: `Upload: ${dps2.length ? dps2[dps2.length - 1]?.y : 0} ${
-            dps2[dps2.length - 1]?.y > 1 ? "Mbps" : "kbps"
+            Number(formatToMbps(dps2[dps2.length - 1]?.y) / 1024) > 0
+              ? "Mbps"
+              : "kbps"
           }`,
           dataPointWidth: 2,
           dataPoints: dps2,
-          toolTipContent: `${dps1.length ? dps1[dps1.length - 1]?.y : 0} ${
-            dps1[dps1.length - 1]?.y > 1 ? "Mbps" : "kbps"
-          }`,
+          // toolTipContent: `${dps2.length ? dps2[dps2.length - 1]?.y : 0} ${
+          //   Number(formatToMbps(dps2[dps2.length - 1]?.y) / 1024) > 0
+          //     ? "Mbps"
+          //     : "kbps"
+          // }`,
         },
       ],
     }),
