@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import { toast } from "react-toastify";
 import CanvasJSReact from "@canvasjs/react-charts";
 import apiLink from "../../api/apiLink";
@@ -7,6 +7,8 @@ import ComponentCustomModal from "../../components/common/customModal/ComponentC
 const CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 const BandwidthModal = ({ customer, modalShow, setModalShow }) => {
+  const abortControllerRef = useRef(null);
+
   const [chunkData, setChunkData] = useState([]);
   const [dps1, setDps1] = useState([]);
   const [dps2, setDps2] = useState([]);
@@ -28,32 +30,52 @@ const BandwidthModal = ({ customer, modalShow, setModalShow }) => {
   }, [modalShow]);
 
   useEffect(() => {
-    let fetchInterval;
-    const fetchBandwidthData = async () => {
-      if (!modalShow || !customer?.id) return; // Stop fetching if modal is closed or no customer ID
+    if (!modalShow) {
+      setDps1([]);
+      setDps2([]);
+      setXVal(0);
 
-      try {
-        const response = await apiLink.get(
-          `customer/mikrotik/bandwidth?customerId=${customer?.id}`
-        );
-
-        if (response.status === 200) {
-          setChunkData(response.data?.data || []);
-          fetchBandwidthData();
-        }
-      } catch (error) {
-        toast.error(`Failed to fetch bandwidth data: ${error.message}`);
+      // Cancel any ongoing API calls
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
       }
-    };
-
-    // Fetch data every few seconds while modal is open
-    if (modalShow) {
+    } else {
+      // Start fetching data when modal opens
       fetchBandwidthData();
-      // fetchInterval = setInterval(fetchBandwidthData, 2000); // Fetch every 5 seconds
     }
 
-    return () => clearInterval(fetchInterval); // Clean up interval when modal closes or component unmounts
-  }, [modalShow, customer?.id]);
+    // Cleanup function
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
+  }, [modalShow]);
+
+  const fetchBandwidthData = async () => {
+    if (!modalShow || !customer?.id) return;
+
+    // Create a new AbortController for this fetch
+    abortControllerRef.current = new AbortController();
+
+    try {
+      const response = await apiLink.get(
+        `customer/mikrotik/bandwidth?customerId=${customer?.id}`,
+        { signal: abortControllerRef.current.signal }
+      );
+
+      if (response.status === 200) {
+        setChunkData(response.data?.data || []);
+
+        // Only call fetchBandwidthData again if the modal is still open
+        if (modalShow) {
+          fetchBandwidthData();
+        }
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
 
   useEffect(() => {
     if (chunkData.length > 0) {
@@ -94,38 +116,26 @@ const BandwidthModal = ({ customer, modalShow, setModalShow }) => {
       },
       data: [
         {
-          type: "column", // Bar chart for download
+          type: "column",
           showInLegend: true,
           legendText: `Download: ${
-            dps1.length ? dps1[dps1.length - 1]?.y : 0
-          } ${
-            Number(formatToMbps(dps1[dps1.length - 1]?.y) / 1024) > 0
-              ? "Mbps"
-              : "kbps"
-          }`,
+            dps1[dps1.length - 1]?.y / 1024 >= 1
+              ? (dps1[dps1.length - 1]?.y / 1024).toFixed(2)
+              : dps1[dps1.length - 1]?.y
+          } ${Number(dps1[dps1.length - 1]?.y / 1024) >= 1 ? "Mbps" : "kbps"}`,
           dataPointWidth: 2,
           dataPoints: dps1,
-          // toolTipContent: `${dps1.length ? dps1[dps1.length - 1]?.y : 0} ${
-          //   Number(formatToMbps(dps1[dps1.length - 1]?.y) / 1024) > 0
-          //     ? "Mbps"
-          //     : "kbps"
-          // }`,
         },
         {
-          type: "column", // Bar chart for upload
+          type: "column",
           showInLegend: true,
-          legendText: `Upload: ${dps2.length ? dps2[dps2.length - 1]?.y : 0} ${
-            Number(formatToMbps(dps2[dps2.length - 1]?.y) / 1024) > 0
-              ? "Mbps"
-              : "kbps"
-          }`,
+          legendText: `Upload: ${
+            dps2[dps2.length - 1]?.y / 1024 >= 1
+              ? (dps2[dps2.length - 1]?.y / 1024).toFixed(2)
+              : dps2[dps2.length - 1]?.y
+          } ${Number(dps2[dps2.length - 1]?.y / 1024) >= 1 ? "Mbps" : "kbps"}`,
           dataPointWidth: 2,
           dataPoints: dps2,
-          // toolTipContent: `${dps2.length ? dps2[dps2.length - 1]?.y : 0} ${
-          //   Number(formatToMbps(dps2[dps2.length - 1]?.y) / 1024) > 0
-          //     ? "Mbps"
-          //     : "kbps"
-          // }`,
         },
       ],
     }),

@@ -1817,7 +1817,7 @@ export const fetchpppoeUser = async (
 
     customers = customers.map((customerItem) => {
       const lastLogout = pppsecretUsers.find(
-        (j) => j?.name === customerItem.pppoe?.name
+        (j) => j?.name == customerItem.pppoe?.name
       );
       if (lastLogout) {
         customerItem = {
