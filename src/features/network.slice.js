@@ -18,6 +18,11 @@ const networkSlice = createSlice({
       state.outputs = action.payload;
     },
 
+    deleteNetworkDeviceSuccess: (state, action) => {
+      const deviceId = action.payload.id;
+      state.devices = state.devices.filter((device) => device.id !== deviceId);
+    },
+
     postNetworkDeviceSuccess: (state, action) => {
       state.devices.push(action.payload);
     },
@@ -61,6 +66,7 @@ export const {
   getNetworkDeviceSuccess,
   getNetworkDeviceOutputSuccess,
   postNetworkDeviceSuccess,
+  deleteNetworkDeviceSuccess,
   updateNetworkDeviceSuccess,
   getNetworkDiagramDeviceSuccess,
 } = networkSlice.actions;

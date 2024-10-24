@@ -192,6 +192,7 @@ import { updatePermissionSuccess } from "./adminNetFeeSupportSlice";
 import axios from "axios";
 import { config } from "../config";
 import {
+  deleteNetworkDeviceSuccess,
   getNetworkDeviceOutputSuccess,
   getNetworkDeviceSuccess,
   getNetworkDiagramDeviceSuccess,
@@ -4263,4 +4264,18 @@ export const networkDeviceAssign = async (
     toast.error(error?.response?.data.message);
   }
   setIsLoading(false);
+};
+
+export const deleteNetworkDevice = async (dispatch, deviceId) => {
+  try {
+    const res = await apiLink.delete(`network/deleteNetworkDevice/${deviceId}`);
+    dispatch(deleteNetworkDeviceSuccess(res.data));
+    langMessage(
+      "success",
+      "নেটওয়ার্ক ডিভাইস ডিলিট সফল হয়েছে",
+      "Network device delete successful"
+    );
+  } catch (error) {
+    toast.error(error.response?.data?.message);
+  }
 };

@@ -6,13 +6,17 @@ import { FontColor, FourGround } from "../../../assets/js/theme";
 import { useTranslation } from "react-i18next";
 import Loader from "../../../components/common/Loader";
 import {
+  ArchiveFill,
   ArrowClockwise,
   PenFill,
   Plus,
   ThreeDots,
 } from "react-bootstrap-icons";
 import DeviceForm from "./DeviceForm";
-import { getNetworkDevice } from "../../../features/apiCalls";
+import {
+  deleteNetworkDevice,
+  getNetworkDevice,
+} from "../../../features/apiCalls";
 import { useDispatch, useSelector } from "react-redux";
 import useISPowner from "../../../hooks/useISPOwner";
 import Table from "../../../components/table/Table";
@@ -57,6 +61,11 @@ const Device = () => {
 
   const deviceReloadHandler = () => {
     getNetworkDevice(dispatch, ispOwnerId, setIsLoading);
+  };
+
+  // Network device delete function handler
+  const handleNetworkDeviceDelete = (deviceId) => {
+    deleteNetworkDevice(dispatch, deviceId);
   };
 
   const columns = useMemo(
@@ -132,6 +141,15 @@ const Device = () => {
                   <div className="customerAction">
                     <PenFill />
                     <p className="actionP">{t("edit")}</p>
+                  </div>
+                </div>
+              </li>
+
+              <li onClick={() => handleNetworkDeviceDelete(original.id)}>
+                <div className="dropdown-item actionManager">
+                  <div className="customerAction">
+                    <ArchiveFill />
+                    <p className="actionP">{t("delete")}</p>
                   </div>
                 </div>
               </li>
