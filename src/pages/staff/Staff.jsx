@@ -161,7 +161,7 @@ const Staff = () => {
                 </li>
               )}
 
-              {/* {role === "ispOwner" && (
+              {role === "ispOwner" && (
                 <li
                   onClick={() => {
                     setStafId(original.id);
@@ -176,7 +176,7 @@ const Staff = () => {
                     </div>
                   </div>
                 </li>
-              )} */}
+              )}
             </ul>
           </div>
         ),
