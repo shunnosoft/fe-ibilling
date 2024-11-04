@@ -200,6 +200,9 @@ function App() {
 
             {/* ispOwoner invoice payment */}
             <Route path="/payment" element={<AcountPayment />} />
+
+            {/* netFee tutorial */}
+            <Route path="/netFee/tutorial" element={<Tutorial />} />
           </Routes>
         )}
 
@@ -729,8 +732,6 @@ function App() {
                 )
               }
             />
-
-            <Route path="/netFee/tutorial" element={<Tutorial />} />
 
             {/* dashboard */}
             <Route path="/*" element={<PrivateOutlet />}>

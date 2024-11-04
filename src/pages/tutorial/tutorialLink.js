@@ -1,18 +1,39 @@
 export const tutorialLink = [
   {
     id: 1,
+    role: "",
+    title: "Version how to use on mobile",
+    link: "https://www.youtube.com/embed/sVvctxnNBC0?si=TzLZr6rasFGSXgR8",
+  },
+  {
+    id: 1,
+    role: "ispOwner",
     title: "Dashboard",
     link: "https://www.youtube.com/embed/Ttl5NRoUPkM?si=XXr48vgC0_1Yglvc",
   },
   {
     id: 2,
+    role: "ispOwner",
     title: "NetFee Support",
     link: "https://www.youtube.com/embed/rX33-TqCIwU?si=UcFv5_ySnFFjRhBq",
   },
   {
     id: 3,
+    role: "ispOwner",
     title: "NetFee Admin Panel",
     link: "https://www.youtube.com/embed/7DVn0mQGGH0?si=nV1SuLt3SlNU0sIT",
+  },
+  {
+    id: 5,
+    role: "ispOwner",
+    title: "Area",
+    link: "https://www.youtube.com/embed/axSbX5_3av4?si=cXP4aCJf5tAcMbuJ",
+  },
+  {
+    id: 5,
+    role: "ispOwner",
+    title: "Microtic configuration",
+    link: "https://www.youtube.com/embed/uEu5WCkBMFI?si=oYbZHR2PlYs06Vof",
   },
   {
     id: 5,
@@ -26,27 +47,74 @@ export const tutorialLink = [
   },
   {
     id: 5,
-    title: "Collector Manage",
+    role: "ispOwner",
+    title: "Report Section",
+    link: "https://www.youtube.com/embed/3lCT7d0vRrI?si=KUB_hcsUEr1wzlQ2",
+  },
+  {
+    id: 5,
+    role: "manager",
+    title: "Manager",
+    link: "https://www.youtube.com/embed/mS8s6ocgkvM?si=ujluqseNnOz92uRS",
+  },
+  {
+    id: 5,
+    role: "collector",
+    title: "Collector",
     link: "https://www.youtube.com/embed/PVW7x0t_vhY?si=JflBvzb_yUUwCw7G",
   },
   {
     id: 5,
+    role: "collector",
+    title: "Mobile App Collector Panel",
+    link: "https://www.youtube.com/embed/4Ooavtkbyo8?si=hurz1J_sRYEgthJQ",
+  },
+  {
+    id: 5,
+    role: "ispOwner",
+    title: "Staff",
+    link: "https://www.youtube.com/embed/boo602xwVqY?si=Ug4MGZqzJNgchakj",
+  },
+  {
+    id: 5,
+    role: "reseller",
+    title: "Reseller",
+    link: "https://www.youtube.com/embed/jSiRwaSvT-s?si=QwJA3I-chaoHVt4l",
+  },
+  {
+    id: 5,
+    role: "reseller",
+    title: "Mobile App Reseller Panel",
+    link: "https://www.youtube.com/embed/2TgTCUBUclg?si=m5I_YaNJqCUkewmy",
+  },
+  {
+    id: 5,
+    role: "ispOwner",
     title: "Reseller Manage",
     link: "https://www.youtube.com/embed/fUrf0xOvQfc?si=oV2IxTNE7N-4vAUo",
   },
   {
     id: 4,
+    role: "ispOwner",
     title: "SMS Configuration",
     link: "https://www.youtube.com/embed/PQFSfdDPMLM?si=XjGj33kpkcNLlxUX",
   },
   {
     id: 4,
+    role: "ispOwner",
     title: "Network diagram",
     link: "https://www.youtube.com/embed/ZeWmTWcwdK0?si=v1LTWD-9Du9LiVzp",
   },
   {
     id: 4,
+    role: "ispOwner",
     title: "Accounts",
     link: "https://www.youtube.com/embed/JOpOb8qmkIE?si=viI0fbnAW-4dCZo9",
+  },
+  {
+    id: 4,
+    role: "",
+    title: "Netfee Customer App",
+    link: "https://www.youtube.com/embed/X1T17BAIBmY?si=xlRZKSpwZgsZXoA3",
   },
 ];

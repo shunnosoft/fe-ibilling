@@ -1071,7 +1071,8 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       disabled:
         status === "post"
           ? !formData.packageId
-          : (rsRole && !permission?.singleCustomerNumberEdit) ||
+          : (adminUser && !permission?.customerMobileEdit) ||
+            (rsRole && !permission?.singleCustomerNumberEdit) ||
             (rscRole && !resellerData?.permission?.customerMobileEdit) ||
             false,
       validation: ["pppoe", "static"].includes(page)
