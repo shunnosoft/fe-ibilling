@@ -152,7 +152,7 @@ export const collectorPermission = (
     },
     {
       id: 5,
-      value: "CustomerMobileEdit",
+      value: "customerMobileEdit",
       label: "Change Mobile Number",
       isChecked: permission?.customerMobileEdit, //ToDo
       disabled: false,

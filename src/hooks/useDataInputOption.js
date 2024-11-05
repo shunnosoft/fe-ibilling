@@ -49,6 +49,8 @@ const useDataInputOption = (inputPermission, page, status, data) => {
     role === "manager" ||
     (role === "collector" && !userData.reseller);
 
+  const ispcRole = role === "collector" && !userData.reseller;
+
   // reseller staff user role permission
   const rsRole = role === "reseller";
   const rscRole = role === "collector" && userData.reseller;
@@ -1071,7 +1073,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       disabled:
         status === "post"
           ? !formData.packageId
-          : (adminUser && !permission?.customerMobileEdit) ||
+          : (ispcRole && !permission?.customerMobileEdit) ||
             (rsRole && !permission?.singleCustomerNumberEdit) ||
             (rscRole && !resellerData?.permission?.customerMobileEdit) ||
             false,
