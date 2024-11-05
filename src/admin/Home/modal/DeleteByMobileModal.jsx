@@ -6,8 +6,9 @@ import {
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import Loader from "../../../components/common/Loader";
+import ComponentCustomModal from "../../../components/common/customModal/ComponentCustomModal";
 
-const DeleteByMobileModal = () => {
+const DeleteByMobileModal = ({ show, setShow }) => {
   //get current use Role
   const currentUserRole = useSelector(
     (state) => state.persistedReducer.auth.role
@@ -28,57 +29,53 @@ const DeleteByMobileModal = () => {
     if (confirm) DeleteByNumber(mobile, setIsLoading, setCustomer);
   };
   return (
-    <div
-      class="modal fade"
-      id="numberDeleteModal"
-      tabindex="-1"
-      aria-labelledby="numberDeleteModal"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="numberDeleteModal">
-              Enter Number
-            </h5>
+    <>
+      <ComponentCustomModal
+        show={show}
+        setShow={setShow}
+        centered={true}
+        size="md"
+        header="User Mobile number found and delete"
+        footer={
+          <div>
             <button
               type="button"
-              class="btn-close"
+              class="btn btn-secondary"
               data-bs-dismiss="modal"
-              aria-label="Close"
-              onClick={() => {
-                setCustomer("");
-                setMobile("");
-              }}
-            ></button>
+              onClick={() => setShow(false)}
+            >
+              Close
+            </button>
           </div>
-          <div class="modal-body">
-            <div className="form-group d-flex">
-              <input
-                value={mobile}
-                onChange={(e) => setMobile(e.target.value)}
-                type="number"
-                className="form-control me-3 w-50"
-              />
-              <button
-                type="button"
-                onClick={SearchHandler}
-                className="btn btn-primary btn-sm float-end"
-              >
-                {isLoading ? <Loader /> : "Search"}
-              </button>
-            </div>
+        }
+      >
+        <div className="form-group">
+          <div className="d-flex">
+            <input
+              value={mobile}
+              onChange={(e) => setMobile(e.target.value)}
+              type="number"
+              className="form-control me-2 w-100"
+            />
+            <button
+              type="button"
+              onClick={SearchHandler}
+              className="btn btn-primary btn-sm float-end"
+            >
+              {isLoading ? <Loader /> : "Search"}
+            </button>
+          </div>
 
-            {Object.keys(customer)?.length !== 0 ? (
-              <>
-                <h5 className="mt-3">
-                  {customer?.user?.role.toUpperCase()} Found
-                </h5>
-                <h5>Name : {customer?.profile?.name}</h5>
-                <h5>Mobile : {customer?.profile?.mobile}</h5>
-                {(currentUserRole === "superadmin" ||
-                  (currentUserRole === "admin" &&
-                    customer?.user?.role === "customer")) && (
+          {Object.keys(customer)?.length !== 0 ? (
+            <>
+              <h5 className="mt-3">
+                {customer?.user?.role.toUpperCase()} Found
+              </h5>
+              <h5>Name : {customer?.profile?.name}</h5>
+              <h5>Mobile : {customer?.profile?.mobile}</h5>
+              {(currentUserRole === "superadmin" ||
+                currentUserRole === "admin") &&
+                customer?.user?.role === "customer" && (
                   <button
                     type="button"
                     onClick={deleteHandler}
@@ -87,27 +84,13 @@ const DeleteByMobileModal = () => {
                     Delete
                   </button>
                 )}
-              </>
-            ) : (
-              ""
-            )}
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-              onClick={() => {
-                setCustomer("");
-                setMobile("");
-              }}
-            >
-              Close
-            </button>
-          </div>
+            </>
+          ) : (
+            ""
+          )}
         </div>
-      </div>
-    </div>
+      </ComponentCustomModal>
+    </>
   );
 };
 

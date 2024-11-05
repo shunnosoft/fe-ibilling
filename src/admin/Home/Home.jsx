@@ -722,10 +722,11 @@ export default function Home() {
               <div className="addAndSettingIcon d-flex justify-content-center align-items-center">
                 <TrashFill
                   size={23}
-                  type="button"
-                  data-bs-toggle="modal"
-                  data-bs-target="#numberDeleteModal"
                   className="me-4 text-danger"
+                  onClick={() => {
+                    setModalStatus("mobileNumberSearch");
+                    setShow(true);
+                  }}
                 />
 
                 <CSVLink
@@ -967,7 +968,11 @@ export default function Home() {
 
               <Note ownerId={ownerId} companyName={companyName} />
               <FileUpload ownerID={ownerId} mikrotikStatus={mikrotikStatus} />
-              <DeleteByMobileModal />
+
+              {/* user mobile number search and delete */}
+              {modalStatus === "mobileNumberSearch" && (
+                <DeleteByMobileModal show={show} setShow={setShow} />
+              )}
 
               {/* password reset modal */}
               {modalStatus === "password" && (
