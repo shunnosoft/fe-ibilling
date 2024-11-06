@@ -1073,7 +1073,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       disabled:
         status === "post"
           ? !formData.packageId
-          : (ispcRole && !permission?.customerMobileEdit) ||
+          : (ispcRole && !permissions?.customerMobileEdit) ||
             (rsRole && !permission?.singleCustomerNumberEdit) ||
             (rscRole && !resellerData?.permission?.customerMobileEdit) ||
             false,
