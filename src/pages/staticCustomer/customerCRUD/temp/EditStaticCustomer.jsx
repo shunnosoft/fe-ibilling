@@ -174,6 +174,7 @@ const EditStaticCustomer = ({ show, setShow, single }) => {
     if (userType === "firewall-queue") {
       mainData.userType = "firewall-queue";
       mainData.queue = {
+        name: queueName,
         type: userType,
         address: ipAddress,
         list: "allow_ip",
