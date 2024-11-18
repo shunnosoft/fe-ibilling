@@ -112,6 +112,30 @@ export const bulkStatusEdit = async (dispatch, data, setIsLoading, setShow) => {
   setIsLoading(false);
 };
 
+export const bulkCustomerUserTypeUpdate = async (
+  dispatch,
+  data,
+  setIsLoading,
+  setShow
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.patch(
+      "/customer/bulk-customer-userType-update",
+      data
+    );
+    dispatch(bulkUpdate(res.data.data));
+
+    setShow(false);
+    toast.success(res?.data.message);
+  } catch (err) {
+    if (err.response) {
+      toast.error(err.response.data.message);
+    }
+  }
+  setIsLoading(false);
+};
+
 // hostpot customer bulk status update
 export const hostpotBulkStatusEdit = async (
   dispatch,

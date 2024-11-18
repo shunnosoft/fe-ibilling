@@ -19,6 +19,7 @@ import BulkPackageEdit from "./bulkPackageEdit";
 import BulkAutoConnectionEdit from "./bulkAutoConnectionEdit";
 import BulkCustomerDelete from "./BulkdeleteModal";
 import BulkMikrotikEdit from "./bulkMikrotikEdit";
+import BulkUserTypeUpdate from "./BulkUserTypeUpdate";
 
 const BulkOptions = ({ bulkCustomers, page }) => {
   const { t } = useTranslation();
@@ -189,6 +190,14 @@ const BulkOptions = ({ bulkCustomers, page }) => {
       icon: <i class="fas fa-server fa-xs" />,
       value: "changeMikrotik",
     },
+    // {
+    //   id: 14,
+    //   name: "userType",
+    //   class: "bg-danger",
+    //   isVisiable: true,
+    //   icon: <i class="fas fa-server fa-xs" />,
+    //   value: "userType",
+    // },
   ];
 
   return (
@@ -363,6 +372,15 @@ const BulkOptions = ({ bulkCustomers, page }) => {
       {/* bulk mikrotik edit */}
       {modalStatus === "changeMikrotik" && (
         <BulkMikrotikEdit
+          show={show}
+          setShow={setShow}
+          bulkCustomer={bulkCustomers}
+        />
+      )}
+
+      {/* bulk user type update */}
+      {modalStatus === "userType" && (
+        <BulkUserTypeUpdate
           show={show}
           setShow={setShow}
           bulkCustomer={bulkCustomers}
