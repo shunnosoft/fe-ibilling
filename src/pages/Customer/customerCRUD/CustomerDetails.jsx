@@ -76,11 +76,7 @@ const CustomerDetails = ({ show, setShow, customerId }) => {
   const [modalShow, setModalShow] = useState(false);
 
   // profile option state
-  const [profileOption, setProfileOption] = useState(
-    role === "ispOwner" || permissions?.customerEdit
-      ? "profileEdit"
-      : "recharge"
-  );
+  const [profileOption, setProfileOption] = useState("profileEdit");
 
   // user id state
   const [userId, setUserId] = useState("");
@@ -273,24 +269,21 @@ const CustomerDetails = ({ show, setShow, customerId }) => {
                   <Card.Body>
                     <FontColor id="clintSetting">
                       {/* customer profile update */}
-                      {(role === "ispOwner" || permissions?.customerEdit) && (
-                        <li
-                          className="profileSetting"
-                          onClick={() => setProfileOption("profileEdit")}
-                          id={
-                            profileOption === "profileEdit"
-                              ? "activeSetting"
-                              : ""
-                          }
-                        >
-                          <div className="profileOptions">
-                            <PencilSquare size={22} />
-                          </div>
-                          <span className="options_name">
-                            {t("updateProfile")}
-                          </span>
-                        </li>
-                      )}
+
+                      <li
+                        className="profileSetting"
+                        onClick={() => setProfileOption("profileEdit")}
+                        id={
+                          profileOption === "profileEdit" ? "activeSetting" : ""
+                        }
+                      >
+                        <div className="profileOptions">
+                          <PencilSquare size={22} />
+                        </div>
+                        <span className="options_name">
+                          {t("updateProfile")}
+                        </span>
+                      </li>
 
                       {data?.monthlyFee > 0 && (
                         <>

@@ -26,14 +26,6 @@ const BandwidthModal = ({ customer, modalShow, setModalShow }) => {
       setDps1([]);
       setDps2([]);
       setXVal(0);
-    }
-  }, [modalShow]);
-
-  useEffect(() => {
-    if (!modalShow) {
-      setDps1([]);
-      setDps2([]);
-      setXVal(0);
 
       // Cancel any ongoing API calls
       if (abortControllerRef.current) {

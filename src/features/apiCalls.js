@@ -106,6 +106,8 @@ import {
   getCustomersWebhookMessageSuccess,
   getAllWebhookMessageSuccess,
   updateReferenceIDSuccess,
+  getPendingDepositSuccess,
+  deleteDepositSuccess,
 } from "./paymentSlice";
 import {
   getChartSuccess,
@@ -1247,7 +1249,6 @@ export const getCustomer = async (dispatch, ispOwner, setIsloading) => {
   setIsloading(true);
   try {
     const res = await apiLink.get(`/ispOwner/customer/${ispOwner}`);
-    console.log(res.data);
     dispatch(getCustomerSuccess(res.data));
   } catch (error) {
     console.log(error.message);
@@ -2622,6 +2623,31 @@ export const getDeposit = async (
     toast.error(error.response?.data.message);
   }
   setLoading(false);
+};
+
+// ispOwner employee pending deposit
+export const getPendingDeposit = async (dispatch, ispOwner, setLoading) => {
+  setLoading(true);
+  try {
+    const res = await apiLink.get(`/deposit/pending/${ispOwner}`);
+
+    dispatch(getPendingDepositSuccess(res.data?.data));
+  } catch (error) {
+    toast.error(error.response?.data.message);
+  }
+  setLoading(false);
+};
+
+// ispOwner employee pending deposit delete
+export const deletePendingDeposit = async (dispatch, ispOwner, deposit) => {
+  try {
+    const res = await apiLink.delete(`/deposit/pending/${ispOwner}/${deposit}`);
+
+    dispatch(deleteDepositSuccess(deposit));
+    toast.success(res?.data.message);
+  } catch (error) {
+    toast.error(error.response?.data.message);
+  }
 };
 
 export const getDepositReport = async (

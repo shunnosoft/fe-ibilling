@@ -5,13 +5,15 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import moment from "moment";
 import DatePicker from "react-datepicker";
-import { Accordion } from "react-bootstrap";
+import { Accordion, Tab, Tabs } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import {
+  ArchiveFill,
   ArrowClockwise,
   FilterCircle,
   Pencil,
   PrinterFill,
+  ThreeDots,
 } from "react-bootstrap-icons";
 import ReactToPrint from "react-to-print";
 
@@ -25,10 +27,12 @@ import { FontColor, FourGround } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
 import useDash from "../../assets/css/dash.module.css";
 import {
+  deletePendingDeposit,
   depositAcceptReject,
   getCollector,
   getDeposit,
   getManger,
+  getPendingDeposit,
 } from "../../features/apiCalls";
 import Loader from "../../components/common/Loader";
 import FormatNumber from "../../components/common/NumberFormat";
@@ -50,6 +54,9 @@ const Diposit = () => {
 
   // get all deposit form redux
   const allDeposit = useSelector((state) => state?.payment?.allDeposit);
+
+  // get pending deposit form redux store
+  const pendingDeposit = useSelector((state) => state?.payment?.pendingDeposit);
 
   // get manager from redux
   const manager = useSelector((state) => state?.manager?.manager);
@@ -136,6 +143,9 @@ const Diposit = () => {
     manager.length === 0 && getManger(dispatch, ispOwnerId);
     ownerUsers.length === 0 && getOwnerUsers(dispatch, ispOwnerId);
     Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
+
+    // get pending deposit
+    getPendingDeposit(dispatch, ispOwnerId, setIsLoading);
   }, []);
 
   useEffect(() => {
@@ -151,6 +161,8 @@ const Diposit = () => {
       filterDate.getMonth() + 1,
       setIsLoading
     );
+
+    getPendingDeposit(dispatch, ispOwnerId, setIsLoading);
   };
 
   // deposit select handler
@@ -164,6 +176,11 @@ const Diposit = () => {
   // deposit report accept & reject handler
   const depositAcceptRejectHandler = (status, id) => {
     depositAcceptReject(dispatch, status, id, setAccLoading, "ispOwner");
+  };
+
+  // pending deposit delete handler
+  const deletePendingDepositHandler = (id) => {
+    deletePendingDeposit(dispatch, ispOwnerId, id);
   };
 
   // filter section
@@ -423,6 +440,214 @@ const Diposit = () => {
     [t, ownerUsers, manager]
   );
 
+  // pending deposit report column
+  const pendingColumns = React.useMemo(
+    () => [
+      {
+        width: "10%",
+        Header: "#",
+        id: "row",
+        accessor: (row) => Number(row.id + 1),
+        Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
+      },
+      {
+        width: "15%",
+        Header: t("depositBy"),
+        accessor: "user",
+        Cell: ({ cell: { value } }) => {
+          const performer = ownerUsers.find((item) => item[value]);
+
+          return (
+            <div>
+              {performer &&
+                performer[value].name + "(" + performer[value].role + ")"}
+            </div>
+          );
+        },
+      },
+      {
+        width: "10%",
+        Header: t("total"),
+        accessor: "amount",
+        Cell: ({ row: { original } }) => (
+          <div>৳ {FormatNumber(original.amount)}</div>
+        ),
+      },
+      {
+        width: "10%",
+        Header: t("receivedBy"),
+        Cell: ({ row: { original } }) => {
+          const performer = manager?.find(
+            (item) => item.id === original.manager
+          );
+
+          return <div>{performer?.name || "Owner"}</div>;
+        },
+      },
+      {
+        width: "15%",
+        Header: t("status"),
+
+        Cell: ({ row: { original } }) => (
+          <div className="d-flex justify-content-center align-items-center">
+            <div>
+              {original.status === "pending" &&
+              original.depositBy === "manager" ? (
+                acceptLoading ? (
+                  <div className="loaderDiv">
+                    <Loader />
+                  </div>
+                ) : original.depositBy === "manager" ? (
+                  <div className="">
+                    <span
+                      style={{ cursor: "pointer" }}
+                      class="badge bg-success shadow me-1"
+                      onClick={() => {
+                        depositAcceptRejectHandler("accepted", original.id);
+                      }}
+                    >
+                      {t("accept")}
+                    </span>
+                    <span
+                      style={{ cursor: "pointer" }}
+                      class="badge bg-danger shadow"
+                      onClick={() => {
+                        depositAcceptRejectHandler("rejected", original.id);
+                      }}
+                    >
+                      {t("rejected")}
+                    </span>
+                  </div>
+                ) : (
+                  ""
+                )
+              ) : original.depositBy === "collector" ? (
+                <div>
+                  {original.status === "accepted" && (
+                    <span className="badge bg-success">
+                      {t("managerAccepted")}
+                    </span>
+                  )}
+                  {original.status === "rejected" && (
+                    <span className="badge bg-danger">
+                      {t("managerCanceled")}
+                    </span>
+                  )}
+                  {original.status === "pending" && (
+                    <span className="badge bg-warning">
+                      {t("managerPending")}
+                    </span>
+                  )}
+                </div>
+              ) : (
+                <div>
+                  {original.status === "accepted" && (
+                    <span className="badge bg-success">
+                      {t("adminAccepted")}
+                    </span>
+                  )}
+                  {original.status === "rejected" && (
+                    <span className="badge bg-danger">
+                      {t("adminCanceled")}
+                    </span>
+                  )}
+                  {original.status === "pending" && (
+                    <span className="badge bg-warning">
+                      {t("adminPending")}
+                    </span>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        ),
+      },
+      {
+        width: "20%",
+        Header: t("note"),
+        accessor: "note",
+        Cell: ({ row: { original } }) => {
+          return (
+            <div>
+              {original?.note && original?.note?.slice(0, 70)}
+              <span
+                className="text-primary see-more"
+                onClick={() => {
+                  setMessage(original?.note);
+                  setModalStatus("noteDetails");
+                  setShow(true);
+                }}
+              >
+                {original?.note?.length > 70 ? "...see more" : ""}
+              </span>
+            </div>
+          );
+        },
+      },
+      {
+        width: "10%",
+        Header: t("date"),
+        accessor: "createdAt",
+        Cell: ({ cell: { value } }) => {
+          return moment(value).format("YYYY/MM/DD hh:mm A");
+        },
+      },
+      {
+        width: bpSettings?.depositUpdate ? "10%" : "0%",
+        Header: bpSettings?.depositUpdate && <div>{t("action")}</div>,
+        id: "option1",
+        Cell: ({ row: { original } }) => (
+          <div className="d-flex justify-content-center align-items-center">
+            {original.status === "accepted" && bpSettings?.depositUpdate && (
+              <button
+                className="btn btn-sm btn-outline-primary p-1"
+                title={t("update")}
+                onClick={() => {
+                  setDepositData(original);
+                  setModalStatus("updateDeposit");
+                  setShow(true);
+                }}
+              >
+                <Pencil size={19} />
+              </button>
+            )}
+          </div>
+        ),
+      },
+      {
+        width: "7%",
+        Header: () => <div className="text-center">{t("action")}</div>,
+        id: "option",
+        Cell: ({ row: { original } }) => (
+          <div className="d-flex justify-content-center align-items-center">
+            <ThreeDots
+              className="dropdown-toggle ActionDots"
+              id="areaDropdown"
+              type="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            />
+            <ul className="dropdown-menu" aria-labelledby="customerDrop">
+              <li
+                onClick={() => {
+                  deletePendingDepositHandler(original.id);
+                }}
+              >
+                <div className="dropdown-item">
+                  <div className="customerAction">
+                    <ArchiveFill />
+                    <p className="actionP">{t("delete")}</p>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        ),
+      },
+    ],
+    [t, ownerUsers, manager]
+  );
+
   return (
     <>
       <Sidebar />
@@ -569,12 +794,30 @@ const Diposit = () => {
                       </div>
 
                       <div className="table-section">
-                        <Table
-                          isLoading={isLoading}
-                          columns={columns}
-                          data={mainData}
-                          customComponent={allDepositSum}
-                        ></Table>
+                        <Tabs
+                          defaultActiveKey="deposit"
+                          id="uncontrolled-tab-example"
+                          className="mb-3"
+                        >
+                          <Tab eventKey="deposit" title="Deposit">
+                            <Table
+                              isLoading={isLoading}
+                              columns={columns}
+                              data={mainData}
+                              customComponent={allDepositSum}
+                            ></Table>
+                          </Tab>
+                          <Tab
+                            eventKey="pendingDeposit"
+                            title="Pending Deposit"
+                          >
+                            <Table
+                              isLoading={isLoading}
+                              columns={pendingColumns}
+                              data={pendingDeposit}
+                            ></Table>
+                          </Tab>
+                        </Tabs>
                       </div>
                     </div>
                   </div>

@@ -10,6 +10,7 @@ const paymentSlice = createSlice({
     collectorDeposit: [],
     allBills: [],
     myDeposit: [],
+    pendingDeposit: [],
     customerInvoice: [],
     withdrawBalance: [],
     billReport: [],
@@ -56,6 +57,20 @@ const paymentSlice = createSlice({
 
     getmyDepositSucces: (state, action) => {
       state.myDeposit = action.payload;
+    },
+
+    getPendingDepositSuccess: (state, action) => {
+      state.pendingDeposit = action.payload;
+    },
+
+    deleteDepositSuccess: (state, action) => {
+      state.pendingDeposit = state.pendingDeposit.filter(
+        (item) => item.id !== action.payload
+      );
+
+      state.allDeposit = state.allDeposit.filter(
+        (item) => item.id !== action.payload
+      );
     },
 
     getDepositReportSuccess: (state, action) => {
@@ -145,5 +160,7 @@ export const {
   deleteCustomerBillReport,
   getAllWebhookMessageSuccess,
   updateReferenceIDSuccess,
+  getPendingDepositSuccess,
+  deleteDepositSuccess,
 } = paymentSlice.actions;
 export default paymentSlice.reducer;

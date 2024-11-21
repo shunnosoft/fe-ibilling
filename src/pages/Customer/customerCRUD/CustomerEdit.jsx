@@ -447,9 +447,12 @@ const CustomerEdit = ({ customerId, setProfileOption }) => {
                 {!bpSettings.genCustomerId && (
                   <TextField
                     type="text"
-                    label="Customer Id"
+                    label={t("customerId")}
                     name="customerId"
                     validation={!bpSettings.genCustomerId}
+                    disabled={
+                      role === "ispOwner" ? false : !permissions.customerEdit
+                    }
                   />
                 )}
 
@@ -462,7 +465,11 @@ const CustomerEdit = ({ customerId, setProfileOption }) => {
                   <select
                     className="form-select mw-100 mt-0"
                     onChange={selectMikrotikPackage}
-                    disabled={role === "collector"}
+                    disabled={
+                      role === "ispOwner"
+                        ? false
+                        : !permissions.customerEdit || role === "collector"
+                    }
                   >
                     {ppPackage?.map((val, key) => (
                       <option
@@ -497,6 +504,15 @@ const CustomerEdit = ({ customerId, setProfileOption }) => {
                         min={0}
                         name="monthlyFee"
                         validation={true}
+                        disabled={
+                          role === "ispOwner"
+                            ? false
+                            : !(
+                                permissions.customerEdit ||
+                                (role === "manager" &&
+                                  permissions.monthlyFeeEdit)
+                              )
+                        }
                       />
                       {data?.monthlyFee > 0 &&
                         (permissions?.billPosting || role === "ispOwner") && (
@@ -522,6 +538,9 @@ const CustomerEdit = ({ customerId, setProfileOption }) => {
                     type="number"
                     label={t("balance")}
                     name="balance"
+                    disabled={
+                      role === "ispOwner" ? false : !permissions.customerEdit
+                    }
                   />
                 )}
 
@@ -530,6 +549,9 @@ const CustomerEdit = ({ customerId, setProfileOption }) => {
                   label={t("name")}
                   name="name"
                   validation={"true"}
+                  disabled={
+                    role === "ispOwner" ? false : !permissions.customerEdit
+                  }
                 />
 
                 <TextField
@@ -537,6 +559,9 @@ const CustomerEdit = ({ customerId, setProfileOption }) => {
                   label={`PPPoE ${t("name")}`}
                   name="Pname"
                   validation={"true"}
+                  disabled={
+                    role === "ispOwner" ? false : !permissions.customerEdit
+                  }
                 />
 
                 <div className="displayGridManual6_4">
@@ -558,8 +583,13 @@ const CustomerEdit = ({ customerId, setProfileOption }) => {
                         name="mobile"
                         validation={true}
                         disabled={
-                          !permission?.customerMobileEdit &&
-                          role === "collector"
+                          role === "ispOwner"
+                            ? false
+                            : !(
+                                permissions.customerEdit ||
+                                (role === "collector" &&
+                                  permissions.customerMobileEdit)
+                              )
                         }
                       />
                       {data?.mobile &&
@@ -596,6 +626,11 @@ const CustomerEdit = ({ customerId, setProfileOption }) => {
                         className="form-control shadow-none"
                         type={passType}
                         name="Ppassword"
+                        disabled={
+                          role === "ispOwner"
+                            ? false
+                            : !permissions.customerEdit
+                        }
                       />
                       <InputGroup.Text style={{ cursor: "pointer" }}>
                         <div>
@@ -622,7 +657,14 @@ const CustomerEdit = ({ customerId, setProfileOption }) => {
                   </div>
                 </div>
 
-                <TextField type="text" label={t("NIDno")} name="nid" />
+                <TextField
+                  type="text"
+                  label={t("NIDno")}
+                  name="nid"
+                  disabled={
+                    role === "ispOwner" ? false : !permissions.customerEdit
+                  }
+                />
 
                 <div className="displayGridManual6_4">
                   <label className="form-control-label manualLable">
@@ -634,6 +676,9 @@ const CustomerEdit = ({ customerId, setProfileOption }) => {
                     className="form-select mw-100 mt-0"
                     aria-label="Default select example"
                     onChange={selectSubArea}
+                    disabled={
+                      role === "ispOwner" ? false : !permissions.customerEdit
+                    }
                   >
                     {area.length === undefined
                       ? ""
@@ -661,6 +706,9 @@ const CustomerEdit = ({ customerId, setProfileOption }) => {
                     name="subArea"
                     id="subAreaIdFromEdit"
                     onChange={selectedSubArea}
+                    disabled={
+                      role === "ispOwner" ? false : !permissions.customerEdit
+                    }
                   >
                     <option value="">{t("selectSubArea")}</option>
                     {subArea?.map((val, key) => (
@@ -686,6 +734,9 @@ const CustomerEdit = ({ customerId, setProfileOption }) => {
                       aria-label="Default select example"
                       name="poleBox"
                       onChange={(e) => setPoleBoxIds(e.target.value)}
+                      disabled={
+                        role === "ispOwner" ? false : !permissions.customerEdit
+                      }
                     >
                       <option value="">...</option>
                       {subAreasPoleBox
@@ -716,6 +767,9 @@ const CustomerEdit = ({ customerId, setProfileOption }) => {
                     dateFormat="MMM dd yyyy hh:mm a"
                     timeIntervals={60}
                     showTimeSelect
+                    disabled={
+                      role === "ispOwner" ? false : !permissions.customerEdit
+                    }
                   />
                 </div>
 
@@ -738,6 +792,11 @@ const CustomerEdit = ({ customerId, setProfileOption }) => {
                         minTime={initialTime}
                         maxTime={lastTime}
                         showTimeSelect
+                        disabled={
+                          role === "ispOwner"
+                            ? false
+                            : !permissions.customerEdit
+                        }
                       />
                     </div>
                   )}
@@ -755,6 +814,9 @@ const CustomerEdit = ({ customerId, setProfileOption }) => {
                       id={item.id}
                       onChange={onDivisionalAreaChange}
                       value={item.value}
+                      disabled={
+                        role === "ispOwner" ? false : !permissions.customerEdit
+                      }
                     >
                       <option value="">...</option>
                       {item.data.map((item) => (
@@ -764,11 +826,32 @@ const CustomerEdit = ({ customerId, setProfileOption }) => {
                   </div>
                 ))}
 
-                <TextField type="text" label={t("address")} name="address" />
+                <TextField
+                  type="text"
+                  label={t("address")}
+                  name="address"
+                  disabled={
+                    role === "ispOwner" ? false : !permissions.customerEdit
+                  }
+                />
 
-                <TextField type="text" label={t("email")} name="email" />
+                <TextField
+                  type="text"
+                  label={t("email")}
+                  name="email"
+                  disabled={
+                    role === "ispOwner" ? false : !permissions.customerEdit
+                  }
+                />
 
-                <TextField type="text" label={t("comment")} name="Pcomment" />
+                <TextField
+                  type="text"
+                  label={t("comment")}
+                  name="Pcomment"
+                  disabled={
+                    role === "ispOwner" ? false : !permissions.customerEdit
+                  }
+                />
 
                 <div className="displayGridManual6_4">
                   <label className="form-control-label manualLable">
@@ -780,6 +863,9 @@ const CustomerEdit = ({ customerId, setProfileOption }) => {
                     onChange={(date) => setConnectionDate(date)}
                     dateFormat="MMM dd yyyy"
                     placeholderText={t("selectDate")}
+                    disabled={
+                      role === "ispOwner" ? false : !permissions.customerEdit
+                    }
                   />
                 </div>
 
@@ -787,6 +873,9 @@ const CustomerEdit = ({ customerId, setProfileOption }) => {
                   type="number"
                   name="connectionFee"
                   label={t("connectionFeeDue")}
+                  disabled={
+                    role === "ispOwner" ? false : !permissions.customerEdit
+                  }
                 />
 
                 <div className="displayGridManual6_4">
@@ -798,6 +887,9 @@ const CustomerEdit = ({ customerId, setProfileOption }) => {
                     id="exampleSelect"
                     name="customerBillingType"
                     className="form-select mw-100 mt-0"
+                    disabled={
+                      role === "ispOwner" ? false : !permissions.customerEdit
+                    }
                   >
                     <option value="">{t("customerBillType")}</option>
                     <option value="prepaid">{t("prepaid")}</option>
@@ -807,7 +899,20 @@ const CustomerEdit = ({ customerId, setProfileOption }) => {
               </div>
 
               <div className="d-flex justify-content-end mt-5">
-                <button type="submit" className="btn btn-outline-success">
+                <button
+                  type="submit"
+                  className="btn btn-outline-success"
+                  disabled={
+                    role === "ispOwner"
+                      ? false
+                      : !(
+                          permissions.customerEdit ||
+                          (role === "manager" && permissions.monthlyFeeEdit) ||
+                          (role === "collector" &&
+                            permissions.customerMobileEdit)
+                        )
+                  }
+                >
                   {isLoading ? <Loader /> : t("save")}
                 </button>
               </div>
