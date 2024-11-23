@@ -143,7 +143,7 @@ const PaymentModal = ({ customerData, isPublic }) => {
           user: userData.id,
           userType: userData.userType,
           medium: userData.ispOwner.bpSettings?.paymentGateway?.gatewayType,
-          month: selectedMonth?.map((item) => item.value).join(","),
+          month: selectedMonth?.map((item) => item?.value).join(","),
           paymentStatus: "pending",
           collectedBy: "customer",
         },
