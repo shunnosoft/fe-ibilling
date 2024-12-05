@@ -48,11 +48,13 @@ const AllInvoices = () => {
   // initial company name state
   const [companyName, setCompanyName] = useState();
 
-  // start date state
-  const [startDate, setStartDate] = useState(firstDay);
+  // paid date state
+  const [startPaidDate, setStartPaidDate] = useState(firstDay);
+  const [endPaidDate, setEndPaidDate] = useState(today);
 
-  // end date state
-  const [endDate, setEndDate] = useState(today);
+  // create date state
+  const [startCreateDate, setStartCreateDate] = useState(firstDay);
+  const [endCreateDate, setEndCreateDate] = useState(today);
 
   // react main state
   let [mainData, setMainData] = useState([]);
@@ -76,18 +78,8 @@ const AllInvoices = () => {
   const company = useSelector((state) => state?.admin?.ispOwnerIds);
 
   // set filter status
-  const [filterStatus, setFilterStatus] = useState(null);
-  const [typeFilterStatus, setTypeFilterStatus] = useState(null);
-
-  // // payment filter
-  // if (filterStatus && filterStatus !== "All") {
-  //   mainData = mainData.filter((value) => value.status === filterStatus);
-  // }
-
-  // // type filter
-  // if (typeFilterStatus && typeFilterStatus !== "All") {
-  //   mainData = mainData.filter((value) => value.type === typeFilterStatus);
-  // }
+  const [filterStatus, setFilterStatus] = useState("All");
+  const [typeFilterStatus, setTypeFilterStatus] = useState("All");
 
   // invoice edit method
   const invoiceEditModal = (invoiceId) => {
@@ -97,23 +89,14 @@ const AllInvoices = () => {
   // date filter by last date
   const onClickDueDateFilter = () => {
     let filterMainData = [...invoices];
-    // date filter
-    filterMainData = filterMainData.filter((value) => {
-      let tempDT =
-        value.type === "smsPurchase" ? value.createdAt : value.dueDate;
 
-      return (
-        new Date(moment(tempDT).format("YYYY-MM-DD")).getTime() >=
-          new Date(moment(startDate).format("YYYY-MM-DD")).getTime() &&
-        new Date(moment(tempDT).format("YYYY-MM-DD")).getTime() <=
-          new Date(moment(endDate).format("YYYY-MM-DD")).getTime()
-      );
-    });
     // payment filter
     if (filterStatus && filterStatus !== "All") {
       filterMainData = filterMainData.filter(
         (value) => value.status === filterStatus
       );
+    } else {
+      filterMainData = filterMainData;
     }
 
     // type filter
@@ -121,9 +104,62 @@ const AllInvoices = () => {
       filterMainData = filterMainData.filter(
         (value) => value.type === typeFilterStatus
       );
+    } else {
+      filterMainData = filterMainData;
     }
 
     setMainData(filterMainData);
+  };
+
+  // reset status filter handler
+  const onClickDueDateFilterReset = () => {
+    setFilterStatus("All");
+    setTypeFilterStatus("All");
+    setMainData(invoices);
+  };
+
+  // Invoice paid date filter handler
+  const handleAllInvoicePaidDateFilter = () => {
+    let arr = [...invoices];
+
+    const filteredArr = arr.filter((item) => {
+      const itemDate = new Date(item?.paidAt).setHours(0, 0, 0, 0);
+      const startDate = new Date(startPaidDate).setHours(0, 0, 0, 0);
+      const endDate = new Date(endPaidDate).setHours(23, 59, 59, 999);
+
+      return itemDate >= startDate && itemDate <= endDate;
+    });
+
+    setMainData(filteredArr);
+  };
+
+  // reset paid date filter handler
+  const handleAllInvoicePaidDateFilterReset = () => {
+    setStartPaidDate(firstDay);
+    setEndPaidDate(today);
+    setMainData(invoices);
+  };
+
+  // Invoice create date filter handler
+  const handleAllInvoiceCreateDateFilter = () => {
+    let arr = [...invoices];
+
+    const filteredArr = arr.filter((item) => {
+      const itemDate = new Date(item?.createdAt).setHours(0, 0, 0, 0);
+      const startDate = new Date(startCreateDate).setHours(0, 0, 0, 0);
+      const endDate = new Date(endCreateDate).setHours(23, 59, 59, 999);
+
+      return itemDate >= startDate && itemDate <= endDate;
+    });
+
+    setMainData(filteredArr);
+  };
+
+  // reset create date filter handler
+  const handleAllInvoiceCreateDateFilterReset = () => {
+    setStartCreateDate(firstDay);
+    setEndCreateDate(today);
+    setMainData(invoices);
   };
 
   //total monthly fee and due calculation
@@ -352,7 +388,7 @@ const AllInvoices = () => {
                   </div>
                 </div>
               </div>
-              <div className="card-body">
+              <div className="card-body displayGrid">
                 <div className="d-flex">
                   <select
                     className="form-select mt-0 me-3"
@@ -371,9 +407,10 @@ const AllInvoices = () => {
                     onChange={(event) =>
                       setTypeFilterStatus(event.target.value)
                     }
+                    value={typeFilterStatus}
                   >
                     <option value="All" selected>
-                      Select
+                      Invoice Type
                     </option>
                     <option value="monthlyServiceCharge">
                       Monthly Service Charge
@@ -382,32 +419,106 @@ const AllInvoices = () => {
                     <option value="smsPurchase">SMS</option>
                     <option value="migration">Migration</option>
                   </select>
-                  <div class="d-flex">
-                    <div>
-                      <DatePicker
-                        className="form-control mw-100  me-3"
-                        selected={startDate}
-                        onChange={(date) => setStartDate(date)}
-                        dateFormat="MMM dd yyyy"
-                        placeholderText={"To"}
-                      />
-                    </div>
-                    <div className="mx-3">
-                      <DatePicker
-                        className="form-control mw-100  me-3"
-                        selected={endDate}
-                        onChange={(date) => setEndDate(date)}
-                        dateFormat="MMM dd yyyy"
-                        placeholderText={"From"}
-                      />
-                    </div>
-                    <button
-                      class="btn  btn-outline-primary btn-sm px-4"
-                      onClick={() => onClickDueDateFilter()}
-                    >
-                      Submit
-                    </button>
+
+                  <button
+                    class="btn  btn-outline-primary btn-md px-4 me-3"
+                    onClick={onClickDueDateFilter}
+                  >
+                    Submit
+                  </button>
+
+                  <button
+                    class="btn  btn-outline-secondary btn-md px-4"
+                    onClick={onClickDueDateFilterReset}
+                  >
+                    Reset
+                  </button>
+                </div>
+
+                <div class="d-flex">
+                  <div>
+                    <label className="form-control-label changeLabelFontColor">
+                      Paid Start Date
+                    </label>
+
+                    <DatePicker
+                      className="form-control mw-100  me-3"
+                      selected={startPaidDate}
+                      onChange={(date) => setStartPaidDate(date)}
+                      dateFormat="MMM dd yyyy"
+                      placeholderText={"To"}
+                    />
                   </div>
+                  <div className="mx-3">
+                    <label className="form-control-label changeLabelFontColor">
+                      Paid End Date
+                    </label>
+
+                    <DatePicker
+                      className="form-control mw-100  me-3"
+                      selected={endPaidDate}
+                      onChange={(date) => setEndPaidDate(date)}
+                      dateFormat="MMM dd yyyy"
+                      placeholderText={"From"}
+                    />
+                  </div>
+
+                  <button
+                    class="btn btn-outline-primary btn-md px-4 d-flex align-self-end  me-3"
+                    onClick={handleAllInvoicePaidDateFilter}
+                  >
+                    Submit
+                  </button>
+
+                  <button
+                    class="btn  btn-outline-secondary d-flex align-self-end btn-md px-4"
+                    onClick={handleAllInvoicePaidDateFilterReset}
+                  >
+                    Reset
+                  </button>
+                </div>
+
+                <div class="d-flex">
+                  <div>
+                    <label className="form-control-label changeLabelFontColor">
+                      Create Start Date
+                    </label>
+
+                    <DatePicker
+                      className="form-control mw-100  me-3"
+                      selected={startCreateDate}
+                      onChange={(date) => setStartCreateDate(date)}
+                      dateFormat="MMM dd yyyy"
+                      placeholderText={"To"}
+                    />
+                  </div>
+                  <div className="mx-3">
+                    <label className="form-control-label changeLabelFontColor">
+                      Create End Date
+                    </label>
+
+                    <DatePicker
+                      className="form-control mw-100  me-3"
+                      selected={endCreateDate}
+                      onChange={(date) => setEndCreateDate(date)}
+                      dateFormat="MMM dd yyyy"
+                      placeholderText={"From"}
+                    />
+                  </div>
+
+                  <button
+                    class="btn btn-outline-primary btn-md px-4 d-flex align-self-end me-3"
+                    onClick={handleAllInvoiceCreateDateFilter}
+                  >
+                    Submit
+                  </button>
+
+                  <button
+                    class="btn  btn-outline-secondary d-flex align-self-end btn-md px-4"
+                    onClick={handleAllInvoiceCreateDateFilterReset}
+                  >
+                    Reset
+                  </button>
                 </div>
 
                 <div className="table-section-th">

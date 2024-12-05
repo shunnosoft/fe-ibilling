@@ -150,7 +150,7 @@ export default function Message() {
   }, [ispOwnerId]);
 
   // ispOwner payment gateway payment link
-  const customerPaymentLink = `Payment Link: https://netfeebd.com/isp/${ispOwnerData?.netFeeId}`;
+  const customerPaymentLink = `Payment Link: https://app.netfeebd.com/isp/${ispOwnerData?.netFeeId}`;
 
   useEffect(() => {
     if (role === "ispOwner" || role === "manager") {

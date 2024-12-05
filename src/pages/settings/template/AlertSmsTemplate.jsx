@@ -41,7 +41,7 @@ const AlertSmsTemplate = () => {
   const [alertNum, setAlertNum] = useState("");
 
   // ispOwner payment gateway payment link
-  const customerPaymentLink = `Payment Link: https://netfeebd.com/isp/${ispOwnerData?.netFeeId}`;
+  const customerPaymentLink = `Payment Link: https://app.netfeebd.com/isp/${ispOwnerData?.netFeeId}`;
 
   const itemSettingHandler = (item) => {
     if (smsTemplet.includes(item)) {

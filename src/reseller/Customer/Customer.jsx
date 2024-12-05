@@ -573,7 +573,7 @@ const Customer = () => {
                 original?.balance > -1 ? "success" : "danger"
               }`}
             >
-              ৳{original?.balance}
+              ৳{FormatNumber(original?.balance)}
             </p>
           </div>
         ),
