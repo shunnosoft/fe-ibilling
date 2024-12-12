@@ -260,7 +260,7 @@ export default function Header(props) {
                 <div
                   className="headerIcon"
                   onClick={() => {
-                    const fileUrl = "apk/WebHookMobileApp_v1.0.1.apk";
+                    const fileUrl = "apk/WebHookMobileApp_v1.0.apk";
                     const link = document.createElement("a");
                     link.href = fileUrl;
                     link.download = "WebHookMobileApp_v1.0.1.apk";
