@@ -14,7 +14,12 @@ import {
 } from "../../features/apiCalls";
 import { getSubAreasApi } from "../../features/actions/customerApiCall";
 import { handleActiveFilter } from "./activeFilter";
-import { userStaffs } from "../../features/getIspOwnerUsersApi";
+import { getOwnerUsers, userStaffs } from "../../features/getIspOwnerUsersApi";
+import {
+  getMikrotik,
+  getSubAreas,
+  withMtkPackage,
+} from "../../features/apiCallReseller";
 
 const DataFilter = ({
   page,
@@ -60,17 +65,27 @@ const DataFilter = ({
     role === "manager" ||
     (role === "collector" && !userData.reseller);
 
+  const resellerUser =
+    role === "reseller" || (role === "collector" && userData.reseller);
+
+  // reseller id from role base
+  const resellerId = role === "collector" ? userData.reseller : userData.id;
+
   //get mikrotiks from redux store
   const mikrotiks = useSelector((state) => state?.mikrotik?.mikrotik);
 
   // get mikrotik and without mikrotik packages in redux store
-  const packages = useSelector((state) => state?.package?.allPackages);
+  const packages = useSelector((state) =>
+    resellerUser ? state?.mikrotik?.pppoePackage : state?.package?.allPackages
+  );
 
   //get all areas
   const areas = useSelector((state) => state.area?.area);
 
   // get all subarea
-  const subAreas = useSelector((state) => state.area?.subArea);
+  const subAreas = useSelector((state) =>
+    adminUser ? state.area?.subArea : state.area?.area
+  );
 
   //get all pole Box
   const poleBox = useSelector((state) => state.area?.poleBox);
@@ -93,21 +108,39 @@ const DataFilter = ({
   // api call
   useEffect(() => {
     // get user staffs api
-    staffs.length === 0 && userStaffs(dispatch);
+    if (adminUser) {
+      staffs.length === 0 && userStaffs(dispatch);
+    } else {
+      staffs.length === 0 && getOwnerUsers(dispatch, ispOwnerId);
+    }
 
     // get mikrotiks
-    if (mikrotiks.length === 0) fetchMikrotik(dispatch, ispOwnerId, setLoading);
+    if (mikrotiks.length === 0 && adminUser) {
+      fetchMikrotik(dispatch, ispOwnerId, setLoading);
+    } else {
+      getMikrotik(dispatch, resellerId);
+    }
 
     // get mikrotik packages
-    if (packages?.length === 0)
-      getAllPackages(dispatch, ispOwnerId, setLoading);
+    if (adminUser) {
+      packages?.length === 0 &&
+        getAllPackages(dispatch, ispOwnerId, setLoading);
+    } else {
+      packages?.length === 0 && withMtkPackage(dispatch, resellerId);
+    }
 
     // get area
-    if (areas.length === 0) getArea(dispatch, ispOwnerId, setLoading);
+    if (areas.length === 0 && adminUser) {
+      getArea(dispatch, ispOwnerId, setLoading);
+    }
 
     // get sub area
-    if (subAreas.length === 0) getSubAreasApi(dispatch, ispOwnerId);
-  }, [page]);
+    if (adminUser) {
+      subAreas.length === 0 && getSubAreasApi(dispatch, ispOwnerId);
+    } else {
+      subAreas.length === 0 && getSubAreas(dispatch, resellerId);
+    }
+  }, [page, adminUser]);
 
   // set customers in state
   useEffect(() => {
@@ -216,7 +249,7 @@ const DataFilter = ({
       type: "select",
       id: "mikrotik",
       value: filterOptions.mikrotik,
-      isVisible: bpSettings?.hasMikrotik && adminUser,
+      isVisible: bpSettings?.hasMikrotik && (adminUser || resellerUser),
       disabled: false,
       onChange: (e) => mikrotikHandler(e.target.value),
       options: mikrotiks,
@@ -229,7 +262,7 @@ const DataFilter = ({
       type: "select",
       id: "package",
       value: filterOptions.mikrotikPackage,
-      isVisible: adminUser ? true : false,
+      isVisible: adminUser || resellerUser ? true : false,
       disabled: false,
       onChange: (e) => {
         setFilterOption({
@@ -265,7 +298,7 @@ const DataFilter = ({
       type: "select",
       id: "subArea",
       value: filterOptions.subArea,
-      isVisible: adminUser ? true : false,
+      isVisible: adminUser || resellerUser ? true : false,
       disabled: false,
       onChange: (e) => {
         setFilterOption({
@@ -273,7 +306,9 @@ const DataFilter = ({
           subArea: e.target.value,
         });
       },
-      options: subAreas.filter((item) => item?.area === filterOptions.area),
+      options: adminUser
+        ? subAreas.filter((item) => item?.area === filterOptions.area)
+        : subAreas,
       firstOptions: t("subArea"),
       textAccessor: "name",
       valueAccessor: "id",
@@ -283,7 +318,7 @@ const DataFilter = ({
       type: "select",
       id: "poleBox",
       value: filterOptions.poleBox,
-      isVisible: bpSettings?.poleBox && adminUser,
+      isVisible: bpSettings?.poleBox && (adminUser || resellerUser),
       disabled: false,
       onChange: (e) => {
         setFilterOption({
@@ -303,7 +338,7 @@ const DataFilter = ({
       type: "select",
       id: "status",
       value: filterOptions.status,
-      isVisible: adminUser ? true : false,
+      isVisible: adminUser || resellerUser ? true : false,
       disabled: false,
       onChange: (e) => {
         setFilterOption({
@@ -334,7 +369,7 @@ const DataFilter = ({
       type: "select",
       id: "paymentStatus",
       value: filterOptions.paymentStatus,
-      isVisible: adminUser ? true : false,
+      isVisible: adminUser || resellerUser ? true : false,
       disabled: false,
       onChange: (e) => {
         setFilterOption({
@@ -412,7 +447,7 @@ const DataFilter = ({
       type: "select",
       id: "allCustomer",
       value: filterOptions.allCustomer,
-      isVisible: adminUser ? true : false,
+      isVisible: adminUser || resellerUser ? true : false,
       disabled: false,
       onChange: (e) =>
         setFilterOption({
@@ -434,7 +469,7 @@ const DataFilter = ({
       type: "select",
       id: "billDayLeft",
       value: filterOptions.billDayLeft,
-      isVisible: adminUser ? true : false,
+      isVisible: adminUser || resellerUser ? true : false,
       disabled: false,
       onChange: (e) =>
         setFilterOption({
@@ -456,7 +491,7 @@ const DataFilter = ({
       name: "startDate",
       type: "date",
       id: "startDate",
-      isVisible: adminUser ? true : false,
+      isVisible: adminUser || resellerUser ? true : false,
       disabled: false,
       placeholderText: t("startBillingCycleDate"),
       component: "DatePicker",
@@ -475,7 +510,7 @@ const DataFilter = ({
       name: "endDate",
       type: "date",
       id: "endDate",
-      isVisible: adminUser ? true : false,
+      isVisible: adminUser || resellerUser ? true : false,
       disabled: false,
       placeholderText: t("endBillingCycleDate"),
       component: "DatePicker",
@@ -495,7 +530,7 @@ const DataFilter = ({
       type: "select",
       id: "changeCustomer",
       value: filterOptions.changeCustomer,
-      isVisible: adminUser ? true : false,
+      isVisible: adminUser || resellerUser ? true : false,
       disabled: false,
       onChange: (e) => {
         setFilterOption({

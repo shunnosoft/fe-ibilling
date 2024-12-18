@@ -40,7 +40,6 @@ import CustomerDetails from "./customerCRUD/CustomerDetails";
 import Loader from "../../components/common/Loader";
 import {
   getCustomer,
-  getMikrotik,
   getSubAreas,
   resellerInfo,
   withMtkPackage,
@@ -51,7 +50,6 @@ import Table from "../../components/table/Table";
 import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
 import IndeterminateCheckbox from "../../components/table/bulkCheckbox";
 import FormatNumber from "../../components/common/NumberFormat";
-import BandwidthModal from "../../pages/Customer/BandwidthModal";
 import CustomersNumber from "../../pages/Customer/CustomersNumber";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
@@ -65,6 +63,9 @@ import { getOwnerUsers } from "../../features/getIspOwnerUsersApi";
 import RechargeCustomer from "./actionComponent/RechargeCustomer";
 import PrintOptions from "../../components/common/PrintOptions";
 import BulkOptions from "../../pages/Customer/customerCRUD/bulkOpration/BulkOptions";
+import DataFilter from "../../pages/common/DataFilter";
+import useDataState from "../../hooks/useDataState";
+import { handleActiveFilter } from "../../pages/common/activeFilter";
 
 const Customer = () => {
   const { t } = useTranslation();
@@ -87,9 +88,6 @@ const Customer = () => {
 
   // get reseller subAreas form reseller data
   const subAreas = useSelector((state) => state?.area?.area);
-
-  // get ispOwner mikrotik form redux
-  const mikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
 
   // get mikrotik package form redux
   const ppPackage = useSelector((state) => state?.mikrotik?.pppoePackage);
@@ -115,9 +113,6 @@ const Customer = () => {
   //bandwidth modal state
   const [bandWidthModal, setBandWidthModal] = useState(false);
 
-  //bulk menu show and hide
-  const [isMenuOpen, setMenuOpen] = useState(false);
-
   // bulk modal handle state
   const [modalStatus, setModalStatus] = useState("");
   const [show, setShow] = useState(false);
@@ -139,26 +134,14 @@ const Customer = () => {
   // customer id state
   const [customerId, setCustomerId] = useState("");
 
-  // filter mikrotik package state
-  const [mikrotikPackage, setMikrotikPackage] = useState([]);
-
-  // customer info filter options state
-  const [filterOptions, setFilterOptions] = useState({
-    subArea: "",
-    status: "",
-    paymentStatus: "",
-    mikrotik: "",
-    package: "",
-  });
+  // get user data set from useDataState hooks
+  const { filterOptions, setFilterOption } = useDataState();
 
   // get api calls
   useEffect(() => {
     // get reseller customers from ispOwner
     if (allCustomer.length === 0)
       getCustomer(dispatch, resellerId, setIsLoading);
-
-    // get reseller mikrotiks from provider
-    getMikrotik(dispatch, resellerId);
 
     // withMikrotik & withOutMikrotik package get api
     if (ppPackage.length === 0) withMtkPackage(dispatch, resellerId);
@@ -179,9 +162,29 @@ const Customer = () => {
 
   // set state api call data
   useEffect(() => {
-    setCustomers(allCustomer);
+    let customerModified = [];
 
-    Object.values(filterOptions) && cusInfoFilterHandler();
+    // add area to customers
+    allCustomer?.map((c) => {
+      if (!c.area) {
+        subAreas?.map((sub) => {
+          if (sub.id === c.subArea) {
+            customerModified.push({
+              ...c,
+              area: sub.area,
+            });
+          }
+        });
+      } else {
+        customerModified.push(c);
+      }
+    });
+
+    setCustomers(customerModified);
+
+    // set customer in state for filter
+    Object?.values(filterOptions) &&
+      setCustomers(handleActiveFilter(customerModified, filterOptions));
   }, [allCustomer]);
 
   // reload handler
@@ -212,177 +215,6 @@ const Customer = () => {
     setCustomerId(customerID);
     setBandWidthModal(true);
   };
-
-  // mikrotik package find handler
-  const mikrotikPackageFind = (id) => {
-    setFilterOptions({
-      ...filterOptions,
-      mikrotik: id,
-    });
-
-    // package find
-    const temp = ppPackage.filter((val) => val.mikrotik === id);
-    setMikrotikPackage(temp);
-  };
-
-  // customer information filter handler
-  const cusInfoFilterHandler = () => {
-    let temporaryCustomer = allCustomer.reduce((acc, c) => {
-      const { subArea, status, paymentStatus, mikrotik } = filterOptions;
-
-      // make possible conditions objects if the filter value not selected thats return true
-      //if filter value exist then compare
-      const conditions = {
-        subArea: subArea ? subArea === c.subArea : true,
-        status: status ? status === c.status : true,
-        paymentStatus: paymentStatus ? paymentStatus === c.paymentStatus : true,
-        mikrotik: mikrotik ? mikrotik === c.mikrotik : true,
-        package: filterOptions.package
-          ? filterOptions.package === c.mikrotikPackage
-          : true,
-      };
-
-      //check if condition pass got for next step or is fail stop operation
-      //if specific filter option value not exist it will return true
-      let isPass = false;
-
-      isPass = conditions["subArea"];
-      if (!isPass) return acc;
-
-      isPass = conditions["status"];
-      if (!isPass) return acc;
-
-      isPass = conditions["paymentStatus"];
-      if (!isPass) return acc;
-
-      isPass = conditions["mikrotik"];
-      if (!isPass) return acc;
-
-      isPass = conditions["package"];
-      if (!isPass) return acc;
-
-      if (isPass) acc.push(c);
-      return acc;
-    }, []);
-
-    // set filter customer in customer state
-    setCustomers(temporaryCustomer);
-  };
-
-  // filter reset controller
-  const handleFilterReset = () => {
-    setMikrotikPackage([]);
-    setFilterOptions({
-      subArea: "",
-      status: "",
-      paymentStatus: "",
-      mikrotik: "",
-      package: "",
-    });
-    setCustomers(allCustomer);
-  };
-
-  // custom filter inputs customer info
-  const filterInputs = [
-    {
-      type: "select",
-      name: "mikrotik",
-      id: "mikrotik",
-      value: filterOptions.mikrotik,
-      disable: false,
-      isVisible: true,
-      options: mikrotik,
-      onChange: (e) => {
-        mikrotikPackageFind(e.target.value);
-      },
-      firstOption: t("mikrotik"),
-      textAccessor: "name",
-      valueAccessor: "id",
-    },
-    {
-      type: "select",
-      name: "package",
-      id: "package",
-      value: filterOptions.package,
-      disable: false,
-      isVisible: true,
-      options: mikrotikPackage,
-      onChange: (e) => {
-        setFilterOptions({
-          ...filterOptions,
-          package: e.target.value,
-        });
-      },
-      firstOption: t("package"),
-      textAccessor: "name",
-      valueAccessor: "id",
-    },
-    {
-      type: "select",
-      name: "subArea",
-      id: "subArea",
-      value: filterOptions.subArea,
-      disable: false,
-      isVisible: true,
-      options: subAreas,
-      onChange: (e) => {
-        setFilterOptions({
-          ...filterOptions,
-          subArea: e.target.value,
-        });
-      },
-      firstOption: t("subArea"),
-      textAccessor: "name",
-      valueAccessor: "id",
-    },
-    {
-      type: "select",
-      name: "status",
-      id: "status",
-      value: filterOptions.status,
-      disable: false,
-      isVisible: true,
-      options: [
-        { text: t("active"), value: "active" },
-        { text: t("in active"), value: "inactive" },
-        { text: t("expired"), value: "expired" },
-      ],
-      onChange: (e) => {
-        setFilterOptions({
-          ...filterOptions,
-          status: e.target.value,
-        });
-      },
-      firstOption: t("status"),
-      textAccessor: "text",
-      valueAccessor: "value",
-    },
-    {
-      type: "select",
-      name: "paymentStatus",
-      id: "paymentStatus",
-      value: filterOptions.paymentStatus,
-      disable: false,
-      isVisible: true,
-      options: [
-        { text: t("free"), value: "free" },
-        { text: t("paid"), value: "paid" },
-        { text: t("unpaid"), value: "unpaid" },
-        { text: t("partial"), value: "partial" },
-        { text: t("advance"), value: "advance" },
-        { text: t("overdue"), value: "overdue" },
-      ],
-      onChange: (e) => {
-        setFilterOptions({
-          ...filterOptions,
-          paymentStatus: e.target.value,
-        });
-      },
-      firstOption: t("paymentStatus"),
-      textAccessor: "text",
-      valueAccessor: "value",
-    },
-  ];
 
   // export customer header
   const customerForCsVTableInfoHeader = [
@@ -467,13 +299,11 @@ const Customer = () => {
   // find area name
   const areaName = subAreas.find((item) => item.id === filterOptions.subArea);
 
-  // send filter data to print
+  // set filter value in pdf
   const filterData = {
     area: areaName?.name ? areaName.name : t("allArea"),
-    status: filterOptions.status ? filterOptions.status : t("allCustomer"),
-    payment: filterOptions.paymentStatus
-      ? filterOptions.paymentStatus
-      : t("allCustomer"),
+    status: filterOptions.status,
+    payment: filterOptions.paymentStatus,
   };
 
   // pppoe customer print option
@@ -900,42 +730,13 @@ const Customer = () => {
                     <Accordion alwaysOpen activeKey={activeKeys}>
                       <Accordion.Item eventKey="filter">
                         <Accordion.Body>
-                          <div className="displayGrid6">
-                            {filterInputs.map(
-                              (item) =>
-                                item.isVisible && (
-                                  <select
-                                    className="form-select shadow-none mt-0"
-                                    value={item.value}
-                                    onChange={item.onChange}
-                                  >
-                                    <option value="">{item.firstOption}</option>
-                                    {item.options?.map((val) => (
-                                      <option value={val[item.valueAccessor]}>
-                                        {val[item.textAccessor]}
-                                      </option>
-                                    ))}
-                                  </select>
-                                )
-                            )}
-
-                            <div className="displayGrid1 mt-0 ">
-                              <button
-                                className="btn btn-outline-primary "
-                                type="button"
-                                onClick={cusInfoFilterHandler}
-                              >
-                                {t("filter")}
-                              </button>
-                              <button
-                                className="btn btn-outline-secondary"
-                                type="button"
-                                onClick={handleFilterReset}
-                              >
-                                {t("reset")}
-                              </button>
-                            </div>
-                          </div>
+                          <DataFilter
+                            page="pppoe"
+                            customers={allCustomer}
+                            setCustomers={setCustomers}
+                            filterOptions={filterOptions}
+                            setFilterOption={setFilterOption}
+                          />
                         </Accordion.Body>
                       </Accordion.Item>
                     </Accordion>

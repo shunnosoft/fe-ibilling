@@ -11,10 +11,14 @@ import { bulkPackageEdit } from "../../../../features/actions/bulkOperationApi";
 import RootBulkModal from "./bulkModal";
 import useDataInputOption from "../../../../hooks/useDataInputOption";
 import { FtextField } from "../../../../components/common/FtextField";
+import useISPowner from "../../../../hooks/useISPOwner";
 
 const BulkPackageEdit = ({ bulkCustomer, show, setShow, page }) => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
+
+  // get user & current user data form useISPOwner hook
+  const { hasMikrotik } = useISPowner();
 
   // call the data input option function
   const inputPermission = {
@@ -34,12 +38,19 @@ const BulkPackageEdit = ({ bulkCustomer, show, setShow, page }) => {
     let customers;
     if (data) {
       customers = bulkCustomer.reduce((acc, current) => {
-        if (current.original.mikrotik === data.mikrotik) {
-          acc.push(current);
+        if (hasMikrotik) {
+          if (current.original.mikrotik === data.mikrotik) {
+            acc.push(current);
+          } else {
+            otherCusetomerCount++;
+            toast.error(
+              "মাইক্রটিক এর মধ্যে এই " + current.original.name + " নেই"
+            );
+          }
         } else {
-          otherCusetomerCount++;
-          toast.error("মাইক্রটিক এর মধ্যে এই" + current.original.name + "নেই");
+          acc.push(current);
         }
+
         return acc;
       }, []);
     } else {
@@ -58,7 +69,7 @@ const BulkPackageEdit = ({ bulkCustomer, show, setShow, page }) => {
           t("updateCustomerPackage") +
           "\n" +
           otherCusetomerCount +
-          t("otherMtkUsers")
+          t(" otherMtkUsers")
       );
 
       if (confirm) {

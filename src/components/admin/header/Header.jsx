@@ -263,7 +263,7 @@ export default function Header(props) {
                     const fileUrl = "apk/WebHookMobileApp_v1.0.apk";
                     const link = document.createElement("a");
                     link.href = fileUrl;
-                    link.download = "WebHookMobileApp_v1.0.1.apk";
+                    link.download = "WebHookMobileApp_v1.0.apk";
                     document.body.appendChild(link);
                     link.click();
                     document.body.removeChild(link);
