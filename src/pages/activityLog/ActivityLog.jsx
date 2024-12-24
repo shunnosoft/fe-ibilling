@@ -8,10 +8,13 @@ import { useEffect } from "react";
 import { getActvityLog } from "../../features/activityLogApi";
 import { getOwnerUsers } from "../../features/getIspOwnerUsersApi";
 import moment from "moment";
-import { Eye } from "react-bootstrap-icons";
+import { ArrowClockwise, Eye, FilterCircle } from "react-bootstrap-icons";
 import Details from "./modal/Details";
 import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
+import Loader from "../../components/common/Loader";
+import { Accordion } from "react-bootstrap";
+import { badge } from "../../components/common/Utils";
 
 const ActivityLog = () => {
   const { t } = useTranslation();
@@ -20,9 +23,13 @@ const ActivityLog = () => {
 
   // initial loading state
   const [isLoading, setIsLoading] = useState(false);
+  const [show, setShow] = useState(false);
 
   // initial comment id state
-  const [activityLogId, setActivityLogId] = useState();
+  const [activityLog, setActivityLog] = useState({});
+
+  // filter Accordion handle state
+  const [activeKeys, setActiveKeys] = useState("");
 
   // get isp owner id
   const ispOwnerId = useSelector(
@@ -41,65 +48,67 @@ const ActivityLog = () => {
     getActvityLog(dispatch, setIsLoading, ispOwnerId);
   }, []);
 
+  // reload handler
+  const reloadHandler = () => {
+    getActvityLog(dispatch, setIsLoading, ispOwnerId);
+  };
+
   // table columns
   const columns = React.useMemo(
     () => [
       {
         Header: "#",
         id: "row",
-        width: "8%",
+        width: "3%",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        Header: "name",
-        width: "20%",
-        accessor: "user",
-        Cell: ({ cell: { value } }) => {
-          const performer = ownerUsers.find((item) => item[value]);
-
-          return (
-            <div>
-              {performer &&
-                performer[value].name + "(" + performer[value].role + ")"}
-            </div>
-          );
+        width: "27%",
+        Header: t("description"),
+        accessor: "description",
+      },
+      {
+        width: "15%",
+        Header: t("ipAddress"),
+        accessor: "ipAddress",
+        Cell: ({ value }) => {
+          const ipAddress = value.split(":").pop();
+          return <p>{ipAddress}</p>;
         },
       },
-
       {
+        width: "15%",
+        Header: t("role"),
+        accessor: "role",
+        Cell: ({ cell: { value } }) => <p>{badge(value)}</p>,
+      },
+      {
+        width: "15%",
         Header: t("action"),
-        width: "62%",
-        accessor: (value) => {
-          return (
-            <div>
-              <span>{value.action}</span>
-              <span className="text-primary"> at </span>
-              <small className="text-secondary">
-                {moment(value.createdAt).format("MMM DD YYYY hh:mm A")}
-              </small>
-            </div>
-          );
+        accessor: "action",
+        Cell: ({ cell: { value } }) => <p>{badge(value)}</p>,
+      },
+      {
+        width: "15%",
+        Header: t("date"),
+        accessor: "createdAt",
+        Cell: ({ cell: { value } }) => {
+          return moment(value).format("YYYY-MM-DD hh:mm A");
         },
       },
       {
-        Header: () => <div className="text-center">{t("veiw")}</div>,
+        Header: () => <div className="text-center">{t("view")}</div>,
         width: "10%",
         id: "option",
-
         Cell: ({ row: { original } }) => {
           return (
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
+            <div className="d-flex justify-content-center align-items-center">
               <button
-                onClick={() => setActivityLogId(original.id)}
-                data-bs-toggle="modal"
-                data-bs-target="#showActivityLogDetails"
+                onClick={() => {
+                  setShow(true);
+                  setActivityLog(original);
+                }}
                 className="btn btn-sm btn-outline-primary"
               >
                 <Eye />
@@ -120,18 +129,78 @@ const ActivityLog = () => {
           <div className="container">
             <FontColor>
               <FourGround>
-                <h2 className="collectorTitle">{t("activity")}</h2>
+                <div className="collectorTitle d-flex justify-content-between px-4">
+                  <h2 className="component_name">{t("activityLog")}</h2>
+
+                  <div
+                    style={{ height: "45px" }}
+                    className="d-flex align-items-center"
+                  >
+                    <div
+                      onClick={() => {
+                        if (!activeKeys) {
+                          setActiveKeys("filter");
+                        } else {
+                          setActiveKeys("");
+                        }
+                      }}
+                      title={t("filter")}
+                    >
+                      <FilterCircle className="addcutmButton" />
+                    </div>
+
+                    <div className="reloadBtn">
+                      {isLoading ? (
+                        <Loader />
+                      ) : (
+                        <ArrowClockwise
+                          className="arrowClock"
+                          title={t("refresh")}
+                          onClick={reloadHandler}
+                        />
+                      )}
+                    </div>
+                  </div>
+                </div>
               </FourGround>
               <FourGround>
-                <div className="collectorWrapper">
-                  <Table columns={columns} data={data} isLoading={isLoading} />
+                <div className="mt-2">
+                  <Accordion alwaysOpen activeKey={activeKeys}>
+                    <Accordion.Item eventKey="filter">
+                      <Accordion.Body>
+                        {/* <DataFilter
+                          page="pppoe"
+                          customers={customers}
+                          setCustomers={setPPPoeCustomers}
+                          filterOptions={filterOptions}
+                          setFilterOption={setFilterOption}
+                        /> */}
+                      </Accordion.Body>
+                    </Accordion.Item>
+                  </Accordion>
+
+                  <div className="collectorWrapper pb-2">
+                    <Table
+                      columns={columns}
+                      data={data}
+                      isLoading={isLoading}
+                    />
+                  </div>
                 </div>
               </FourGround>
             </FontColor>
           </div>
         </div>
       </div>
-      <Details activityId={activityLogId} />
+
+      {/* Activity log details modal */}
+      <Details
+        {...{
+          show,
+          setShow,
+          activityLog,
+        }}
+      />
     </>
   );
 };

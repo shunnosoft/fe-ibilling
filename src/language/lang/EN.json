@@ -965,5 +965,8 @@
   "numberOfPort": "Enter number of ports",
   "power": "Power",
   "colorCode": "Color Code",
-  "deviceLocation": "Device Location"
+  "deviceLocation": "Device Location",
+  "activityLog": "Activity Log",
+  "userAgent": "User Agent",
+  "activityLogDetails": "Activity Log Details"
 }

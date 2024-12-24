@@ -678,8 +678,8 @@
   "collected": "কালেক্টেড",
   "currentBalance": "বর্তমান ব্যালেন্স",
   "billDate": "বিল ডেট",
-  "previousState": "পূর্বের স্টেট",
-  "currentState": "বর্তমান স্টেট",
+  "previousState": "পূর্বের অবস্থা",
+  "currentState": "বর্তমান অবস্থা",
   "changeMikrotik": "মাইক্রোটিক পরিবর্তন",
   "connectionFeeCollected": "কানেকশনফি সংগ্রহ",
   "messageBoardAlert": "মেসেজ বোর্ড এলার্ট",
@@ -971,5 +971,8 @@
   "numberOfPort": "পোর্টের সংখ্যা লিখুন",
   "power": "পাওয়ার",
   "colorCode": "কালার কোড",
-  "deviceLocation": "ডিভাইসের অবস্থান"
+  "deviceLocation": "ডিভাইসের অবস্থান",
+  "activityLog": "একটিভিটি লগ",
+  "userAgent": "ব্যবহারকারীর মধ্যম",
+  "activityLogDetails": "গতিবিধি লগ বিবরণ"
 }

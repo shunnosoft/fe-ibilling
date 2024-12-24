@@ -54,6 +54,15 @@ const addClass = {
   UNSENT: "primary",
   REJECTED: "danger",
   TRASH: "warning",
+
+  ispOwner: "primary",
+  manager: "primary",
+  collector: "primary",
+  reseller: "primary",
+
+  CREATE: "info",
+  UPDATE: "success",
+  DELETE: "danger",
 };
 
 export const badge = (item) => {

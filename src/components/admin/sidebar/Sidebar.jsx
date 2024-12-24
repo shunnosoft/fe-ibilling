@@ -34,23 +34,17 @@ import {
   PhoneVibrate,
   ArrowRepeat,
   TelephoneFill,
-  Whatsapp,
   BookmarksFill,
   BellFill,
   Headset,
   Wallet2,
   AppIndicator,
-  PersonFill,
   SendCheck,
   CameraVideoFill,
   HddRackFill,
   BroadcastPin,
   Diagram3Fill,
-  Shuffle,
-  UsbSymbol,
-  Broadcast,
-  RouterFill,
-  Ethernet,
+  ClockHistory,
 } from "react-bootstrap-icons";
 import { NavLink, Router } from "react-router-dom";
 import activeClass from "../../../assets/css/active.module.css";
@@ -1467,6 +1461,30 @@ export default function Sidebar() {
                         </Accordion.Body>
                       </Accordion.Item>
                     </>
+                    {(userRole === "manager" || userRole === "ispOwner") && (
+                      <NavLink
+                        key={14}
+                        to="/activity"
+                        className={(navInfo) =>
+                          navInfo.isActive ? activeClass.active : ""
+                        }
+                      >
+                        <FontColor>
+                          <li
+                            className="sidebarItems"
+                            id={window.location.pathname === "/activity"}
+                          >
+                            <div className="sidebarIcon">
+                              <ClockHistory />
+                            </div>
+                            <span className="sidebarLinksName">
+                              {t("activityLog")}
+                            </span>
+                          </li>
+                        </FontColor>
+                      </NavLink>
+                    )}
+
                     {/* )} */}
                     {(userRole === "ispOwner" || userRole === "manager") && (
                       <>
