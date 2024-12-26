@@ -23,6 +23,7 @@ import {
   GeoAlt,
   FileEarmarkBarGraph,
   FileEarmark,
+  ClockHistory,
 } from "react-bootstrap-icons";
 import { CSVLink } from "react-csv";
 import moment from "moment";
@@ -84,9 +85,11 @@ import BulkOptions from "./customerCRUD/bulkOpration/BulkOptions";
 import DataFilter from "../common/DataFilter";
 import useDataState from "../../hooks/useDataState";
 import { handleActiveFilter } from "../common/activeFilter";
+import { useNavigate } from "react-router-dom";
 
 const PPPOECustomer = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { t } = useTranslation();
 
   // current Date
@@ -372,6 +375,11 @@ const PPPOECustomer = () => {
   const getMikrotik = (id) => {
     const mikrotik = mikrotiks.find((val) => val?.id === id);
     return mikrotik;
+  };
+
+  // single customer activity log handle
+  const handleCustomerActivityLog = (data) => {
+    navigate(`/activity/${data?.id}`);
   };
 
   //column for table
@@ -741,6 +749,15 @@ const PPPOECustomer = () => {
                     </div>
                   </li>
                 )}
+
+                <li onClick={() => handleCustomerActivityLog(original)}>
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <ClockHistory />
+                      <p className="actionP">{t("activityLog")}</p>
+                    </div>
+                  </div>
+                </li>
               </ul>
             </div>
           </div>

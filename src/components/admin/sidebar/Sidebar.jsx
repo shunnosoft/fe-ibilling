@@ -1461,7 +1461,10 @@ export default function Sidebar() {
                         </Accordion.Body>
                       </Accordion.Item>
                     </>
-                    {(userRole === "manager" || userRole === "ispOwner") && (
+                    {(userRole === "ispOwner" ||
+                      userRole === "manager" ||
+                      userRole === "reseller" ||
+                      userRole === "collector") && (
                       <NavLink
                         key={14}
                         to="/activity"

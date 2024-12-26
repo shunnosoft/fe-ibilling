@@ -1,7 +1,10 @@
 import apiLink from "../api/apiLink";
-import { getActivityLogSlice } from "./activityLogSlice";
+import {
+  getActivityLogSlice,
+  getCustomerActivityLogSlice,
+} from "./activityLogSlice";
 
-export const getActvityLog = async (dispatch, setIsLoading, ispOwnerId) => {
+export const getActivityLog = async (dispatch, setIsLoading, ispOwnerId) => {
   setIsLoading(true);
   try {
     const res = await apiLink.get(
@@ -11,6 +14,22 @@ export const getActvityLog = async (dispatch, setIsLoading, ispOwnerId) => {
     dispatch(getActivityLogSlice(res.data?.results));
   } catch (error) {
     console.log(error.response);
+    setIsLoading(false);
+  }
+};
+
+// single customer activity log api
+export const getCustomerActivityLog = async (
+  dispatch,
+  setIsLoading,
+  customer
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.get(`ispOwner/activity-log-customer/${customer}`);
+    setIsLoading(false);
+    dispatch(getCustomerActivityLogSlice(res.data));
+  } catch (error) {
     setIsLoading(false);
   }
 };

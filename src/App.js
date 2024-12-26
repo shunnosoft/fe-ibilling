@@ -123,6 +123,7 @@ import AcountPayment from "./components/modals/payment/AcountPayment";
 import Tutorial from "./pages/tutorial/Tutorial";
 import Diagram from "./pages/network/diagram/Diagram";
 import Device from "./pages/network/device/Device";
+import CustomerActivityLog from "./pages/Customer/CustomerActivityLog";
 
 function App() {
   const [theme, setTheme] = useState("light");
@@ -203,6 +204,20 @@ function App() {
 
             {/* netFee tutorial */}
             <Route path="/netFee/tutorial" element={<Tutorial />} />
+
+            <Route path="/activity" element={<ActivityLog />} />
+
+            <Route
+              path="/activity/:customerId"
+              element={
+                (userRole === "manager" && user) ||
+                (userRole === "ispOwner" && user) ? (
+                  <CustomerActivityLog />
+                ) : (
+                  <Navigate to={"/"} />
+                )
+              }
+            />
           </Routes>
         )}
 
@@ -904,17 +919,6 @@ function App() {
                   </PrivateRoute>
                 ) : (
                   <Navigate to={"/home"} />
-                )
-              }
-            />
-            <Route
-              path="/activity"
-              element={
-                (userRole === "manager" && user) ||
-                (userRole === "ispOwner" && user) ? (
-                  <ActivityLog />
-                ) : (
-                  <Navigate to={"/"} />
                 )
               }
             />

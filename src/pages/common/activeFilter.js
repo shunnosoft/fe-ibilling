@@ -13,12 +13,14 @@ export const handleActiveFilter = (mainData, filterOptions) => {
       status,
       paymentStatus,
       reseller,
+      createdBy,
       allCustomer,
       billDayLeft,
       startDate,
       endDate,
       changeCustomer,
       userType,
+      action,
     } = filterOptions;
 
     // make date object
@@ -89,6 +91,7 @@ export const handleActiveFilter = (mainData, filterOptions) => {
         ? c.paymentStatus === "unpaid" && c.balance < 0
         : true,
       reseller: reseller ? c.reseller.id === reseller : true,
+      createdBy: createdBy ? c.createdBy === createdBy : true,
       freeUser: allCustomer ? c.monthlyFee === 0 : true,
       nonFreeUser: allCustomer ? c.monthlyFee > 0 : true,
       prepaid: allCustomer ? c.customerBillingType === "prepaid" : true,
@@ -104,6 +107,7 @@ export const handleActiveFilter = (mainData, filterOptions) => {
         changeCustomer === "promiseDate" ? billingCycle < promiseDate : true,
       autoDisable: changeCustomer ? c.autoDisable !== connectionStatus : true,
       userType: userType ? c.userType === userType : true,
+      action: action ? c.action === action : true,
     };
 
     //check if condition pass got for next step or is fail stop operation
@@ -140,6 +144,9 @@ export const handleActiveFilter = (mainData, filterOptions) => {
     isPass = conditions["reseller"];
     if (!isPass) return acc;
 
+    isPass = conditions["createdBy"];
+    if (!isPass) return acc;
+
     if (allCustomer) {
       isPass = conditions[allCustomer];
       if (!isPass) return acc;
@@ -158,6 +165,9 @@ export const handleActiveFilter = (mainData, filterOptions) => {
     if (!isPass) return acc;
 
     isPass = conditions["userType"];
+    if (!isPass) return acc;
+
+    isPass = conditions["action"];
     if (!isPass) return acc;
 
     if (isPass) acc.push(c);

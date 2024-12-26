@@ -1,32 +1,32 @@
-import React, { useState } from "react";
-import { FontColor, FourGround } from "../../assets/js/theme";
-import useDash from "../../assets/css/dash.module.css";
-import Sidebar from "../../components/admin/sidebar/Sidebar";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
-import { useEffect } from "react";
-import { getActivityLog } from "../../features/activityLogApi";
-import { userStaffs } from "../../features/getIspOwnerUsersApi";
+import React, { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useDispatch, useSelector } from "react-redux";
+import { badge } from "../../components/common/Utils";
 import moment from "moment";
 import { ArrowClockwise, Eye, FilterCircle } from "react-bootstrap-icons";
-import Details from "./modal/Details";
-import Table from "../../components/table/Table";
-import { useTranslation } from "react-i18next";
+import Sidebar from "../../components/admin/sidebar/Sidebar";
+import { FontColor, FourGround } from "../../assets/js/theme";
 import Loader from "../../components/common/Loader";
 import { Accordion } from "react-bootstrap";
-import { badge } from "../../components/common/Utils";
-import useISPowner from "../../hooks/useISPOwner";
+import Table from "../../components/table/Table";
+import Details from "../activityLog/modal/Details";
+import useDash from "../../assets/css/dash.module.css";
+import { getCustomerActivityLog } from "../../features/activityLogApi";
+import { useParams } from "react-router-dom";
 import { handleActiveFilter } from "../common/activeFilter";
+import useISPowner from "../../hooks/useISPOwner";
+import { getOwnerUsers, userStaffs } from "../../features/getIspOwnerUsersApi";
 import useDataState from "../../hooks/useDataState";
-import { getResellerUsers } from "../../features/apiCallReseller";
 
-const ActivityLog = () => {
+const CustomerActivityLog = () => {
   const { t } = useTranslation();
+  const { customerId } = useParams();
+
   // import dispatch
   const dispatch = useDispatch();
 
   // get user & current user data form useISPOwner hooks
-  const { role, userData } = useISPowner();
+  const { role, ispOwnerId, userData } = useISPowner();
 
   // get user data set from useDataState hooks
   const { filterOptions, setFilterOption } = useDataState();
@@ -49,24 +49,22 @@ const ActivityLog = () => {
   const [activeKeys, setActiveKeys] = useState("");
 
   // get all data from redux
-  const data = useSelector((state) => state?.activityLog?.activityLog);
+  const data = useSelector((state) => state?.activityLog?.customerActivityLog);
 
   // get user staff data from redux store
-  const staffs = useSelector((state) =>
-    adminUser ? state?.ownerUsers?.userStaff : state.reseller.resellerUsers
-  );
+  const staffs = useSelector((state) => state?.ownerUsers?.userStaff);
 
   // api call
   useEffect(() => {
-    getActivityLog(dispatch, setIsLoading, userData?.id);
+    getCustomerActivityLog(dispatch, setIsLoading, customerId);
 
     // get user staffs api
     if (adminUser) {
       staffs.length === 0 && userStaffs(dispatch);
     } else {
-      staffs.length === 0 && getResellerUsers(dispatch, userData?.id);
+      staffs.length === 0 && getOwnerUsers(dispatch, ispOwnerId);
     }
-  }, [adminUser]);
+  }, []);
 
   useEffect(() => {
     setActivityLogData(data);
@@ -74,11 +72,11 @@ const ActivityLog = () => {
 
   // reload handler
   const reloadHandler = () => {
-    getActivityLog(dispatch, setIsLoading, userData?.id);
+    getCustomerActivityLog(dispatch, setIsLoading, customerId);
   };
 
   // table columns
-  const columns = React.useMemo(
+  const columns = useMemo(
     () => [
       {
         Header: "#",
@@ -325,4 +323,4 @@ const ActivityLog = () => {
   );
 };
 
-export default ActivityLog;
+export default CustomerActivityLog;

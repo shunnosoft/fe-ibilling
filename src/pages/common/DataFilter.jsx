@@ -426,21 +426,21 @@ const DataFilter = ({
       valueAccessor: "id",
     },
     {
-      name: "staff",
+      name: "createdBy",
       type: "select",
-      id: "staff",
-      value: filterOptions.staff,
+      id: "createdBy",
+      value: filterOptions.createdBy,
       isVisible: ["newCustomer"].includes(page) && adminUser ? true : false,
       disabled: false,
       onChange: (e) =>
         setFilterOption({
           ...filterOptions,
-          staff: e.target.value,
+          createdBy: e.target.value,
         }),
       options: staffs,
-      firstOptions: t("all collector"),
+      firstOptions: t("createdBy"),
       textAccessor: "name",
-      valueAccessor: "id",
+      valueAccessor: "user",
     },
     {
       name: "allCustomer",
