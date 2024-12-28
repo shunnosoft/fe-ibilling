@@ -14,12 +14,14 @@ import {
 //internal import
 import { badge } from "../../../components/common/Utils";
 import Table from "../../../components/table/Table";
-import { getFreeCustomer } from "../../../features/apiCalls";
+import { getAllPackages, getFreeCustomer } from "../../../features/apiCalls";
 import {
   getCustomerDayLeft,
   getCustomerPromiseDate,
 } from "../../Customer/customerCRUD/customerBillDayPromiseDate";
 import PrintOptions from "../../../components/common/PrintOptions";
+import { getHotspotPackage } from "../../../features/hotspotApi";
+import useAreaPackage from "../../../hooks/useAreaPackage";
 
 const FreeCustomer = ({
   modalShow,
@@ -32,19 +34,17 @@ const FreeCustomer = ({
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
+  // get users area packages form useAreaPackage hook
+  const { allPackage, hotsPackage } = useAreaPackage();
+
   // get free customer data
   const customer = useSelector(
     (state) => state.dashboardInformation?.freeCustomer
   );
 
-  // get all packages
-  const allPackages = useSelector((state) => state.package.allPackages);
-
-  // get hotspot package
-  const hotsPackage = useSelector((state) => state.hotspot?.package);
-
   // is Loading state
   const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   // modal change state
   const [modalStatus, setModalStatus] = useState("");
@@ -53,6 +53,13 @@ const FreeCustomer = ({
   useEffect(() => {
     status === "freeCustomer" &&
       getFreeCustomer(dispatch, ispOwnerId, year, month, setIsLoading);
+
+    //get all customer package api
+    allPackage.length === 0 && getAllPackages(dispatch, ispOwnerId, setLoading);
+
+    // get hotspot package api call
+    hotsPackage.length === 0 &&
+      getHotspotPackage(dispatch, ispOwnerId, setLoading);
   }, [month, status, year]);
 
   //modal close handler
@@ -66,7 +73,7 @@ const FreeCustomer = ({
       );
       return findPack;
     } else {
-      const findPack = allPackages.find((item) =>
+      const findPack = allPackage.find((item) =>
         item.id.includes(value?.mikrotikPackage)
       );
       return findPack;
@@ -220,7 +227,7 @@ const FreeCustomer = ({
         ),
       },
     ],
-    [t, allPackages, hotsPackage]
+    [t, allPackage, hotsPackage]
   );
 
   return (
