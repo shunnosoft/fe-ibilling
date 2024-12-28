@@ -137,7 +137,7 @@ const EditPPPoECustomer = ({ show, setShow, single }) => {
     } = formValue;
 
     // if customer id is empty then alert write customer id
-    if (!bpSettings.genCustomerId) {
+    if (!bpSettings?.genCustomerId) {
       if (customerId === "") {
         setIsloading(false);
         return alert(t("writeCustomerId"));
@@ -216,7 +216,7 @@ const EditPPPoECustomer = ({ show, setShow, single }) => {
     }
 
     // if bpsettings genCustomerId is false then add customerId
-    if (!bpSettings.genCustomerId) {
+    if (!bpSettings?.genCustomerId) {
       mainData.customerId = customerId;
     }
 

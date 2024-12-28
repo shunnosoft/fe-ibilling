@@ -13,25 +13,16 @@ import { Accordion } from "react-bootstrap";
 
 // custom hooks import
 import useISPowner from "../../hooks/useISPOwner";
-import useAreaPackage from "../../hooks/useAreaPackage";
 
 // internal imports
 import "./home.css";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import {
-  fetchReseller,
-  getAllPackages,
-  getArea,
-  getCollector,
   getDashboardBelowCollectorCardData,
   getDashboardBelowIspOwnerCardData,
   getDashboardBelowManagerCardData,
   getDashboardBelowResellerCardData,
-  getIspOwnerCollector,
   getIspOwnerDashboardOverViewData,
-  getIspOwnerData,
-  getIspOwnerManager,
-  getManger,
 } from "../../features/apiCalls";
 import { getIspOwnerCharts } from "../../features/apiCalls";
 import FormatNumber from "../../components/common/NumberFormat";
@@ -40,10 +31,9 @@ import Loader from "../../components/common/Loader";
 import Footer from "../../components/admin/footer/Footer";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
-import { getHotspotPackage } from "../../features/hotspotApi";
-import { getSubAreasApi } from "../../features/actions/customerApiCall";
 import DashboardCard from "./dashboardCard/DashboardCard";
 import PaymentAlert from "./PaymentAlert";
+import { userStaffs } from "../../features/getIspOwnerUsersApi";
 
 const IspOwnerDashboard = () => {
   const { t } = useTranslation();
@@ -75,9 +65,6 @@ const IspOwnerDashboard = () => {
   // get user & current user data form useISPOwner hooks
   const { role, ispOwnerData, ispOwnerId, bpSettings } = useISPowner();
 
-  // get users area pacages form useAreaPackage hook
-  const { areas, subAreas, allPackage, hotsPackage } = useAreaPackage();
-
   // get dashboard over view data form redux store
   const dashboardOverView = useSelector(
     (state) => state.chart.dashboardOverview
@@ -103,17 +90,11 @@ const IspOwnerDashboard = () => {
     (state) => state.chart.dashboardBelowResellerCardData
   );
 
-  //get all Collectors
-  const allCollector = useSelector((state) => state.collector.collector);
-
-  //get all manager
-  const manager = useSelector((state) => state.manager.manager);
+  // get user staff data from redux store
+  const staffs = useSelector((state) => state?.ownerUsers?.userStaff);
 
   //get graph data
   const ChartsData = useSelector((state) => state.chart.charts);
-
-  //get reseller data from redux store
-  const reseller = useSelector((state) => state.reseller);
 
   //get payment invoice to check expiration
   const invoice = useSelector((state) => state.invoice.invoice);
@@ -131,11 +112,8 @@ const IspOwnerDashboard = () => {
   const [collectorCardLoading, setCollectorCardLoading] = useState(false);
   const [resellerCardLoading, setResellerCardLoading] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [packageLoading, setPackageLoading] = useState(false);
-
   const [showGraphData, setShowGraphData] = useState("amount");
   const [label, setLabel] = useState([]);
-  const [collectors, setCollectors] = useState([]);
   const [collection, setCollection] = useState([]);
   const [count, setCount] = useState([]);
   const [currentCollector, setCurrentCollector] = useState("");
@@ -166,56 +144,12 @@ const IspOwnerDashboard = () => {
     //get graph chart data
     getIspOwnerCharts(setLoading, dispatch, ispOwnerId, Year, Month);
 
-    // get ispOwner data api
-    Object.keys(ispOwnerData)?.length === 0 &&
-      getIspOwnerData(dispatch, ispOwnerId, setIsloading);
-
-    // get all manager api
-    Object.keys(manager)?.length === 0 && getManger(dispatch, ispOwnerId);
-
-    // get all collector api
-    allCollector?.length === 0 &&
-      getCollector(dispatch, ispOwnerId, setIsloading);
-
-    // get all reseller api
-    reseller?.reseller.length === 0 &&
-      fetchReseller(dispatch, ispOwnerId, setIsloading);
-
-    // get area api
-    areas.length === 0 && getArea(dispatch, ispOwnerId, setPackageLoading);
-
-    // get sub area api
-    subAreas.length === 0 && getSubAreasApi(dispatch, ispOwnerId);
-
-    //get all customer package api
-    allPackage.length === 0 &&
-      getAllPackages(dispatch, ispOwnerId, setPackageLoading);
-
-    // get hotspot package api call
-    hotsPackage.length === 0 &&
-      getHotspotPackage(dispatch, ispOwnerId, setPackageLoading);
+    // get all user api
+    staffs?.length === 0 && userStaffs(dispatch);
 
     // get netFee bulletin api call
     Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
   }, []);
-
-  // collectors and managers for graph filter
-  useEffect(() => {
-    let collectors = [];
-
-    allCollector.map((item) =>
-      collectors.push({ name: item.name, user: item.user, id: item.id })
-    );
-
-    if (collectors.length === allCollector.length) {
-      manager?.map((man) => {
-        const { user, name, id } = man;
-        collectors.unshift({ name: name + " Manager", user, id }); //pushing managers into array of all collectors
-      });
-    }
-
-    setCollectors(collectors);
-  }, [allCollector, manager]);
 
   //graph data calculation
   useEffect(() => {
@@ -262,15 +196,6 @@ const IspOwnerDashboard = () => {
         setManagerCardLoading,
         ispOwnerId,
         filterData
-      );
-
-      // get all manager api
-      getIspOwnerManager(
-        dispatch,
-        ispOwnerId,
-        filterData?.year,
-        filterData?.month,
-        setManagerCardLoading
       );
     }
 
@@ -647,7 +572,7 @@ const IspOwnerDashboard = () => {
                       onChange={(e) => setCurrentCollector(e.target.value)}
                     >
                       <option value="">{t("all collector")}</option>
-                      {collectors?.map((c, key) => (
+                      {staffs?.map((c, key) => (
                         <option key={key} value={c.user}>
                           {c.name}
                         </option>

@@ -53,9 +53,6 @@ const AcountPayment = () => {
   useEffect(() => {
     // get ispOwner netFee support api
     getIspOwnerNetFeeSupport(dispatch, setIsloading);
-
-    // get ispOwner data api
-    getIspOwnerData(dispatch, ispOwnerId, setIsloading);
   }, []);
 
   useEffect(() => {

@@ -12,23 +12,19 @@ import ReactDatePicker from "react-datepicker";
 
 // custom hook import
 import useISPowner from "../../hooks/useISPOwner";
-import useAreaPackage from "../../hooks/useAreaPackage";
 
 // internal imports
 import "./home.css";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import { monthsName } from "./homeData";
 import {
-  getAllPackages,
   getCollectorDashboardCardData,
   getCollectorDashboardCharts,
-  getIspOwnerData,
 } from "../../features/apiCalls";
 import FormatNumber from "../../components/common/NumberFormat";
 import AnimatedProgressProvider from "../../components/common/AnimationProgressProvider";
 import Loader from "../../components/common/Loader";
 import Footer from "../../components/admin/footer/Footer";
-import { getHotspotPackageSuccess } from "../../features/packageSlice";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
 import DashboardCard from "./dashboardCard/DashboardCard";
@@ -39,10 +35,7 @@ const CollectorDashboard = () => {
   const dispatch = useDispatch();
 
   // get user & current user data form useISPOwner
-  const { ispOwnerData, ispOwnerId, bpSettings, permissions } = useISPowner();
-
-  // get users area pacages form useAreaPackage hook
-  const { allPackage, hotsPackage } = useAreaPackage();
+  const { ispOwnerData, bpSettings, permissions } = useISPowner();
 
   // get collectorId
   const collectorId = useSelector(
@@ -81,9 +74,6 @@ const CollectorDashboard = () => {
 
   //api calls
   useEffect(() => {
-    Object.keys(ispOwnerData)?.length === 0 &&
-      getIspOwnerData(dispatch, ispOwnerId, setIsLoading);
-
     //get graph chart data
     getCollectorDashboardCharts(setLoading, dispatch, collectorId, Year, Month);
 
@@ -93,14 +83,6 @@ const CollectorDashboard = () => {
       setLoadingDashboardData,
       collectorId
     );
-
-    //get all customer package
-    allPackage.length === 0 &&
-      getAllPackages(dispatch, ispOwnerId, setIsLoading);
-
-    // get hotspot package api call
-    hotsPackage.length === 0 &&
-      getHotspotPackageSuccess(dispatch, ispOwnerId, setIsLoading);
 
     // get netFee bulletin api call
     Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);

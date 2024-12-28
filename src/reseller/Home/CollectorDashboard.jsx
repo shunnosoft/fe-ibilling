@@ -17,7 +17,6 @@ import { FourGround, FontColor } from "../../assets/js/theme";
 import { monthsName } from "./homeData";
 import {
   getChartsResellerCollector,
-  getIspOwnerData,
   getResellerCollectorDashboardOverViewData,
 } from "../../features/apiCalls";
 import FormatNumber from "../../components/common/NumberFormat";
@@ -35,7 +34,7 @@ const CollectorDashboard = () => {
   const date = new Date();
 
   // get user & current user data form useISPOwner hooks
-  const { role, ispOwnerData, ispOwnerId, userData } = useISPowner();
+  const { ispOwnerData, userData } = useISPowner();
 
   // get dashboard over view data form redux store
   const dashboardOverView = useSelector(
@@ -90,10 +89,6 @@ const CollectorDashboard = () => {
       filterData,
       setChartLoading
     );
-
-    // get ispOwner data api
-    Object.keys(ispOwnerData)?.length === 0 &&
-      getIspOwnerData(dispatch, ispOwnerId, setIsLoading);
 
     // get netFee bulletin permission api
     Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);

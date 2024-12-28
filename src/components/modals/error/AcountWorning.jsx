@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Card } from "react-bootstrap";
 
-// custome hooks import
+// customer hooks import
 import useISPowner from "../../../hooks/useISPOwner";
 
 // internal import
@@ -21,7 +21,7 @@ const AcountWorning = () => {
   const navigate = useNavigate();
 
   // get user & current user data form useISPOwner hooks
-  const { ispOwnerId, ispOwnerData } = useISPowner();
+  const { ispOwnerData } = useISPowner();
 
   //get payment invoice to check expiration
   const invoice = useSelector((state) => state.invoice.invoice);
@@ -46,9 +46,6 @@ const AcountWorning = () => {
   useEffect(() => {
     // get ispOwner netFee support api
     getIspOwnerNetFeeSupport(dispatch, setIsLoading);
-
-    // get ispOwner data api
-    getIspOwnerData(dispatch, ispOwnerId, setIsLoading);
   }, []);
 
   return (

@@ -31,12 +31,14 @@ import CustomerMessage from "./CustomerMessage";
 import CustomerBillReport from "./CustomerBillReport";
 import {
   editCustomer,
+  getArea,
   getConnectionFee,
   getCustomer,
 } from "../../../features/apiCalls";
 import FormatNumber from "../../../components/common/NumberFormat";
 import PasswordReset from "../../../components/modals/passwordReset/PasswordReset";
 import { getOwnerUsers } from "../../../features/getIspOwnerUsersApi";
+import { getSubAreasApi } from "../../../features/actions/customerApiCall";
 
 const CustomerDetails = ({ show, setShow, customerId }) => {
   const { t } = useTranslation();
@@ -90,6 +92,12 @@ const CustomerDetails = ({ show, setShow, customerId }) => {
 
     //get customer paid connection fee
     getConnectionFee(dispatch, customerId);
+
+    // get area api
+    areas.length === 0 && getArea(dispatch, ispOwnerId, setLoading);
+
+    // get sub area api
+    subAreas.length === 0 && getSubAreasApi(dispatch, ispOwnerId);
   }, [customerId]);
 
   // modal close handler
@@ -130,8 +138,8 @@ const CustomerDetails = ({ show, setShow, customerId }) => {
 
   // customer creator find
   const getCustomerCreatedBy = (userId) => {
-    const findCreator = ownerUsers.find((id) => id[userId]);
-    return findCreator[userId];
+    const findCreator = ownerUsers?.find((id) => id?.[userId]);
+    return findCreator?.[userId];
   };
 
   // customer area subarea find

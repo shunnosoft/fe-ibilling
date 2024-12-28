@@ -1399,9 +1399,12 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
 
       {status === "manager" && (
         <AllManager
+          status={status}
           modalShow={show}
           setModalShow={setShow}
-          isLoading={isLoading}
+          ispOwnerId={ispOwnerId}
+          year={filterDate.getFullYear()}
+          month={filterDate.getMonth() + 1}
         />
       )}
 

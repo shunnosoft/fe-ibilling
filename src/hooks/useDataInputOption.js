@@ -364,7 +364,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       validation:
         !bpSettings?.genCustomerId &&
         Yup.string().required(t("selectCustomer")),
-      isVisible: !bpSettings.genCustomerId && inputPermission.customerId,
+      isVisible: !bpSettings?.genCustomerId && inputPermission.customerId,
     },
     {
       name: "connectionFee",
@@ -728,9 +728,9 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       name: "customerId",
       type: "text",
       id: "customerId",
-      isVisible: !bpSettings.genCustomerId && inputPermission.customerId,
+      isVisible: !bpSettings?.genCustomerId && inputPermission.customerId,
       disabled: false,
-      validation: !bpSettings.genCustomerId,
+      validation: !bpSettings?.genCustomerId,
       label: t("customerId"),
       placeholder: "e.g. ID: ABC-123-XYZ",
       onChange: (e) => {
@@ -745,7 +745,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       as: "select",
       type: "select",
       id: "mikrotik",
-      isVisible: bpSettings.hasMikrotik && inputPermission.mikrotik,
+      isVisible: bpSettings?.hasMikrotik && inputPermission.mikrotik,
       disabled: status === "edit" ? true : false,
       validation: true,
       label: t("selectMikrotik"),
@@ -767,7 +767,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       type: "select",
       id: "mikrotikPackage",
       isVisible: page === "pppoe" && inputPermission.mikrotikPackage,
-      disabled: bpSettings.hasMikrotik
+      disabled: bpSettings?.hasMikrotik
         ? status === "post"
           ? !formData.mikrotikId
           : data?.status === "expired"
@@ -781,7 +781,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       valueAccessor: "id",
       options:
         page === "pppoe"
-          ? bpSettings.hasMikrotik
+          ? bpSettings?.hasMikrotik
             ? ppPackage?.filter(
                 (pack) =>
                   pack.packageType === "pppoe" &&
@@ -802,7 +802,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
         page === "static" &&
         ["firewall-queue", "core-queue"].includes(userType) &&
         inputPermission.mikrotikPackage,
-      disabled: bpSettings.hasMikrotik
+      disabled: bpSettings?.hasMikrotik
         ? status === "post"
           ? !formData.mikrotikId
           : resellerUser && !permission?.customerMikrotikPackageEdit
@@ -814,7 +814,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       valueAccessor: "id",
       options:
         page === "static"
-          ? bpSettings.hasMikrotik
+          ? bpSettings?.hasMikrotik
             ? ppPackage?.filter(
                 (pack) =>
                   pack.packageType === "queue" &&
@@ -834,7 +834,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       isVisible:
         page === "static" &&
         userType === "simple-queue" &&
-        bpSettings.hasMikrotik &&
+        bpSettings?.hasMikrotik &&
         inputPermission.mikrotikPackage,
       disabled: adminUser ? (status ? !formData.mikrotikId : false) : true,
       validation: true,
@@ -845,7 +845,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       value: formData.uploadPackgeId || "",
       options:
         page === "static" &&
-        bpSettings.hasMikrotik &&
+        bpSettings?.hasMikrotik &&
         ppPackage?.filter(
           (pack) =>
             pack.packageType === "queue" &&
@@ -864,7 +864,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
         page === "static" &&
         userType === "simple-queue" &&
         inputPermission.mikrotikPackage,
-      disabled: bpSettings.hasMikrotik
+      disabled: bpSettings?.hasMikrotik
         ? adminUser
           ? status
             ? !formData.mikrotikId
@@ -878,7 +878,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       valueAccessor: "id",
       options:
         page === "static"
-          ? bpSettings.hasMikrotik
+          ? bpSettings?.hasMikrotik
             ? ppPackage?.filter(
                 (pack) =>
                   pack.packageType === "queue" &&
@@ -1034,7 +1034,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       as: "select",
       type: "select",
       id: "poleBox",
-      isVisible: bpSettings.poleBox && inputPermission.poleBox,
+      isVisible: bpSettings?.poleBox && inputPermission.poleBox,
       disabled: status ? !formData.packageId : false,
       validation: false,
       label: t("selectPoleBox"),

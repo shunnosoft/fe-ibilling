@@ -444,12 +444,12 @@ const CustomerEdit = ({ customerId, setProfileOption }) => {
           {() => (
             <Form>
               <div>
-                {!bpSettings.genCustomerId && (
+                {!bpSettings?.genCustomerId && (
                   <TextField
                     type="text"
                     label={t("customerId")}
                     name="customerId"
-                    validation={!bpSettings.genCustomerId}
+                    validation={!bpSettings?.genCustomerId}
                     disabled={
                       role === "ispOwner" ? false : !permissions.customerEdit
                     }
@@ -773,7 +773,7 @@ const CustomerEdit = ({ customerId, setProfileOption }) => {
                   />
                 </div>
 
-                {bpSettings.promiseDate &&
+                {bpSettings?.promiseDate &&
                   (role === "manager" || role === "ispOwner") && (
                     <div className="displayGridManual6_4">
                       <label className="form-control-label manualLable">

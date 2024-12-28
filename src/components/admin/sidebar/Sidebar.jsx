@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import "./sidebar.css";
-
 import { TitleColor, FontColor, FourGround } from "../../../assets/js/theme";
 import {
   List,
@@ -46,33 +45,34 @@ import {
   Diagram3Fill,
   ClockHistory,
 } from "react-bootstrap-icons";
-import { NavLink, Router } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import activeClass from "../../../assets/css/active.module.css";
-// import { billData } from "./billData";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Accordion } from "react-bootstrap";
 // the hook
 import { useTranslation } from "react-i18next";
-import SupportCall from "../../../pages/netFeeSupport/supportOpration/SupportCall";
+import { getIspOwnerData } from "../../../features/apiCalls";
+
+// custom hooks
+import useISPowner from "../../../hooks/useISPOwner";
 
 export default function Sidebar() {
-  const { t, i18n } = useTranslation();
-  const userRole = useSelector((state) => state.persistedReducer.auth?.role);
-  const user = useSelector((state) => state.persistedReducer.auth?.currentUser);
-  const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
-  );
-  const getIspOwnerData = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerData
-  );
+  const { t } = useTranslation();
+  const dispatch = useDispatch();
+
+  // get user & current user data form useISPOwner hooks
+  const {
+    role,
+    ispOwnerData,
+    ispOwnerId,
+    bpSettings,
+    permissions,
+    currentUser,
+  } = useISPowner();
 
   // get reseller
   const reseller = useSelector((state) => state.reseller);
 
-  // get user permission
-  const permission = useSelector(
-    (state) => state.persistedReducer.auth.userData.permissions
-  );
   // const hasReseller= true
   // addSidebar
   const addSidebar = () => {
@@ -84,10 +84,16 @@ export default function Sidebar() {
     document.querySelector(".sidebar").classList.remove("toggleSidebar");
   };
 
-  const [isOpen, setIsOpen] = useState(false);
   const [activeKey, setActiveKey] = useState();
   const [childActiveKey, setChildActiveKey] = useState();
+  const [isLoading, setIsLoading] = useState(false);
   const location = window.location.pathname;
+
+  useEffect(() => {
+    // get ispOwner data api
+    Object.keys(ispOwnerData)?.length === 0 &&
+      getIspOwnerData(dispatch, ispOwnerId, setIsLoading);
+  }, []);
 
   useEffect(() => {
     switch (location) {
@@ -136,7 +142,7 @@ export default function Sidebar() {
           <List onClick={addSidebar} className="ListIcon" />
         </div>
         <div className="sidebar">
-          {!["admin", "superadmin"].includes(userRole) && (
+          {!["admin", "superadmin"].includes(role) && (
             <FourGround>
               <div className="name companyDiv text-center">
                 {/* <div className="company_logo">
@@ -144,25 +150,23 @@ export default function Sidebar() {
               </div> */}
                 <NavLink to="/" className="adminDashboardTitle">
                   {/* <ArrowLeft className="GotoHomeFromDashboard" /> */}
-                  <span className="companyName">
-                    {getIspOwnerData?.company}
-                  </span>
+                  <span className="companyName">{ispOwnerData?.company}</span>
                 </NavLink>
                 <br />
-                {(userRole === "ispOwner" || userRole === "manager") && (
+                {(role === "ispOwner" || role === "manager") && (
                   <>
                     <span className="role-section">
-                      {t("ID")}: {getIspOwnerData?.netFeeId}
+                      {t("ID")}: {ispOwnerData?.netFeeId}
                     </span>
                     <br />
                   </>
                 )}
 
                 <span className="role-section">
-                  {userRole === "manager" && t("roleManager")}
-                  {userRole === "collector" && t("roleCollector")}
-                  {userRole === "ispOwner" && t("roleAdmin")}
-                  {userRole === "reseller" && t("roleReseller")}
+                  {role === "manager" && t("roleManager")}
+                  {role === "collector" && t("roleCollector")}
+                  {role === "ispOwner" && t("roleAdmin")}
+                  {role === "reseller" && t("roleReseller")}
                 </span>
                 <span className="HideSidebar" onClick={removeSidebar}></span>
               </div>
@@ -170,8 +174,8 @@ export default function Sidebar() {
               <ul className="sidebarUl">
                 <NavLink
                   to={
-                    userRole === "reseller" ||
-                    (userRole === "collector" && user.collector.reseller)
+                    role === "reseller" ||
+                    (role === "collector" && currentUser.collector.reseller)
                       ? "/reseller/home"
                       : "/home"
                   }
@@ -184,7 +188,7 @@ export default function Sidebar() {
                       className="sidebarItems"
                       id={
                         window.location.pathname ===
-                        (userRole === "reseller" ? "/reseller/home" : "/home")
+                        (role === "reseller" ? "/reseller/home" : "/home")
                           ? "active"
                           : ""
                       }
@@ -195,9 +199,9 @@ export default function Sidebar() {
                   </FontColor>
                 </NavLink>
 
-                {userRole === "manager" ||
-                userRole === "collector" ||
-                userRole === "reseller" ? (
+                {role === "manager" ||
+                role === "collector" ||
+                role === "reseller" ? (
                   ""
                 ) : (
                   <NavLink
@@ -220,8 +224,8 @@ export default function Sidebar() {
                   </NavLink>
                 )}
 
-                {!getIspOwnerData?.bpSettings?.hasMikrotik &&
-                (userRole === "ispOwner" || userRole === "manager") ? (
+                {!ispOwnerData?.bpSettings?.hasMikrotik &&
+                (role === "ispOwner" || role === "manager") ? (
                   <NavLink
                     key={55}
                     to={"/package"}
@@ -246,8 +250,8 @@ export default function Sidebar() {
                 ) : (
                   ""
                 )}
-                {userRole === "ispOwner" &&
-                getIspOwnerData?.bpSettings?.hasMikrotik ? (
+                {role === "ispOwner" &&
+                ispOwnerData?.bpSettings?.hasMikrotik ? (
                   <NavLink
                     key={5}
                     to={"/mikrotik"}
@@ -292,9 +296,9 @@ export default function Sidebar() {
                           <NavLink
                             key={6}
                             to={
-                              userRole === "reseller" ||
-                              (userRole === "collector" &&
-                                user.collector.reseller)
+                              role === "reseller" ||
+                              (role === "collector" &&
+                                currentUser.collector.reseller)
                                 ? "/reseller/customer"
                                 : "/customer"
                             }
@@ -307,7 +311,7 @@ export default function Sidebar() {
                                 className="sidebarItems"
                                 id={
                                   window.location.pathname ===
-                                  (userRole === "reseller"
+                                  (role === "reseller"
                                     ? "/reseller/customer"
                                     : "/customer")
                                     ? "active"
@@ -324,13 +328,13 @@ export default function Sidebar() {
                         )}
                         {hasCustomerType.includes("pppoe") && (
                           <>
-                            {getIspOwnerData?.bpSettings?.hasMikrotik && (
+                            {ispOwnerData?.bpSettings?.hasMikrotik && (
                               <NavLink
                                 key={66}
                                 to={
-                                  userRole === "reseller" ||
-                                  (userRole === "collector" &&
-                                    user.collector.reseller)
+                                  role === "reseller" ||
+                                  (role === "collector" &&
+                                    currentUser.collector.reseller)
                                     ? "/reseller/activeCustomer"
                                     : "/activeCustomer"
                                 }
@@ -343,7 +347,7 @@ export default function Sidebar() {
                                     className="sidebarItems"
                                     id={
                                       window.location.pathname ===
-                                      (userRole === "reseller"
+                                      (role === "reseller"
                                         ? "/reseller/activeCustomer"
                                         : "/activeCustomer")
                                         ? "active"
@@ -367,9 +371,9 @@ export default function Sidebar() {
                             <NavLink
                               key={60}
                               to={
-                                userRole === "reseller" ||
-                                (userRole === "collector" &&
-                                  user.collector.reseller)
+                                role === "reseller" ||
+                                (role === "collector" &&
+                                  currentUser.collector.reseller)
                                   ? "/reseller/staticCustomer"
                                   : "/staticCustomer"
                               }
@@ -382,7 +386,7 @@ export default function Sidebar() {
                                   className="sidebarItems"
                                   id={
                                     window.location.pathname ===
-                                    (userRole === "reseller"
+                                    (role === "reseller"
                                       ? "/reseller/staticCustomer"
                                       : "/staticCustomer")
                                       ? "active"
@@ -416,13 +420,13 @@ export default function Sidebar() {
                           </FontColor> */}
                             </NavLink>
 
-                            {getIspOwnerData?.bpSettings?.hasMikrotik && (
+                            {ispOwnerData?.bpSettings?.hasMikrotik && (
                               <NavLink
                                 key={61}
                                 to={
-                                  userRole === "reseller" ||
-                                  (userRole === "collector" &&
-                                    user.collector.reseller)
+                                  role === "reseller" ||
+                                  (role === "collector" &&
+                                    currentUser.collector.reseller)
                                     ? "/reseller/staticActiveCustomer"
                                     : "/staticActiveCustomer"
                                 }
@@ -435,9 +439,9 @@ export default function Sidebar() {
                                     className="sidebarItems"
                                     id={
                                       window.location.pathname ===
-                                      (userRole === "reseller" ||
-                                      (userRole === "collector" &&
-                                        user.collector.reseller)
+                                      (role === "reseller" ||
+                                      (role === "collector" &&
+                                        currentUser.collector.reseller)
                                         ? "/reseller/staticActiveCustomer"
                                         : "/staticActiveCustomer")
                                         ? "active"
@@ -456,10 +460,10 @@ export default function Sidebar() {
                             )}
                           </>
                         )}
-                        {(userRole === "ispOwner" ||
-                          userRole === "manager" ||
-                          (userRole === "collector" &&
-                            !user.collector?.reseller)) &&
+                        {(role === "ispOwner" ||
+                          role === "manager" ||
+                          (role === "collector" &&
+                            !currentUser.collector?.reseller)) &&
                           bpSettings?.hasMikrotik &&
                           hasCustomerType.includes("hotspot") && (
                             <NavLink
@@ -553,9 +557,9 @@ export default function Sidebar() {
                         <NavLink
                           key={8}
                           to={
-                            userRole === "reseller" ||
-                            (userRole === "collector" &&
-                              user.collector.reseller)
+                            role === "reseller" ||
+                            (role === "collector" &&
+                              currentUser.collector.reseller)
                               ? "/reseller/report"
                               : "/report"
                           }
@@ -568,7 +572,7 @@ export default function Sidebar() {
                               className="sidebarItems"
                               id={
                                 window.location.pathname ===
-                                (userRole === "reseller"
+                                (role === "reseller"
                                   ? "/reseller/report"
                                   : "/report")
                                   ? "active"
@@ -585,12 +589,12 @@ export default function Sidebar() {
                           </FontColor>
                         </NavLink>
 
-                        {userRole === "ispOwner" &&
+                        {role === "ispOwner" &&
                         reseller.reseller?.length > 0 ? (
                           <NavLink
                             key={125}
                             to={
-                              userRole === "ispOwner" &&
+                              role === "ispOwner" &&
                               "/reseller/collection/report"
                             }
                             className={(navInfo) =>
@@ -618,8 +622,7 @@ export default function Sidebar() {
                           ""
                         )}
 
-                        {(userRole === "ispOwner" ||
-                          userRole === "manager") && (
+                        {(role === "ispOwner" || role === "manager") && (
                           <NavLink
                             key={138}
                             to={"/webhook/message"}
@@ -651,9 +654,9 @@ export default function Sidebar() {
                         <NavLink
                           key={7}
                           to={
-                            userRole === "reseller" ||
-                            (userRole === "collector" &&
-                              user.collector.reseller)
+                            role === "reseller" ||
+                            (role === "collector" &&
+                              currentUser.collector.reseller)
                               ? "/reseller/diposit"
                               : "/deposit"
                           }
@@ -666,7 +669,7 @@ export default function Sidebar() {
                               className="sidebarItems"
                               id={
                                 window.location.pathname ===
-                                (userRole === "reseller"
+                                (role === "reseller"
                                   ? "/reseller/diposit"
                                   : "/deposit")
                                   ? "active"
@@ -681,7 +684,7 @@ export default function Sidebar() {
                           </FontColor>
                         </NavLink>
 
-                        {userRole === "reseller" && (
+                        {role === "reseller" && (
                           <NavLink
                             key={127}
                             to="/reseller/summary"
@@ -708,10 +711,10 @@ export default function Sidebar() {
                           </NavLink>
                         )}
 
-                        {((userRole === "ispOwner" &&
+                        {((role === "ispOwner" &&
                           bpSettings?.customerInvoice) ||
-                          (userRole === "manager" &&
-                            permission?.customerInvoice)) && (
+                          (role === "manager" &&
+                            permissions?.customerInvoice)) && (
                           <NavLink
                             key={125}
                             to={"/customer/invoice"}
@@ -738,11 +741,11 @@ export default function Sidebar() {
                           </NavLink>
                         )}
 
-                        {userRole === "reseller" && (
+                        {role === "reseller" && (
                           <NavLink
                             key={123}
                             to={
-                              userRole === "reseller" &&
+                              role === "reseller" &&
                               "/reseller/recharge-history"
                             }
                             className={(navInfo) =>
@@ -770,7 +773,7 @@ export default function Sidebar() {
                       </Accordion.Body>
                     </Accordion.Item>
                     {/* স্টাফ */}
-                    {userRole !== "collector" && (
+                    {role !== "collector" && (
                       <Accordion.Item eventKey="2">
                         <Accordion.Header
                           onClick={() => handleActiveAccordian("2")}
@@ -781,7 +784,7 @@ export default function Sidebar() {
                           <span className="sidebarLinksName">{t("staff")}</span>
                         </Accordion.Header>
                         <Accordion.Body>
-                          {userRole === "ispOwner" ? (
+                          {role === "ispOwner" ? (
                             <NavLink
                               key={3}
                               to={"/manager"}
@@ -810,13 +813,13 @@ export default function Sidebar() {
                           ) : (
                             ""
                           )}
-                          {userRole === "manager" ||
-                          userRole === "ispOwner" ||
-                          userRole === "reseller" ? (
+                          {role === "manager" ||
+                          role === "ispOwner" ||
+                          role === "reseller" ? (
                             <NavLink
                               key={4}
                               to={
-                                userRole === "reseller"
+                                role === "reseller"
                                   ? "/reseller/collector"
                                   : "/collector"
                               }
@@ -829,7 +832,7 @@ export default function Sidebar() {
                                   className="sidebarItems"
                                   id={
                                     window.location.pathname ===
-                                    (userRole === "reseller"
+                                    (role === "reseller"
                                       ? "/reseller/collector"
                                       : "/collector")
                                       ? "active"
@@ -849,9 +852,9 @@ export default function Sidebar() {
                             ""
                           )}
 
-                          {(userRole === "ispOwner" ||
-                            (userRole === "manager" &&
-                              permission?.staffSalary)) && (
+                          {(role === "ispOwner" ||
+                            (role === "manager" &&
+                              permissions?.staffSalary)) && (
                             <NavLink
                               key={330}
                               to={"/staff"}
@@ -882,7 +885,7 @@ export default function Sidebar() {
                       </Accordion.Item>
                     )}
                     {/* রিসেলার */}
-                    {userRole === "ispOwner" && bpSettings?.hasReseller && (
+                    {role === "ispOwner" && bpSettings?.hasReseller && (
                       <Accordion.Item eventKey="3">
                         <Accordion.Header
                           onClick={() => handleActiveAccordian("3")}
@@ -920,7 +923,7 @@ export default function Sidebar() {
                           <NavLink
                             key={70}
                             to={
-                              userRole === "reseller"
+                              role === "reseller"
                                 ? "/reseller/recharge"
                                 : "/recharge"
                             }
@@ -933,7 +936,7 @@ export default function Sidebar() {
                                 className="sidebarItems"
                                 id={
                                   window.location.pathname ===
-                                  (userRole === "reseller"
+                                  (role === "reseller"
                                     ? "/reseller/recharge"
                                     : "/recharge")
                                     ? "active"
@@ -1004,7 +1007,7 @@ export default function Sidebar() {
                     )}
 
                     {/* মেসেজ */}
-                    {userRole !== "collector" && (
+                    {role !== "collector" && (
                       <Accordion.Item eventKey="4">
                         <Accordion.Header
                           onClick={() => handleActiveAccordian("4")}
@@ -1015,9 +1018,9 @@ export default function Sidebar() {
                           </span>
                         </Accordion.Header>
                         <Accordion.Body>
-                          {userRole === "ispOwner" ||
-                          userRole === "manager" ||
-                          userRole === "reseller" ? (
+                          {role === "ispOwner" ||
+                          role === "manager" ||
+                          role === "reseller" ? (
                             <NavLink
                               key={99}
                               to={"/message"}
@@ -1048,12 +1051,12 @@ export default function Sidebar() {
                           )}
 
                           {
-                            /*(userRole === "ispOwner" && bpSettings?.hasReseller) ||*/
-                            userRole === "reseller" ? (
+                            /*(role === "ispOwner" && bpSettings?.hasReseller) ||*/
+                            role === "reseller" ? (
                               <NavLink
                                 key={71}
                                 to={
-                                  userRole === "reseller"
+                                  role === "reseller"
                                     ? "/reseller/sms-receharge"
                                     : "/recharge"
                                 }
@@ -1066,7 +1069,7 @@ export default function Sidebar() {
                                     className="sidebarItems"
                                     id={
                                       window.location.pathname ===
-                                      (userRole === "reseller"
+                                      (role === "reseller"
                                         ? "/reseller/sms-receharge"
                                         : "/recharge")
                                         ? "active"
@@ -1086,8 +1089,7 @@ export default function Sidebar() {
                               ""
                             )
                           }
-                          {userRole === "ispOwner" ||
-                          userRole === "reseller" ? (
+                          {role === "ispOwner" || role === "reseller" ? (
                             <NavLink
                               key={337}
                               to={"/settings"}
@@ -1114,9 +1116,9 @@ export default function Sidebar() {
                           ) : (
                             ""
                           )}
-                          {(userRole === "ispOwner" ||
-                            (userRole === "manager" &&
-                              permission?.readMessageLog)) && (
+                          {(role === "ispOwner" ||
+                            (role === "manager" &&
+                              permissions?.readMessageLog)) && (
                             <NavLink
                               key={338}
                               to={"/message/log"}
@@ -1143,7 +1145,7 @@ export default function Sidebar() {
                               </FontColor>
                             </NavLink>
                           )}
-                          {userRole === "reseller" && (
+                          {role === "reseller" && (
                             <NavLink
                               key={339}
                               to={"/reseller/message/log"}
@@ -1176,9 +1178,9 @@ export default function Sidebar() {
                     )}
 
                     {/* network diagram */}
-                    {((bpSettings?.networkDiagram && userRole === "ispOwner") ||
-                      userRole === "manager" ||
-                      userRole === "reseller") && (
+                    {((bpSettings?.networkDiagram && role === "ispOwner") ||
+                      role === "manager" ||
+                      role === "reseller") && (
                       <>
                         <Accordion.Item eventKey="14">
                           <Accordion.Header
@@ -1239,9 +1241,9 @@ export default function Sidebar() {
                     )}
 
                     {/* একাউন্টস */}
-                    {(userRole === "ispOwner" ||
-                      userRole === "manager" ||
-                      (userRole === "collector" && permission.expenditure)) && (
+                    {(role === "ispOwner" ||
+                      role === "manager" ||
+                      (role === "collector" && permissions.expenditure)) && (
                       <>
                         <Accordion.Item eventKey="5">
                           <Accordion.Header
@@ -1253,10 +1255,10 @@ export default function Sidebar() {
                             </span>
                           </Accordion.Header>
                           <Accordion.Body>
-                            {(userRole === "ispOwner" ||
-                              userRole === "manager" ||
-                              (userRole === "collector" &&
-                                permission.expenditure)) && (
+                            {(role === "ispOwner" ||
+                              role === "manager" ||
+                              (role === "collector" &&
+                                permissions.expenditure)) && (
                               <NavLink
                                 key={309}
                                 to={"/expenditure"}
@@ -1284,7 +1286,7 @@ export default function Sidebar() {
                                 </FontColor>
                               </NavLink>
                             )}
-                            {userRole !== "collector" && (
+                            {role !== "collector" && (
                               <NavLink
                                 key={300}
                                 to={"/invoice"}
@@ -1314,7 +1316,7 @@ export default function Sidebar() {
                           </Accordion.Body>
                         </Accordion.Item>
 
-                        {bpSettings?.inventory && userRole !== "collector" && (
+                        {bpSettings?.inventory && role !== "collector" && (
                           <a
                             href={"https://old.hisabnikashbd.com"}
                             target="_blank"
@@ -1341,11 +1343,11 @@ export default function Sidebar() {
                         )}
                       </>
                     )}
-                    {/* {(userRole === "ispOwner" ||
-                      userRole === "collector" ||
-                      userRole === "manager" ||
-                      userRole === "reseller") &&
-                      !user.collector?.reseller && ( */}
+                    {/* {(role === "ispOwner" ||
+                      role === "collector" ||
+                      role === "manager" ||
+                      role === "reseller") &&
+                      !currentUser.collector?.reseller && ( */}
                     <>
                       <Accordion.Item eventKey="7">
                         <Accordion.Header
@@ -1360,9 +1362,9 @@ export default function Sidebar() {
                           <NavLink
                             key={11}
                             to={
-                              userRole === "reseller" ||
-                              (userRole === "collector" &&
-                                user.collector?.reseller)
+                              role === "reseller" ||
+                              (role === "collector" &&
+                                currentUser.collector?.reseller)
                                 ? "/reseller/support/ticket"
                                 : "/support/ticket"
                             }
@@ -1375,9 +1377,9 @@ export default function Sidebar() {
                                 className="sidebarItems"
                                 id={
                                   window.location.pathname ===
-                                  (userRole === "reseller" ||
-                                  (userRole === "collector" &&
-                                    user.collector?.reseller)
+                                  (role === "reseller" ||
+                                  (role === "collector" &&
+                                    currentUser.collector?.reseller)
                                     ? "/reseller/support/ticket"
                                     : "/support/ticket")
                                     ? "active"
@@ -1394,7 +1396,7 @@ export default function Sidebar() {
                             </FontColor>
                           </NavLink>
 
-                          {userRole === "ispOwner" && (
+                          {role === "ispOwner" && (
                             <NavLink
                               key={13}
                               to="/netFee/supportNumber"
@@ -1423,12 +1425,11 @@ export default function Sidebar() {
                             </NavLink>
                           )}
 
-                          {(userRole === "ispOwner" ||
-                            userRole === "reseller") && (
+                          {(role === "ispOwner" || role === "reseller") && (
                             <NavLink
                               key={14}
                               to={
-                                userRole === "reseller"
+                                role === "reseller"
                                   ? "/reseller/customer/package/changes"
                                   : "/netFee/packageChange"
                               }
@@ -1441,7 +1442,7 @@ export default function Sidebar() {
                                   className="sidebarItems"
                                   id={
                                     window.location.pathname ===
-                                    (userRole === "reseller"
+                                    (role === "reseller"
                                       ? "/reseller/customer/package/changes"
                                       : "/netFee/packageChange")
                                       ? "active"
@@ -1461,10 +1462,10 @@ export default function Sidebar() {
                         </Accordion.Body>
                       </Accordion.Item>
                     </>
-                    {(userRole === "ispOwner" ||
-                      userRole === "manager" ||
-                      userRole === "reseller" ||
-                      userRole === "collector") && (
+                    {(role === "ispOwner" ||
+                      role === "manager" ||
+                      role === "reseller" ||
+                      role === "collector") && (
                       <NavLink
                         key={14}
                         to="/activity"
@@ -1489,7 +1490,7 @@ export default function Sidebar() {
                     )}
 
                     {/* )} */}
-                    {(userRole === "ispOwner" || userRole === "manager") && (
+                    {(role === "ispOwner" || role === "manager") && (
                       <>
                         <Accordion.Item eventKey="8">
                           <Accordion.Header
@@ -1502,7 +1503,7 @@ export default function Sidebar() {
                           </Accordion.Header>
                           <Accordion.Body>
                             <a
-                              href={`https://support.shunnoit.com/support-ticket/create?&netfeeID=${getIspOwnerData?.netFeeId}`}
+                              href={`https://support.shunnoit.com/support-ticket/create?&netfeeID=${ispOwnerData?.netFeeId}`}
                               target="_blank"
                               className={(navInfo) =>
                                 navInfo.isActive ? activeClass.active : ""
@@ -1599,7 +1600,7 @@ export default function Sidebar() {
           )}
 
           {/* Admin/Superadmin Sidebar */}
-          {["admin", "superadmin"].includes(userRole) && (
+          {["admin", "superadmin"].includes(role) && (
             <FourGround>
               <div className="name companyDiv text-center">
                 {/* <div className="company_logo">
@@ -1610,7 +1611,7 @@ export default function Sidebar() {
                   <span className="companyName">{`Admin Panel`}</span>
                 </NavLink>
                 <br />
-                <span className="role-section">{userRole}</span>
+                <span className="role-section">{role}</span>
                 <span className="HideSidebar" onClick={removeSidebar}></span>
               </div>
 
@@ -1657,7 +1658,7 @@ export default function Sidebar() {
                   </FontColor>
                 </NavLink>
 
-                {["admin", "superadmin"].includes(userRole) && (
+                {["admin", "superadmin"].includes(role) && (
                   <NavLink
                     to={"/admin/invoices"}
                     className={(navInfo) =>
@@ -1701,7 +1702,7 @@ export default function Sidebar() {
                   </FontColor>
                 </NavLink>
 
-                {userRole === "superadmin" && (
+                {role === "superadmin" && (
                   <NavLink
                     to={"/admin/netFee/bulletin"}
                     className={(navInfo) =>

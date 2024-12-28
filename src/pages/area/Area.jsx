@@ -23,7 +23,6 @@ import ActionButton from "./ActionButton";
 import Table from "../../components/table/Table";
 
 import { useTranslation } from "react-i18next";
-import SubAreaModal from "./areaModals/SubAreaModal";
 import {
   getPoleBoxApi,
   getSubAreasApi,
@@ -71,9 +70,10 @@ export default function Area() {
     if (area.length === 0) getArea(dispatch, ispOwnerId, setIsLoading);
     if (storeSubArea.length === 0) getSubAreasApi(dispatch, ispOwnerId);
     if (cus.length === 0) getCustomer(dispatch, ispOwnerId, setCustomerLoading);
-    getPoleBoxApi(dispatch, ispOwnerId, setIsLoadingPole);
+    poleBox?.length === 0 &&
+      getPoleBoxApi(dispatch, ispOwnerId, setIsLoadingPole);
     fetchMikrotik(dispatch, ispOwnerId, setMikrotikLoading);
-  }, [dispatch, ispOwnerId]);
+  }, []);
 
   const deleteSingleArea = async (id, ispOwner) => {
     let singleArea = area.find((a) => a.id === id);

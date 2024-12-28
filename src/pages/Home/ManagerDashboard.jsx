@@ -13,18 +13,14 @@ import { Accordion } from "react-bootstrap";
 
 // custom hooks import
 import useISPowner from "../../hooks/useISPOwner";
-import useAreaPackage from "../../hooks/useAreaPackage";
 
 // internal imports
 import "./home.css";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import { monthsName } from "./homeData";
 import {
-  getAllPackages,
-  getArea,
   getDashboardBelowCollectorCardData,
   getIspOwnerCollector,
-  getIspOwnerData,
   getManagerDashboardCardData,
   getManagerDashboardCharts,
   getManagerDashboardOverViewCardData,
@@ -34,10 +30,8 @@ import FormatNumber from "../../components/common/NumberFormat";
 import AnimatedProgressProvider from "../../components/common/AnimationProgressProvider";
 import Loader from "../../components/common/Loader";
 import Footer from "../../components/admin/footer/Footer";
-import { getHotspotPackage } from "../../features/hotspotApi";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
-import { getSubAreasApi } from "../../features/actions/customerApiCall";
 import DashboardCard from "./dashboardCard/DashboardCard";
 import PaymentAlert from "./PaymentAlert";
 
@@ -55,9 +49,6 @@ const ManagerDashboard = () => {
   // get user & current user data form useISPOwner
   const { role, ispOwnerData, ispOwnerId, bpSettings, permissions } =
     useISPowner();
-
-  // get users area pacages form useAreaPackage hook
-  const { areas, subAreas, allPackage, hotsPackage } = useAreaPackage();
 
   // get userdata
   const userData = useSelector(
@@ -99,7 +90,6 @@ const ManagerDashboard = () => {
   const [belowCardLoading, setBelowCardLoading] = useState(false);
   const [managerCardLoading, setManagerCardLoading] = useState(false);
   const [collectorCardLoading, setCollectorCardLoading] = useState(false);
-  const [packageLoading, setPackageLoading] = useState(false);
   const [overViewLoading, setOverViewLoading] = useState(false);
 
   const [showGraphData, setShowGraphData] = useState("amount");
@@ -146,26 +136,8 @@ const ManagerDashboard = () => {
       currentDate
     );
 
-    // get ispOwner data api
-    Object.keys(ispOwnerData)?.length === 0 &&
-      getIspOwnerData(dispatch, ispOwnerId, setIsloading);
-
     // get user data
     dispatch(managerFetchSuccess(userData));
-
-    // get area api
-    areas.length === 0 && getArea(dispatch, ispOwnerId, setPackageLoading);
-
-    // get sub area api
-    subAreas.length === 0 && getSubAreasApi(dispatch, ispOwnerId);
-
-    //get all customer package
-    allPackage.length === 0 &&
-      getAllPackages(dispatch, ispOwnerId, setPackageLoading);
-
-    // get hotspot package api call
-    hotsPackage.length === 0 &&
-      getHotspotPackage(dispatch, ispOwnerId, setPackageLoading);
 
     // get netFee bulletin api call
     Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);

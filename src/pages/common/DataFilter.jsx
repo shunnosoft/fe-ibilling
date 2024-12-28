@@ -7,11 +7,7 @@ import DatePicker from "react-datepicker";
 import useISPowner from "../../hooks/useISPOwner";
 
 // internal import
-import {
-  fetchMikrotik,
-  getAllPackages,
-  getArea,
-} from "../../features/apiCalls";
+import { fetchMikrotik, getArea } from "../../features/apiCalls";
 import { getSubAreasApi } from "../../features/actions/customerApiCall";
 import { handleActiveFilter } from "./activeFilter";
 import { getOwnerUsers, userStaffs } from "../../features/getIspOwnerUsersApi";
@@ -121,11 +117,8 @@ const DataFilter = ({
       getMikrotik(dispatch, resellerId);
     }
 
-    // get mikrotik packages
-    if (adminUser) {
-      packages?.length === 0 &&
-        getAllPackages(dispatch, ispOwnerId, setLoading);
-    } else {
+    // get all mikrotik packages
+    if (!adminUser) {
       packages?.length === 0 && withMtkPackage(dispatch, resellerId);
     }
 

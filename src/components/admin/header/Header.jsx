@@ -18,11 +18,7 @@ import "./header.css";
 import { useDispatch } from "react-redux";
 import { userLogout } from "../../../features/actions/authAsyncAction";
 import Loader from "../../common/Loader";
-import {
-  getIspOwnerWitSMS,
-  getResellerBalance,
-  getTotalbal,
-} from "../../../features/apiCalls";
+import { getResellerBalance, getTotalbal } from "../../../features/apiCalls";
 import i18n from "../../../language/i18n/i18n";
 import FormatNumber from "../../common/NumberFormat";
 import { useTranslation } from "react-i18next";
@@ -44,7 +40,6 @@ export default function Header(props) {
 
   const [rechargeBalnace, setRechargeBalance] = useState(0);
   const [smsBalance, setSmsBalance] = useState(0);
-  const [ispOwner, setIspOwner] = useState("");
 
   // get ispOwner payment invoice to check expiration
   const invoice = useSelector((state) => state?.invoice?.invoice);
@@ -69,15 +64,6 @@ export default function Header(props) {
   const userRole = useSelector((state) => state.persistedReducer.auth.role);
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
   const balancee = useSelector((state) => state?.payment?.balance);
-  const previousBalancee = useSelector(
-    (state) => state?.payment?.previousBalance
-  );
-
-  // admin staff user role permission
-  const adminUser =
-    userRole === "ispOwner" ||
-    userRole === "manager" ||
-    (userRole === "collector" && !userData.reseller);
 
   // ispOwner invoice due date
   const invoiceDate = new Date(invoice?.dueDate).getTime() < date.getTime();
@@ -98,9 +84,6 @@ export default function Header(props) {
   };
 
   useEffect(() => {
-    if (userRole === "ispOwner") {
-      getIspOwnerWitSMS(ispOwnerId, setIspOwner, setLoading);
-    }
     if (userRole === "reseller") {
       getResellerBalance(
         userData.id,

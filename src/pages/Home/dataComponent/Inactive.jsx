@@ -18,7 +18,10 @@ import {
 import FormatNumber from "../../../components/common/NumberFormat";
 import { badge } from "../../../components/common/Utils";
 import Table from "../../../components/table/Table";
-import { getInactiveCustomer } from "../../../features/apiCalls";
+import {
+  getAllPackages,
+  getInactiveCustomer,
+} from "../../../features/apiCalls";
 import PPPoECustomerDetails from "../../Customer/customerCRUD/CustomerDetails";
 import HotspotCustomerDetails from "../../hotspot/customerOperation/CustomerDetails";
 import StaticCustomerDetails from "../../staticCustomer/customerCRUD/CustomerDetails";
@@ -28,6 +31,8 @@ import {
 } from "../../Customer/customerCRUD/customerBillDayPromiseDate";
 import useISPowner from "../../../hooks/useISPOwner";
 import PrintOptions from "../../../components/common/PrintOptions";
+import { getHotspotPackage } from "../../../features/hotspotApi";
+import useAreaPackage from "../../../hooks/useAreaPackage";
 
 const Inactive = ({
   modalShow,
@@ -36,7 +41,6 @@ const Inactive = ({
   ispOwnerId,
   month,
   year,
-  s,
 }) => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
@@ -44,11 +48,8 @@ const Inactive = ({
   // get user & current user data form useISPOwner
   const { role, permissions } = useISPowner();
 
-  // get all packages
-  const allPackages = useSelector((state) => state.package.allPackages);
-
-  // get hotspot package
-  const hotsPackage = useSelector((state) => state.hotspot?.package);
+  // get users area packages form useAreaPackage hook
+  const { allPackage, hotsPackage } = useAreaPackage();
 
   // get inactive customer
   const customer = useSelector(
@@ -57,6 +58,7 @@ const Inactive = ({
 
   // loading state
   const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   // view customer id
   const [customerId, setCustomerId] = useState("");
@@ -68,6 +70,13 @@ const Inactive = ({
   useEffect(() => {
     status === "inactive" &&
       getInactiveCustomer(dispatch, ispOwnerId, year, month, setIsLoading);
+
+    //get all customer package api
+    allPackage.length === 0 && getAllPackages(dispatch, ispOwnerId, setLoading);
+
+    // get hotspot package api call
+    hotsPackage.length === 0 &&
+      getHotspotPackage(dispatch, ispOwnerId, setLoading);
   }, [month, status, year]);
 
   // modal close handler
@@ -81,7 +90,7 @@ const Inactive = ({
       );
       return findPack;
     } else {
-      const findPack = allPackages.find((item) =>
+      const findPack = allPackage.find((item) =>
         item.id.includes(value?.mikrotikPackage)
       );
       return findPack;
@@ -290,7 +299,7 @@ const Inactive = ({
         ),
       },
     ],
-    [t, allPackages, hotsPackage]
+    [t, allPackage, hotsPackage]
   );
 
   return (

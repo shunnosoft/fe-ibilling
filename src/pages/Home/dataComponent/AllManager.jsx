@@ -1,5 +1,5 @@
-import React, { useMemo, useRef } from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import ReactToPrint from "react-to-print";
 import { PrinterFill } from "react-bootstrap-icons";
@@ -9,15 +9,33 @@ import ComponentCustomModal from "../../../components/common/customModal/Compone
 import Table from "../../../components/table/Table";
 import CollectionOverviewPdf from "../homePdf/CollectionOverviewPdf";
 import SummaryCalculation from "./SummaryCalculation";
+import { getIspOwnerManager } from "../../../features/apiCalls";
 
-const AllManager = ({ modalShow, setModalShow, isLoading }) => {
+const AllManager = ({
+  status,
+  modalShow,
+  setModalShow,
+  ispOwnerId,
+  year,
+  month,
+}) => {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
   const componentRef = useRef();
 
   // get manager data
   const managerData = useSelector(
     (state) => state.dashboardInformation?.ispOwnerManager
   );
+
+  // Loading state
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    status === "manager" &&
+      // get all manager api
+      getIspOwnerManager(dispatch, ispOwnerId, year, month, setIsLoading);
+  }, [status, year, month]);
 
   const column = useMemo(
     () => [

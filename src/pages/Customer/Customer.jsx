@@ -45,11 +45,11 @@ import {
   editCustomer,
   fetchMikrotik,
   fetchReseller,
+  getAllPackages,
   getArea,
   getCollector,
   getCustomer,
   getManger,
-  getPPPoEPackage,
   getPackagewithoutmikrotik,
 } from "../../features/apiCalls";
 import useDash from "../../assets/css/dash.module.css";
@@ -130,7 +130,7 @@ const PPPOECustomer = () => {
   const mikrotiks = useSelector((state) => state?.mikrotik?.mikrotik);
 
   // get all package list
-  let packages = useSelector((state) => state?.package?.pppoePackages);
+  let packages = useSelector((state) => state?.package?.allPackages);
 
   //get all pole Box
   const poleBox = useSelector((state) => state.area?.poleBox);
@@ -222,7 +222,7 @@ const PPPOECustomer = () => {
 
     // get package list api
     if (packages.length === 0)
-      getPPPoEPackage(dispatch, ispOwnerId, setIsLoadingPole);
+      getAllPackages(dispatch, ispOwnerId, setIsLoadingPole);
 
     if (role !== "collector") {
       if (collectors.length === 0)
