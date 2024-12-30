@@ -34,6 +34,7 @@ import { getBulletinPermission } from "../../features/apiCallAdmin";
 import DashboardCard from "./dashboardCard/DashboardCard";
 import PaymentAlert from "./PaymentAlert";
 import { userStaffs } from "../../features/getIspOwnerUsersApi";
+import { ArrowClockwise } from "react-bootstrap-icons";
 
 const IspOwnerDashboard = () => {
   const { t } = useTranslation();
@@ -476,34 +477,23 @@ const IspOwnerDashboard = () => {
                     className="d-flex justify-content-end "
                   >
                     <div
-                      id="dashboard_reload"
-                      className="d-flex justify-content-center align-items-center me-2"
-                      title={t("refresh")}
-                      style={{
-                        borderRadius: "10%",
-                        backgroundColor: "#F7E9D7",
-                      }}
+                      className="addcutmButton me-1"
+                      // id="dashboard_reload"
+                      // className="d-flex justify-content-center align-items-center me-2"
+                      // title={t("refresh")}
+                      // style={{
+                      //   borderRadius: "10%",
+                      //   backgroundColor: "#F7E9D7",
+                      // }}
                     >
-                      {isLoading ? (
-                        <div className="dashboardLoader">
-                          <Loader />
-                        </div>
+                      {dashboardLoading ? (
+                        <Loader />
                       ) : (
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="23"
-                          height="23"
-                          fill="currentColor"
-                          className="bi bi-arrow-clockwise dashboardButton"
-                          viewBox="0 0 16 16"
+                        <ArrowClockwise
+                          className="arrowClock"
+                          title={t("refresh")}
                           onClick={dashboardReloadHandler}
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"
-                          />
-                          <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z" />
-                        </svg>
+                        />
                       )}
                     </div>
 

@@ -405,21 +405,21 @@ export const getIspOwnerDashboardCardData = async (
 // get dashboard overview
 export const getIspOwnerDashboardOverViewData = async (
   dispatch,
-  setIsloading,
+  setDashboardLoading,
   ispOwnerId,
   filterData
 ) => {
-  setIsloading(true);
   try {
+    setDashboardLoading(true);
     const res = await apiLink(
       `/dashboard/overview/${ispOwnerId}?year=${filterData.year}&month=${filterData.month}`
     );
     localStorage.setItem("webhook", res?.data.webhookPaymentCustomerCount);
     dispatch(getDashboardOverViewData(res.data));
+    setDashboardLoading(false);
   } catch (err) {
     toast.error(err.response?.data?.message);
   }
-  setIsloading(false);
 };
 
 // get dashboard below admin card data
