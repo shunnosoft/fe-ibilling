@@ -134,12 +134,13 @@ const IspOwnerDashboard = () => {
   //api calls
   useEffect(() => {
     // get dashboard over view api
-    getIspOwnerDashboardOverViewData(
-      dispatch,
-      setDashboardLoading,
-      ispOwnerId,
-      currentDate
-    );
+    Object.keys(dashboardOverView)?.length === 0 &&
+      getIspOwnerDashboardOverViewData(
+        dispatch,
+        setDashboardLoading,
+        ispOwnerId,
+        currentDate
+      );
 
     //get graph chart data
     getIspOwnerCharts(setLoading, dispatch, ispOwnerId, Year, Month);
@@ -384,7 +385,7 @@ const IspOwnerDashboard = () => {
   return (
     <>
       <div className="container homeWrapper">
-        {dashboardLoading && (
+        {/* {dashboardLoading && (
           <div
             className={`d-flex justify-content-center align-items-center Loader ${
               dashboardLoading && "d-block"
@@ -396,7 +397,7 @@ const IspOwnerDashboard = () => {
               <div class="square-3 square"></div>
             </div>
           </div>
-        )}
+        )} */}
 
         <ToastContainer position="top-right" theme="colored" />
         <FontColor>
