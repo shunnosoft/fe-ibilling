@@ -7,8 +7,6 @@ import DatePicker from "react-datepicker";
 import useISPowner from "../../hooks/useISPOwner";
 
 // internal import
-import { fetchMikrotik, getArea } from "../../features/apiCalls";
-import { getSubAreasApi } from "../../features/actions/customerApiCall";
 import { handleActiveFilter } from "./activeFilter";
 import { getOwnerUsers, userStaffs } from "../../features/getIspOwnerUsersApi";
 import {
@@ -16,6 +14,7 @@ import {
   getSubAreas,
   withMtkPackage,
 } from "../../features/apiCallReseller";
+import useSelectorState from "../../hooks/useSelectorState";
 
 const DataFilter = ({
   page,
@@ -26,9 +25,15 @@ const DataFilter = ({
 }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const { month } = filterOptions;
+
+  // get user & current user data form useISPOwner hooks
+  const { role, ispOwnerId, bpSettings, hasMikrotik, userData } = useISPowner();
+
+  //---> Get redux store state data from useSelectorState hooks
+  const { areas, subAreas, polesBox, mikrotiks } = useSelectorState();
 
   // current month date
+  const { month } = filterOptions;
   let today = new Date();
 
   // current start & end date
@@ -52,9 +57,6 @@ const DataFilter = ({
   firstDayOfMonth.setHours(0, 0, 0, 0);
   today.setHours(23, 59, 59, 999);
 
-  // get user & current user data form useISPOwner hooks
-  const { role, ispOwnerId, bpSettings, hasMikrotik, userData } = useISPowner();
-
   // admin staff user role permission
   const adminUser =
     role === "ispOwner" ||
@@ -67,24 +69,12 @@ const DataFilter = ({
   // reseller id from role base
   const resellerId = role === "collector" ? userData.reseller : userData.id;
 
-  //get mikrotiks from redux store
-  const mikrotiks = useSelector((state) => state?.mikrotik?.mikrotik);
+  const allSubAreas = adminUser ? subAreas : areas;
 
   // get mikrotik and without mikrotik packages in redux store
   const packages = useSelector((state) =>
     resellerUser ? state?.mikrotik?.pppoePackage : state?.package?.allPackages
   );
-
-  //get all areas
-  const areas = useSelector((state) => state.area?.area);
-
-  // get all subarea
-  const subAreas = useSelector((state) =>
-    adminUser ? state.area?.subArea : state.area?.area
-  );
-
-  //get all pole Box
-  const poleBox = useSelector((state) => state.area?.poleBox);
 
   // get reseller
   const resellers = useSelector((state) => state?.reseller.reseller);
@@ -110,28 +100,15 @@ const DataFilter = ({
       staffs.length === 0 && getOwnerUsers(dispatch, ispOwnerId);
     }
 
-    // get mikrotiks
-    if (mikrotiks.length === 0 && adminUser) {
-      fetchMikrotik(dispatch, ispOwnerId, setLoading);
-    } else {
-      getMikrotik(dispatch, resellerId);
-    }
-
     // get all mikrotik packages
     if (!adminUser) {
       packages?.length === 0 && withMtkPackage(dispatch, resellerId);
-    }
 
-    // get area
-    if (areas.length === 0 && adminUser) {
-      getArea(dispatch, ispOwnerId, setLoading);
-    }
+      //---> @Get reseller mikrotiks data
+      !mikrotiks?.length && getMikrotik(dispatch, resellerId);
 
-    // get sub area
-    if (adminUser) {
-      subAreas.length === 0 && getSubAreasApi(dispatch, ispOwnerId);
-    } else {
-      subAreas.length === 0 && getSubAreas(dispatch, resellerId);
+      //---> @Get reseller areas sub-area data
+      !allSubAreas.length && getSubAreas(dispatch, resellerId);
     }
   }, [page, adminUser]);
 
@@ -141,7 +118,7 @@ const DataFilter = ({
 
     // add area to customers
     customers?.map((c) => {
-      subAreas?.map((sub) => {
+      allSubAreas?.map((sub) => {
         if (sub.id === c.subArea) {
           customerModified.push({
             ...c,
@@ -153,7 +130,7 @@ const DataFilter = ({
 
     // set customers in state
     setMainData(customerModified);
-  }, [customers, subAreas]);
+  }, [customers, allSubAreas]);
 
   // mikrotik handler method
   const mikrotikHandler = async (id) => {
@@ -300,8 +277,8 @@ const DataFilter = ({
         });
       },
       options: adminUser
-        ? subAreas.filter((item) => item?.area === filterOptions.area)
-        : subAreas,
+        ? allSubAreas.filter((item) => item?.area === filterOptions.area)
+        : allSubAreas,
       firstOptions: t("subArea"),
       textAccessor: "name",
       valueAccessor: "id",
@@ -319,7 +296,7 @@ const DataFilter = ({
           poleBox: e.target.value,
         });
       },
-      options: poleBox.filter(
+      options: polesBox.filter(
         (item) => item?.subArea === filterOptions.subArea
       ),
       firstOptions: t("poleBox"),

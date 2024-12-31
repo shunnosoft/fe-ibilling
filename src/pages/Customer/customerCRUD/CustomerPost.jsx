@@ -35,7 +35,7 @@ const CustomerModal = ({ show, setShow }) => {
   const { ispOwnerId, bpSettings } = useISPowner();
 
   // Loading state
-  const [isLoading, setIsloading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   // customer auto disable state
   const [autoDisable, setAutoDisable] = useState(true);
@@ -151,7 +151,7 @@ const CustomerModal = ({ show, setShow }) => {
     }
 
     // sending data to api
-    addCustomer(dispatch, mainData, setIsloading, resetForm, setShow);
+    addCustomer(dispatch, mainData, setIsLoading, resetForm, setShow);
   };
 
   return (

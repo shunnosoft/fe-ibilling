@@ -10,7 +10,6 @@ import useISPowner from "../../hooks/useISPOwner";
 // INTERNAL IMPORT
 import { printOptionData } from "../../pages/Customer/customerCRUD/printOptionData";
 import PrintCustomer from "../../pages/Customer/customerPDF";
-import { getAllPackages } from "../../features/apiCalls";
 import ComponentCustomModal from "./customModal/ComponentCustomModal";
 
 const PrintOptions = ({
@@ -52,9 +51,6 @@ const PrintOptions = ({
     } else {
       setPrintOption(printOptionData?.report);
     }
-
-    // get ispOwner all packages api
-    getAllPackages(dispatch, ispOwnerId, setIsLoading);
   }, [page]);
 
   //modal close handle

@@ -10,23 +10,24 @@ import {
 } from "../../features/supportTicketApi";
 import Loader from "../common/Loader";
 import ComponentCustomModal from "../common/customModal/ComponentCustomModal";
+import { getCollector, getManger } from "../../features/apiCalls";
+import useISPowner from "../../hooks/useISPOwner";
 
-const CreateSupportTicket = ({
-  show,
-  setShow,
-  customer,
-  collectors,
-  manager,
-  ispOwner,
-}) => {
+const CreateSupportTicket = ({ show, setShow, customer, ispOwner }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
-  // get user role form redux
-  const role = useSelector((state) => state.persistedReducer.auth?.role);
+  // get user & current user data form useISPOwner hooks
+  const { role, ispOwnerId } = useISPowner();
 
   // get user data form redux store
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
+
+  // get collector
+  const collectors = useSelector((state) => state?.collector?.collector);
+
+  // get manager
+  const manager = useSelector((state) => state.manager?.manager);
 
   //get ticket category
   const allTicketCategory = useSelector(
@@ -46,6 +47,12 @@ const CreateSupportTicket = ({
 
   // ticket category api call
   useEffect(() => {
+    if (role !== "collector") {
+      if (collectors.length === 0)
+        getCollector(dispatch, ispOwnerId, setIsLoading);
+      role === "ispOwner" && getManger(dispatch, ispOwnerId);
+    }
+
     getTicketCategoryApi(dispatch, ispOwner, setIsLoading);
   }, [ispOwner]);
 

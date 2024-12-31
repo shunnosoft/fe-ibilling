@@ -906,6 +906,8 @@ export const editManager = async (
 export const getArea = async (dispatch, ispOwnerId, setIsLoading) => {
   try {
     setIsLoading(true);
+    console.log("Call");
+
     const res = await apiLink.get(`/ispOwner/area/v2/${ispOwnerId}`);
     dispatch(FetchAreaSuccess(res.data));
   } catch (error) {

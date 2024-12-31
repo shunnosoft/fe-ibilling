@@ -151,7 +151,8 @@ const CustomerEdit = ({ customerId, setProfileOption }) => {
     };
 
     if (bpSettings?.hasMikrotik) {
-      fetchPackagefromDatabase(dispatch, IDs, setIsloading);
+      ppPackage?.length === 0 &&
+        fetchPackagefromDatabase(dispatch, IDs, setIsloading);
     }
     //select customer district,division and thana for sync with state
     const divisionalInfo = {};
@@ -178,7 +179,9 @@ const CustomerEdit = ({ customerId, setProfileOption }) => {
   }, [bpSettings, ispOwnerId, data]);
 
   useEffect(() => {
-    fetchMikrotik(dispatch, ispOwnerId, setLoading);
+    mikrotiks?.length === 0 && fetchMikrotik(dispatch, ispOwnerId, setLoading);
+    poleBox?.length === 0 &&
+      getPoleBoxApi(dispatch, ispOwnerId, setIsLoadingPole);
   }, [ispOwnerId]);
 
   useEffect(() => {
@@ -203,11 +206,6 @@ const CustomerEdit = ({ customerId, setProfileOption }) => {
     });
     setSubAreasPoleBox(subPoleBox);
   }, [area, data, storeSubArea]);
-
-  // get subarea poleBox
-  useEffect(() => {
-    getPoleBoxApi(dispatch, ispOwnerId, setIsLoadingPole);
-  }, []);
 
   //customer Mikrotik Package find
   useEffect(() => {

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -8,6 +8,7 @@ import Loader from "../../../components/common/Loader";
 import { transferToResellerApi } from "../../../features/actions/customerApiCall";
 import ComponentCustomModal from "../../../components/common/customModal/ComponentCustomModal";
 import useISPowner from "../../../hooks/useISPOwner";
+import { fetchReseller } from "../../../features/apiCalls";
 
 const TransferToReseller = ({ show, setShow, customerId, page }) => {
   //call dispatch
@@ -17,7 +18,7 @@ const TransferToReseller = ({ show, setShow, customerId, page }) => {
   const { t } = useTranslation();
 
   //===> get user & current user data form useISPOwner hooks
-  const { bpSettings } = useISPowner();
+  const { ispOwnerId, bpSettings } = useISPowner();
 
   const allSubArea = useSelector((state) => state?.area?.subArea);
 
@@ -38,6 +39,11 @@ const TransferToReseller = ({ show, setShow, customerId, page }) => {
 
   // fing single reseller
   const selectedReseller = reseller.find((item) => item.id === resellerId);
+
+  useEffect(() => {
+    // get reseller api
+    fetchReseller(dispatch, ispOwnerId, setIsLoading);
+  }, [customerId]);
 
   // select reseller sub areas handler
   let subAreas = [];

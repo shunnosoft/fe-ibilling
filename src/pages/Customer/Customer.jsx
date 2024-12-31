@@ -44,12 +44,9 @@ import {
 import {
   editCustomer,
   fetchMikrotik,
-  fetchReseller,
   getAllPackages,
   getArea,
-  getCollector,
   getCustomer,
-  getManger,
   getPackagewithoutmikrotik,
 } from "../../features/apiCalls";
 import useDash from "../../assets/css/dash.module.css";
@@ -80,12 +77,12 @@ import {
   getCustomerPromiseDate,
 } from "./customerCRUD/customerBillDayPromiseDate";
 import useISPowner from "../../hooks/useISPOwner";
-import { getOwnerUsers } from "../../features/getIspOwnerUsersApi";
 import BulkOptions from "./customerCRUD/bulkOpration/BulkOptions";
 import DataFilter from "../common/DataFilter";
 import useDataState from "../../hooks/useDataState";
 import { handleActiveFilter } from "../common/activeFilter";
 import { useNavigate } from "react-router-dom";
+import useSelectorState from "../../hooks/useSelectorState";
 
 const PPPOECustomer = () => {
   const dispatch = useDispatch();
@@ -103,37 +100,26 @@ const PPPOECustomer = () => {
   // get user & current user data form useISPOwner hooks
   const { role, ispOwnerId, bpSettings, permissions } = useISPowner();
 
+  //---> Get redux store state data from useSelectorState hooks
+  const {
+    areas,
+    subAreas,
+    polesBox,
+    mikrotiks,
+    allPackages,
+    withoutMtkPackages,
+  } = useSelectorState();
+
   // get user data set from useDataState hooks
   const { filterOptions, setFilterOption } = useDataState();
 
   // get all customer
   const customers = useSelector((state) => state.customer.customer);
 
-  // get collector
-  const collectors = useSelector((state) => state?.collector?.collector);
-
-  // get manager
-  const manager = useSelector((state) => state.manager?.manager);
-
   // get isp owner data
   const ispOwnerData = useSelector(
     (state) => state.persistedReducer.auth.userData
   );
-
-  //get all areas
-  const areas = useSelector((state) => state.area?.area);
-
-  // get all subarea
-  const subAreas = useSelector((state) => state.area?.subArea);
-
-  //get mikrotik
-  const mikrotiks = useSelector((state) => state?.mikrotik?.mikrotik);
-
-  // get all package list
-  let packages = useSelector((state) => state?.package?.allPackages);
-
-  //get all pole Box
-  const poleBox = useSelector((state) => state.area?.poleBox);
 
   // get bulletin permission
   const bulletinPagePermission = useSelector(
@@ -179,9 +165,6 @@ const PPPOECustomer = () => {
   //bandwidth modal state
   const [bandWidthModal, setBandWidthModal] = useState(false);
 
-  // collector loading
-  const [collectorLoading, setCollectorLoading] = useState(false);
-
   // get specific customer
   const [singleCustomer, setSingleCustomer] = useState("");
 
@@ -190,9 +173,6 @@ const PPPOECustomer = () => {
 
   const [open, setOpen] = useState(false);
 
-  // pole box filter loding
-  const [isLoadingPole, setIsLoadingPole] = useState(false);
-
   // optional modal state
   const [modalStatus, setModalStatus] = useState("");
   const [showModal, setShowModal] = useState(false);
@@ -200,49 +180,43 @@ const PPPOECustomer = () => {
   // bulk modal handle state
   const [show, setShow] = useState(false);
 
-  //initial api calls
+  //================// API CALL's //================//
   useEffect(() => {
-    // get mikrotik api without mikrotik / has mikrotik
+    //===========================================================> FIRST API
+
+    //---> @Get ispOwner areas sub-area data
+    !subAreas.length && getSubAreasApi(dispatch, ispOwnerId);
+
+    //---> @Get ispOwner all customer data
+    !customers?.length && getCustomer(dispatch, ispOwnerId, setCustomerLoading);
+
+    //===========================================================> SECOND STEP API
+
+    //---> @Get ispOwner areas data
+    !areas?.length && getArea(dispatch, ispOwnerId, setLoading);
+
+    //---> Get hasMikrotik base all mikrotik data
     if (!bpSettings?.hasMikrotik) {
-      getPackagewithoutmikrotik(ispOwnerId, dispatch, setLoading);
+      //---> @Get ispOwner without mikrotiks all package data
+      !withoutMtkPackages.length &&
+        getPackagewithoutmikrotik(ispOwnerId, dispatch, setLoading);
     } else {
-      if (mikrotiks.length === 0)
-        fetchMikrotik(dispatch, ispOwnerId, setLoading);
+      //---> @Get ispOwner mikrotiks data
+      !mikrotiks?.length && fetchMikrotik(dispatch, ispOwnerId, setLoading);
     }
 
-    // get area api
-    if (areas.length === 0) getArea(dispatch, ispOwnerId, setLoading);
+    //===========================================================> LAST API
 
-    // get sub area api
-    if (subAreas.length === 0) getSubAreasApi(dispatch, ispOwnerId);
+    //---> @Get ispOwner all mikrotik packages data
+    !allPackages.length && getAllPackages(dispatch, ispOwnerId, setLoading);
 
-    // get customer api
-    if (customers.length === 0)
-      getCustomer(dispatch, ispOwnerId, setCustomerLoading);
-
-    // get package list api
-    if (packages.length === 0)
-      getAllPackages(dispatch, ispOwnerId, setIsLoadingPole);
-
-    if (role !== "collector") {
-      if (collectors.length === 0)
-        getCollector(dispatch, ispOwnerId, setCollectorLoading);
-      role === "ispOwner" && getManger(dispatch, ispOwnerId);
-    }
-
-    if (poleBox.length === 0)
-      getPoleBoxApi(dispatch, ispOwnerId, setIsLoadingPole);
-
-    // get ispOwner all staffs
-    getOwnerUsers(dispatch, ispOwnerId);
-
-    // get reseller api
-    fetchReseller(dispatch, ispOwnerId, setCollectorLoading);
+    //---> @Get ispOwner sub-areas pol-box data
+    !polesBox?.length && getPoleBoxApi(dispatch, ispOwnerId, setLoading);
 
     // bulletin get apipppoeCustomerOption
     Object.keys(bulletinPagePermission)?.length === 0 &&
       getBulletinPermission(dispatch);
-  }, []);
+  }, [ispOwnerId]);
 
   // set all customer in state
   useEffect(() => {
@@ -1156,8 +1130,6 @@ const PPPOECustomer = () => {
         <CreateSupportTicket
           show={showModal}
           setShow={setShowModal}
-          collectors={collectors}
-          manager={manager}
           customer={singleCustomer}
           ispOwner={ispOwnerId}
         />

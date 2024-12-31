@@ -29,21 +29,20 @@ import {
 } from "../../features/actions/customerApiCall";
 import SubArea from "../../pages/subArea/SubArea";
 import PoleBox from "../subArea/PoleBox";
-//subArea/SubArea
-export default function Area() {
+import useSelectorState from "../../hooks/useSelectorState";
+import useISPowner from "../../hooks/useISPOwner";
+
+const Area = () => {
   const { t } = useTranslation();
-  const area = useSelector((state) => state?.area?.area);
   const dispatch = useDispatch();
+
+  // get user & current user data form useISPOwner hooks
+  const { ispOwnerId, bpSettings } = useISPowner();
+
+  //---> Get redux store state data from useSelectorState hooks
+  const { areas, subAreas, polesBox, mikrotiks } = useSelectorState();
+
   const cus = useSelector((state) => state?.customer?.customer);
-  const storeSubArea = useSelector((state) => state.area?.subArea);
-
-  //get all pole Box
-  const poleBox = useSelector((state) => state.area?.poleBox);
-
-  // get bp settings
-  const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
-  );
 
   const [isLoading, setIsLoading] = useState(false);
   const [customerLoading, setCustomerLoading] = useState(false);
@@ -59,27 +58,33 @@ export default function Area() {
   const [modalStatus, setModalStatus] = useState("");
   const [show, setShow] = useState(false);
 
-  const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerId
-  );
-
   const reloadHandler = () => {
     getArea(dispatch, ispOwnerId, setIsLoading);
   };
+
+  //================// API CALL's //================//
   useEffect(() => {
-    if (area.length === 0) getArea(dispatch, ispOwnerId, setIsLoading);
-    if (storeSubArea.length === 0) getSubAreasApi(dispatch, ispOwnerId);
+    //---> @Get ispOwner areas data
+    !areas?.length && getArea(dispatch, ispOwnerId, setIsLoading);
+
+    //---> @Get ispOwner mikrotiks data
+    !mikrotiks?.length &&
+      fetchMikrotik(dispatch, ispOwnerId, setMikrotikLoading);
+
+    //---> @Get ispOwner areas sub-area data
+    !subAreas?.length && getSubAreasApi(dispatch, ispOwnerId);
+
+    //---> @Get ispOwner sub-areas pol-box data
+    !polesBox?.length && getPoleBoxApi(dispatch, ispOwnerId, setIsLoadingPole);
+
     if (cus.length === 0) getCustomer(dispatch, ispOwnerId, setCustomerLoading);
-    poleBox?.length === 0 &&
-      getPoleBoxApi(dispatch, ispOwnerId, setIsLoadingPole);
-    fetchMikrotik(dispatch, ispOwnerId, setMikrotikLoading);
   }, []);
 
   const deleteSingleArea = async (id, ispOwner) => {
-    let singleArea = area.find((a) => a.id === id);
+    let singleArea = areas.find((a) => a.id === id);
     let isCustomer = false;
-    const subAreas = singleArea?.subAreas;
-    subAreas?.map((sub) => {
+    const singleAreaSubs = singleArea?.subAreas;
+    singleAreaSubs?.map((sub) => {
       cus.map((cus) => {
         if (cus.subArea === sub.id) {
           isCustomer = true;
@@ -107,18 +112,16 @@ export default function Area() {
 
   // area subarea count function
   const areaSubareaCount = (areaId) => {
-    const filterItem = storeSubArea.filter((item) =>
-      item.area.includes(areaId)
-    );
+    const filterItem = subAreas.filter((item) => item.area.includes(areaId));
     return filterItem?.length;
   };
 
   // subarea polBox count function
   const subareaPolBoxCount = (subId) => {
-    const subPoleBox = storeSubArea.filter((sub) => sub.area === subId);
+    const subPoleBox = subAreas.filter((sub) => sub.area === subId);
     let temp = [];
     subPoleBox?.map((val) =>
-      poleBox.map((pole) => {
+      polesBox.map((pole) => {
         if (pole.subArea === val.id) {
           temp.push(pole);
         }
@@ -164,7 +167,7 @@ export default function Area() {
           >
             {t("subArea")}
             <b className="text-warning ms-1">
-              {area && areaSubareaCount(original.id)}
+              {areas && areaSubareaCount(original.id)}
             </b>
             <ArrowRightShort style={{ fontSize: "19px" }} />
           </div>
@@ -195,7 +198,7 @@ export default function Area() {
               >
                 {t("poleBox")}
                 <b className="text-warning ms-1">
-                  {area && subareaPolBoxCount(original.id)}
+                  {areas && subareaPolBoxCount(original.id)}
                 </b>
                 <ArrowRightShort style={{ fontSize: "19px" }} />
               </div>
@@ -218,13 +221,12 @@ export default function Area() {
         ),
       },
     ],
-    [t, area]
+    [t, areas]
   );
 
   return (
     <>
       <Sidebar />
-      {/* toast */}
       <ToastContainer position="top-right" theme="colored" />
       <div className={useDash.dashboardWrapper}>
         <div className="container-fluied collector">
@@ -264,7 +266,7 @@ export default function Area() {
                   <Table
                     isLoading={isLoading}
                     columns={columns}
-                    data={area}
+                    data={areas}
                   ></Table>
                 </div>
               </FourGround>
@@ -299,4 +301,6 @@ export default function Area() {
       )}
     </>
   );
-}
+};
+
+export default Area;
