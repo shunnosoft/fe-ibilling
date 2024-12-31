@@ -117,6 +117,7 @@ import {
   getBelowManagerCardData,
   getBelowCollectorCardData,
   getBelowResellerCardData,
+  getDashboardOverViewCustomerData,
 } from "./chartsSlice";
 import {
   getAllRechargeHistory,
@@ -402,7 +403,7 @@ export const getIspOwnerDashboardCardData = async (
   setIsloading(false);
 };
 
-// get dashboard overview
+// get dashboard overview collection data
 export const getIspOwnerDashboardOverViewData = async (
   dispatch,
   setDashboardLoading,
@@ -412,10 +413,29 @@ export const getIspOwnerDashboardOverViewData = async (
   try {
     setDashboardLoading(true);
     const res = await apiLink(
-      `/dashboard/overview/${ispOwnerId}?year=${filterData.year}&month=${filterData.month}`
+      `/dashboard/bill-overview/${ispOwnerId}?year=${filterData.year}&month=${filterData.month}`
+    );
+    dispatch(getDashboardOverViewData(res.data));
+    setDashboardLoading(false);
+  } catch (err) {
+    toast.error(err.response?.data?.message);
+  }
+};
+
+// get dashboard overview customer data
+export const getIspOwnerDashboardOverViewCustomerData = async (
+  dispatch,
+  setDashboardLoading,
+  ispOwnerId,
+  filterData
+) => {
+  try {
+    setDashboardLoading(true);
+    const res = await apiLink(
+      `/dashboard/customer-overview/${ispOwnerId}?year=${filterData.year}&month=${filterData.month}`
     );
     localStorage.setItem("webhook", res?.data.webhookPaymentCustomerCount);
-    dispatch(getDashboardOverViewData(res.data));
+    dispatch(getDashboardOverViewCustomerData(res.data));
     setDashboardLoading(false);
   } catch (err) {
     toast.error(err.response?.data?.message);

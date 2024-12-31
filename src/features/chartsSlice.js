@@ -6,6 +6,7 @@ const chartsSlice = createSlice({
     charts: [],
     customerStat: {},
     dashboardOverview: {},
+    dashboardOverviewCustomer: {},
     dashboardBelowAdminCardData: {},
     dashboardBelowManagerCardData: {},
     dashboardBelowResellerCardData: {},
@@ -24,6 +25,9 @@ const chartsSlice = createSlice({
 
     getDashboardOverViewData: (state, { payload }) => {
       state.dashboardOverview = payload;
+    },
+    getDashboardOverViewCustomerData: (state, { payload }) => {
+      state.dashboardOverviewCustomer = payload;
     },
     getBelowAdminCardData: (state, { payload }) => {
       state.dashboardBelowAdminCardData = payload;
@@ -50,6 +54,7 @@ export const {
   getBelowAdminCardData,
   getBelowManagerCardData,
   getDashboardOverViewData,
+  getDashboardOverViewCustomerData,
   getBelowResellerCardData,
   getBelowCollectorCardData,
 } = chartsSlice.actions;

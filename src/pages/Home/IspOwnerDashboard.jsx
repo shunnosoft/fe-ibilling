@@ -22,6 +22,7 @@ import {
   getDashboardBelowIspOwnerCardData,
   getDashboardBelowManagerCardData,
   getDashboardBelowResellerCardData,
+  getIspOwnerDashboardOverViewCustomerData,
   getIspOwnerDashboardOverViewData,
 } from "../../features/apiCalls";
 import { getIspOwnerCharts } from "../../features/apiCalls";
@@ -69,6 +70,11 @@ const IspOwnerDashboard = () => {
   // get dashboard over view data form redux store
   const dashboardOverView = useSelector(
     (state) => state.chart.dashboardOverview
+  );
+
+  // get dashboard over view customer data form redux store
+  const dashboardOverviewCustomer = useSelector(
+    (state) => state.chart.dashboardOverviewCustomer
   );
 
   // get dashboard Below  admin card data form redux store
@@ -135,8 +141,16 @@ const IspOwnerDashboard = () => {
   //api calls
   useEffect(() => {
     // get dashboard over view api
-    Object.keys(dashboardOverView)?.length === 0 &&
+    !Object.keys(dashboardOverView).length &&
       getIspOwnerDashboardOverViewData(
+        dispatch,
+        setDashboardLoading,
+        ispOwnerId,
+        currentDate
+      );
+
+    !Object.keys(dashboardOverviewCustomer).length &&
+      getIspOwnerDashboardOverViewCustomerData(
         dispatch,
         setDashboardLoading,
         ispOwnerId,
@@ -182,7 +196,7 @@ const IspOwnerDashboard = () => {
 
     if (
       eventKey.includes("admin") &&
-      Object.keys(dashboardBelowAdminCardData).length === 0
+      !Object.keys(dashboardBelowAdminCardData).length
     ) {
       getDashboardBelowIspOwnerCardData(
         dispatch,
@@ -192,7 +206,10 @@ const IspOwnerDashboard = () => {
       );
     }
 
-    if (eventKey.includes("manager")) {
+    if (
+      eventKey.includes("manager") &&
+      !Object.keys(dashboardBelowManagerCardData).length
+    ) {
       getDashboardBelowManagerCardData(
         dispatch,
         setManagerCardLoading,
@@ -201,7 +218,10 @@ const IspOwnerDashboard = () => {
       );
     }
 
-    if (eventKey.includes("collector")) {
+    if (
+      eventKey.includes("collector") &&
+      !Object.keys(dashboardBelowCollectorCardData).length
+    ) {
       getDashboardBelowCollectorCardData(
         dispatch,
         setCollectorCardLoading,
@@ -212,7 +232,7 @@ const IspOwnerDashboard = () => {
 
     if (
       eventKey.includes("reseller") &&
-      Object.keys(dashboardBelowResellerCardData).length === 0
+      !Object.keys(dashboardBelowResellerCardData).length
     ) {
       getDashboardBelowResellerCardData(
         dispatch,
@@ -236,6 +256,13 @@ const IspOwnerDashboard = () => {
       setDashboardLoading,
       ispOwnerId,
       filterData
+    );
+
+    getIspOwnerDashboardOverViewCustomerData(
+      dispatch,
+      setDashboardLoading,
+      ispOwnerId,
+      currentDate
     );
 
     // get dashboard below admin date filter card api
@@ -338,14 +365,14 @@ const IspOwnerDashboard = () => {
   const probabilityAmountCalculation = () => {
     if (bpSettings?.dashboardProbabilityAmountWithNewCustomer) {
       return (
-        dashboardOverView.totalProbableAmount -
-        dashboardOverView.totalInactiveAmount -
-        dashboardOverView.newCustomerBillCount
+        dashboardOverviewCustomer.totalProbableAmount -
+        dashboardOverviewCustomer.totalInactiveAmount -
+        dashboardOverviewCustomer.newCustomerBillCount
       );
     } else {
       return (
-        dashboardOverView.totalProbableAmount -
-        dashboardOverView.totalInactiveAmount
+        dashboardOverviewCustomer.totalProbableAmount -
+        dashboardOverviewCustomer.totalInactiveAmount
       );
     }
   };
@@ -356,7 +383,7 @@ const IspOwnerDashboard = () => {
         ((bpSettings?.dashboardProbabilityAmountWithNewCustomer
           ? Math.abs(
               dashboardOverView.totalMonthlyCollection -
-                dashboardOverView.newCustomerBillCollection -
+                dashboardOverviewCustomer.newCustomerBillCollection -
                 dashboardOverView.totalMonthlyDiscount
             )
           : Math.abs(
@@ -381,12 +408,19 @@ const IspOwnerDashboard = () => {
       ispOwnerId,
       filterData
     );
+
+    getIspOwnerDashboardOverViewCustomerData(
+      dispatch,
+      setDashboardLoading,
+      ispOwnerId,
+      currentDate
+    );
   };
 
   return (
     <>
       <div className="container homeWrapper">
-        {/* {dashboardLoading && (
+        {dashboardLoading && (
           <div
             className={`d-flex justify-content-center align-items-center Loader ${
               dashboardLoading && "d-block"
@@ -398,7 +432,7 @@ const IspOwnerDashboard = () => {
               <div class="square-3 square"></div>
             </div>
           </div>
-        )} */}
+        )}
 
         <ToastContainer position="top-right" theme="colored" />
         <FontColor>
@@ -458,7 +492,7 @@ const IspOwnerDashboard = () => {
                         bpSettings?.dashboardProbabilityAmountWithNewCustomer
                           ? Math.abs(
                               dashboardOverView.totalMonthlyCollection -
-                                dashboardOverView.newCustomerBillCollection -
+                                dashboardOverviewCustomer.newCustomerBillCollection -
                                 dashboardOverView.totalMonthlyDiscount
                             )
                           : Math.abs(
@@ -522,7 +556,10 @@ const IspOwnerDashboard = () => {
 
               {/* dashboard overview card */}
               <DashboardCard
-                dashboardCard={dashboardOverView}
+                dashboardCard={{
+                  ...dashboardOverView,
+                  ...dashboardOverviewCustomer,
+                }}
                 filterDate={filterDate}
                 cardRole="overView"
               />
