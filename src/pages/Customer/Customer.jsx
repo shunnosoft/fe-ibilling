@@ -1179,4 +1179,4 @@ const PPPOECustomer = () => {
   );
 };
 
-export default React.memo(PPPOECustomer);
+export default PPPOECustomer;

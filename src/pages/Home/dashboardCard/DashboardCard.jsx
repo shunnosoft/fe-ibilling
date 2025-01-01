@@ -408,6 +408,51 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
               </div>
             )}
 
+            {["ispOwner", "manager"].includes(role) && (
+              <div class="col-md-4 col-xl-3">
+                <div class="card bg-card-09 order-card">
+                  <div class="card-block display_card">
+                    <p class="m-b-20">{t("totalDiscount")}</p>
+                    <div class="d-flex align-items-center">
+                      <p className="card_Icon">%</p>
+                      <h2
+                        className={adminUser && "clickable"}
+                        onClick={() =>
+                          adminUser && modlaClickHandler("discount")
+                        }
+                      >
+                        {FormatNumber(dashboardCard.totalMonthlyDiscount)}
+                      </h2>
+                    </div>
+                    <p class="m-b-0">
+                      {t("todayDiscount")}
+                      <span class="f-right">
+                        {FormatNumber(dashboardCard.todayTotalBillDiscount)}
+                      </span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {role === "ispOwner" && (
+              <div class="col-md-4 col-xl-3">
+                <div class="card bg-card-38 order-card">
+                  <div class="card-block display_card">
+                    <p class="m-b-20">{t("allCustomerCollection")}</p>
+                    <div class="d-flex align-items-center">
+                      <p className="card_Icon">
+                        <Reception4 />
+                      </p>
+                      <h2>
+                        {FormatNumber(dashboardCard.allCustomerCollection)}
+                      </h2>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {userHandle && (
               <div class="col-md-4 col-xl-3">
                 <div class="card bg-card-11 order-card">
@@ -441,33 +486,6 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
                       </p>
                       <h2>{FormatNumber(dashboardCard.todayBillCollection)}</h2>
                     </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {["ispOwner", "manager"].includes(role) && (
-              <div class="col-md-4 col-xl-3">
-                <div class="card bg-card-09 order-card">
-                  <div class="card-block display_card">
-                    <p class="m-b-20">{t("totalDiscount")}</p>
-                    <div class="d-flex align-items-center">
-                      <p className="card_Icon">%</p>
-                      <h2
-                        className={adminUser && "clickable"}
-                        onClick={() =>
-                          adminUser && modlaClickHandler("discount")
-                        }
-                      >
-                        {FormatNumber(dashboardCard.totalMonthlyDiscount)}
-                      </h2>
-                    </div>
-                    <p class="m-b-0">
-                      {t("todayDiscount")}
-                      <span class="f-right">
-                        {FormatNumber(dashboardCard.todayTotalBillDiscount)}
-                      </span>
-                    </p>
                   </div>
                 </div>
               </div>
@@ -550,24 +568,6 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
                         <CashStack />
                       </p>
                       <h2>{FormatNumber(dashboardCard.totalSalary)}</h2>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {role === "ispOwner" && (
-              <div class="col-md-4 col-xl-3">
-                <div class="card bg-card-38 order-card">
-                  <div class="card-block display_card">
-                    <p class="m-b-20">{t("allCustomerCollection")}</p>
-                    <div class="d-flex align-items-center">
-                      <p className="card_Icon">
-                        <Reception4 />
-                      </p>
-                      <h2>
-                        {FormatNumber(dashboardCard.allCustomerCollection)}
-                      </h2>
                     </div>
                   </div>
                 </div>

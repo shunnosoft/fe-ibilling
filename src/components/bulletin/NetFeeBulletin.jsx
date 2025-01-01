@@ -29,42 +29,26 @@ const NetFeeBulletin = () => {
 
   return (
     <>
-      {bulletins.length > 0 &&
-        bulletins.some(
-          (val) =>
-            moment(val.startDate).format("YYYY-MM-DD hh:mm") <=
-              moment(date).format("YYYY-MM-DD hh:mm") &&
-            moment(date).format("YYYY-MM-DD hh:mm") <=
-              moment(val.endDate).format("YYYY-MM-DD hh:mm")
-        ) && (
-          <div className="bulletin">
-            <marquee id="bulletin_marquee" scrollamount="6" scrolldelay="100">
-              {bulletins &&
-                bulletins.map((val) => {
-                  if (
-                    moment(val.startDate).format("YYYY-MM-DD hh:mm") <=
-                      moment(date).format("YYYY-MM-DD hh:mm") &&
-                    moment(date).format("YYYY-MM-DD hh:mm") <=
-                      moment(val.endDate).format("YYYY-MM-DD hh:mm")
-                  ) {
-                    return (
-                      <span
-                        className="bulletin_title"
-                        onMouseEnter={() =>
-                          document.getElementById("bulletin_marquee").stop()
-                        }
-                        onMouseLeave={() =>
-                          document.getElementById("bulletin_marquee").start()
-                        }
-                      >
-                        {val && val.title}
-                      </span>
-                    );
+      <div className="bulletin">
+        <marquee id="bulletin_marquee" scrollamount="6" scrolldelay="100">
+          {bulletins &&
+            bulletins.map((val) => {
+              return (
+                <span
+                  className="bulletin_title"
+                  onMouseEnter={() =>
+                    document.getElementById("bulletin_marquee").stop()
                   }
-                })}
-            </marquee>
-          </div>
-        )}
+                  onMouseLeave={() =>
+                    document.getElementById("bulletin_marquee").start()
+                  }
+                >
+                  {val && val.title}
+                </span>
+              );
+            })}
+        </marquee>
+      </div>
     </>
   );
 };
