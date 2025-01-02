@@ -24,15 +24,15 @@ export const tutorialLink = [
     link: "https://www.youtube.com/embed/7DVn0mQGGH0?si=nV1SuLt3SlNU0sIT",
   },
   {
-    id: 5,
+    key: "area",
     role: "ispOwner",
-    title: "Area",
+    title: "Area and Sub-area Configuration",
     link: "https://www.youtube.com/embed/axSbX5_3av4?si=cXP4aCJf5tAcMbuJ",
   },
   {
-    id: 5,
+    key: "mikrotik",
     role: "ispOwner",
-    title: "Microtic configuration",
+    title: "Mikrotik Configuration",
     link: "https://www.youtube.com/embed/uEu5WCkBMFI?si=oYbZHR2PlYs06Vof",
   },
   {
@@ -42,13 +42,13 @@ export const tutorialLink = [
   },
   {
     id: 5,
-    title: "Customer internet bill through sendmoney",
+    title: "Customer internet bill through send money",
     link: "https://www.youtube.com/embed/SDxNamAT8c0?si=q0SzehUz5INPM0SQ",
   },
   {
-    id: 5,
+    key: "report",
     role: "ispOwner",
-    title: "Report Section",
+    title: "Report section",
     link: "https://www.youtube.com/embed/3lCT7d0vRrI?si=KUB_hcsUEr1wzlQ2",
   },
   {
@@ -70,9 +70,9 @@ export const tutorialLink = [
     link: "https://www.youtube.com/embed/4Ooavtkbyo8?si=hurz1J_sRYEgthJQ",
   },
   {
-    id: 5,
+    key: "staff",
     role: "ispOwner",
-    title: "Staff",
+    title: "Staff section",
     link: "https://www.youtube.com/embed/boo602xwVqY?si=Ug4MGZqzJNgchakj",
   },
   {
@@ -88,19 +88,19 @@ export const tutorialLink = [
     link: "https://www.youtube.com/embed/2TgTCUBUclg?si=m5I_YaNJqCUkewmy",
   },
   {
-    id: 5,
+    key: "reseller",
     role: "ispOwner",
-    title: "Reseller Manage",
+    title: "Reseller section",
     link: "https://www.youtube.com/embed/fUrf0xOvQfc?si=oV2IxTNE7N-4vAUo",
   },
   {
-    id: 4,
+    key: "smsTemplate",
     role: "ispOwner",
-    title: "SMS Configuration",
+    title: "Message Configuration",
     link: "https://www.youtube.com/embed/PQFSfdDPMLM?si=XjGj33kpkcNLlxUX",
   },
   {
-    id: 4,
+    key: "diagram",
     role: "ispOwner",
     title: "Network diagram",
     link: "https://www.youtube.com/embed/ZeWmTWcwdK0?si=v1LTWD-9Du9LiVzp",

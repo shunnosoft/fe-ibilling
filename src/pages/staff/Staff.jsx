@@ -10,6 +10,7 @@ import {
   CurrencyDollar,
   PenFill,
   PersonPlusFill,
+  PlayBtn,
   PrinterFill,
   ThreeDots,
   Trash,
@@ -32,6 +33,7 @@ import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
 import { badge } from "../../components/common/Utils";
 import StaffDelete from "./staffModal/StaffDelete";
 import StaffPdf from "./StaffPdf";
+import PlayTutorial from "../tutorial/PlayTutorial";
 
 const Staff = () => {
   const { t } = useTranslation();
@@ -233,6 +235,19 @@ const Staff = () => {
                       />
                     </div>
                   )}
+
+                  {["ispOwner"].includes(role) && (
+                    <div className="addAndSettingIcon">
+                      <PlayBtn
+                        className="addcutmButton"
+                        onClick={() => {
+                          setModalStatus("playTutorial");
+                          setShow(true);
+                        }}
+                        title={t("tutorial")}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
             </FourGround>
@@ -280,6 +295,17 @@ const Staff = () => {
       {/* staff delete modal */}
       {modalStatus === "delete" && (
         <StaffDelete show={show} setShow={setShow} staffId={staffId} />
+      )}
+
+      {/* tutorial play modal */}
+      {modalStatus === "playTutorial" && (
+        <PlayTutorial
+          {...{
+            show,
+            setShow,
+            video: "staff",
+          }}
+        />
       )}
     </>
   );

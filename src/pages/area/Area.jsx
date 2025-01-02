@@ -2,7 +2,12 @@ import "./area.css";
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { GeoAlt, ArrowRightShort, ArrowClockwise } from "react-bootstrap-icons";
+import {
+  GeoAlt,
+  ArrowRightShort,
+  ArrowClockwise,
+  PlayBtn,
+} from "react-bootstrap-icons";
 import Loader from "../../components/common/Loader";
 
 // internal imports
@@ -31,6 +36,7 @@ import SubArea from "../../pages/subArea/SubArea";
 import PoleBox from "../subArea/PoleBox";
 import useSelectorState from "../../hooks/useSelectorState";
 import useISPowner from "../../hooks/useISPOwner";
+import PlayTutorial from "../tutorial/PlayTutorial";
 
 const Area = () => {
   const { t } = useTranslation();
@@ -257,6 +263,17 @@ const Area = () => {
                     >
                       <GeoAlt className="addcutmButton" />
                     </div>
+
+                    <div className="addAndSettingIcon">
+                      <PlayBtn
+                        className="addcutmButton"
+                        onClick={() => {
+                          setModalStatus("playTutorial");
+                          setShow(true);
+                        }}
+                        title={t("tutorial")}
+                      />
+                    </div>
                   </div>
                 </div>
               </FourGround>
@@ -297,6 +314,17 @@ const Area = () => {
           areaId={areaId}
           poleShow={show}
           setPoleShow={setShow}
+        />
+      )}
+
+      {/* tutorial play modal */}
+      {modalStatus === "playTutorial" && (
+        <PlayTutorial
+          {...{
+            show,
+            setShow,
+            video: "area",
+          }}
         />
       )}
     </>

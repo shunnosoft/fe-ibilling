@@ -11,6 +11,7 @@ import {
   FiletypeCsv,
   FilterCircle,
   PenFill,
+  PlayBtn,
   PrinterFill,
   ThreeDots,
 } from "react-bootstrap-icons";
@@ -47,6 +48,7 @@ import { managerFetchSuccess } from "../../features/managerSlice";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
 import { userStaffs } from "../../features/getIspOwnerUsersApi";
+import PlayTutorial from "../tutorial/PlayTutorial";
 
 const Report = () => {
   const { t } = useTranslation();
@@ -608,6 +610,17 @@ const Report = () => {
                       )}
                     </div>
 
+                    <div className="addAndSettingIcon">
+                      <PlayBtn
+                        className="addcutmButton"
+                        onClick={() => {
+                          setModalStatus("playTutorial");
+                          setShow(true);
+                        }}
+                        title={t("tutorial")}
+                      />
+                    </div>
+
                     <Collapse in={open} dimension="width">
                       <div id="example-collapse-text">
                         <Card className="cardCollapse border-0">
@@ -863,6 +876,17 @@ const Report = () => {
           setShow={setShow}
           reportId={viewId}
           status="ispOwnerCustomerReport"
+        />
+      )}
+
+      {/* tutorial play modal */}
+      {modalStatus === "playTutorial" && (
+        <PlayTutorial
+          {...{
+            show,
+            setShow,
+            video: "report",
+          }}
         />
       )}
     </>

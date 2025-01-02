@@ -41,6 +41,8 @@ import { badge } from "../../components/common/Utils";
 import { ToastContainer } from "react-toastify";
 import InvoicePrint from "./customerInvoicePrint/InvoicePrint";
 import { Accordion, Card, Collapse } from "react-bootstrap";
+import { PlayBtn } from "react-bootstrap-icons";
+import PlayTutorial from "../tutorial/PlayTutorial";
 
 const CustomerInvoice = () => {
   const { t } = useTranslation();
@@ -71,6 +73,7 @@ const CustomerInvoice = () => {
   // Loading state
   const [isLoading, setIsLoading] = useState(false);
   const [show, setShow] = useState(false);
+  const [modalStatus, setModalStatus] = useState("");
   const [customerLoading, setCustomerLoading] = useState(false);
 
   // customer state
@@ -435,6 +438,7 @@ const CustomerInvoice = () => {
                   original?.customer !== null && (
                     <li
                       onClick={() => {
+                        setModalStatus("recharge");
                         setInvoiceId(original.id);
                         setShow(true);
                       }}
@@ -529,6 +533,17 @@ const CustomerInvoice = () => {
                           onClick={() => reloadHandler()}
                         />
                       )}
+                    </div>
+
+                    <div className="addAndSettingIcon">
+                      <PlayBtn
+                        className="addcutmButton"
+                        onClick={() => {
+                          setModalStatus("playTutorial");
+                          setShow(true);
+                        }}
+                        title={t("tutorial")}
+                      />
                     </div>
 
                     <Collapse in={open} dimension="width">
@@ -748,11 +763,26 @@ const CustomerInvoice = () => {
           </div>
         </div>
       </div>
-      <CustomerBillCollectInvoice
-        show={show}
-        setShow={setShow}
-        invoiceId={invoiceId}
-      />
+
+      {/* customer temporary recharge modal */}
+      {modalStatus === "recharge" && (
+        <CustomerBillCollectInvoice
+          show={show}
+          setShow={setShow}
+          invoiceId={invoiceId}
+        />
+      )}
+
+      {/* tutorial play modal */}
+      {modalStatus === "playTutorial" && (
+        <PlayTutorial
+          {...{
+            show,
+            setShow,
+            video: "report",
+          }}
+        />
+      )}
     </>
   );
 };

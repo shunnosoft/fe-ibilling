@@ -14,6 +14,7 @@ import {
   CashStack,
   Book,
   FiletypePy,
+  PlayBtn,
 } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer } from "react-toastify";
@@ -50,6 +51,7 @@ import { getSubAreasApi } from "../../features/actions/customerApiCall";
 import FormatNumber from "../../components/common/NumberFormat";
 import ResellerEdit from "./resellerModals/ResellerEdit/ResellerEdit";
 import { csutomerWebhookRegister } from "../../features/apiCallAdmin";
+import PlayTutorial from "../tutorial/PlayTutorial";
 
 const Reseller = () => {
   const { t } = useTranslation();
@@ -478,6 +480,17 @@ const Reseller = () => {
                       >
                         <PersonPlusFill className="addcutmButton" />
                       </div>
+
+                      <div className="addAndSettingIcon">
+                        <PlayBtn
+                          className="addcutmButton"
+                          onClick={() => {
+                            setModalStatus("playTutorial");
+                            setShow(true);
+                          }}
+                          title={t("tutorial")}
+                        />
+                      </div>
                     </div>
                   )}
                 </div>
@@ -553,6 +566,17 @@ const Reseller = () => {
       {/* password reset modal */}
       {modalStatus === "password" && (
         <PasswordReset show={show} setShow={setShow} userId={userId} />
+      )}
+
+      {/* tutorial play modal */}
+      {modalStatus === "playTutorial" && (
+        <PlayTutorial
+          {...{
+            show,
+            setShow,
+            video: "reseller",
+          }}
+        />
       )}
 
       {/* end modals section*/}

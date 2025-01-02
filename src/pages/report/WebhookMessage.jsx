@@ -6,6 +6,7 @@ import {
   ArrowClockwise,
   FilterCircle,
   PencilSquare,
+  PlayBtn,
   SendCheck,
   SendX,
 } from "react-bootstrap-icons";
@@ -23,6 +24,7 @@ import Table from "../../components/table/Table";
 import { badge } from "../../components/common/Utils";
 import Loader from "../../components/common/Loader";
 import ReferenceIDEdit from "./modal/ReferenceIDEdit";
+import PlayTutorial from "../tutorial/PlayTutorial";
 
 const WebhookMessage = () => {
   const { t } = useTranslation();
@@ -191,7 +193,7 @@ const WebhookMessage = () => {
         Header: t("createdAt"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("YYYY/MM/DD");
+          return moment(value).format("YYYY-MM-DD hh:mm A");
         },
       },
       {
@@ -266,6 +268,17 @@ const WebhookMessage = () => {
                           title={t("refresh")}
                         />
                       )}
+                    </div>
+
+                    <div className="addAndSettingIcon">
+                      <PlayBtn
+                        className="addcutmButton"
+                        onClick={() => {
+                          setModalStatus("playTutorial");
+                          setShow(true);
+                        }}
+                        title={t("tutorial")}
+                      />
                     </div>
                   </div>
                 </div>
@@ -392,6 +405,17 @@ const WebhookMessage = () => {
       {/* webhook message reference id edit modal */}
       {modalStatus === "reference" && (
         <ReferenceIDEdit show={show} setShow={setShow} message={message} />
+      )}
+
+      {/* tutorial play modal */}
+      {modalStatus === "playTutorial" && (
+        <PlayTutorial
+          {...{
+            show,
+            setShow,
+            video: "report",
+          }}
+        />
       )}
     </>
   );

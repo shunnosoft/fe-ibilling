@@ -22,12 +22,13 @@ import { Button } from "react-bootstrap";
 import { getIspOwnerWitSMS } from "../../features/apiCalls";
 import MessageAlert from "../message/MessageAlert";
 import { useSelector } from "react-redux";
-import { EnvelopePlus } from "react-bootstrap-icons";
+import { EnvelopePlus, PlayBtn } from "react-bootstrap-icons";
 import CustomerTicketSmsTemplate from "./template/CustomerTicketSmsTemplate";
 import CustomerManualEdit from "./template/CustomerManualEdit";
 import StaffAssignTicketSMSTemplate from "./template/StaffAssignTicketSMSTemplate";
 import CustomerTicketAssignSmsTemplate from "./template/CustomerAssignTicketSmsTemplate";
 import ConnectionFeeSMSTemplate from "./template/ConnectionFeeSMSTemplate";
+import PlayTutorial from "../tutorial/PlayTutorial";
 export default function Settings() {
   const { t } = useTranslation();
 
@@ -42,6 +43,7 @@ export default function Settings() {
   };
   const [loading, setLoading] = useState(false);
   const [ispOwner, setIspOwner] = useState("");
+  const [modalStatus, setModalStatus] = useState("");
 
   useEffect(() => {
     getIspOwnerWitSMS(ispOwnerId, setIspOwner, setLoading);
@@ -60,7 +62,24 @@ export default function Settings() {
                   <div>{t("message setting")}</div>
 
                   <div className="d-flex align-items-center">
-                    <div className="textButton" onClick={() => setShow(true)}>
+                    <div className="addAndSettingIcon">
+                      <PlayBtn
+                        className="addcutmButton"
+                        onClick={() => {
+                          setModalStatus("playTutorial");
+                          setShow(true);
+                        }}
+                        title={t("tutorial")}
+                      />
+                    </div>
+
+                    <div
+                      className="textButton"
+                      onClick={() => {
+                        setModalStatus("buySms");
+                        setShow(true);
+                      }}
+                    >
                       <EnvelopePlus className="text_icons" /> {t("buySms")}
                     </div>
                   </div>
@@ -196,8 +215,23 @@ export default function Settings() {
           </div>
         </div>
       </div>
-      <SMSPurchase show={show} setShow={setShow} />
       <MessageAlert ispOwner={ispOwner} />
+
+      {/* sms purchase board modal */}
+      {modalStatus === "buySms" && (
+        <SMSPurchase show={show} setShow={setShow} />
+      )}
+
+      {/* tutorial play modal */}
+      {modalStatus === "playTutorial" && (
+        <PlayTutorial
+          {...{
+            show,
+            setShow,
+            video: "smsTemplate",
+          }}
+        />
+      )}
     </>
   );
 }

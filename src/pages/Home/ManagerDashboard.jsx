@@ -23,6 +23,8 @@ import {
   getIspOwnerCollector,
   getManagerDashboardCardData,
   getManagerDashboardCharts,
+  getManagerDashboardCollectionOverviewData,
+  getManagerDashboardCustomerOverviewData,
   getManagerDashboardOverViewCardData,
 } from "../../features/apiCalls";
 import { managerFetchSuccess } from "../../features/managerSlice";
@@ -34,10 +36,15 @@ import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
 import DashboardCard from "./dashboardCard/DashboardCard";
 import PaymentAlert from "./PaymentAlert";
+import { userStaffs } from "../../features/getIspOwnerUsersApi";
+import useSelectorState from "../../hooks/useSelectorState";
 
 const ManagerDashboard = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+
+  //---> Get redux store state data from useSelectorState hooks
+  const { userStaff } = useSelectorState();
 
   // get current date
   const getDate = new Date();
@@ -61,11 +68,16 @@ const ManagerDashboard = () => {
   );
 
   //get dashboard different cards data
-  const customerStat = useSelector((state) => state.chart.customerStat);
+  const customerStat = useSelector((state) => state.chart?.customerStat);
 
-  // get dashboard over view data form redux store
-  const dashboardOverView = useSelector(
-    (state) => state.chart.dashboardOverview
+  // get dashboard collection over view data form redux store
+  const dashboardOverviewManagerCollection = useSelector(
+    (state) => state.chart.dashboardOverviewManagerCollection
+  );
+
+  // get dashboard customer over view data form redux store
+  const dashboardOverviewManagerCustomer = useSelector(
+    (state) => state.chart.dashboardOverviewManagerCustomer
   );
 
   // get dashboard Below collector card data form redux store
@@ -105,39 +117,45 @@ const ManagerDashboard = () => {
   const date = new Date();
   const newYear = date.getFullYear();
   const [Year, setYear] = useState(date.getFullYear());
-  const [Month, setMonth] = useState(date.getMonth());
+  const [Month, setMonth] = useState(date.getMonth() + 1);
   const [filterDate, setFilterDate] = useState(date);
 
   //api calls
   useEffect(() => {
-    // get manager dashboard overview card data api
-    getManagerDashboardOverViewCardData(
-      dispatch,
-      setOverViewLoading,
-      managerId,
-      currentDate
-    );
+    //---> @Get dashboard overview collection data
+    !Object.keys(dashboardOverviewManagerCollection).length &&
+      getManagerDashboardCollectionOverviewData(
+        dispatch,
+        setOverViewLoading,
+        managerId,
+        currentDate
+      );
 
-    //get graph data
-    getManagerDashboardCharts(
-      setLoading,
-      dispatch,
-      managerId,
-      Year,
-      Month,
-      currentCollector
-    );
+    //---> @Get dashboard overview customer data
+    !Object.keys(dashboardOverviewManagerCustomer).length &&
+      getManagerDashboardCustomerOverviewData(
+        dispatch,
+        setBelowCardLoading,
+        managerId,
+        currentDate
+      );
 
-    //get dashboard below card api
-    getManagerDashboardCardData(
-      dispatch,
-      setBelowCardLoading,
-      managerId,
-      currentDate
-    );
+    //---> @Get dashboard monthly collection chart data
+    !ChartsData.length &&
+      getManagerDashboardCharts(
+        setLoading,
+        dispatch,
+        managerId,
+        Year,
+        Month,
+        currentCollector
+      );
 
     // get user data
     dispatch(managerFetchSuccess(userData));
+
+    //---> @Get current user staffs data
+    !userStaff?.length && userStaffs(dispatch);
 
     // get netFee bulletin api call
     Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
@@ -167,15 +185,23 @@ const ManagerDashboard = () => {
       month: filterDate.getMonth() + 1,
     };
 
-    // get manager dashboard overview card api
-    getManagerDashboardOverViewCardData(
+    //---> @Get dashboard overview collection data
+    getManagerDashboardCollectionOverviewData(
       dispatch,
       setOverViewLoading,
       managerId,
       filterData
     );
 
-    // get graph data api
+    //---> @Get dashboard overview customer data
+    getManagerDashboardCustomerOverviewData(
+      dispatch,
+      setBelowCardLoading,
+      managerId,
+      filterData
+    );
+
+    //---> @Get dashboard monthly collection chart data
     getManagerDashboardCharts(
       setLoading,
       dispatch,
@@ -183,14 +209,6 @@ const ManagerDashboard = () => {
       filterData.year,
       filterData.month,
       currentCollector
-    );
-
-    // get dashboard below card api
-    getManagerDashboardCardData(
-      dispatch,
-      setBelowCardLoading,
-      managerId,
-      filterData
     );
   };
 
@@ -213,15 +231,23 @@ const ManagerDashboard = () => {
       month: filterDate.getMonth() + 1,
     };
 
-    // get manager dashboard overview card api
-    getManagerDashboardOverViewCardData(
+    //---> @Get dashboard overview collection data
+    getManagerDashboardCollectionOverviewData(
       dispatch,
       setOverViewLoading,
       managerId,
       filterData
     );
 
-    // get graph data api
+    //---> @Get dashboard overview customer data
+    getManagerDashboardCustomerOverviewData(
+      dispatch,
+      setBelowCardLoading,
+      managerId,
+      filterData
+    );
+
+    //---> @Get dashboard monthly collection chart data
     getManagerDashboardCharts(
       setLoading,
       dispatch,
@@ -243,31 +269,25 @@ const ManagerDashboard = () => {
     setAccordionKey(eventKey);
 
     if (eventKey.includes("manager")) {
-      // get dashboard below card api
-      getManagerDashboardCardData(
-        dispatch,
-        setManagerCardLoading,
-        managerId,
-        filterData
-      );
+      //---> @Get dashboard below manager card data
+      !Object.keys(customerStat).length &&
+        getManagerDashboardCardData(
+          dispatch,
+          setManagerCardLoading,
+          managerId,
+          filterData
+        );
     }
 
     if (eventKey.includes("collector")) {
-      getDashboardBelowCollectorCardData(
-        dispatch,
-        setCollectorCardLoading,
-        ispOwnerId,
-        filterData
-      );
-
-      // get all collector api
-      getIspOwnerCollector(
-        dispatch,
-        ispOwnerId,
-        filterData?.year,
-        filterData?.month,
-        setCollectorCardLoading
-      );
+      //---> @Get dashboard below manager collectors data
+      !Object.keys(dashboardBelowCollectorCardData).length &&
+        getDashboardBelowCollectorCardData(
+          dispatch,
+          setCollectorCardLoading,
+          ispOwnerId,
+          filterData
+        );
     }
   };
 
@@ -318,14 +338,14 @@ const ManagerDashboard = () => {
   const probabilityAmountCalculation = () => {
     if (bpSettings?.dashboardProbabilityAmountWithNewCustomer) {
       return (
-        dashboardOverView.totalProbableAmount -
-        dashboardOverView.totalInactiveAmount -
-        dashboardOverView.newCustomerBillCount
+        dashboardOverviewManagerCustomer.totalProbableAmount -
+        dashboardOverviewManagerCustomer.totalInactiveAmount -
+        dashboardOverviewManagerCustomer.newCustomerBillCount
       );
     } else {
       return (
-        dashboardOverView.totalProbableAmount -
-        dashboardOverView.totalInactiveAmount
+        dashboardOverviewManagerCustomer.totalProbableAmount -
+        dashboardOverviewManagerCustomer.totalInactiveAmount
       );
     }
   };
@@ -335,13 +355,13 @@ const ManagerDashboard = () => {
     ? Math.round(
         ((bpSettings?.dashboardProbabilityAmountWithNewCustomer
           ? Math.abs(
-              dashboardOverView.totalMonthlyCollection -
-                dashboardOverView.newCustomerBillCollection -
-                dashboardOverView.totalMonthlyDiscount
+              dashboardOverviewManagerCollection.totalMonthlyCollection -
+                dashboardOverviewManagerCustomer.newCustomerBillCollection -
+                dashboardOverviewManagerCollection.totalMonthlyDiscount
             )
           : Math.abs(
-              dashboardOverView.totalMonthlyCollection -
-                dashboardOverView.totalMonthlyDiscount
+              dashboardOverviewManagerCollection.totalMonthlyCollection -
+                dashboardOverviewManagerCollection.totalMonthlyDiscount
             )) /
           probabilityAmountCalculation()) *
           100
@@ -421,13 +441,13 @@ const ManagerDashboard = () => {
                         {FormatNumber(
                           bpSettings?.dashboardProbabilityAmountWithNewCustomer
                             ? Math.abs(
-                                dashboardOverView.totalMonthlyCollection -
-                                  dashboardOverView.newCustomerBillCollection -
-                                  dashboardOverView.totalMonthlyDiscount
+                                dashboardOverviewManagerCollection.totalMonthlyCollection -
+                                  dashboardOverviewManagerCustomer.newCustomerBillCollection -
+                                  dashboardOverviewManagerCollection.totalMonthlyDiscount
                               )
                             : Math.abs(
-                                dashboardOverView.totalMonthlyCollection -
-                                  dashboardOverView.totalMonthlyDiscount
+                                dashboardOverviewManagerCollection.totalMonthlyCollection -
+                                  dashboardOverviewManagerCollection.totalMonthlyDiscount
                               )
                         )}
                       </h2>
@@ -497,7 +517,10 @@ const ManagerDashboard = () => {
 
               {/* dashboard overview card */}
               <DashboardCard
-                dashboardCard={dashboardOverView}
+                dashboardCard={{
+                  ...dashboardOverviewManagerCollection,
+                  ...dashboardOverviewManagerCustomer,
+                }}
                 filterDate={filterDate}
                 cardRole={"overView"}
               />
@@ -531,15 +554,13 @@ const ManagerDashboard = () => {
                   </div>
 
                   <div className="ChartsFilternew">
-                    {role === "collector" ? (
-                      ""
-                    ) : (
+                    {role === "manager" && (
                       <select
                         className="form-select chartFilteritem"
                         onChange={(e) => setCurrentCollector(e.target.value)}
                       >
                         <option value="">{t("all collector")}</option>
-                        {dashboardOverView?.collectorStat?.map((c, key) => (
+                        {userStaff?.map((c, key) => (
                           <option key={key} value={c.user}>
                             {c.name}
                           </option>
@@ -611,7 +632,7 @@ const ManagerDashboard = () => {
                 </Accordion.Body>
               </Accordion.Item>
 
-              {dashboardOverView.collectorStat?.length > 0 && (
+              {dashboardOverviewManagerCollection?.collectorStat > 0 && (
                 <Accordion.Item eventKey="collector">
                   <Accordion.Header className="shadow-none">
                     <h4 className="mb-0">{t("roleCollector")}</h4>

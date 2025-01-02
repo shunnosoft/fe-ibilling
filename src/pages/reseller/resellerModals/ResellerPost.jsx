@@ -302,7 +302,7 @@ const ResellerPost = ({ show, setShow }) => {
         setShow={setShow}
         centered={false}
         size={"xl"}
-        header={t("resellerPost")}
+        header={t("create") + " " + t("reseller")}
         footer={
           <div className="displayGrid1 float-end">
             <button

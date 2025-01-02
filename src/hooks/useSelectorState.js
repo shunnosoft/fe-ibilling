@@ -19,8 +19,8 @@ const useSelectorState = () => {
   //---> Get ispOwner without mikrotik packages from redux store
   const withoutMtkPackages = useSelector((state) => state.package?.packages);
 
-  //---> Get ispOwner all user staff from redux store
-  const ispOwnerStaff = useSelector((state) => state?.ownerUsers?.userStaff);
+  //---> Get current user staff from redux store
+  const userStaff = useSelector((state) => state?.ownerUsers?.userStaff);
 
   return {
     areas,
@@ -29,7 +29,7 @@ const useSelectorState = () => {
     mikrotiks,
     allPackages,
     withoutMtkPackages,
-    ispOwnerStaff,
+    userStaff,
   };
 };
 

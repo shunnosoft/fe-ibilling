@@ -9,6 +9,7 @@ import {
   ArchiveFill,
   ArrowClockwise,
   PenFill,
+  PlayBtn,
   Plus,
   ThreeDots,
 } from "react-bootstrap-icons";
@@ -22,6 +23,7 @@ import useISPowner from "../../../hooks/useISPOwner";
 import Table from "../../../components/table/Table";
 import moment from "moment";
 import Footer from "../../../components/admin/footer/Footer";
+import PlayTutorial from "../../tutorial/PlayTutorial";
 
 const Device = () => {
   const { t } = useTranslation();
@@ -195,6 +197,17 @@ const Device = () => {
                     >
                       <Plus className="addcutmButton" />
                     </div>
+
+                    <div className="addAndSettingIcon">
+                      <PlayBtn
+                        className="addcutmButton"
+                        onClick={() => {
+                          setModalStatus("playTutorial");
+                          setShow(true);
+                        }}
+                        title={t("tutorial")}
+                      />
+                    </div>
                   </div>
                 </div>
               </FourGround>
@@ -224,6 +237,17 @@ const Device = () => {
               ? `${t("update")} ${t("mikrotik")}`
               : `${t("create")} ${t("mikrotik")}`,
             device: isUpdate ? deviceData : "",
+          }}
+        />
+      )}
+
+      {/* tutorial play modal */}
+      {modalStatus === "playTutorial" && (
+        <PlayTutorial
+          {...{
+            show,
+            setShow,
+            video: "diagram",
           }}
         />
       )}

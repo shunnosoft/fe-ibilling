@@ -6,6 +6,7 @@ import {
   PersonFill,
   KeyFill,
   ChatText,
+  PlayBtn,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector } from "react-redux";
@@ -34,6 +35,7 @@ import ManagerDetails from "./ManagerCRUD/ManagerDetails";
 import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
 import ManagerEdit from "./ManagerCRUD/ManagerEdit";
 import { getSubAreasApi } from "../../features/actions/customerApiCall";
+import PlayTutorial from "../tutorial/PlayTutorial";
 
 const Manager = () => {
   const { t } = useTranslation();
@@ -202,30 +204,44 @@ const Manager = () => {
             <FontColor>
               <FourGround>
                 <div className="d-flex justify-content-between collectorTitle px-4">
-                  <h2 className="">{t("manager")}</h2>
-                  {bpSettings?.multipleManager ? (
-                    <div
-                      title={t("addNewManager")}
-                      onClick={() => {
-                        setModalStatus("managerPost");
-                        setShow(true);
-                      }}
-                    >
-                      <PersonPlusFill className="addcutmButton" />
+                  <div>{t("manager")}</div>
+
+                  <div className="d-flex align-items-center">
+                    {bpSettings?.multipleManager ? (
+                      <div
+                        title={t("addNewManager")}
+                        onClick={() => {
+                          setModalStatus("managerPost");
+                          setShow(true);
+                        }}
+                      >
+                        <PersonPlusFill className="addcutmButton" />
+                      </div>
+                    ) : manager.length === 0 ? (
+                      <div
+                        title={t("addNewManager")}
+                        onClick={() => {
+                          setModalStatus("managerPost");
+                          setShow(true);
+                        }}
+                      >
+                        <PersonPlusFill className="addcutmButton" />
+                      </div>
+                    ) : (
+                      ""
+                    )}
+
+                    <div className="addAndSettingIcon">
+                      <PlayBtn
+                        className="addcutmButton"
+                        onClick={() => {
+                          setModalStatus("playTutorial");
+                          setShow(true);
+                        }}
+                        title={t("tutorial")}
+                      />
                     </div>
-                  ) : manager.length === 0 ? (
-                    <div
-                      title={t("addNewManager")}
-                      onClick={() => {
-                        setModalStatus("managerPost");
-                        setShow(true);
-                      }}
-                    >
-                      <PersonPlusFill className="addcutmButton" />
-                    </div>
-                  ) : (
-                    ""
-                  )}
+                  </div>
                 </div>
               </FourGround>
 
@@ -274,6 +290,17 @@ const Manager = () => {
       {/* collector password reset */}
       {modalStatus === "password" && (
         <PasswordReset show={show} setShow={setShow} userId={userId} />
+      )}
+
+      {/* tutorial play modal */}
+      {modalStatus === "playTutorial" && (
+        <PlayTutorial
+          {...{
+            show,
+            setShow,
+            video: "staff",
+          }}
+        />
       )}
 
       {/* modal End */}

@@ -10,6 +10,7 @@ import {
   ArchiveFill,
   CashStack,
   CurrencyDollar,
+  PlayBtn,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
@@ -39,6 +40,7 @@ import Loader from "../../components/common/Loader";
 import PasswordReset from "../../components/modals/passwordReset/PasswordReset";
 import { getSubAreasApi } from "../../features/actions/customerApiCall";
 import PrevBalanceReport from "./collectorCRUD/PrevBalanceReport";
+import PlayTutorial from "../tutorial/PlayTutorial";
 
 const Collector = () => {
   const { t } = useTranslation();
@@ -300,6 +302,17 @@ const Collector = () => {
                         <PersonPlusFill className="addcutmButton" />
                       </div>
                     )}
+
+                    <div className="addAndSettingIcon">
+                      <PlayBtn
+                        className="addcutmButton"
+                        onClick={() => {
+                          setModalStatus("playTutorial");
+                          setShow(true);
+                        }}
+                        title={t("tutorial")}
+                      />
+                    </div>
                   </div>
                 </div>
               </FourGround>
@@ -319,47 +332,59 @@ const Collector = () => {
             </FontColor>
           </div>
         </div>
-        {/* modals */}
-        <CollectorDetails collectorId={singleCollector} />
-
-        {/* collector post modal */}
-        {modalStatus === "collectorPost" && (
-          <CollectorPost show={show} setShow={setShow} />
-        )}
-
-        {/* collector data edit modal */}
-        {modalStatus === "collectorEdit" && (
-          <CollectorEdit
-            show={show}
-            setShow={setShow}
-            collectorId={singleCollector}
-          />
-        )}
-
-        {/* collector previous balance modal */}
-        {modalStatus === "previousBalance" && (
-          <PrevBalanceReport
-            show={show}
-            setShow={setShow}
-            collectorId={singleCollector}
-          />
-        )}
-
-        {/* single message modal */}
-        {modalStatus === "message" && (
-          <SingleMessage
-            show={show}
-            setShow={setShow}
-            single={collectorId}
-            sendCustomer="collector"
-          />
-        )}
-
-        {/* collector password reset */}
-        {modalStatus === "password" && (
-          <PasswordReset show={show} setShow={setShow} userId={userId} />
-        )}
       </div>
+
+      {/* modals */}
+      <CollectorDetails collectorId={singleCollector} />
+
+      {/* collector post modal */}
+      {modalStatus === "collectorPost" && (
+        <CollectorPost show={show} setShow={setShow} />
+      )}
+
+      {/* collector data edit modal */}
+      {modalStatus === "collectorEdit" && (
+        <CollectorEdit
+          show={show}
+          setShow={setShow}
+          collectorId={singleCollector}
+        />
+      )}
+
+      {/* collector previous balance modal */}
+      {modalStatus === "previousBalance" && (
+        <PrevBalanceReport
+          show={show}
+          setShow={setShow}
+          collectorId={singleCollector}
+        />
+      )}
+
+      {/* single message modal */}
+      {modalStatus === "message" && (
+        <SingleMessage
+          show={show}
+          setShow={setShow}
+          single={collectorId}
+          sendCustomer="collector"
+        />
+      )}
+
+      {/* collector password reset */}
+      {modalStatus === "password" && (
+        <PasswordReset show={show} setShow={setShow} userId={userId} />
+      )}
+
+      {/* tutorial play modal */}
+      {modalStatus === "playTutorial" && (
+        <PlayTutorial
+          {...{
+            show,
+            setShow,
+            video: "staff",
+          }}
+        />
+      )}
     </>
   );
 };

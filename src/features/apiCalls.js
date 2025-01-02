@@ -118,6 +118,8 @@ import {
   getBelowCollectorCardData,
   getBelowResellerCardData,
   getDashboardOverViewCustomerData,
+  getDashboardOverviewManagerCustomerDataSuccess,
+  getDashboardOverviewManagerCollectionDataSuccess,
 } from "./chartsSlice";
 import {
   getAllRechargeHistory,
@@ -245,11 +247,10 @@ export const getManagerDashboardCharts = async (
   month,
   collectorId
 ) => {
-  const plusMonth = Number(month) + 1;
   try {
     setLoading(true);
     const res = await apiLink(
-      `dashboard/manager/chart-data/${managerId}?year=${year}&month=${plusMonth}&user=${collectorId}`
+      `dashboard/manager/chart-data/${managerId}?year=${year}&month=${month}&user=${collectorId}`
     );
     dispatch(getChartSuccess(res.data));
   } catch (err) {
@@ -415,6 +416,7 @@ export const getIspOwnerDashboardOverViewData = async (
     const res = await apiLink(
       `/dashboard/bill-overview/${ispOwnerId}?year=${filterData.year}&month=${filterData.month}`
     );
+    localStorage.setItem("webhook", res?.data.webhookPaymentCustomerCount);
     dispatch(getDashboardOverViewData(res.data));
     setDashboardLoading(false);
   } catch (err) {
@@ -434,7 +436,7 @@ export const getIspOwnerDashboardOverViewCustomerData = async (
     const res = await apiLink(
       `/dashboard/customer-overview/${ispOwnerId}?year=${filterData.year}&month=${filterData.month}`
     );
-    localStorage.setItem("webhook", res?.data.webhookPaymentCustomerCount);
+
     dispatch(getDashboardOverViewCustomerData(res.data));
     setDashboardLoading(false);
   } catch (err) {
@@ -588,6 +590,44 @@ export const getManagerDashboardCardData = async (
       `/dashboard/manager/${managerId}?year=${filterData.year}&month=${filterData.month}`
     );
     dispatch(getCardDataSuccess(res.data));
+  } catch (err) {
+    toast.error(err.response?.data?.message);
+  }
+  setIsloading(false);
+};
+
+// get manager dashboard collection overview card data
+export const getManagerDashboardCollectionOverviewData = async (
+  dispatch,
+  setIsloading,
+  managerId,
+  filterData
+) => {
+  setIsloading(true);
+  try {
+    const res = await apiLink(
+      `/dashboard/manager/collection-overview/${managerId}?year=${filterData.year}&month=${filterData.month}`
+    );
+    dispatch(getDashboardOverviewManagerCollectionDataSuccess(res.data));
+  } catch (err) {
+    toast.error(err.response?.data?.message);
+  }
+  setIsloading(false);
+};
+
+// get manager dashboard customer overview card data
+export const getManagerDashboardCustomerOverviewData = async (
+  dispatch,
+  setIsloading,
+  managerId,
+  filterData
+) => {
+  setIsloading(true);
+  try {
+    const res = await apiLink(
+      `/dashboard/manager/customer-overview/${managerId}?year=${filterData.year}&month=${filterData.month}`
+    );
+    dispatch(getDashboardOverviewManagerCustomerDataSuccess(res.data));
   } catch (err) {
     toast.error(err.response?.data?.message);
   }

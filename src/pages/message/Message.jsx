@@ -6,7 +6,7 @@ import moment from "moment";
 
 // internal import
 import { useCallback } from "react";
-import { ArrowClockwise, EnvelopePlus } from "react-bootstrap-icons";
+import { ArrowClockwise, EnvelopePlus, PlayBtn } from "react-bootstrap-icons";
 import { FontColor, FourGround } from "../../assets/js/theme";
 
 import Footer from "../../components/admin/footer/Footer";
@@ -29,6 +29,7 @@ import { areasSubareasChecked } from "../staff/staffCustomFucn";
 import useISPowner from "../../hooks/useISPOwner";
 import InformationTooltip from "../../components/common/tooltipInformation/InformationTooltip";
 import { informationEnBn } from "../../components/common/tooltipInformation/informationEnBn";
+import PlayTutorial from "../tutorial/PlayTutorial";
 
 const useForceUpdate = () => {
   const [value, setValue] = useState(0); // integer state
@@ -123,6 +124,7 @@ export default function Message() {
   const [billDate, setBillDate] = useState(new Date());
 
   const [show, setShow] = useState(false);
+  const [modalStatus, setModalStatus] = useState("");
 
   const [loading, setIsLoading] = useState(false);
 
@@ -504,7 +506,24 @@ export default function Message() {
                   <div>{t("SMSboard")}</div>
 
                   <div className="d-flex align-items-center">
-                    <div className="textButton" onClick={() => setShow(true)}>
+                    <div className="addAndSettingIcon">
+                      <PlayBtn
+                        className="addcutmButton"
+                        onClick={() => {
+                          setModalStatus("playTutorial");
+                          setShow(true);
+                        }}
+                        title={t("tutorial")}
+                      />
+                    </div>
+
+                    <div
+                      className="textButton"
+                      onClick={() => {
+                        setModalStatus("buySms");
+                        setShow(true);
+                      }}
+                    >
                       <EnvelopePlus className="text_icons" /> {t("buySms")}
                     </div>
                   </div>
@@ -1163,7 +1182,22 @@ export default function Message() {
         </div>
       </div>
       <MessageAlert ispOwner={sms} />
-      <SMSPurchase show={show} setShow={setShow} />
+
+      {/* sms purchase board modal */}
+      {modalStatus === "buySms" && (
+        <SMSPurchase show={show} setShow={setShow} />
+      )}
+
+      {/* tutorial play modal */}
+      {modalStatus === "playTutorial" && (
+        <PlayTutorial
+          {...{
+            show,
+            setShow,
+            video: "smsTemplate",
+          }}
+        />
+      )}
     </>
   );
 }

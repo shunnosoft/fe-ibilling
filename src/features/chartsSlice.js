@@ -11,6 +11,8 @@ const chartsSlice = createSlice({
     dashboardBelowManagerCardData: {},
     dashboardBelowResellerCardData: {},
     dashboardBelowCollectorCardData: {},
+    dashboardOverviewManagerCustomer: {},
+    dashboardOverviewManagerCollection: {},
   },
   reducers: {
     getChartSuccess: (state, { payload }) => {
@@ -18,6 +20,12 @@ const chartsSlice = createSlice({
     },
     getCardDataSuccess: (state, { payload }) => {
       state.customerStat = payload;
+    },
+    getDashboardOverviewManagerCollectionDataSuccess: (state, { payload }) => {
+      state.dashboardOverviewManagerCollection = payload;
+    },
+    getDashboardOverviewManagerCustomerDataSuccess: (state, { payload }) => {
+      state.dashboardOverviewManagerCustomer = payload;
     },
     clearChart: (state) => {
       state.charts = [];
@@ -57,5 +65,7 @@ export const {
   getDashboardOverViewCustomerData,
   getBelowResellerCardData,
   getBelowCollectorCardData,
+  getDashboardOverviewManagerCustomerDataSuccess,
+  getDashboardOverviewManagerCollectionDataSuccess,
 } = chartsSlice.actions;
 export default chartsSlice.reducer;

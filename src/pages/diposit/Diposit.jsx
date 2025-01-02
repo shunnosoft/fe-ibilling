@@ -12,6 +12,7 @@ import {
   ArrowClockwise,
   FilterCircle,
   Pencil,
+  PlayBtn,
   PrinterFill,
   ThreeDots,
 } from "react-bootstrap-icons";
@@ -43,6 +44,7 @@ import NoteDetailsModal from "./NoteDetailsModal";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
 import UpdateDeposit from "./UpdateDeposit";
+import PlayTutorial from "../tutorial/PlayTutorial";
 
 const Diposit = () => {
   const { t } = useTranslation();
@@ -687,6 +689,17 @@ const Diposit = () => {
                       )}
                     </div>
 
+                    <div className="addAndSettingIcon">
+                      <PlayBtn
+                        className="addcutmButton"
+                        onClick={() => {
+                          setModalStatus("playTutorial");
+                          setShow(true);
+                        }}
+                        title={t("tutorial")}
+                      />
+                    </div>
+
                     <ReactToPrint
                       documentTitle="গ্রাহক লিস্ট"
                       trigger={() => (
@@ -842,6 +855,17 @@ const Diposit = () => {
       {/* deposit report update modal */}
       {modalStatus === "updateDeposit" && (
         <UpdateDeposit show={show} setShow={setShow} deposit={depositData} />
+      )}
+
+      {/* tutorial play modal */}
+      {modalStatus === "playTutorial" && (
+        <PlayTutorial
+          {...{
+            show,
+            setShow,
+            video: "report",
+          }}
+        />
       )}
     </>
   );

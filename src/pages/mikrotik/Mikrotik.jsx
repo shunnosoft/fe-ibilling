@@ -6,6 +6,7 @@ import {
   ArchiveFill,
   PlugFill,
   PersonDash,
+  PlayBtn,
 } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -26,6 +27,7 @@ import Loader from "../../components/common/Loader";
 import MikrotikDelete from "./mikrotikModals/MikrotikDelete";
 import apiLink from "../../api/apiLink";
 import useISPowner from "../../hooks/useISPOwner";
+import PlayTutorial from "../tutorial/PlayTutorial";
 
 const Mikrotik = () => {
   const { t } = useTranslation();
@@ -193,6 +195,17 @@ const Mikrotik = () => {
                     >
                       <Plus className="addcutmButton" />
                     </div>
+
+                    <div className="addAndSettingIcon">
+                      <PlayBtn
+                        className="addcutmButton"
+                        onClick={() => {
+                          setModalStatus("playTutorial");
+                          setShow(true);
+                        }}
+                        title={t("tutorial")}
+                      />
+                    </div>
                   </div>
                 </div>
               </FourGround>
@@ -226,6 +239,17 @@ const Mikrotik = () => {
       {/* mikrotik modal for delete */}
       {modalStatus === "deletekrotik" && (
         <MikrotikDelete show={show} setShow={setShow} mikrotikID={mikrotikId} />
+      )}
+
+      {/* tutorial play modal */}
+      {modalStatus === "playTutorial" && (
+        <PlayTutorial
+          {...{
+            show,
+            setShow,
+            video: "mikrotik",
+          }}
+        />
       )}
     </>
   );

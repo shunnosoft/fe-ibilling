@@ -13,6 +13,8 @@ import {
   getCustomer,
   getNetworkDiagramDevice,
 } from "../../../features/apiCalls";
+import PlayTutorial from "../../tutorial/PlayTutorial";
+import { PlayBtn } from "react-bootstrap-icons";
 
 const Diagram = () => {
   const { t } = useTranslation();
@@ -43,6 +45,7 @@ const Diagram = () => {
 
   // Modal handle state
   const [show, setShow] = useState(false);
+  const [modalStatus, setModalStatus] = useState("");
 
   // Assign data update handler
   const [isUpdate, setIsUpdate] = useState(false);
@@ -151,6 +154,7 @@ const Diagram = () => {
           event.preventDefault();
           if (!d._children) {
             if (d.data?.candidateType !== "onu") {
+              setModalStatus("assignDevice");
               setAssignData(d.data);
               setShow(true);
               setIsUpdate(d.data?.children ? true : false);
@@ -339,6 +343,17 @@ const Diagram = () => {
                   <div className="component_name">{`${t("network")} ${t(
                     "diagram"
                   )}`}</div>
+
+                  <div className="addAndSettingIcon">
+                    <PlayBtn
+                      className="addcutmButton"
+                      onClick={() => {
+                        setModalStatus("playTutorial");
+                        setShow(true);
+                      }}
+                      title={t("tutorial")}
+                    />
+                  </div>
                 </div>
               </FourGround>
               <FourGround>
@@ -355,6 +370,17 @@ const Diagram = () => {
       </div>
 
       <AssignDevice show={show} setShow={setShow} data={assignData} />
+
+      {/* tutorial play modal */}
+      {modalStatus === "playTutorial" && (
+        <PlayTutorial
+          {...{
+            show,
+            setShow,
+            video: "diagram",
+          }}
+        />
+      )}
     </>
   );
 };

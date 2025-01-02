@@ -70,9 +70,6 @@ export default function Sidebar() {
     currentUser,
   } = useISPowner();
 
-  // get reseller
-  const reseller = useSelector((state) => state.reseller);
-
   // const hasReseller= true
   // addSidebar
   const addSidebar = () => {
@@ -589,8 +586,7 @@ export default function Sidebar() {
                           </FontColor>
                         </NavLink>
 
-                        {role === "ispOwner" &&
-                        reseller.reseller?.length > 0 ? (
+                        {role === "ispOwner" && bpSettings?.hasReseller && (
                           <NavLink
                             key={125}
                             to={
@@ -618,8 +614,6 @@ export default function Sidebar() {
                               </li>
                             </FontColor>
                           </NavLink>
-                        ) : (
-                          ""
                         )}
 
                         {(role === "ispOwner" || role === "manager") && (
