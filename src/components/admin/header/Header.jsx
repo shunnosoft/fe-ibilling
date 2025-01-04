@@ -95,7 +95,8 @@ export default function Header(props) {
     if (userRole === "manager" || userRole === "collector") {
       getTotalbal(dispatch, setLoading);
     }
-  }, [userRole, userData]);
+  }, [userRole]);
+
   // logout
   const handleLogOut = async () => {
     userLogout(dispatch);

@@ -20,12 +20,10 @@ import { FourGround, FontColor } from "../../assets/js/theme";
 import { monthsName } from "./homeData";
 import {
   getDashboardBelowCollectorCardData,
-  getIspOwnerCollector,
   getManagerDashboardCardData,
   getManagerDashboardCharts,
   getManagerDashboardCollectionOverviewData,
   getManagerDashboardCustomerOverviewData,
-  getManagerDashboardOverViewCardData,
 } from "../../features/apiCalls";
 import { managerFetchSuccess } from "../../features/managerSlice";
 import FormatNumber from "../../components/common/NumberFormat";
@@ -117,7 +115,7 @@ const ManagerDashboard = () => {
   const date = new Date();
   const newYear = date.getFullYear();
   const [Year, setYear] = useState(date.getFullYear());
-  const [Month, setMonth] = useState(date.getMonth() + 1);
+  const [Month, setMonth] = useState(date.getMonth());
   const [filterDate, setFilterDate] = useState(date);
 
   //api calls

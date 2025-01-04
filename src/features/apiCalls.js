@@ -248,9 +248,10 @@ export const getManagerDashboardCharts = async (
   collectorId
 ) => {
   try {
+    const plusMonth = Number(month) + 1;
     setLoading(true);
     const res = await apiLink(
-      `dashboard/manager/chart-data/${managerId}?year=${year}&month=${month}&user=${collectorId}`
+      `dashboard/manager/chart-data/${managerId}?year=${year}&month=${plusMonth}&user=${collectorId}`
     );
     dispatch(getChartSuccess(res.data));
   } catch (err) {
