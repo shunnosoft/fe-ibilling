@@ -28,28 +28,24 @@ const NetFeeBulletin = () => {
   }, []);
 
   return (
-    <>
+    bulletins &&
+    bulletins.map((val) => {
       <div className="bulletin">
         <marquee id="bulletin_marquee" scrollamount="6" scrolldelay="100">
-          {bulletins &&
-            bulletins.map((val) => {
-              return (
-                <span
-                  className="bulletin_title"
-                  onMouseEnter={() =>
-                    document.getElementById("bulletin_marquee").stop()
-                  }
-                  onMouseLeave={() =>
-                    document.getElementById("bulletin_marquee").start()
-                  }
-                >
-                  {val && val.title}
-                </span>
-              );
-            })}
+          <span
+            className="bulletin_title"
+            onMouseEnter={() =>
+              document.getElementById("bulletin_marquee").stop()
+            }
+            onMouseLeave={() =>
+              document.getElementById("bulletin_marquee").start()
+            }
+          >
+            {val && val.title}
+          </span>
         </marquee>
-      </div>
-    </>
+      </div>;
+    })
   );
 };
 

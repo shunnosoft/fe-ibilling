@@ -159,7 +159,7 @@ const RechargeReport = ({ show, setShow, resellerId }) => {
 
           <div style={{ display: "none" }}>
             <PrintReport
-              currentCustomers={data}
+              currentCustomers={mainData}
               name={findName?.name}
               ref={componentRef}
             />

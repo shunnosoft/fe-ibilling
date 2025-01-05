@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { ToastContainer } from "react-toastify";
 import { useSelector } from "react-redux";
@@ -14,13 +14,21 @@ import DatePicker from "react-datepicker";
 import { rechargeHistoryfuncR } from "../../features/apiCallReseller";
 import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
-import { FilterCircle, PenFill, ThreeDots } from "react-bootstrap-icons";
+import {
+  FilterCircle,
+  PenFill,
+  PrinterFill,
+  ThreeDots,
+} from "react-bootstrap-icons";
 import CommentEdit from "./modal/CommentEdit";
 import FormatNumber from "../../components/common/NumberFormat";
 import { Accordion } from "react-bootstrap";
+import ReactToPrint from "react-to-print";
+import PrintReport from "../reseller/resellerModals/ReportPDF";
 
 const Recharge = () => {
   const { t } = useTranslation();
+  const componentRef = useRef();
 
   // import dispatch
   const dispatch = useDispatch();
@@ -71,6 +79,9 @@ const Recharge = () => {
 
   // filter Accordion handle state
   const [activeKeys, setActiveKeys] = useState("");
+
+  // find select reseller
+  const findName = resellers.find((item) => item?.id === resellerId);
 
   // data filter
   const onClickFilter = () => {
@@ -241,17 +252,32 @@ const Recharge = () => {
                     <h2> {t("rechargeHistory")} </h2>
                   </div>
 
-                  <div
-                    onClick={() => {
-                      if (!activeKeys) {
-                        setActiveKeys("filter");
-                      } else {
-                        setActiveKeys("");
-                      }
-                    }}
-                    title={t("filter")}
-                  >
-                    <FilterCircle className="addcutmButton" />
+                  <div className="d-flex align-items-center">
+                    <div
+                      onClick={() => {
+                        if (!activeKeys) {
+                          setActiveKeys("filter");
+                        } else {
+                          setActiveKeys("");
+                        }
+                      }}
+                      title={t("filter")}
+                    >
+                      <FilterCircle className="addcutmButton" />
+                    </div>
+
+                    <div className="addAndSettingIcon">
+                      <ReactToPrint
+                        documentTitle={t("billReport")}
+                        trigger={() => (
+                          <PrinterFill
+                            title={t("print")}
+                            className="addcutmButton"
+                          />
+                        )}
+                        content={() => componentRef.current}
+                      />
+                    </div>
                   </div>
                 </div>
               </FourGround>
@@ -325,6 +351,13 @@ const Recharge = () => {
               <Footer />
             </FontColor>
           </div>
+        </div>
+        <div style={{ display: "none" }}>
+          <PrintReport
+            currentCustomers={rechargeData}
+            name={findName ? findName?.name : t("allReseller")}
+            ref={componentRef}
+          />
         </div>
       </div>
       <CommentEdit rechargeId={rechargeId} />
