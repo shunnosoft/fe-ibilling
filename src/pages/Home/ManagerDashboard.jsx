@@ -337,12 +337,12 @@ const ManagerDashboard = () => {
     if (bpSettings?.dashboardProbabilityAmountWithNewCustomer) {
       return (
         dashboardOverviewManagerCustomer.totalProbableAmount -
-        dashboardOverviewManagerCustomer.totalInactiveAmount -
-        dashboardOverviewManagerCustomer.newCustomerBillCount
+        dashboardOverviewManagerCustomer.totalInactiveAmount
       );
     } else {
       return (
         dashboardOverviewManagerCustomer.totalProbableAmount -
+        dashboardOverviewManagerCustomer.newCustomerBillCount -
         dashboardOverviewManagerCustomer.totalInactiveAmount
       );
     }
@@ -354,11 +354,11 @@ const ManagerDashboard = () => {
         ((bpSettings?.dashboardProbabilityAmountWithNewCustomer
           ? Math.abs(
               dashboardOverviewManagerCollection.totalMonthlyCollection -
-                dashboardOverviewManagerCustomer.newCustomerBillCollection -
                 dashboardOverviewManagerCollection.totalMonthlyDiscount
             )
           : Math.abs(
               dashboardOverviewManagerCollection.totalMonthlyCollection -
+                dashboardOverviewManagerCustomer.newCustomerBillCollection -
                 dashboardOverviewManagerCollection.totalMonthlyDiscount
             )) /
           probabilityAmountCalculation()) *
@@ -440,11 +440,11 @@ const ManagerDashboard = () => {
                           bpSettings?.dashboardProbabilityAmountWithNewCustomer
                             ? Math.abs(
                                 dashboardOverviewManagerCollection.totalMonthlyCollection -
-                                  dashboardOverviewManagerCustomer.newCustomerBillCollection -
                                   dashboardOverviewManagerCollection.totalMonthlyDiscount
                               )
                             : Math.abs(
                                 dashboardOverviewManagerCollection.totalMonthlyCollection -
+                                  dashboardOverviewManagerCustomer.newCustomerBillCollection -
                                   dashboardOverviewManagerCollection.totalMonthlyDiscount
                               )
                         )}

@@ -366,12 +366,12 @@ const IspOwnerDashboard = () => {
     if (bpSettings?.dashboardProbabilityAmountWithNewCustomer) {
       return (
         dashboardOverviewCustomer.totalProbableAmount -
-        dashboardOverviewCustomer.totalInactiveAmount -
-        dashboardOverviewCustomer.newCustomerBillCount
+        dashboardOverviewCustomer.totalInactiveAmount
       );
     } else {
       return (
         dashboardOverviewCustomer.totalProbableAmount -
+        dashboardOverviewCustomer.newCustomerBillCount -
         dashboardOverviewCustomer.totalInactiveAmount
       );
     }
@@ -383,11 +383,11 @@ const IspOwnerDashboard = () => {
         ((bpSettings?.dashboardProbabilityAmountWithNewCustomer
           ? Math.abs(
               dashboardOverView.totalMonthlyCollection -
-                dashboardOverviewCustomer.newCustomerBillCollection -
                 dashboardOverView.totalMonthlyDiscount
             )
           : Math.abs(
               dashboardOverView.totalMonthlyCollection -
+                dashboardOverviewCustomer.newCustomerBillCollection -
                 dashboardOverView.totalMonthlyDiscount
             )) /
           probabilityAmountCalculation()) *
@@ -492,11 +492,11 @@ const IspOwnerDashboard = () => {
                         bpSettings?.dashboardProbabilityAmountWithNewCustomer
                           ? Math.abs(
                               dashboardOverView.totalMonthlyCollection -
-                                dashboardOverviewCustomer.newCustomerBillCollection -
                                 dashboardOverView.totalMonthlyDiscount
                             )
                           : Math.abs(
                               dashboardOverView.totalMonthlyCollection -
+                                dashboardOverviewCustomer.newCustomerBillCollection -
                                 dashboardOverView.totalMonthlyDiscount
                             )
                       )}

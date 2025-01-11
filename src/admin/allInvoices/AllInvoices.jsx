@@ -14,7 +14,6 @@ import {
 import useDash from "../../assets/css/dash.module.css";
 import DatePicker from "react-datepicker";
 import "./allInvoices.css";
-import DetailsModal from "./modal/DetailsModal";
 import InvoiceEditModal from "./modal/EditModal";
 import { badge } from "../../components/common/Utils";
 import FormatNumber from "../../components/common/NumberFormat";
@@ -38,6 +37,14 @@ const AllInvoices = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [ispOwnerLoading, setIspOwnerLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [filterOptions, setFilterOption] = useState({
+    invoiceType: "",
+    paymentStatus: "",
+    startCreatedAt: "",
+    endCreatedAt: "",
+    startPaidAt: "",
+    endPaidAt: "",
+  });
 
   // initial customer id state
   const [invoiceId, setInvoiceId] = useState();
@@ -47,14 +54,6 @@ const AllInvoices = () => {
 
   // initial company name state
   const [companyName, setCompanyName] = useState();
-
-  // paid date state
-  const [startPaidDate, setStartPaidDate] = useState(firstDay);
-  const [endPaidDate, setEndPaidDate] = useState(today);
-
-  // create date state
-  const [startCreateDate, setStartCreateDate] = useState(firstDay);
-  const [endCreateDate, setEndCreateDate] = useState(today);
 
   // react main state
   let [mainData, setMainData] = useState([]);
@@ -86,79 +85,92 @@ const AllInvoices = () => {
     setInvoiceId(invoiceId);
   };
 
-  // date filter by last date
-  const onClickDueDateFilter = () => {
-    let filterMainData = [...invoices];
+  const handleActiveFilter = () => {
+    let findAnyInvoice = invoices.reduce((acc, c) => {
+      const {
+        invoiceType,
+        paymentStatus,
+        startCreatedAt,
+        endCreatedAt,
+        startPaidAt,
+        endPaidAt,
+      } = filterOptions;
 
-    // payment filter
-    if (filterStatus && filterStatus !== "All") {
-      filterMainData = filterMainData.filter(
-        (value) => value.status === filterStatus
+      // make date object
+      const createDate = new Date(
+        moment(c.createdAt).format("YYYY-MM-DD hh:mm a")
       );
-    } else {
-      filterMainData = filterMainData;
-    }
 
-    // type filter
-    if (typeFilterStatus && typeFilterStatus !== "All") {
-      filterMainData = filterMainData.filter(
-        (value) => value.type === typeFilterStatus
+      const paidDate = new Date(moment(c.paidAt).format("YYYY-MM-DD hh:mm a"));
+
+      const monthCreateDateStart = new Date(
+        moment(startCreatedAt).format("YYYY-MM-DD hh:mm a")
       );
-    } else {
-      filterMainData = filterMainData;
-    }
 
-    setMainData(filterMainData);
+      const monthCreateDateEnd = new Date(
+        moment(endCreatedAt).format("YYYY-MM-DD hh:mm a")
+      );
+
+      const monthPaidDateStart = new Date(
+        moment(startPaidAt).format("YYYY-MM-DD hh:mm a")
+      );
+
+      const monthPaidDateEnd = new Date(
+        moment(endPaidAt).format("YYYY-MM-DD hh:mm a")
+      );
+
+      // make possible conditions objects if the filter value not selected thats return true
+      //if filter value exist then compare
+      const conditions = {
+        type: invoiceType ? c.type === invoiceType : true,
+        paymentStatus: paymentStatus ? c.status === paymentStatus : true,
+        createDate:
+          startCreatedAt && endCreatedAt
+            ? monthCreateDateStart <= createDate &&
+              monthCreateDateEnd >= createDate
+            : true,
+        paidDate:
+          startPaidAt && endPaidAt
+            ? monthPaidDateStart <= paidDate && monthPaidDateEnd >= paidDate
+            : true,
+      };
+
+      //check if condition pass got for next step or is fail stop operation
+      //if specific filter option value not exist it will return true
+
+      let isPass = false;
+
+      isPass = conditions["type"];
+      if (!isPass) return acc;
+
+      isPass = conditions["paymentStatus"];
+      if (!isPass) return acc;
+
+      isPass = conditions["createDate"];
+      if (!isPass) return acc;
+
+      isPass = conditions["paidDate"];
+      if (!isPass) return acc;
+
+      if (isPass) acc.push(c);
+
+      return acc;
+    }, []);
+
+    // set filter customer in customer state
+    setMainData(findAnyInvoice);
   };
 
-  // reset status filter handler
-  const onClickDueDateFilterReset = () => {
-    setFilterStatus("All");
-    setTypeFilterStatus("All");
-    setMainData(invoices);
-  };
-
-  // Invoice paid date filter handler
-  const handleAllInvoicePaidDateFilter = () => {
-    let arr = [...invoices];
-
-    const filteredArr = arr.filter((item) => {
-      const itemDate = new Date(item?.paidAt).setHours(0, 0, 0, 0);
-      const startDate = new Date(startPaidDate).setHours(0, 0, 0, 0);
-      const endDate = new Date(endPaidDate).setHours(23, 59, 59, 999);
-
-      return itemDate >= startDate && itemDate <= endDate;
+  // filter reset controller
+  const handleFilterReset = () => {
+    setFilterOption({
+      invoiceType: "",
+      paymentStatus: "",
+      startCreatedAt: "",
+      endCreatedAt: "",
+      startPaidAt: "",
+      endPaidAt: "",
     });
-
-    setMainData(filteredArr);
-  };
-
-  // reset paid date filter handler
-  const handleAllInvoicePaidDateFilterReset = () => {
-    setStartPaidDate(firstDay);
-    setEndPaidDate(today);
-    setMainData(invoices);
-  };
-
-  // Invoice create date filter handler
-  const handleAllInvoiceCreateDateFilter = () => {
-    let arr = [...invoices];
-
-    const filteredArr = arr.filter((item) => {
-      const itemDate = new Date(item?.createdAt).setHours(0, 0, 0, 0);
-      const startDate = new Date(startCreateDate).setHours(0, 0, 0, 0);
-      const endDate = new Date(endCreateDate).setHours(23, 59, 59, 999);
-
-      return itemDate >= startDate && itemDate <= endDate;
-    });
-
-    setMainData(filteredArr);
-  };
-
-  // reset create date filter handler
-  const handleAllInvoiceCreateDateFilterReset = () => {
-    setStartCreateDate(firstDay);
-    setEndCreateDate(today);
     setMainData(invoices);
   };
 
@@ -389,29 +401,19 @@ const AllInvoices = () => {
                 </div>
               </div>
               <div className="card-body displayGrid">
-                <div className="d-flex">
+                <div className="displayGrid6">
                   <select
                     className="form-select mt-0 me-3"
                     aria-label="Default select example"
-                    onChange={(event) => setFilterStatus(event.target.value)}
-                  >
-                    <option value="All" selected>
-                      Payment Status
-                    </option>
-                    <option value="paid">Paid</option>
-                    <option value="unpaid">Unpaid</option>
-                  </select>
-                  <select
-                    className="form-select mt-0 me-3"
-                    aria-label="Default select example"
-                    onChange={(event) =>
-                      setTypeFilterStatus(event.target.value)
+                    onChange={(e) =>
+                      setFilterOption({
+                        ...filterOptions,
+                        invoiceType: e.target.value,
+                      })
                     }
-                    value={typeFilterStatus}
+                    value={filterOptions.invoiceType}
                   >
-                    <option value="All" selected>
-                      Invoice Type
-                    </option>
+                    <option value="">Invoice Type</option>
                     <option value="monthlyServiceCharge">
                       Monthly Service Charge
                     </option>
@@ -420,105 +422,93 @@ const AllInvoices = () => {
                     <option value="migration">Migration</option>
                   </select>
 
-                  <button
-                    class="btn  btn-outline-primary btn-md px-4 me-3"
-                    onClick={onClickDueDateFilter}
+                  <select
+                    className="form-select mt-0 me-3"
+                    aria-label="Default select example"
+                    onChange={(e) =>
+                      setFilterOption({
+                        ...filterOptions,
+                        paymentStatus: e.target.value,
+                      })
+                    }
+                    value={filterOptions.paymentStatus}
                   >
-                    Submit
-                  </button>
+                    <option value="">Payment Status</option>
+                    <option value="paid">Paid</option>
+                    <option value="unpaid">Unpaid</option>
+                  </select>
 
-                  <button
-                    class="btn  btn-outline-secondary btn-md px-4"
-                    onClick={onClickDueDateFilterReset}
-                  >
-                    Reset
-                  </button>
-                </div>
-
-                <div class="d-flex">
                   <div>
-                    <label className="form-control-label changeLabelFontColor">
-                      Paid Start Date
-                    </label>
-
                     <DatePicker
-                      className="form-control mw-100  me-3"
-                      selected={startPaidDate}
-                      onChange={(date) => setStartPaidDate(date)}
+                      className="form-control mw-100"
+                      selected={filterOptions.startCreatedAt}
+                      onChange={(date) =>
+                        setFilterOption({
+                          ...filterOptions,
+                          startCreatedAt: date,
+                        })
+                      }
                       dateFormat="MMM dd yyyy"
-                      placeholderText={"To"}
-                    />
-                  </div>
-                  <div className="mx-3">
-                    <label className="form-control-label changeLabelFontColor">
-                      Paid End Date
-                    </label>
-
-                    <DatePicker
-                      className="form-control mw-100  me-3"
-                      selected={endPaidDate}
-                      onChange={(date) => setEndPaidDate(date)}
-                      dateFormat="MMM dd yyyy"
-                      placeholderText={"From"}
+                      placeholderText="Create Start Date"
                     />
                   </div>
 
-                  <button
-                    class="btn btn-outline-primary btn-md px-4 d-flex align-self-end  me-3"
-                    onClick={handleAllInvoicePaidDateFilter}
-                  >
-                    Submit
-                  </button>
-
-                  <button
-                    class="btn  btn-outline-secondary d-flex align-self-end btn-md px-4"
-                    onClick={handleAllInvoicePaidDateFilterReset}
-                  >
-                    Reset
-                  </button>
-                </div>
-
-                <div class="d-flex">
                   <div>
-                    <label className="form-control-label changeLabelFontColor">
-                      Create Start Date
-                    </label>
-
                     <DatePicker
-                      className="form-control mw-100  me-3"
-                      selected={startCreateDate}
-                      onChange={(date) => setStartCreateDate(date)}
+                      className="form-control mw-100"
+                      selected={filterOptions.endCreatedAt}
+                      onChange={(date) =>
+                        setFilterOption({
+                          ...filterOptions,
+                          endCreatedAt: date,
+                        })
+                      }
                       dateFormat="MMM dd yyyy"
-                      placeholderText={"To"}
-                    />
-                  </div>
-                  <div className="mx-3">
-                    <label className="form-control-label changeLabelFontColor">
-                      Create End Date
-                    </label>
-
-                    <DatePicker
-                      className="form-control mw-100  me-3"
-                      selected={endCreateDate}
-                      onChange={(date) => setEndCreateDate(date)}
-                      dateFormat="MMM dd yyyy"
-                      placeholderText={"From"}
+                      placeholderText="Create End Date"
                     />
                   </div>
 
-                  <button
-                    class="btn btn-outline-primary btn-md px-4 d-flex align-self-end me-3"
-                    onClick={handleAllInvoiceCreateDateFilter}
-                  >
-                    Submit
-                  </button>
+                  <div>
+                    <DatePicker
+                      className="form-control mw-100"
+                      selected={filterOptions.startPaidAt}
+                      onChange={(date) =>
+                        setFilterOption({ ...filterOptions, startPaidAt: date })
+                      }
+                      dateFormat="MMM dd yyyy"
+                      placeholderText="Paid Start Date"
+                      disabled={filterOptions.paymentStatus === "unpaid"}
+                    />
+                  </div>
 
-                  <button
-                    class="btn  btn-outline-secondary d-flex align-self-end btn-md px-4"
-                    onClick={handleAllInvoiceCreateDateFilterReset}
-                  >
-                    Reset
-                  </button>
+                  <div>
+                    <DatePicker
+                      className="form-control mw-100"
+                      selected={filterOptions.endPaidAt}
+                      onChange={(date) =>
+                        setFilterOption({ ...filterOptions, endPaidAt: date })
+                      }
+                      dateFormat="MMM dd yyyy"
+                      placeholderText="Paid End Date"
+                      disabled={filterOptions.paymentStatus === "unpaid"}
+                    />
+                  </div>
+
+                  <div className="displayGrid1">
+                    <button
+                      class="btn btn-outline-primary btn-md"
+                      onClick={handleActiveFilter}
+                    >
+                      Submit
+                    </button>
+
+                    <button
+                      class="btn  btn-outline-secondary btn-md"
+                      onClick={handleFilterReset}
+                    >
+                      Reset
+                    </button>
+                  </div>
                 </div>
 
                 <div className="table-section-th">

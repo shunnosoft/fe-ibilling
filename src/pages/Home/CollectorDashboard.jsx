@@ -187,13 +187,13 @@ const CollectorDashboard = () => {
   const probabilityAmountCalculation = () => {
     if (bpSettings?.dashboardProbabilityAmountWithNewCustomer) {
       return (
-        customerStat.totalProbableAmount -
-        customerStat.totalInactiveAmount -
-        customerStat.newCustomerBillCount
+        customerStat.totalProbableAmount - customerStat.totalInactiveAmount
       );
     } else {
       return (
-        customerStat.totalProbableAmount - customerStat.totalInactiveAmount
+        customerStat.totalProbableAmount -
+        customerStat.newCustomerBillCount -
+        customerStat.totalInactiveAmount
       );
     }
   };
@@ -202,11 +202,9 @@ const CollectorDashboard = () => {
   const collectionPercentage = customerStat
     ? Math.round(
         ((bpSettings?.dashboardProbabilityAmountWithNewCustomer
-          ? Math.abs(
-              customerStat.totalMonthlyCollection -
-                customerStat.newCustomerBillCollection
-            )
-          : customerStat.totalMonthlyCollection) /
+          ? Math.abs(customerStat.totalMonthlyCollection)
+          : customerStat.totalMonthlyCollection -
+            customerStat.newCustomerBillCollection) /
           probabilityAmountCalculation()) *
           100
       )
@@ -287,11 +285,9 @@ const CollectorDashboard = () => {
                         <br /> ৳ &nbsp;
                         {FormatNumber(
                           bpSettings?.dashboardProbabilityAmountWithNewCustomer
-                            ? Math.abs(
-                                customerStat.totalMonthlyCollection -
-                                  customerStat.newCustomerBillCollection
-                              )
-                            : customerStat.totalMonthlyCollection
+                            ? Math.abs(customerStat.totalMonthlyCollection)
+                            : customerStat.totalMonthlyCollection -
+                                customerStat.newCustomerBillCollection
                         )}
                       </h2>
                     </div>

@@ -13,6 +13,20 @@ export default function Details({ show, setShow, activityLog }) {
 
   const objectIdRegex = /^[a-fA-F0-9]{24}$/;
 
+  const isDate = (value) => {
+    if (typeof value === "string") {
+      const date = new Date(value);
+      return !isNaN(date.getTime());
+    }
+  };
+
+  const objectIsDate = (value) => {
+    const date = new Date(value);
+    if (!isNaN(date.getTime())) {
+      return moment(value).format("DD/MM/YYYY hh:mm A");
+    }
+  };
+
   const findIdInformation = (key, value) => {
     const area = areas?.find((item) => item.id === value);
 
@@ -91,8 +105,25 @@ export default function Details({ show, setShow, activityLog }) {
                           {key.charAt(0).toUpperCase() + key.slice(1)}
                         </p>
                         <p className="changeLabelFontColor">
-                          {objectIdRegex?.test(item.old[key])
+                          {typeof item.old[key] === "object" &&
+                          ![undefined, null].includes(item.old[key])
+                            ? Object.keys(item.old?.[key])?.map((subKey) => (
+                                <React.Fragment key={subKey}>
+                                  <div className="displayGridManual6_4">
+                                    <p className="changeLabelFontColor">
+                                      {subKey.charAt(0).toUpperCase() +
+                                        subKey.slice(1)}
+                                    </p>
+                                    <p className="changeLabelFontColor">
+                                      {item.old?.[key][subKey]}
+                                    </p>
+                                  </div>
+                                </React.Fragment>
+                              ))
+                            : objectIdRegex?.test(item.old[key])
                             ? findIdInformation(item.old, item.old[key])
+                            : isDate(item.old[key])
+                            ? objectIsDate(item.old[key])
                             : item.old[key]}
                         </p>
                       </React.Fragment>
@@ -128,6 +159,8 @@ export default function Details({ show, setShow, activityLog }) {
                             ))
                           : objectIdRegex?.test(item.new[key])
                           ? findIdInformation(item.new, item.new[key])
+                          : isDate(item.new[key])
+                          ? objectIsDate(item.new[key])
                           : item.new[key]}
                       </p>
                     </React.Fragment>

@@ -76,18 +76,16 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
       return bpSettings?.dashboardProbabilityAmountWithNewCustomer
         ? Math.abs(
             dashboardCard.totalMonthlyCollection -
-              dashboardCard.newCustomerBillCollection -
               dashboardCard.totalMonthlyDiscount
           )
         : dashboardCard.totalMonthlyCollection -
+            dashboardCard.newCustomerBillCollection -
             dashboardCard.totalMonthlyDiscount;
     } else if (role === "collector" && !currentUser.collector.reseller) {
       return bpSettings?.dashboardProbabilityAmountWithNewCustomer
-        ? Math.abs(
-            dashboardCard.totalMonthlyCollection -
-              dashboardCard.newCustomerBillCollection
-          )
-        : dashboardCard.totalMonthlyCollection;
+        ? Math.abs(dashboardCard.totalMonthlyCollection)
+        : dashboardCard.totalMonthlyCollection -
+            dashboardCard.newCustomerBillCollection;
     } else {
       return Math.abs(dashboardCard.totalMonthlyCollection);
     }
@@ -435,24 +433,6 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
               </div>
             )}
 
-            {role === "ispOwner" && (
-              <div class="col-md-4 col-xl-3">
-                <div class="card bg-card-38 order-card">
-                  <div class="card-block display_card">
-                    <p class="m-b-20">{t("allCustomerCollection")}</p>
-                    <div class="d-flex align-items-center">
-                      <p className="card_Icon">
-                        <Reception4 />
-                      </p>
-                      <h2>
-                        {FormatNumber(dashboardCard.allCustomerCollection)}
-                      </h2>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
             {userHandle && (
               <div class="col-md-4 col-xl-3">
                 <div class="card bg-card-11 order-card">
@@ -470,6 +450,24 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
                         {FormatNumber(dashboardCard.newCustomerBillCollection)}
                       </span>
                     </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {role === "ispOwner" && (
+              <div class="col-md-4 col-xl-3">
+                <div class="card bg-card-38 order-card">
+                  <div class="card-block display_card">
+                    <p class="m-b-20">{t("allCustomerCollection")}</p>
+                    <div class="d-flex align-items-center">
+                      <p className="card_Icon">
+                        <Reception4 />
+                      </p>
+                      <h2>
+                        {FormatNumber(dashboardCard.allCustomerCollection)}
+                      </h2>
+                    </div>
                   </div>
                 </div>
               </div>
