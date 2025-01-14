@@ -126,7 +126,7 @@ const Mikrotik = () => {
             {bpSettings.customerType.includes("pppoe") && (
               <Link
                 to={`/mikrotik/customer/${original.ispOwner}/${original.id}`}
-                className="mikrotikConfigureButtom ms-1"
+                className="mikrotikConfigureButtom ms-1 bg-secondary"
               >
                 <PersonDash />
               </Link>

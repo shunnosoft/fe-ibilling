@@ -968,5 +968,8 @@
   "deviceLocation": "Device Location",
   "activityLog": "Activity Log",
   "userAgent": "User Agent",
-  "activityLogDetails": "Activity Log Details"
+  "activityLogDetails": "Activity Log Details",
+  "linkUp": "Link Up",
+  "loggedOut": "Logged Out",
+  "uptime": "Uptime"
 }

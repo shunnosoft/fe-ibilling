@@ -44,14 +44,14 @@ const AllCustomer = () => {
   const customerColumn = React.useMemo(
     () => [
       {
-        width: "8%",
+        width: "10%",
         Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        width: "11%",
+        width: "10%",
         Header: t("status"),
         accessor: "running",
         Cell: ({ row: { original } }) => (
@@ -70,12 +70,12 @@ const AllCustomer = () => {
         accessor: "name",
       },
       {
-        width: "12%",
+        width: "20%",
         Header: t("package"),
         accessor: "profile",
       },
       {
-        width: "12%",
+        width: "10%",
         Header: "RX",
         accessor: "rxByte",
         Cell: ({ row: { original } }) => (
@@ -91,7 +91,7 @@ const AllCustomer = () => {
         ),
       },
       {
-        width: "12%",
+        width: "10%",
         Header: "TX",
         accessor: "txByte",
         Cell: ({ row: { original } }) => (
@@ -105,11 +105,6 @@ const AllCustomer = () => {
               : ""}
           </div>
         ),
-      },
-      {
-        width: "25%",
-        Header: "Last Link Up Time",
-        accessor: "lastLinkUpTime",
       },
     ],
     [t]

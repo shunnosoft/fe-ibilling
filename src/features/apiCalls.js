@@ -1904,6 +1904,7 @@ export const fetchpppoeUser = async (
         interfaceItem = {
           ...interfaceItem,
           ip: ipAddress.address,
+          uptime: ipAddress.uptime,
         };
       }
       return interfaceItem;

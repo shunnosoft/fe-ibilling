@@ -974,5 +974,8 @@
   "deviceLocation": "ডিভাইসের অবস্থান",
   "activityLog": "একটিভিটি লগ",
   "userAgent": "ব্যবহারকারীর মধ্যম",
-  "activityLogDetails": "গতিবিধি লগ বিবরণ"
+  "activityLogDetails": "গতিবিধি লগ বিবরণ",
+  "linkUp": "লিংক আপ",
+  "loggedOut": "লগ আউট",
+  "uptime": "আপটাইম"
 }

@@ -295,7 +295,7 @@ export default function ConfigMikrotik() {
         width: "2%",
       },
       {
-        width: "5%",
+        width: "4%",
         Header: t("id"),
         accessor: "customerId",
       },
@@ -316,15 +316,17 @@ export default function ConfigMikrotik() {
       {
         width: "10%",
         Header: t("name"),
-        accessor: "name",
+        Header: t("namePPPoE"),
+        accessor: (data) => `${data?.name} ${data.pppoe?.name}`,
+        Cell: ({ row: { original } }) => (
+          <div>
+            <p>{original?.name}</p>
+            <p>{original.pppoe?.name}</p>
+          </div>
+        ),
       },
       {
-        width: "10%",
-        Header: t("PPPoEName"),
-        accessor: "pppoe.name",
-      },
-      {
-        width: "10%",
+        width: "8%",
         Header: t("ip"),
         Cell: ({ row: { original } }) => (
           <div>
@@ -368,7 +370,12 @@ export default function ConfigMikrotik() {
       },
       {
         width: "10%",
-        Header: "Last Link Up",
+        Header: t("uptime"),
+        accessor: "uptime",
+      },
+      {
+        width: "10%",
+        Header: t("linkUp"),
         accessor: "lastLinkUpTime",
         Cell: ({ row: { original } }) => (
           <div>
@@ -379,7 +386,7 @@ export default function ConfigMikrotik() {
       },
       {
         width: "10%",
-        Header: "Last Logout",
+        Header: t("loggedOut"),
         accessor: "lastLogoutTime",
         Cell: ({ row: { original } }) => (
           <div>
@@ -389,7 +396,7 @@ export default function ConfigMikrotik() {
         ),
       },
       {
-        width: "10%",
+        width: "5%",
         Header: t("status"),
         Cell: ({ row: { original } }) => <div>{badge(original?.status)}</div>,
       },
