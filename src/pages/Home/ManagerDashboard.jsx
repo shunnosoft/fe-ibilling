@@ -314,24 +314,6 @@ const ManagerDashboard = () => {
     ],
   };
 
-  //expiration date calculation for pop-up modal
-  let invoiceFlag;
-  if (invoice) {
-    if (new Date(invoice?.dueDate).getTime() < new Date().getTime()) {
-      invoiceFlag = "EXPIRED";
-    } else {
-      const dt = new Date(),
-        expDate = new Date(invoice?.dueDate);
-
-      const diffTime = Math.abs(expDate - dt);
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-      if (diffDays <= 7) {
-        invoiceFlag = "UNPAID";
-      }
-    }
-  }
-
   // probability amount calculation ispOwner permission wise
   const probabilityAmountCalculation = () => {
     if (bpSettings?.dashboardProbabilityAmountWithNewCustomer) {
@@ -387,7 +369,7 @@ const ManagerDashboard = () => {
         <FontColor>
           <div className="home">
             <div className="row">
-              {invoiceFlag === "UNPAID" && <PaymentAlert invoice={invoice} />}
+              <PaymentAlert invoice={invoice} />
 
               <div className="col-md-12 mb-3">
                 {permissions?.dashboardCollectionData && (

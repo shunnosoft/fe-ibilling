@@ -437,7 +437,14 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
               <div class="col-md-4 col-xl-3">
                 <div class="card bg-card-11 order-card">
                   <div class="card-block display_card">
-                    <p class="m-b-20">{t("totalCollection")}</p>
+                    <p className="m-b-20">
+                      {`${t("totalCollection")} (${
+                        bpSettings?.dashboardProbabilityAmountWithNewCustomer
+                          ? t("withNew")
+                          : t("withoutNew")
+                      })`}
+                    </p>
+
                     <div class="d-flex align-items-center">
                       <p className="card_Icon">
                         <Reception3 />

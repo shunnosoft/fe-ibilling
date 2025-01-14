@@ -471,7 +471,7 @@
   "adminPending": "Pending to Admin",
   "balance": "Balance",
   "fee": "Fee",
-  "expiredFee": "Tk. Please make payment before",
+  "expiredFee": ". Please make payment before",
   "payment": "Pay Now",
   "paymentStatus": "Payment",
   "january": "January",
@@ -971,5 +971,7 @@
   "activityLogDetails": "Activity Log Details",
   "linkUp": "Link Up",
   "loggedOut": "Logged Out",
-  "uptime": "Uptime"
+  "uptime": "Uptime",
+  "withNew": "With New",
+  "withoutNew": "Without New"
 }

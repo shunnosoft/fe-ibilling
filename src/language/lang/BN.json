@@ -477,7 +477,7 @@
   "managerPending": "ম্যানেজার পেন্ডিং",
   "adminPending": "এডমিন পেন্ডিং",
   "fee": "ফি",
-  "expiredFee": "Tk পরিশোধের শেষ সময়",
+  "expiredFee": "। পরিশোধের শেষ সময়",
   "january": "জানুয়ারী",
   "february": "ফেব্রুয়ারী",
   "march": "মার্চ",
@@ -977,5 +977,7 @@
   "activityLogDetails": "গতিবিধি লগ বিবরণ",
   "linkUp": "লিংক আপ",
   "loggedOut": "লগ আউট",
-  "uptime": "আপটাইম"
+  "uptime": "আপটাইম",
+  "withNew": "নতুন সহ",
+  "withoutNew": "নতুন ছাড়া"
 }

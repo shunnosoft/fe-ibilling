@@ -10,12 +10,11 @@ export const getActivityLog = async (dispatch, setIsLoading, ispOwnerId) => {
     const res = await apiLink.get(
       `ispOwner/activity-log/${ispOwnerId}?limit=${1000}&sortBy=${"createdAt:desc"}`
     );
-    setIsLoading(false);
     dispatch(getActivityLogSlice(res.data?.results));
   } catch (error) {
     console.log(error.response);
-    setIsLoading(false);
   }
+  setIsLoading(false);
 };
 
 // single customer activity log api
