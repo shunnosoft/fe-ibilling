@@ -14,10 +14,15 @@ import TdLoader from "../../../components/common/TdLoader";
 import { useTranslation } from "react-i18next";
 import { fetchPackagefromDatabase } from "../../../features/apiCalls";
 import ComponentCustomModal from "../../../components/common/customModal/ComponentCustomModal";
+import useISPowner from "../../../hooks/useISPOwner";
 
 const CustomerReport = ({ show, setShow, single }) => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
+
+  // get user & current user data form useISPOwner
+  const { role, bpSettings, userData, permissions } = useISPowner();
+
   const [customerReport, setCustomerReport] = useState([]);
   const billRefwithNote = useRef();
   const billRefStaticWithOutNote = useRef();
@@ -29,26 +34,10 @@ const CustomerReport = ({ show, setShow, single }) => {
     (state) => state.persistedReducer.auth.userData
   );
 
-  // get all role
-  const role = useSelector((state) => state.persistedReducer.auth.role);
-
-  // get user permission
-  const permission = useSelector(
-    (state) => state.persistedReducer.auth.userData.permissions
-  );
-
-  const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth?.userData?.bpSettings
-  );
-
   const ppPackage = useSelector((state) =>
     bpSettings?.hasMikrotik
       ? state?.mikrotik?.packagefromDatabase
       : state?.package?.packages
-  );
-
-  const userPackage = ppPackage.find(
-    (item) => item?.id === single?.mikrotikPackage
   );
 
   useEffect(() => {
@@ -173,6 +162,7 @@ const CustomerReport = ({ show, setShow, single }) => {
                           </b>
                         </p>
                       </td>
+
                       <td>
                         <p>
                           {t("discount")}{" "}
@@ -199,6 +189,7 @@ const CustomerReport = ({ show, setShow, single }) => {
                           </b>
                         </p>
                       </td>
+
                       <td>
                         <p>
                           {t("billDate")}{" "}
@@ -217,6 +208,7 @@ const CustomerReport = ({ show, setShow, single }) => {
                           </b>
                         </p>
                       </td>
+
                       <td>
                         <p>
                           {t("billDate")}{" "}
@@ -237,17 +229,29 @@ const CustomerReport = ({ show, setShow, single }) => {
                       </td>
 
                       <td>
-                        <p>{val.note}</p>
+                        <p>
+                          {val.note && val.note.slice(0, 20)}
+                          <span>
+                            {val?.note && val?.note?.length > 20 && "..."}
+                          </span>
+                        </p>
                         {val.start && val.end && (
                           <span className="badge bg-secondary">
                             {moment(val.start).format("MMM/DD/YY")}--
                             {moment(val.end).format("MMM/DD/YY")}
                           </span>
                         )}
+                        <p>
+                          {val?.month && val.month.slice(0, 20)}
+                          <span>
+                            {val?.month && val?.month?.length > 20 && "..."}
+                          </span>
+                        </p>
                       </td>
+
                       {/* conditional rendering because print component doesnot perform with conditon  */}
                       {val.note || val.start || val.end || val.month ? (
-                        <td className="text-center">
+                        <td>
                           <div style={{ display: "none" }}>
                             <BillCollectInvoiceWithNote
                               ref={billRefwithNote}
@@ -257,22 +261,23 @@ const CustomerReport = ({ show, setShow, single }) => {
                                 due: printVal.due,
                                 discount: printVal.discount,
                                 billType: printVal.billType,
+                                collectedBy: printVal.collectedBy,
                                 paymentDate: printVal.createdAt,
                                 medium: printVal.medium,
                                 startDate: printVal.start,
                                 endDate: printVal.end,
-                                month: printVal.month,
                                 note: printVal.note,
+                                month: printVal.month,
                                 billingCycle: printVal?.prevState?.billingCycle,
                                 promiseDate: printVal?.prevState?.promiseDate,
                                 status: status,
                               }}
-                              ispOwnerData={ispOwnerData}
+                              ispOwnerData={userData}
                               paymentDate={printVal.createdAt}
                             />
                           </div>
-                          {permission?.billPrint || role !== "collector" ? (
-                            <div>
+                          {permissions?.billPrint || role !== "collector" ? (
+                            <>
                               <div
                                 style={{ cursor: "pointer" }}
                                 onClick={() => {
@@ -303,17 +308,17 @@ const CustomerReport = ({ show, setShow, single }) => {
                                     title={t("printInvoiceBill")}
                                     style={{ cursor: "pointer" }}
                                   >
-                                    <button id="PrintWithNote">btn</button>
+                                    <button id="PrintPppoeWithNote">btn</button>
                                   </div>
                                 )}
                                 content={() => billRefwithNote.current}
                               />
-                            </div>
+                            </>
                           ) : (
                             ""
                           )}
                           {(role === "ispOwner" && bpSettings?.reportDelete) ||
-                          (role === "manager" && permission?.reportDelete) ? (
+                          (role === "manager" && permissions?.reportDelete) ? (
                             <div title={t("deleteReport")}>
                               <button
                                 className="border-0 bg-transparent me-4"
@@ -323,7 +328,7 @@ const CustomerReport = ({ show, setShow, single }) => {
                                   color="#dc3545"
                                   style={{ cursor: "pointer" }}
                                 />
-                                <span> {t("deleteReport")}</span>
+                                <span>{t("delete")}</span>
                               </button>
                             </div>
                           ) : (
@@ -331,7 +336,7 @@ const CustomerReport = ({ show, setShow, single }) => {
                           )}
                         </td>
                       ) : (
-                        <td className="text-center">
+                        <td>
                           <div style={{ display: "none" }}>
                             <BillCollectInvoiceWithoutNote
                               ref={billRefStaticWithOutNote}
@@ -341,67 +346,77 @@ const CustomerReport = ({ show, setShow, single }) => {
                                 due: printVal.due,
                                 discount: printVal.discount,
                                 billType: printVal.billType,
+                                collectedBy: printVal.collectedBy,
                                 paymentDate: printVal.createdAt,
-                                medium: printVal.medium,
                                 billingCycle: printVal?.prevState?.billingCycle,
                                 promiseDate: printVal?.prevState?.promiseDate,
+                                medium: printVal.medium,
                                 status: status,
                               }}
-                              ispOwnerData={ispOwnerData}
+                              ispOwnerData={userData}
                               paymentDate={printVal.createdAt}
                             />
                           </div>
-                          {permission?.billPrint || role !== "collector" ? (
-                            <div>
-                              <div
-                                style={{ cursor: "pointer" }}
-                                onClick={() => {
-                                  handlePrint(val, "both"); //button for printing
-                                }}
-                                className="d-flex"
-                              >
-                                <PrinterFill className="me-1 mt-1 text-success" />
-                                <span>{t("office&customer")}</span>
-                              </div>
+                          <div>
+                            {permissions?.billPrint || role !== "collector" ? (
+                              <>
+                                <div
+                                  style={{ cursor: "pointer" }}
+                                  onClick={() => {
+                                    handlePrint(val, "both"); //button for printing
+                                  }}
+                                  className="d-flex"
+                                >
+                                  <PrinterFill className="me-1 mt-1 text-success" />
+                                  <span>{t("office&customer")}</span>
+                                </div>
 
-                              <div
-                                style={{ cursor: "pointer" }}
-                                onClick={() => {
-                                  handlePrint(val, "customer"); //button for printing
-                                }}
-                                className="d-flex"
-                              >
-                                <PrinterFill className="me-1 mt-1 text-primary" />
-                                <span>{t("customer")}</span>
-                              </div>
+                                <div
+                                  style={{ cursor: "pointer" }}
+                                  onClick={() => {
+                                    handlePrint(val, "customer"); //button for printing
+                                  }}
+                                  className="d-flex"
+                                >
+                                  <PrinterFill className="me-1 mt-1 text-primary" />
+                                  <span>{t("customer")}</span>
+                                </div>
 
-                              <ReactToPrint
-                                documentTitle={t("billIvoice")}
-                                trigger={() => (
-                                  <div
-                                    className="d-none"
-                                    title={t("printInvoiceBill")}
-                                    style={{ cursor: "pointer" }}
-                                  >
-                                    <button id="PrintWithoutNote">btn</button>
-                                  </div>
-                                )}
-                                content={() => billRefStaticWithOutNote.current}
-                              />
-                            </div>
-                          ) : (
-                            ""
-                          )}
-                          {((role === "ispOwner" && bpSettings?.reportDelete) ||
-                            (role === "manager" && permission?.reportDelete)) &&
-                            ![
-                              "sslcommerz",
-                              "uddoktapay",
-                              "sslpay",
-                              "bKashPG",
-                              "Webhook",
-                            ].includes(val.medium) && (
-                              <div title={t("deleteReport")}>
+                                <ReactToPrint
+                                  documentTitle={t("billIvoice")}
+                                  trigger={() => (
+                                    <div
+                                      className="d-none"
+                                      title={t("printInvoiceBill")}
+                                      style={{ cursor: "pointer" }}
+                                    >
+                                      <button id="PrintPppoeWithoutNote">
+                                        btn
+                                      </button>
+                                    </div>
+                                  )}
+                                  content={() =>
+                                    billRefStaticWithOutNote.current
+                                  }
+                                />
+                              </>
+                            ) : (
+                              ""
+                            )}
+                            {((role === "ispOwner" &&
+                              bpSettings?.reportDelete) ||
+                              (role === "manager" &&
+                                permissions?.reportDelete) ||
+                              (role === "collector" &&
+                                bpSettings?.reportDelete &&
+                                permissions?.billDelete)) &&
+                              ![
+                                "sslcommerz",
+                                "uddoktapay",
+                                "sslpay",
+                                "bKashPG",
+                                "Webhook",
+                              ].includes(val.medium) && (
                                 <button
                                   className="border-0 bg-transparent me-4"
                                   onClick={() => deletReport(val.id)}
@@ -410,10 +425,10 @@ const CustomerReport = ({ show, setShow, single }) => {
                                     color="#dc3545"
                                     style={{ cursor: "pointer" }}
                                   />
-                                  <span> {t("deleteReport")}</span>
+                                  <span> {t("delete")}</span>
                                 </button>
-                              </div>
-                            )}
+                              )}
+                          </div>
                         </td>
                       )}
                     </tr>

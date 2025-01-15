@@ -179,7 +179,9 @@ const DataFilter = ({
       isVisible: ["newCustomer"].includes(page),
       disabled: false,
       component: "DatePicker",
-      dateFormat: "MMM dd yyyy",
+      dateFormat: "yyyy MM dd hh:mm a",
+      timeIntervals: 60,
+      showTimeSelect: "showTimeSelect",
       minDate: filterFirstDayOfMonth,
       maxDate:
         month?.getMonth() + 1 === today.getMonth() + 1
@@ -200,7 +202,9 @@ const DataFilter = ({
       isVisible: ["newCustomer"].includes(page),
       disabled: false,
       component: "DatePicker",
-      dateFormat: "MMM dd yyyy",
+      dateFormat: "yyyy MM dd hh:mm a",
+      timeIntervals: 60,
+      showTimeSelect: "showTimeSelect",
       minDate: filterFirstDayOfMonth,
       maxDate:
         month?.getMonth() + 1 === today.getMonth() + 1

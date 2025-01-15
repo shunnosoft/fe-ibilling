@@ -149,6 +149,7 @@ const CustomerReport = ({ show, setShow, single }) => {
                           </b>
                         </p>
                       </td>
+
                       <td>
                         <p>
                           {t("discount")}
@@ -175,6 +176,7 @@ const CustomerReport = ({ show, setShow, single }) => {
                           </b>
                         </p>
                       </td>
+
                       <td>
                         <p>
                           {t("billDate")}
@@ -193,6 +195,7 @@ const CustomerReport = ({ show, setShow, single }) => {
                           </b>
                         </p>
                       </td>
+
                       <td>
                         <p>
                           {t("billDate")}
