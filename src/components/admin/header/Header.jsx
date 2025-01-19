@@ -165,7 +165,7 @@ export default function Header(props) {
                   title={t("supportTicket")}
                 >
                   <a
-                    href={`https://support.shunnoit.com/support-ticket/create?&netfeeID=${ispOwnerData?.netFeeId}`}
+                    href={`https://support.shunnoit.com/support-ticket/create?&shunnoID=${ispOwnerData?.netFeeId}&clientApp=netfee`}
                     target="_blank"
                   >
                     {t("supportTicket")}
