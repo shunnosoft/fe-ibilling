@@ -67,6 +67,7 @@ export default function ConfigMikrotik() {
 
   // get all static customer
   let allMikrotikUsers = useSelector((state) => state?.mikrotik?.pppoeUser);
+  console.log(allMikrotikUsers);
 
   //get all areas
   const areas = useSelector((state) => state.area?.area);

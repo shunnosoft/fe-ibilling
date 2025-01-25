@@ -19,6 +19,8 @@ import useISPowner from "../../hooks/useISPOwner";
 import { handleActiveFilter } from "../common/activeFilter";
 import useDataState from "../../hooks/useDataState";
 import { getResellerUsers } from "../../features/apiCallReseller";
+import { getArea } from "../../features/apiCalls";
+import useSelectorState from "../../hooks/useSelectorState";
 
 const ActivityLog = () => {
   const { t } = useTranslation();
@@ -26,7 +28,10 @@ const ActivityLog = () => {
   const dispatch = useDispatch();
 
   // get user & current user data form useISPOwner hooks
-  const { role, userData } = useISPowner();
+  const { role, ispOwnerId, userData } = useISPowner();
+
+  //---> Get redux store state data from useSelectorState hooks
+  const { areas } = useSelectorState();
 
   // get user data set from useDataState hooks
   const { filterOptions, setFilterOption } = useDataState();
@@ -59,6 +64,9 @@ const ActivityLog = () => {
   // api call
   useEffect(() => {
     getActivityLog(dispatch, setIsLoading, userData?.id);
+
+    //---> @Get ispOwner areas data
+    !areas?.length && getArea(dispatch, ispOwnerId, setIsLoading);
 
     // get user staffs api
     if (adminUser) {

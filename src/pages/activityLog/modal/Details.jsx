@@ -1,36 +1,33 @@
 import moment from "moment";
 import React from "react";
-import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import ComponentCustomModal from "../../../components/common/customModal/ComponentCustomModal";
 import { badge } from "../../../components/common/Utils";
+import useSelectorState from "../../../hooks/useSelectorState";
 
 export default function Details({ show, setShow, activityLog }) {
   const { t } = useTranslation();
 
-  //get all areas
-  const areas = useSelector((state) => state.area?.area);
+  //---> Get redux store state data from useSelectorState hooks
+  const { areas } = useSelectorState();
 
   const objectIdRegex = /^[a-fA-F0-9]{24}$/;
 
-  const isDate = (value) => {
-    if (typeof value === "string") {
-      const date = new Date(value);
-      return !isNaN(date.getTime());
+  const getFormattedValue = (value) => {
+    if (
+      typeof value === "string" &&
+      !/^\d+$/.test(value) &&
+      moment(value).isValid()
+    ) {
+      return moment(value).format("YYYY/MM/DD hh:mm A");
+    } else if (objectIdRegex?.test(value)) {
+      const area = areas?.find((item) => item.id === value);
+      return area?.name;
+    } else if (typeof value === "boolean") {
+      return value ? "true" : "false";
+    } else {
+      return value;
     }
-  };
-
-  const objectIsDate = (value) => {
-    const date = new Date(value);
-    if (!isNaN(date.getTime())) {
-      return moment(value).format("DD/MM/YYYY hh:mm A");
-    }
-  };
-
-  const findIdInformation = (key, value) => {
-    const area = areas?.find((item) => item.id === value);
-
-    return area?.name;
   };
 
   return (
@@ -120,11 +117,7 @@ export default function Details({ show, setShow, activityLog }) {
                                   </div>
                                 </React.Fragment>
                               ))
-                            : objectIdRegex?.test(item.old[key])
-                            ? findIdInformation(item.old, item.old[key])
-                            : isDate(item.old[key])
-                            ? objectIsDate(item.old[key])
-                            : item.old[key]}
+                            : getFormattedValue(item.old[key])}
                         </p>
                       </React.Fragment>
                     ))}
@@ -157,11 +150,7 @@ export default function Details({ show, setShow, activityLog }) {
                                 </div>
                               </React.Fragment>
                             ))
-                          : objectIdRegex?.test(item.new[key])
-                          ? findIdInformation(item.new, item.new[key])
-                          : isDate(item.new[key])
-                          ? objectIsDate(item.new[key])
-                          : item.new[key]}
+                          : getFormattedValue(item.new[key])}
                       </p>
                     </React.Fragment>
                   ))}

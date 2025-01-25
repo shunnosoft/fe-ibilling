@@ -1871,79 +1871,102 @@ export const fetchpppoeUser = async (
   dispatch(resetpppoeUser());
   dispatch(mtkIsLoading(true));
   try {
-    const res = await apiLink({
+    // const res = await apiLink({
+    //   method: "GET",
+    //   url: `/mikrotik/PPPsecretUsers/${IDs.ispOwner}/${IDs.mikrotikId}`,
+    // });
+
+    const PPPSecretCustomers = await apiLink({
       method: "GET",
-      url: `/mikrotik/PPPsecretUsers/${IDs.ispOwner}/${IDs.mikrotikId}`,
+      url: `/mikrotik/PPPSecretCustomers/${IDs.ispOwner}/${IDs.mikrotikId}`,
     });
 
-    let customers = res.data?.customers;
-    const pppsecretUsers = res.data?.pppsecretUsers;
-    let interfaaceList = res.data?.interfaceList;
-    let activepppSecretUsers = res.data?.activepppSecretUsers;
-
-    customers = customers.map((customerItem) => {
-      const lastLogout = pppsecretUsers.find(
-        (j) => j?.name == customerItem.pppoe?.name
-      );
-      if (lastLogout) {
-        customerItem = {
-          ...customerItem,
-          lastLogoutTime: lastLogout.lastLoggedOut,
-          status: customerItem.status,
-        };
-      }
-      return customerItem;
+    const PPPInterfaceList = await apiLink({
+      method: "GET",
+      url: `/mikrotik/PPPInterfaceList/${IDs.ispOwner}/${IDs.mikrotikId}`,
     });
 
-    const temp = [];
-    interfaaceList = interfaaceList.map((interfaceItem) => {
-      const ipAddress = activepppSecretUsers.find(
-        (ip) => "<pppoe-" + ip.name + ">" === interfaceItem.name
-      );
-      if (ipAddress) {
-        interfaceItem = {
-          ...interfaceItem,
-          ip: ipAddress.address,
-          uptime: ipAddress.uptime,
-        };
-      }
-      return interfaceItem;
+    const PPPActiveUsers = await apiLink({
+      method: "GET",
+      url: `/mikrotik/PPPActiveUsers/${IDs.ispOwner}/${IDs.mikrotikId}`,
     });
 
-    if (userType === "user") {
-      customers.forEach((i) => {
-        const match = interfaaceList.find(
-          (item) => item.name === "<pppoe-" + i.pppoe.name + ">"
+    const PPPgetCustomer = await apiLink({
+      method: "GET",
+      url: `/mikrotik/PPPgetCustomer/${IDs.ispOwner}/${IDs.mikrotikId}`,
+    });
+
+    const pppsecretUsers = PPPSecretCustomers?.data?.pppsecretUsers;
+    let interfaaceList = PPPInterfaceList?.data?.interfaceList;
+    let activepppSecretUsers = PPPActiveUsers?.data?.activepppSecretUsers;
+    let customers = PPPgetCustomer?.data?.customers;
+
+    if (pppsecretUsers && interfaaceList && activepppSecretUsers && customers) {
+      customers = customers.map((customerItem) => {
+        const lastLogout = pppsecretUsers.find(
+          (j) => j?.name == customerItem.pppoe?.name
         );
-        if (match) {
-          temp.push({
-            ...match,
-            ...i,
-          });
+        if (lastLogout) {
+          customerItem = {
+            ...customerItem,
+            lastLogoutTime: lastLogout.lastLoggedOut,
+            status: customerItem.status,
+          };
         }
-        if (!match) temp.push(i);
+        return customerItem;
       });
-    }
 
-    if (userType === "mikrotikUser") {
-      pppsecretUsers.forEach((i) => {
-        let match = false;
-        interfaaceList.forEach((j) => {
-          if (j.name === "<pppoe-" + i.name + ">") {
-            match = true;
+      const temp = [];
+      interfaaceList = interfaaceList.map((interfaceItem) => {
+        const ipAddress = activepppSecretUsers.find(
+          (ip) => "<pppoe-" + ip.name + ">" === interfaceItem.name
+        );
+        if (ipAddress) {
+          interfaceItem = {
+            ...interfaceItem,
+            ip: ipAddress.address,
+            uptime: ipAddress.uptime,
+          };
+        }
+        return interfaceItem;
+      });
 
+      if (userType === "user") {
+        customers.forEach((i) => {
+          const match = interfaaceList.find(
+            (item) => item.name === "<pppoe-" + i.pppoe.name + ">"
+          );
+          if (match) {
             temp.push({
-              ...j,
+              ...match,
               ...i,
             });
           }
+          if (!match) temp.push(i);
         });
-        if (!match) temp.push(i);
-      });
+      }
+
+      if (userType === "mikrotikUser") {
+        pppsecretUsers.forEach((i) => {
+          let match = false;
+          interfaaceList.forEach((j) => {
+            if (j.name === "<pppoe-" + i.name + ">") {
+              match = true;
+
+              temp.push({
+                ...j,
+                ...i,
+              });
+            }
+          });
+          if (!match) temp.push(i);
+        });
+      }
+
+      dispatch(getpppoeUserSuccess(temp));
+      dispatch(mtkIsLoading(false));
     }
 
-    dispatch(getpppoeUserSuccess(temp));
-    dispatch(mtkIsLoading(false));
     setIsLoading(false);
   } catch (error) {
     setIsLoading(false);
