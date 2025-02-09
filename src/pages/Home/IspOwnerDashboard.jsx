@@ -100,7 +100,7 @@ const IspOwnerDashboard = () => {
   // get user staff data from redux store
   const staffs = useSelector((state) => state?.ownerUsers?.userStaff);
 
-  //get graph data
+  //--->  @Get dashboard middle monthly collection graph chart data
   const ChartsData = useSelector((state) => state.chart.charts);
 
   //get payment invoice to check expiration
@@ -138,9 +138,11 @@ const IspOwnerDashboard = () => {
   const minMonth = new Date(ispOwnerData?.createdAt);
   minMonth.setDate(1);
 
-  //api calls
+  //================// API CALL's //================//
   useEffect(() => {
-    // get dashboard over view api
+    //===========================================================> FIRST API
+
+    //---> @Get ispOwner dashboard overview monthly collection data
     !Object.keys(dashboardOverView).length &&
       getIspOwnerDashboardOverViewData(
         dispatch,
@@ -149,6 +151,7 @@ const IspOwnerDashboard = () => {
         currentDate
       );
 
+    //---> @Get ispOwner dashboard overview monthly customer data
     !Object.keys(dashboardOverviewCustomer).length &&
       getIspOwnerDashboardOverViewCustomerData(
         dispatch,
@@ -157,15 +160,227 @@ const IspOwnerDashboard = () => {
         currentDate
       );
 
-    //get graph chart data
-    getIspOwnerCharts(setLoading, dispatch, ispOwnerId, Year, Month);
+    //---> @Get ispOwner staffs information with current user
+    !staffs?.length && userStaffs(dispatch);
 
-    // get all user api
-    staffs?.length === 0 && userStaffs(dispatch);
+    //---> @Get ispOwner dashboard middle monthly collection chart data
+    !ChartsData?.length &&
+      getIspOwnerCharts(setLoading, dispatch, ispOwnerId, Year, Month);
 
-    // get netFee bulletin api call
-    Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
+    //===========================================================> LAST API
+
+    //---> @Get netFee app page bulletin permission data
+    !Object.keys(butPermission)?.length && getBulletinPermission(dispatch);
   }, []);
+
+  //---> IspOwner dashboard below accordion change handler
+  const handleAccordionChange = (eventKey) => {
+    const filterData = {
+      year: filterDate.getFullYear(),
+      month: filterDate.getMonth() + 1,
+    };
+
+    //---> Set local state accordion key value
+    setAccordionKey(eventKey);
+
+    if (
+      eventKey.includes("admin") &&
+      !Object.keys(dashboardBelowAdminCardData).length
+    ) {
+      //---> @Get IspOwner dashboard below ISP OWNER card business summary
+      getDashboardBelowIspOwnerCardData(
+        dispatch,
+        setAdminCardLoading,
+        ispOwnerId,
+        filterData
+      );
+    }
+
+    if (
+      eventKey.includes("manager") &&
+      !Object.keys(dashboardBelowManagerCardData).length
+    ) {
+      //---> @Get IspOwner dashboard below MANAGER card business summary
+      getDashboardBelowManagerCardData(
+        dispatch,
+        setManagerCardLoading,
+        ispOwnerId,
+        filterData
+      );
+    }
+
+    if (
+      eventKey.includes("collector") &&
+      !Object.keys(dashboardBelowCollectorCardData).length
+    ) {
+      //---> @Get IspOwner dashboard below COLLECTOR card business summary
+      getDashboardBelowCollectorCardData(
+        dispatch,
+        setCollectorCardLoading,
+        ispOwnerId,
+        filterData
+      );
+    }
+
+    if (
+      eventKey.includes("reseller") &&
+      !Object.keys(dashboardBelowResellerCardData).length
+    ) {
+      //---> @Get IspOwner dashboard below RESELLER card business summary
+      getDashboardBelowResellerCardData(
+        dispatch,
+        setResellerCardLoading,
+        ispOwnerId,
+        filterData
+      );
+    }
+  };
+
+  //---> IspOwner Dashboard monthly filter handler
+  const dashboardFilterController = () => {
+    const filterData = {
+      year: filterDate.getFullYear(),
+      month: filterDate.getMonth() + 1,
+    };
+
+    //---> @Get ispOwner dashboard overview monthly collection data
+    getIspOwnerDashboardOverViewData(
+      dispatch,
+      setDashboardLoading,
+      ispOwnerId,
+      filterData
+    );
+
+    //---> @Get ispOwner dashboard overview monthly customer data
+    getIspOwnerDashboardOverViewCustomerData(
+      dispatch,
+      setDashboardLoading,
+      ispOwnerId,
+      currentDate
+    );
+
+    //---> @Get ispOwner dashboard middle monthly collection chart data
+    getIspOwnerCharts(
+      setLoading,
+      dispatch,
+      ispOwnerId,
+      filterDate.getFullYear(),
+      filterDate.getMonth()
+    );
+
+    //---> @Get IspOwner dashboard below ISP OWNER card business summary
+    if (accordionKey.includes("admin")) {
+      getDashboardBelowIspOwnerCardData(
+        dispatch,
+        setAdminCardLoading,
+        ispOwnerId,
+        filterData
+      );
+    }
+
+    //---> @Get IspOwner dashboard below MANAGER card business summary
+    if (accordionKey.includes("manager")) {
+      getDashboardBelowManagerCardData(
+        dispatch,
+        setManagerCardLoading,
+        ispOwnerId,
+        filterData
+      );
+    }
+
+    //---> @Get IspOwner dashboard below COLLECTOR card business summary
+    if (accordionKey.includes("collector")) {
+      getDashboardBelowCollectorCardData(
+        dispatch,
+        setCollectorCardLoading,
+        ispOwnerId,
+        filterData
+      );
+    }
+
+    //---> @Get IspOwner dashboard below RESELLER card business summary
+    if (accordionKey.includes("reseller")) {
+      getDashboardBelowResellerCardData(
+        dispatch,
+        setResellerCardLoading,
+        ispOwnerId,
+        filterData
+      );
+    }
+  };
+
+  //---> IspOwner dashboard monthly filter refresh handler
+  const dashboardReloadHandler = () => {
+    const filterData = {
+      year: filterDate.getFullYear(),
+      month: filterDate.getMonth() + 1,
+    };
+
+    //---> @Get ispOwner dashboard overview monthly collection data
+    getIspOwnerDashboardOverViewData(
+      dispatch,
+      setDashboardLoading,
+      ispOwnerId,
+      filterData
+    );
+
+    //---> @Get ispOwner dashboard overview monthly customer data
+    getIspOwnerDashboardOverViewCustomerData(
+      dispatch,
+      setDashboardLoading,
+      ispOwnerId,
+      currentDate
+    );
+
+    //---> @Get ispOwner dashboard middle monthly collection chart data
+    getIspOwnerCharts(
+      setLoading,
+      dispatch,
+      ispOwnerId,
+      filterDate.getFullYear(),
+      filterDate.getMonth()
+    );
+
+    //---> @Get IspOwner dashboard below ISP OWNER card business summary
+    if (accordionKey.includes("admin")) {
+      getDashboardBelowIspOwnerCardData(
+        dispatch,
+        setAdminCardLoading,
+        ispOwnerId,
+        filterData
+      );
+    }
+
+    //---> @Get IspOwner dashboard below MANAGER card business summary
+    if (accordionKey.includes("manager")) {
+      getDashboardBelowManagerCardData(
+        dispatch,
+        setManagerCardLoading,
+        ispOwnerId,
+        filterData
+      );
+    }
+
+    //---> @Get IspOwner dashboard below COLLECTOR card business summary
+    if (accordionKey.includes("collector")) {
+      getDashboardBelowCollectorCardData(
+        dispatch,
+        setCollectorCardLoading,
+        ispOwnerId,
+        filterData
+      );
+    }
+
+    //---> @Get IspOwner dashboard below RESELLER card business summary
+    if (accordionKey.includes("reseller")) {
+      getDashboardBelowResellerCardData(
+        dispatch,
+        setResellerCardLoading,
+        ispOwnerId,
+        filterData
+      );
+    }
+  };
 
   //graph data calculation
   useEffect(() => {
@@ -183,128 +398,6 @@ const IspOwnerDashboard = () => {
     setCollection(tempCollection);
     setCount(tempCount);
   }, [ChartsData]);
-
-  // dashboard accordion change api call
-  const handleAccordionChange = (eventKey) => {
-    const filterData = {
-      year: filterDate.getFullYear(),
-      month: filterDate.getMonth() + 1,
-    };
-
-    // set accordion key
-    setAccordionKey(eventKey);
-
-    if (
-      eventKey.includes("admin") &&
-      !Object.keys(dashboardBelowAdminCardData).length
-    ) {
-      getDashboardBelowIspOwnerCardData(
-        dispatch,
-        setAdminCardLoading,
-        ispOwnerId,
-        filterData
-      );
-    }
-
-    if (
-      eventKey.includes("manager") &&
-      !Object.keys(dashboardBelowManagerCardData).length
-    ) {
-      getDashboardBelowManagerCardData(
-        dispatch,
-        setManagerCardLoading,
-        ispOwnerId,
-        filterData
-      );
-    }
-
-    if (
-      eventKey.includes("collector") &&
-      !Object.keys(dashboardBelowCollectorCardData).length
-    ) {
-      getDashboardBelowCollectorCardData(
-        dispatch,
-        setCollectorCardLoading,
-        ispOwnerId,
-        filterData
-      );
-    }
-
-    if (
-      eventKey.includes("reseller") &&
-      !Object.keys(dashboardBelowResellerCardData).length
-    ) {
-      getDashboardBelowResellerCardData(
-        dispatch,
-        setResellerCardLoading,
-        ispOwnerId,
-        filterData
-      );
-    }
-  };
-
-  // dashboard filter date api
-  const dashboardFilterController = () => {
-    const filterData = {
-      year: filterDate.getFullYear(),
-      month: filterDate.getMonth() + 1,
-    };
-
-    // get dashboard over view api
-    getIspOwnerDashboardOverViewData(
-      dispatch,
-      setDashboardLoading,
-      ispOwnerId,
-      filterData
-    );
-
-    getIspOwnerDashboardOverViewCustomerData(
-      dispatch,
-      setDashboardLoading,
-      ispOwnerId,
-      currentDate
-    );
-
-    // get dashboard below admin date filter card api
-    if (accordionKey.includes("admin")) {
-      getDashboardBelowIspOwnerCardData(
-        dispatch,
-        setAdminCardLoading,
-        ispOwnerId,
-        filterData
-      );
-    }
-
-    // get dashboard below manager date filter card api
-    if (accordionKey.includes("manager")) {
-      getDashboardBelowManagerCardData(
-        dispatch,
-        setManagerCardLoading,
-        ispOwnerId,
-        filterData
-      );
-    }
-
-    // get dashboard below collector date filter card api
-    if (accordionKey.includes("collector")) {
-      getDashboardBelowCollectorCardData(
-        dispatch,
-        setCollectorCardLoading,
-        ispOwnerId,
-        filterData
-      );
-    }
-
-    // get dashboard below admin date filter card api
-    if (accordionKey.includes("reseller")) {
-      getDashboardBelowResellerCardData(
-        dispatch,
-        setResellerCardLoading,
-        ispOwnerId,
-        filterData
-      );
-    }
-  };
 
   //chartsData for graph
   const chartsData = {
@@ -376,28 +469,6 @@ const IspOwnerDashboard = () => {
           100
       )
     : 0;
-
-  //reload cards handler
-  const dashboardReloadHandler = () => {
-    const filterData = {
-      year: filterDate.getFullYear(),
-      month: filterDate.getMonth() + 1,
-    };
-
-    getIspOwnerDashboardOverViewData(
-      dispatch,
-      setDashboardLoading,
-      ispOwnerId,
-      filterData
-    );
-
-    getIspOwnerDashboardOverViewCustomerData(
-      dispatch,
-      setDashboardLoading,
-      ispOwnerId,
-      currentDate
-    );
-  };
 
   return (
     <>
@@ -492,16 +563,7 @@ const IspOwnerDashboard = () => {
                     id="reload_search"
                     className="d-flex justify-content-end "
                   >
-                    <div
-                      className="addcutmButton me-1"
-                      // id="dashboard_reload"
-                      // className="d-flex justify-content-center align-items-center me-2"
-                      // title={t("refresh")}
-                      // style={{
-                      //   borderRadius: "10%",
-                      //   backgroundColor: "#F7E9D7",
-                      // }}
-                    >
+                    <div className="addcutmButton me-1">
                       {dashboardLoading ? (
                         <Loader />
                       ) : (

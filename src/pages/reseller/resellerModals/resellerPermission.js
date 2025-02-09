@@ -179,6 +179,13 @@ export const resellerPermissions = (permission, bpSettings) => {
       isChecked: permission?.customerRecharge,
       disabled: false,
     },
+    {
+      id: 25,
+      label: "Bulk Customer Package Update",
+      value: "bulkCustomerPackageUpdate",
+      isChecked: permission?.bulkCustomerPackageUpdate,
+      disabled: !bpSettings?.bulkPackageEdit,
+    },
   ];
 
   const permissionBn = [
@@ -361,6 +368,13 @@ export const resellerPermissions = (permission, bpSettings) => {
       value: "customerRecharge",
       isChecked: permission?.customerRecharge,
       disabled: false,
+    },
+    {
+      id: 25,
+      label: "বাল্ক গ্রাহক প্যাকেজ এডিট",
+      value: "bulkCustomerPackageUpdate",
+      isChecked: permission?.bulkCustomerPackageUpdate,
+      disabled: !bpSettings?.bulkPackageEdit,
     },
   ];
 

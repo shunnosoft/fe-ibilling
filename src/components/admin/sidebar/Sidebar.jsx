@@ -47,7 +47,7 @@ import {
 } from "react-bootstrap-icons";
 import { NavLink } from "react-router-dom";
 import activeClass from "../../../assets/css/active.module.css";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Accordion } from "react-bootstrap";
 // the hook
 import { useTranslation } from "react-i18next";
@@ -60,7 +60,7 @@ export default function Sidebar() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
-  // get user & current user data form useISPOwner hooks
+  //---> Get user & current user data form useISPOwner hooks
   const {
     role,
     ispOwnerData,
@@ -1172,67 +1172,66 @@ export default function Sidebar() {
                     )}
 
                     {/* network diagram */}
-                    {((bpSettings?.networkDiagram && role === "ispOwner") ||
-                      role === "manager" ||
-                      role === "reseller") && (
-                      <>
-                        <Accordion.Item eventKey="14">
-                          <Accordion.Header
-                            onClick={() => handleActiveAccordian("14")}
-                          >
-                            <div className="sidebarIcon">
-                              {<BroadcastPin />}
-                            </div>
-                            <span className="sidebarLinksName">
-                              {t("network")}
-                            </span>
-                          </Accordion.Header>
-                          <Accordion.Body>
-                            <NavLink key={400} to="/network/device">
-                              <FontColor>
-                                <li
-                                  className="sidebarItems"
-                                  id={
-                                    window.location.pathname ===
-                                    "/network/device"
-                                      ? "active"
-                                      : ""
-                                  }
-                                >
-                                  <div className="sidebarIcon">
-                                    {<HddRackFill />}
-                                  </div>
-                                  <span className="sidebarLinksName">
-                                    {t("device")}
-                                  </span>
-                                </li>
-                              </FontColor>
-                            </NavLink>
+                    {bpSettings?.networkDiagram &&
+                      (role === "ispOwner" || role === "manager") && (
+                        <>
+                          <Accordion.Item eventKey="14">
+                            <Accordion.Header
+                              onClick={() => handleActiveAccordian("14")}
+                            >
+                              <div className="sidebarIcon">
+                                {<BroadcastPin />}
+                              </div>
+                              <span className="sidebarLinksName">
+                                {t("network")}
+                              </span>
+                            </Accordion.Header>
+                            <Accordion.Body>
+                              <NavLink key={400} to="/network/device">
+                                <FontColor>
+                                  <li
+                                    className="sidebarItems"
+                                    id={
+                                      window.location.pathname ===
+                                      "/network/device"
+                                        ? "active"
+                                        : ""
+                                    }
+                                  >
+                                    <div className="sidebarIcon">
+                                      {<HddRackFill />}
+                                    </div>
+                                    <span className="sidebarLinksName">
+                                      {t("device")}
+                                    </span>
+                                  </li>
+                                </FontColor>
+                              </NavLink>
 
-                            <NavLink key={400} to="/network/diagram">
-                              <FontColor>
-                                <li
-                                  className="sidebarItems"
-                                  id={
-                                    window.location.pathname ===
-                                    "/network/diagram"
-                                      ? "active"
-                                      : ""
-                                  }
-                                >
-                                  <div className="sidebarIcon">
-                                    {<Diagram3Fill />}
-                                  </div>
-                                  <span className="sidebarLinksName">
-                                    {t("diagram")}
-                                  </span>
-                                </li>
-                              </FontColor>
-                            </NavLink>
-                          </Accordion.Body>
-                        </Accordion.Item>
-                      </>
-                    )}
+                              <NavLink key={400} to="/network/diagram">
+                                <FontColor>
+                                  <li
+                                    className="sidebarItems"
+                                    id={
+                                      window.location.pathname ===
+                                      "/network/diagram"
+                                        ? "active"
+                                        : ""
+                                    }
+                                  >
+                                    <div className="sidebarIcon">
+                                      {<Diagram3Fill />}
+                                    </div>
+                                    <span className="sidebarLinksName">
+                                      {t("diagram")}
+                                    </span>
+                                  </li>
+                                </FontColor>
+                              </NavLink>
+                            </Accordion.Body>
+                          </Accordion.Item>
+                        </>
+                      )}
 
                     {/* একাউন্টস */}
                     {(role === "ispOwner" ||

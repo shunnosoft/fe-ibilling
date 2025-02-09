@@ -1,26 +1,19 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
 // internal import
 import Loader from "../../../components/common/Loader";
 import apiLink from "../../../api/apiLink";
 import { smsCount } from "../../../components/common/UtilityMethods";
+import useISPowner from "../../../hooks/useISPOwner";
 
 const StaffAssignTicketSMSTemplate = () => {
   const { t } = useTranslation();
   const textRef = useRef();
 
-  // get SMS settings
-  const settings = useSelector(
-    (state) => state.persistedReducer.auth.userData?.settings
-  );
-
-  // get isp owner id
-  const ispOwner = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerId
-  );
+  //---> @Get user & current user data form useISPOwner hooks
+  const { ispOwnerId, hasMikrotik, settings } = useISPowner();
 
   // loading state
   const [loading, setLoading] = useState(false);
@@ -147,7 +140,7 @@ const StaffAssignTicketSMSTemplate = () => {
 
     // api call
     try {
-      await apiLink.patch(`/ispOwner/settings/sms/${ispOwner}`, data);
+      await apiLink.patch(`/ispOwner/settings/sms/${ispOwnerId}`, data);
       setLoading(false);
       toast.success(t("assignTicketToast"));
     } catch (error) {
@@ -249,21 +242,23 @@ const StaffAssignTicketSMSTemplate = () => {
             </div>
 
             <div className="displayGrid mt-3">
-              <div className="checkboxSelect">
-                <input
-                  id="user_Name_14"
-                  type="checkbox"
-                  className="getValueUsingClass"
-                  value={"USER: USERNAME"}
-                  checked={matchFound.includes("USER: USERNAME")}
-                  onChange={(e) => {
-                    itemSettingHandler(e.target.value);
-                  }}
-                />
-                <label className="templatelabel" htmlFor="user_Name_14">
-                  {"USER: USERNAME"}
-                </label>
-              </div>
+              {hasMikrotik && (
+                <div className="checkboxSelect">
+                  <input
+                    id="user_Name_14"
+                    type="checkbox"
+                    className="getValueUsingClass"
+                    value={"USER: USERNAME"}
+                    checked={matchFound.includes("USER: USERNAME")}
+                    onChange={(e) => {
+                      itemSettingHandler(e.target.value);
+                    }}
+                  />
+                  <label className="templatelabel" htmlFor="user_Name_14">
+                    {"USER: USERNAME"}
+                  </label>
+                </div>
+              )}
 
               <div className="checkboxSelect">
                 <input

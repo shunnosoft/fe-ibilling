@@ -1,23 +1,21 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import apiLink from "../../../api/apiLink";
 import Loader from "../../../components/common/Loader";
 import { smsSettingUpdateIsp } from "../../../features/authSlice";
 import { smsCount } from "../../../components/common/UtilityMethods";
 import { useTranslation } from "react-i18next";
+import useISPowner from "../../../hooks/useISPOwner";
 
 function BillConfirmationSmsTemplate() {
   const { t } = useTranslation();
+
+  //---> @Get user & current user data form useISPOwner hooks
+  const { ispOwnerId, hasMikrotik, settings } = useISPowner();
+
   const [loading, setLoading] = useState(false);
   const [totalText, setTotalText] = useState("");
-
-  const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerId
-  );
-  const settings = useSelector(
-    (state) => state.persistedReducer.auth.userData?.settings
-  );
 
   const dispatch = useDispatch();
   const textRef = useRef();
@@ -263,21 +261,23 @@ function BillConfirmationSmsTemplate() {
 
             <div className="d-flex">
               <div className="displayFlexx">
-                <div className="radioselect">
-                  <input
-                    id="1"
-                    type="checkbox"
-                    className="getValueUsingClass"
-                    value={"USER: USERNAME"}
-                    checked={matchFound.includes("USER: USERNAME")}
-                    onChange={(e) => {
-                      itemSettingHandler(e.target.value);
-                    }}
-                  />
-                  <label className="templatelabel" htmlFor="1">
-                    {"USER: USERNAME"}
-                  </label>
-                </div>
+                {hasMikrotik && (
+                  <div className="radioselect">
+                    <input
+                      id="1"
+                      type="checkbox"
+                      className="getValueUsingClass"
+                      value={"USER: USERNAME"}
+                      checked={matchFound.includes("USER: USERNAME")}
+                      onChange={(e) => {
+                        itemSettingHandler(e.target.value);
+                      }}
+                    />
+                    <label className="templatelabel" htmlFor="1">
+                      {"USER: USERNAME"}
+                    </label>
+                  </div>
+                )}
 
                 <div className="radioselect">
                   <input

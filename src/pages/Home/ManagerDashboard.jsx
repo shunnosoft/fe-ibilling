@@ -36,6 +36,7 @@ import DashboardCard from "./dashboardCard/DashboardCard";
 import PaymentAlert from "./PaymentAlert";
 import { userStaffs } from "../../features/getIspOwnerUsersApi";
 import useSelectorState from "../../hooks/useSelectorState";
+import { ArrowClockwise } from "react-bootstrap-icons";
 
 const ManagerDashboard = () => {
   const { t } = useTranslation();
@@ -118,9 +119,11 @@ const ManagerDashboard = () => {
   const [Month, setMonth] = useState(date.getMonth());
   const [filterDate, setFilterDate] = useState(date);
 
-  //api calls
+  //================// API CALL's //================//
   useEffect(() => {
-    //---> @Get dashboard overview collection data
+    //===========================================================> FIRST API
+
+    //---> @Get manager dashboard overview monthly collection data
     !Object.keys(dashboardOverviewManagerCollection).length &&
       getManagerDashboardCollectionOverviewData(
         dispatch,
@@ -129,7 +132,7 @@ const ManagerDashboard = () => {
         currentDate
       );
 
-    //---> @Get dashboard overview customer data
+    //---> @Get manager dashboard overview monthly customer data
     !Object.keys(dashboardOverviewManagerCustomer).length &&
       getManagerDashboardCustomerOverviewData(
         dispatch,
@@ -138,7 +141,10 @@ const ManagerDashboard = () => {
         currentDate
       );
 
-    //---> @Get dashboard monthly collection chart data
+    //---> @Get ispOwner staffs information with current user
+    !userStaff?.length && userStaffs(dispatch);
+
+    //---> @Get manager dashboard middle monthly collection chart data
     !ChartsData.length &&
       getManagerDashboardCharts(
         setLoading,
@@ -149,15 +155,147 @@ const ManagerDashboard = () => {
         currentCollector
       );
 
-    // get user data
+    //---> User data dispatch manager slice
     dispatch(managerFetchSuccess(userData));
 
-    //---> @Get current user staffs data
-    !userStaff?.length && userStaffs(dispatch);
+    //===========================================================> LAST API
 
-    // get netFee bulletin api call
-    Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
+    //---> @Get netFee app page bulletin permission data
+    !Object.keys(butPermission)?.length && getBulletinPermission(dispatch);
   }, []);
+
+  //---> Manager dashboard below accordion change handler
+  const handleAccordionChange = (eventKey) => {
+    const filterData = {
+      year: filterDate.getFullYear(),
+      month: filterDate.getMonth() + 1,
+    };
+
+    //---> Set local state accordion key value
+    setAccordionKey(eventKey);
+
+    if (eventKey.includes("manager")) {
+      //---> @Get Manager dashboard below MANAGER card business summary
+      !Object.keys(customerStat).length &&
+        getManagerDashboardCardData(
+          dispatch,
+          setManagerCardLoading,
+          managerId,
+          filterData
+        );
+    }
+
+    if (eventKey.includes("collector")) {
+      //---> @Get Manager dashboard below COLLECTOR card business summary
+      !Object.keys(dashboardBelowCollectorCardData).length &&
+        getDashboardBelowCollectorCardData(
+          dispatch,
+          setCollectorCardLoading,
+          ispOwnerId,
+          filterData
+        );
+    }
+  };
+
+  //---> Manager Dashboard monthly filter handler
+  const dashboardFilterController = () => {
+    const filterData = {
+      year: filterDate.getFullYear(),
+      month: filterDate.getMonth() + 1,
+    };
+
+    //---> @Get manager dashboard overview monthly collection data
+    getManagerDashboardCollectionOverviewData(
+      dispatch,
+      setOverViewLoading,
+      managerId,
+      filterData
+    );
+
+    //---> @Get manager dashboard overview monthly customer data
+    getManagerDashboardCustomerOverviewData(
+      dispatch,
+      setBelowCardLoading,
+      managerId,
+      filterData
+    );
+
+    //---> @Get manager dashboard middle monthly collection chart data
+    getManagerDashboardCharts(
+      setLoading,
+      dispatch,
+      managerId,
+      filterDate.getFullYear(),
+      filterDate.getMonth(),
+      currentCollector
+    );
+
+    //---> @Get Manager dashboard below MANAGER card business summary
+    getManagerDashboardCardData(
+      dispatch,
+      setManagerCardLoading,
+      managerId,
+      filterData
+    );
+
+    //---> @Get Manager dashboard below COLLECTOR card business summary
+    getDashboardBelowCollectorCardData(
+      dispatch,
+      setCollectorCardLoading,
+      ispOwnerId,
+      filterData
+    );
+  };
+
+  //---> Manager dashboard monthly filter refresh handler
+  const dashboardReloadHandler = () => {
+    const filterData = {
+      year: filterDate.getFullYear(),
+      month: filterDate.getMonth() + 1,
+    };
+
+    //---> @Get manager dashboard overview monthly collection data
+    getManagerDashboardCollectionOverviewData(
+      dispatch,
+      setOverViewLoading,
+      managerId,
+      filterData
+    );
+
+    //---> @Get manager dashboard overview monthly customer data
+    getManagerDashboardCustomerOverviewData(
+      dispatch,
+      setBelowCardLoading,
+      managerId,
+      filterData
+    );
+
+    //---> @Get manager dashboard middle monthly collection chart data
+    getManagerDashboardCharts(
+      setLoading,
+      dispatch,
+      managerId,
+      filterData.year,
+      filterData.month,
+      currentCollector
+    );
+
+    //---> @Get Manager dashboard below MANAGER card business summary
+    getManagerDashboardCardData(
+      dispatch,
+      setManagerCardLoading,
+      managerId,
+      filterData
+    );
+
+    //---> @Get Manager dashboard below COLLECTOR card business summary
+    getDashboardBelowCollectorCardData(
+      dispatch,
+      setCollectorCardLoading,
+      ispOwnerId,
+      filterData
+    );
+  };
 
   //graph data calculation
   useEffect(() => {
@@ -176,40 +314,6 @@ const ManagerDashboard = () => {
     setCount(tempCount);
   }, [ChartsData]);
 
-  //reload cards handler
-  const dashboardReloadHandler = () => {
-    const filterData = {
-      year: filterDate.getFullYear(),
-      month: filterDate.getMonth() + 1,
-    };
-
-    //---> @Get dashboard overview collection data
-    getManagerDashboardCollectionOverviewData(
-      dispatch,
-      setOverViewLoading,
-      managerId,
-      filterData
-    );
-
-    //---> @Get dashboard overview customer data
-    getManagerDashboardCustomerOverviewData(
-      dispatch,
-      setBelowCardLoading,
-      managerId,
-      filterData
-    );
-
-    //---> @Get dashboard monthly collection chart data
-    getManagerDashboardCharts(
-      setLoading,
-      dispatch,
-      managerId,
-      filterData.year,
-      filterData.month,
-      currentCollector
-    );
-  };
-
   //filter for graph chart
   const handleFilterHandler = () => {
     getManagerDashboardCharts(
@@ -220,73 +324,6 @@ const ManagerDashboard = () => {
       Month,
       currentCollector
     );
-  };
-
-  //filter card information
-  const dashboardFilterController = () => {
-    const filterData = {
-      year: filterDate.getFullYear(),
-      month: filterDate.getMonth() + 1,
-    };
-
-    //---> @Get dashboard overview collection data
-    getManagerDashboardCollectionOverviewData(
-      dispatch,
-      setOverViewLoading,
-      managerId,
-      filterData
-    );
-
-    //---> @Get dashboard overview customer data
-    getManagerDashboardCustomerOverviewData(
-      dispatch,
-      setBelowCardLoading,
-      managerId,
-      filterData
-    );
-
-    //---> @Get dashboard monthly collection chart data
-    getManagerDashboardCharts(
-      setLoading,
-      dispatch,
-      managerId,
-      filterData.year,
-      filterData.month,
-      currentCollector
-    );
-  };
-
-  // dashboard accordion change api call
-  const handleAccordionChange = (eventKey) => {
-    const filterData = {
-      year: filterDate.getFullYear(),
-      month: filterDate.getMonth() + 1,
-    };
-
-    // set accordion key
-    setAccordionKey(eventKey);
-
-    if (eventKey.includes("manager")) {
-      //---> @Get dashboard below manager card data
-      !Object.keys(customerStat).length &&
-        getManagerDashboardCardData(
-          dispatch,
-          setManagerCardLoading,
-          managerId,
-          filterData
-        );
-    }
-
-    if (eventKey.includes("collector")) {
-      //---> @Get dashboard below manager collectors data
-      !Object.keys(dashboardBelowCollectorCardData).length &&
-        getDashboardBelowCollectorCardData(
-          dispatch,
-          setCollectorCardLoading,
-          ispOwnerId,
-          filterData
-        );
-    }
   };
 
   //chartsData for graph
@@ -439,34 +476,15 @@ const ManagerDashboard = () => {
                   <div></div>
 
                   <div className="d-flex justify-content-end">
-                    <div
-                      className="d-flex justify-content-center align-items-center me-2"
-                      title={t("refresh")}
-                      style={{
-                        borderRadius: "10%",
-                        backgroundColor: "#F7E9D7",
-                      }}
-                    >
+                    <div className="addcutmButton me-1">
                       {isLoading ? (
-                        <div className="dashboardLoader">
-                          <Loader />
-                        </div>
+                        <Loader />
                       ) : (
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="23"
-                          height="23"
-                          fill="currentColor"
-                          className="bi bi-arrow-clockwise dashboardButton"
-                          viewBox="0 0 16 16"
+                        <ArrowClockwise
+                          className="arrowClock"
+                          title={t("refresh")}
                           onClick={dashboardReloadHandler}
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"
-                          />
-                          <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z" />
-                        </svg>
+                        />
                       )}
                     </div>
 

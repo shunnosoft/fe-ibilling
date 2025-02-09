@@ -15,13 +15,8 @@ const CustomerTicketSmsTemplate = () => {
   const { t } = useTranslation();
   const textRef = useRef();
 
-  // get user & current user data form useISPOwner
-  const { role, ispOwnerId, userData } = useISPowner();
-
-  // get SMS settings
-  const settings = useSelector(
-    (state) => state.persistedReducer.auth.userData?.settings
-  );
+  //---> @Get user & current user data form useISPOwner hooks
+  const { role, ispOwnerId, userData, hasMikrotik, settings } = useISPowner();
 
   // loading state
   const [loading, setLoading] = useState(false);
@@ -262,21 +257,23 @@ const CustomerTicketSmsTemplate = () => {
           </div>
 
           <div className="displayGrid mt-3">
-            <div className="checkboxSelect">
-              <input
-                id="user_Name"
-                type="checkbox"
-                className="getValueUsingClass"
-                value={"USER: USERNAME"}
-                checked={matchFound.includes("USER: USERNAME")}
-                onChange={(e) => {
-                  itemSettingHandler(e.target.value);
-                }}
-              />
-              <label className="templatelabel" htmlFor="user_Name">
-                {"USER: USERNAME"}
-              </label>
-            </div>
+            {hasMikrotik && (
+              <div className="checkboxSelect">
+                <input
+                  id="user_Name"
+                  type="checkbox"
+                  className="getValueUsingClass"
+                  value={"USER: USERNAME"}
+                  checked={matchFound.includes("USER: USERNAME")}
+                  onChange={(e) => {
+                    itemSettingHandler(e.target.value);
+                  }}
+                />
+                <label className="templatelabel" htmlFor="user_Name">
+                  {"USER: USERNAME"}
+                </label>
+              </div>
+            )}
 
             <div className="checkboxSelect">
               <input

@@ -150,7 +150,7 @@ const BulkOptions = ({ bulkCustomers, page }) => {
         bpSettings?.bulkPackageEdit &&
         (role === "ispOwner" ||
           (role === "manager" && permissions?.bulkPackageEdit) ||
-          (role === "reseller" && permission?.customerMikrotikPackageEdit)),
+          (role === "reseller" && permission?.bulkCustomerPackageUpdate)),
       icon: <i class="fas fa-wifi fa-xs" />,
       value: "updatePackage",
     },

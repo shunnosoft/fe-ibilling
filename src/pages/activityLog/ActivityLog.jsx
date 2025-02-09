@@ -38,9 +38,7 @@ const ActivityLog = () => {
 
   // admin staff user role permission
   const adminUser =
-    role === "ispOwner" ||
-    role === "manager" ||
-    (role === "collector" && !userData.reseller);
+    role === "ispOwner" || role === "manager" || role !== "collector";
 
   // initial loading state
   const [isLoading, setIsLoading] = useState(false);
@@ -160,7 +158,7 @@ const ActivityLog = () => {
       type: "select",
       id: "createdBy",
       value: filterOptions.createdBy,
-      isVisible: true,
+      isVisible: role === "collector" ? false : true,
       disabled: false,
       onChange: (e) =>
         setFilterOption({

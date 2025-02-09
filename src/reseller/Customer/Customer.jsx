@@ -79,7 +79,7 @@ const Customer = () => {
   firstDate.setHours(0, 0, 0, 0);
   lastDate.setHours(23, 59, 59, 999);
 
-  // get user & current user data form useISPOwner
+  //---> Get user & current user data form useISPOwner
   const { role, ispOwnerData, ispOwnerId, userData, permission, permissions } =
     useISPowner();
 

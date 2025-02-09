@@ -29,6 +29,7 @@ import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
 import DashboardCard from "./dashboardCard/DashboardCard";
 import PaymentAlert from "./PaymentAlert";
+import { ArrowClockwise } from "react-bootstrap-icons";
 
 const CollectorDashboard = () => {
   const { t } = useTranslation();
@@ -72,21 +73,85 @@ const CollectorDashboard = () => {
   const [Month, setMonth] = useState(date.getMonth());
   const [filterDate, setFilterDate] = useState(date);
 
-  //api calls
+  //================// API CALL's //================//
   useEffect(() => {
-    //get graph chart data
-    getCollectorDashboardCharts(setLoading, dispatch, collectorId, Year, Month);
+    //---> @Get collector dashboard overview monthly business summary data
+    !Object.keys(customerStat).length &&
+      getCollectorDashboardCardData(
+        dispatch,
+        setLoadingDashboardData,
+        collectorId
+      );
 
-    //get card data
+    //---> @Get collector dashboard middle monthly collection chart data
+    !ChartsData?.length &&
+      getCollectorDashboardCharts(
+        setLoading,
+        dispatch,
+        collectorId,
+        Year,
+        Month
+      );
+
+    //---> @Get netFee app page bulletin permission data
+    !Object.keys(butPermission)?.length && getBulletinPermission(dispatch);
+  }, []);
+
+  //---> IspOwner Dashboard monthly filter handler
+  const dashboardFilterController = () => {
+    const filterData = {
+      year: filterDate.getFullYear(),
+      month: filterDate.getMonth() + 1,
+    };
+
+    //---> @Get collector dashboard overview monthly business summary data
     getCollectorDashboardCardData(
       dispatch,
       setLoadingDashboardData,
-      collectorId
+      collectorId,
+      filterData
     );
 
-    // get netFee bulletin api call
-    Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
-  }, []);
+    //---> @Get collector dashboard middle monthly collection chart data
+    getCollectorDashboardCharts(
+      setLoading,
+      dispatch,
+      collectorId,
+      filterDate.getFullYear(),
+      filterDate.getMonth()
+    );
+  };
+
+  //---> IspOwner dashboard monthly filter refresh handler
+  const dashboardReloadHandler = () => {
+    const filterData = {
+      year: filterDate.getFullYear(),
+      month: filterDate.getMonth() + 1,
+    };
+
+    //---> @Get collector dashboard overview monthly business summary data
+    getCollectorDashboardCardData(
+      dispatch,
+      setLoadingDashboardData,
+      collectorId,
+      filterData
+    );
+
+    //---> @Get collector dashboard middle monthly collection chart data
+    getCollectorDashboardCharts(
+      setLoading,
+      dispatch,
+      collectorId,
+      filterDate.getFullYear(),
+      filterDate.getMonth()
+    );
+  };
+
+  //---> Collector Dashboard below monthly collection graph chard filter handler
+  const handleFilterHandler = () => {
+    //---> @Get collector dashboard overview monthly business summary data
+    getCollectorDashboardCharts(setLoading, dispatch, collectorId, Year, Month);
+  };
 
   //graph data calculation
   useEffect(() => {
@@ -104,41 +169,6 @@ const CollectorDashboard = () => {
     setCollection(tempCollection);
     setCount(tempCount);
   }, [ChartsData]);
-
-  //filter for graph chart
-  const handleFilterHandler = () => {
-    getCollectorDashboardCharts(setLoading, dispatch, collectorId, Year, Month);
-  };
-
-  //reload cards handler
-  const dashboardReloadHandler = () => {
-    const filterData = {
-      year: filterDate.getFullYear(),
-      month: filterDate.getMonth() + 1,
-    };
-
-    getCollectorDashboardCardData(
-      dispatch,
-      setLoadingDashboardData,
-      collectorId,
-      filterData
-    );
-  };
-
-  //filter card information
-  const dashboardFilterController = () => {
-    const filterData = {
-      year: filterDate.getFullYear(),
-      month: filterDate.getMonth() + 1,
-    };
-
-    getCollectorDashboardCardData(
-      dispatch,
-      setLoadingDashboardData,
-      collectorId,
-      filterData
-    );
-  };
 
   //chartsData for graph
   const chartsData = {
@@ -279,34 +309,15 @@ const CollectorDashboard = () => {
                 <div className="d-flex justify-content-between">
                   <div></div>
                   <div className="d-flex justify-content-end">
-                    <div
-                      className="d-flex justify-content-center align-items-center me-2"
-                      title={t("refresh")}
-                      style={{
-                        borderRadius: "10%",
-                        backgroundColor: "#F7E9D7",
-                      }}
-                    >
+                    <div className="addcutmButton me-1">
                       {isLoading ? (
-                        <div className="dashboardLoader">
-                          <Loader />
-                        </div>
+                        <Loader />
                       ) : (
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="23"
-                          height="23"
-                          fill="currentColor"
-                          className="bi bi-arrow-clockwise dashboardButton"
-                          viewBox="0 0 16 16"
+                        <ArrowClockwise
+                          className="arrowClock"
+                          title={t("refresh")}
                           onClick={dashboardReloadHandler}
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"
-                          />
-                          <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z" />
-                        </svg>
+                        />
                       )}
                     </div>
 

@@ -16,15 +16,11 @@ const AlertSmsTemplate = () => {
   const textRef = useRef();
   const formRef = useRef();
 
-  // get user & current user data form useISPOwner
-  const { ispOwnerData, ispOwnerId } = useISPowner();
+  //---> @Get user & current user data form useISPOwner hooks
+  const { ispOwnerData, ispOwnerId, hasMikrotik, settings } = useISPowner();
 
   // loading state
   const [loading, setLoading] = useState(false);
-
-  const settings = useSelector(
-    (state) => state.persistedReducer.auth.userData?.settings
-  );
 
   const [bottomText, setBottomText] = useState("");
   const [fontValue, setFontValue] = useState("");
@@ -331,21 +327,23 @@ const AlertSmsTemplate = () => {
             </div>
 
             <div className="displayGrid">
-              <div className="radioselect">
-                <input
-                  id="USERNAME"
-                  type="checkbox"
-                  className="getValueUsingClass"
-                  value={"USER: USERNAME"}
-                  checked={smsTemplet.includes("USER: USERNAME")}
-                  onChange={(e) => {
-                    itemSettingHandler(e.target.value);
-                  }}
-                />
-                <label className="templatelabel" htmlFor="USERNAME">
-                  {"USER: USERNAME"}
-                </label>
-              </div>
+              {hasMikrotik && (
+                <div className="radioselect">
+                  <input
+                    id="USERNAME"
+                    type="checkbox"
+                    className="getValueUsingClass"
+                    value={"USER: USERNAME"}
+                    checked={smsTemplet.includes("USER: USERNAME")}
+                    onChange={(e) => {
+                      itemSettingHandler(e.target.value);
+                    }}
+                  />
+                  <label className="templatelabel" htmlFor="USERNAME">
+                    {"USER: USERNAME"}
+                  </label>
+                </div>
+              )}
 
               <div className="radioselect">
                 <input

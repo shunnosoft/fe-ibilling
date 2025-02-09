@@ -97,7 +97,7 @@ const PPPOECustomer = () => {
   firstDate.setHours(0, 0, 0, 0);
   lastDate.setHours(23, 59, 59, 999);
 
-  // get user & current user data form useISPOwner hooks
+  //---> Get user & current user data form useISPOwner hooks
   const { role, ispOwnerId, bpSettings, permissions } = useISPowner();
 
   //---> Get redux store state data from useSelectorState hooks
@@ -213,7 +213,7 @@ const PPPOECustomer = () => {
     //---> @Get ispOwner sub-areas pol-box data
     !polesBox?.length && getPoleBoxApi(dispatch, ispOwnerId, setLoading);
 
-    // bulletin get apipppoeCustomerOption
+    //---> @Get bulletin permissions data
     Object.keys(bulletinPagePermission)?.length === 0 &&
       getBulletinPermission(dispatch);
   }, [ispOwnerId]);

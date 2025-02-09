@@ -558,6 +558,12 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
                       </p>
                       <h2>{FormatNumber(dashboardCard.totalDeposit)}</h2>
                     </div>
+                    <p class="m-b-0">
+                      {t("previousMonthDeposit")}
+                      <span class="f-right">
+                        {FormatNumber(dashboardCard.previousMonthDeposit)}
+                      </span>
+                    </p>
                   </div>
                 </div>
               </div>

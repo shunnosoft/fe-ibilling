@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
-import { useSelector } from "react-redux";
 
 // custom hook import
 import useISPowner from "../../../hooks/useISPOwner";
@@ -15,13 +14,8 @@ const ConnectionFeeSMSTemplate = () => {
   const { t } = useTranslation();
   const textRef = useRef();
 
-  // get user & current user data form useISPOwner
-  const { role, ispOwnerId, userData } = useISPowner();
-
-  // get SMS settings
-  const settings = useSelector(
-    (state) => state.persistedReducer.auth.userData?.settings
-  );
+  //---> @Get user & current user data form useISPOwner hooks
+  const { role, ispOwnerId, userData, hasMikrotik, settings } = useISPowner();
 
   // loading state
   const [loading, setLoading] = useState(false);
@@ -263,21 +257,23 @@ const ConnectionFeeSMSTemplate = () => {
           </div>
 
           <div className="displayGrid mt-3">
-            <div className="checkboxSelect">
-              <input
-                id="user_Name"
-                type="checkbox"
-                className="getValueUsingClass"
-                value={"USER: USERNAME"}
-                checked={matchFound.includes("USER: USERNAME")}
-                onChange={(e) => {
-                  itemSettingHandler(e.target.value);
-                }}
-              />
-              <label className="templatelabel" htmlFor="user_Name">
-                {"USER: USERNAME"}
-              </label>
-            </div>
+            {hasMikrotik && (
+              <div className="checkboxSelect">
+                <input
+                  id="user_Name"
+                  type="checkbox"
+                  className="getValueUsingClass"
+                  value={"USER: USERNAME"}
+                  checked={matchFound.includes("USER: USERNAME")}
+                  onChange={(e) => {
+                    itemSettingHandler(e.target.value);
+                  }}
+                />
+                <label className="templatelabel" htmlFor="user_Name">
+                  {"USER: USERNAME"}
+                </label>
+              </div>
+            )}
 
             <div className="checkboxSelect">
               <input

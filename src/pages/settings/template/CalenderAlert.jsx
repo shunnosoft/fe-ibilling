@@ -46,18 +46,13 @@ const dayOptions = [
 
 function CalenderAlert() {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
 
-  // get user & current user data form useISPOwner
-  const { ispOwnerData, ispOwnerId } = useISPowner();
+  //---> @Get user & current user data form useISPOwner hooks
+  const { ispOwnerData, ispOwnerId, hasMikrotik, settings } = useISPowner();
 
   const [loading, setLoading] = useState(false);
 
-  //get settings
-  const settings = useSelector(
-    (state) => state.persistedReducer.auth.userData?.settings
-  );
-
-  const dispatch = useDispatch();
   const [bottomText, setBottomText] = useState("");
   const [fontValue, setFontValue] = useState("");
   const [upperText, setUpperText] = useState("");
@@ -392,20 +387,26 @@ function CalenderAlert() {
             >
               <div className="d-flex">
                 <div className="displayFlexx me-4">
-                  <div className="radioselect">
-                    <input
-                      id="customerUserName"
-                      type="checkbox"
-                      className="getValueUsingClass"
-                      value={"USER: USERNAME"}
-                      checked={smsTemplet?.includes("USER: USERNAME")}
-                      onChange={itemSettingHandler}
-                      name="user_name"
-                    />
-                    <label className="templatelabel" htmlFor="customerUserName">
-                      {"USER: USERNAME"}
-                    </label>
-                  </div>
+                  {hasMikrotik && (
+                    <div className="radioselect">
+                      <input
+                        id="customerUserName"
+                        type="checkbox"
+                        className="getValueUsingClass"
+                        value={"USER: USERNAME"}
+                        checked={smsTemplet?.includes("USER: USERNAME")}
+                        onChange={itemSettingHandler}
+                        name="user_name"
+                      />
+                      <label
+                        className="templatelabel"
+                        htmlFor="customerUserName"
+                      >
+                        {"USER: USERNAME"}
+                      </label>
+                    </div>
+                  )}
+
                   <div className="radioselect">
                     <input
                       id="customerUserId"

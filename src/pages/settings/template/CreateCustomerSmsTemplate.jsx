@@ -13,15 +13,12 @@ import useISPowner from "../../../hooks/useISPOwner";
 const CreateCustomerSmsTemplate = () => {
   const { t } = useTranslation();
 
-  // get user & current user data form useISPOwner
-  const { ispOwnerData, ispOwnerId } = useISPowner();
+  //---> @Get user & current user data form useISPOwner hooks
+  const { ispOwnerData, ispOwnerId, hasMikrotik, settings } = useISPowner();
 
   const [loading, setLoading] = useState(false);
   const [totalText, setTotalText] = useState("");
 
-  const settings = useSelector(
-    (state) => state.persistedReducer.auth.userData?.settings
-  );
   const dispatch = useDispatch();
   const [bottomText, setBottomText] = useState("");
   const [upperText, setUpperText] = useState("");
@@ -288,21 +285,24 @@ const CreateCustomerSmsTemplate = () => {
               <p className="endingtext">{bottomText}</p>
             </div>
             <div className="displayFlexx">
-              <div className="radioselect">
-                <input
-                  id="1"
-                  type="checkbox"
-                  className="getValueUsingClass"
-                  value={"USER: USERNAME"}
-                  checked={matchFound.includes("USER: USERNAME")}
-                  onChange={(e) => {
-                    itemSettingHandler(e.target.value);
-                  }}
-                />
-                <label className="templatelabel" htmlFor="1">
-                  {"USER: USERNAME"}
-                </label>
-              </div>
+              {hasMikrotik && (
+                <div className="radioselect">
+                  <input
+                    id="1"
+                    type="checkbox"
+                    className="getValueUsingClass"
+                    value={"USER: USERNAME"}
+                    checked={matchFound.includes("USER: USERNAME")}
+                    onChange={(e) => {
+                      itemSettingHandler(e.target.value);
+                    }}
+                  />
+                  <label className="templatelabel" htmlFor="1">
+                    {"USER: USERNAME"}
+                  </label>
+                </div>
+              )}
+
               <div className="radioselect">
                 <input
                   id="2"

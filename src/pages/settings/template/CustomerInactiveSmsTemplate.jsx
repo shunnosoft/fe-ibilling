@@ -14,12 +14,8 @@ function CustomerInactiveSmsTemplate() {
   const textRef = useRef();
   const formRef = useRef();
 
-  // get user & current user data form useISPOwner
-  const { ispOwnerData, ispOwnerId } = useISPowner();
-
-  const settings = useSelector(
-    (state) => state.persistedReducer.auth.userData?.settings
-  );
+  //---> @Get user & current user data form useISPOwner hooks
+  const { ispOwnerData, ispOwnerId, hasMikrotik, settings } = useISPowner();
 
   // loading state
   const [loading, setLoading] = useState(false);
@@ -272,21 +268,23 @@ function CustomerInactiveSmsTemplate() {
               {paymentLink && <p className="text-primary">{paymentLink}</p>}
             </div>
             <div className="displayFlexx">
-              <div className="radioselect">
-                <input
-                  id="userName"
-                  type="checkbox"
-                  className="getValueUsingClass"
-                  value={"USER: USERNAME"}
-                  checked={matchFound.includes("USER: USERNAME")}
-                  onChange={(e) => {
-                    itemSettingHandler(e.target.value);
-                  }}
-                />
-                <label className="templatelabel" htmlFor="userName">
-                  {"USER: USERNAME"}
-                </label>
-              </div>
+              {hasMikrotik && (
+                <div className="radioselect">
+                  <input
+                    id="userName"
+                    type="checkbox"
+                    className="getValueUsingClass"
+                    value={"USER: USERNAME"}
+                    checked={matchFound.includes("USER: USERNAME")}
+                    onChange={(e) => {
+                      itemSettingHandler(e.target.value);
+                    }}
+                  />
+                  <label className="templatelabel" htmlFor="userName">
+                    {"USER: USERNAME"}
+                  </label>
+                </div>
+              )}
 
               <div className="radioselect">
                 <input
