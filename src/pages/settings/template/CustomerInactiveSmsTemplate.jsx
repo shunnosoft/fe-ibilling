@@ -97,8 +97,7 @@ function CustomerInactiveSmsTemplate() {
           : null,
       template: {
         ...settings.sms.template,
-        customerInactive:
-          fontText + upperText + "\n" + bottomText + "\n" + paymentLink,
+        customerInactive: fontText + upperText + "\n" + bottomText,
       },
     };
     setLoading(true);
@@ -133,6 +132,7 @@ function CustomerInactiveSmsTemplate() {
       "NAME: CUSTOMER_NAME",
       "BILL: AMOUNT",
       "LAST DATE: BILL_DATE",
+      customerPaymentLink,
     ];
     var found = [];
 
@@ -141,7 +141,8 @@ function CustomerInactiveSmsTemplate() {
       .replace("ID: CUSTOMER_ID", "")
       .replace("NAME: CUSTOMER_NAME", "")
       .replace("BILL: AMOUNT", "")
-      .replace("LAST DATE: BILL_DATE", "");
+      .replace("LAST DATE: BILL_DATE", "")
+      .replace(customerPaymentLink, "");
 
     // setBottomText(messageBoxStr !== "undefined" ? messageBoxStr?.trim() : "");
 
@@ -353,13 +354,19 @@ function CustomerInactiveSmsTemplate() {
               {ispOwnerData?.bpSettings.hasPG && (
                 <div className="radioselect">
                   <input
-                    id="paymentLink"
+                    id="PAYMENT_LINK_EXPIRED"
                     type="checkbox"
                     className="getValueUsingClass"
                     value={customerPaymentLink}
-                    onChange={paymentLinkHandler}
+                    checked={matchFound?.includes(customerPaymentLink)}
+                    onChange={(e) => {
+                      itemSettingHandler(e.target.value);
+                    }}
                   />
-                  <label className="templatelabel" htmlFor="paymentLink">
+                  <label
+                    className="templatelabel"
+                    htmlFor="PAYMENT_LINK_EXPIRED"
+                  >
                     {"PAYMENT_LINK"}
                   </label>
                 </div>

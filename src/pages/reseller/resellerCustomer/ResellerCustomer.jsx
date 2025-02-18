@@ -42,7 +42,12 @@ import BulkCustomerReturn from "../resellerModals/BulkCustomerReturn";
 import PrintCustomer from "./customerPDF";
 import BulkBillingCycleEdit from "../resellerModals/bulkBillingCycleEdit";
 import FormatNumber from "../../../components/common/NumberFormat";
-import { getArea } from "../../../features/apiCalls";
+import {
+  fetchMikrotik,
+  getAllPackages,
+  getArea,
+  getPackagewithoutmikrotik,
+} from "../../../features/apiCalls";
 import BulkStatusEdit from "../resellerModals/bulkStatusEdit";
 import BulkCustomerTransfer from "../resellerModals/bulkCustomerTransfer";
 import BulkPromiseDateEdit from "../../Customer/customerCRUD/bulkOpration/BulkPromiseDateEdit";
@@ -56,9 +61,10 @@ import {
   getCustomerPromiseDate,
 } from "../../Customer/customerCRUD/customerBillDayPromiseDate";
 import { badge } from "../../../components/common/Utils";
-import { getMikrotikPackages } from "../../../features/apiCallReseller";
 import DataFilter from "../../common/DataFilter";
 import useDataState from "../../../hooks/useDataState";
+import useSelectorState from "../../../hooks/useSelectorState";
+import useISPowner from "../../../hooks/useISPOwner";
 
 const ResellerCustomer = () => {
   const { t } = useTranslation();
@@ -73,13 +79,15 @@ const ResellerCustomer = () => {
   // get id from route
   const { resellerId } = useParams();
 
+  //---> Get user & current user data form useISPOwner hooks
+  const { ispOwnerId, bpSettings } = useISPowner();
+
+  //---> Get redux store state data from useSelectorState hooks
+  const { areas, subAreas, mikrotiks, allPackages, withoutMtkPackages } =
+    useSelectorState();
+
   // get user data set from useDataState hooks
   const { filterOptions, setFilterOption } = useDataState();
-
-  // get isp owner id
-  const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth.ispOwnerId
-  );
 
   // get isp owner data
   const ispOwnerData = useSelector(
@@ -94,14 +102,10 @@ const ResellerCustomer = () => {
     (state) => state?.resellerCustomer?.resellerCustomer
   );
 
-  // get bp settings
-  const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
-  );
+  //====================|| Local State||====================//
 
-  const packages = useSelector(
-    (state) => state.reseller.allMikrotikPakages?.packages
-  );
+  //---> Local api loading state
+  const [loading, setLoading] = useState(false);
 
   // customer state
   const [customer, setCustomer] = useState([]);
@@ -144,17 +148,36 @@ const ResellerCustomer = () => {
     getResellerCustomer(dispatch, resellerId, setIsLoading);
   };
 
-  // get all reseller customer api call
+  //================// API CALL's //================//
   useEffect(() => {
-    if (customer.length === 0)
+    //===========================================================> FIRST API
+
+    //---> @Get ispOwner areas sub-area data
+    !subAreas.length && getSubAreasApi(dispatch, ispOwnerId);
+
+    //---> @Get Reseller all customer data
+    !resellerCustomer.length &&
       getResellerCustomer(dispatch, resellerId, setIsLoading);
-    // fetchMikrotik(dispatch, ispOwnerId, setIsLoading);
 
-    getArea(dispatch, ispOwnerId, setAreaLoading);
-    getSubAreasApi(dispatch, ispOwnerId);
+    //===========================================================> SECOND STEP API
 
-    // get ispOwner mikrotiks and packages in redux store
-    getMikrotikPackages(dispatch, ispOwnerId);
+    //---> @Get ispOwner areas data
+    !areas?.length && getArea(dispatch, ispOwnerId, setLoading);
+
+    //---> Get hasMikrotik base all mikrotik data
+    if (!bpSettings?.hasMikrotik) {
+      //---> @Get ispOwner without mikrotiks all package data
+      !withoutMtkPackages.length &&
+        getPackagewithoutmikrotik(ispOwnerId, dispatch, setLoading);
+    } else {
+      //---> @Get ispOwner mikrotiks data
+      !mikrotiks?.length && fetchMikrotik(dispatch, ispOwnerId, setLoading);
+    }
+
+    //===========================================================> LAST API
+
+    //---> @Get ispOwner all mikrotik packages data
+    !allPackages.length && getAllPackages(dispatch, ispOwnerId, setLoading);
   }, []);
 
   // set customer at state
@@ -181,7 +204,7 @@ const ResellerCustomer = () => {
 
   // customer current package find
   const getCustomerPackage = (value) => {
-    const findPack = packages.find((item) =>
+    const findPack = allPackages?.find((item) =>
       item.id.includes(value?.mikrotikPackage)
     );
     return findPack;
@@ -529,7 +552,7 @@ const ResellerCustomer = () => {
         ),
       },
     ],
-    [t, customer, packages]
+    [t, customer, allPackages]
   );
 
   //total monthly fee and due calculation

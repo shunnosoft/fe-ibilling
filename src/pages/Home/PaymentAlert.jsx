@@ -37,7 +37,7 @@ const PaymentAlert = ({ invoice }) => {
         }`}
       >
         <Container fluid>
-          <div className="w-100 d-flex justify-content-between align-items-center">
+          <div className="row w-100 d-flex justify-content-between align-items-center gx-0 mx-0">
             <Col xs="auto" className="d-flex align-items-center">
               <ExclamationTriangle
                 className="text-danger"

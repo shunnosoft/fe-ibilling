@@ -552,15 +552,14 @@ const DataFilter = ({
         });
       },
       options: [
-        {
-          text: t("pppoe"),
-          value: "pppoe",
-        },
-        {
-          text: t("static"),
-          value: "static",
-        },
+        ...(bpSettings?.customerType.includes("pppoe")
+          ? [{ text: t("pppoe"), value: "pppoe" }]
+          : []),
+        ...(bpSettings?.customerType.includes("static")
+          ? [{ text: t("static"), value: "static" }]
+          : []),
       ],
+
       firstOptions: t("userType"),
       textAccessor: "text",
       valueAccessor: "value",
