@@ -159,18 +159,19 @@ const useDataInputOption = (inputPermission, page, status, data) => {
   // get package commission rate based on commission type
   useEffect(() => {
     const packageId = formData.packageId;
+    const currentData = rsRole ? userData : resellerData;
 
     // get ispOwner package rate
-    if (packageId && userData?.commissionType === "packageBased") {
+    if (packageId && currentData?.commissionType === "packageBased") {
       getResellerPackageRate(resellerId, packageId, setPackageCommission);
-    } else if (packageId && userData?.commissionType === "global") {
+    } else if (packageId && currentData?.commissionType === "global") {
       // find mikrotik package in pppoe packages
       const singlePackage = ppPackage.find((val) => val.id === packageId);
 
       if (status === "post") {
         setPackageCommission({
           ispOwnerRate: adminResellerCommission(
-            userData,
+            currentData,
             { pageStatus: "post", amount: singlePackage?.rate },
             role
           )?.ispOwnerCommission,
@@ -178,7 +179,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       } else {
         setPackageCommission({
           ispOwnerRate: adminResellerCommission(
-            userData,
+            currentData,
             { ...data, amount: singlePackage?.rate, pageStatus: "edit" },
             role
           )?.ispOwnerCommission,

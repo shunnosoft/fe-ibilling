@@ -2,7 +2,7 @@
 export const adminResellerCommission = (reseller, data, role) => {
   // single reseller find in customer report data
   const singleReseller =
-    role === "reseller"
+    role === "reseller" || (role === "collector" && reseller.reseller)
       ? reseller
       : reseller?.find((item) => item.id === data.reseller);
 
