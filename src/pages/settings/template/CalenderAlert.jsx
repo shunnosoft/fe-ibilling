@@ -50,6 +50,7 @@ function CalenderAlert() {
 
   //---> @Get user & current user data form useISPOwner hooks
   const { ispOwnerData, ispOwnerId, hasMikrotik, settings } = useISPowner();
+  console.log(settings?.sms?.template?.calenderAlert);
 
   const [loading, setLoading] = useState(false);
 
@@ -77,6 +78,7 @@ function CalenderAlert() {
   const formRef = useRef();
 
   const [smsTemplet, setTemplet] = useState([]);
+  console.log(smsTemplet);
 
   // payment link state
   const [paymentLink, setPaymentLink] = useState("");
@@ -124,8 +126,7 @@ function CalenderAlert() {
       smsTemplet.length === 0 ? setSelected(false) : setSelected(true);
     } else {
       if (
-        (fontValue + "\n" + upperText + "\n" + bottomText + "\n" + paymentLink)
-          .length +
+        (fontValue + "\n" + upperText + "\n" + bottomText).length +
           item.length >
         334
       ) {
@@ -158,6 +159,7 @@ function CalenderAlert() {
       "NAME: CUSTOMER_NAME",
       "BILL: AMOUNT",
       "LAST DATE: BILL_DATE",
+      customerPaymentLink,
     ];
     let found = [];
     let messageBoxStr = settings?.sms?.template?.calenderAlert
@@ -165,7 +167,8 @@ function CalenderAlert() {
       .replace("ID: CUSTOMER_ID", "")
       .replace("NAME: CUSTOMER_NAME", "")
       .replace("BILL: AMOUNT", "")
-      .replace("LAST DATE: BILL_DATE", "");
+      .replace("LAST DATE: BILL_DATE", "")
+      .replace(customerPaymentLink, "");
 
     let temp = messageBoxStr?.split("\n");
 
@@ -222,6 +225,10 @@ function CalenderAlert() {
       : "";
     const amount = form.amount.checked ? form.amount.value : "";
     const bill_date = form.bill_date.checked ? form.bill_date.value : "";
+    const payment_link = form.payment_link.checked
+      ? form.payment_link.value
+      : "";
+
     // const active = form.active.checked ? form.active.value : "";
     // const inactive = form.inactive.checked ? form.inactive.value : "";
     // const expired = form.expired.checked ? form.expired.value : "";
@@ -229,7 +236,14 @@ function CalenderAlert() {
     // const unpaid = form.unpaid.checked ? form.unpaid.value : "";
 
     var tempu = [];
-    tempu.push(user_name, customer_id, customer_name, amount, bill_date);
+    tempu.push(
+      user_name,
+      customer_id,
+      customer_name,
+      amount,
+      bill_date,
+      payment_link
+    );
 
     var uppText = "";
     tempu?.map((i) => {
@@ -256,8 +270,7 @@ function CalenderAlert() {
       calenderDays: monthDays,
       template: {
         ...settings?.sms?.template,
-        calenderAlert:
-          fontValue + newUppText + "\n" + bottomText + "\n" + paymentLink,
+        calenderAlert: fontValue + newUppText + "\n" + bottomText,
         calenderAlertCustomerStatus: status,
       },
     };
@@ -387,26 +400,20 @@ function CalenderAlert() {
             >
               <div className="d-flex">
                 <div className="displayFlexx me-4">
-                  {hasMikrotik && (
-                    <div className="radioselect">
-                      <input
-                        id="customerUserName"
-                        type="checkbox"
-                        className="getValueUsingClass"
-                        value={"USER: USERNAME"}
-                        checked={smsTemplet?.includes("USER: USERNAME")}
-                        onChange={itemSettingHandler}
-                        name="user_name"
-                      />
-                      <label
-                        className="templatelabel"
-                        htmlFor="customerUserName"
-                      >
-                        {"USER: USERNAME"}
-                      </label>
-                    </div>
-                  )}
-
+                  <div className="radioselect">
+                    <input
+                      id="customerUserName"
+                      type="checkbox"
+                      className="getValueUsingClass"
+                      value={"USER: USERNAME"}
+                      checked={smsTemplet?.includes("USER: USERNAME")}
+                      onChange={itemSettingHandler}
+                      name="user_name"
+                    />
+                    <label className="templatelabel" htmlFor="customerUserName">
+                      {"USER: USERNAME"}
+                    </label>
+                  </div>
                   <div className="radioselect">
                     <input
                       id="customerUserId"
@@ -470,13 +477,18 @@ function CalenderAlert() {
                   {ispOwnerData?.bpSettings.hasPG && (
                     <div className="radioselect">
                       <input
-                        id="payment_link"
+                        id="PAYMENT_LINK_ALERT"
                         type="checkbox"
                         className="getValueUsingClass"
                         value={customerPaymentLink}
-                        onChange={paymentLinkHandler}
+                        checked={smsTemplet?.includes(customerPaymentLink)}
+                        onChange={itemSettingHandler}
+                        name="payment_link"
                       />
-                      <label className="templatelabel" htmlFor="payment_link">
+                      <label
+                        className="templatelabel"
+                        htmlFor="PAYMENT_LINK_ALERT"
+                      >
                         {"PAYMENT_LINK"}
                       </label>
                     </div>

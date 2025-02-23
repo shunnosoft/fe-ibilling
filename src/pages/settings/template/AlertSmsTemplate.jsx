@@ -326,25 +326,22 @@ const AlertSmsTemplate = () => {
               <p className="endingtext">{bottomText}</p>
             </div>
 
-            <div className="displayGrid">
-              {hasMikrotik && (
-                <div className="radioselect">
-                  <input
-                    id="USERNAME"
-                    type="checkbox"
-                    className="getValueUsingClass"
-                    value={"USER: USERNAME"}
-                    checked={smsTemplet.includes("USER: USERNAME")}
-                    onChange={(e) => {
-                      itemSettingHandler(e.target.value);
-                    }}
-                  />
-                  <label className="templatelabel" htmlFor="USERNAME">
-                    {"USER: USERNAME"}
-                  </label>
-                </div>
-              )}
-
+            <div className="displayFlexx">
+              <div className="radioselect">
+                <input
+                  id="USERNAME"
+                  type="checkbox"
+                  className="getValueUsingClass"
+                  value={"USER: USERNAME"}
+                  checked={smsTemplet.includes("USER: USERNAME")}
+                  onChange={(e) => {
+                    itemSettingHandler(e.target.value);
+                  }}
+                />
+                <label className="templatelabel" htmlFor="USERNAME">
+                  {"USER: USERNAME"}
+                </label>
+              </div>
               <div className="radioselect">
                 <input
                   id="CUSTOMER_ID"

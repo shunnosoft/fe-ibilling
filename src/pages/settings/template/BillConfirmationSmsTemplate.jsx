@@ -261,24 +261,21 @@ function BillConfirmationSmsTemplate() {
 
             <div className="d-flex">
               <div className="displayFlexx">
-                {hasMikrotik && (
-                  <div className="radioselect">
-                    <input
-                      id="1"
-                      type="checkbox"
-                      className="getValueUsingClass"
-                      value={"USER: USERNAME"}
-                      checked={matchFound.includes("USER: USERNAME")}
-                      onChange={(e) => {
-                        itemSettingHandler(e.target.value);
-                      }}
-                    />
-                    <label className="templatelabel" htmlFor="1">
-                      {"USER: USERNAME"}
-                    </label>
-                  </div>
-                )}
-
+                <div className="radioselect">
+                  <input
+                    id="1"
+                    type="checkbox"
+                    className="getValueUsingClass"
+                    value={"USER: USERNAME"}
+                    checked={matchFound.includes("USER: USERNAME")}
+                    onChange={(e) => {
+                      itemSettingHandler(e.target.value);
+                    }}
+                  />
+                  <label className="templatelabel" htmlFor="1">
+                    {"USER: USERNAME"}
+                  </label>
+                </div>
                 <div className="radioselect">
                   <input
                     id="2"

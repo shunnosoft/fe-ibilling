@@ -269,24 +269,21 @@ function CustomerInactiveSmsTemplate() {
               {paymentLink && <p className="text-primary">{paymentLink}</p>}
             </div>
             <div className="displayFlexx">
-              {hasMikrotik && (
-                <div className="radioselect">
-                  <input
-                    id="userName"
-                    type="checkbox"
-                    className="getValueUsingClass"
-                    value={"USER: USERNAME"}
-                    checked={matchFound.includes("USER: USERNAME")}
-                    onChange={(e) => {
-                      itemSettingHandler(e.target.value);
-                    }}
-                  />
-                  <label className="templatelabel" htmlFor="userName">
-                    {"USER: USERNAME"}
-                  </label>
-                </div>
-              )}
-
+              <div className="radioselect">
+                <input
+                  id="userName"
+                  type="checkbox"
+                  className="getValueUsingClass"
+                  value={"USER: USERNAME"}
+                  checked={matchFound.includes("USER: USERNAME")}
+                  onChange={(e) => {
+                    itemSettingHandler(e.target.value);
+                  }}
+                />
+                <label className="templatelabel" htmlFor="userName">
+                  {"USER: USERNAME"}
+                </label>
+              </div>
               <div className="radioselect">
                 <input
                   id="customerId"

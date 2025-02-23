@@ -65,7 +65,7 @@ const BandwidthModal = ({ customer, modalShow, setModalShow }) => {
         }
       }
     } catch (error) {
-      console.log(error.message);
+      toast.error(error.message);
     }
   };
 

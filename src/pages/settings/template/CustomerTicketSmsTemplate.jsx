@@ -257,24 +257,21 @@ const CustomerTicketSmsTemplate = () => {
           </div>
 
           <div className="displayGrid mt-3">
-            {hasMikrotik && (
-              <div className="checkboxSelect">
-                <input
-                  id="user_Name"
-                  type="checkbox"
-                  className="getValueUsingClass"
-                  value={"USER: USERNAME"}
-                  checked={matchFound.includes("USER: USERNAME")}
-                  onChange={(e) => {
-                    itemSettingHandler(e.target.value);
-                  }}
-                />
-                <label className="templatelabel" htmlFor="user_Name">
-                  {"USER: USERNAME"}
-                </label>
-              </div>
-            )}
-
+            <div className="checkboxSelect">
+              <input
+                id="user_Name"
+                type="checkbox"
+                className="getValueUsingClass"
+                value={"USER: USERNAME"}
+                checked={matchFound.includes("USER: USERNAME")}
+                onChange={(e) => {
+                  itemSettingHandler(e.target.value);
+                }}
+              />
+              <label className="templatelabel" htmlFor="user_Name">
+                {"USER: USERNAME"}
+              </label>
+            </div>
             <div className="checkboxSelect">
               <input
                 id="customer_Id"
