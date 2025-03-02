@@ -417,7 +417,7 @@ export const getIspOwnerDashboardOverViewData = async (
     const res = await apiLink(
       `/dashboard/bill-overview/${ispOwnerId}?year=${filterData.year}&month=${filterData.month}`
     );
-    localStorage.setItem("webhook", res?.data.webhookPaymentCustomerCount);
+
     dispatch(getDashboardOverViewData(res.data));
     setDashboardLoading(false);
   } catch (err) {
@@ -438,6 +438,7 @@ export const getIspOwnerDashboardOverViewCustomerData = async (
       `/dashboard/customer-overview/${ispOwnerId}?year=${filterData.year}&month=${filterData.month}`
     );
 
+    localStorage.setItem("webhook", res?.data.customers);
     dispatch(getDashboardOverViewCustomerData(res.data));
     setDashboardLoading(false);
   } catch (err) {

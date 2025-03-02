@@ -95,6 +95,7 @@ const PPPoECustomerEdit = ({ show, setShow, single }) => {
     address: true,
     email: true,
     billingCycle: true,
+    promiseDate: true,
     connectionDate: true,
     connectionFee: true,
     customerBillingType: true,

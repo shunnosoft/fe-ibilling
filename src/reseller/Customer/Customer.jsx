@@ -419,13 +419,15 @@ const Customer = () => {
             <div>
               <p>{getCustomerPromiseDate(original)?.billDate}</p>
 
-              <p
-                className={`d-flex align-self-end text-${
-                  getCustomerPromiseDate(original)?.promiseDateChange
-                }`}
-              >
-                {getCustomerPromiseDate(original)?.promiseDate}
-              </p>
+              {permission?.promiseDate && (
+                <p
+                  className={`d-flex align-self-end text-${
+                    getCustomerPromiseDate(original)?.promiseDateChange
+                  }`}
+                >
+                  {getCustomerPromiseDate(original)?.promiseDate}
+                </p>
+              )}
             </div>
           </div>
         ),
@@ -467,7 +469,6 @@ const Customer = () => {
         width: "5%",
         Header: () => <div className="text-center">{t("action")}</div>,
         id: "option",
-
         Cell: ({ row: { original } }) => (
           <div className="d-flex justify-content-center align-items-center">
             <div className="dropdown">
@@ -513,22 +514,22 @@ const Customer = () => {
                     </div>
                   </li>
                 )}
-                {(permission?.customerEdit || permissions?.customerEdit) && (
-                  <li
-                    onClick={() => {
-                      getSpecificCustomer(original.id);
-                      setModalStatus("customerEdit");
-                      setShow(true);
-                    }}
-                  >
-                    <div className="dropdown-item">
-                      <div className="customerAction">
-                        <PenFill />
-                        <p className="actionP">{t("edit")}</p>
-                      </div>
+
+                <li
+                  onClick={() => {
+                    getSpecificCustomer(original.id);
+                    setModalStatus("customerEdit");
+                    setShow(true);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <PenFill />
+                      <p className="actionP">{t("edit")}</p>
                     </div>
-                  </li>
-                )}
+                  </div>
+                </li>
+
                 {role !== "collector" && (
                   <li
                     data-bs-toggle="modal"

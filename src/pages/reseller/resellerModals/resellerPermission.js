@@ -186,6 +186,13 @@ export const resellerPermissions = (permission, bpSettings) => {
       isChecked: permission?.bulkCustomerPackageUpdate,
       disabled: !bpSettings?.bulkPackageEdit,
     },
+    {
+      id: 26,
+      label: "Promise Date",
+      value: "promiseDate",
+      isChecked: permission?.promiseDate,
+      disabled: false,
+    },
   ];
 
   const permissionBn = [
@@ -375,6 +382,13 @@ export const resellerPermissions = (permission, bpSettings) => {
       value: "bulkCustomerPackageUpdate",
       isChecked: permission?.bulkCustomerPackageUpdate,
       disabled: !bpSettings?.bulkPackageEdit,
+    },
+    {
+      id: 26,
+      label: "প্রমিজ তারিখ",
+      value: "promiseDate",
+      isChecked: permission?.promiseDate,
+      disabled: false,
     },
   ];
 

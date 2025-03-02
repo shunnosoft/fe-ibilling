@@ -36,6 +36,7 @@ const CustomerModal = ({ show, setShow }) => {
     mikrotik: true,
     mikrotikPackage: true,
     monthlyFee: true,
+    balance: true,
     pppoeName: true,
     password: true,
     subArea: true,
