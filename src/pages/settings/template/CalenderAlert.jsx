@@ -44,13 +44,12 @@ const dayOptions = [
   { value: "31", label: "31" },
 ];
 
-function CalenderAlert() {
+const CalenderAlert = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
   //---> @Get user & current user data form useISPOwner hooks
-  const { ispOwnerData, ispOwnerId, hasMikrotik, settings } = useISPowner();
-  console.log(settings?.sms?.template?.calenderAlert);
+  const { ispOwnerData, ispOwnerId, settings } = useISPowner();
 
   const [loading, setLoading] = useState(false);
 
@@ -78,10 +77,6 @@ function CalenderAlert() {
   const formRef = useRef();
 
   const [smsTemplet, setTemplet] = useState([]);
-  console.log(smsTemplet);
-
-  // payment link state
-  const [paymentLink, setPaymentLink] = useState("");
 
   //Status Handler
   const statusHandler = (e) => {
@@ -105,15 +100,6 @@ function CalenderAlert() {
 
   // ispOwner payment gateway payment link
   const customerPaymentLink = `Payment Link: https://app.netfeebd.com/isp/${ispOwnerData?.netFeeId}`;
-
-  // customer payment link handler
-  const paymentLinkHandler = (e) => {
-    if (paymentLink) {
-      setPaymentLink("");
-    } else {
-      setPaymentLink(e.target.value);
-    }
-  };
 
   const itemSettingHandler = (e) => {
     const item = e.target.value;
@@ -218,78 +204,59 @@ function CalenderAlert() {
 
     const form = e.target;
 
-    const user_name = form.user_name.checked ? form.user_name.value : "";
-    const customer_id = form.customer_id.checked ? form.customer_id.value : "";
-    const customer_name = form.customer_name.checked
-      ? form.customer_name.value
-      : "";
-    const amount = form.amount.checked ? form.amount.value : "";
-    const bill_date = form.bill_date.checked ? form.bill_date.value : "";
-    const payment_link = form.payment_link.checked
-      ? form.payment_link.value
-      : "";
+    // Extract checked form values safely
+    const getCheckedValue = (name) =>
+      form[name]?.checked ? form[name].value : "";
 
-    // const active = form.active.checked ? form.active.value : "";
-    // const inactive = form.inactive.checked ? form.inactive.value : "";
-    // const expired = form.expired.checked ? form.expired.value : "";
-    // const paid = form.paid.checked ? form.paid.value : "";
-    // const unpaid = form.unpaid.checked ? form.unpaid.value : "";
+    const selectedValues = [
+      getCheckedValue("user_name"),
+      getCheckedValue("customer_id"),
+      getCheckedValue("customer_name"),
+      getCheckedValue("amount"),
+      getCheckedValue("bill_date"),
+      getCheckedValue("payment_link"),
+    ];
 
-    var tempu = [];
-    tempu.push(
-      user_name,
-      customer_id,
-      customer_name,
-      amount,
-      bill_date,
-      payment_link
-    );
+    // Build `uppText` efficiently using reduce
+    const uppText = selectedValues
+      .reduce((acc, value) => (value ? `${acc}\n${value}` : acc), "")
+      .trim();
 
-    var uppText = "";
-    tempu?.map((i) => {
-      if (i) return (uppText = uppText + "\n" + i);
-    });
+    // Extract calendar days values
+    const monthDays = calenderDays.map((day) => day.value);
 
-    let monthDays = [];
-    for (let i = 0; i < calenderDays.length; i++) {
-      monthDays.push(calenderDays[i].value);
-    }
-    const temp = uppText.split("\n");
-    temp.length = smsTemplet.length + 1;
-    const newUppText = temp.join("\n");
+    // Limit `uppText` length based on `smsTemplet`
+    const newUppText = uppText
+      .split("\n")
+      .slice(0, smsTemplet.length + 1)
+      .join("\n");
 
-    let data = {
+    // Construct API payload
+    const data = {
       ...settings?.sms,
       calenderAlertSendBy: sendingType,
-      calenderAlert:
-        billConfirmation === "on"
-          ? true
-          : billConfirmation === "off"
-          ? false
-          : null,
+      calenderAlert: billConfirmation === "on",
       calenderDays: monthDays,
       template: {
         ...settings?.sms?.template,
-        calenderAlert: fontValue + newUppText + "\n" + bottomText,
+        calenderAlert: `${fontValue}${newUppText}\n${bottomText}`,
         calenderAlertCustomerStatus: status,
       },
     };
-    setLoading(true);
 
+    setLoading(true);
     try {
       const res = await apiLink.patch(
         `/ispOwner/settings/sms/${ispOwnerId}`,
         data
       );
       dispatch(smsSettingUpdateIsp(res.data));
-      setLoading(false);
       toast.success(t("alertSMStemplateSaveAlert"));
     } catch (error) {
-      console.log(error);
+      toast.error("Error updating SMS settings:", error);
+    } finally {
       setLoading(false);
     }
-
-    // formRef.current.reset();
   };
 
   useEffect(() => {
@@ -384,7 +351,6 @@ function CalenderAlert() {
               })}
 
               <p className="endingtext">{bottomText}</p>
-              {paymentLink && <p className="text-primary">{paymentLink}</p>}
             </div>
 
             <div
@@ -628,11 +594,9 @@ function CalenderAlert() {
           <div className="smsCount">
             <span className="smsLength">
               {t("letter")}
-              {(fontValue + smsTemplet + bottomText + paymentLink).length}
+              {(fontValue + smsTemplet + bottomText).length}
             </span>
-            <span>
-              SMS: {smsCount(fontValue + smsTemplet + bottomText + paymentLink)}
-            </span>
+            <span>SMS: {smsCount(fontValue + smsTemplet + bottomText)}</span>
           </div>
 
           <textarea
@@ -658,6 +622,6 @@ function CalenderAlert() {
       </form>
     </div>
   );
-}
+};
 
 export default CalenderAlert;
