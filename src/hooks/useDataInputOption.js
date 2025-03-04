@@ -44,6 +44,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
   } = useISPowner();
 
   // admin staff user role permission
+  const ispOwner = role === "ispOwner";
   const adminUser =
     role === "ispOwner" ||
     role === "manager" ||
@@ -773,6 +774,8 @@ const useDataInputOption = (inputPermission, page, status, data) => {
           ? !formData.mikrotikId
           : data?.status === "expired"
           ? true
+          : adminUser
+          ? !ispOwner && !(permissions?.customerEdit || permissions?.package)
           : resellerUser && !permission?.customerMikrotikPackageEdit
         : false,
       validation: true,
@@ -899,6 +902,9 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       disabled:
         status === "post"
           ? !formData.packageId
+          : adminUser
+          ? !ispOwner &&
+            !(permissions?.customerEdit || permissions?.monthlyFeeEdit)
           : resellerUser &&
             !(permission?.customerEdit || permission?.monthlyFeeEdit),
       validation: true,
@@ -916,13 +922,14 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       type: "text",
       id: "balance",
       isVisible: inputPermission.balance,
-      disabled: adminUser
-        ? status
+      disabled:
+        status === "post"
           ? !formData.packageId
-          : false
-        : status === "post"
-        ? !formData.packageId
-        : !permission?.customerEdit,
+          : adminUser
+          ? !ispOwner &&
+            !(permissions?.customerEdit || permissions?.monthlyFeeEdit)
+          : resellerUser &&
+            !(permission?.customerEdit || permission?.monthlyFeeEdit),
       validation: false,
       label: t("balance"),
       onChange: (e) => {
@@ -937,7 +944,12 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       type: "text",
       id: "ipAddress",
       isVisible: inputPermission.ipAddress,
-      disabled: status ? !formData.packageId : false,
+      disabled:
+        status === "post"
+          ? !formData.packageId
+          : adminUser
+          ? !ispOwner && !permissions?.customerEdit
+          : !permission?.customerEdit,
       validation: true,
       label: t("ipAddress"),
       placeholder: "e.g. 192.168.0.1",
@@ -954,7 +966,11 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       id: "pppoeName",
       isVisible: inputPermission.pppoeName,
       disabled:
-        status === "post" ? !formData.packageId : !permission?.customerEdit,
+        status === "post"
+          ? !formData.packageId
+          : adminUser
+          ? !ispOwner && !permissions?.customerEdit
+          : !permission?.customerEdit,
       validation: true,
       label: t("PPPoEName"),
       placeholder: "e.g. PPPoE-Name",
@@ -971,7 +987,11 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       id: "queueName",
       isVisible: inputPermission.queueName,
       disabled:
-        status === "post" ? !formData.packageId : !permission?.customerEdit,
+        status === "post"
+          ? !formData.packageId
+          : adminUser
+          ? !ispOwner && !permissions?.customerEdit
+          : !permission?.customerEdit,
       validation: true,
       label: t("queueName"),
       placeholder: "e.g. Queue-Name",
@@ -988,7 +1008,11 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       id: "password",
       isVisible: inputPermission.password,
       disabled:
-        status === "post" ? !formData.packageId : !permission?.customerEdit,
+        status === "post"
+          ? !formData.packageId
+          : adminUser
+          ? !ispOwner && !permissions?.customerEdit
+          : !permission?.customerEdit,
       validation: true,
       label: t("password"),
       placeholder: "e.g. Password: ********",
@@ -1006,7 +1030,11 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       id: "area",
       isVisible: inputPermission.area,
       disabled:
-        status === "post" ? !formData.packageId : !permission?.customerEdit,
+        status === "post"
+          ? !formData.packageId
+          : adminUser
+          ? !ispOwner && !permissions?.customerEdit
+          : !permission?.customerEdit,
       validation: true,
       label: t("selectArea"),
       firstOptions: t("selectArea"),
@@ -1027,7 +1055,11 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       id: "subArea",
       isVisible: inputPermission.subArea,
       disabled:
-        status === "post" ? !formData.packageId : !permission?.customerEdit,
+        status === "post"
+          ? !formData.packageId
+          : adminUser
+          ? !ispOwner && !permissions?.customerEdit
+          : !permission?.customerEdit,
       validation: true,
       label: t("selectSubArea"),
       firstOptions: t("selectSubArea"),
@@ -1050,7 +1082,11 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       id: "poleBox",
       isVisible: bpSettings?.poleBox && inputPermission.poleBox,
       disabled:
-        status === "post" ? !formData.packageId : !permission?.customerEdit,
+        status === "post"
+          ? !formData.packageId
+          : adminUser
+          ? !ispOwner && !permissions?.customerEdit
+          : !permission?.customerEdit,
       validation: false,
       label: t("selectPoleBox"),
       firstOptions: t("selectPoleBox"),
@@ -1070,7 +1106,11 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       id: "name",
       isVisible: inputPermission.name,
       disabled:
-        status === "post" ? !formData.packageId : !permission?.customerEdit,
+        status === "post"
+          ? !formData.packageId
+          : adminUser
+          ? !ispOwner && !permissions?.customerEdit
+          : !permission?.customerEdit,
       validation: true,
       label: t("name"),
       placeholder: "e.g. Name",
@@ -1119,7 +1159,11 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       id: "nid",
       isVisible: inputPermission.nid,
       disabled:
-        status === "post" ? !formData.packageId : !permission?.customerEdit,
+        status === "post"
+          ? !formData.packageId
+          : adminUser
+          ? !ispOwner && !permissions?.customerEdit
+          : !permission?.customerEdit,
       validation: page ? false : true,
       label: t("NIDno"),
       placeholder: "e.g. 10,13 or 17 digits",
@@ -1136,7 +1180,11 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       id: "birthDate",
       isVisible: inputPermission.birthDate,
       disabled:
-        status === "post" ? !formData.packageId : !permission?.customerEdit,
+        status === "post"
+          ? !formData.packageId
+          : adminUser
+          ? !ispOwner && !permissions?.customerEdit
+          : !permission?.customerEdit,
       validation: false,
       label: t("birthDate"),
       placeholderText: "YYYY MM DD",
@@ -1158,7 +1206,11 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       id: "address",
       isVisible: inputPermission.address,
       disabled:
-        status === "post" ? !formData.packageId : !permission?.customerEdit,
+        status === "post"
+          ? !formData.packageId
+          : adminUser
+          ? !ispOwner && !permissions?.customerEdit
+          : !permission?.customerEdit,
       validation: page ? false : true,
       label: t("address"),
       onChange: (e) => {
@@ -1174,7 +1226,11 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       id: "email",
       isVisible: inputPermission.email,
       disabled:
-        status === "post" ? !formData.packageId : !permission?.customerEdit,
+        status === "post"
+          ? !formData.packageId
+          : adminUser
+          ? !ispOwner && !permissions?.customerEdit
+          : !permission?.customerEdit,
       validation: page ? false : true,
       label: t("email"),
       placeholder: "***@mail.com",
@@ -1224,7 +1280,11 @@ const useDataInputOption = (inputPermission, page, status, data) => {
         inputPermission.promiseDate &&
         permission?.promiseDate,
       disabled:
-        status === "post" ? !formData.packageId : !permission?.customerEdit,
+        status === "post"
+          ? !formData.packageId
+          : adminUser
+          ? !ispOwner && !permissions?.customerEdit
+          : !permission?.customerEdit,
       validation: false,
       label: t("promiseDate"),
       placeholderText: "YYYY MM DD HH:mm A",
@@ -1246,13 +1306,12 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       type: "date",
       id: "connectionDate",
       isVisible: inputPermission.connectionDate,
-      disabled: adminUser
-        ? status === "post"
+      disabled:
+        status === "post"
           ? !formData.packageId
-          : true
-        : status === "post"
-        ? !formData.packageId
-        : !permission?.customerEdit,
+          : adminUser
+          ? !ispOwner && !permissions?.customerEdit
+          : !permission?.customerEdit,
       validation: false,
       label: t("connectionDate"),
       placeholderText: "YYYY MM DD HH:mm A",
@@ -1273,7 +1332,11 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       id: "connectionFee",
       isVisible: inputPermission.connectionFee,
       disabled:
-        status === "post" ? !formData.packageId : !permission?.customerEdit,
+        status === "post"
+          ? !formData.packageId
+          : adminUser
+          ? !ispOwner && !permissions?.customerEdit
+          : !permission?.customerEdit,
       validation: false,
       label: t("connectionFee"),
       onChange: (e) => {
@@ -1290,7 +1353,11 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       id: "customerBillingType",
       isVisible: inputPermission.customerBillingType,
       disabled:
-        status === "post" ? !formData.packageId : !permission?.customerEdit,
+        status === "post"
+          ? !formData.packageId
+          : adminUser
+          ? !ispOwner && !permissions?.customerEdit
+          : !permission?.customerEdit,
       validation: true,
       label: t("customerBillType"),
       firstOptions: t("customerBillType"),
@@ -1320,7 +1387,11 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       id: "division",
       isVisible: inputPermission.division,
       disabled:
-        status === "post" ? !formData.packageId : !permission?.customerEdit,
+        status === "post"
+          ? !formData.packageId
+          : adminUser
+          ? !ispOwner && !permissions?.customerEdit
+          : !permission?.customerEdit,
       validation: false,
       label: t("selectDivision"),
       firstOptions: t("selectDivision"),
@@ -1341,7 +1412,11 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       id: "district",
       isVisible: inputPermission.district,
       disabled:
-        status === "post" ? !formData.packageId : !permission?.customerEdit,
+        status === "post"
+          ? !formData.packageId
+          : adminUser
+          ? !ispOwner && !permissions?.customerEdit
+          : !permission?.customerEdit,
       validation: false,
       label: t("selectDistrict"),
       firstOptions: t("selectDistrict"),
@@ -1364,7 +1439,11 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       id: "thana",
       isVisible: inputPermission.thana,
       disabled:
-        status === "post" ? !formData.packageId : !permission?.customerEdit,
+        status === "post"
+          ? !formData.packageId
+          : adminUser
+          ? !ispOwner && !permissions?.customerEdit
+          : !permission?.customerEdit,
       validation: false,
       label: t("selectThana"),
       firstOptions: t("selectThana"),
@@ -1386,7 +1465,11 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       id: "comment",
       isVisible: inputPermission.comment,
       disabled:
-        status === "post" ? !formData.packageId : !permission?.customerEdit,
+        status === "post"
+          ? !formData.packageId
+          : adminUser
+          ? !ispOwner && !permissions?.customerEdit
+          : !permission?.customerEdit,
       validation: false,
       label: t("comment"),
       onChange: (e) => {

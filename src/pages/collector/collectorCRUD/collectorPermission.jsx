@@ -119,6 +119,13 @@ export const collectorPermission = (
           ispOwnerPermission?.bulkPaymentStatusEdit &&
           managerPermission?.bulkPaymentStatusEdit),
     },
+    {
+      id: 15,
+      value: "package",
+      label: "গ্রাহক প্যাকেজ আপডেট",
+      isChecked: permission?.package,
+      disabled: !managerPermission?.package,
+    },
   ];
 
   const permissionEn = [
@@ -235,6 +242,13 @@ export const collectorPermission = (
         : role === "manager" &&
           ispOwnerPermission?.bulkPaymentStatusEdit &&
           managerPermission?.bulkPaymentStatusEdit),
+    },
+    {
+      id: 15,
+      value: "package",
+      label: "Customer Package Update",
+      isChecked: permission?.package,
+      disabled: !managerPermission?.package,
     },
   ];
 

@@ -562,22 +562,20 @@ const PPPOECustomer = () => {
                   </li>
                 )}
 
-                {(permissions?.customerEdit || role === "ispOwner") && (
-                  <li
-                    onClick={() => {
-                      setCustomerId(original.id);
-                      setModalStatus("customerEdit");
-                      setShowModal(true);
-                    }}
-                  >
-                    <div className="dropdown-item">
-                      <div className="customerAction">
-                        <PenFill />
-                        <p className="actionP">{t("edit")}</p>
-                      </div>
+                <li
+                  onClick={() => {
+                    setCustomerId(original.id);
+                    setModalStatus("customerEdit");
+                    setShowModal(true);
+                  }}
+                >
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <PenFill />
+                      <p className="actionP">{t("edit")}</p>
                     </div>
-                  </li>
-                )}
+                  </div>
+                </li>
 
                 <li
                   onClick={() => {
