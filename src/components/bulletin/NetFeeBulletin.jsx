@@ -4,12 +4,9 @@ import {
   getIspOwnerBulletin,
   getResellerBulletin,
 } from "../../features/apiCallAdmin";
-import moment from "moment";
 import { useSelector } from "react-redux";
 
 const NetFeeBulletin = () => {
-  const date = new Date();
-
   // get user role
   const role = useSelector((state) => state.persistedReducer.auth?.role);
 
@@ -29,7 +26,7 @@ const NetFeeBulletin = () => {
 
   return (
     bulletins &&
-    bulletins.map((val) => {
+    bulletins.map((val) => (
       <div className="bulletin">
         <marquee id="bulletin_marquee" scrollamount="6" scrolldelay="100">
           <span
@@ -44,8 +41,8 @@ const NetFeeBulletin = () => {
             {val && val.title}
           </span>
         </marquee>
-      </div>;
-    })
+      </div>
+    ))
   );
 };
 

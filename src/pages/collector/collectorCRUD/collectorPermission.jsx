@@ -248,7 +248,7 @@ export const collectorPermission = (
       value: "package",
       label: "Customer Package Update",
       isChecked: permission?.package,
-      disabled: !managerPermission?.package,
+      disabled: role === "ispOwner" ? false : !managerPermission?.package,
     },
   ];
 
