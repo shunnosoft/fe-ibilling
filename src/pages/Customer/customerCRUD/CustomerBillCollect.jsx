@@ -47,8 +47,15 @@ const CustomerBillCollect = ({ single, status, page, setShow }) => {
   ];
 
   // get user & current user data form useISPOwner hooks
-  const { role, ispOwnerId, bpSettings, userData, currentUser, permissions } =
-    useISPowner();
+  const {
+    role,
+    ispOwnerId,
+    ispOwnerData,
+    bpSettings,
+    userData,
+    currentUser,
+    permissions,
+  } = useISPowner();
 
   // get all customer
   const customer = useSelector((state) =>
@@ -430,7 +437,7 @@ const CustomerBillCollect = ({ single, status, page, setShow }) => {
                       ref={rechargePrint}
                       customerData={data}
                       billingData={responseData}
-                      ispOwnerData={userData}
+                      ispOwnerData={ispOwnerData}
                     />
                   </div>
                 )}

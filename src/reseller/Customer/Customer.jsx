@@ -19,6 +19,7 @@ import {
   Phone,
   GeoAlt,
   Cash,
+  ClockHistory,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -66,10 +67,12 @@ import BulkOptions from "../../pages/Customer/customerCRUD/bulkOpration/BulkOpti
 import DataFilter from "../../pages/common/DataFilter";
 import useDataState from "../../hooks/useDataState";
 import { handleActiveFilter } from "../../pages/common/activeFilter";
+import { useNavigate } from "react-router-dom";
 
 const Customer = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // current Date
   let today = new Date();
@@ -312,6 +315,11 @@ const Customer = () => {
     value: "pppoe",
     label: "pppoe",
     checked: true,
+  };
+
+  // single customer activity log handle
+  const handleCustomerActivityLog = (data) => {
+    navigate(`/activity/${data?.id}`);
   };
 
   const columns = React.useMemo(
@@ -590,6 +598,15 @@ const Customer = () => {
                       </div>
                     </li>
                   )}
+
+                <li onClick={() => handleCustomerActivityLog(original)}>
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <ClockHistory />
+                      <p className="actionP">{t("activityLog")}</p>
+                    </div>
+                  </div>
+                </li>
               </ul>
             </div>
           </div>

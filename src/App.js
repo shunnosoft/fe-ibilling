@@ -209,14 +209,7 @@ function App() {
 
             <Route
               path="/activity/:customerId"
-              element={
-                (userRole === "manager" && user) ||
-                (userRole === "ispOwner" && user) ? (
-                  <CustomerActivityLog />
-                ) : (
-                  <Navigate to={"/"} />
-                )
-              }
+              element={<CustomerActivityLog />}
             />
           </Routes>
         )}

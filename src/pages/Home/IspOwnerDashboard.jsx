@@ -256,7 +256,7 @@ const IspOwnerDashboard = () => {
       dispatch,
       setDashboardLoading,
       ispOwnerId,
-      currentDate
+      filterData
     );
 
     //---> @Get ispOwner dashboard middle monthly collection chart data
@@ -329,7 +329,7 @@ const IspOwnerDashboard = () => {
       dispatch,
       setDashboardLoading,
       ispOwnerId,
-      currentDate
+      filterData
     );
 
     //---> @Get ispOwner dashboard middle monthly collection chart data

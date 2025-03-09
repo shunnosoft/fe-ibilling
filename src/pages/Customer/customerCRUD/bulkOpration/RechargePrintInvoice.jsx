@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 const RechargePrintInvoice = React.forwardRef((props, ref) => {
   const { t } = useTranslation();
   const { billingData, ispOwnerData, customerData } = props;
+
   return (
     <>
       {/* will not render initially if no data is found */}
@@ -26,6 +27,12 @@ const RechargePrintInvoice = React.forwardRef((props, ref) => {
           <div className="container">
             <div className="d-flex justify-content-between p-1 m-1">
               <div>
+                <p>
+                  {t("id")} :
+                  <strong style={{ marginLeft: "2.7rem" }}>
+                    {customerData?.customerId}
+                  </strong>
+                </p>
                 <p>
                   {t("name")} :
                   <strong style={{ marginLeft: "2.7rem" }}>
@@ -165,6 +172,12 @@ const RechargePrintInvoice = React.forwardRef((props, ref) => {
             <div className="container">
               <div className="d-flex justify-content-between p-1 m-1">
                 <div className="text-justify">
+                  <p>
+                    {t("id")} :
+                    <strong style={{ marginLeft: "2.7rem" }}>
+                      {customerData?.customerId}
+                    </strong>
+                  </p>
                   <p>
                     {t("name")} :
                     <strong style={{ marginLeft: "2.7rem" }}>

@@ -43,6 +43,8 @@ const useDataInputOption = (inputPermission, page, status, data) => {
     permissions,
   } = useISPowner();
 
+  console.log(permission?.promiseDate);
+
   // admin staff user role permission
   const ispOwner = role === "ispOwner";
   const adminUser =
@@ -1275,10 +1277,11 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       type: "date",
       id: "promiseDate",
       isVisible:
-        status === "edit" &&
-        bpSettings?.promiseDate &&
-        inputPermission.promiseDate &&
-        permission?.promiseDate,
+        status === "edit"
+          ? adminUser
+            ? bpSettings?.promiseDate && inputPermission.promiseDate
+            : permission?.promiseDate
+          : false,
       disabled:
         status === "post"
           ? !formData.packageId
