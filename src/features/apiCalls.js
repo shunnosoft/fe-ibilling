@@ -1987,7 +1987,8 @@ export const fetchpppoeUserForReseller = async (
   dispatch,
   IDs,
   mtkName,
-  setIsLoading
+  setIsLoading,
+  userType
 ) => {
   setIsLoading(true);
   dispatch(resetpppoeUser());
@@ -2003,84 +2004,73 @@ export const fetchpppoeUserForReseller = async (
     let interfaaceList = res.data?.interfaceList;
     let activepppSecretUsers = res.data?.activepppSecretUsers;
 
-    customers = customers.map((customerItem) => {
-      const lastLogout = pppsecretUsers.find(
-        (j) => j?.name === customerItem.pppoe?.name
-      );
-      if (lastLogout) {
-        customerItem = {
-          ...customerItem,
-          lastLogoutTime: lastLogout.lastLoggedOut,
-          status: customerItem.status,
-        };
-      }
-      return customerItem;
-    });
+    if (pppsecretUsers && interfaaceList && activepppSecretUsers && customers) {
+      customers = customers.map((customerItem) => {
+        const lastLogout = pppsecretUsers.find(
+          (j) => j?.name == customerItem.pppoe?.name
+        );
+        if (lastLogout) {
+          customerItem = {
+            ...customerItem,
+            lastLogoutTime: lastLogout.lastLoggedOut,
+            status: customerItem.status,
+          };
+        }
+        return customerItem;
+      });
 
-    const temp = [];
-    interfaaceList = interfaaceList.map((interfaceItem) => {
-      const ipAddress = activepppSecretUsers.find(
-        (ip) => "<pppoe-" + ip.name + ">" === interfaceItem.name
-      );
-      if (ipAddress) {
-        interfaceItem = {
-          ...interfaceItem,
-          ip: ipAddress.address,
-        };
-      }
-      return interfaceItem;
-    });
+      const temp = [];
+      interfaaceList = interfaaceList.map((interfaceItem) => {
+        const ipAddress = activepppSecretUsers.find(
+          (ip) => "<pppoe-" + ip.name + ">" === interfaceItem.name
+        );
+        if (ipAddress) {
+          interfaceItem = {
+            ...interfaceItem,
+            ip: ipAddress.address,
+            uptime: ipAddress.uptime,
+          };
+        }
+        return interfaceItem;
+      });
 
-    customers.forEach((i) => {
-      const match = interfaaceList.find(
-        (item) => item.name === "<pppoe-" + i.pppoe.name + ">"
-      );
-      if (match) {
-        temp.push({
-          ...match,
-          ...i,
+      if (userType === "user") {
+        customers.forEach((i) => {
+          const match = interfaaceList.find(
+            (item) => item.name === "<pppoe-" + i.pppoe.name + ">"
+          );
+
+          if (match) {
+            temp.push({
+              ...match,
+              ...i,
+            });
+          }
+          if (!match) temp.push(i);
         });
       }
-      if (!match) temp.push(i);
-    });
 
-    // const pppsecretUsers = res.data?.secretCustomers;
-    // let interfaaceList = res.data?.interfaceList;
-    // let activepppSecretUsers = res.data?.activepppSecretUsers;
-    // let customers = res.data?.customers;
+      if (userType === "mikrotikUser") {
+        pppsecretUsers.forEach((i) => {
+          let match = false;
+          interfaaceList.forEach((j) => {
+            if (j.name === "<pppoe-" + i.name + ">") {
+              match = true;
 
-    // const temp = [];
+              temp.push({
+                ...j,
+                ...i,
+              });
+            }
+          });
+          if (!match) temp.push(i);
+        });
+      }
 
-    // interfaaceList = interfaaceList.map((interfaceItem) => {
-    //   const ipAddress = activepppSecretUsers.find(
-    //     (ip) => "<pppoe-" + ip.name + ">" === interfaceItem.name
-    //   );
-    //   if (ipAddress) {
-    //     interfaceItem = {
-    //       ...interfaceItem,
-    //       ip: ipAddress.address,
-    //     };
-    //   }
-    //   return interfaceItem;
-    // });
+      dispatch(getpppoeUserSuccess(temp));
+      dispatch(mtkIsLoading(false));
+    }
 
-    // pppsecretUsers.forEach((i) => {
-    //   let match = false;
-    //   interfaaceList.forEach((j) => {
-    //     if (j.name === "<pppoe-" + i.name + ">") {
-    //       match = true;
-
-    //       temp.push({
-    //         ...j,
-    //         ...i,
-    //       });
-    //     }
-    //   });
-    //   if (!match) temp.push(i);
-    // });
-
-    dispatch(getpppoeUserSuccess(temp));
-    dispatch(mtkIsLoading(false));
     setIsLoading(false);
   } catch (error) {
     console.log(error);

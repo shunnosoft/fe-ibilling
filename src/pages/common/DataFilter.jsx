@@ -12,7 +12,7 @@ import { getOwnerUsers, userStaffs } from "../../features/getIspOwnerUsersApi";
 import {
   getMikrotik,
   getSubAreas,
-  withMtkPackage,
+  getResellerPackages,
 } from "../../features/apiCallReseller";
 import useSelectorState from "../../hooks/useSelectorState";
 
@@ -102,7 +102,7 @@ const DataFilter = ({
 
     // get all mikrotik packages
     if (!adminUser) {
-      packages?.length === 0 && withMtkPackage(dispatch, resellerId);
+      packages?.length === 0 && getResellerPackages(dispatch, resellerId);
 
       //---> @Get reseller mikrotiks data
       !mikrotiks?.length && getMikrotik(dispatch, resellerId);

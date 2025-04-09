@@ -275,13 +275,13 @@ export const managerPermission = (permission, bpSettings, lang) => {
       isChecked: permission?.customerDelete || false,
       disabled: false,
     },
-    {
-      id: 6,
-      value: "billEdit",
-      label: "বিল আপডেট",
-      isChecked: permission?.billEdit || false,
-      disabled: false,
-    },
+    // {
+    //   id: 6,
+    //   value: "billEdit",
+    //   label: "বিল আপডেট",
+    //   isChecked: permission?.billEdit || false,
+    //   disabled: false,
+    // },
     {
       id: 7,
       value: "monthlyFeeEdit",

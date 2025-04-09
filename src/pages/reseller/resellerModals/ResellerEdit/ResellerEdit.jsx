@@ -189,10 +189,7 @@ const ResellerEdit = ({ show, setShow, resellerId }) => {
             (rateItem) => rateItem.mikrotikPackage === pack.id
           );
 
-          if (!commission) {
-            errorFlag = true;
-            msg = t("packageRateError");
-          } else {
+          if (commission) {
             let foundPackage = resellerPackage.find(
               (pack) => pack.id === commission.mikrotikPackage
             );

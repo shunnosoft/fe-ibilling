@@ -6,12 +6,12 @@ const resellerSlice = createSlice({
     reseller: [],
   },
   reducers: {
-    getResellerProfile: (state, action) => {
+    getResellerProfileSuccess: (state, action) => {
       state.reseller = action.payload;
     },
   },
 });
 
-export const { getResellerProfile } = resellerSlice.actions;
+export const { getResellerProfileSuccess } = resellerSlice.actions;
 
 export default resellerSlice.reducer;

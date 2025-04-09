@@ -36,7 +36,7 @@ import {
   getMikrotik,
   getStaticCustomerApi,
   getSubAreas,
-  withMtkPackage,
+  getResellerPackages,
 } from "../../features/apiCallReseller";
 import { badge } from "../../components/common/Utils";
 import Table from "../../components/table/Table";
@@ -144,7 +144,7 @@ export default function RstaticCustomer() {
       getStaticCustomerApi(dispatch, resellerId, setIsloading);
 
     // withMikrotik & withOutMikrotik package get api
-    if (ppPackage.length === 0) withMtkPackage(dispatch, resellerId);
+    if (ppPackage.length === 0) getResellerPackages(dispatch, resellerId);
 
     // get reseller mikrotik
     getMikrotik(dispatch, resellerId);

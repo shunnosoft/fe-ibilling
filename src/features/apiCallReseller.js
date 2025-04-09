@@ -45,7 +45,7 @@ import {
   getResellerSupport,
   updateResellerSupport,
 } from "./resellerSupportSlice";
-import { getResellerProfile } from "./resellerProfileSlice";
+import { getResellerProfileSuccess } from "./resellerProfileSlice";
 import {
   getResellerChangePackageRequest,
   updateResellerChangePackageRequest,
@@ -415,14 +415,14 @@ export const profileUpdate = async (dispatch, data, id, setIsLoading) => {
 };
 
 //get reseller info
-export const resellerInfo = async (
+export const getResellerProfile = async (
   resellerId,
   dispatch,
   setCollectorResellerInfo
 ) => {
   try {
     const res = await apiLink.get(`/reseller/${resellerId}`);
-    dispatch(getResellerProfile(res.data));
+    dispatch(getResellerProfileSuccess(res.data));
   } catch (error) {
     console.log(error);
   }
@@ -653,7 +653,7 @@ export const fetchpppoePackage = async (dispatch, IDs) => {
   }
 };
 
-export const withMtkPackage = async (dispatch, resellerId) => {
+export const getResellerPackages = async (dispatch, resellerId) => {
   try {
     const res = await apiLink({
       method: "GET",

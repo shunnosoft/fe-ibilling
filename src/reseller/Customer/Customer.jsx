@@ -42,8 +42,8 @@ import Loader from "../../components/common/Loader";
 import {
   getCustomer,
   getSubAreas,
-  resellerInfo,
-  withMtkPackage,
+  getResellerProfile,
+  getResellerPackages,
 } from "../../features/apiCallReseller";
 import CustomerReport from "./customerCRUD/showCustomerReport";
 import { badge } from "../../components/common/Utils";
@@ -82,20 +82,20 @@ const Customer = () => {
   firstDate.setHours(0, 0, 0, 0);
   lastDate.setHours(23, 59, 59, 999);
 
-  //---> Get user & current user data form useISPOwner
+  //---> Get user & current user data form useISPOwner hooks
   const { role, ispOwnerData, ispOwnerId, userData, permission, permissions } =
     useISPowner();
 
-  // customer get form redux
-  const allCustomer = useSelector((state) => state?.customer?.customer);
+  //---> Get reseller customer from redux store
+  const customers = useSelector((state) => state?.customer?.customer);
 
-  // get reseller subAreas form reseller data
+  //---> Get reseller subAreas from redux store
   const subAreas = useSelector((state) => state?.area?.area);
 
-  // get mikrotik package form redux
-  const ppPackage = useSelector((state) => state?.mikrotik?.pppoePackage);
+  //---> Get reseller mikrotik package from redux store
+  const packages = useSelector((state) => state?.mikrotik?.pppoePackage);
 
-  // get bulletin permission
+  //---> Get bulletin route permission from redux store
   const butPermission = useSelector(
     (state) => state.adminNetFeeSupport?.bulletinPermission
   );
@@ -140,35 +140,36 @@ const Customer = () => {
   // get user data set from useDataState hooks
   const { filterOptions, setFilterOption } = useDataState();
 
-  // get api calls
+  //================// API CALL's //================//
   useEffect(() => {
-    // get reseller customers from ispOwner
-    if (allCustomer.length === 0)
-      getCustomer(dispatch, resellerId, setIsLoading);
+    //===========================================================> FIRST API
 
-    // withMikrotik & withOutMikrotik package get api
-    if (ppPackage.length === 0) withMtkPackage(dispatch, resellerId);
+    //---> @Get reseller ispOwner areas sub-area data
+    !subAreas.length && getSubAreas(dispatch, resellerId);
 
-    // reseller subarea get api
-    getSubAreas(dispatch, resellerId);
+    //---> @Get ispOwner all customer data
+    !customers?.length && getCustomer(dispatch, resellerId, setIsLoading);
 
-    if (role === "collector") {
-      resellerInfo(resellerId, dispatch);
-    }
+    //===========================================================> SECOND STEP API
 
-    // get ispOwner & staffs
-    getOwnerUsers(dispatch, ispOwnerId);
+    //---> @Get reseller with and withOut mikrotik package data
+    !packages.length && getResellerPackages(dispatch, resellerId);
 
-    // bulletin permission get api
+    //===========================================================> LAST API
+
+    //---> @Get reseller profile data
+    role === "collector" && getResellerProfile(resellerId, dispatch);
+
+    //---> @Get netFee bulletin permissions data
     Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
-  }, [role]);
+  }, [resellerId]);
 
   // set state api call data
   useEffect(() => {
     let customerModified = [];
 
     // add area to customers
-    allCustomer?.map((c) => {
+    customers?.map((c) => {
       if (!c.area) {
         subAreas?.map((sub) => {
           if (sub.id === c.subArea) {
@@ -188,7 +189,7 @@ const Customer = () => {
     // set customer in state for filter
     Object?.values(filterOptions) &&
       setCustomers(handleActiveFilter(customerModified, filterOptions));
-  }, [allCustomer]);
+  }, [customers]);
 
   // reload handler
   const reloadHandler = () => {
@@ -322,7 +323,7 @@ const Customer = () => {
     navigate(`/activity/${data?.id}`);
   };
 
-  const columns = React.useMemo(
+  const columns = useMemo(
     () => [
       {
         id: "selection",
@@ -504,6 +505,7 @@ const Customer = () => {
                     </div>
                   </div>
                 </li>
+
                 {((role === "reseller" && permission?.customerRecharge) ||
                   (role === "collector" && permissions?.billPosting)) && (
                   <li
@@ -554,6 +556,7 @@ const Customer = () => {
                     </div>
                   </li>
                 )}
+
                 {permission?.customerDelete && (
                   <li
                     onClick={() => {
@@ -570,6 +573,7 @@ const Customer = () => {
                     </div>
                   </li>
                 )}
+
                 {original.mobile &&
                   (permissions?.sendSMS || role !== "collector") && (
                     <li
@@ -583,17 +587,6 @@ const Customer = () => {
                         <div className="customerAction">
                           <ChatText />
                           <p className="actionP">{t("message")}</p>
-                        </div>
-                      </div>
-                    </li>
-                  )}
-                {role === "reseller" &&
-                  ispOwnerData.bpSettings?.hasMikrotik && (
-                    <li onClick={() => bandwidthModalController(original.id)}>
-                      <div className="dropdown-item">
-                        <div className="customerAction">
-                          <Server />
-                          <p className="actionP">{t("bandwidth")}</p>
                         </div>
                       </div>
                     </li>
@@ -750,7 +743,7 @@ const Customer = () => {
                         <Accordion.Body>
                           <DataFilter
                             page="pppoe"
-                            customers={allCustomer}
+                            customers={customers}
                             setCustomers={setCustomers}
                             filterOptions={filterOptions}
                             setFilterOption={setFilterOption}
