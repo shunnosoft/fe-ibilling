@@ -51,7 +51,7 @@ const CustomerDelete = ({
 
     // api call
     if (checkCondition) {
-      deleteACustomer(dispatch, data, setIsloading);
+      deleteACustomer(dispatch, data, setIsloading, setShow);
     }
   };
 

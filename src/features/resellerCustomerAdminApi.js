@@ -136,27 +136,28 @@ export const bulkBillingCycleEdit = async (
   }
 };
 
-export const deleteACustomer = async (dispatch, data, setIsLoading) => {
+export const deleteACustomer = async (
+  dispatch,
+  data,
+  setIsLoading,
+  setShow
+) => {
   try {
     setIsLoading(true);
     await apiLink.delete(
       `/ispOwner/customer/${data.ispID}/${data.customerID}?mikrotik=${data.mikrotik}`
     );
     dispatch(deleteReCustomer(data.customerID));
-    document.querySelector("#customerDelete").click();
-    setIsLoading(false);
+    setShow(false);
     langMessage(
       "success",
       "কাস্টমার ডিলিট সফল হয়েছে",
       "Customer Deleted Successfully"
     );
   } catch (err) {
-    if (err.response) {
-      setIsLoading(false);
-      document.querySelector("#customerDelete").click();
-      toast.error(err.response.data.message);
-    }
+    toast.error(err.response?.data?.message);
   }
+  setIsLoading(false);
 };
 
 // get single cusomer bill report
