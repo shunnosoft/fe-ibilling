@@ -979,5 +979,6 @@
   "loggedOut": "লগ আউট",
   "uptime": "আপটাইম",
   "withNew": "নতুন সহ",
-  "withoutNew": "নতুন ছাড়া"
+  "withoutNew": "নতুন ছাড়া",
+  "packagePrice": "প্যাকেজ মূল্য"
 }

@@ -3066,7 +3066,7 @@ export const getIspOwnerWitSMS = async (
 
 //mikrotik packages without mikrotik access
 
-export const getPackagewithoutmikrotik = async (
+export const getWithoutMikrotikPackage = async (
   ispOwnerId,
   dispatch,
   setIsLoading
@@ -3082,6 +3082,7 @@ export const getPackagewithoutmikrotik = async (
   }
   setIsLoading(false);
 };
+
 export const getAllPackages = async (dispatch, ispOwnerId, setIsLoading) => {
   try {
     setIsLoading(true);
@@ -3133,27 +3134,30 @@ export const addPackagewithoutmikrotik = async (
   setIsLoading(false);
 };
 
-export const addQueuePackage = async (data, dispatch, setIsLoading) => {
+export const addQueuePackage = async (
+  data,
+  dispatch,
+  setIsLoading,
+  setShow
+) => {
   setIsLoading(true);
   try {
     const res = await apiLink.post(`/mikrotik/queue/package`, data);
-    // console.log(res.data.newPackage);
     dispatch(addPackageSuccess(res.data.newPackage));
-    setIsLoading(false);
-    document.querySelector("#createPackage").click();
+
+    setShow(false);
     langMessage(
       "success",
       "প্যাকেজ সফলভাবে যুক্ত হয়েছে",
       "Package Added Successfully"
     );
   } catch (error) {
-    console.log(error.response?.data.message);
-    setIsLoading(false);
     langMessage("error", "প্যাকেজ অ্যাড ব্যর্থ হয়েছে", "Package Add Failed");
   }
+  setIsLoading(false);
 };
 
-export const editPackagewithoutmikrotik = async (
+export const updateWithoutMikrotikPackage = async (
   data,
   dispatch,
   setIsLoading,

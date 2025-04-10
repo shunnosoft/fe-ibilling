@@ -973,5 +973,6 @@
   "loggedOut": "Logged Out",
   "uptime": "Uptime",
   "withNew": "With New",
-  "withoutNew": "Without New"
+  "withoutNew": "Without New",
+  "packagePrice": "Package Price"
 }

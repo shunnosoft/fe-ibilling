@@ -22,6 +22,11 @@ const useSelectorState = () => {
   //---> Get current user staff from redux store
   const userStaff = useSelector((state) => state?.ownerUsers?.userStaff);
 
+  //---> Get netFee bulletin route permission from redux store
+  const bulletinPermission = useSelector(
+    (state) => state.adminNetFeeSupport?.bulletinPermission
+  );
+
   return {
     areas,
     subAreas,
@@ -30,6 +35,7 @@ const useSelectorState = () => {
     allPackages,
     withoutMtkPackages,
     userStaff,
+    bulletinPermission,
   };
 };
 

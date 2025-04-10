@@ -8,7 +8,7 @@ import { useSelector, useDispatch } from "react-redux";
 import "../Customer/customer.css";
 import { FtextField } from "../../components/common/FtextField";
 import Loader from "../../components/common/Loader";
-import { editPackagewithoutmikrotik } from "../../features/apiCalls";
+import { updateWithoutMikrotikPackage } from "../../features/apiCalls";
 import ComponentCustomModal from "../../components/common/customModal/ComponentCustomModal";
 
 const EditPackage = ({ show, setShow, singlePackage }) => {
@@ -43,7 +43,7 @@ const EditPackage = ({ show, setShow, singlePackage }) => {
     };
 
     // edit api call
-    editPackagewithoutmikrotik(sendingData, dispatch, setIsLoading);
+    updateWithoutMikrotikPackage(sendingData, dispatch, setIsLoading);
   };
 
   return (

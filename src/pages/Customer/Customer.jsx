@@ -47,7 +47,7 @@ import {
   getAllPackages,
   getArea,
   getCustomer,
-  getPackagewithoutmikrotik,
+  getWithoutMikrotikPackage,
 } from "../../features/apiCalls";
 import useDash from "../../assets/css/dash.module.css";
 import { FontColor, FourGround } from "../../assets/js/theme";
@@ -98,7 +98,8 @@ const PPPOECustomer = () => {
   lastDate.setHours(23, 59, 59, 999);
 
   //---> Get user & current user data form useISPOwner hooks
-  const { role, ispOwnerId, bpSettings, permissions } = useISPowner();
+  const { role, ispOwnerData, ispOwnerId, bpSettings, permissions } =
+    useISPowner();
 
   //---> Get redux store state data from useSelectorState hooks
   const {
@@ -108,6 +109,7 @@ const PPPOECustomer = () => {
     mikrotiks,
     allPackages,
     withoutMtkPackages,
+    bulletinPermission,
   } = useSelectorState();
 
   // get user data set from useDataState hooks
@@ -115,16 +117,6 @@ const PPPOECustomer = () => {
 
   // get all customer
   const customers = useSelector((state) => state.customer.customer);
-
-  // get isp owner data
-  const ispOwnerData = useSelector(
-    (state) => state.persistedReducer.auth.userData
-  );
-
-  // get bulletin permission
-  const bulletinPagePermission = useSelector(
-    (state) => state.adminNetFeeSupport?.bulletinPermission
-  );
 
   //loading states
   const [loading, setLoading] = useState(false);
@@ -199,7 +191,7 @@ const PPPOECustomer = () => {
     if (!bpSettings?.hasMikrotik) {
       //---> @Get ispOwner without mikrotiks all package data
       !withoutMtkPackages.length &&
-        getPackagewithoutmikrotik(ispOwnerId, dispatch, setLoading);
+        getWithoutMikrotikPackage(ispOwnerId, dispatch, setLoading);
     } else {
       //---> @Get ispOwner mikrotiks data
       !mikrotiks?.length && fetchMikrotik(dispatch, ispOwnerId, setLoading);
@@ -214,7 +206,7 @@ const PPPOECustomer = () => {
     !polesBox?.length && getPoleBoxApi(dispatch, ispOwnerId, setLoading);
 
     //---> @Get bulletin permissions data
-    Object.keys(bulletinPagePermission)?.length === 0 &&
+    Object.keys(bulletinPermission)?.length === 0 &&
       getBulletinPermission(dispatch);
   }, [ispOwnerId]);
 
@@ -1028,8 +1020,8 @@ const PPPOECustomer = () => {
                 )}
 
                 {/* bulletin modal */}
-                {(bulletinPagePermission?.customer ||
-                  bulletinPagePermission?.allPage) && <NetFeeBulletin />}
+                {(bulletinPermission?.customer ||
+                  bulletinPermission?.allPage) && <NetFeeBulletin />}
               </FourGround>
               <Footer />
             </FontColor>

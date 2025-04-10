@@ -18,12 +18,12 @@ import { FourGround, FontColor } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
 import {
   deleteWithOutMikrotikPackage,
-  getPackagewithoutmikrotik,
+  getWithoutMikrotikPackage,
 } from "../../features/apiCalls";
 import CreatePackage from "./CreatePackageModal";
-import EditPackage from "./EditPackageModal";
 import Table from "../../components/table/Table";
 import Loader from "../../components/common/Loader";
+import PackageModal from "../staticCustomer/PackageModal";
 
 const Package = () => {
   const { t } = useTranslation();
@@ -59,12 +59,12 @@ const Package = () => {
   // api call
   useEffect(() => {
     if (packages.length === 0)
-      getPackagewithoutmikrotik(ispOwnerId, dispatch, setIsLoading);
+      getWithoutMikrotikPackage(ispOwnerId, dispatch, setIsLoading);
   }, []);
 
   // reload handler
   const reloadHandler = () => {
-    getPackagewithoutmikrotik(ispOwnerId, dispatch, setIsLoading);
+    getWithoutMikrotikPackage(ispOwnerId, dispatch, setIsLoading);
   };
 
   // specific package handler
@@ -206,9 +206,10 @@ const Package = () => {
 
       {/* package edit modal */}
       {modalStatus === "packageEdit" && (
-        <EditPackage
+        <PackageModal
           show={show}
           setShow={setShow}
+          isUpdate={true}
           singlePackage={singlePackage}
         />
       )}

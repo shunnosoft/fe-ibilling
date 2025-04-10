@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   ThreeDots,
   PenFill,
@@ -21,8 +21,7 @@ import {
   fetchMikrotik,
   getQueuePackageByIspOwnerId,
 } from "../../features/apiCalls";
-import CreatePackage from "./CreatePackageModal";
-import EditPackage from "./EditPackageModal";
+import PackageModal from "./PackageModal";
 import Table from "../../components/table/Table";
 import { useTranslation } from "react-i18next";
 
@@ -57,10 +56,14 @@ export default function PackageSetting() {
   const [mikrotikLoading, setMikrotikLoading] = useState(false);
 
   // set editable data for state
-  const [singlePackage, setSinglePackage] = useState("");
+  const [singlePackage, setSinglePackage] = useState({});
 
   // set filter status
   const [filterStatus, setFilterStatus] = useState(null);
+
+  //---> Modal handler
+  const [show, setShow] = useState(false);
+  const [isUpdate, setIsUpdate] = useState(false);
 
   // navigate handler
   const goToAllCustomer = () => {
@@ -91,7 +94,7 @@ export default function PackageSetting() {
   };
 
   // table column
-  const columns = React.useMemo(
+  const columns = useMemo(
     () => [
       {
         Header: t("serial"),
@@ -130,9 +133,9 @@ export default function PackageSetting() {
             <ul className="dropdown-menu" aria-labelledby="customerDrop">
               {
                 <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#editPackage"
                   onClick={() => {
+                    setShow(true);
+                    setIsUpdate(true);
                     setSinglePackage(original);
                   }}
                 >
@@ -166,11 +169,9 @@ export default function PackageSetting() {
 
   return (
     <>
-      <CreatePackage></CreatePackage>
-      <EditPackage package={singlePackage}></EditPackage>
-
       <Sidebar />
       <ToastContainer position="top-right" theme="colored" />
+
       <div className={useDash.dashboardWrapper}>
         <div className="container-fluied collector">
           <div className="container">
@@ -186,38 +187,37 @@ export default function PackageSetting() {
                     <div className="addAndSettingIcon">
                       <PlusLg
                         className="addcutmButton"
-                        data-bs-toggle="modal"
-                        data-bs-target="#createPackage"
+                        onClick={() => {
+                          setShow(true);
+                          setIsUpdate(false);
+                        }}
                       />
                     </div>
                   )}
                 </div>
               </FourGround>
-
               <FourGround>
-                <div className="collectorWrapper mt-2 py-2">
-                  <div className="addCollector">
-                    <div className="mikrotiKFilter">
-                      <select
-                        className="form-select"
-                        aria-label="Default select example"
-                        onChange={(event) =>
-                          setFilterStatus(event.target.value)
-                        }
-                      >
-                        <option selected>{t("mikrotik")}</option>
-                        {mikrotik.map((item) => (
-                          <option value={item.id}>{item.name}</option>
-                        ))}
-                      </select>
-                    </div>
+                <div className="mt-2">
+                  <div className="pt-2 px-4">
+                    <select
+                      className="form-select"
+                      aria-label="Default select example"
+                      onChange={(event) => setFilterStatus(event.target.value)}
+                    >
+                      <option selected>{t("mikrotik")}</option>
+                      {mikrotik.map((item) => (
+                        <option value={item.id}>{item.name}</option>
+                      ))}
+                    </select>
                   </div>
+                </div>
 
+                <div className="collectorWrapper pb-2">
                   <Table
                     isLoading={isLoading}
                     columns={columns}
                     data={packages}
-                  ></Table>
+                  />
                 </div>
               </FourGround>
               <Footer />
@@ -225,6 +225,14 @@ export default function PackageSetting() {
           </div>
         </div>
       </div>
+
+      {/* Queue package create and update modal */}
+      <PackageModal
+        show={show}
+        setShow={setShow}
+        isUpdate={isUpdate}
+        singlePackage={singlePackage}
+      />
     </>
   );
 }

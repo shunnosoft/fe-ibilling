@@ -11,7 +11,7 @@ import "../../collector/collector.css";
 import { FtextField } from "../../../components/common/FtextField";
 import Loader from "../../../components/common/Loader";
 import {
-  getPackagewithoutmikrotik,
+  getWithoutMikrotikPackage,
   postReseller,
 } from "../../../features/apiCalls";
 import { resellerPermissions } from "./resellerPermission";
@@ -106,7 +106,7 @@ const ResellerPost = ({ show, setShow }) => {
 
   useEffect(() => {
     if (!bpSettings.hasMikrotik) {
-      getPackagewithoutmikrotik(ispOwnerId, dispatch, setIsLoading);
+      getWithoutMikrotikPackage(ispOwnerId, dispatch, setIsLoading);
     }
 
     // reseller permission

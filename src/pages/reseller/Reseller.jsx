@@ -38,7 +38,7 @@ import {
   deleteReseller,
   fetchReseller,
   getArea,
-  getPackagewithoutmikrotik,
+  getWithoutMikrotikPackage,
 } from "../../features/apiCalls";
 import Recharge from "./resellerModals/recharge";
 import Table from "../../components/table/Table";
@@ -99,7 +99,7 @@ const Reseller = () => {
 
     // get package without mikrotik
     !hasMikrotik &&
-      getPackagewithoutmikrotik(ispOwnerId, dispatch, setIsLoading);
+      getWithoutMikrotikPackage(ispOwnerId, dispatch, setIsLoading);
   }, []);
 
   // reload handler

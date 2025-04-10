@@ -35,7 +35,7 @@ import {
   fetchReseller,
   getAllPackages,
   getArea,
-  getPackagewithoutmikrotik,
+  getWithoutMikrotikPackage,
 } from "../../../features/apiCalls";
 import CustomerReport from "../../Customer/customerCRUD/showCustomerReport";
 import ResellerCustomerEdit from "../resellerModals/ResellerCustomerEdit";
@@ -153,7 +153,7 @@ const AllResellerCustomer = () => {
     if (!bpSettings?.hasMikrotik) {
       //---> @Get ispOwner without mikrotiks all package data
       !withoutMtkPackages.length &&
-        getPackagewithoutmikrotik(ispOwnerId, dispatch, setLoading);
+        getWithoutMikrotikPackage(ispOwnerId, dispatch, setLoading);
     } else {
       //---> @Get ispOwner mikrotiks data
       !mikrotiks?.length && fetchMikrotik(dispatch, ispOwnerId, setLoading);
