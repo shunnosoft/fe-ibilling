@@ -20,7 +20,7 @@ import {
   deletePPPoEpackage,
   fetchPackagefromDatabase,
   fetchpppoePackage,
-  fetchpppoeUser,
+  getPPPoEActiveCustomer,
 } from "../../../features/apiCalls";
 import Loader from "../../../components/common/Loader";
 import CustomerSync from "../configMikrotikModals/CustomerSync";
@@ -150,7 +150,7 @@ const PPPoE = () => {
       configMikrotik?.name
     );
 
-    fetchpppoeUser(
+    getPPPoEActiveCustomer(
       dispatch,
       IDs,
       configMikrotik?.name,

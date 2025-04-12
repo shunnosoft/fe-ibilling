@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Table from "../../../../components/table/Table";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchpppoeUser } from "../../../../features/apiCalls";
+import { getPPPoEActiveCustomer } from "../../../../features/apiCalls";
 import { Check2Circle } from "react-bootstrap-icons";
 import { useTranslation } from "react-i18next";
 
@@ -31,7 +31,7 @@ const AllCustomer = () => {
       mikrotikId: mikrotikId,
     };
 
-    fetchpppoeUser(
+    getPPPoEActiveCustomer(
       dispatch,
       IDs,
       configMikrotik?.name,

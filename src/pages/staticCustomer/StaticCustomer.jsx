@@ -51,7 +51,7 @@ import {
   fetchMikrotik,
   getArea,
   getAllPackages,
-  staticMACBinding,
+  getQueuePackageByIspOwnerId,
 } from "../../features/apiCalls";
 import CustomerReport from "./customerCRUD/showCustomerReport";
 import { badge } from "../../components/common/Utils";
@@ -195,15 +195,12 @@ const Customer = () => {
     //---> @Get ispOwner areas data
     !areas?.length && getArea(dispatch, ispOwnerId, setIsLoading);
 
-    //---> Get hasMikrotik base all mikrotik data
-    if (!bpSettings?.hasMikrotik) {
-      //---> @Get ispOwner without mikrotiks all package data
-      !withoutMtkPackages.length &&
-        getWithoutMikrotikPackage(ispOwnerId, dispatch, setIsLoading);
-    } else {
-      //---> @Get ispOwner mikrotiks data
-      !mikrotiks?.length && fetchMikrotik(dispatch, ispOwnerId, setIsLoading);
-    }
+    //---> @Get ispOwner mikrotiks data
+    !mikrotiks?.length && fetchMikrotik(dispatch, ispOwnerId, setIsLoading);
+
+    //---> @Get ispOwner mikrotiks queue package data
+    !withoutMtkPackages.length &&
+      getQueuePackageByIspOwnerId(ispOwnerId, dispatch, setIsLoading);
 
     //===========================================================> LAST API
 

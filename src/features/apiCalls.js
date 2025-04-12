@@ -1861,7 +1861,7 @@ export const getExtraMikrotikCustomers = async (
 };
 
 // get PPPoE user
-export const fetchpppoeUser = async (
+export const getPPPoEActiveCustomer = async (
   dispatch,
   IDs,
   mtkName,

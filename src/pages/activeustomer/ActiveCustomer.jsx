@@ -28,7 +28,7 @@ import Footer from "../../components/admin/footer/Footer";
 import Loader from "../../components/common/Loader";
 import {
   fetchMikrotik,
-  fetchpppoeUser,
+  getPPPoEActiveCustomer,
   getArea,
   pppoeMACBinding,
   pppoeRemoveMACBinding,
@@ -52,15 +52,19 @@ import ReactToPrint from "react-to-print";
 import useISPowner from "../../hooks/useISPOwner";
 import { btrcHeader, newBTRCReport } from "../common/btrcReport";
 import { badge } from "../../components/common/Utils";
+import useSelectorState from "../../hooks/useSelectorState";
 
 export default function ConfigMikrotik() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const componentRef = useRef();
 
-  //calling custom hook here
+  //---> Get user & current user data form useISPOwner hooks
   const { role, ispOwnerData, ispOwnerId, bpSettings, userData } =
     useISPowner();
+
+  //---> Get redux store state data from useSelectorState hooks
+  const { areas, subAreas, mikrotiks, bulletinPermission } = useSelectorState();
 
   // get all mikrotik from redux
   const mikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
@@ -68,19 +72,8 @@ export default function ConfigMikrotik() {
   // get all static customer
   let allMikrotikUsers = useSelector((state) => state?.mikrotik?.pppoeUser);
 
-  //get all areas
-  const areas = useSelector((state) => state.area?.area);
-
-  // get all subarea
-  const subAreas = useSelector((state) => state.area?.subArea);
-
-  // get bulletin permission
-  const butPermission = useSelector(
-    (state) => state.adminNetFeeSupport?.bulletinPermission
-  );
-
   // loading state
-  const [loading, setIsloading] = useState(false);
+  const [loading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false);
 
   // bulk customer state
@@ -93,7 +86,7 @@ export default function ConfigMikrotik() {
   const [activeKeys, setActiveKeys] = useState("");
 
   // set initialy mikrotik id
-  const [mikrotikId, setMikrotikId] = useState(mikrotik[0]?.id);
+  const [mikrotikId, setMikrotikId] = useState(mikrotiks[0]?.id);
 
   // customer state
   let [allUsers, setAllUsers] = useState(allMikrotikUsers);
@@ -134,23 +127,38 @@ export default function ConfigMikrotik() {
   const [customerType, setCustomerType] = useState();
 
   // find single mikrotik details
-  const singleMik = mikrotik.find((item) => item.id === mikrotikId);
+  const singleMik = mikrotiks.find((item) => item.id === mikrotikId);
 
+  //================// API CALL's //================//
   useEffect(() => {
-    // get area api
-    if (areas.length === 0) getArea(dispatch, ispOwnerId, setIsloading);
+    //===========================================================> FIRST API
 
-    // get sub area api
-    if (subAreas.length === 0) getSubAreasApi(dispatch, ispOwnerId);
+    //---> @Get ispOwner areas sub-area data
+    !subAreas.length && getSubAreasApi(dispatch, ispOwnerId);
 
-    Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
+    //===========================================================> LAST API
+
+    //---> @Get ispOwner areas data
+    !areas?.length && getArea(dispatch, ispOwnerId, setIsLoading);
+
+    //---> @Get ispOwner mikrotiks data
+    !mikrotiks?.length && fetchMikrotik(dispatch, ispOwnerId, setIsLoading);
+
+    //---> @Get bulletin permissions data
+    Object.keys(bulletinPermission)?.length === 0 &&
+      getBulletinPermission(dispatch);
   }, []);
 
   // api call for get update static customer
   useEffect(() => {
-    !mikrotik.length && fetchMikrotik(dispatch, ispOwnerId, setIsloading);
     if (mikrotikId) {
-      fetchpppoeUser(dispatch, IDs, singleMik?.name, setMtkLoading, "user");
+      getPPPoEActiveCustomer(
+        dispatch,
+        IDs,
+        singleMik?.name,
+        setMtkLoading,
+        "user"
+      );
     }
   }, [mikrotikId]);
 
@@ -189,8 +197,14 @@ export default function ConfigMikrotik() {
 
   // reload handler
   const reloadHandler = () => {
-    fetchpppoeUser(dispatch, IDs, singleMik?.name, setMtkLoading, "user");
-    fetchMikrotik(dispatch, ispOwnerId, setIsloading);
+    getPPPoEActiveCustomer(
+      dispatch,
+      IDs,
+      singleMik?.name,
+      setMtkLoading,
+      "user"
+    );
+    fetchMikrotik(dispatch, ispOwnerId, setIsLoading);
   };
 
   // area subarea handler
@@ -343,7 +357,7 @@ export default function ConfigMikrotik() {
       },
       {
         width: "8%",
-        Header: "RX",
+        Header: "Upload",
         accessor: "rxByte",
         Cell: ({ row: { original } }) => (
           <div
@@ -359,7 +373,7 @@ export default function ConfigMikrotik() {
       },
       {
         width: "8%",
-        Header: "TX",
+        Header: "Download",
         accessor: "txByte",
         Cell: ({ row: { original } }) => (
           <div>
@@ -485,7 +499,7 @@ export default function ConfigMikrotik() {
   );
 
   // mikrotik find in select mikrotik id
-  const mikrotikName = mikrotik.find((val) => val.id === mikrotikId);
+  const mikrotikName = mikrotiks.find((val) => val.id === mikrotikId);
 
   const filterData = {
     mikrotik: mikrotikName?.name,
@@ -504,7 +518,7 @@ export default function ConfigMikrotik() {
       isVisible: true,
       disabled: false,
       onChange: (e) => mikrotiSelectionHandler(e.target.value),
-      options: mikrotik,
+      options: mikrotiks,
       textAccessor: "name",
       valueAccessor: "id",
     },
@@ -759,9 +773,8 @@ export default function ConfigMikrotik() {
                   </div>
                 </div>
 
-                {(butPermission?.activeCustomer || butPermission?.allPage) && (
-                  <NetFeeBulletin />
-                )}
+                {(bulletinPermission?.activeCustomer ||
+                  bulletinPermission?.allPage) && <NetFeeBulletin />}
               </FourGround>
               <Footer />
             </FontColor>

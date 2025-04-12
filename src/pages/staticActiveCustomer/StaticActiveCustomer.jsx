@@ -261,11 +261,12 @@ const StaticActiveCustomer = () => {
         accessor: "customerId",
       },
       {
-        width: "20%",
+        width: "10%",
         Header: t("status"),
         accessor: "running",
         Cell: ({ row: { original } }) => (
           <div>
+            {console.log(original?.bytes?.split("/")[0])}
             {original?.complete === true ? (
               <Wifi color="green" />
             ) : (
@@ -275,19 +276,47 @@ const StaticActiveCustomer = () => {
         ),
       },
       {
-        width: "20%",
+        width: "10%",
         Header: t("name"),
         accessor: "name",
       },
       {
-        width: "20%",
+        width: "10%",
         Header: t("address"),
-        accessor: "address",
+        accessor: "ip",
       },
       {
-        width: "30%",
+        width: "15%",
         Header: t("macAddress"),
         accessor: "macAddress",
+      },
+      {
+        width: "10%",
+        Header: "Upload",
+        Cell: ({ row: { original } }) => (
+          <div
+            style={{
+              padding: "15px 15px 15px 0 !important",
+            }}
+          >
+            {original?.bytes
+              ? (original?.bytes?.split("/")?.[0] / 1024 / 1024).toFixed(2) +
+                " MB"
+              : ""}
+          </div>
+        ),
+      },
+      {
+        width: "10%",
+        Header: "Download",
+        Cell: ({ row: { original } }) => (
+          <div>
+            {original?.bytes
+              ? (original?.bytes?.split("/")?.[1] / 1024 / 1024).toFixed(2) +
+                " MB"
+              : ""}
+          </div>
+        ),
       },
       {
         width: "5%",

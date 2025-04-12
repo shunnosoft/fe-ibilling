@@ -31,11 +31,6 @@ import InformationTooltip from "../../components/common/tooltipInformation/Infor
 import { informationEnBn } from "../../components/common/tooltipInformation/informationEnBn";
 import PlayTutorial from "../tutorial/PlayTutorial";
 
-const useForceUpdate = () => {
-  const [value, setValue] = useState(0); // integer state
-  return () => setValue((value) => value + 1); // update the state to force render
-};
-
 const makeMessageObj = (
   template,
   ispOwnerId,
@@ -44,29 +39,29 @@ const makeMessageObj = (
 ) => {
   if (areaSubareas?.includes(customer.subArea)) {
     let msg = template
-      .replace("CUSTOMER_NAME", customer?.name)
-      .replace("CUSTOMER_ID", customer?.customerId)
+      .replace(/CUSTOMER_NAME/g, customer?.name || "")
+      .replace(/CUSTOMER_ID/g, customer?.customerId || "")
       .replace(
-        "BILL_DATE",
+        /BILL_DATE/g,
         moment(customer?.billingCycle).format("DD-MM-YYYY hh:mm A")
       )
-      .replace("AMOUNT", customer?.monthlyFee)
+      .replace(/AMOUNT/g, customer?.monthlyFee || "")
       .replace(
-        "BILL_DUE",
+        /BILL_DUE/g,
         customer.monthlyFee - customer.balance > 0
           ? customer.monthlyFee - customer.balance
           : 0
       );
 
     if (customer.userType === "pppoe") {
-      msg = msg.replace("USERNAME", customer?.pppoe?.name);
+      msg = msg.replace(/USERNAME/g, customer?.pppoe?.name || "");
     } else if (customer.userType === "firewall-queue") {
-      msg = msg.replace("USERNAME", customer?.queue?.address);
+      msg = msg.replace(/USERNAME/g, customer?.queue?.address || "");
     } else if (customer.userType === "simple-queue") {
       let temp = customer.queue.target
         ? customer.queue.target.split("/")[0]
         : "";
-      msg = msg.replace("USERNAME", temp);
+      msg = msg.replace(/USERNAME/g, temp);
     }
 
     return {
@@ -75,7 +70,7 @@ const makeMessageObj = (
       senderId: ispOwnerId,
       message: msg,
       mobile: customer?.mobile,
-      count: smsCount(msg),
+      count: smsCount(msg.trim()),
     };
   }
   return null;
