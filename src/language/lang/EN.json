@@ -540,7 +540,7 @@
   "promiseDate": "Promise Date",
   "packageAliasName": "Alias Name",
   "online": "Online",
-  "ofline": "Offline",
+  "offline": "Offline",
   "salaryDeleteAlert": "Do you want to delete salary ?",
   "salaryDelete": "Delete Salary",
   "staffDeleteAlert": "Do you want to delete staff ?",
@@ -974,5 +974,9 @@
   "uptime": "Uptime",
   "withNew": "With New",
   "withoutNew": "Without New",
-  "packagePrice": "Package Price"
+  "packagePrice": "Package Price",
+  "IPMac": "IP/MAC",
+  "loggedInOut": "Logged In/Out",
+  "IdPPPoE": "ID/PPPoE",
+  "duration": "Duration"
 }

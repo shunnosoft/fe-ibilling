@@ -53,6 +53,7 @@ import useISPowner from "../../hooks/useISPOwner";
 import { btrcHeader, newBTRCReport } from "../common/btrcReport";
 import { badge } from "../../components/common/Utils";
 import useSelectorState from "../../hooks/useSelectorState";
+import axios from "axios";
 
 export default function ConfigMikrotik() {
   const { t } = useTranslation();
@@ -309,49 +310,57 @@ export default function ConfigMikrotik() {
         width: "2%",
       },
       {
-        width: "4%",
-        Header: t("id"),
-        accessor: "customerId",
-      },
-      {
-        width: "5%",
-        Header: t("status"),
+        width: "3%",
+        Header: <Wifi />,
         accessor: "running",
-        Cell: ({ row: { original } }) => (
-          <div>
-            {original?.running ? (
-              <Wifi color="green" />
-            ) : (
-              <WifiOff color="red" />
-            )}
-          </div>
+        Cell: ({ value }) => (
+          <div>{value ? <Wifi color="green" /> : <WifiOff color="red" />}</div>
         ),
       },
       {
         width: "10%",
-        Header: t("name"),
-        Header: t("namePPPoE"),
-        accessor: (data) => `${data?.name} ${data.pppoe?.name}`,
+        Header: t("IdPPPoE"),
+        accessor: (data) => `${data?.customerId} ${data.pppoe?.name}`,
         Cell: ({ row: { original } }) => (
           <div>
-            <p>{original?.name}</p>
+            <p>{original?.customerId}</p>
             <p>{original.pppoe?.name}</p>
           </div>
         ),
       },
       {
-        width: "8%",
-        Header: t("ip"),
+        width: "10%",
+        Header: t("IPMac"),
+        accessor: (data) => `${data?.ip} ${data.callerId}`,
         Cell: ({ row: { original } }) => (
-          <div>
-            <p className={`text-${original?.macBinding && "success"} fw-700`}>
+          <div style={{ cursor: "pointer" }}>
+            <p
+              onClick={() => window.open(`http://${original?.ip}`, "_blank")}
+              style={{
+                cursor: "pointer",
+                textDecoration: "none",
+                color: "inherit",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.textDecoration = "underline";
+                e.currentTarget.classList.add("text-primary");
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.textDecoration = "none";
+                e.currentTarget.classList.remove("text-primary");
+              }}
+            >
               {original?.ip}
+            </p>
+
+            <p className={`text-${original?.macBinding && "success fw-bold"}`}>
+              {original?.callerId}
             </p>
           </div>
         ),
       },
       {
-        width: "10%",
+        width: "8%",
         Header: t("package"),
         accessor: "pppoe.profile",
       },
@@ -366,7 +375,9 @@ export default function ConfigMikrotik() {
             }}
           >
             {original?.rxByte
-              ? (original?.rxByte / 1024 / 1024).toFixed(2) + " MB"
+              ? original?.rxByte / 1024 / 1024 <= 1024
+                ? (original?.rxByte / 1024 / 1024).toFixed(2) + " MB"
+                : (original?.rxByte / 1024 / 1024 / 1024).toFixed(2) + " GB"
               : ""}
           </div>
         ),
@@ -377,48 +388,78 @@ export default function ConfigMikrotik() {
         accessor: "txByte",
         Cell: ({ row: { original } }) => (
           <div>
-            {original?.txByte &&
-              (original?.txByte / 1024 / 1024).toFixed(2) + " MB"}
+            {original?.txByte
+              ? original?.txByte / 1024 / 1024 <= 1024
+                ? (original?.txByte / 1024 / 1024).toFixed(2) + " MB"
+                : (original?.txByte / 1024 / 1024 / 1024).toFixed(2) + " GB"
+              : ""}
           </div>
         ),
       },
       {
-        width: "10%",
+        width: "8%",
         Header: t("uptime"),
-        accessor: "uptime",
-      },
-      {
-        width: "10%",
-        Header: t("linkUp"),
-        accessor: "lastLinkUpTime",
         Cell: ({ row: { original } }) => (
           <div>
-            {original?.lastLinkUpTime &&
-              moment(original.lastLinkUpTime).format("MMM DD YYYY hh:mm A")}
+            {original?.uptime ? (
+              original?.uptime
+            ) : (
+              <p className="text-danger">
+                {(() => {
+                  const diffInSeconds = moment().diff(
+                    moment(original?.lastLogoutTime),
+                    "seconds"
+                  );
+
+                  const days = Math.floor(diffInSeconds / (60 * 60 * 24));
+                  const hours = Math.floor(
+                    (diffInSeconds % (60 * 60 * 24)) / (60 * 60)
+                  );
+                  const minutes = Math.floor((diffInSeconds % (60 * 60)) / 60);
+                  const seconds = diffInSeconds % 60;
+
+                  return (
+                    <>
+                      {days > 0 && <span>{days}d</span>}
+                      {hours > 0 && <span>{hours}h</span>}
+                      {minutes > 0 && <span>{minutes}m</span>}
+                      {seconds >= 0 && <span>{seconds}s</span>}
+                    </>
+                  );
+                })()}
+              </p>
+            )}
           </div>
         ),
       },
+
       {
-        width: "10%",
-        Header: t("loggedOut"),
-        accessor: "lastLogoutTime",
+        width: "15%",
+        Header: t("loggedInOut"),
+        accessor: (data) => `${data?.lastLinkUpTime} ${data?.lastLogoutTime}`,
         Cell: ({ row: { original } }) => (
           <div>
-            {original?.lastLogoutTime &&
-              moment(original.lastLogoutTime).format("MMM DD YYYY hh:mm A")}
+            <p>
+              {original?.lastLinkUpTime &&
+                moment(original.lastLinkUpTime).format("YYYY/MM/DD hh:mm A")}
+            </p>
+            <p>
+              {original?.lastLogoutTime &&
+                moment(original.lastLogoutTime).format("YYYY/MM/DD hh:mm A")}
+            </p>
           </div>
         ),
       },
       {
         width: "5%",
         Header: t("status"),
+        accessor: (data) => data.status,
         Cell: ({ row: { original } }) => <div>{badge(original?.status)}</div>,
       },
       {
         width: "5%",
         Header: () => <div className="text-center">{t("action")}</div>,
         id: "option",
-
         Cell: ({ row: { original } }) => {
           return (
             <div className="text-center">
@@ -854,7 +895,7 @@ export default function ConfigMikrotik() {
       <BandwidthModal
         setModalShow={setBandWidthModal}
         modalShow={bandWidthModal}
-        customer={bandWidthCustomerData}
+        customer={{ ...bandWidthCustomerData, page: "PPPoE" }}
       />
     </>
   );

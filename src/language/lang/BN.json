@@ -543,7 +543,7 @@
   "promiseDate": "প্রমিজ ডেট",
   "packageAliasName": "এলিয়াস নাম",
   "online": "অনলাইন",
-  "ofline": "অফলাইন",
+  "offline": "অফলাইন",
   "salaryDeleteAlert": "আপনি স্যালারি ডিলিট করতে চান ?",
   "salaryDelete": "স্যালারি ডিলিট",
   "staffDeleteAlert": "আপনি স্টাফ ডিলিট করতে চান ?",
@@ -980,5 +980,9 @@
   "uptime": "আপটাইম",
   "withNew": "নতুন সহ",
   "withoutNew": "নতুন ছাড়া",
-  "packagePrice": "প্যাকেজ মূল্য"
+  "packagePrice": "প্যাকেজ মূল্য",
+  "IPMac": "আইপি/ম্যাক",
+  "loggedInOut": "লগ ইন/আউট",
+  "IdPPPoE": "আইডি/পিপিওই",
+  "duration": "সময়কাল"
 }

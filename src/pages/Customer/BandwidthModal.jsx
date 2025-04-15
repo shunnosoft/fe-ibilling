@@ -8,13 +8,14 @@ const CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 const BandwidthModal = ({ customer, modalShow, setModalShow }) => {
   const abortControllerRef = useRef(null);
+  const intervalRef = useRef(null);
 
   const [chunkData, setChunkData] = useState([]);
   const [dps1, setDps1] = useState([]);
   const [dps2, setDps2] = useState([]);
   const [xVal, setXVal] = useState(0); // X-axis values
 
-  const dataLength = 80; // Number of visible data points
+  const dataLength = 150; // Number of visible data points
 
   // Helper function to format data to Mbps or Kbps
   const formatToMbps = (value) => {
@@ -22,32 +23,31 @@ const BandwidthModal = ({ customer, modalShow, setModalShow }) => {
   };
 
   useEffect(() => {
-    if (!modalShow) {
-      setDps1([]);
-      setDps2([]);
-      setXVal(0);
+    if (customer?.page === "PPPoE") {
+      if (!modalShow) {
+        setDps1([]);
+        setDps2([]);
+        setXVal(0);
 
-      // Cancel any ongoing API calls
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
+        if (abortControllerRef.current) {
+          abortControllerRef.current.abort();
+        }
+      } else {
+        //---> Start fetching data when modal opens
+        fetchBandwidthData();
       }
-    } else {
-      // Start fetching data when modal opens
-      fetchBandwidthData();
+
+      //---> Cleanup function
+      return () => {
+        if (abortControllerRef.current) {
+          abortControllerRef.current.abort();
+        }
+      };
     }
-
-    // Cleanup function
-    return () => {
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
-    };
   }, [modalShow]);
 
   const fetchBandwidthData = async () => {
     if (!modalShow || !customer?.id) return;
-
-    // Create a new AbortController for this fetch
     abortControllerRef.current = new AbortController();
 
     try {
@@ -59,20 +59,70 @@ const BandwidthModal = ({ customer, modalShow, setModalShow }) => {
       if (response.status === 200) {
         setChunkData(response.data?.data || []);
 
-        // Only call fetchBandwidthData again if the modal is still open
+        //---> Only call fetchBandwidthData again if the modal is still open
         if (modalShow) {
           fetchBandwidthData();
         }
       }
     } catch (error) {
-      toast.error(error.message);
+      if (error.message !== "canceled") {
+        toast.error(error.message);
+      }
     }
   };
 
   useEffect(() => {
+    if (customer?.page === "Static") {
+      if (!modalShow || !customer?.id) return;
+
+      let isMounted = true;
+
+      const fetchBandwidthData = async () => {
+        if (!isMounted) return;
+        abortControllerRef.current = new AbortController();
+
+        try {
+          const response = await apiLink.get(
+            `customer/mikrotik/bandwidth?customerId=${customer.id}`,
+            { signal: abortControllerRef.current.signal }
+          );
+
+          if (response.status === 200) {
+            setChunkData(response.data?.data || []);
+          }
+
+          // ---> Call again after 2 seconds
+          if (isMounted) {
+            setTimeout(fetchBandwidthData, 2000);
+          }
+        } catch (error) {
+          if (error.message !== "canceled") {
+            toast.error(error.message);
+          }
+        }
+      };
+
+      // Reset states
+      setDps1([]);
+      setDps2([]);
+      setXVal(0);
+
+      // Start initial fetch
+      fetchBandwidthData();
+
+      return () => {
+        isMounted = false;
+        if (abortControllerRef.current) {
+          abortControllerRef.current.abort();
+        }
+      };
+    }
+  }, [modalShow]);
+
+  useEffect(() => {
     if (chunkData.length > 0) {
-      const rxValue = chunkData[0].rx || 0;
-      const txValue = chunkData[1].tx || 0;
+      const rxValue = chunkData[0]?.rx || 0;
+      const txValue = chunkData[1]?.tx || 0;
 
       // Update data points for both download and upload
       setDps1((prevDps1) => {
@@ -110,7 +160,7 @@ const BandwidthModal = ({ customer, modalShow, setModalShow }) => {
         {
           type: "column",
           showInLegend: true,
-          legendText: `Download: ${
+          legendText: `Upload: ${
             dps1[dps1.length - 1]?.y / 1024 >= 1
               ? (dps1[dps1.length - 1]?.y / 1024).toFixed(2)
               : dps1[dps1.length - 1]?.y
@@ -121,7 +171,7 @@ const BandwidthModal = ({ customer, modalShow, setModalShow }) => {
         {
           type: "column",
           showInLegend: true,
-          legendText: `Upload: ${
+          legendText: `Download: ${
             dps2[dps2.length - 1]?.y / 1024 >= 1
               ? (dps2[dps2.length - 1]?.y / 1024).toFixed(2)
               : dps2[dps2.length - 1]?.y

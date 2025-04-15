@@ -22,6 +22,7 @@ import {
   FilterCircle,
   PrinterFill,
   Router,
+  Server,
   ThreeDots,
   Wifi,
   WifiOff,
@@ -37,27 +38,29 @@ import ReactToPrint from "react-to-print";
 import ActiveCustomerPDF from "../Customer/ActiveCustomerPrint";
 import ActiveCustomerPrint from "../Customer/ActiveCustomerPrint";
 import { getSubAreasApi } from "../../features/actions/customerApiCall";
+import { badge } from "../../components/common/Utils";
+import useISPowner from "../../hooks/useISPOwner";
+import useSelectorState from "../../hooks/useSelectorState";
+import BandwidthModal from "../Customer/BandwidthModal";
 
 const StaticActiveCustomer = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const componentRef = useRef();
 
-  const [isLoading, setIsloading] = useState(false);
+  //---> Get user & current user data form useISPOwner hooks
+  const { role, ispOwnerData, ispOwnerId, bpSettings } = useISPowner();
+
+  //---> Get redux store state data from useSelectorState hooks
+  const { areas, subAreas, mikrotiks, bulletinPermission } = useSelectorState();
+
+  const [isLoading, setIsLoading] = useState(false);
   const [mtkLoading, setMtkLoading] = useState(false);
   const [filterStatus, setFilterStatus] = useState();
   const [open, setOpen] = useState(false);
 
   // filter Accordion handle state
   const [activeKeys, setActiveKeys] = useState("");
-
-  // get all role
-  const role = useSelector((state) => state.persistedReducer.auth.role);
-
-  // get bp settings
-  const bpSettings = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerData?.bpSettings
-  );
 
   // get all mikrotik from redux
   const mikrotik = useSelector((state) => state?.mikrotik?.mikrotik);
@@ -70,27 +73,6 @@ const StaticActiveCustomer = () => {
     (state) => state?.customer?.staticActiveCustomer
   );
 
-  // get isp owner id
-  const ispOwnerId = useSelector(
-    (state) => state.persistedReducer.auth?.ispOwnerId
-  );
-
-  // get ispOwner data
-  const ispOwnerData = useSelector(
-    (state) => state.persistedReducer.auth?.userData
-  );
-
-  // get bulletin permission
-  const butPermission = useSelector(
-    (state) => state.adminNetFeeSupport?.bulletinPermission
-  );
-
-  //get all areas
-  const areas = useSelector((state) => state.area?.area);
-
-  // get all subarea
-  const subAreas = useSelector((state) => state.area?.subArea);
-
   // static customer state
   const [staticCustomers, setStaticCustomers] = useState([]);
 
@@ -102,18 +84,39 @@ const StaticActiveCustomer = () => {
   const [subareaName, setSubareaName] = useState("");
 
   // subArea ids state
-  const [subareaIds, setSubareaIds] = useState([]);
+  const [areaId, setAreaId] = useState();
 
-  // api call for get update static customer
+  //active customer filter options state
+  const [filterOptions, setFilterOptions] = useState({
+    mikrotik: "",
+    area: "",
+    subArea: "",
+    customer: "",
+    status: "",
+  });
+
+  // customer id state
+  const [bandWidthCustomerData, setBandWidthCustomerData] = useState();
+  const [show, setShow] = useState(false);
+
+  //================// API CALL's //================//
   useEffect(() => {
-    // get area api
-    if (areas.length === 0) getArea(dispatch, ispOwnerId, setIsloading);
+    //===========================================================> FIRST API
 
-    // get sub area api
-    if (subAreas.length === 0) getSubAreasApi(dispatch, ispOwnerId);
+    //---> @Get ispOwner areas sub-area data
+    !subAreas.length && getSubAreasApi(dispatch, ispOwnerId);
 
-    mikrotik.length === 0 && fetchMikrotik(dispatch, ispOwnerId, setMtkLoading);
-    Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
+    //===========================================================> LAST API
+
+    //---> @Get ispOwner areas data
+    !areas?.length && getArea(dispatch, ispOwnerId, setIsLoading);
+
+    //---> @Get ispOwner mikrotiks data
+    !mikrotiks?.length && fetchMikrotik(dispatch, ispOwnerId, setIsLoading);
+
+    //---> @Get bulletin permissions data
+    Object.keys(bulletinPermission)?.length === 0 &&
+      getBulletinPermission(dispatch);
   }, []);
 
   useEffect(() => {
@@ -122,7 +125,7 @@ const StaticActiveCustomer = () => {
 
   useEffect(() => {
     mikrotikId &&
-      getStaticActiveCustomer(dispatch, ispOwnerId, mikrotikId, setIsloading);
+      getStaticActiveCustomer(dispatch, ispOwnerId, mikrotikId, setIsLoading);
   }, [mikrotikId]);
 
   useEffect(() => {
@@ -136,87 +139,7 @@ const StaticActiveCustomer = () => {
 
   // reload handler
   const reloadHandler = () => {
-    getStaticActiveCustomer(dispatch, ispOwnerId, mikrotikId, setIsloading);
-  };
-
-  // customer filter state
-  const customerStatusFilter = (e) => {
-    let temp;
-
-    if (e.target.value === "online") {
-      temp = staticActiveCustomer.filter((item) => item.complete == true);
-      setInactiveCustomers([]);
-    } else if (e.target.value === "offline") {
-      temp = staticActiveCustomer.filter((item) => item.complete != true);
-      setInactiveCustomers(temp);
-    } else {
-      temp = staticActiveCustomer;
-    }
-
-    setStaticCustomers(temp);
-  };
-
-  // area subarea handler
-  const areaSubareaHandler = (e) => {
-    setAreaName(e.target.name);
-    let tempCustomers = staticActiveCustomer.reduce((acc, c) => {
-      // find area all subareas
-      let allSub = [];
-      if (e.target.value !== "") {
-        allSub = subAreas.filter((val) => val.area === e.target.value);
-      }
-      setSubareaIds(allSub);
-
-      const condition = {
-        area:
-          e.target.value !== ""
-            ? allSub.some((sub) => sub.id === c.subArea)
-            : true,
-      };
-
-      let isPass = false;
-      isPass = condition["area"];
-      if (!isPass) return acc;
-
-      if (isPass) acc.push(c);
-      return acc;
-    }, []);
-
-    setStaticCustomers(tempCustomers);
-  };
-
-  // subarea handle
-  const subAreasHandler = (e) => {
-    setSubareaName(e.target.name);
-    let subAreaCustomers = staticActiveCustomer.reduce((acc, c) => {
-      const condition = {
-        subArea: e.target.value !== "" ? c.subArea === e.target.value : true,
-      };
-
-      let isPass = false;
-      isPass = condition["subArea"];
-      if (!isPass) return acc;
-
-      if (isPass) acc.push(c);
-      return acc;
-    }, []);
-
-    setStaticCustomers(subAreaCustomers);
-  };
-
-  // inactive customer filter handler
-  const inactiveCustomerHandler = (e) => {
-    let customer;
-
-    if (e.target.value === "activeOffline") {
-      customer = inactiveCustomers.filter((item) => item.status == "active");
-    } else if (e.target.value === "inactiveOffline") {
-      customer = inactiveCustomers.filter((item) => item.status === "inactive");
-    } else if (e.target.value === "expiredOffline") {
-      customer = inactiveCustomers.filter((item) => item.status === "expired");
-    }
-
-    setStaticCustomers(customer);
+    getStaticActiveCustomer(dispatch, ispOwnerId, mikrotikId, setIsLoading);
   };
 
   // csv table header
@@ -253,45 +176,70 @@ const StaticActiveCustomer = () => {
     customer: filterStatus,
   };
 
+  // customer bandwidth handler
+  const bandwidthModalController = (customer) => {
+    setBandWidthCustomerData(customer);
+    setShow(true);
+  };
+
   const columns = useMemo(
     () => [
       {
-        width: "10%",
+        width: "5%",
         Header: t("id"),
         accessor: "customerId",
       },
       {
-        width: "10%",
-        Header: t("status"),
-        accessor: "running",
-        Cell: ({ row: { original } }) => (
+        width: "5%",
+        Header: <Wifi />,
+        accessor: "complete",
+        Cell: ({ value }) => (
           <div>
-            {console.log(original?.bytes?.split("/")[0])}
-            {original?.complete === true ? (
-              <Wifi color="green" />
-            ) : (
-              <WifiOff color="red" />
-            )}
+            {value === true ? <Wifi color="green" /> : <WifiOff color="red" />}
           </div>
         ),
       },
       {
-        width: "10%",
+        width: "15%",
         Header: t("name"),
         accessor: "name",
       },
       {
         width: "10%",
-        Header: t("address"),
-        accessor: "ip",
+        Header: t("ipAddress"),
+        accessor: (data) => data?.ipAddress,
+        Cell: ({ row: { original } }) => (
+          <div style={{ cursor: "pointer" }}>
+            <p
+              onClick={() =>
+                window.open(`http://${original?.ipAddress}`, "_blank")
+              }
+              style={{
+                cursor: "pointer",
+                textDecoration: "none",
+                color: "inherit",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.textDecoration = "underline";
+                e.currentTarget.classList.add("text-primary");
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.textDecoration = "none";
+                e.currentTarget.classList.remove("text-primary");
+              }}
+            >
+              {original?.ipAddress}
+            </p>
+          </div>
+        ),
       },
       {
-        width: "15%",
+        width: "10%",
         Header: t("macAddress"),
         accessor: "macAddress",
       },
       {
-        width: "10%",
+        width: "8%",
         Header: "Upload",
         Cell: ({ row: { original } }) => (
           <div
@@ -299,30 +247,49 @@ const StaticActiveCustomer = () => {
               padding: "15px 15px 15px 0 !important",
             }}
           >
-            {original?.bytes
-              ? (original?.bytes?.split("/")?.[0] / 1024 / 1024).toFixed(2) +
-                " MB"
+            {original?.bytes?.split("/")?.[0]
+              ? original?.bytes?.split("/")?.[0] / 1024 / 1024 <= 1024
+                ? (original?.bytes?.split("/")?.[0] / 1024 / 1024).toFixed(2) +
+                  " MB"
+                : (
+                    original?.bytes?.split("/")?.[0] /
+                    1024 /
+                    1024 /
+                    1024
+                  ).toFixed(2) + " GB"
+              : ""}
+          </div>
+        ),
+      },
+      {
+        width: "8%",
+        Header: "Download",
+        Cell: ({ row: { original } }) => (
+          <div>
+            {original?.bytes?.split("/")?.[1]
+              ? original?.bytes?.split("/")?.[1] / 1024 / 1024 <= 1024
+                ? (original?.bytes?.split("/")?.[1] / 1024 / 1024).toFixed(2) +
+                  " MB"
+                : (
+                    original?.bytes?.split("/")?.[1] /
+                    1024 /
+                    1024 /
+                    1024
+                  ).toFixed(2) + " GB"
               : ""}
           </div>
         ),
       },
       {
         width: "10%",
-        Header: "Download",
-        Cell: ({ row: { original } }) => (
-          <div>
-            {original?.bytes
-              ? (original?.bytes?.split("/")?.[1] / 1024 / 1024).toFixed(2) +
-                " MB"
-              : ""}
-          </div>
-        ),
+        Header: t("status"),
+        accessor: (data) => data.status,
+        Cell: ({ row: { original } }) => <div>{badge(original?.status)}</div>,
       },
       {
         width: "5%",
         Header: () => <div className="text-center">{t("action")}</div>,
         id: "option",
-
         Cell: ({ row: { original } }) => {
           return (
             <div className="text-center">
@@ -336,6 +303,16 @@ const StaticActiveCustomer = () => {
                 />
 
                 <ul className="dropdown-menu" aria-labelledby="areaDropdown">
+                  {bpSettings?.hasMikrotik && original?.complete === true && (
+                    <li onClick={() => bandwidthModalController(original)}>
+                      <div className="dropdown-item">
+                        <div className="customerAction">
+                          <Server />
+                          <p className="actionP">{t("bandwidth")}</p>
+                        </div>
+                      </div>
+                    </li>
+                  )}
                   {/* {(role === "ispOwner" || role === "manager") &&
                     bpSettings?.hasMikrotik && (
                       <li onClick={() => macBindingCall(original)}>
@@ -356,6 +333,165 @@ const StaticActiveCustomer = () => {
     ],
     [t]
   );
+
+  // manual filter options
+  const filterInput = [
+    {
+      type: "select",
+      name: "mikrotik",
+      id: "mikrotik",
+      value: filterOptions.mikrotik,
+      isVisible: true,
+      disabled: false,
+      onChange: (e) => mikrotiSelectionHandler(e.target.value),
+      options: mikrotiks,
+      textAccessor: "name",
+      valueAccessor: "id",
+    },
+    {
+      type: "select",
+      name: "area",
+      id: "area",
+      value: filterOptions.area,
+      isVisible: true,
+      disabled: false,
+      onChange: (e) => {
+        setAreaId(e.target.value);
+        setAreaName(e.target.name);
+        setFilterOptions({
+          ...filterOptions,
+          area: e.target.value,
+        });
+      },
+      options: areas,
+      firstOptions: t("allArea"),
+      textAccessor: "name",
+      valueAccessor: "id",
+    },
+    {
+      type: "select",
+      name: "subArea",
+      id: "subArea",
+      value: filterOptions.subArea,
+      isVisible: true,
+      disabled: false,
+      onChange: (e) => {
+        setSubareaName(e.target.name);
+        setFilterOptions({
+          ...filterOptions,
+          subArea: e.target.value,
+        });
+      },
+      options: subAreas.filter((sub) => sub.area === areaId),
+      firstOptions: t("subArea"),
+      textAccessor: "name",
+      valueAccessor: "id",
+    },
+    {
+      type: "select",
+      name: "customer",
+      id: "customer",
+      value: filterOptions.customer,
+      isVisible: true,
+      disabled: false,
+      onChange: (e) => {
+        setFilterOptions({
+          ...filterOptions,
+          customer: e.target.value,
+        });
+      },
+      options: [
+        { text: t("online"), value: "online" },
+        { text: t("offline"), value: "offline" },
+      ],
+      firstOptions: t("sokolCustomer"),
+      textAccessor: "text",
+      valueAccessor: "value",
+    },
+    {
+      type: "select",
+      name: "status",
+      id: "status",
+      value: filterOptions.status,
+      isVisible: true,
+      disabled: filterOptions.customer !== "offline",
+      onChange: (e) => {
+        setFilterOptions({
+          ...filterOptions,
+          status: e.target.value,
+        });
+      },
+      options: [
+        { text: t("activeOffline"), value: "active" },
+        { text: t("inactiveOffline"), value: "inactive" },
+        { text: t("expiredOffline"), value: "expired" },
+      ],
+      firstOptions: t("status"),
+      textAccessor: "text",
+      valueAccessor: "value",
+    },
+  ];
+
+  // area subarea handler
+  const handleActiveFilter = () => {
+    let tempCustomers = staticActiveCustomer.reduce((acc, c) => {
+      // inport filter option state name
+      const { area, subArea, customer, status } = filterOptions;
+
+      // find area all subareas
+      let allSubarea = [];
+      if (area) {
+        allSubarea = subAreas.filter((val) => val.area === area);
+      }
+
+      // make possible conditions objects if the filter value not selected thats return true
+      //if filter value exist then compare
+
+      const condition = {
+        area: area ? allSubarea.some((sub) => sub.id === c.subArea) : true,
+        subArea: subArea ? subArea === c.subArea : true,
+        online: customer === "online" ? c.complete === true : true,
+        offline: customer === "offline" ? c.complete !== true : true,
+        status: status ? status === c.status : true,
+      };
+
+      //check if condition pass got for next step or is fail stop operation
+      //if specific filter option value not exist it will return true
+
+      let isPass = false;
+
+      isPass = condition["area"];
+      if (!isPass) return acc;
+
+      isPass = condition["subArea"];
+      if (!isPass) return acc;
+
+      if (customer) {
+        isPass = condition[customer];
+        if (!isPass) return acc;
+      }
+
+      isPass = condition["status"];
+      if (!isPass) return acc;
+
+      if (isPass) acc.push(c);
+      return acc;
+    }, []);
+
+    // set filter customer in customer state
+    setStaticCustomers(tempCustomers);
+  };
+
+  // filter reset controller
+  const handleFilterReset = () => {
+    setFilterOptions({
+      area: "",
+      subArea: "",
+      customer: "",
+      status: "",
+    });
+    setStaticCustomers(staticActiveCustomer);
+  };
 
   return (
     <>
@@ -456,72 +592,46 @@ const StaticActiveCustomer = () => {
                     <Accordion.Item eventKey="filter">
                       <Accordion.Body>
                         <div className="displayGrid6">
-                          <select
-                            id="selectMikrotikOption"
-                            onChange={mikrotiSelectionHandler}
-                            className="form-select mt-0"
-                          >
-                            {mikrotik.map((item) => (
-                              <option value={item.id}>{item.name}</option>
-                            ))}
-                          </select>
+                          {filterInput?.map(
+                            (item) =>
+                              item.isVisible && (
+                                <select
+                                  className="form-select shadow-none mt-0"
+                                  onChange={item.onChange}
+                                  value={item.value}
+                                  disabled={item.disabled}
+                                >
+                                  {item?.firstOptions && (
+                                    <option value="">
+                                      {item?.firstOptions}
+                                    </option>
+                                  )}
 
-                          <select
-                            id="selectMikrotikOption"
-                            className="form-select mt-0"
-                            onChange={areaSubareaHandler}
-                          >
-                            <option value="">{t("allArea")}</option>
-                            {areas.map((item) => (
-                              <option name={item.name} value={item.id}>
-                                {item.name}
-                              </option>
-                            ))}
-                          </select>
-
-                          <select
-                            id="selectMikrotikOption"
-                            className="form-select mt-0"
-                            onChange={subAreasHandler}
-                          >
-                            <option value="">{t("subArea")}</option>
-                            {subareaIds.map((item) => (
-                              <option name={item.name} value={item.id}>
-                                {item.name}
-                              </option>
-                            ))}
-                          </select>
-
-                          <select
-                            className="form-select mt-0"
-                            aria-label="Default select example"
-                            onChange={customerStatusFilter}
-                          >
-                            <option selected value="">
-                              {t("sokolCustomer")}
-                            </option>
-                            <option value="online"> {t("online")} </option>
-                            <option value="offline">{t("ofline")}</option>
-                          </select>
-
-                          {inactiveCustomers.length > 0 && (
-                            <select
-                              id="selectMikrotikOption"
-                              className="form-select mt-0"
-                              onChange={inactiveCustomerHandler}
-                            >
-                              <option value="">{t("status")}</option>
-                              <option value="activeOffline">
-                                {t("activeOffline")}
-                              </option>
-                              <option value="inactiveOffline">
-                                {t("inactiveOffline")}
-                              </option>
-                              <option value="expiredOffline">
-                                {t("expiredOffline")}
-                              </option>
-                            </select>
+                                  {item.options?.map((option) => (
+                                    <option value={option[item.valueAccessor]}>
+                                      {option[item.textAccessor]}
+                                    </option>
+                                  ))}
+                                </select>
+                              )
                           )}
+
+                          <div className="displayGrid1 mt-0">
+                            <button
+                              className="btn btn-outline-primary"
+                              type="button"
+                              onClick={handleActiveFilter}
+                            >
+                              {t("filter")}
+                            </button>
+                            <button
+                              className="btn btn-outline-secondary"
+                              type="button"
+                              onClick={handleFilterReset}
+                            >
+                              {t("reset")}
+                            </button>
+                          </div>
                         </div>
                       </Accordion.Body>
                     </Accordion.Item>
@@ -545,15 +655,20 @@ const StaticActiveCustomer = () => {
                   </div>
                 </div>
 
-                {(butPermission?.activeCustomer || butPermission?.allPage) && (
-                  <NetFeeBulletin />
-                )}
+                {(bulletinPermission?.activeCustomer ||
+                  bulletinPermission?.allPage) && <NetFeeBulletin />}
               </FourGround>
               <Footer />
             </FontColor>
           </div>
         </div>
       </div>
+
+      <BandwidthModal
+        modalShow={show}
+        setModalShow={setShow}
+        customer={{ ...bandWidthCustomerData, page: "Static" }}
+      />
     </>
   );
 };

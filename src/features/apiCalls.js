@@ -1922,11 +1922,13 @@ export const getPPPoEActiveCustomer = async (
         const ipAddress = activepppSecretUsers.find(
           (ip) => "<pppoe-" + ip.name + ">" === interfaceItem.name
         );
+
         if (ipAddress) {
           interfaceItem = {
             ...interfaceItem,
             ip: ipAddress.address,
             uptime: ipAddress.uptime,
+            callerId: ipAddress.callerId,
           };
         }
         return interfaceItem;
