@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import moment from "moment";
 import { CSVLink } from "react-csv";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   ThreeDots,
   ArchiveFill,
@@ -28,6 +28,7 @@ import {
   GeoAlt,
   FileEarmarkBarGraph,
   FileEarmark,
+  ClockHistory,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -47,7 +48,6 @@ import CustomerDetails from "./customerCRUD/CustomerDetails";
 import RechargeCustomer from "./customerCRUD/RechargeCustomer";
 import {
   getStaticCustomer,
-  getWithoutMikrotikPackage,
   fetchMikrotik,
   getArea,
   getAllPackages,
@@ -92,6 +92,7 @@ const Customer = () => {
   //call hooks
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // current Date
   let today = new Date();
@@ -419,6 +420,11 @@ const Customer = () => {
     { label: "billing_cycle", key: "billingCycle" },
   ];
 
+  // single customer activity log handle
+  const handleCustomerActivityLog = (data) => {
+    navigate(`/activity/${data?.id}`, { state: data });
+  };
+
   const columns = React.useMemo(
     () => [
       {
@@ -548,7 +554,7 @@ const Customer = () => {
       {
         width: "6%",
         Header: t("day"),
-        accessor: (data) => `${new Date(data?.billingCycle).getDay()}`,
+        accessor: (data) => `${getCustomerDayLeft(data?.billingCycle)}`,
         Cell: ({ row: { original } }) => (
           <div className="text-center p-1">
             <p
@@ -778,6 +784,15 @@ const Customer = () => {
                     </div>
                   </li>
                 )}
+
+                <li onClick={() => handleCustomerActivityLog(original)}>
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <ClockHistory />
+                      <p className="actionP">{t("activityLog")}</p>
+                    </div>
+                  </div>
+                </li>
 
                 {/* {(role === "ispOwner" || role === "manager") &&
                   bpSettings?.hasMikrotik && (

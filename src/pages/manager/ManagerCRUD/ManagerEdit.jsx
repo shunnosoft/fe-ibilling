@@ -74,13 +74,7 @@ const ManagerEdit = ({ show, setShow, managerId }) => {
   //get manager permissions
   useEffect(() => {
     if (single) {
-      language === "en"
-        ? setManagerPermissions(
-            managerPermission(single.permissions, bpSettings, "en")
-          )
-        : setManagerPermissions(
-            managerPermission(single.permissions, bpSettings, "bn")
-          );
+      setManagerPermissions(managerPermission(single.permissions, bpSettings));
     }
   }, [single, manager, language]);
 
@@ -340,7 +334,7 @@ const ManagerEdit = ({ show, setShow, managerId }) => {
                                   htmlFor={val.value + key + "edit"}
                                   className="checkboxLabel"
                                 >
-                                  {val.label}
+                                  {t(val.label)}
                                 </label>
                               </div>
 

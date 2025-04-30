@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { getActivityLog } from "../../features/activityLogApi";
-import { userStaffs } from "../../features/getIspOwnerUsersApi";
+import { getOwnerUsers, userStaffs } from "../../features/getIspOwnerUsersApi";
 import moment from "moment";
 import { ArrowClockwise, Eye, FilterCircle } from "react-bootstrap-icons";
 import Details from "./modal/Details";
@@ -18,9 +18,18 @@ import { badge } from "../../components/common/Utils";
 import useISPowner from "../../hooks/useISPOwner";
 import { handleActiveFilter } from "../common/activeFilter";
 import useDataState from "../../hooks/useDataState";
-import { getResellerUsers } from "../../features/apiCallReseller";
-import { getArea } from "../../features/apiCalls";
+import {
+  getResellerPackages,
+  getResellerUsers,
+  getSubAreas,
+} from "../../features/apiCallReseller";
+import {
+  fetchMikrotik,
+  getAllPackages,
+  getArea,
+} from "../../features/apiCalls";
 import useSelectorState from "../../hooks/useSelectorState";
+import { getSubAreasApi } from "../../features/actions/customerApiCall";
 
 const ActivityLog = () => {
   const { t } = useTranslation();
@@ -31,14 +40,20 @@ const ActivityLog = () => {
   const { role, ispOwnerId, userData } = useISPowner();
 
   //---> Get redux store state data from useSelectorState hooks
-  const { areas } = useSelectorState();
+  const { mikrotiks, packages, allPackages, areas, subAreas, ownerUsers } =
+    useSelectorState();
 
   // get user data set from useDataState hooks
   const { filterOptions, setFilterOption } = useDataState();
 
   // admin staff user role permission
   const adminUser =
-    role === "ispOwner" || role === "manager" || role !== "collector";
+    role === "ispOwner" ||
+    role === "manager" ||
+    (role === "collector" && !userData.reseller);
+
+  //---> Reseller id from role base
+  const resellerId = role === "collector" ? userData.reseller : userData.id;
 
   // initial loading state
   const [isLoading, setIsLoading] = useState(false);
@@ -63,16 +78,36 @@ const ActivityLog = () => {
   useEffect(() => {
     getActivityLog(dispatch, setIsLoading, userData?.id);
 
-    //---> @Get ispOwner areas data
-    !areas?.length && getArea(dispatch, ispOwnerId, setIsLoading);
+    if (adminUser) {
+      //---> @Get ispOwner areas data
+      !areas?.length && getArea(dispatch, ispOwnerId, setIsLoading);
+
+      //---> @Get ispOwner areas sub-area data
+      !subAreas.length && getSubAreasApi(dispatch, ispOwnerId);
+
+      //---> @Get ispOwner mikrotiks data
+      !mikrotiks?.length && fetchMikrotik(dispatch, ispOwnerId, setIsLoading);
+
+      //---> @Get ispOwner all mikrotik packages data
+      !allPackages.length && getAllPackages(dispatch, ispOwnerId, setIsLoading);
+
+      //---> @Get ispOwner user data
+      !ownerUsers?.length && getOwnerUsers(dispatch, ispOwnerId);
+    } else {
+      //---> @Get reseller ispOwner areas sub-area data
+      !subAreas.length && getSubAreas(dispatch, resellerId);
+
+      //---> @Get reseller with and withOut mikrotik package data
+      !packages.length && getResellerPackages(dispatch, resellerId);
+    }
 
     // get user staffs api
-    if (adminUser) {
+    if (role === "ispOwner") {
       staffs.length === 0 && userStaffs(dispatch);
     } else {
       staffs.length === 0 && getResellerUsers(dispatch, userData?.id);
     }
-  }, [adminUser]);
+  }, []);
 
   useEffect(() => {
     setActivityLogData(data);

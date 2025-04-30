@@ -133,8 +133,12 @@ const StaticActiveCustomer = () => {
   }, [staticActiveCustomer]);
 
   // select mikrotik handler
-  const mikrotiSelectionHandler = (event) => {
-    setMikrotikId(event.target.value);
+  const mikrotiSelectionHandler = (mikrotikId) => {
+    setFilterOptions({
+      ...filterOptions,
+      mikrotik: mikrotikId,
+    });
+    setMikrotikId(mikrotikId);
   };
 
   // reload handler
@@ -283,8 +287,13 @@ const StaticActiveCustomer = () => {
       {
         width: "10%",
         Header: t("status"),
-        accessor: (data) => data.status,
-        Cell: ({ row: { original } }) => <div>{badge(original?.status)}</div>,
+        accessor: (data) => `${data?.action} ${data.status}`,
+        Cell: ({ row: { original } }) => (
+          <div>
+            <p>{badge(original?.action)}</p>
+            <p>{badge(original?.status)}</p>
+          </div>
+        ),
       },
       {
         width: "5%",

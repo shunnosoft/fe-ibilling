@@ -21,7 +21,7 @@ import BulkCustomerDelete from "./BulkdeleteModal";
 import BulkMikrotikEdit from "./bulkMikrotikEdit";
 import BulkUserTypeUpdate from "./BulkUserTypeUpdate";
 
-const BulkOptions = ({ bulkCustomers, page }) => {
+const BulkOptions = ({ bulkCustomers, pageOption, page }) => {
   const { t } = useTranslation();
 
   // get user & current user data form useISPOwner hook
@@ -200,6 +200,8 @@ const BulkOptions = ({ bulkCustomers, page }) => {
     // },
   ];
 
+  const bulkMenuOption = pageOption ? pageOption : bulkOption;
+
   return (
     <>
       {bulkCustomers.length > 0 && (
@@ -211,7 +213,7 @@ const BulkOptions = ({ bulkCustomers, page }) => {
           >
             <div className="service_wraper">
               <ul className="client_service_list2 ps-0">
-                {bulkOption.map(
+                {bulkMenuOption.map(
                   (item) =>
                     item?.isVisiable && (
                       <>
@@ -363,6 +365,7 @@ const BulkOptions = ({ bulkCustomers, page }) => {
       {/* bulk customer delete modal */}
       {modalStatus === "customerDelete" && (
         <BulkCustomerDelete
+          page={page}
           show={show}
           setShow={setShow}
           bulkCustomer={bulkCustomers}

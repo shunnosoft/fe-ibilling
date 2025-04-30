@@ -521,9 +521,9 @@ const PrintCustomer = forwardRef((props, ref) => {
                     <tr>
                       <th>{t("billingCycle")}</th>
                       <td>
-                        {moment(currentCustomers?.billingCycle).format(
-                          "MMM DD YYYY"
-                        )}
+                        {moment(
+                          currentCustomers?.currentState.billingCycle
+                        ).format("MMM DD YYYY h:mm A")}
                       </td>
                     </tr>
                     <tr>
@@ -694,9 +694,9 @@ const PrintCustomer = forwardRef((props, ref) => {
                     <tr>
                       <th>{t("billingCycle")}</th>
                       <td>
-                        {moment(currentCustomers?.billingCycle).format(
-                          "MMM DD YYYY"
-                        )}
+                        {moment(
+                          currentCustomers?.currentState.billingCycle
+                        ).format("MMM DD YYYY h:mm A")}
                       </td>
                     </tr>
                     <tr>

@@ -11,11 +11,12 @@ import {
   CashStack,
   CurrencyDollar,
   PlayBtn,
+  ClockHistory,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 // custom hooks import
 import useISPowner from "../../hooks/useISPOwner";
@@ -45,6 +46,7 @@ import PlayTutorial from "../tutorial/PlayTutorial";
 const Collector = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // get user & current user data form useISPOwner hooks
   const { role, ispOwnerId, permissions } = useISPowner();
@@ -97,6 +99,13 @@ const Collector = () => {
     if (confirm) {
       deleteCollector(dispatch, setIsLoading, ispOwnerId, collectorId);
     }
+  };
+
+  //---> Single collector activity log handle
+  const handleCollectorActivityLog = (data) => {
+    navigate(`/activity/${data?.id}`, {
+      state: { ...data, role: "collector" },
+    });
   };
 
   const columns = React.useMemo(
@@ -256,6 +265,15 @@ const Collector = () => {
                     </div>
                   </li>
                 )}
+
+                <li onClick={() => handleCollectorActivityLog(original)}>
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <ClockHistory />
+                      <p className="actionP">{t("activityLog")}</p>
+                    </div>
+                  </div>
+                </li>
               </ul>
             </div>
           </div>

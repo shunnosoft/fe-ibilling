@@ -345,7 +345,7 @@ const PPPOECustomer = () => {
 
   // single customer activity log handle
   const handleCustomerActivityLog = (data) => {
-    navigate(`/activity/${data?.id}`);
+    navigate(`/activity/${data?.id}`, { state: { ...data, role: "customer" } });
   };
 
   //column for table
@@ -477,7 +477,7 @@ const PPPOECustomer = () => {
       {
         width: "6%",
         Header: t("day"),
-        accessor: (data) => `${new Date(data?.billingCycle).getDay()}`,
+        accessor: (data) => `${getCustomerDayLeft(data?.billingCycle)}`,
         Cell: ({ row: { original } }) => (
           <div className="text-center p-1">
             <p

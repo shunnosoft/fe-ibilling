@@ -25,6 +25,7 @@ import FormatNumber from "../../components/common/NumberFormat";
 import { Accordion } from "react-bootstrap";
 import ReactToPrint from "react-to-print";
 import PrintReport from "../reseller/resellerModals/ReportPDF";
+import { badge } from "../../components/common/Utils";
 
 const Recharge = () => {
   const { t } = useTranslation();
@@ -175,18 +176,30 @@ const Recharge = () => {
         },
       },
       {
-        width: "18%",
+        width: "10%",
         Header: t("amount"),
         accessor: "amount",
       },
       {
-        width: "30%",
+        width: "10%",
+        Header: t("medium"),
+        accessor: "medium",
+      },
+      {
+        width: "10%",
+        Header: t("paymentStatus"),
+        accessor: "paymentStatus",
+        Cell: ({ cell: { value } }) => {
+          return badge(value);
+        },
+      },
+      {
+        width: "20%",
         Header: t("comment"),
         accessor: "comment",
       },
-
       {
-        width: "22%",
+        width: "15%",
         Header: t("date"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
@@ -194,7 +207,7 @@ const Recharge = () => {
         },
       },
       {
-        width: "7%",
+        width: "5%",
         Header: () => <div className="text-center">{t("action")}</div>,
         id: "option",
 

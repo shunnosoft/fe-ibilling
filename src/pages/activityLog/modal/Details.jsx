@@ -9,7 +9,8 @@ export default function Details({ show, setShow, activityLog }) {
   const { t } = useTranslation();
 
   //---> Get redux store state data from useSelectorState hooks
-  const { areas } = useSelectorState();
+  const { mikrotiks, allPackages, areas, subAreas, ownerUsers } =
+    useSelectorState();
 
   const objectIdRegex = /^[a-fA-F0-9]{24}$/;
 
@@ -21,8 +22,23 @@ export default function Details({ show, setShow, activityLog }) {
     ) {
       return moment(value).format("YYYY/MM/DD hh:mm A");
     } else if (objectIdRegex?.test(value)) {
-      const area = areas?.find((item) => item.id === value);
-      return area?.name;
+      const mikrotik = mikrotiks?.find((mtk) => mtk.id === value);
+      const mtkPackage = allPackages?.find((pack) => pack.id === value);
+      const area = areas?.find((area) => area.id === value);
+      const subArea = subAreas?.find((sub) => sub.id === value);
+      const createdBy = ownerUsers?.find((user) => Boolean(user?.[value]))?.[
+        value
+      ];
+
+      return mikrotik
+        ? mikrotik?.name
+        : mtkPackage
+        ? mtkPackage?.name
+        : area
+        ? area?.name
+        : subArea
+        ? subArea?.name
+        : createdBy?.name;
     } else if (typeof value === "boolean") {
       return value ? "true" : "false";
     } else {
@@ -35,13 +51,13 @@ export default function Details({ show, setShow, activityLog }) {
       show={show}
       setShow={setShow}
       centered={true}
-      size="lg"
+      size="xl"
       header={t("activityLogDetails")}
     >
       <div className="displayGrid">
         <div className="displayGridHorizontalFill5_5">
           <div className="displayGridHorizontalFill5_5">
-            <p>{activityLog?.data?.map((item) => item.module)}</p>
+            <p>{activityLog.module}</p>
             <p>{badge(activityLog?.action)}</p>
           </div>
 
@@ -76,89 +92,103 @@ export default function Details({ show, setShow, activityLog }) {
           ></input>
         </div>
 
-        {activityLog?.data?.map((item) => (
+        <div
+          className="shadow-sm bg-white rounded"
+          style={{
+            overflow: "auto",
+            maxHeight: "400px",
+            maxWidth: "100%",
+          }}
+        >
           <div
-            className="shadow-sm bg-white rounded"
-            style={{
-              overflow: "auto",
-              maxHeight: "400px",
-              maxWidth: "100%",
-            }}
+            className={`${
+              activityLog?.action === "DELETE" ? "" : "displayGrid2"
+            } p-2`}
           >
-            <div
-              className={`${
-                activityLog?.action === "DELETE" ? "" : "displayGrid2"
-              } p-2`}
-            >
-              {activityLog?.action !== "DELETE" && (
-                <div>
-                  <p className="reportCollect p-2 h6 mb-0">
-                    {t("previousState")}
-                  </p>
-                  <div className="displayGridManual6_4">
-                    {Object.keys(item.old).map((key) => (
-                      <React.Fragment key={key}>
-                        <p className="changeLabelFontColor">
-                          {key.charAt(0).toUpperCase() + key.slice(1)}
-                        </p>
-                        <p className="changeLabelFontColor">
-                          {typeof item.old[key] === "object" &&
-                          ![undefined, null].includes(item.old[key])
-                            ? Object.keys(item.old?.[key])?.map((subKey) => (
+            <div>
+              <p className="reportCollect p-2 h6 mb-0">{t("previousState")}</p>
+              <div className="displayGridManual7_3">
+                {activityLog?.old &&
+                  Object.keys(activityLog?.old)?.map((key) => (
+                    <React.Fragment key={key}>
+                      <p className="changeLabelFontColor">
+                        {key.charAt(0).toUpperCase() + key.slice(1)}
+                      </p>
+                      <p className="changeLabelFontColor">
+                        {Array.isArray(activityLog?.old[key])
+                          ? activityLog?.old[key]
+                              ?.map((value) => getFormattedValue(value))
+                              .join(", ")
+                          : typeof activityLog?.old[key] === "object" &&
+                            ![undefined, null].includes(activityLog?.old[key])
+                          ? Object.keys(activityLog?.old?.[key])?.map(
+                              (subKey) => (
                                 <React.Fragment key={subKey}>
-                                  <div className="displayGridManual6_4">
+                                  <div className="displayGridManual4_6">
                                     <p className="changeLabelFontColor">
                                       {subKey.charAt(0).toUpperCase() +
                                         subKey.slice(1)}
                                     </p>
                                     <p className="changeLabelFontColor">
-                                      {item.old?.[key][subKey]}
+                                      {getFormattedValue(
+                                        activityLog?.old[key][subKey]
+                                      )}
                                     </p>
                                   </div>
                                 </React.Fragment>
-                              ))
-                            : getFormattedValue(item.old[key])}
-                        </p>
-                      </React.Fragment>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              <div>
-                <p className="reportCollect p-2 h6 mb-0">{t("currentState")}</p>
-                <div className="displayGridManual6_4">
-                  {Object.keys(item.new).map((key) => (
-                    <React.Fragment key={key}>
-                      <p className="changeLabelFontColor">
-                        {key.charAt(0).toUpperCase() + key.slice(1)}
-                      </p>
-
-                      <p className="changeLabelFontColor">
-                        {typeof item.new[key] === "object" &&
-                        ![undefined, null].includes(item.new[key])
-                          ? Object.keys(item.new?.[key])?.map((subKey) => (
-                              <React.Fragment key={subKey}>
-                                <div className="displayGridManual6_4">
-                                  <p className="changeLabelFontColor">
-                                    {subKey.charAt(0).toUpperCase() +
-                                      subKey.slice(1)}
-                                  </p>
-                                  <p className="changeLabelFontColor">
-                                    {item.new?.[key][subKey]}
-                                  </p>
-                                </div>
-                              </React.Fragment>
-                            ))
-                          : getFormattedValue(item.new[key])}
+                              )
+                            )
+                          : getFormattedValue(activityLog?.old[key])}
                       </p>
                     </React.Fragment>
                   ))}
-                </div>
               </div>
             </div>
+
+            {activityLog?.action !== "DELETE" && (
+              <div>
+                <p className="reportCollect p-2 h6 mb-0">{t("currentState")}</p>
+                <div className="displayGridManual7_3">
+                  {activityLog?.new &&
+                    Object.keys(activityLog?.new)?.map((key) => (
+                      <React.Fragment key={key}>
+                        <p className="changeLabelFontColor">
+                          {key.charAt(0).toUpperCase() + key.slice(1)}
+                        </p>
+
+                        <p className="changeLabelFontColor">
+                          {Array.isArray(activityLog?.new[key])
+                            ? activityLog?.new[key]
+                                ?.map((value) => getFormattedValue(value))
+                                .join(", ")
+                            : typeof activityLog?.new[key] === "object" &&
+                              ![undefined, null].includes(activityLog?.new[key])
+                            ? Object.keys(activityLog?.new?.[key])?.map(
+                                (subKey) => (
+                                  <React.Fragment key={subKey}>
+                                    <div className="displayGridManual4_6">
+                                      <p className="changeLabelFontColor">
+                                        {subKey.charAt(0).toUpperCase() +
+                                          subKey.slice(1)}
+                                      </p>
+                                      <p className="changeLabelFontColor">
+                                        {getFormattedValue(
+                                          activityLog?.new[key][subKey]
+                                        )}
+                                      </p>
+                                    </div>
+                                  </React.Fragment>
+                                )
+                              )
+                            : getFormattedValue(activityLog?.new[key])}
+                        </p>
+                      </React.Fragment>
+                    ))}
+                </div>
+              </div>
+            )}
           </div>
-        ))}
+        </div>
 
         <div class="form-floating">
           <label className="changeLabelFontColor">{t("userAgent")}</label>

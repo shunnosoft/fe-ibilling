@@ -18,6 +18,7 @@ import {
   Phone,
   GeoAlt,
   Cash,
+  ClockHistory,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -57,8 +58,10 @@ import { getOwnerUsers } from "../../features/getIspOwnerUsersApi";
 import StaticCustomerEdit from "./actionComponent/StaticCustomerEdit";
 import RechargeCustomer from "./actionComponent/RechargeCustomer";
 import PrintOptions from "../../components/common/PrintOptions";
+import { useNavigate } from "react-router-dom";
 
 export default function RstaticCustomer() {
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const componentRef = useRef(); //reference of pdf export component
@@ -447,6 +450,11 @@ export default function RstaticCustomer() {
     </div>
   );
 
+  // single customer activity log handle
+  const handleCustomerActivityLog = (data) => {
+    navigate(`/activity/${data?.id}`);
+  };
+
   const columns = React.useMemo(
     () => [
       {
@@ -559,7 +567,7 @@ export default function RstaticCustomer() {
       {
         width: "6%",
         Header: t("day"),
-        accessor: (data) => `${new Date(data?.billingCycle).getDay()}`,
+        accessor: (data) => `${getCustomerDayLeft(data?.billingCycle)}`,
         Cell: ({ row: { original } }) => (
           <div className="text-center p-1">
             <p
@@ -696,6 +704,15 @@ export default function RstaticCustomer() {
                     </div>
                   </li>
                 )}
+
+                <li onClick={() => handleCustomerActivityLog(original)}>
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <ClockHistory />
+                      <p className="actionP">{t("activityLog")}</p>
+                    </div>
+                  </div>
+                </li>
               </ul>
             </div>
           </div>

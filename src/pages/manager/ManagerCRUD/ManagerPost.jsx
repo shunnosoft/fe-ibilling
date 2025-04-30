@@ -48,8 +48,8 @@ const ManagerPost = ({ show, setShow }) => {
   //get current language
   const language = localStorage.getItem("netFee:lang");
 
-  // get user & current user data form useISPOwner
-  const { ispOwnerId } = useISPowner();
+  //---> Get user & current user data form useISPOwner hooks
+  const { ispOwnerId, bpSettings } = useISPowner();
 
   //get area
   const area = useSelector((state) => state?.area?.area);
@@ -69,10 +69,8 @@ const ManagerPost = ({ show, setShow }) => {
 
   //get manager permissions
   useEffect(() => {
-    language === "en"
-      ? setPermissions(managerPermission(null, null, "en"))
-      : setPermissions(managerPermission(null, null, "bn"));
-  }, [language]);
+    setPermissions(managerPermission(null, bpSettings));
+  }, [language, bpSettings]);
 
   // ispOwner all areas subarea handle
   useEffect(() => {
@@ -353,7 +351,7 @@ const ManagerPost = ({ show, setShow }) => {
                               htmlFor={val.value + key}
                               className="checkboxLabel"
                             >
-                              {val.label}
+                              {t(val.label)}
                             </label>
                           </div>
 

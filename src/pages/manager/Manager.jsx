@@ -7,6 +7,7 @@ import {
   KeyFill,
   ChatText,
   PlayBtn,
+  ClockHistory,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useSelector } from "react-redux";
@@ -36,10 +37,12 @@ import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
 import ManagerEdit from "./ManagerCRUD/ManagerEdit";
 import { getSubAreasApi } from "../../features/actions/customerApiCall";
 import PlayTutorial from "../tutorial/PlayTutorial";
+import { useNavigate } from "react-router-dom";
 
 const Manager = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // get user & current user data form useISPOwner hooks
   const { ispOwnerId, bpSettings } = useISPowner();
@@ -76,6 +79,11 @@ const Manager = () => {
   //get specific manager set id
   const getSpecificManager = (managerId) => {
     setSingleManager(managerId);
+  };
+
+  //---> Single manager activity log handle
+  const handleManagerActivityLog = (data) => {
+    navigate(`/activity/${data?.id}`, { state: { ...data, role: "manager" } });
   };
 
   const columns = useMemo(
@@ -182,6 +190,15 @@ const Manager = () => {
                     <div className="customerAction">
                       <KeyFill />
                       <p className="actionP">{t("passwordReset")}</p>
+                    </div>
+                  </div>
+                </li>
+
+                <li onClick={() => handleManagerActivityLog(original)}>
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <ClockHistory />
+                      <p className="actionP">{t("activityLog")}</p>
                     </div>
                   </div>
                 </li>

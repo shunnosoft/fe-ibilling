@@ -8,7 +8,7 @@ import {
 import RootBulkModal from "./bulkModal";
 import { useTranslation } from "react-i18next";
 
-const BulkCustomerDelete = ({ bulkCustomer, show, setShow, status }) => {
+const BulkCustomerDelete = ({ bulkCustomer, page, show, setShow, status }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
@@ -67,22 +67,27 @@ const BulkCustomerDelete = ({ bulkCustomer, show, setShow, status }) => {
     <RootBulkModal
       show={show}
       setShow={setShow}
-      header={`${bulkCustomer.length} টি গ্রাহক ডিলিট করুন`}
+      header={bulkCustomer.length + " " + t("deleteCustomer")}
     >
       {bpSettings.hasMikrotik && (
         <div class="form-check mt-4">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            checked={mikrotikCheck}
-            id="flexCheckDefault"
-            onChange={(event) => setMikrotikCheck(event.target.checked)}
-          />
+          {page !== "extra-user" && (
+            <input
+              class="form-check-input"
+              type="checkbox"
+              checked={mikrotikCheck}
+              id="flexCheckDefault"
+              onChange={(event) => setMikrotikCheck(event.target.checked)}
+            />
+          )}
+
           <label
             class="form-check-label text-secondary"
             htmlFor="flexCheckDefault"
           >
-            {t("deleteMikrotik")}
+            {page === "extra-user"
+              ? t("deleteFormSoftware")
+              : t("deleteMikrotik")}
           </label>
         </div>
       )}

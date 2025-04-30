@@ -230,7 +230,7 @@ export default function ConfigMikrotik() {
         area: area ? allSubarea.some((sub) => sub.id === c.subArea) : true,
         subArea: subArea ? subArea === c.subArea : true,
         online: customer === "online" ? c.running === true : true,
-        ofline: customer === "ofline" ? c.running !== true : true,
+        offline: customer === "offline" ? c.running !== true : true,
         status: status ? status === c.status : true,
       };
 
@@ -318,12 +318,17 @@ export default function ConfigMikrotik() {
         ),
       },
       {
+        width: "5%",
+        Header: t("id"),
+        accessor: "customerId",
+      },
+      {
         width: "10%",
-        Header: t("IdPPPoE"),
-        accessor: (data) => `${data?.customerId} ${data.pppoe?.name}`,
+        Header: t("namePPPoE"),
+        accessor: (data) => `${data?.name} ${data.pppoe?.name}`,
         Cell: ({ row: { original } }) => (
           <div>
-            <p>{original?.customerId}</p>
+            <p>{original?.name}</p>
             <p>{original.pppoe?.name}</p>
           </div>
         ),
@@ -366,39 +371,36 @@ export default function ConfigMikrotik() {
       },
       {
         width: "8%",
-        Header: "Upload",
-        accessor: "rxByte",
+        Header: t("upDown"),
+        accessor: (data) => `${data?.rxByte} ${data.txByte}`,
         Cell: ({ row: { original } }) => (
           <div
             style={{
               padding: "15px 15px 15px 0 !important",
             }}
           >
-            {original?.rxByte
-              ? original?.rxByte / 1024 / 1024 <= 1024
-                ? (original?.rxByte / 1024 / 1024).toFixed(2) + " MB"
-                : (original?.rxByte / 1024 / 1024 / 1024).toFixed(2) + " GB"
-              : ""}
-          </div>
-        ),
-      },
-      {
-        width: "8%",
-        Header: "Download",
-        accessor: "txByte",
-        Cell: ({ row: { original } }) => (
-          <div>
-            {original?.txByte
-              ? original?.txByte / 1024 / 1024 <= 1024
-                ? (original?.txByte / 1024 / 1024).toFixed(2) + " MB"
-                : (original?.txByte / 1024 / 1024 / 1024).toFixed(2) + " GB"
-              : ""}
+            <p>
+              {original?.rxByte
+                ? original?.rxByte / 1024 / 1024 <= 1024
+                  ? (original?.rxByte / 1024 / 1024).toFixed(2) + " MB"
+                  : (original?.rxByte / 1024 / 1024 / 1024).toFixed(2) + " GB"
+                : ""}
+            </p>
+
+            <p>
+              {original?.txByte
+                ? original?.txByte / 1024 / 1024 <= 1024
+                  ? (original?.txByte / 1024 / 1024).toFixed(2) + " MB"
+                  : (original?.txByte / 1024 / 1024 / 1024).toFixed(2) + " GB"
+                : ""}
+            </p>
           </div>
         ),
       },
       {
         width: "8%",
         Header: t("uptime"),
+        accessor: "uptime",
         Cell: ({ row: { original } }) => (
           <div>
             {original?.uptime ? (
@@ -411,7 +413,10 @@ export default function ConfigMikrotik() {
                     "seconds"
                   );
 
-                  const days = Math.floor(diffInSeconds / (60 * 60 * 24));
+                  const weeks = Math.floor(diffInSeconds / (60 * 60 * 24 * 7));
+                  const days = Math.floor(
+                    (diffInSeconds % (60 * 60 * 24 * 7)) / (60 * 60 * 24)
+                  );
                   const hours = Math.floor(
                     (diffInSeconds % (60 * 60 * 24)) / (60 * 60)
                   );
@@ -420,10 +425,11 @@ export default function ConfigMikrotik() {
 
                   return (
                     <>
+                      {weeks > 0 && <span>{weeks}w</span>}
                       {days > 0 && <span>{days}d</span>}
                       {hours > 0 && <span>{hours}h</span>}
                       {minutes > 0 && <span>{minutes}m</span>}
-                      {seconds >= 0 && <span>{seconds}s</span>}
+                      <span>{seconds}s</span>
                     </>
                   );
                 })()}
@@ -432,7 +438,6 @@ export default function ConfigMikrotik() {
           </div>
         ),
       },
-
       {
         width: "15%",
         Header: t("loggedInOut"),
@@ -617,7 +622,7 @@ export default function ConfigMikrotik() {
       },
       options: [
         { text: t("online"), value: "online" },
-        { text: t("ofline"), value: "ofline" },
+        { text: t("offline"), value: "offline" },
       ],
       firstOptions: t("sokolCustomer"),
       textAccessor: "text",
@@ -629,7 +634,7 @@ export default function ConfigMikrotik() {
       id: "status",
       value: filterOptions.status,
       isVisible: true,
-      disabled: filterOptions.customer !== "ofline",
+      disabled: filterOptions.customer !== "offline",
       onChange: (e) => {
         setFilterOptions({
           ...filterOptions,

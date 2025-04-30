@@ -156,8 +156,7 @@ const ResellerCustomer = () => {
     !subAreas.length && getSubAreasApi(dispatch, ispOwnerId);
 
     //---> @Get Reseller all customer data
-    !resellerCustomer.length &&
-      getResellerCustomer(dispatch, resellerId, setIsLoading);
+    getResellerCustomer(dispatch, resellerId, setIsLoading);
 
     //===========================================================> SECOND STEP API
 
@@ -178,7 +177,7 @@ const ResellerCustomer = () => {
 
     //---> @Get ispOwner all mikrotik packages data
     !allPackages.length && getAllPackages(dispatch, ispOwnerId, setLoading);
-  }, []);
+  }, [resellerId]);
 
   // set customer at state
   useEffect(() => {

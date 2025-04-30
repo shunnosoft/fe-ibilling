@@ -14,6 +14,7 @@ import TdLoader from "../../../components/common/TdLoader";
 import { getResellerRechargeHistioty } from "../../../features/apiCalls";
 import PrintReport from "./ReportPDF";
 import ComponentCustomModal from "../../../components/common/customModal/ComponentCustomModal";
+import { badge } from "../../../components/common/Utils";
 
 const RechargeReport = ({ show, setShow, resellerId }) => {
   const { t } = useTranslation();
@@ -128,6 +129,7 @@ const RechargeReport = ({ show, setShow, resellerId }) => {
                 <th scope="col">#</th>
                 <th scope="col">{t("amount")}</th>
                 <th scope="col">{t("medium")}</th>
+                <th scope="col">{t("paymentStatus")}</th>
                 <th scope="col">{t("date")}</th>
               </tr>
             </thead>
@@ -142,6 +144,7 @@ const RechargeReport = ({ show, setShow, resellerId }) => {
                         <th scope="row">{index + 1}</th>
                         <td>{FormatNumber(item.amount)}</td>
                         <td>{item?.medium}</td>
+                        <td>{badge(item?.paymentStatus)}</td>
                         <td>
                           {moment(item.createdAt).format("MMM DD YYYY hh:mm a")}
                         </td>

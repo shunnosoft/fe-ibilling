@@ -308,7 +308,7 @@ const CustomerReport = ({ show, setShow, single }) => {
                                     title={t("printInvoiceBill")}
                                     style={{ cursor: "pointer" }}
                                   >
-                                    <button id="PrintPppoeWithNote">btn</button>
+                                    <button id="PrintWithNote">btn</button>
                                   </div>
                                 )}
                                 content={() => billRefwithNote.current}

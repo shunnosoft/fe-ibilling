@@ -223,9 +223,23 @@ ul.client_service_list2 li {
   color: #297fd4;
 }
 
+.displayGridManual4_6 {
+  display: grid;
+  grid-template-columns: minmax(59%, auto) minmax(40%, auto);
+  grid-gap: 1%;
+  margin: 10px 0;
+}
+
 .displayGridManual6_4 {
   display: grid;
   grid-template-columns: minmax(39%, auto) minmax(60%, auto);
+  grid-gap: 1%;
+  margin: 10px 0;
+}
+
+.displayGridManual7_3 {
+  display: grid;
+  grid-template-columns: minmax(29%, auto) minmax(70%, auto);
   grid-gap: 1%;
   margin: 10px 0;
 }
@@ -439,7 +453,15 @@ ul.client_service_list2 li {
     font-size: 1rem;
   }
 
+  .displayGridManual4_6 {
+    display: block;
+  }
+
   .displayGridManual6_4 {
+    display: block;
+  }
+
+  .displayGridManual7_3 {
     display: block;
   }
 
@@ -537,7 +559,15 @@ ul.client_service_list2 li {
     font-size: 1.1rem;
   }
 
+  .displayGridManual4_6 {
+    display: block;
+  }
+
   .displayGridManual6_4 {
+    display: block;
+  }
+
+  .displayGridManual7_3 {
     display: block;
   }
 
@@ -630,7 +660,15 @@ ul.client_service_list2 li {
     font-size: 1.1rem;
   }
 
+  .displayGridManual4_6 {
+    display: block;
+  }
+
   .displayGridManual6_4 {
+    display: block;
+  }
+
+  .displayGridManual7_3 {
     display: block;
   }
 

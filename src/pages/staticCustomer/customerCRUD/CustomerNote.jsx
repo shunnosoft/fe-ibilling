@@ -42,8 +42,8 @@ const CustomerNote = ({ show, setShow, customerId, customerName }) => {
 
   const performerName = (performerId) => {
     if (performerId) {
-      const performer = ownerUsers.find((item) => item[performerId]);
-      const name = performer[performerId].name;
+      const performer = ownerUsers?.find((item) => item[performerId]);
+      const name = performer?.[performerId]?.name;
       return name;
     }
   };
@@ -101,7 +101,7 @@ const CustomerNote = ({ show, setShow, customerId, customerName }) => {
                 overflowY: "auto",
               }}
             >
-              {notes.map((data, key) => (
+              {notes?.map((data, key) => (
                 <>
                   <div className="comment-show">
                     <div className="">

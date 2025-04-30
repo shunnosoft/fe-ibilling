@@ -63,6 +63,10 @@ const addClass = {
   CREATE: "info",
   UPDATE: "success",
   DELETE: "danger",
+
+  RECHARGE: "success",
+  accept: "success",
+  drop: "danger",
 };
 
 export const badge = (item) => {

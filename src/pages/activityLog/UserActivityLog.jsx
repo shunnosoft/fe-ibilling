@@ -9,24 +9,39 @@ import { FontColor, FourGround } from "../../assets/js/theme";
 import Loader from "../../components/common/Loader";
 import { Accordion } from "react-bootstrap";
 import Table from "../../components/table/Table";
-import Details from "../activityLog/modal/Details";
+import Details from "./modal/Details";
 import useDash from "../../assets/css/dash.module.css";
-import { getCustomerActivityLog } from "../../features/activityLogApi";
-import { useParams } from "react-router-dom";
+import { getUserActivityLog } from "../../features/activityLogApi";
+import { useLocation, useParams } from "react-router-dom";
 import { handleActiveFilter } from "../common/activeFilter";
 import useISPowner from "../../hooks/useISPOwner";
 import { getOwnerUsers, userStaffs } from "../../features/getIspOwnerUsersApi";
 import useDataState from "../../hooks/useDataState";
+import {
+  fetchMikrotik,
+  getAllPackages,
+  getArea,
+} from "../../features/apiCalls";
+import { getSubAreasApi } from "../../features/actions/customerApiCall";
+import {
+  getResellerPackages,
+  getResellerUsers,
+  getSubAreas,
+} from "../../features/apiCallReseller";
+import useSelectorState from "../../hooks/useSelectorState";
 
-const CustomerActivityLog = () => {
+const UserActivityLog = () => {
   const { t } = useTranslation();
-  const { customerId } = useParams();
-
-  // import dispatch
   const dispatch = useDispatch();
+  const { userId } = useParams();
+  const { state: user } = useLocation();
 
   // get user & current user data form useISPOwner hooks
   const { role, ispOwnerId, userData } = useISPowner();
+
+  //---> Get redux store state data from useSelectorState hooks
+  const { mikrotiks, packages, allPackages, areas, subAreas, ownerUsers } =
+    useSelectorState();
 
   // get user data set from useDataState hooks
   const { filterOptions, setFilterOption } = useDataState();
@@ -36,6 +51,9 @@ const CustomerActivityLog = () => {
     role === "ispOwner" ||
     role === "manager" ||
     (role === "collector" && !userData.reseller);
+
+  //---> Reseller id from role base
+  const resellerId = role === "collector" ? userData.reseller : userData.id;
 
   // initial loading state
   const [isLoading, setIsLoading] = useState(false);
@@ -54,15 +72,37 @@ const CustomerActivityLog = () => {
   // get user staff data from redux store
   const staffs = useSelector((state) => state?.ownerUsers?.userStaff);
 
-  // api call
   useEffect(() => {
-    getCustomerActivityLog(dispatch, setIsLoading, customerId);
+    getUserActivityLog(dispatch, setIsLoading, user?.role, userId);
+
+    if (adminUser) {
+      //---> @Get ispOwner areas data
+      !areas?.length && getArea(dispatch, ispOwnerId, setIsLoading);
+
+      //---> @Get ispOwner areas sub-area data
+      !subAreas.length && getSubAreasApi(dispatch, ispOwnerId);
+
+      //---> @Get ispOwner mikrotiks data
+      !mikrotiks?.length && fetchMikrotik(dispatch, ispOwnerId, setIsLoading);
+
+      //---> @Get ispOwner all mikrotik packages data
+      !allPackages.length && getAllPackages(dispatch, ispOwnerId, setIsLoading);
+
+      //---> @Get ispOwner user data
+      !ownerUsers?.length && getOwnerUsers(dispatch, ispOwnerId);
+    } else {
+      //---> @Get reseller ispOwner areas sub-area data
+      !subAreas.length && getSubAreas(dispatch, resellerId);
+
+      //---> @Get reseller with and withOut mikrotik package data
+      !packages.length && getResellerPackages(dispatch, resellerId);
+    }
 
     // get user staffs api
-    if (adminUser) {
+    if (role === "ispOwner") {
       staffs.length === 0 && userStaffs(dispatch);
     } else {
-      staffs.length === 0 && getOwnerUsers(dispatch, ispOwnerId);
+      staffs.length === 0 && getResellerUsers(dispatch, userData?.id);
     }
   }, []);
 
@@ -72,7 +112,7 @@ const CustomerActivityLog = () => {
 
   // reload handler
   const reloadHandler = () => {
-    getCustomerActivityLog(dispatch, setIsLoading, customerId);
+    getUserActivityLog(dispatch, setIsLoading, user, userId);
   };
 
   // table columns
@@ -215,6 +255,7 @@ const CustomerActivityLog = () => {
             <FontColor>
               <FourGround>
                 <div className="collectorTitle d-flex justify-content-between px-4">
+                  <p>{user?.name}</p>
                   <h2 className="component_name">{t("activityLog")}</h2>
 
                   <div
@@ -323,4 +364,4 @@ const CustomerActivityLog = () => {
   );
 };
 
-export default CustomerActivityLog;
+export default UserActivityLog;

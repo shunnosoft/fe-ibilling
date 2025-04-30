@@ -157,40 +157,59 @@ const ResellerActiveCustomer = () => {
   const columns = useMemo(
     () => [
       {
-        width: "4%",
-        Header: "#",
-        id: "row",
-        accessor: (row) => Number(row.id + 1),
-        Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
+        width: "3%",
+        Header: <Wifi />,
+        accessor: "running",
+        Cell: ({ value }) => (
+          <div>{value ? <Wifi color="green" /> : <WifiOff color="red" />}</div>
+        ),
       },
       {
         width: "5%",
-        Header: t("status"),
-        accessor: "running",
+        Header: t("id"),
+        accessor: "customerId",
+      },
+      {
+        width: "10%",
+        Header: t("namePPPoE"),
+        accessor: (data) => `${data?.name} ${data.pppoe?.name}`,
         Cell: ({ row: { original } }) => (
           <div>
-            {original?.running ? (
-              <Wifi color="green" />
-            ) : (
-              <WifiOff color="red" />
-            )}
+            <p>{original?.name}</p>
+            <p>{original.pppoe?.name}</p>
           </div>
         ),
       },
       {
         width: "10%",
-        Header: t("name"),
-        accessor: "name",
-      },
-      {
-        width: "10%",
-        Header: t("PPPoEName"),
-        accessor: "pppoe.name",
-      },
-      {
-        width: "10%",
-        Header: t("ip"),
-        accessor: "ip",
+        Header: t("IPMac"),
+        accessor: (data) => `${data?.ip} ${data.callerId}`,
+        Cell: ({ row: { original } }) => (
+          <div style={{ cursor: "pointer" }}>
+            <p
+              onClick={() => window.open(`http://${original?.ip}`, "_blank")}
+              style={{
+                cursor: "pointer",
+                textDecoration: "none",
+                color: "inherit",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.textDecoration = "underline";
+                e.currentTarget.classList.add("text-primary");
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.textDecoration = "none";
+                e.currentTarget.classList.remove("text-primary");
+              }}
+            >
+              {original?.ip}
+            </p>
+
+            <p className={`text-${original?.macBinding && "success fw-bold"}`}>
+              {original?.callerId}
+            </p>
+          </div>
+        ),
       },
       {
         width: "10%",
@@ -199,64 +218,100 @@ const ResellerActiveCustomer = () => {
       },
       {
         width: "8%",
-        Header: "RX",
-        accessor: "rxByte",
+        Header: t("upDown"),
+        accessor: (data) => `${data?.rxByte} ${data.txByte}`,
         Cell: ({ row: { original } }) => (
           <div
             style={{
               padding: "15px 15px 15px 0 !important",
             }}
           >
-            {original?.rxByte
-              ? (original?.rxByte / 1024 / 1024).toFixed(2) + " MB"
-              : ""}
+            <p>
+              {original?.rxByte
+                ? original?.rxByte / 1024 / 1024 <= 1024
+                  ? (original?.rxByte / 1024 / 1024).toFixed(2) + " MB"
+                  : (original?.rxByte / 1024 / 1024 / 1024).toFixed(2) + " GB"
+                : ""}
+            </p>
+
+            <p>
+              {original?.txByte
+                ? original?.txByte / 1024 / 1024 <= 1024
+                  ? (original?.txByte / 1024 / 1024).toFixed(2) + " MB"
+                  : (original?.txByte / 1024 / 1024 / 1024).toFixed(2) + " GB"
+                : ""}
+            </p>
           </div>
         ),
       },
       {
         width: "8%",
-        Header: "TX",
-        accessor: "txByte",
+        Header: t("uptime"),
+        accessor: "uptime",
         Cell: ({ row: { original } }) => (
           <div>
-            {original?.txByte &&
-              (original?.txByte / 1024 / 1024).toFixed(2) + " MB"}
+            {original?.uptime ? (
+              original?.uptime
+            ) : (
+              <p className="text-danger">
+                {(() => {
+                  const diffInSeconds = moment().diff(
+                    moment(original?.lastLogoutTime),
+                    "seconds"
+                  );
+
+                  const weeks = Math.floor(diffInSeconds / (60 * 60 * 24 * 7));
+                  const days = Math.floor(
+                    (diffInSeconds % (60 * 60 * 24 * 7)) / (60 * 60 * 24)
+                  );
+                  const hours = Math.floor(
+                    (diffInSeconds % (60 * 60 * 24)) / (60 * 60)
+                  );
+                  const minutes = Math.floor((diffInSeconds % (60 * 60)) / 60);
+                  const seconds = diffInSeconds % 60;
+
+                  return (
+                    <>
+                      {weeks > 0 && <span>{weeks}w</span>}
+                      {days > 0 && <span>{days}d</span>}
+                      {hours > 0 && <span>{hours}h</span>}
+                      {minutes > 0 && <span>{minutes}m</span>}
+                      <span>{seconds}s</span>
+                    </>
+                  );
+                })()}
+              </p>
+            )}
           </div>
         ),
       },
       {
-        width: "10%",
-        Header: "Last Link Up",
-        accessor: "lastLinkUpTime",
+        width: "15%",
+        Header: t("loggedInOut"),
+        accessor: (data) => `${data?.lastLinkUpTime} ${data?.lastLogoutTime}`,
         Cell: ({ row: { original } }) => (
           <div>
-            {original?.lastLinkUpTime &&
-              moment(original.lastLinkUpTime).format("YYYY/MM/DD hh:mm A")}
+            <p>
+              {original?.lastLinkUpTime &&
+                moment(original.lastLinkUpTime).format("YYYY/MM/DD hh:mm A")}
+            </p>
+            <p>
+              {original?.lastLogoutTime &&
+                moment(original.lastLogoutTime).format("YYYY/MM/DD hh:mm A")}
+            </p>
           </div>
         ),
       },
       {
-        width: "10%",
-        Header: "Last Logout",
-        accessor: "lastLogoutTime",
-        Cell: ({ row: { original } }) => (
-          <div>
-            {original?.lastLogoutTime &&
-              moment(original.lastLogoutTime).format("YYYY/MM/DD hh:mm A")}
-          </div>
-        ),
-      },
-      {
-        width: "10%",
+        width: "5%",
         Header: t("status"),
-        accessor: (data) => `${data.status}`,
+        accessor: (data) => data.status,
         Cell: ({ row: { original } }) => <div>{badge(original?.status)}</div>,
       },
       {
         width: "5%",
         Header: () => <div className="text-center">{t("action")}</div>,
         id: "option",
-
         Cell: ({ row: { original } }) => {
           return (
             <div className="text-center">
@@ -365,7 +420,7 @@ const ResellerActiveCustomer = () => {
       },
       options: [
         { text: t("online"), value: "online" },
-        { text: t("ofline"), value: "ofline" },
+        { text: t("offline"), value: "offline" },
       ],
       firstOptions: t("sokolCustomer"),
       textAccessor: "text",
@@ -377,7 +432,7 @@ const ResellerActiveCustomer = () => {
       id: "status",
       value: filterOptions.status,
       isVisible: true,
-      disabled: filterOptions.customer !== "ofline",
+      disabled: filterOptions.customer !== "offline",
       onChange: (e) => {
         setFilterOptions({
           ...filterOptions,
@@ -417,7 +472,7 @@ const ResellerActiveCustomer = () => {
         area: area ? allSubarea.some((sub) => sub.id === c.subArea) : true,
         subArea: subArea ? subArea === c.subArea : true,
         online: customer === "online" ? c.running === true : true,
-        ofline: customer === "ofline" ? c.running !== true : true,
+        offline: customer === "offline" ? c.running !== true : true,
         status: status ? status === c.status : true,
       };
 

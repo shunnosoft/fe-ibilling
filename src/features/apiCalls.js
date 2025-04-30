@@ -2031,6 +2031,7 @@ export const fetchpppoeUserForReseller = async (
             ...interfaceItem,
             ip: ipAddress.address,
             uptime: ipAddress.uptime,
+            callerId: ipAddress.callerId,
           };
         }
         return interfaceItem;

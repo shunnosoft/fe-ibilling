@@ -94,6 +94,7 @@ const BulkSubAreaEdit = ({ bulkCustomer, show, setShow }) => {
     if (selectedValue.area && selectedValue.subArea) {
       const data = {
         customerIds: bulkCustomer.map((item) => item.original.id),
+        areaId: selectedValue.area,
         subAreaId: selectedValue.subArea,
         poleBox: selectedValue.poleBox,
       };

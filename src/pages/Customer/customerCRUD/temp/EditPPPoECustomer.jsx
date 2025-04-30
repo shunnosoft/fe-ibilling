@@ -313,7 +313,7 @@ const EditPPPoECustomer = ({ show, setShow, single }) => {
                             <input
                               className="form-check-input me-2"
                               type="checkbox"
-                              name="autoDisable"
+                              name="nextMonthAutoDisable"
                               id="nextMonthAutoDisable"
                               checked={nextMonthAutoDisable}
                               disabled={autoDisable}

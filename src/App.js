@@ -123,7 +123,7 @@ import AcountPayment from "./components/modals/payment/AcountPayment";
 import Tutorial from "./pages/tutorial/Tutorial";
 import Diagram from "./pages/network/diagram/Diagram";
 import Device from "./pages/network/device/Device";
-import CustomerActivityLog from "./pages/Customer/CustomerActivityLog";
+import UserActivityLog from "./pages/activityLog/UserActivityLog";
 
 function App() {
   const [theme, setTheme] = useState("light");
@@ -207,10 +207,7 @@ function App() {
 
             <Route path="/activity" element={<ActivityLog />} />
 
-            <Route
-              path="/activity/:customerId"
-              element={<CustomerActivityLog />}
-            />
+            <Route path="/activity/:userId" element={<UserActivityLog />} />
           </Routes>
         )}
 

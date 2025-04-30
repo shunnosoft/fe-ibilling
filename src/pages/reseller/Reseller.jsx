@@ -15,10 +15,11 @@ import {
   Book,
   FiletypePy,
   PlayBtn,
+  ClockHistory,
 } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer } from "react-toastify";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 // custom hooks import
@@ -56,6 +57,7 @@ import PlayTutorial from "../tutorial/PlayTutorial";
 const Reseller = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // get user & current user data form useISPOwner hooks
   const { role, ispOwnerData, ispOwnerId, hasMikrotik } = useISPowner();
@@ -139,6 +141,11 @@ const Reseller = () => {
 
     // webhook api call
     csutomerWebhookRegister(sendingData);
+  };
+
+  //---> Single reseller activity log handle
+  const handleResellerActivityLog = (data) => {
+    navigate(`/activity/${data?.id}`, { state: { ...data, role: "reseller" } });
   };
 
   // table column
@@ -394,6 +401,15 @@ const Reseller = () => {
                     </div>
                   </li>
                 )}
+
+                <li onClick={() => handleResellerActivityLog(original)}>
+                  <div className="dropdown-item">
+                    <div className="customerAction">
+                      <ClockHistory />
+                      <p className="actionP">{t("activityLog")}</p>
+                    </div>
+                  </div>
+                </li>
               </ul>
             </div>
           </div>

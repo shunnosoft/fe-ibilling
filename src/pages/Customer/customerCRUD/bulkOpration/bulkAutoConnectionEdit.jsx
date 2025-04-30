@@ -13,6 +13,7 @@ const BulkAutoConnectionEdit = ({ bulkCustomer, show, setShow }) => {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [autoDisable, setAutoDisable] = useState(false);
+  const [nextMonth, setNextMonth] = useState(false);
   const dispatch = useDispatch();
 
   const changeStatus = (e) => {
@@ -21,6 +22,7 @@ const BulkAutoConnectionEdit = ({ bulkCustomer, show, setShow }) => {
     const data = {
       customerIds: bulkCustomer.map((item) => item.original.id),
       autoDisable: autoDisable,
+      nextMonthAutoDisable: nextMonth,
     };
     let confirm;
     if (autoDisable) {
@@ -43,7 +45,11 @@ const BulkAutoConnectionEdit = ({ bulkCustomer, show, setShow }) => {
   };
 
   return (
-    <RootBulkModal show={show} setShow={setShow} header={t("updateStatus")}>
+    <RootBulkModal
+      show={show}
+      setShow={setShow}
+      header={t("automaticConnectionOff")}
+    >
       <form onSubmit={changeStatus}>
         <div className="autoDisable">
           <label htmlFor="autoDisable">{t("automaticConnectionOff")}</label>
@@ -52,6 +58,18 @@ const BulkAutoConnectionEdit = ({ bulkCustomer, show, setShow }) => {
             type="checkBox"
             checked={autoDisable}
             onChange={(e) => setAutoDisable(e.target.checked)}
+          />
+        </div>
+
+        <div className="autoDisable">
+          <label htmlFor="nextAutoDisable">
+            {t("nextMonth") + " " + t("automaticConnectionOff")}
+          </label>
+          <input
+            id="nextMonth"
+            type="checkBox"
+            checked={nextMonth}
+            onChange={(e) => setNextMonth(e.target.checked)}
           />
         </div>
 

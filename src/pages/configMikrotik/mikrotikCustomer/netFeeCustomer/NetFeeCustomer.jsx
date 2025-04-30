@@ -12,6 +12,8 @@ import { badge } from "../../../../components/common/Utils";
 import moment from "moment";
 import Table from "../../../../components/table/Table";
 import { ArchiveFill, ThreeDots } from "react-bootstrap-icons";
+import IndeterminateCheckbox from "../../../../components/table/bulkCheckbox";
+import BulkOptions from "../../../Customer/customerCRUD/bulkOpration/BulkOptions";
 
 const NetFeeCustomer = () => {
   const { t } = useTranslation();
@@ -23,6 +25,9 @@ const NetFeeCustomer = () => {
   // states
   const [isLoading, setIsLoading] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
+
+  //---> Bulk customer
+  const [bulkCustomers, setBulkCustomer] = useState([]);
 
   // get data from redux
   const allUsers = useSelector((state) => state.crossCustomer.netFeeCustomer);
@@ -43,6 +48,21 @@ const NetFeeCustomer = () => {
   // column for table
   const columns = useMemo(
     () => [
+      {
+        width: "2%",
+        id: "selection",
+        Header: ({ getToggleAllPageRowsSelectedProps }) => (
+          <IndeterminateCheckbox
+            customeStyle={true}
+            {...getToggleAllPageRowsSelectedProps()}
+          />
+        ),
+        Cell: ({ row }) => (
+          <div>
+            <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
+          </div>
+        ),
+      },
       {
         width: "8%",
         Header: t("id"),
@@ -133,6 +153,17 @@ const NetFeeCustomer = () => {
     [t]
   );
 
+  const bulkOptions = [
+    {
+      id: 12,
+      name: "customerDelete",
+      class: "bg-danger",
+      isVisiable: true,
+      icon: <i className="fas fa-trash-alt fa-xs" />,
+      value: "customerDelete",
+    },
+  ];
+
   useEffect(() => {
     // get data api call
     netFeeCustomerGet(mikrotikId, ispOwnerId, setIsLoading, dispatch);
@@ -147,10 +178,21 @@ const NetFeeCustomer = () => {
               isLoading={isLoading}
               columns={columns}
               data={allUsers}
+              bulkLength={bulkCustomers?.length}
+              bulkState={{
+                setBulkCustomer,
+              }}
             ></Table>
           </div>
         </div>
       </div>
+
+      {/* bulk options modal  */}
+      <BulkOptions
+        bulkCustomers={bulkCustomers}
+        pageOption={bulkOptions}
+        page="extra-user"
+      />
     </>
   );
 };
