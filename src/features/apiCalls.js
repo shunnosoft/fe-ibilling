@@ -191,7 +191,9 @@ import {
   deleteMikrotikCustomerSuccess,
   deleteNetFeeCustomerSuccess,
   getMikrotikCustomerSuccess,
+  getMikrotikStaticCustomerSuccess,
   getNetFeeCustomerSuccess,
+  getNetFeeStaticCustomerSuccess,
 } from "./customerCrossCheckSlice";
 import { updatePermissionSuccess } from "./adminNetFeeSupportSlice";
 import axios from "axios";
@@ -1820,6 +1822,7 @@ export const mikrotikTesting = async (IDs) => {
       );
     });
 };
+
 export const netFeeCustomerGet = async (
   mikrotikId,
   ispOwnerId,
@@ -1840,6 +1843,26 @@ export const netFeeCustomerGet = async (
   setIsLoading(false);
 };
 
+export const getNetFeeStaticCustomer = async (
+  mikrotikId,
+  ispOwnerId,
+  setIsLoading,
+  dispatch
+) => {
+  setIsLoading(true);
+  await apiLink({
+    method: "GET",
+    url: `/mikrotik/netFee/static/users/${ispOwnerId}/${mikrotikId}`,
+  })
+    .then((res) => {
+      dispatch(getNetFeeStaticCustomerSuccess(res.data));
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  setIsLoading(false);
+};
+
 export const getExtraMikrotikCustomers = async (
   mikrotikId,
   ispOwnerId,
@@ -1853,6 +1876,26 @@ export const getExtraMikrotikCustomers = async (
   })
     .then((res) => {
       dispatch(getMikrotikCustomerSuccess(res.data));
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  setIsLoading(false);
+};
+
+export const getStaticExtraMikrotikCustomers = async (
+  mikrotikId,
+  ispOwnerId,
+  setIsLoading,
+  dispatch
+) => {
+  setIsLoading(true);
+  await apiLink({
+    method: "GET",
+    url: `/mikrotik/extra/static/users/${ispOwnerId}/${mikrotikId}`,
+  })
+    .then((res) => {
+      dispatch(getMikrotikStaticCustomerSuccess(res.data));
     })
     .catch((error) => {
       console.log(error);

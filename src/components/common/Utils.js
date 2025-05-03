@@ -59,6 +59,7 @@ const addClass = {
   manager: "primary",
   collector: "primary",
   reseller: "primary",
+  customer: "primary",
 
   CREATE: "info",
   UPDATE: "success",

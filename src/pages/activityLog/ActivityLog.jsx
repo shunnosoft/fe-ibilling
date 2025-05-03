@@ -129,12 +129,18 @@ const ActivityLog = () => {
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        width: "25%",
+        width: "30%",
         Header: t("description"),
         accessor: "description",
       },
       {
-        width: "15%",
+        width: "10%",
+        Header: t("module"),
+        accessor: "module",
+        Cell: ({ cell: { value } }) => <p>{badge(value.toLowerCase())}</p>,
+      },
+      {
+        width: "10%",
         Header: t("ipAddress"),
         accessor: "ipAddress",
         Cell: ({ value }) => {
@@ -143,13 +149,13 @@ const ActivityLog = () => {
         },
       },
       {
-        width: "15%",
+        width: "10%",
         Header: t("role"),
         accessor: "role",
         Cell: ({ cell: { value } }) => <p>{badge(value)}</p>,
       },
       {
-        width: "15%",
+        width: "10%",
         Header: t("action"),
         accessor: "action",
         Cell: ({ cell: { value } }) => <p>{badge(value)}</p>,

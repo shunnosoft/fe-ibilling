@@ -4,7 +4,9 @@ const customerCrossCheckSlice = createSlice({
   name: "customer",
   initialState: {
     netFeeCustomer: [],
+    netFeeStaticCustomer: [],
     mikrotikCustomer: [],
+    mikrotikStaticCustomer: [],
   },
   reducers: {
     getNetFeeCustomerSuccess: (state, { payload }) => {
@@ -27,6 +29,14 @@ const customerCrossCheckSlice = createSlice({
         1
       );
     },
+
+    getNetFeeStaticCustomerSuccess: (state, { payload }) => {
+      state.netFeeStaticCustomer = payload;
+    },
+
+    getMikrotikStaticCustomerSuccess: (state, { payload }) => {
+      state.mikrotikStaticCustomer = payload;
+    },
   },
 });
 
@@ -35,5 +45,7 @@ export const {
   getMikrotikCustomerSuccess,
   deleteNetFeeCustomerSuccess,
   deleteMikrotikCustomerSuccess,
+  getNetFeeStaticCustomerSuccess,
+  getMikrotikStaticCustomerSuccess,
 } = customerCrossCheckSlice.actions;
 export default customerCrossCheckSlice.reducer;

@@ -40,7 +40,7 @@ const Customers = () => {
                 </div>
               </FourGround>
               <FourGround>
-                <Tabs id="uncontrolled-tab-example" className="mb-3">
+                <Tabs id="uncontrolled-tab-example" className="mt-2 p-2">
                   <Tab eventKey="allUsers" title={t("allUsers")}>
                     <AllCustomer />
                   </Tab>

@@ -123,14 +123,14 @@ const Mikrotik = () => {
               {t("configure")} <ArrowRightShort style={{ fontSize: "19px" }} />
             </Link>
 
-            {bpSettings.customerType.includes("pppoe") && (
-              <Link
-                to={`/mikrotik/customer/${original.ispOwner}/${original.id}`}
-                className="mikrotikConfigureButtom ms-1 bg-secondary"
-              >
-                <PersonDash />
-              </Link>
-            )}
+            {/* {bpSettings.customerType.includes("pppoe") && ( */}
+            <Link
+              to={`/mikrotik/customer/${original.ispOwner}/${original.id}`}
+              className="mikrotikConfigureButtom ms-1 bg-secondary"
+            >
+              <PersonDash />
+            </Link>
+            {/* )} */}
 
             <button
               title={t("checkConnection")}
