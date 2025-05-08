@@ -243,9 +243,11 @@ const NetFeeCustomer = () => {
 
   useEffect(() => {
     // get data api call
-    netFeeCustomerGet(mikrotikId, ispOwnerId, setIsLoading, dispatch);
+    bpSettings?.customerType.includes("pppoe") &&
+      netFeeCustomerGet(mikrotikId, ispOwnerId, setIsLoading, dispatch);
 
-    getNetFeeStaticCustomer(mikrotikId, ispOwnerId, setIsLoading, dispatch);
+    bpSettings?.customerType.includes("static") &&
+      getNetFeeStaticCustomer(mikrotikId, ispOwnerId, setIsLoading, dispatch);
   }, [mikrotikId]);
 
   return (

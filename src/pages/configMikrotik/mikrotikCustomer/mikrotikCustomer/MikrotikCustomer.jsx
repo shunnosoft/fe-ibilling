@@ -190,14 +190,16 @@ const MikrotikCustomer = () => {
 
   useEffect(() => {
     // get data api call
-    getExtraMikrotikCustomers(mikrotikId, ispOwnerId, setIsLoading, dispatch);
+    bpSettings?.customerType.includes("pppoe") &&
+      getExtraMikrotikCustomers(mikrotikId, ispOwnerId, setIsLoading, dispatch);
 
-    getStaticExtraMikrotikCustomers(
-      mikrotikId,
-      ispOwnerId,
-      setIsLoading,
-      dispatch
-    );
+    bpSettings?.customerType.includes("static") &&
+      getStaticExtraMikrotikCustomers(
+        mikrotikId,
+        ispOwnerId,
+        setIsLoading,
+        dispatch
+      );
   }, [mikrotikId]);
 
   return (

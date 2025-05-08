@@ -41,9 +41,9 @@ const Customers = () => {
               </FourGround>
               <FourGround>
                 <Tabs id="uncontrolled-tab-example" className="mt-2 p-2">
-                  <Tab eventKey="allUsers" title={t("allUsers")}>
+                  {/* <Tab eventKey="allUsers" title={t("allUsers")}>
                     <AllCustomer />
-                  </Tab>
+                  </Tab> */}
                   <Tab eventKey="extraNetFeeUsers" title={t("extraNetFeeUser")}>
                     <NetFeeCustomer />
                   </Tab>
