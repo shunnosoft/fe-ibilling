@@ -102,7 +102,7 @@ const customerBillReportPDFwithNote = React.forwardRef((props, ref) => {
                   <tr>
                     <th>{t("billingCycle")}</th>
                     <td>
-                      {moment(billingData?.currentState.billingCycle).format(
+                      {moment(billingData?.currentState?.billingCycle).format(
                         "MMM DD YYYY"
                       )}
                     </td>
@@ -110,7 +110,9 @@ const customerBillReportPDFwithNote = React.forwardRef((props, ref) => {
                   <tr>
                     <th>{t("promiseDate")}</th>
                     <td>
-                      {moment(billingData?.promiseDate).format("MMM DD YYYY")}
+                      {moment(billingData?.currentState?.promiseDate).format(
+                        "MMM DD YYYY"
+                      )}
                     </td>
                   </tr>
                 </tbody>
@@ -232,7 +234,7 @@ const customerBillReportPDFwithNote = React.forwardRef((props, ref) => {
                 <tr>
                   <th>{t("billingCycle")}</th>
                   <td>
-                    {moment(billingData?.currentState.billingCycle).format(
+                    {moment(billingData?.currentState?.billingCycle).format(
                       "MMM DD YYYY"
                     )}
                   </td>
@@ -240,7 +242,9 @@ const customerBillReportPDFwithNote = React.forwardRef((props, ref) => {
                 <tr>
                   <th>{t("promiseDate")}</th>
                   <td>
-                    {moment(billingData?.promiseDate).format("MMM DD YYYY")}
+                    {moment(billingData?.currentState?.promiseDate).format(
+                      "MMM DD YYYY"
+                    )}
                   </td>
                 </tr>
               </tbody>

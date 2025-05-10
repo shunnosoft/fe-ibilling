@@ -124,6 +124,7 @@ import Tutorial from "./pages/tutorial/Tutorial";
 import Diagram from "./pages/network/diagram/Diagram";
 import Device from "./pages/network/device/Device";
 import UserActivityLog from "./pages/activityLog/UserActivityLog";
+import OLT from "./pages/olt/OLT";
 
 function App() {
   const [theme, setTheme] = useState("light");
@@ -612,6 +613,9 @@ function App() {
                 )
               }
             />
+
+            {/* OLT Route */}
+            <Route path="olt" element={<OLT />} />
 
             {/* network diagram */}
             <Route

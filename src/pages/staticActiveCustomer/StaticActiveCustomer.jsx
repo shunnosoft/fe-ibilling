@@ -20,6 +20,7 @@ import {
   ArrowClockwise,
   FileExcelFill,
   FilterCircle,
+  HddNetworkFill,
   PrinterFill,
   Router,
   Server,
@@ -42,6 +43,7 @@ import { badge } from "../../components/common/Utils";
 import useISPowner from "../../hooks/useISPOwner";
 import useSelectorState from "../../hooks/useSelectorState";
 import BandwidthModal from "../Customer/BandwidthModal";
+import ONUDetails from "../activeustomer/ONUDetails";
 
 const StaticActiveCustomer = () => {
   const { t } = useTranslation();
@@ -98,6 +100,11 @@ const StaticActiveCustomer = () => {
   // customer id state
   const [bandWidthCustomerData, setBandWidthCustomerData] = useState();
   const [show, setShow] = useState(false);
+
+  // modal show state
+  const [modalStatus, setModalStatus] = useState("");
+
+  const [customer, setCustomer] = useState({});
 
   //================// API CALL's //================//
   useEffect(() => {
@@ -322,6 +329,26 @@ const StaticActiveCustomer = () => {
                       </div>
                     </li>
                   )}
+
+                  {bpSettings?.hasMikrotik &&
+                    bpSettings?.hasOLT &&
+                    original?.running === true && (
+                      <li
+                        onClick={() => {
+                          setCustomer(original);
+                          setModalStatus("onuDetails");
+                          setShow(true);
+                        }}
+                      >
+                        <div className="dropdown-item">
+                          <div className="customerAction">
+                            <HddNetworkFill />
+                            <p className="actionP">{t("onuLaser")}</p>
+                          </div>
+                        </div>
+                      </li>
+                    )}
+
                   {/* {(role === "ispOwner" || role === "manager") &&
                     bpSettings?.hasMikrotik && (
                       <li onClick={() => macBindingCall(original)}>
@@ -678,6 +705,11 @@ const StaticActiveCustomer = () => {
         setModalShow={setShow}
         customer={{ ...bandWidthCustomerData, page: "Static" }}
       />
+
+      {/* Customer ONU Information Dialog */}
+      {modalStatus === "onuDetails" && (
+        <ONUDetails {...{ show, setShow, customer }} />
+      )}
     </>
   );
 };

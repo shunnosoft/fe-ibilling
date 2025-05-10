@@ -44,6 +44,7 @@ import {
   BroadcastPin,
   Diagram3Fill,
   ClockHistory,
+  HddFill,
 } from "react-bootstrap-icons";
 import { NavLink } from "react-router-dom";
 import activeClass from "../../../assets/css/active.module.css";
@@ -269,6 +270,29 @@ export default function Sidebar() {
                         <span className="sidebarLinksName">
                           {t("mikrotik")}
                         </span>
+                      </li>
+                    </FontColor>
+                  </NavLink>
+                ) : (
+                  ""
+                )}
+
+                {["ispOwner", "manager"].includes(role) &&
+                ispOwnerData?.bpSettings?.hasMikrotik ? (
+                  <NavLink
+                    key={29}
+                    to={"/olt"}
+                    className={(navInfo) =>
+                      navInfo.isActive ? activeClass.active : ""
+                    }
+                  >
+                    <FontColor>
+                      <li
+                        className="sidebarItems"
+                        id={window.location.pathname === "/olt" ? "active" : ""}
+                      >
+                        <div className="sidebarIcon">{<HddFill />}</div>
+                        <span className="sidebarLinksName">{t("olt")}</span>
                       </li>
                     </FontColor>
                   </NavLink>

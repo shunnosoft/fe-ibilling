@@ -15,6 +15,7 @@ import {
   PrinterFill,
   ArrowBarLeft,
   ArrowBarRight,
+  HddNetworkFill,
 } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -53,7 +54,7 @@ import useISPowner from "../../hooks/useISPOwner";
 import { btrcHeader, newBTRCReport } from "../common/btrcReport";
 import { badge } from "../../components/common/Utils";
 import useSelectorState from "../../hooks/useSelectorState";
-import axios from "axios";
+import ONUDetails from "./ONUDetails";
 
 export default function ConfigMikrotik() {
   const { t } = useTranslation();
@@ -126,6 +127,8 @@ export default function ConfigMikrotik() {
 
   //set customer type bulk oparation
   const [customerType, setCustomerType] = useState();
+
+  const [customer, setCustomer] = useState({});
 
   // find single mikrotik details
   const singleMik = mikrotiks.find((item) => item.id === mikrotikId);
@@ -506,6 +509,25 @@ export default function ConfigMikrotik() {
                       </div>
                     </li>
                   )}
+
+                  {bpSettings?.hasMikrotik &&
+                    bpSettings?.hasOLT &&
+                    original?.running === true && (
+                      <li
+                        onClick={() => {
+                          setCustomer(original);
+                          setModalStatus("onuDetails");
+                          setShow(true);
+                        }}
+                      >
+                        <div className="dropdown-item">
+                          <div className="customerAction">
+                            <HddNetworkFill />
+                            <p className="actionP">{t("onuLaser")}</p>
+                          </div>
+                        </div>
+                      </li>
+                    )}
 
                   {(role === "ispOwner" || role === "manager") &&
                     bpSettings?.hasMikrotik &&
@@ -902,6 +924,11 @@ export default function ConfigMikrotik() {
         modalShow={bandWidthModal}
         customer={{ ...bandWidthCustomerData, page: "PPPoE" }}
       />
+
+      {/* Customer ONU Information Dialog */}
+      {modalStatus === "onuDetails" && (
+        <ONUDetails {...{ show, setShow, customer }} />
+      )}
     </>
   );
 }

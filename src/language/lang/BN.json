@@ -1017,5 +1017,22 @@
   "billingCycleUpdate": "বিলিং সাইকেল আপডেট",
   "promiseDateUpdate": "প্রমিজ ডেট আপডেট",
   "deleteFormSoftware": "সফটওয়্যার থেকে মুছুন",
-  "upDown": "আপ/ডাউন"
+  "upDown": "আপ/ডাউন",
+  "createOLT": "ওএলটি তৈরি করুন",
+  "ponPort": "পন পোর্ট",
+  "oltUserName": "ওএলটি ব্যবহারকারীর নাম",
+  "oltName": "ওএলটির নাম",
+  "oltPort": "ওএলটির পোর্ট",
+  "oltUserPassword": "ওএলটির পাসওয়ার্ড",
+  "oltIp": "ওএলটি আইপি",
+  "pon": "পন",
+  "vendor": "ভেন্ডর",
+  "selectOLTVendor": "ওএলটি ভেন্ডর নির্বাচন করুন",
+  "onuLaser": "অনু লেজার",
+  "onuId": "অনু আইডি",
+  "rxPower": "আরএক্স পাওয়ার (ডিবিএম)",
+  "txPower": "টিএক্স আরএক্স পাওয়ার (ডিবিএম)",
+  "temperature": "তাপমাত্রা (°সে)",
+  "vlan": "ভিলেন",
+  "voltage": "ভোল্টেজ"
 }

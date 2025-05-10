@@ -71,6 +71,7 @@ const DetailsForm = ({ setShow, ispOwner }) => {
     customerLimit: Yup.string().required("কাস্টমার লিমিট দিন"),
     packageRate: Yup.string().required("প্যাকেজ রেট দিন"),
     hasMikrotik: Yup.string(),
+    hasOLT: Yup.string(),
     inventory: Yup.string(),
     executeBillingCycle: Yup.string(),
     hasWebHook: Yup.string(),
@@ -96,6 +97,7 @@ const DetailsForm = ({ setShow, ispOwner }) => {
       packageRate: ispOwner?.bpSettings?.packageRate,
       customerLimit: ispOwner?.bpSettings?.customerLimit,
       hasMikrotik: ispOwner?.bpSettings?.hasMikrotik,
+      hasOLT: ispOwner?.bpSettings?.hasOLT,
       inventory: ispOwner?.bpSettings?.inventory,
       executeBillingCycle: ispOwner?.bpSettings?.executeBillingCycle,
       hasWebHook: ispOwner?.bpSettings?.hasWebHook,
@@ -126,6 +128,7 @@ const DetailsForm = ({ setShow, ispOwner }) => {
         pack: values.pack,
         queueType: values.queueType,
         hasMikrotik: values.hasMikrotik,
+        hasOLT: values.hasOLT,
         inventory: values.inventory,
         monthlyDueDate: billDate,
         executeBillingCycle: values.executeBillingCycle,
@@ -513,7 +516,7 @@ const DetailsForm = ({ setShow, ispOwner }) => {
             </div>
 
             <div>
-              <lable>Has Modul</lable>
+              <label>Has Module</label>
               <div className="displayGrid3 mt-0">
                 <div className="form-check ">
                   <Field
@@ -524,6 +527,21 @@ const DetailsForm = ({ setShow, ispOwner }) => {
                   />
                   <label className="form-check-label" for="flexCheckChecked">
                     Mikrotik
+                  </label>
+                </div>
+
+                <div className="form-check ">
+                  <Field
+                    className="form-check-input"
+                    type="checkbox"
+                    id="hasOLT"
+                    name="hasOLT"
+                  />
+                  <label
+                    className="form-check-label"
+                    for="hasOLT"
+                  >
+                    OLT
                   </label>
                 </div>
 

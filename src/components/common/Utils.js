@@ -68,6 +68,9 @@ const addClass = {
   RECHARGE: "success",
   accept: "success",
   drop: "danger",
+
+  online: "success",
+  offline: "secondary",
 };
 
 export const badge = (item) => {

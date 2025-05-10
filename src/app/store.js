@@ -3,6 +3,7 @@ import authReducer from "../features/authSlice";
 import customerSlice from "../features/customerSlice";
 import areaSlice from "../features/areaSlice";
 import mikrotikSlice from "../features/mikrotikSlice";
+import oltSlice from "../features/olt.Slice";
 import resellerSlice from "../features/resellerSlice";
 import collectorSlice from "../features/collectorSlice";
 import paymentSlice from "../features/paymentSlice";
@@ -62,6 +63,7 @@ const store = configureStore({
     customer: customerSlice,
     area: areaSlice,
     mikrotik: mikrotikSlice,
+    olt: oltSlice,
     reseller: resellerSlice,
     collector: collectorSlice,
     manager: managerSlice,

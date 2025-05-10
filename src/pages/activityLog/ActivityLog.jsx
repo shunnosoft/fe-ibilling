@@ -237,6 +237,10 @@ const ActivityLog = () => {
           text: t("delete"),
           value: "DELETE",
         },
+        {
+          text: t("recharge"),
+          value: "RECHARGE",
+        },
       ],
       firstOptions: t("action"),
       textAccessor: "text",
