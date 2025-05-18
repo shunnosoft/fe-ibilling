@@ -149,212 +149,210 @@ const StaffAssignTicketSMSTemplate = () => {
   };
 
   return (
-    <>
-      <div className="py-4">
-        <div className="writeMessageSection">
-          <div className="messageStatus d-flex justify-content-between">
-            <div className="sending-status">
-              <h4> {t("assingTicketTemplate")} </h4>
-              <div className="displayGrid1 mb-3">
-                <div className="message_radio">
-                  <input
-                    type="radio"
-                    name="customerAssignTicket"
-                    id="templateON_14"
-                    checked={assignTicketStatus}
-                    onChange={() => setAssignTicketStatus(true)}
-                  />
-                  <label htmlFor="templateON_14">{t("ON")}</label>
-                </div>
-
-                <div className="message_radio">
-                  <input
-                    type="radio"
-                    name="customerAssignTicket"
-                    id="templateOFF_14"
-                    checked={!assignTicketStatus}
-                    onChange={() => setAssignTicketStatus(false)}
-                  />
-                  <label htmlFor="templateOFF_14">{t("OFF")}</label>
-                </div>
+    <div>
+      <div className="writeMessageSection">
+        <div className="messageStatus d-flex justify-content-between">
+          <div className="sending-status">
+            <h4> {t("assingTicketTemplate")} </h4>
+            <div className="displayGrid1 mb-3">
+              <div className="message_radio">
+                <input
+                  type="radio"
+                  name="customerAssignTicket"
+                  id="templateON_14"
+                  checked={assignTicketStatus}
+                  onChange={() => setAssignTicketStatus(true)}
+                />
+                <label htmlFor="templateON_14">{t("ON")}</label>
               </div>
 
-              <div>
+              <div className="message_radio">
                 <input
-                  value={fontText}
-                  onChange={(event) => setFontText(event.target.value)}
-                  className="form-control"
-                  type="text"
-                  placeholder="Title"
-                  maxLength={40}
+                  type="radio"
+                  name="customerAssignTicket"
+                  id="templateOFF_14"
+                  checked={!assignTicketStatus}
+                  onChange={() => setAssignTicketStatus(false)}
                 />
+                <label htmlFor="templateOFF_14">{t("OFF")}</label>
               </div>
             </div>
-            <div className="message-sending-type">
-              <h4> {t("sendingMessageType")} </h4>
-              <div className="smsType">
-                <div className="message_radio">
-                  <input
-                    type="radio"
-                    id="non_Masking_14"
-                    checked={sendingType === "nonMasking"}
-                    value={"nonMasking"}
-                    onChange={(event) => setSendingType(event.target.value)}
-                  />
 
-                  <label htmlFor="non_Masking_14"> {t("nonMasking")}</label>
-                </div>
-
-                <div className="message_radio">
-                  <input
-                    type="radio"
-                    id="_masking_14"
-                    checked={sendingType === "masking"}
-                    value={"masking"}
-                    onChange={(event) => setSendingType(event.target.value)}
-                  />
-
-                  <label htmlFor="_masking_14"> {t("masking")}</label>
-                </div>
-
-                <div className="message_radio">
-                  <input
-                    type="radio"
-                    id="fixed_Number_14"
-                    checked={sendingType === "fixedNumber"}
-                    value={"fixedNumber"}
-                    onChange={(event) => setSendingType(event.target.value)}
-                  />
-
-                  <label htmlFor="fixed_Number_14"> {t("fixedNumber")}</label>
-                </div>
-              </div>
+            <div>
+              <input
+                value={fontText}
+                onChange={(event) => setFontText(event.target.value)}
+                className="form-control"
+                type="text"
+                placeholder="Title"
+                maxLength={40}
+              />
             </div>
           </div>
-
-          <div className="billconfirm">
-            <div className="showthesequence">
-              <p className="endingText">{fontText}</p>
-              {matchFound.map((item, key) => {
-                return <p key={key}>{item}</p>;
-              })}
-              <p className="endingtext">{bottomText}</p>
-            </div>
-
-            <div className="displayGrid mt-3">
-              {hasMikrotik && (
-                <div className="checkboxSelect">
-                  <input
-                    id="user_Name_14"
-                    type="checkbox"
-                    className="getValueUsingClass"
-                    value={"USER: USERNAME"}
-                    checked={matchFound.includes("USER: USERNAME")}
-                    onChange={(e) => {
-                      itemSettingHandler(e.target.value);
-                    }}
-                  />
-                  <label className="templatelabel" htmlFor="user_Name_14">
-                    {"USER: USERNAME"}
-                  </label>
-                </div>
-              )}
-
-              <div className="checkboxSelect">
+          <div className="message-sending-type">
+            <h4> {t("sendingMessageType")} </h4>
+            <div className="smsType">
+              <div className="message_radio">
                 <input
-                  id="customer_Id_14"
-                  type="checkbox"
-                  className="getValueUsingClass"
-                  checked={matchFound.includes("ID: CUSTOMER_ID")}
-                  value={"ID: CUSTOMER_ID"}
-                  onChange={(e) => {
-                    itemSettingHandler(e.target.value);
-                  }}
+                  type="radio"
+                  id="non_Masking_14"
+                  checked={sendingType === "nonMasking"}
+                  value={"nonMasking"}
+                  onChange={(event) => setSendingType(event.target.value)}
                 />
-                <label className="templatelabel" htmlFor="customer_Id_14">
-                  {"ID: CUSTOMER_ID"}
-                </label>
+
+                <label htmlFor="non_Masking_14"> {t("nonMasking")}</label>
               </div>
 
-              <div className="checkboxSelect">
+              <div className="message_radio">
                 <input
-                  id="customer_Name_14"
-                  type="checkbox"
-                  className="getValueUsingClass"
-                  checked={matchFound.includes("NAME: CUSTOMER_NAME")}
-                  value={"NAME: CUSTOMER_NAME"}
-                  onChange={(e) => {
-                    itemSettingHandler(e.target.value);
-                  }}
+                  type="radio"
+                  id="_masking_14"
+                  checked={sendingType === "masking"}
+                  value={"masking"}
+                  onChange={(event) => setSendingType(event.target.value)}
                 />
-                <label className="templatelabel" htmlFor="customer_Name_14">
-                  {"NAME: CUSTOMER_NAME"}
-                </label>
+
+                <label htmlFor="_masking_14"> {t("masking")}</label>
               </div>
 
-              <div className="checkboxSelect">
+              <div className="message_radio">
                 <input
-                  id="ticket_Id_14"
-                  type="checkbox"
-                  className="getValueUsingClass"
-                  value={"TICKET ID: TICKET_ID"}
-                  checked={matchFound.includes("TICKET ID: TICKET_ID")}
-                  onChange={(e) => {
-                    itemSettingHandler(e.target.value);
-                  }}
+                  type="radio"
+                  id="fixed_Number_14"
+                  checked={sendingType === "fixedNumber"}
+                  value={"fixedNumber"}
+                  onChange={(event) => setSendingType(event.target.value)}
                 />
-                <label className="templatelabel" htmlFor="ticket_Id_14">
-                  {"TICKET ID: TICKET_ID"}
-                </label>
-              </div>
 
-              <div className="checkboxSelect">
-                <input
-                  id="ticket_Sub_14"
-                  type="checkbox"
-                  className="getValueUsingClass"
-                  value={"SUB: TICKET_SUBJECT"}
-                  checked={matchFound.includes("SUB: TICKET_SUBJECT")}
-                  onChange={(e) => {
-                    itemSettingHandler(e.target.value);
-                  }}
-                />
-                <label className="templatelabel" htmlFor="ticket_Sub_14">
-                  {"SUB: TICKET_SUBJECT"}
-                </label>
+                <label htmlFor="fixed_Number_14"> {t("fixedNumber")}</label>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="smsCount">
-          <span className="smsLength">
-            {t("letter")}
-            {(fontText + matchFound + bottomText).length}
-          </span>
-          <span>SMS: {smsCount(fontText + matchFound + bottomText)}</span>
+        <div className="billconfirm">
+          <div className="showthesequence">
+            <p className="endingText">{fontText}</p>
+            {matchFound.map((item, key) => {
+              return <p key={key}>{item}</p>;
+            })}
+            <p className="endingtext">{bottomText}</p>
+          </div>
+
+          <div className="displayGrid mt-3">
+            {hasMikrotik && (
+              <div className="checkboxSelect">
+                <input
+                  id="user_Name_14"
+                  type="checkbox"
+                  className="getValueUsingClass"
+                  value={"USER: USERNAME"}
+                  checked={matchFound.includes("USER: USERNAME")}
+                  onChange={(e) => {
+                    itemSettingHandler(e.target.value);
+                  }}
+                />
+                <label className="templatelabel" htmlFor="user_Name_14">
+                  {"USER: USERNAME"}
+                </label>
+              </div>
+            )}
+
+            <div className="checkboxSelect">
+              <input
+                id="customer_Id_14"
+                type="checkbox"
+                className="getValueUsingClass"
+                checked={matchFound.includes("ID: CUSTOMER_ID")}
+                value={"ID: CUSTOMER_ID"}
+                onChange={(e) => {
+                  itemSettingHandler(e.target.value);
+                }}
+              />
+              <label className="templatelabel" htmlFor="customer_Id_14">
+                {"ID: CUSTOMER_ID"}
+              </label>
+            </div>
+
+            <div className="checkboxSelect">
+              <input
+                id="customer_Name_14"
+                type="checkbox"
+                className="getValueUsingClass"
+                checked={matchFound.includes("NAME: CUSTOMER_NAME")}
+                value={"NAME: CUSTOMER_NAME"}
+                onChange={(e) => {
+                  itemSettingHandler(e.target.value);
+                }}
+              />
+              <label className="templatelabel" htmlFor="customer_Name_14">
+                {"NAME: CUSTOMER_NAME"}
+              </label>
+            </div>
+
+            <div className="checkboxSelect">
+              <input
+                id="ticket_Id_14"
+                type="checkbox"
+                className="getValueUsingClass"
+                value={"TICKET ID: TICKET_ID"}
+                checked={matchFound.includes("TICKET ID: TICKET_ID")}
+                onChange={(e) => {
+                  itemSettingHandler(e.target.value);
+                }}
+              />
+              <label className="templatelabel" htmlFor="ticket_Id_14">
+                {"TICKET ID: TICKET_ID"}
+              </label>
+            </div>
+
+            <div className="checkboxSelect">
+              <input
+                id="ticket_Sub_14"
+                type="checkbox"
+                className="getValueUsingClass"
+                value={"SUB: TICKET_SUBJECT"}
+                checked={matchFound.includes("SUB: TICKET_SUBJECT")}
+                onChange={(e) => {
+                  itemSettingHandler(e.target.value);
+                }}
+              />
+              <label className="templatelabel" htmlFor="ticket_Sub_14">
+                {"SUB: TICKET_SUBJECT"}
+              </label>
+            </div>
+          </div>
         </div>
-
-        <textarea
-          id="messageTextArea"
-          rows="6"
-          className="form-control mt-2"
-          placeholder={t("messageLikhun")}
-          ref={textRef}
-          value={bottomText}
-          maxLength={335 - upperText.length}
-          onChange={(e) => setBottomText(e.target.value)}
-        ></textarea>
-
-        <button
-          type="submit"
-          onClick={handleSubmit}
-          className="btn btn-success mt-4"
-        >
-          {loading ? <Loader /> : t("save")}
-        </button>
       </div>
-    </>
+
+      <div className="smsCount">
+        <span className="smsLength">
+          {t("letter")}
+          {(fontText + matchFound + bottomText).length}
+        </span>
+        <span>SMS: {smsCount(fontText + matchFound + bottomText)}</span>
+      </div>
+
+      <textarea
+        id="messageTextArea"
+        rows="6"
+        className="form-control mt-2"
+        placeholder={t("messageLikhun")}
+        ref={textRef}
+        value={bottomText}
+        maxLength={335 - upperText.length}
+        onChange={(e) => setBottomText(e.target.value)}
+      ></textarea>
+
+      <button
+        type="submit"
+        onClick={handleSubmit}
+        className="btn btn-success mt-4"
+      >
+        {loading ? <Loader /> : t("save")}
+      </button>
+    </div>
   );
 };
 

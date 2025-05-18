@@ -55,8 +55,9 @@ const ActivityLog = () => {
   //---> Reseller id from role base
   const resellerId = role === "collector" ? userData.reseller : userData.id;
 
-  // initial loading state
+  // initial loading ste
   const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [show, setShow] = useState(false);
 
   // initial comment id state
@@ -67,7 +68,7 @@ const ActivityLog = () => {
   const [activeKeys, setActiveKeys] = useState("");
 
   // get all data from redux
-  const data = useSelector((state) => state?.activityLog?.activityLog);
+  const data = useSelector((state) => state?.activityLog.activityLog);
 
   // get user staff data from redux store
   const staffs = useSelector((state) =>
@@ -80,16 +81,16 @@ const ActivityLog = () => {
 
     if (adminUser) {
       //---> @Get ispOwner areas data
-      !areas?.length && getArea(dispatch, ispOwnerId, setIsLoading);
+      !areas?.length && getArea(dispatch, ispOwnerId, setLoading);
 
       //---> @Get ispOwner areas sub-area data
       !subAreas.length && getSubAreasApi(dispatch, ispOwnerId);
 
       //---> @Get ispOwner mikrotiks data
-      !mikrotiks?.length && fetchMikrotik(dispatch, ispOwnerId, setIsLoading);
+      !mikrotiks?.length && fetchMikrotik(dispatch, ispOwnerId, setLoading);
 
       //---> @Get ispOwner all mikrotik packages data
-      !allPackages.length && getAllPackages(dispatch, ispOwnerId, setIsLoading);
+      !allPackages.length && getAllPackages(dispatch, ispOwnerId, setLoading);
 
       //---> @Get ispOwner user data
       !ownerUsers?.length && getOwnerUsers(dispatch, ispOwnerId);

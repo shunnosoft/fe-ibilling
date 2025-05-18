@@ -7,35 +7,52 @@ import * as Yup from "yup";
 import Loader from "../../components/common/Loader";
 import { createOLT, updateOLT } from "../../features/oltApi";
 import useISPowner from "../../hooks/useISPOwner";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const DEFAULT_VALUE = {
+  mikrotik: "",
   oltVendor: "",
   name: "",
-  ponPort: 1,
+  ponPort: "",
   username: "",
   password: "",
   host: "",
-  port: null,
+  port: "",
 };
 
 const OLTDialog = ({ show, setShow, isUpdate, oltInformation }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
-  // get user & current user data form useISPOwner
+  //---> Get user & current user data form useISPOwner hooks
   const { ispOwnerId, bpSettings } = useISPowner();
 
   //---> OLT Form Data Validation Schema
   const oltValidator = Yup.object({
-    oltVendor: Yup.string().required(t("enterOltVendor")),
-    name: Yup.string().required(t("enterOltName")),
-    ponPort: Yup.number(),
-    username: Yup.string().required(t("enterUsername")),
-    password: Yup.string().required(t("enterPassword")),
-    host: Yup.string().required(t("enterHost")),
-    port: Yup.number().required(t("enterPort")),
+    mikrotik: Yup.string().required(t("mikrotik") + " " + t("requiredField")),
+    oltVendor: Yup.string().required(t("oltVendor") + " " + t("requiredField")),
+    name: Yup.string().required(t("name") + " " + t("requiredField")),
+    ponPort: Yup.number()
+      .transform((value, originalValue) => {
+        return originalValue === "" ? undefined : Number(originalValue);
+      })
+      .max(32, `${t("ponPort")} ${t("mustLessThanEqual")} 32`)
+      .when("oltVendor", {
+        is: "cdata",
+        then: (schema) =>
+          schema.required(
+            `${t("ponPort")} ${t("requiredField")} ${t("mustLessThanEqual")} 32`
+          ),
+        otherwise: (schema) => schema.notRequired(),
+      }),
+    username: Yup.string().required(t("userName") + " " + t("requiredField")),
+    password: Yup.string().required(t("password") + " " + t("requiredField")),
+    host: Yup.string().required(t("ip") + " " + t("requiredField")),
+    port: Yup.number().required(t("port") + " " + t("requiredField")),
   });
+
+  //---> Get ispOwner mikrotik from redux store
+  const mikrotiks = useSelector((state) => state?.mikrotik?.mikrotik);
 
   //---> Local State
   const [defaultValues, setDefaultValue] = useState(DEFAULT_VALUE);
@@ -50,6 +67,20 @@ const OLTDialog = ({ show, setShow, isUpdate, oltInformation }) => {
 
   const inputOptions = [
     {
+      name: "mikrotik",
+      as: "select",
+      type: "select",
+      id: "mikrotik",
+      isVisible: true,
+      disabled: false,
+      validation: true,
+      label: t("selectMikrotik"),
+      firstOptions: t("selectMikrotik"),
+      textAccessor: "name",
+      valueAccessor: "id",
+      options: mikrotiks,
+    },
+    {
       name: "oltVendor",
       as: "select",
       type: "select",
@@ -63,12 +94,24 @@ const OLTDialog = ({ show, setShow, isUpdate, oltInformation }) => {
       valueAccessor: "value",
       options: [
         {
-          label: "Vsol",
-          value: "vsol",
+          label: "V.Sole EPon",
+          value: "vSole_ePon",
+        },
+        {
+          label: "V.Sole GPon",
+          value: "vSole_gPon",
         },
         {
           label: "CData",
-          value: "cdata",
+          value: "cData",
+        },
+        {
+          label: "BDCom",
+          value: "bdCom",
+        },
+        {
+          label: "ECom",
+          value: "eCom",
         },
       ],
     },
@@ -83,12 +126,38 @@ const OLTDialog = ({ show, setShow, isUpdate, oltInformation }) => {
     },
     {
       name: "ponPort",
-      type: "number",
+      as: "select",
+      type: "select",
       id: "ponPort",
       isVisible: true,
       disabled: false,
       validation: true,
       label: t("ponPort"),
+      firstOptions: t("selectPonPort"),
+      textAccessor: "label",
+      valueAccessor: "value",
+      options: [
+        {
+          label: "2",
+          value: "2",
+        },
+        {
+          label: "4",
+          value: "4",
+        },
+        {
+          label: "8",
+          value: "8",
+        },
+        {
+          label: "16",
+          value: "16",
+        },
+        {
+          label: "32",
+          value: "32",
+        },
+      ],
     },
     {
       name: "username",

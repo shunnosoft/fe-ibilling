@@ -187,13 +187,18 @@ const Inactive = ({
         accessor: (data) => `${data?.mobile} ${data?.address}`,
         Cell: ({ row: { original } }) => (
           <div>
-            <p style={{ fontWeight: "500" }}>
-              <Phone className="text-info" /> {original?.mobile || "N/A"}
-            </p>
-            <p>
-              <GeoAlt />
-              {original?.address || "N/A"}
-            </p>
+            {original?.mobile && (
+              <p style={{ fontWeight: "500" }}>
+                <Phone className="text-info" /> {original?.mobile}
+              </p>
+            )}
+            {original?.address && (
+              <p>
+                <GeoAlt />
+                &nbsp;
+                {original?.address}
+              </p>
+            )}
           </div>
         ),
       },

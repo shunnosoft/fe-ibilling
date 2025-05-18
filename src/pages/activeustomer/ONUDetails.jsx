@@ -51,7 +51,7 @@ const ONUDetails = ({ show, setShow, customer }) => {
         {isLoading
           ? ONUFields.map((field, index) => (
               <div
-                className="displayGridManual6_4 placeholder-glow"
+                className="displayGridManual3_7 placeholder-glow"
                 key={index}
               >
                 <p>{field.label}:</p>
@@ -59,7 +59,7 @@ const ONUDetails = ({ show, setShow, customer }) => {
               </div>
             ))
           : ONUFields.map((field, index) => (
-              <div className="displayGridManual6_4" key={index}>
+              <div className="displayGridManual3_7" key={index}>
                 <p>{field.label}:</p>
 
                 {field.key === "status" ? (

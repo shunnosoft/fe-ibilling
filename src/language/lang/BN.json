@@ -1033,6 +1033,20 @@
   "rxPower": "আরএক্স পাওয়ার (ডিবিএম)",
   "txPower": "টিএক্স আরএক্স পাওয়ার (ডিবিএম)",
   "temperature": "তাপমাত্রা (°সে)",
-  "vlan": "ভিলেন",
-  "voltage": "ভোল্টেজ"
+  "vlan": "ভিল্যান",
+  "voltage": "ভোল্টেজ",
+  "module": "মডিউল",
+  "mustLessThanEqual": " কম বা সমান হতে হবে ",
+  "version": "ভার্সন",
+  "cpu": "সিপিইউ",
+  "cpuCount": "সিপিইউ সংখ্যা",
+  "cpuFrequency": "সিপিইউ ফ্রিকোয়েন্সি",
+  "cpuLoad": "সিপিইউ লোড",
+  "architectureName": "আর্কিটেকচার নাম",
+  "boardName": "বোর্ড নাম",
+  "platform": "প্ল্যাটফর্ম",
+  "mikrotikHistory": "মাইক্রোটিক ইতিহাস",
+  "selectPonPort": "পন পোর্ট নির্বাচন করুন",
+  "requiredField": "অবশ্যই প্রয়োজন",
+  "oltVendor": "ওএলটি ভেন্ডর"
 }

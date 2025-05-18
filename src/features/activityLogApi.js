@@ -22,16 +22,18 @@ export const getUserActivityLog = async (
   dispatch,
   setIsLoading,
   role,
-  customer
+  userId,
+  existCustomer,
+  existCollector
 ) => {
   setIsLoading(true);
   try {
     const res = await apiLink.get(
-      `ispOwner/user/activity-log?${role}=${customer}`
+      `ispOwner/user/activity-log?${role}=${userId}&existCustomer=${existCustomer}&existCollector=${existCollector}`
     );
-    setIsLoading(false);
     dispatch(getCustomerActivityLogSlice(res.data));
   } catch (error) {
-    setIsLoading(false);
+    console.log(error.response);
   }
+  setIsLoading(false);
 };

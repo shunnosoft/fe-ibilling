@@ -7,6 +7,9 @@ import {
   PlugFill,
   PersonDash,
   PlayBtn,
+  ListColumns,
+  Gear,
+  ArrowRight,
 } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -21,19 +24,23 @@ import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { FourGround, FontColor } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
 import MikrotikPost from "./mikrotikModals/MikrotikPost";
-import { fetchMikrotik } from "../../features/apiCalls";
+import {
+  fetchMikrotik,
+  getMikrotikConnectionCheck,
+} from "../../features/apiCalls";
 import Table from "../../components/table/Table";
 import Loader from "../../components/common/Loader";
 import MikrotikDelete from "./mikrotikModals/MikrotikDelete";
 import apiLink from "../../api/apiLink";
 import useISPowner from "../../hooks/useISPOwner";
 import PlayTutorial from "../tutorial/PlayTutorial";
+import MikrotikResource from "./mikrotikModals/MikrotikResource";
 
 const Mikrotik = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
-  // get user & current user data form useISPOwner hooks
+  //---> Get user & current user data form useISPOwner hooks
   const { ispOwnerId, bpSettings } = useISPowner();
 
   // get all mikrotiks from redux store
@@ -50,6 +57,8 @@ const Mikrotik = () => {
   const [modalStatus, setModalStatus] = useState("");
   const [show, setShow] = useState(false);
 
+  const [mtkDocument, setMtkDocument] = useState({});
+
   // fetch mikrotik
   useEffect(() => {
     if (allmikrotiks.length === 0)
@@ -61,23 +70,14 @@ const Mikrotik = () => {
     fetchMikrotik(dispatch, ispOwnerId, setIsLoading);
   };
 
-  // mikrottik Connection Check
-  const MikrotikConnectionTest = async (connectionCheckId, mikrotikName) => {
-    setIsChecking(true);
+  const handleMikrotikConnectionCheck = (mikrotikId, name) => {
+    getMikrotikConnectionCheck(ispOwnerId, mikrotikId, name, setIsChecking);
+  };
 
-    await apiLink({
-      method: "GET",
-      url: `/mikrotik/testConnection/${ispOwnerId}/${connectionCheckId}`,
-    })
-      .then(() => {
-        setIsChecking(false);
-        toast.success(`${mikrotikName} এর কানেকশন ঠিক আছে`);
-      })
-      .catch(() => {
-        setIsChecking(false);
-
-        toast.error(`দুঃখিত, ${mikrotikName} এর কানেকশন ঠিক নেই!`);
-      });
+  const handleMikrotikSystemResource = (mikrotik) => {
+    setMtkDocument(mikrotik);
+    setModalStatus("system_resource");
+    setShow(true);
   };
 
   const columns = React.useMemo(
@@ -115,31 +115,42 @@ const Mikrotik = () => {
         id: "option1",
 
         Cell: ({ row: { original } }) => (
-          <div className="d-flex justify-content-center align-items-center">
+          <div className="d-flex align-items-center gap-2">
             <Link
               to={`/mikrotik/${original.ispOwner}/${original.id}`}
-              className="mikrotikConfigureButtom"
+              className="btn btn-sm btn-success d-flex justify-content-center align-items-center text-white gap-1"
             >
-              {t("configure")} <ArrowRightShort style={{ fontSize: "19px" }} />
+              <Gear size={18} />
+              {t("configure")} <ArrowRight size={18} />
             </Link>
-
-            {/* {bpSettings.customerType.includes("pppoe") && ( */}
-            <Link
-              to={`/mikrotik/customer/${original.ispOwner}/${original.id}`}
-              className="mikrotikConfigureButtom ms-1 bg-secondary"
-            >
-              <PersonDash />
-            </Link>
-            {/* )} */}
 
             <button
               title={t("checkConnection")}
-              style={{ padding: "0.10rem .5rem" }}
-              className="btn btn-sm btn-primary mx-1"
-              onClick={() => MikrotikConnectionTest(original.id, original.name)}
+              type="button"
+              className="btn btn-sm btn-primary"
+              onClick={() =>
+                handleMikrotikConnectionCheck(original.id, original.name)
+              }
             >
-              <PlugFill />
+              {isChecking ? <Loader /> : <PlugFill size={18} />}
             </button>
+
+            <button
+              title={t("mikrotikHistory")}
+              type="button"
+              className="btn btn-sm btn-info mx-1"
+              onClick={() => handleMikrotikSystemResource(original)}
+            >
+              {isChecking ? <Loader /> : <ListColumns size={18} />}
+            </button>
+
+            <Link
+              to={`/mikrotik/customer/${original.ispOwner}/${original.id}`}
+              type="button"
+              className="btn btn-sm btn-secondary d-flex justify-content-center align-items-center text-white gap-1"
+            >
+              <PersonDash size={20} />
+            </Link>
 
             {bpSettings?.mikrotikDelete && (
               <button
@@ -149,10 +160,10 @@ const Mikrotik = () => {
                   setModalStatus("deletekrotik");
                   setShow(true);
                 }}
-                style={{ padding: "0.10rem .5rem" }}
+                type="button"
                 className="btn btn-sm btn-danger"
               >
-                <ArchiveFill />
+                <ArchiveFill size={18} />
               </button>
             )}
           </div>
@@ -250,6 +261,11 @@ const Mikrotik = () => {
             video: "mikrotik",
           }}
         />
+      )}
+
+      {/* mikrotik system resource history dialog */}
+      {modalStatus === "system_resource" && (
+        <MikrotikResource {...{ show, setShow, mikrotik: mtkDocument }} />
       )}
     </>
   );

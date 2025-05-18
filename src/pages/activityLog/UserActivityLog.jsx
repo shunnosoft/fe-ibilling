@@ -46,17 +46,15 @@ const UserActivityLog = () => {
   // get user data set from useDataState hooks
   const { filterOptions, setFilterOption } = useDataState();
 
-  // admin staff user role permission
-  const adminUser =
-    role === "ispOwner" ||
-    role === "manager" ||
-    (role === "collector" && !userData.reseller);
+  // get all data from redux
+  const data = useSelector((state) => state?.activityLog.customerActivityLog);
 
-  //---> Reseller id from role base
-  const resellerId = role === "collector" ? userData.reseller : userData.id;
+  // get user staff data from redux store
+  const staffs = useSelector((state) => state?.ownerUsers?.userStaff);
 
   // initial loading state
   const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [show, setShow] = useState(false);
 
   // initial comment id state
@@ -66,27 +64,41 @@ const UserActivityLog = () => {
   // filter Accordion handle state
   const [activeKeys, setActiveKeys] = useState("");
 
-  // get all data from redux
-  const data = useSelector((state) => state?.activityLog?.customerActivityLog);
+  // admin staff user role permission
+  const adminUser =
+    role === "ispOwner" ||
+    role === "manager" ||
+    (role === "collector" && !userData.reseller);
 
-  // get user staff data from redux store
-  const staffs = useSelector((state) => state?.ownerUsers?.userStaff);
+  //---> Reseller id from role base
+  const resellerId = role === "collector" ? userData.reseller : userData.id;
+
+  const userRole = user?.role ? user?.role : "customer";
+  const existCustomer = user?.role ? false : true;
+  const existCollector = user?.role ? false : true;
 
   useEffect(() => {
-    getUserActivityLog(dispatch, setIsLoading, user?.role, userId);
+    getUserActivityLog(
+      dispatch,
+      setIsLoading,
+      userRole,
+      userId,
+      existCustomer,
+      existCollector
+    );
 
     if (adminUser) {
       //---> @Get ispOwner areas data
-      !areas?.length && getArea(dispatch, ispOwnerId, setIsLoading);
+      !areas?.length && getArea(dispatch, ispOwnerId, setLoading);
 
       //---> @Get ispOwner areas sub-area data
       !subAreas.length && getSubAreasApi(dispatch, ispOwnerId);
 
       //---> @Get ispOwner mikrotiks data
-      !mikrotiks?.length && fetchMikrotik(dispatch, ispOwnerId, setIsLoading);
+      !mikrotiks?.length && fetchMikrotik(dispatch, ispOwnerId, setLoading);
 
       //---> @Get ispOwner all mikrotik packages data
-      !allPackages.length && getAllPackages(dispatch, ispOwnerId, setIsLoading);
+      !allPackages.length && getAllPackages(dispatch, ispOwnerId, setLoading);
 
       //---> @Get ispOwner user data
       !ownerUsers?.length && getOwnerUsers(dispatch, ispOwnerId);

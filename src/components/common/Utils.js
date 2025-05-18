@@ -71,6 +71,8 @@ const addClass = {
 
   online: "success",
   offline: "secondary",
+
+  report: "success",
 };
 
 export const badge = (item) => {

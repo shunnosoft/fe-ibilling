@@ -9,7 +9,7 @@ export default function Details({ show, setShow, activityLog }) {
   const { t } = useTranslation();
 
   //---> Get redux store state data from useSelectorState hooks
-  const { mikrotiks, allPackages, areas, subAreas, ownerUsers } =
+  const { mikrotiks, packages, allPackages, areas, subAreas, ownerUsers } =
     useSelectorState();
 
   const objectIdRegex = /^[a-fA-F0-9]{24}$/;
@@ -23,7 +23,9 @@ export default function Details({ show, setShow, activityLog }) {
       return moment(value).format("YYYY/MM/DD hh:mm A");
     } else if (objectIdRegex?.test(value)) {
       const mikrotik = mikrotiks?.find((mtk) => mtk.id === value);
-      const mtkPackage = allPackages?.find((pack) => pack.id === value);
+      let mtkPackage =
+        allPackages?.find((pack) => pack.id === value) ??
+        packages?.find((pack) => pack.id === value);
       const area = areas?.find((area) => area.id === value);
       const subArea = subAreas?.find((sub) => sub.id === value);
       const createdBy = ownerUsers?.find((user) => Boolean(user?.[value]))?.[

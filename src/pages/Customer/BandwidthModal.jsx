@@ -3,10 +3,12 @@ import { toast } from "react-toastify";
 import CanvasJSReact from "@canvasjs/react-charts";
 import apiLink from "../../api/apiLink";
 import ComponentCustomModal from "../../components/common/customModal/ComponentCustomModal";
+import { useTranslation } from "react-i18next";
 
 const CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 const BandwidthModal = ({ customer, modalShow, setModalShow }) => {
+  const { t } = useTranslation();
   const abortControllerRef = useRef(null);
   const intervalRef = useRef(null);
 
@@ -149,9 +151,9 @@ const BandwidthModal = ({ customer, modalShow, setModalShow }) => {
   const options = useMemo(
     () => ({
       exportEnabled: true,
-      title: {
-        text: "Real-time Bandwidth Usage",
-      },
+      // title: {
+      //   text: "Real-time Bandwidth Usage",
+      // },
       axisX: {
         minimum: xVal - dataLength + 1, // Dynamic x-axis start point
         maximum: xVal, // Current xVal as end point
@@ -190,7 +192,7 @@ const BandwidthModal = ({ customer, modalShow, setModalShow }) => {
       setShow={setModalShow}
       centered
       size="lg"
-      header={customer?.name} //Real-time Bandwidth Usage
+      header={customer?.name + " " + t("bandwidth")} //Real-time Bandwidth Usage
     >
       <div>
         <CanvasJSChart options={options} />

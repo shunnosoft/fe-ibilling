@@ -165,7 +165,7 @@ const CustomerTicketSmsTemplate = () => {
   };
 
   return (
-    <div className="py-4">
+    <div>
       <div className="writeMessageSection">
         <div className="messageStatus d-flex justify-content-between">
           <div className="sending-status">

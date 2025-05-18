@@ -78,6 +78,21 @@ const CalenderAlert = () => {
 
   const [smsTemplet, setTemplet] = useState([]);
 
+  const messageTypes = [
+    {
+      label: t("nonMasking"),
+      value: "nonMasking",
+    },
+    {
+      label: t("masking"),
+      value: "masking",
+    },
+    {
+      label: t("fixedNumber"),
+      value: "fixedNumber",
+    },
+  ];
+
   //Status Handler
   const statusHandler = (e) => {
     const val = e.target.value;
@@ -305,41 +320,25 @@ const CalenderAlert = () => {
                 </div>
               </div>
             </div>
+
             <div className="message-sending-type">
-              <h4> {t("sendingMessageType")} </h4>
-              <input
-                id="nonMasking"
-                name="messageSendingType"
-                type="radio"
-                checked={sendingType === "nonMasking"}
-                value={"nonMasking"}
-                onChange={(event) => setSendingType(event.target.value)}
-              />
-              <label className="templatelabel" htmlFor="nonMasking">
-                {t("nonMasking")}
-              </label>
-              <input
-                id="masking"
-                name="messageSendingType"
-                type="radio"
-                checked={sendingType === "masking"}
-                value={"masking"}
-                onChange={(event) => setSendingType(event.target.value)}
-              />
-              <label className="templatelabel" htmlFor="masking">
-                {t("masking")}
-              </label>
-              <input
-                id="fixedNumber"
-                name="messageSendingType"
-                type="radio"
-                checked={sendingType === "fixedNumber"}
-                value={"fixedNumber"}
-                onChange={(event) => setSendingType(event.target.value)}
-              />
-              <label className="templatelabel" htmlFor="fixedNumber">
-                {t("fixedNumber")}
-              </label>
+              <h4>{t("sendingMessageType")}</h4>
+              <div className="smsType">
+                {messageTypes.map((type) => (
+                  <div className="message_radio" key={type.value}>
+                    <input
+                      type="radio"
+                      id={type.value + "calender"}
+                      value={type.value}
+                      onChange={(event) => setSendingType(event.target.value)}
+                      checked={sendingType === type.value}
+                    />
+                    <label htmlFor={type.value + "calender"}>
+                      {type.label}
+                    </label>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 

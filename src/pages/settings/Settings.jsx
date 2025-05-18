@@ -87,14 +87,13 @@ export default function Settings() {
               </FourGround>
 
               <FourGround>
-                <div className="collectorWrapper mt-2 pb-2">
+                <div className="collectorWrapper p-3">
                   <Tabs
                     defaultActiveKey="billConfirmation"
                     id="uncontrolled-tab-example"
-                    className="mb-3"
+                    className="mb-3 rounded"
                   >
                     <Tab
-                      className="mt-5"
                       eventKey="billConfirmation"
                       title={t("billConfirmSMS")}
                     >
@@ -103,48 +102,31 @@ export default function Settings() {
                       </FourGround>
                     </Tab>
 
-                    <Tab
-                      className="mt-5"
-                      eventKey="connectionFee"
-                      title={t("connectionFee")}
-                    >
+                    <Tab eventKey="connectionFee" title={t("connectionFee")}>
                       <FourGround>
                         <ConnectionFeeSMSTemplate />
                       </FourGround>
                     </Tab>
 
-                    <Tab
-                      className="mt-5"
-                      eventKey="alertSms"
-                      title={t("alertSMS")}
-                    >
+                    <Tab eventKey="alertSms" title={t("alertSMS")}>
                       <FourGround>
                         <AlertSmsTemplate />
                       </FourGround>
                     </Tab>
 
-                    <Tab
-                      className="mt-5"
-                      eventKey="calenderAlert"
-                      title={t("calenderAlert")}
-                    >
+                    <Tab eventKey="calenderAlert" title={t("calenderAlert")}>
                       <FourGround>
                         <CalenderAlert />
                       </FourGround>
                     </Tab>
 
-                    <Tab
-                      className="mt-5"
-                      eventKey="newCustomer"
-                      title={t("newCustomerSMS")}
-                    >
+                    <Tab eventKey="newCustomer" title={t("newCustomerSMS")}>
                       <FourGround>
                         <CreateCustomerSmsTemplate />
                       </FourGround>
                     </Tab>
 
                     <Tab
-                      className="mt-5"
                       eventKey="expiredCustomer"
                       title={t("expiredCustomer")}
                     >
@@ -152,17 +134,12 @@ export default function Settings() {
                         <CustomerInactiveSmsTemplate />
                       </FourGround>
                     </Tab>
-                    <Tab
-                      className="mt-5"
-                      eventKey="staffSalary"
-                      title={t("SalarySMS")}
-                    >
+                    <Tab eventKey="staffSalary" title={t("SalarySMS")}>
                       <FourGround>
                         <SalarySMSTemplate />
                       </FourGround>
                     </Tab>
                     <Tab
-                      className="mt-5"
                       eventKey="resellerRecharge"
                       title={t("resellerRecharge")}
                     >
@@ -170,39 +147,23 @@ export default function Settings() {
                         <ResellerRechargeSmsTemplate />
                       </FourGround>
                     </Tab>
-                    <Tab
-                      className="mt-5"
-                      eventKey="customerTicket"
-                      title={t("customerTicket")}
-                    >
+                    <Tab eventKey="customerTicket" title={t("customerTicket")}>
                       <FourGround>
                         <CustomerTicketSmsTemplate />
                       </FourGround>
                     </Tab>
 
-                    <Tab
-                      className="mt-5"
-                      eventKey="customerNotify"
-                      title={t("customerNotify")}
-                    >
+                    <Tab eventKey="customerNotify" title={t("customerNotify")}>
                       <FourGround>
                         <CustomerTicketAssignSmsTemplate />
                       </FourGround>
                     </Tab>
-                    <Tab
-                      className="mt-5"
-                      eventKey="assignTicket"
-                      title={t("assignTicket")}
-                    >
+                    <Tab eventKey="assignTicket" title={t("assignTicket")}>
                       <FourGround>
                         <StaffAssignTicketSMSTemplate />
                       </FourGround>
                     </Tab>
-                    <Tab
-                      className="mt-5"
-                      eventKey="manualInactive"
-                      title={t("manualInactive")}
-                    >
+                    <Tab eventKey="manualInactive" title={t("manualInactive")}>
                       <FourGround>
                         <CustomerManualEdit />
                       </FourGround>

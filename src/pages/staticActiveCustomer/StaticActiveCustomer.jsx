@@ -332,7 +332,7 @@ const StaticActiveCustomer = () => {
 
                   {bpSettings?.hasMikrotik &&
                     bpSettings?.hasOLT &&
-                    original?.running === true && (
+                    original?.complete === true && (
                       <li
                         onClick={() => {
                           setCustomer(original);

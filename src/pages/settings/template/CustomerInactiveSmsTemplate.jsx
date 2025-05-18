@@ -36,6 +36,21 @@ function CustomerInactiveSmsTemplate() {
   // payment link state
   const [paymentLink, setPaymentLink] = useState("");
 
+  const messageTypes = [
+    {
+      label: t("nonMasking"),
+      value: "nonMasking",
+    },
+    {
+      label: t("masking"),
+      value: "masking",
+    },
+    {
+      label: t("fixedNumber"),
+      value: "fixedNumber",
+    },
+  ];
+
   // ispOwner payment gateway payment link
   const customerPaymentLink = `Payment Link: https://app.netfeebd.com/isp/${ispOwnerData?.netFeeId}`;
 
@@ -229,32 +244,23 @@ function CustomerInactiveSmsTemplate() {
                 />
               </div>
             </div>
+
             <div className="message-sending-type">
-              <h4> {t("sendingMessageType")} </h4>
-              <input
-                name="messageSendingType"
-                type="radio"
-                checked={sendingType === "nonMasking"}
-                value={"nonMasking"}
-                onChange={(event) => setSendingType(event.target.value)}
-              />
-              {t("nonMasking")} {"              "}
-              <input
-                name="messageSendingType"
-                type="radio"
-                checked={sendingType === "masking"}
-                value={"masking"}
-                onChange={(event) => setSendingType(event.target.value)}
-              />
-              {t("masking")} {"              "}
-              <input
-                name="messageSendingType"
-                type="radio"
-                checked={sendingType === "fixedNumber"}
-                value={"fixedNumber"}
-                onChange={(event) => setSendingType(event.target.value)}
-              />
-              {t("fixedNumber")} {"              "}
+              <h4>{t("sendingMessageType")}</h4>
+              <div className="smsType">
+                {messageTypes.map((type) => (
+                  <div className="message_radio" key={type.value}>
+                    <input
+                      type="radio"
+                      id={type.value + "expired"}
+                      value={type.value}
+                      onChange={(event) => setSendingType(event.target.value)}
+                      checked={sendingType === type.value}
+                    />
+                    <label htmlFor={type.value + "expired"}>{type.label}</label>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 

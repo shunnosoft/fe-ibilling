@@ -7,7 +7,8 @@ import DatePicker from "react-datepicker";
 import { useDispatch, useSelector } from "react-redux";
 // internal imports
 import "chart.js/auto";
-import { FontColor } from "../../assets/js/theme";
+import { FontColor, FourGround } from "../../assets/js/theme";
+import useDash from "../../assets/css/dash.module.css";
 
 import {
   PersonBoundingBox,
@@ -23,6 +24,12 @@ import {
   FiletypeCsv,
   TrashFill,
   FiletypePy,
+  FilterCircle,
+  People,
+  PeopleFill,
+  Cash,
+  CashStack,
+  Phone,
 } from "react-bootstrap-icons";
 import {
   csutomerWebhookRegister,
@@ -49,6 +56,7 @@ import { CSVLink } from "react-csv";
 import DeleteByMobileModal from "./modal/DeleteByMobileModal";
 import { useTranslation } from "react-i18next";
 import IspOwnerCustomerUpdate from "./modal/IspOwnerCustomerUpdate";
+import { Accordion } from "react-bootstrap";
 
 const districts = districtsJSON.districts;
 
@@ -93,6 +101,9 @@ export default function Home() {
 
   // Owner id
   const [ispOwnerId, setIspOwnerId] = useState("");
+
+  // filter Accordion handle state
+  const [activeKeys, setActiveKeys] = useState("");
 
   // filter options state
   const [filterOptions, setFilterOptions] = useState({
@@ -325,28 +336,33 @@ export default function Home() {
         Header: "Id",
         accessor: "netFeeId",
       },
-
       {
-        width: "5%",
+        width: "15%",
         accessor: "company",
         Header: "Company",
         Cell: ({ cell: { value } }) => {
           return <strong>{value}</strong>;
         },
       },
-
       {
-        width: "5%",
-        accessor: "name",
-        Header: "Name",
+        width: "15%",
+        Header: "Name/Mobile",
+        accessor: (data) => `${data?.name} ${data?.mobile}`,
+        Cell: ({ row: { original } }) => (
+          <div>
+            <p>{original?.name}</p>
+            <p
+              title="IspOwner mobile"
+              className="d-flex gap-1 align-items-center"
+            >
+              <Phone size={18} className="text-info" />
+              <span>{original?.mobile}</span>
+            </p>
+          </div>
+        ),
       },
       {
-        width: "8%",
-        accessor: "mobile",
-        Header: "Mobile",
-      },
-      {
-        width: "5%",
+        width: "7%",
         accessor: "bpSettings.hasMikrotik",
         Header: "MTK",
         Cell: ({ cell: { value } }) => {
@@ -354,7 +370,7 @@ export default function Home() {
         },
       },
       {
-        width: "8%",
+        width: "7%",
         Header: "SMS",
         accessor: "smsBalance",
         Cell: ({ row: { original } }) => (
@@ -366,76 +382,70 @@ export default function Home() {
         ),
       },
       {
-        width: "8%",
-        accessor: "bpSettings.customerLimit",
-        Header: "Customer",
-      },
-      {
-        width: "7%",
-        accessor: "bpSettings.packageRate",
-        Header: "Rate",
+        width: "10%",
+        Header: "User/Rate",
+        accessor: (data) =>
+          `${data?.bpSettings?.customerLimit} ${data?.bpSettings?.packageRate}`,
+        Cell: ({ row: { original } }) => (
+          <div>
+            <p
+              title="Customer limit"
+              className="d-flex gap-1 align-items-center"
+            >
+              <People size={16} className="text-primary" />
+              {original?.bpSettings.customerLimit}
+            </p>
+            <p
+              title="Customer package rate"
+              className="d-flex gap-1 align-items-center"
+            >
+              <CashStack size={18} className="text-success" />
+              <span>{original?.bpSettings.packageRate}</span>
+            </p>
+          </div>
+        ),
       },
       {
         width: "10%",
-        Header: "Payment",
+        accessor: "address",
+        Header: "Address",
+      },
+      {
+        width: "18%",
+        Header: "Created/Bill Date",
+        accessor: (data) =>
+          `${moment(data?.createdAt).format("DD MMM YY hh:mm A")} ${moment(
+            data?.bpSettings?.monthlyDueDate
+          ).format("DD MMM YY hh:mm A")}`,
         Cell: ({ row: { original } }) => (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <span
-              className={
-                "badge " +
-                (original.bpSettings.paymentStatus === "paid"
-                  ? "bg-success"
-                  : "bg-warning")
-              }
-            >
-              {original.bpSettings.paymentStatus}
-            </span>
+          <div className="d-flex">
+            <div>
+              <p>{moment(original?.createdAt).format("DD MMM YY hh:mm A")}</p>
+              <p>
+                {moment(original?.bpSettings?.monthlyDueDate).format(
+                  "DD MMM YY hh:mm A"
+                )}
+              </p>
+            </div>
           </div>
         ),
       },
       {
         width: "8%",
-        Header: "Status",
-        accessor: "status",
-        Cell: ({ cell: { value } }) => {
-          return badge(value);
-        },
+        Header: t("status"),
+        accessor: (data) =>
+          `${data?.bpSettings?.paymentStatus} ${data?.status}`,
+        Cell: ({ row: { original } }) => (
+          <div className="text-center">
+            <p>{badge(original?.bpSettings?.paymentStatus)}</p>
+            <p>{badge(original?.status)}</p>
+          </div>
+        ),
       },
-      {
-        width: "8%",
-        accessor: "address",
-        Header: "Address",
-      },
-
-      {
-        width: "9%",
-        Header: "CreatedAt",
-        accessor: "createdAt",
-        Cell: ({ cell: { value } }) => {
-          return moment(value).format("DD MMM YY hh:mm a");
-        },
-      },
-
-      {
-        width: "9%",
-        Header: "Bill Date",
-        accessor: "bpSettings.monthlyDueDate",
-        Cell: ({ cell: { value } }) => {
-          return moment(value).format("DD MMM YY hh:mm a");
-        },
-      },
-
       {
         width: "5%",
         Header: () => <div className="text-center">Action</div>,
         id: "option",
-
         Cell: ({ row: { original } }) => {
           return (
             <div className="text-center">
@@ -710,280 +720,289 @@ export default function Home() {
 
   return (
     <>
-      <div className="homeWrapper isp_owner_list">
-        <ToastContainer position="top-right" theme="colored" />
-        <div className="card">
-          <div className="card-header">
-            <div className="d-flex justify-content-between">
-              <h2 className="dashboardTitle text-secondary">
-                {userRole === "admin" ? "Admin Dashboard" : "Super Admin"}
-              </h2>
+      <FontColor>
+        <FourGround>
+          <div className="collectorTitle d-flex justify-content-between px-4">
+            <div className="component_name">
+              {userRole === "admin" ? "Admin Dashboard" : "Super Admin"}
+            </div>
 
-              <div className="addAndSettingIcon d-flex justify-content-center align-items-center">
-                <TrashFill
-                  size={23}
-                  className="me-4 text-danger"
-                  onClick={() => {
-                    setModalStatus("mobileNumberSearch");
-                    setShow(true);
-                  }}
-                />
-
-                <CSVLink
-                  data={ispOwnerForCsVTableInfo}
-                  filename={ispOwners.company}
-                  headers={ispOwnerForCsVTableInfoHeader}
-                  title="IspOwner Customer CSV"
-                >
-                  <FiletypeCsv className="addcutmButton" />
-                </CSVLink>
+            <div className="d-flex align-items-center">
+              <div
+                onClick={() => {
+                  if (!activeKeys) {
+                    setActiveKeys("filter");
+                  } else {
+                    setActiveKeys("");
+                  }
+                }}
+                title={t("filter")}
+              >
+                <FilterCircle className="addcutmButton" />
               </div>
+
+              <TrashFill
+                size={23}
+                className="addcutmButton"
+                onClick={() => {
+                  setModalStatus("mobileNumberSearch");
+                  setShow(true);
+                }}
+              />
+
+              <CSVLink
+                data={ispOwnerForCsVTableInfo}
+                filename={ispOwners.company}
+                headers={ispOwnerForCsVTableInfoHeader}
+                title="IspOwner Customer CSV"
+              >
+                <FiletypeCsv className="addcutmButton" />
+              </CSVLink>
             </div>
           </div>
-          <div className="card-body">
-            <div className="displayGrid6">
-              <select
-                className="form-select mt-0"
-                aria-label="Default select example"
-                onChange={(e) =>
-                  setFilterOptions({
-                    ...filterOptions,
-                    paymentStatus: e.target.value,
-                  })
-                }
-              >
-                <option value="" selected>
-                  All
-                </option>
-                <option value="paid">Paid</option>
-                <option value="unpaid">Unpaid</option>
-              </select>
+        </FourGround>
 
-              <select
-                className="form-select mt-0"
-                aria-label="Default select example"
-                onChange={(e) =>
-                  setFilterOptions({
-                    ...filterOptions,
-                    status: e.target.value,
-                  })
-                }
-              >
-                <option value="" selected>
-                  Status
-                </option>
-                <option value="new">New</option>
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-                <option value="banned">Banned</option>
-                <option value="deleted">Deleted</option>
-                <option value="trial">Trial</option>
-              </select>
+        <FourGround>
+          <div className="mt-2">
+            <Accordion alwaysOpen activeKey={activeKeys}>
+              <Accordion.Item eventKey="filter">
+                <Accordion.Body>
+                  <div className="displayGrid6">
+                    <select
+                      className="form-select mt-0"
+                      aria-label="Default select example"
+                      onChange={(e) =>
+                        setFilterOptions({
+                          ...filterOptions,
+                          paymentStatus: e.target.value,
+                        })
+                      }
+                    >
+                      <option value="" selected>
+                        All
+                      </option>
+                      <option value="paid">Paid</option>
+                      <option value="unpaid">Unpaid</option>
+                    </select>
 
-              <select
-                className="form-select mt-0"
-                aria-label="Default select example"
-                onChange={(e) =>
-                  setFilterOptions({
-                    ...filterOptions,
-                    billingCycle: e.target.value,
-                  })
-                }
-              >
-                <option value="" selected>
-                  Execute Billing Cycle
-                </option>
-                <option value="true">Run Billing Cycle</option>
-                <option value="false">Don't Billing Cycle</option>
-              </select>
+                    <select
+                      className="form-select mt-0"
+                      aria-label="Default select example"
+                      onChange={(e) =>
+                        setFilterOptions({
+                          ...filterOptions,
+                          status: e.target.value,
+                        })
+                      }
+                    >
+                      <option value="" selected>
+                        Status
+                      </option>
+                      <option value="new">New</option>
+                      <option value="active">Active</option>
+                      <option value="inactive">Inactive</option>
+                      <option value="banned">Banned</option>
+                      <option value="deleted">Deleted</option>
+                      <option value="trial">Trial</option>
+                    </select>
 
-              <select
-                className="form-select mt-0"
-                aria-label="Default select example"
-                onChange={(e) =>
-                  setFilterOptions({
-                    ...filterOptions,
-                    queueType: e.target.value,
-                  })
-                }
-              >
-                <option value="">Queue Type</option>
-                <option value="simple-queue">Simple Queue</option>
-                <option value="firewall-queue">Firewall Queue</option>
-                <option value="core-queue">Core Queue</option>
-              </select>
+                    <select
+                      className="form-select mt-0"
+                      aria-label="Default select example"
+                      onChange={(e) =>
+                        setFilterOptions({
+                          ...filterOptions,
+                          billingCycle: e.target.value,
+                        })
+                      }
+                    >
+                      <option value="" selected>
+                        Execute Billing Cycle
+                      </option>
+                      <option value="true">Run Billing Cycle</option>
+                      <option value="false">Don't Billing Cycle</option>
+                    </select>
 
-              <select
-                className="form-select mt-0"
-                aria-label="Default select example"
-                onChange={(e) =>
-                  setFilterOptions({
-                    ...filterOptions,
-                    customerType: e.target.value,
-                  })
-                }
-              >
-                <option value="">Customer Type</option>
-                <option value="pppoe">PPPoE</option>
-                <option value="static">Static</option>
-                <option value="hotspot">Hotspot</option>
-              </select>
+                    <select
+                      className="form-select mt-0"
+                      aria-label="Default select example"
+                      onChange={(e) =>
+                        setFilterOptions({
+                          ...filterOptions,
+                          queueType: e.target.value,
+                        })
+                      }
+                    >
+                      <option value="">Queue Type</option>
+                      <option value="simple-queue">Simple Queue</option>
+                      <option value="firewall-queue">Firewall Queue</option>
+                      <option value="core-queue">Core Queue</option>
+                    </select>
 
-              <select
-                className="form-select mt-0"
-                aria-label="Default select example"
-                onChange={(e) =>
-                  setFilterOptions({
-                    ...filterOptions,
-                    mikrotik: e.target.value,
-                  })
-                }
-              >
-                <option value="" selected>
-                  Mikrotik
-                </option>
-                <option value="true">With Mikrotik</option>
-                <option value="false">WithOut Mikrotik</option>
-              </select>
+                    <select
+                      className="form-select mt-0"
+                      aria-label="Default select example"
+                      onChange={(e) =>
+                        setFilterOptions({
+                          ...filterOptions,
+                          customerType: e.target.value,
+                        })
+                      }
+                    >
+                      <option value="">Customer Type</option>
+                      <option value="pppoe">PPPoE</option>
+                      <option value="static">Static</option>
+                      <option value="hotspot">Hotspot</option>
+                    </select>
 
-              <select
-                className="form-select mt-0"
-                aria-label="Default select example"
-                onChange={(e) =>
-                  setFilterOptions({
-                    ...filterOptions,
-                    district: e.target.value,
-                  })
-                }
-              >
-                <option value="" selected>
-                  All District
-                </option>
-                {districts.map((item) => {
-                  return <option value={item.id}>{item.name}</option>;
-                })}
-              </select>
+                    <select
+                      className="form-select mt-0"
+                      aria-label="Default select example"
+                      onChange={(e) =>
+                        setFilterOptions({
+                          ...filterOptions,
+                          mikrotik: e.target.value,
+                        })
+                      }
+                    >
+                      <option value="" selected>
+                        Mikrotik
+                      </option>
+                      <option value="true">With Mikrotik</option>
+                      <option value="false">WithOut Mikrotik</option>
+                    </select>
 
-              <div>
-                <DatePicker
-                  className="form-control mt-0"
-                  selected={filterOptions.startDate}
-                  onChange={(date) =>
-                    setFilterOptions({
-                      ...filterOptions,
-                      startDate: date,
-                    })
-                  }
-                  dateFormat="dd-MM-yyyy"
-                  placeholderText={t("startDate")}
-                />
-              </div>
+                    <select
+                      className="form-select mt-0"
+                      aria-label="Default select example"
+                      onChange={(e) =>
+                        setFilterOptions({
+                          ...filterOptions,
+                          district: e.target.value,
+                        })
+                      }
+                    >
+                      <option value="" selected>
+                        All District
+                      </option>
+                      {districts.map((item) => {
+                        return <option value={item.id}>{item.name}</option>;
+                      })}
+                    </select>
 
-              <div>
-                <DatePicker
-                  className="form-control mt-0"
-                  selected={filterOptions.endDate}
-                  onChange={(date) =>
-                    setFilterOptions({
-                      ...filterOptions,
-                      endDate: date,
-                    })
-                  }
-                  dateFormat="dd-MM-yyyy"
-                  placeholderText={t("endDate")}
-                />
-              </div>
+                    <div>
+                      <DatePicker
+                        className="form-control mt-0"
+                        selected={filterOptions.startDate}
+                        onChange={(date) =>
+                          setFilterOptions({
+                            ...filterOptions,
+                            startDate: date,
+                          })
+                        }
+                        dateFormat="dd-MM-yyyy"
+                        placeholderText={t("startDate")}
+                      />
+                    </div>
 
-              <Link to={"/admin/all-comments"}>
-                <div className="all-comment-btn">
-                  <button className="btn btn-outline-success w-100">
-                    All Comment
-                  </button>
-                </div>
-              </Link>
+                    <div>
+                      <DatePicker
+                        className="form-control mt-0"
+                        selected={filterOptions.endDate}
+                        onChange={(date) =>
+                          setFilterOptions({
+                            ...filterOptions,
+                            endDate: date,
+                          })
+                        }
+                        dateFormat="dd-MM-yyyy"
+                        placeholderText={t("endDate")}
+                      />
+                    </div>
 
-              {userRole === "superadmin" && (
-                <Link to={"/admin/invoices"}>
-                  <div className="all-comment-btn">
-                    <button className="btn btn-outline-primary w-100">
-                      Invoice
-                    </button>
+                    <Link to={"/admin/all-comments"}>
+                      <div className="all-comment-btn">
+                        <button className="btn btn-outline-success w-100">
+                          All Comment
+                        </button>
+                      </div>
+                    </Link>
+
+                    {userRole === "superadmin" && (
+                      <Link to={"/admin/invoices"}>
+                        <div className="all-comment-btn">
+                          <button className="btn btn-outline-primary w-100">
+                            Invoice
+                          </button>
+                        </div>
+                      </Link>
+                    )}
+
+                    <div className="displayGrid1 mt-0 ">
+                      <button
+                        className="btn btn-outline-primary"
+                        type="button"
+                        onClick={handleClintFilter}
+                      >
+                        Filter
+                      </button>
+                    </div>
                   </div>
-                </Link>
-              )}
+                </Accordion.Body>
+              </Accordion.Item>
+            </Accordion>
 
-              <div className="displayGrid1 mt-0 ">
-                <button
-                  className="btn btn-outline-primary"
-                  type="button"
-                  onClick={handleClintFilter}
-                >
-                  Filter
-                </button>
-              </div>
+            <div className="collectorWrapper pb-2">
+              <Table isLoading={isLoading} columns={columns} data={clintData} />
             </div>
-
-            <FontColor>
-              <Table
-                isLoading={isLoading}
-                columns={columns}
-                data={clintData}
-              ></Table>
-
-              {/* owner permissions  */}
-              {modalStatus === "permission" && (
-                <Permissions
-                  show={show}
-                  setShow={setShow}
-                  ownerId={permissionId}
-                />
-              )}
-
-              {modalStatus === "edit" && (
-                <EditModal show={show} setShow={setShow} ownerId={ownerId} />
-              )}
-
-              <DetailsModal ownerId={ownerId} />
-              <AddProprietorModal ownerId={ownerId} />
-
-              {/* customer invoice list */}
-              {modalStatus === "invoice" && (
-                <Invoices
-                  ownerId={ownerId}
-                  companyName={companyName}
-                  isOpen={show}
-                  setIsOpen={setShow}
-                />
-              )}
-
-              {/* owner multiple customer update */}
-              {modalStatus === "multiple" && (
-                <IspOwnerCustomerUpdate
-                  isShow={show}
-                  setIsShow={setShow}
-                  ispOwnerId={ispOwnerId}
-                  companyName={companyName}
-                />
-              )}
-
-              <Note ownerId={ownerId} companyName={companyName} />
-              <FileUpload ownerID={ownerId} mikrotikStatus={mikrotikStatus} />
-
-              {/* user mobile number search and delete */}
-              {modalStatus === "mobileNumberSearch" && (
-                <DeleteByMobileModal show={show} setShow={setShow} />
-              )}
-
-              {/* password reset modal */}
-              {modalStatus === "password" && (
-                <PasswordReset show={show} setShow={setShow} userId={userId} />
-              )}
-
-              {/* Execute billing cycle ispOwner */}
-            </FontColor>
           </div>
-        </div>
-      </div>
+        </FourGround>
+      </FontColor>
+
+      {/* owner permissions  */}
+      {modalStatus === "permission" && (
+        <Permissions show={show} setShow={setShow} ownerId={permissionId} />
+      )}
+
+      {modalStatus === "edit" && (
+        <EditModal show={show} setShow={setShow} ownerId={ownerId} />
+      )}
+
+      <DetailsModal ownerId={ownerId} />
+      <AddProprietorModal ownerId={ownerId} />
+
+      {/* customer invoice list */}
+      {modalStatus === "invoice" && (
+        <Invoices
+          ownerId={ownerId}
+          companyName={companyName}
+          isOpen={show}
+          setIsOpen={setShow}
+        />
+      )}
+
+      {/* owner multiple customer update */}
+      {modalStatus === "multiple" && (
+        <IspOwnerCustomerUpdate
+          isShow={show}
+          setIsShow={setShow}
+          ispOwnerId={ispOwnerId}
+          companyName={companyName}
+        />
+      )}
+
+      <Note ownerId={ownerId} companyName={companyName} />
+      <FileUpload ownerID={ownerId} mikrotikStatus={mikrotikStatus} />
+
+      {/* user mobile number search and delete */}
+      {modalStatus === "mobileNumberSearch" && (
+        <DeleteByMobileModal show={show} setShow={setShow} />
+      )}
+
+      {/* password reset modal */}
+      {modalStatus === "password" && (
+        <PasswordReset show={show} setShow={setShow} userId={userId} />
+      )}
     </>
   );
 }

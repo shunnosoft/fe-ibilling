@@ -244,6 +244,13 @@ ul.client_service_list2 li {
   margin: 10px 0;
 }
 
+.displayGridManual3_7 {
+  display: grid;
+  grid-template-columns: minmax(70%, auto) minmax(29%, auto);
+  grid-gap: 1%;
+  margin: 10px 0;
+}
+
 .report5_5,
 .displayGridHorizontalFill5_5 {
   display: grid;
@@ -465,6 +472,10 @@ ul.client_service_list2 li {
     display: block;
   }
 
+  .displayGridManual3_7 {
+    display: block;
+  }
+
   .report5_5 {
     display: block;
   }
@@ -571,6 +582,10 @@ ul.client_service_list2 li {
     display: block;
   }
 
+  .displayGridManual3_7 {
+    display: block;
+  }
+
   .options_name {
     display: none;
   }
@@ -669,6 +684,10 @@ ul.client_service_list2 li {
   }
 
   .displayGridManual7_3 {
+    display: block;
+  }
+
+  .displayGridManual3_7 {
     display: block;
   }
 

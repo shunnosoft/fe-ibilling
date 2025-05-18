@@ -10,12 +10,16 @@ export const mikroTikSlice = createSlice({
     pppoePackage: [],
     mikrotikSyncUser: [],
     packagefromDatabase: [],
+    system: {},
   },
   reducers: {
     mtkIsLoading: (state, action) => {
       state.isLoading = action.payload;
     },
     //mikrotik
+    getMikrotikSystemResourceSuccess: (state, action) => {
+      state.system = action.payload;
+    },
     getMikrotikSuccess: (state, action) => {
       state.mikrotik = action.payload;
     },
@@ -119,6 +123,7 @@ export const {
   resetPackagefromDatabase,
   resetMikrotikUserAndPackage,
   fetchMikrotikSyncSimpleQueueUserSuccess,
+  getMikrotikSystemResourceSuccess,
 } = mikroTikSlice.actions;
 
 export default mikroTikSlice.reducer;

@@ -70,6 +70,7 @@ import {
   resetpppoePackage,
   resetpppoeUser,
   fetchMikrotikSyncSimpleQueueUserSuccess,
+  getMikrotikSystemResourceSuccess,
 } from "./mikrotikSlice";
 import {
   addResellerSuccess,
@@ -1729,6 +1730,44 @@ export const postMikrotik = async (dispatch, data, setIsLoading, setShow) => {
         toast.error(err.response.data.message);
       }
     });
+  setIsLoading(false);
+};
+
+// GET mikrotik connection check api function
+export const getMikrotikConnectionCheck = async (
+  ispOwner,
+  mikrotik,
+  name,
+  setIsLoading
+) => {
+  setIsLoading(true);
+  try {
+    await apiLink.get(`/mikrotik/testConnection/${ispOwner}/${mikrotik}`);
+
+    toast.success(`${name} এর কানেকশন ঠিক আছে`);
+  } catch (error) {
+    toast.error(`দুঃখিত, ${name} এর কানেকশন ঠিক নেই!`);
+  }
+  setIsLoading(false);
+};
+
+// GET mikrotik system resource api function
+export const getMikrotikSystemResource = async (
+  dispatch,
+  ispOwner,
+  mikrotik,
+  setIsLoading
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.get(
+      `/mikrotik/testConnection/${ispOwner}/${mikrotik}`
+    );
+
+    dispatch(getMikrotikSystemResourceSuccess(res.data?.resource));
+  } catch (error) {
+    toast.error(error.response.data.message);
+  }
   setIsLoading(false);
 };
 

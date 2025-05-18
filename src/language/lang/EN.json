@@ -1027,5 +1027,19 @@
   "txPower": "tx Power (dbm)",
   "temperature": "Temperature (°C)",
   "vlan": "VLAN",
-  "voltage": "Voltage"
+  "voltage": "Voltage",
+  "module": "Module",
+  "mustLessThanEqual": " must be less than or equal to ",
+  "version": "Version",
+  "cpu": "CPU",
+  "cpuCount": "CPU Count",
+  "cpuFrequency": "CPU Frequency",
+  "cpuLoad": "CPU Load",
+  "architectureName": "Architecture Name",
+  "boardName": "Board Name",
+  "platform": "Platform",
+  "mikrotikHistory": "Mikrotik History",
+  "selectPonPort": "Select PON Port",
+  "requiredField": "is a required field",
+  "oltVendor": "OLT Vendor"
 }

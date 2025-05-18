@@ -19,6 +19,8 @@ import { deleteOLT, getOLT } from "../../features/oltApi";
 import useISPowner from "../../hooks/useISPOwner";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
+import { fetchMikrotik } from "../../features/apiCalls";
+import useSelectorState from "../../hooks/useSelectorState";
 
 const OLT = () => {
   const { t } = useTranslation();
@@ -27,9 +29,13 @@ const OLT = () => {
   //---> Get user & current user data form useISPOwner hooks
   const { ispOwnerId, bpSettings } = useISPowner();
 
+  //---> Get redux store state data from useSelectorState hooks
+  const { mikrotiks } = useSelectorState();
+
   const olt = useSelector((state) => state?.olt.olt);
 
   const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const [oltInformation, setOLTInformation] = useState({});
   const [modalStatus, setModalStatus] = useState("");
@@ -38,6 +44,9 @@ const OLT = () => {
 
   useEffect(() => {
     getOLT(ispOwnerId, setIsLoading, dispatch);
+
+    //---> @Get ispOwner mikrotiks data
+    !mikrotiks?.length && fetchMikrotik(dispatch, ispOwnerId, setLoading);
   }, [ispOwnerId]);
 
   const reloadHandler = () => {

@@ -615,7 +615,10 @@ function App() {
             />
 
             {/* OLT Route */}
-            <Route path="olt" element={<OLT />} />
+            <Route
+              path="olt"
+              element={user ? <OLT /> : <Navigate to={"/home"} />}
+            />
 
             {/* network diagram */}
             <Route

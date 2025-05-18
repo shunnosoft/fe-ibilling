@@ -7,6 +7,7 @@ import {
   ArrowClockwise,
   KeyFill,
   ChatText,
+  ClockHistory,
 } from "react-bootstrap-icons";
 import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
@@ -27,16 +28,19 @@ import { useTranslation } from "react-i18next";
 import Loader from "../../components/common/Loader";
 import PasswordReset from "../../components/modals/passwordReset/PasswordReset";
 import SingleMessage from "../../components/singleCustomerSms/SingleMessage";
+import { useNavigate } from "react-router-dom";
 
 const Collector = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const [collSearch, setCollSearch] = useState("");
+  const navigate = useNavigate();
+
   const collector = useSelector((state) => state.collector.collector);
 
   const userData = useSelector((state) => state.persistedReducer.auth.userData);
 
   // pagination
+  const [collSearch, setCollSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [collectorPerPage, setCollectorPerPage] = useState(5);
   const [userId, setUserId] = useState();
@@ -85,6 +89,13 @@ const Collector = () => {
       setCollector(collector);
     }
   }, [collSearch, collector]);
+
+  //---> Single collector activity log handle
+  const handleCollectorActivityLog = (data) => {
+    navigate(`/activity/${data?.id}`, {
+      state: { ...data, role: "collector" },
+    });
+  };
 
   const columns = React.useMemo(
     () => [
@@ -195,6 +206,15 @@ const Collector = () => {
                   </div>
                 </li>
               )}
+
+              <li onClick={() => handleCollectorActivityLog(original)}>
+                <div className="dropdown-item">
+                  <div className="customerAction">
+                    <ClockHistory />
+                    <p className="actionP">{t("activityLog")}</p>
+                  </div>
+                </div>
+              </li>
             </ul>
           </div>
         ),

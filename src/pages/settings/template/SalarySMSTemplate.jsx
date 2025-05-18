@@ -44,73 +44,67 @@ function SalarySMSTemplate() {
 
   return (
     <div>
-      <div className="py-4">
-        <div className="writeMessageSection">
-          <div className="messageStatus d-flex justify-content-between">
-            <div className="sending-status">
-              <h4> {t("SalarySMSTemplate")} </h4>
-              <div className="displayGrid1">
-                <div className="message_radio">
-                  <input
-                    type="radio"
-                    name="salarySMS"
-                    id="onTemplate"
-                    checked={salarySMS}
-                    onChange={() => setSalarySMS(true)}
-                  />
-                  <label htmlFor="onTemplate">{t("ON")}</label>
-                </div>
+      <div className="writeMessageSection">
+        <div className="messageStatus d-flex justify-content-between">
+          <div className="sending-status">
+            <h4> {t("SalarySMSTemplate")} </h4>
+            <div className="displayGrid1">
+              <div className="message_radio">
+                <input
+                  type="radio"
+                  name="salarySMS"
+                  id="onTemplate"
+                  checked={salarySMS}
+                  onChange={() => setSalarySMS(true)}
+                />
+                <label htmlFor="onTemplate">{t("ON")}</label>
+              </div>
 
-                <div className="message_radio">
-                  <input
-                    type="radio"
-                    name="salarySMS"
-                    id="offTemplate"
-                    checked={!salarySMS}
-                    onChange={() => setSalarySMS(false)}
-                  />
-                  <label htmlFor="offTemplate">{t("OFF")}</label>
-                </div>
+              <div className="message_radio">
+                <input
+                  type="radio"
+                  name="salarySMS"
+                  id="offTemplate"
+                  checked={!salarySMS}
+                  onChange={() => setSalarySMS(false)}
+                />
+                <label htmlFor="offTemplate">{t("OFF")}</label>
               </div>
             </div>
-            <div className="message-sending-type">
-              <h4> {t("sendingMessageType")} </h4>
-              <input
-                name="salarySmsSendingType"
-                type="radio"
-                checked={salarySendingType === "nonMasking"}
-                value={"nonMasking"}
-                onChange={(event) => setSalarySendingType(event.target.value)}
-              />{" "}
-              {t("nonMasking")} {"              "}
-              <input
-                name="salarySmsSendingType"
-                type="radio"
-                checked={salarySendingType === "masking"}
-                value={"masking"}
-                onChange={(event) => setSalarySendingType(event.target.value)}
-              />{" "}
-              {t("masking")} {"              "}
-              <input
-                name="salarySmsSendingType"
-                type="radio"
-                checked={salarySendingType === "fixedNumber"}
-                value={"fixedNumber"}
-                onChange={(event) => setSalarySendingType(event.target.value)}
-              />{" "}
-              {t("fixedNumber")} {"              "}
-            </div>
+          </div>
+          <div className="message-sending-type">
+            <h4> {t("sendingMessageType")} </h4>
+            <input
+              name="salarySmsSendingType"
+              type="radio"
+              checked={salarySendingType === "nonMasking"}
+              value={"nonMasking"}
+              onChange={(event) => setSalarySendingType(event.target.value)}
+            />{" "}
+            {t("nonMasking")} {"              "}
+            <input
+              name="salarySmsSendingType"
+              type="radio"
+              checked={salarySendingType === "masking"}
+              value={"masking"}
+              onChange={(event) => setSalarySendingType(event.target.value)}
+            />{" "}
+            {t("masking")} {"              "}
+            <input
+              name="salarySmsSendingType"
+              type="radio"
+              checked={salarySendingType === "fixedNumber"}
+              value={"fixedNumber"}
+              onChange={(event) => setSalarySendingType(event.target.value)}
+            />{" "}
+            {t("fixedNumber")} {"              "}
           </div>
         </div>
-        <hr />
-        <button
-          type="submit"
-          onClick={handleSubmit}
-          className="btn btn-success"
-        >
-          {loading ? <Loader /> : t("save")}
-        </button>
       </div>
+      <hr />
+      <button type="submit" onClick={handleSubmit} className="btn btn-success">
+        {loading ? <Loader /> : t("save")}
+      </button>
     </div>
   );
 }

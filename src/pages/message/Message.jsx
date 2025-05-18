@@ -133,6 +133,21 @@ export default function Message() {
   const mobileNumRef = useRef();
   const smsRef = useRef();
 
+  const messageTypes = [
+    {
+      label: t("nonMasking"),
+      value: "nonMasking",
+    },
+    {
+      label: t("masking"),
+      value: "masking",
+    },
+    {
+      label: t("fixedNumber"),
+      value: "fixedNumber",
+    },
+  ];
+
   const getIspownerwitSMS = useCallback(async () => {
     setIsrefresh(true);
     try {
@@ -489,7 +504,6 @@ export default function Message() {
 
   return (
     <>
-      <SMSPurchase />
       <Sidebar />
       <ToastContainer position="top-right" theme="colored" />
       <div className={useDash.dashboardWrapper}>
@@ -561,49 +575,23 @@ export default function Message() {
                         </div>
                       </div>
 
-                      <div
-                        className="message-sending-type"
-                        style={{ fontWeight: "normal" }}
-                      >
-                        <h4> {t("sendingMessageType")} </h4>
-                        <div className="d-flex justify-content-center align-items-center">
-                          <div className="me-2">
-                            <input
-                              name="messageSendingType"
-                              type="radio"
-                              checked={sendingType === "nonMasking"}
-                              value={"nonMasking"}
-                              onChange={(event) =>
-                                setSendingType(event.target.value)
-                              }
-                            />
-                            &nbsp;
-                            {t("nonMasking")}
-                          </div>
-                          <div className="me-2">
-                            <input
-                              name="messageSendingType"
-                              type="radio"
-                              value={"masking"}
-                              onChange={(event) =>
-                                setSendingType(event.target.value)
-                              }
-                            />
-                            &nbsp;
-                            {t("masking")}
-                          </div>
-                          <div>
-                            <input
-                              name="messageSendingType"
-                              type="radio"
-                              value={"fixedNumber"}
-                              onChange={(event) =>
-                                setSendingType(event.target.value)
-                              }
-                            />
-                            &nbsp;
-                            {t("fixedNumber")}
-                          </div>
+                      <div className="message-sending-type">
+                        <h4>{t("sendingMessageType")}</h4>
+                        <div className="smsType">
+                          {messageTypes.map((type) => (
+                            <div className="message_radio" key={type.value}>
+                              <input
+                                type="radio"
+                                id={type.value}
+                                value={type.value}
+                                onChange={(event) =>
+                                  setSendingType(event.target.value)
+                                }
+                                checked={sendingType === type.value}
+                              />
+                              <label htmlFor={type.value}>{type.label}</label>
+                            </div>
+                          ))}
                         </div>
                       </div>
                     </div>
@@ -1176,6 +1164,8 @@ export default function Message() {
           </div>
         </div>
       </div>
+
+      <SMSPurchase />
       <MessageAlert ispOwner={sms} />
 
       {/* sms purchase board modal */}
