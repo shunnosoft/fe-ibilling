@@ -23,10 +23,27 @@ import useISPowner from "../../../hooks/useISPOwner";
 import { addManager } from "../../../features/apiCalls";
 import InformationTooltip from "../../../components/common/tooltipInformation/InformationTooltip";
 import { areasSubareasChecked } from "../../staff/staffCustomFucn";
+import useDataInputOption from "../../../hooks/useDataInputOption";
+import ComponentCustomModal from "../../../components/common/customModal/ComponentCustomModal";
 
 const ManagerPost = ({ show, setShow }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+
+  // call the data input option function
+  const inputPermission = {
+    name: true,
+    mobile: true,
+    address: true,
+    email: true,
+    nid: true,
+    status: true,
+    addStaff: true,
+    salary: true,
+  };
+
+  //---> Get form input option from hook
+  const dataInputOption = useDataInputOption(inputPermission, null);
 
   //manager Validate with yup
   const managerValidate = Yup.object({
@@ -136,12 +153,6 @@ const ManagerPost = ({ show, setShow }) => {
 
   //added manager function handler
   const managerCreateHandler = (data) => {
-    if (areaSubareas.filter((val) => val.isChecked).length === 0) {
-      setIsLoading(false);
-      toast.warn(t("selectArea"));
-      return;
-    }
-
     let temp = {};
     permissions.forEach((val) => {
       temp[val.value] = val.isChecked;
@@ -170,222 +181,157 @@ const ManagerPost = ({ show, setShow }) => {
 
   return (
     <>
-      <Modal
-        show={show}
-        onHide={closeHandler}
-        backdrop="static"
-        keyboard={false}
-        size="xl"
+      <ComponentCustomModal
+        {...{ show, setShow, size: "xl", header: t("addManager") }}
       >
-        <ModalHeader closeButton>
-          <ModalTitle>
-            <h4 className="modal-title" id="exampleModalLabel">
-              {t("addManager")}
-            </h4>
-          </ModalTitle>
-        </ModalHeader>
-        <ModalBody>
-          <Formik
-            initialValues={{
-              name: "",
-              mobile: "",
-              address: "",
-              email: "",
-              nid: "",
-              salary: "",
-            }}
-            validationSchema={managerValidate}
-            onSubmit={(values) => {
-              managerCreateHandler(values);
-            }}
-          >
-            {() => (
-              <Form id="managerPost">
-                <Tabs
-                  defaultActiveKey={"addManager"}
-                  id="uncontrolled-tab-example"
-                  className="mb-3"
-                >
-                  {/* manager profile information tab start */}
-                  <Tab eventKey="addManager" title={t("profile")}>
-                    <div className="d-flex justify-content-center">
-                      <div className="displayGrid col-6">
-                        <FtextField
-                          type="text"
-                          label={t("managerName")}
-                          name="name"
-                        />
-                        <FtextField
-                          type="text"
-                          label={t("managerMobile")}
-                          name="mobile"
-                        />
+        <Formik
+          initialValues={{
+            ...dataInputOption?.inputInitialValues,
+          }}
+          validationSchema={dataInputOption?.validationSchema}
+          onSubmit={(values) => {
+            managerCreateHandler(values);
+          }}
+        >
+          {() => (
+            <Form id="managerPost">
+              <Tabs
+                defaultActiveKey={"addManager"}
+                id="uncontrolled-tab-example"
+                className="mb-3"
+              >
+                {/* manager profile information tab start */}
+                <Tab eventKey="addManager" title={t("profile")}>
+                  <div className="d-flex justify-content-center">
+                    <div className="displayGrid col-6">
+                      {dataInputOption?.inputOption.map(
+                        (item) => item?.isVisible && <FtextField {...item} />
+                      )}
+                    </div>
+                  </div>
+                </Tab>
+                {/* manager profile information tab end */}
 
-                        <FtextField
-                          type="text"
-                          label={t("managerAddress")}
-                          name="address"
-                        />
-                        <FtextField
-                          type="email"
-                          label={t("managerEmail")}
-                          name="email"
-                        />
-
-                        <FtextField
-                          type="text"
-                          label={t("managerNID")}
-                          name="nid"
-                        />
-
-                        <div className="autoDisable">
+                {/* manager area select tab start */}
+                <Tab eventKey="area" title={t("area")}>
+                  <div className="AllAreaClass">
+                    {area?.map((val, key) => (
+                      <div key={key}>
+                        <div className="form-check">
                           <input
-                            id="addStaff"
-                            type="checkBox"
-                            checked={addStaffStatus}
-                            onChange={(e) =>
-                              setAddStaffStatus(e.target.checked)
+                            type="checkbox"
+                            className="form-check-input"
+                            name="area"
+                            id={val.id}
+                            onChange={areaSubareaSelectHandler}
+                            checked={
+                              areaSubareas &&
+                              areasSubareasChecked(val.id, areaSubareas)
                             }
                           />
-                          <label className="ps-2" htmlFor="addStaff">
-                            {t("addStaff")}
+
+                          <label htmlFor={val.id} className="areaParent ms-1">
+                            {val.name}
                           </label>
                         </div>
 
-                        {addStaffStatus && (
-                          <FtextField
-                            type="number"
-                            label={t("salary")}
-                            name="salary"
-                          />
+                        {areaSubareas?.map(
+                          (subarea, k) =>
+                            subarea.area === val.id && (
+                              <div key={k} className="displayFlex">
+                                <input
+                                  type="checkbox"
+                                  id={subarea.id}
+                                  onChange={areaSubareaSelectHandler}
+                                  checked={subarea.isChecked}
+                                />
+
+                                <label
+                                  htmlFor={subarea.id}
+                                  className="text-secondary"
+                                >
+                                  {subarea.name}
+                                </label>
+                              </div>
+                            )
                         )}
                       </div>
+                    ))}
+                  </div>
+                </Tab>
+                {/* manager area select tab end */}
+
+                {/* manager permission select tab start */}
+                <Tab eventKey="permission" title={t("permissions")}>
+                  <div className="displayGrid3">
+                    <div className="CheckboxContainer">
+                      <input
+                        type="checkbox"
+                        className="CheckBox"
+                        name="allPermissions"
+                        onChange={managerPermissionHandler}
+                        id="selectAllPermissions"
+                        checked={permissions.every((item) => item.isChecked)}
+                      />
+                      <label
+                        htmlFor="selectAllPermissions"
+                        className="checkboxLabel text-info fw-bold"
+                      >
+                        {t("allPermission")}
+                      </label>
                     </div>
-                  </Tab>
-                  {/* manager profile information tab end */}
 
-                  {/* manager area select tab start */}
-                  <Tab eventKey="area" title={t("area")}>
-                    <div className="AllAreaClass">
-                      {area?.map((val, key) => (
-                        <div key={key}>
-                          <div className="form-check">
-                            <input
-                              type="checkbox"
-                              className="form-check-input"
-                              name="area"
-                              id={val.id}
-                              onChange={areaSubareaSelectHandler}
-                              checked={
-                                areaSubareas &&
-                                areasSubareasChecked(val.id, areaSubareas)
-                              }
-                            />
-
-                            <label htmlFor={val.id} className="areaParent ms-1">
-                              {val.name}
-                            </label>
-                          </div>
-
-                          {areaSubareas?.map(
-                            (subarea, k) =>
-                              subarea.area === val.id && (
-                                <div key={k} className="displayFlex">
-                                  <input
-                                    type="checkbox"
-                                    id={subarea.id}
-                                    onChange={areaSubareaSelectHandler}
-                                    checked={subarea.isChecked}
-                                  />
-
-                                  <label
-                                    htmlFor={subarea.id}
-                                    className="text-secondary"
-                                  >
-                                    {subarea.name}
-                                  </label>
-                                </div>
-                              )
-                          )}
+                    {permissions.map((val, key) => (
+                      <div
+                        className="CheckboxContainer d-flex justify-content-between"
+                        key={key}
+                      >
+                        <div>
+                          <input
+                            type="checkbox"
+                            className="CheckBox"
+                            name={val.value}
+                            checked={val.isChecked}
+                            onChange={managerPermissionHandler}
+                            id={val.value + key}
+                          />
+                          <label
+                            htmlFor={val.value + key}
+                            className="checkboxLabel"
+                          >
+                            {t(val.label)}
+                          </label>
                         </div>
-                      ))}
-                    </div>
-                  </Tab>
-                  {/* manager area select tab end */}
 
-                  {/* manager permission select tab start */}
-                  <Tab eventKey="permission" title={t("permissions")}>
-                    <div className="displayGrid3">
-                      <div className="CheckboxContainer">
-                        <input
-                          type="checkbox"
-                          className="CheckBox"
-                          name="allPermissions"
-                          onChange={managerPermissionHandler}
-                          id="selectAllPermissions"
-                          checked={permissions.every((item) => item.isChecked)}
-                        />
-                        <label
-                          htmlFor="selectAllPermissions"
-                          className="checkboxLabel text-info fw-bold"
-                        >
-                          {t("allPermission")}
-                        </label>
+                        {/* there is information to grant permission tooltip */}
+                        {val?.info && <InformationTooltip data={val} />}
                       </div>
+                    ))}
+                  </div>
+                </Tab>
+                {/* manager permission select tab start */}
+              </Tabs>
 
-                      {permissions.map((val, key) => (
-                        <div
-                          className="CheckboxContainer d-flex justify-content-between"
-                          key={key}
-                        >
-                          <div>
-                            <input
-                              type="checkbox"
-                              className="CheckBox"
-                              name={val.value}
-                              checked={val.isChecked}
-                              onChange={managerPermissionHandler}
-                              id={val.value + key}
-                            />
-                            <label
-                              htmlFor={val.value + key}
-                              className="checkboxLabel"
-                            >
-                              {t(val.label)}
-                            </label>
-                          </div>
-
-                          {/* there is information to grant permission tooltip */}
-                          {val?.info && <InformationTooltip data={val} />}
-                        </div>
-                      ))}
-                    </div>
-                  </Tab>
-                  {/* manager permission select tab start */}
-                </Tabs>
-              </Form>
-            )}
-          </Formik>
-        </ModalBody>
-        <ModalFooter>
-          <div className="displayGrid1">
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={closeHandler}
-            >
-              {t("cancel")}
-            </button>
-            <button
-              type="submit"
-              form="managerPost"
-              className="btn btn-primary"
-            >
-              {isLoading ? <Loader /> : t("submit")}
-            </button>
-          </div>
-        </ModalFooter>
-      </Modal>
+              <div className="displayGrid1 float-end mt-4">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={closeHandler}
+                >
+                  {t("cancel")}
+                </button>
+                <button
+                  type="submit"
+                  form="managerPost"
+                  className="btn btn-primary"
+                >
+                  {isLoading ? <Loader /> : t("submit")}
+                </button>
+              </div>
+            </Form>
+          )}
+        </Formik>
+      </ComponentCustomModal>
     </>
   );
 };

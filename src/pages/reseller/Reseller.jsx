@@ -53,6 +53,7 @@ import FormatNumber from "../../components/common/NumberFormat";
 import ResellerEdit from "./resellerModals/ResellerEdit/ResellerEdit";
 import { csutomerWebhookRegister } from "../../features/apiCallAdmin";
 import PlayTutorial from "../tutorial/PlayTutorial";
+import { badge } from "../../components/common/Utils";
 
 const Reseller = () => {
   const { t } = useTranslation();
@@ -152,7 +153,7 @@ const Reseller = () => {
   const columns = React.useMemo(
     () => [
       {
-        width: "8%",
+        width: "5%",
         Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
@@ -169,18 +170,23 @@ const Reseller = () => {
         accessor: "mobile",
       },
       {
-        width: "19%",
-        Header: t("address"),
-        accessor: "address",
-      },
-
-      {
-        width: "16%",
+        width: "10%",
         Header: t("email"),
         accessor: "email",
       },
       {
-        width: "12%",
+        width: "19%",
+        Header: t("address"),
+        accessor: "address",
+      },
+      {
+        width: "10%",
+        Header: t("status"),
+        accessor: "status",
+        Cell: ({ cell: { value } }) => badge(value),
+      },
+      {
+        width: "10%",
         Header: t("customer"),
         accessor: "customerCount",
       },

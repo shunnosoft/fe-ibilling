@@ -486,7 +486,7 @@ const ResellerPost = ({ show, setShow }) => {
                         >
                           <option value="">{t("selectType")}</option>
 
-                          <option value="percentage">{t("Percentage")}</option>
+                          <option value="percentage">{t("percentage")}</option>
                           <option value="fixedRate">{t("fixedRate")}</option>
                         </select>
                       </div>

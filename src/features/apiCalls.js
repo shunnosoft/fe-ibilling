@@ -1213,13 +1213,14 @@ export const addCollector = async (
   addStaffStatus,
   setShow
 ) => {
+  setIsLoading(true);
   try {
     const res = await apiLink.post(
       `ispOwner/collector?addStaff=${addStaffStatus}`,
       data
     );
+
     dispatch(addCollectorSuccess(res.data));
-    setIsLoading(false);
     langMessage(
       "success",
       "কালেক্টর সংযুক্ত সফল হয়েছে",
@@ -1227,11 +1228,9 @@ export const addCollector = async (
     );
     setShow(false);
   } catch (err) {
-    if (err.response) {
-      setIsLoading(false);
-      toast.error(err.response.data.message);
-    }
+    toast.error(err.message);
   }
+  setIsLoading(false);
 };
 
 export const editCollector = async (dispatch, data, setIsLoading, setShow) => {

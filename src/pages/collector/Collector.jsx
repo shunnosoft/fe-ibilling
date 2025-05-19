@@ -42,6 +42,7 @@ import PasswordReset from "../../components/modals/passwordReset/PasswordReset";
 import { getSubAreasApi } from "../../features/actions/customerApiCall";
 import PrevBalanceReport from "./collectorCRUD/PrevBalanceReport";
 import PlayTutorial from "../tutorial/PlayTutorial";
+import { badge } from "../../components/common/Utils";
 
 const Collector = () => {
   const { t } = useTranslation();
@@ -124,11 +125,6 @@ const Collector = () => {
       },
       {
         width: "19%",
-        Header: t("address"),
-        accessor: "address",
-      },
-      {
-        width: "19%",
         Header: t("mobile"),
         accessor: "mobile",
       },
@@ -137,12 +133,21 @@ const Collector = () => {
         Header: t("email"),
         accessor: "email",
       },
-
+      {
+        width: "19%",
+        Header: t("address"),
+        accessor: "address",
+      },
+      {
+        width: "10%",
+        Header: t("status"),
+        accessor: "status",
+        Cell: ({ cell: { value } }) => badge(value),
+      },
       {
         width: "12%",
         Header: () => <div className="text-center">{t("action")}</div>,
         id: "option",
-
         Cell: ({ row: { original } }) => (
           <div className="d-flex justify-content-center align-items-center">
             <div className="dropdown">

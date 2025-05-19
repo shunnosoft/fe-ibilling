@@ -38,6 +38,7 @@ import ManagerEdit from "./ManagerCRUD/ManagerEdit";
 import { getSubAreasApi } from "../../features/actions/customerApiCall";
 import PlayTutorial from "../tutorial/PlayTutorial";
 import { useNavigate } from "react-router-dom";
+import { badge } from "../../components/common/Utils";
 
 const Manager = () => {
   const { t } = useTranslation();
@@ -89,7 +90,7 @@ const Manager = () => {
   const columns = useMemo(
     () => [
       {
-        width: "8%",
+        width: "5%",
         Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
@@ -102,11 +103,6 @@ const Manager = () => {
       },
       {
         width: "19%",
-        Header: t("address"),
-        accessor: "address",
-      },
-      {
-        width: "19%",
         Header: t("mobile"),
         accessor: "mobile",
       },
@@ -115,7 +111,17 @@ const Manager = () => {
         Header: t("email"),
         accessor: "email",
       },
-
+      {
+        width: "19%",
+        Header: t("address"),
+        accessor: "address",
+      },
+      {
+        width: "10%",
+        Header: t("status"),
+        accessor: "status",
+        Cell: ({ cell: { value } }) => badge(value),
+      },
       {
         width: "12%",
         Header: () => <div className="text-center">{t("action")}</div>,
