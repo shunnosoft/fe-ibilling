@@ -86,32 +86,34 @@ const MessageLog = () => {
                 </div>
               </FourGround>
               <FourGround>
-                <Tabs
-                  defaultActiveKey={"nonMasking"}
-                  id="uncontrolled-tab-example"
-                >
-                  <Tab eventKey="nonMasking" title={t("nonMasking")}>
-                    <NonMasking
-                      nonMaskingLoading={nonMasking}
-                      setNonMaskingLoading={setNonMasking}
-                      activeKeys={activeKeys}
-                    />
-                  </Tab>
-                  <Tab eventKey="masking" title={t("masking")}>
-                    <Masking
-                      maskingLoading={masking}
-                      setMaskingLoading={setMasking}
-                      activeKeys={activeKeys}
-                    />
-                  </Tab>
-                  <Tab eventKey="fixedNumber" title={t("fixedNumber")}>
-                    <FixedNumber
-                      fixedNumberLoading={fixedNumber}
-                      setFixedNumberLoading={setFixedNumber}
-                      activeKeys={activeKeys}
-                    />
-                  </Tab>
-                </Tabs>
+                <div className="collectorWrapper mt-2 p-3">
+                  <Tabs
+                    defaultActiveKey={"nonMasking"}
+                    id="uncontrolled-tab-example"
+                  >
+                    <Tab eventKey="nonMasking" title={t("nonMasking")}>
+                      <NonMasking
+                        nonMaskingLoading={nonMasking}
+                        setNonMaskingLoading={setNonMasking}
+                        activeKeys={activeKeys}
+                      />
+                    </Tab>
+                    <Tab eventKey="masking" title={t("masking")}>
+                      <Masking
+                        maskingLoading={masking}
+                        setMaskingLoading={setMasking}
+                        activeKeys={activeKeys}
+                      />
+                    </Tab>
+                    <Tab eventKey="fixedNumber" title={t("fixedNumber")}>
+                      <FixedNumber
+                        fixedNumberLoading={fixedNumber}
+                        setFixedNumberLoading={setFixedNumber}
+                        activeKeys={activeKeys}
+                      />
+                    </Tab>
+                  </Tabs>
+                </div>
               </FourGround>
               <Footer />
             </FontColor>

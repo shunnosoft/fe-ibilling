@@ -715,124 +715,128 @@ const Diposit = () => {
               </FourGround>
 
               <FourGround>
-                <div className="mt-2">
-                  <Accordion alwaysOpen activeKey={activeKeys}>
-                    <Accordion.Item eventKey="filter">
-                      <Accordion.Body>
-                        <div className="displayGrid6">
-                          <div>
-                            <DatePicker
-                              className="form-control mw-100 mt-0"
-                              selected={filterDate}
-                              onChange={(date) => setFilterDate(date)}
-                              dateFormat="MMM-yyyy"
-                              showMonthYearPicker
-                              showFullMonthYearPicker
-                              maxDate={new Date()}
-                              minDate={new Date(userData?.createdAt)}
-                            />
-                          </div>
-
-                          <select
-                            className="form-select mt-0"
-                            onChange={depositorHandler}
-                          >
-                            <option defaultValue>{t("all collector")}</option>
-                            {manager.map((val) => (
-                              <option name={val.name} value={val?.user}>
-                                {val?.name} (Manager)
-                              </option>
-                            ))}
-                            {allCollector?.map((c, key) => (
-                              <option key={key} name={c.name} value={c.user}>
-                                {c.name}
-                              </option>
-                            ))}
-                          </select>
-
-                          <div>
-                            <DatePicker
-                              className="form-control"
-                              selected={dateStart}
-                              onChange={(date) => setStartDate(date)}
-                              dateFormat="MMM dd yyyy"
-                              minDate={selectDate}
-                              maxDate={
-                                lastDate.getMonth() + 1 === today.getMonth() + 1
-                                  ? today
-                                  : lastDate
-                              }
-                              placeholderText={t("selectBillDate")}
-                            />
-                          </div>
-
-                          <div>
-                            <DatePicker
-                              className="form-control"
-                              selected={dateEnd}
-                              onChange={(date) => setEndDate(date)}
-                              dateFormat="MMM dd yyyy"
-                              minDate={selectDate}
-                              maxDate={
-                                lastDate.getMonth() + 1 === today.getMonth() + 1
-                                  ? today
-                                  : lastDate
-                              }
-                              placeholderText={t("selectBillDate")}
-                            />
-                          </div>
-
-                          <div className="">
-                            <button
-                              className="btn btn-outline-primary w-140"
-                              type="button"
-                              onClick={onClickFilter}
-                            >
-                              {t("filter")}
-                            </button>
-                          </div>
-                        </div>
-                      </Accordion.Body>
-                    </Accordion.Item>
-                  </Accordion>
-
-                  <div className="collectorWrapper pb-2">
-                    <div className="addCollector">
-                      <div className="d-none">
-                        <PrintCustomer
-                          filterData={filterData}
-                          currentCustomers={mainData}
-                          ref={componentRef}
-                        />
-                      </div>
-
-                      <div className="table-section">
-                        <Tabs
-                          defaultActiveKey="deposit"
-                          id="uncontrolled-tab-example"
-                          className="mb-3"
+                <div className="collectorWrapper mt-2 p-3">
+                  <Tabs
+                    defaultActiveKey="deposit"
+                    id="uncontrolled-tab-example"
+                  >
+                    <Tab eventKey="deposit" title="Deposit">
+                      <Accordion alwaysOpen activeKey={activeKeys}>
+                        <Accordion.Item
+                          eventKey="filter"
+                          className="accordionBorder"
                         >
-                          <Tab eventKey="deposit" title="Deposit">
-                            <Table
-                              isLoading={isLoading}
-                              columns={columns}
-                              data={mainData}
-                              customComponent={allDepositSum}
-                            ></Table>
-                          </Tab>
-                          <Tab
-                            eventKey="pendingDeposit"
-                            title="Pending Deposit"
-                          >
-                            <Table
-                              isLoading={isLoading}
-                              columns={pendingColumns}
-                              data={pendingDeposit}
-                            ></Table>
-                          </Tab>
-                        </Tabs>
+                          <Accordion.Body className="accordionPadding pt-2">
+                            <div className="displayGrid6">
+                              <div>
+                                <DatePicker
+                                  className="form-control mw-100 mt-0"
+                                  selected={filterDate}
+                                  onChange={(date) => setFilterDate(date)}
+                                  dateFormat="MMM-yyyy"
+                                  showMonthYearPicker
+                                  showFullMonthYearPicker
+                                  maxDate={new Date()}
+                                  minDate={new Date(userData?.createdAt)}
+                                />
+                              </div>
+
+                              <select
+                                className="form-select mt-0"
+                                onChange={depositorHandler}
+                              >
+                                <option defaultValue>
+                                  {t("all collector")}
+                                </option>
+                                {manager.map((val) => (
+                                  <option name={val.name} value={val?.user}>
+                                    {val?.name} (Manager)
+                                  </option>
+                                ))}
+                                {allCollector?.map((c, key) => (
+                                  <option
+                                    key={key}
+                                    name={c.name}
+                                    value={c.user}
+                                  >
+                                    {c.name}
+                                  </option>
+                                ))}
+                              </select>
+
+                              <div>
+                                <DatePicker
+                                  className="form-control"
+                                  selected={dateStart}
+                                  onChange={(date) => setStartDate(date)}
+                                  dateFormat="MMM dd yyyy"
+                                  minDate={selectDate}
+                                  maxDate={
+                                    lastDate.getMonth() + 1 ===
+                                    today.getMonth() + 1
+                                      ? today
+                                      : lastDate
+                                  }
+                                  placeholderText={t("selectBillDate")}
+                                />
+                              </div>
+
+                              <div>
+                                <DatePicker
+                                  className="form-control"
+                                  selected={dateEnd}
+                                  onChange={(date) => setEndDate(date)}
+                                  dateFormat="MMM dd yyyy"
+                                  minDate={selectDate}
+                                  maxDate={
+                                    lastDate.getMonth() + 1 ===
+                                    today.getMonth() + 1
+                                      ? today
+                                      : lastDate
+                                  }
+                                  placeholderText={t("selectBillDate")}
+                                />
+                              </div>
+
+                              <div className="">
+                                <button
+                                  className="btn btn-outline-primary w-140"
+                                  type="button"
+                                  onClick={onClickFilter}
+                                >
+                                  {t("filter")}
+                                </button>
+                              </div>
+                            </div>
+                          </Accordion.Body>
+                        </Accordion.Item>
+                      </Accordion>
+
+                      <div className="addCollector">
+                        <Table
+                          isLoading={isLoading}
+                          columns={columns}
+                          data={mainData}
+                          customComponent={allDepositSum}
+                        ></Table>
                       </div>
-                    </div>
+                    </Tab>
+
+                    <Tab eventKey="pendingDeposit" title="Pending Deposit">
+                      <Table
+                        isLoading={isLoading}
+                        columns={pendingColumns}
+                        data={pendingDeposit}
+                      ></Table>
+                    </Tab>
+                  </Tabs>
+
+                  <div className="d-none">
+                    <PrintCustomer
+                      filterData={filterData}
+                      currentCustomers={mainData}
+                      ref={componentRef}
+                    />
                   </div>
                 </div>
 

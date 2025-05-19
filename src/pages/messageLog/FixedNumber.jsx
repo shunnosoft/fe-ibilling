@@ -228,15 +228,12 @@ const FixedNumber = ({
           </Accordion.Body>
         </Accordion.Item>
       </Accordion>
-      <div className="collectorWrapper pb-2">
-        <div className="addCollector">
-          <Table
-            isLoading={fixedNumberLoading}
-            columns={columns}
-            data={fixedNumber}
-          ></Table>
-        </div>
-      </div>
+      <Table
+        isLoading={fixedNumberLoading}
+        columns={columns}
+        data={fixedNumber}
+      ></Table>
+
       <MessageDetails
         messageId={fixedId}
         status="fixedNumberMessage"

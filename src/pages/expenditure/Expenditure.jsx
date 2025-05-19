@@ -99,6 +99,8 @@ const Expenditure = () => {
   // end date state
   const [dateEnd, setEndDate] = useState(today);
 
+  const [changeTab, setChangeTab] = useState("expenditure");
+
   // filter value state
   const [filterOptions, setFilterOption] = useState({
     name: "",
@@ -135,8 +137,11 @@ const Expenditure = () => {
 
   // reload handler
   const reloadHandler = () => {
-    getAllExpenditure(dispatch, ispOwnerId, setExpenditureLoading);
-    getExpenditureSectors(dispatch, ispOwnerId, setIsloading);
+    changeTab === "expenditure" &&
+      getAllExpenditure(dispatch, ispOwnerId, setExpenditureLoading);
+
+    changeTab === "expenditurePurpose" &&
+      getExpenditureSectors(dispatch, ispOwnerId, setIsloading);
   };
 
   // find expenditure purpose method
@@ -160,7 +165,7 @@ const Expenditure = () => {
   const expenditureColumns = React.useMemo(
     () => [
       {
-        width: "8%",
+        width: "5%",
         Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
@@ -197,29 +202,20 @@ const Expenditure = () => {
         Header: t("amount"),
         accessor: "amount",
       },
-
       {
-        width: "12%",
+        width: "15%",
         Header: t("date"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("YYYY/MM/DD hh:mm a");
+          return moment(value).format("YYYY/MM/DD hh:mm A");
         },
       },
-
       {
         width: "7%",
         Header: () => <div className="text-center">{t("action")}</div>,
         id: "option",
-
         Cell: ({ row: { original } }) => (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
+          <div className="d-flex justify-content-center align-items-center">
             <ThreeDots
               className="dropdown-toggle ActionDots"
               id="areaDropdown"
@@ -436,24 +432,26 @@ const Expenditure = () => {
           <div className="container">
             <FontColor>
               <div className="collectorTitle d-flex justify-content-between px-4">
-                <h2>{t("expense")}</h2>
+                <div>{t("expense")}</div>
 
                 <div
                   style={{ height: "45px" }}
                   className="d-flex align-items-center"
                 >
-                  <div
-                    onClick={() => {
-                      if (!activeKeys) {
-                        setActiveKeys("filter");
-                      } else {
-                        setActiveKeys("");
-                      }
-                    }}
-                    title={t("filter")}
-                  >
-                    <FilterCircle className="addcutmButton" />
-                  </div>
+                  {changeTab === "expenditure" && (
+                    <div
+                      onClick={() => {
+                        if (!activeKeys) {
+                          setActiveKeys("filter");
+                        } else {
+                          setActiveKeys("");
+                        }
+                      }}
+                      title={t("filter")}
+                    >
+                      <FilterCircle className="addcutmButton" />
+                    </div>
+                  )}
 
                   <div className="reloadBtn">
                     {isLoading ? (
@@ -471,27 +469,30 @@ const Expenditure = () => {
                     <div id="example-collapse-text">
                       <Card className="cardCollapse border-0">
                         <div className="d-flex align-items-center">
-                          <div title={t("addExpense")}>
-                            <PlusCircleDotted
-                              className="addcutmButton"
-                              onClick={() => {
-                                setModalStatus("createExpenditure");
-                                setShow(true);
-                              }}
-                            />
-                          </div>
-
-                          {role !== "collector" && (
-                            <div title={t("addExpenseSector")}>
-                              <PlusCircleFill
+                          {changeTab === "expenditure" && (
+                            <div title={t("addExpense")}>
+                              <PlusCircleDotted
                                 className="addcutmButton"
                                 onClick={() => {
-                                  setModalStatus("createPourpose");
+                                  setModalStatus("createExpenditure");
                                   setShow(true);
                                 }}
                               />
                             </div>
                           )}
+
+                          {changeTab === "expenditurePurpose" &&
+                            role !== "collector" && (
+                              <div title={t("addExpenseSector")}>
+                                <PlusCircleFill
+                                  className="addcutmButton"
+                                  onClick={() => {
+                                    setModalStatus("createPourpose");
+                                    setShow(true);
+                                  }}
+                                />
+                              </div>
+                            )}
 
                           <div title={t("print")}>
                             <ReactToPrint
@@ -544,140 +545,131 @@ const Expenditure = () => {
                 </div>
                 {/* </div> */}
 
-                <div className="collectorWrapper mt-2 py-2">
-                  <div className="addCollector">
-                    <Tabs
-                      defaultActiveKey="expenditure"
-                      id="uncontrolled-tab-example"
-                      className=" mt-1"
-                    >
-                      <Tab eventKey="expenditure" title={t("expense")}>
-                        <Accordion alwaysOpen activeKey={activeKeys}>
-                          <Accordion.Item
-                            eventKey="filter"
-                            className="accordionBorder"
-                          >
-                            <Accordion.Body className="accordionPadding">
-                              <div className="selectFilteringg">
-                                {role !== "collector" && (
-                                  <select
-                                    class="form-select"
-                                    aria-label="Default select example"
-                                    onChange={(event) =>
-                                      setFilterOption({
-                                        ...filterOptions,
-                                        name: event.target.value,
-                                      })
-                                    }
-                                  >
-                                    <option value="Select" selected>
-                                      {t("name")}
-                                    </option>
-                                    {ownerUsers.map((item) => {
-                                      for (const key in item) {
-                                        return (
-                                          (item[key].role === "manager" ||
-                                            item[key].role === "ispOwner" ||
-                                            item[key].role === "collector") && (
-                                            <option value={key}>
-                                              {item[key].name}
-                                            </option>
-                                          )
-                                        );
-                                      }
-                                    })}
-                                  </select>
-                                )}
-
+                <div className="collectorWrapper mt-2 p-3">
+                  <Tabs
+                    defaultActiveKey="expenditure"
+                    id="uncontrolled-tab-example"
+                    onSelect={(eventKey) => setChangeTab(eventKey)}
+                  >
+                    <Tab eventKey="expenditure" title={t("expense")}>
+                      <Accordion alwaysOpen activeKey={activeKeys}>
+                        <Accordion.Item
+                          eventKey="filter"
+                          className="accordionBorder"
+                        >
+                          <Accordion.Body className="accordionPadding">
+                            <div className="selectFilteringg">
+                              {role !== "collector" && (
                                 <select
-                                  className="form-select ms-2"
+                                  class="form-select"
                                   aria-label="Default select example"
                                   onChange={(event) =>
                                     setFilterOption({
                                       ...filterOptions,
-                                      expenditurePurpose: event.target.value,
+                                      name: event.target.value,
                                     })
                                   }
                                 >
                                   <option value="Select" selected>
-                                    {t("expenseSector")}
+                                    {t("name")}
                                   </option>
-                                  {expenditurePurpose.map((item, key) => (
-                                    <option value={item?.id}>
-                                      {item?.name}
-                                    </option>
-                                  ))}
+                                  {ownerUsers.map((item) => {
+                                    for (const key in item) {
+                                      return (
+                                        (item[key].role === "manager" ||
+                                          item[key].role === "ispOwner" ||
+                                          item[key].role === "collector") && (
+                                          <option value={key}>
+                                            {item[key].name}
+                                          </option>
+                                        )
+                                      );
+                                    }
+                                  })}
                                 </select>
-                                <div
-                                  style={{ margin: "0 5px" }}
-                                  className="dateDiv"
-                                >
-                                  <input
-                                    className="form-select"
-                                    type="date"
-                                    id="start"
-                                    name="trip-start"
-                                    value={moment(dateStart).format(
-                                      "YYYY-MM-DD"
-                                    )}
-                                    onChange={(e) => {
-                                      setStartDate(e.target.value);
-                                    }}
-                                  />
-                                </div>
-                                <div
-                                  style={{ margin: "0 5px" }}
-                                  className="dateDiv"
-                                >
-                                  <input
-                                    className="form-select"
-                                    type="date"
-                                    id="end"
-                                    name="trip-start"
-                                    value={moment(dateEnd).format("YYYY-MM-DD")}
-                                    onChange={(e) => {
-                                      setEndDate(e.target.value);
-                                    }}
-                                  />
-                                </div>
-                                <div>
-                                  <button
-                                    className="btn btn-outline-primary w-140 mt-2"
-                                    type="button"
-                                    onClick={onClickFilter}
-                                  >
-                                    {t("filter")}
-                                  </button>
-                                </div>
+                              )}
+
+                              <select
+                                className="form-select ms-2"
+                                aria-label="Default select example"
+                                onChange={(event) =>
+                                  setFilterOption({
+                                    ...filterOptions,
+                                    expenditurePurpose: event.target.value,
+                                  })
+                                }
+                              >
+                                <option value="Select" selected>
+                                  {t("expenseSector")}
+                                </option>
+                                {expenditurePurpose.map((item, key) => (
+                                  <option value={item?.id}>{item?.name}</option>
+                                ))}
+                              </select>
+                              <div
+                                style={{ margin: "0 5px" }}
+                                className="dateDiv"
+                              >
+                                <input
+                                  className="form-select"
+                                  type="date"
+                                  id="start"
+                                  name="trip-start"
+                                  value={moment(dateStart).format("YYYY-MM-DD")}
+                                  onChange={(e) => {
+                                    setStartDate(e.target.value);
+                                  }}
+                                />
                               </div>
-                            </Accordion.Body>
-                          </Accordion.Item>
-                        </Accordion>
-                        <div className="table-section">
-                          <Table
-                            isLoading={expenditureLoading}
-                            customComponent={customComponent}
-                            data={allExpenditures.reverse()}
-                            columns={expenditureColumns}
-                          ></Table>
-                        </div>
+                              <div
+                                style={{ margin: "0 5px" }}
+                                className="dateDiv"
+                              >
+                                <input
+                                  className="form-select"
+                                  type="date"
+                                  id="end"
+                                  name="trip-start"
+                                  value={moment(dateEnd).format("YYYY-MM-DD")}
+                                  onChange={(e) => {
+                                    setEndDate(e.target.value);
+                                  }}
+                                />
+                              </div>
+                              <div>
+                                <button
+                                  className="btn btn-outline-primary w-140 mt-2"
+                                  type="button"
+                                  onClick={onClickFilter}
+                                >
+                                  {t("filter")}
+                                </button>
+                              </div>
+                            </div>
+                          </Accordion.Body>
+                        </Accordion.Item>
+                      </Accordion>
+
+                      <Table
+                        isLoading={expenditureLoading}
+                        customComponent={customComponent}
+                        data={allExpenditures.reverse()}
+                        columns={expenditureColumns}
+                      ></Table>
+                    </Tab>
+                    {role !== "collector" && (
+                      <Tab
+                        eventKey="expenditurePurpose"
+                        title={t("expenseSector")}
+                      >
+                        <Table
+                          isLoading={isLoading}
+                          data={expenditurePurpose}
+                          columns={expenditurePurposeColumns}
+                        ></Table>
                       </Tab>
-                      {role !== "collector" && (
-                        <Tab
-                          eventKey="expenditurePurpose"
-                          title={t("expenseSector")}
-                        >
-                          <div className="table-section">
-                            <Table
-                              isLoading={isLoading}
-                              data={expenditurePurpose}
-                              columns={expenditurePurposeColumns}
-                            ></Table>
-                          </div>
-                        </Tab>
-                      )}
-                    </Tabs>
-                  </div>
+                    )}
+                  </Tabs>
                 </div>
               </FourGround>
             </FontColor>

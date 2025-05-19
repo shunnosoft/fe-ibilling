@@ -221,15 +221,12 @@ const Masking = ({ maskingLoading, setMaskingLoading, activeKeys }) => {
           </Accordion.Body>
         </Accordion.Item>
       </Accordion>
-      <div className="collectorWrapper pb-2">
-        <div className="addCollector">
-          <Table
-            isLoading={maskingLoading}
-            columns={columns}
-            data={masking}
-          ></Table>
-        </div>
-      </div>
+      <Table
+        isLoading={maskingLoading}
+        columns={columns}
+        data={masking}
+      ></Table>
+
       <MessageDetails
         messageId={maskingId}
         status="maskingNumberMessage"

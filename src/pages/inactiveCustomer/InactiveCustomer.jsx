@@ -368,50 +368,48 @@ const InactiveCustomer = ({
 
   return (
     <>
-      <div className="collectorWrapper pb-2">
-        <Accordion alwaysOpen activeKey={activeKeys}>
-          <Accordion.Item eventKey="filter" className="accordionBorder">
-            <Accordion.Body className="accordionPadding pt-2">
-              <DataFilter
-                page="inactiveCustomer"
-                customers={allCustomers}
-                setCustomers={setInActiveCustomers}
-                filterOptions={filterOptions}
-                setFilterOption={setFilterOption}
-              />
-            </Accordion.Body>
-          </Accordion.Item>
-        </Accordion>
-
-        <div className="addCollector">
-          <div className="d-none">
-            <PrintOptions
-              show={modal}
-              setShow={setModal}
-              filterData={filterData}
-              tableData={inactiveCustomers}
-              page={"customer"}
-              printData={printData}
+      <Accordion alwaysOpen activeKey={activeKeys}>
+        <Accordion.Item eventKey="filter" className="accordionBorder">
+          <Accordion.Body className="accordionPadding pt-2">
+            <DataFilter
+              page="inactiveCustomer"
+              customers={allCustomers}
+              setCustomers={setInActiveCustomers}
+              filterOptions={filterOptions}
+              setFilterOption={setFilterOption}
             />
+          </Accordion.Body>
+        </Accordion.Item>
+      </Accordion>
 
-            <div>
-              <CSVLink
-                data={customerForCsVTableInfo}
-                filename={ispOwnerData.company}
-                headers={customerForCsVTableInfoHeader}
-                title={t("customerReport")}
-                ref={csvLinkDown}
-                target="_blank"
-              ></CSVLink>
-            </div>
+      <div className="addCollector">
+        <div className="d-none">
+          <PrintOptions
+            show={modal}
+            setShow={setModal}
+            filterData={filterData}
+            tableData={inactiveCustomers}
+            page={"customer"}
+            printData={printData}
+          />
+
+          <div>
+            <CSVLink
+              data={customerForCsVTableInfo}
+              filename={ispOwnerData.company}
+              headers={customerForCsVTableInfoHeader}
+              title={t("customerReport")}
+              ref={csvLinkDown}
+              target="_blank"
+            ></CSVLink>
           </div>
-
-          <Table
-            isLoading={isInactiveLoading}
-            columns={columns}
-            data={inactiveCustomers}
-          ></Table>
         </div>
+
+        <Table
+          isLoading={isInactiveLoading}
+          columns={columns}
+          data={inactiveCustomers}
+        ></Table>
       </div>
 
       {/* customer details modal by user type  */}

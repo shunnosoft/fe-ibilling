@@ -257,51 +257,53 @@ const OtherCustomer = () => {
                 </div>
               </FourGround>
               <FourGround>
-                <Tabs
-                  defaultActiveKey={"newCustomer"}
-                  id="uncontrolled-tab-example"
-                  onSelect={(eventKey) => changeTab(eventKey)}
-                >
-                  <Tab eventKey={"newCustomer"} title={t("newCustomer")}>
-                    {otherTabs === "newCustomer" && (
-                      <NewCustomer
-                        isNewLoading={isNewLoading}
-                        setIsNewLoading={setIsNewLoading}
-                        activeKeys={activeKeys}
-                        csvLinkDown={csvLink}
-                        modal={show}
-                        setModal={setShow}
-                      />
-                    )}
-                  </Tab>
-                  <Tab
-                    eventKey={"inactiveCustomer"}
-                    title={t("inactiveCustomer")}
+                <div className="collectorWrapper mt-2 p-3">
+                  <Tabs
+                    defaultActiveKey={"newCustomer"}
+                    id="uncontrolled-tab-example"
+                    onSelect={(eventKey) => changeTab(eventKey)}
                   >
-                    {otherTabs === "inactiveCustomer" && (
-                      <InactiveCustomer
-                        isInactiveLoading={isInactiveLoading}
-                        setIsInactiveLoading={setIsInactiveLoading}
-                        activeKeys={activeKeys}
-                        csvLinkDown={csvLink}
-                        modal={show}
-                        setModal={setShow}
-                      />
-                    )}
-                  </Tab>
-                  <Tab eventKey={"dueCustomer"} title={t("dueCustomer")}>
-                    {otherTabs === "dueCustomer" && (
-                      <DueCustomer
-                        isDueLoading={isDueLoading}
-                        setIsDueLoading={setIsDueLoading}
-                        activeKeys={activeKeys}
-                        csvLinkDown={csvLink}
-                        modal={show}
-                        setModal={setShow}
-                      />
-                    )}
-                  </Tab>
-                </Tabs>
+                    <Tab eventKey={"newCustomer"} title={t("newCustomer")}>
+                      {otherTabs === "newCustomer" && (
+                        <NewCustomer
+                          isNewLoading={isNewLoading}
+                          setIsNewLoading={setIsNewLoading}
+                          activeKeys={activeKeys}
+                          csvLinkDown={csvLink}
+                          modal={show}
+                          setModal={setShow}
+                        />
+                      )}
+                    </Tab>
+                    <Tab
+                      eventKey={"inactiveCustomer"}
+                      title={t("inactiveCustomer")}
+                    >
+                      {otherTabs === "inactiveCustomer" && (
+                        <InactiveCustomer
+                          isInactiveLoading={isInactiveLoading}
+                          setIsInactiveLoading={setIsInactiveLoading}
+                          activeKeys={activeKeys}
+                          csvLinkDown={csvLink}
+                          modal={show}
+                          setModal={setShow}
+                        />
+                      )}
+                    </Tab>
+                    <Tab eventKey={"dueCustomer"} title={t("dueCustomer")}>
+                      {otherTabs === "dueCustomer" && (
+                        <DueCustomer
+                          isDueLoading={isDueLoading}
+                          setIsDueLoading={setIsDueLoading}
+                          activeKeys={activeKeys}
+                          csvLinkDown={csvLink}
+                          modal={show}
+                          setModal={setShow}
+                        />
+                      )}
+                    </Tab>
+                  </Tabs>
+                </div>
 
                 {(butPermission?.allPage || butPermission?.othersCustomer) && (
                   <NetFeeBulletin />

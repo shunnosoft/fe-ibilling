@@ -242,16 +242,12 @@ const NonMasking = ({
           </Accordion.Body>
         </Accordion.Item>
       </Accordion>
-      <div className="collectorWrapper pb-2">
-        <div className="addCollector">
-          <Table
-            isLoading={nonMaskingLoading}
-            columns={columns}
-            data={mainData}
-            customComponent={customComponet}
-          ></Table>
-        </div>
-      </div>
+      <Table
+        isLoading={nonMaskingLoading}
+        columns={columns}
+        data={mainData}
+        customComponent={customComponet}
+      ></Table>
 
       <MessageDetails
         messageId={nonMaskingId}

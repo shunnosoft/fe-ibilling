@@ -80,6 +80,7 @@ export const getActiveCustomerONUInformation = async (
     dispatch(getCustomerONUSuccess(res.data?.data));
   } catch (error) {
     toast.error(error.response?.data?.message);
+    dispatch(getCustomerONUSuccess({}));
   }
   setIsLoading(false);
 };
