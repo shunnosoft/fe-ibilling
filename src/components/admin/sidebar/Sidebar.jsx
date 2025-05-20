@@ -88,8 +88,9 @@ export default function Sidebar() {
   const location = window.location.pathname;
 
   useEffect(() => {
-    // get ispOwner data api
-    Object.keys(ispOwnerData)?.length === 0 &&
+    //---> @Get ispOwner data api
+    !["admin", "superadmin"].includes(role) &&
+      Object.keys(ispOwnerData)?.length === 0 &&
       getIspOwnerData(dispatch, ispOwnerId, setIsLoading);
   }, []);
 

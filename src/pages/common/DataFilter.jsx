@@ -94,7 +94,7 @@ const DataFilter = ({
   // api call
   useEffect(() => {
     // get user staffs api
-    if (adminUser) {
+    if (role === "ispOwner" || role === "manager") {
       staffs.length === 0 && userStaffs(dispatch);
     } else {
       staffs.length === 0 && getOwnerUsers(dispatch, ispOwnerId);

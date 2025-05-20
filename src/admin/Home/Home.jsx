@@ -463,6 +463,8 @@ export default function Home() {
                     data-bs-target="#showCustomerDetails"
                     onClick={() => {
                       detailsModal(original.id);
+                      setModalStatus("details");
+                      setShow(true);
                     }}
                   >
                     <div className="dropdown-item">
@@ -968,7 +970,10 @@ export default function Home() {
         <EditModal show={show} setShow={setShow} ownerId={ownerId} />
       )}
 
-      <DetailsModal ownerId={ownerId} />
+      {modalStatus === "details" && (
+        <DetailsModal {...{ show, setShow, ownerId }} />
+      )}
+
       <AddProprietorModal ownerId={ownerId} />
 
       {/* customer invoice list */}

@@ -8,6 +8,7 @@ import {
   ArchiveFill,
   ArrowClockwise,
   PenFill,
+  PlugFill,
   Plus,
   ThreeDots,
 } from "react-bootstrap-icons";
@@ -19,7 +20,7 @@ import { deleteOLT, getOLT } from "../../features/oltApi";
 import useISPowner from "../../hooks/useISPOwner";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
-import { fetchMikrotik } from "../../features/apiCalls";
+import { fetchMikrotik, getOLTConnection } from "../../features/apiCalls";
 import useSelectorState from "../../hooks/useSelectorState";
 
 const OLT = () => {
@@ -36,6 +37,7 @@ const OLT = () => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isOLTLoading, setIsOLTLoading] = useState(false);
 
   const [oltInformation, setOLTInformation] = useState({});
   const [modalStatus, setModalStatus] = useState("");
@@ -61,6 +63,10 @@ const OLT = () => {
       setIsUpdate(false);
       setShow(true);
     }
+  };
+
+  const handleOLTConnectionCheck = (olt, name) => {
+    getOLTConnection(ispOwnerId, olt, name, setIsOLTLoading);
   };
 
   const handleOLTDelete = (data) => {
@@ -125,7 +131,16 @@ const OLT = () => {
         Header: () => <div className="text-center">{t("action")}</div>,
         id: "option",
         Cell: ({ row: { original } }) => (
-          <div className="d-flex justify-content-center align-items-center">
+          <div className="d-flex justify-content-center align-items-center gap-2">
+            <button
+              title={t("checkConnection")}
+              className="btn btn-sm btn-primary"
+              onClick={() =>
+                handleOLTConnectionCheck(original?.id, original?.name)
+              }
+            >
+              {isOLTLoading ? <Loader /> : <PlugFill size={18} />}
+            </button>
             <div className="dropdown">
               <ThreeDots
                 className="dropdown-toggle ActionDots"

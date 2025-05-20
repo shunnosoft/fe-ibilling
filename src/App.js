@@ -125,6 +125,7 @@ import Diagram from "./pages/network/diagram/Diagram";
 import Device from "./pages/network/device/Device";
 import UserActivityLog from "./pages/activityLog/UserActivityLog";
 import OLT from "./pages/olt/OLT";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   const [theme, setTheme] = useState("light");
@@ -181,6 +182,7 @@ function App() {
     <ThemeProvider theme={themes[theme]}>
       <GlobalStyles />
       <div className="App">
+        <ToastContainer position="top-right" theme="colored" />
         {pathName === "/login" || pathName === "/register" || user
           ? userRole !== "customer" && (
               <Header theme={theme} setTheme={setTheme} />

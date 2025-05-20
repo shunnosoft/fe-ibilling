@@ -530,20 +530,19 @@ const DetailsForm = ({ setShow, ispOwner }) => {
                   </label>
                 </div>
 
-                <div className="form-check ">
-                  <Field
-                    className="form-check-input"
-                    type="checkbox"
-                    id="hasOLT"
-                    name="hasOLT"
-                  />
-                  <label
-                    className="form-check-label"
-                    for="hasOLT"
-                  >
-                    OLT
-                  </label>
-                </div>
+                {ispOwner?.bpSettings?.hasMikrotik && (
+                  <div className="form-check ">
+                    <Field
+                      className="form-check-input"
+                      type="checkbox"
+                      id="hasOLT"
+                      name="hasOLT"
+                    />
+                    <label className="form-check-label" for="hasOLT">
+                      OLT
+                    </label>
+                  </div>
+                )}
 
                 <div className="form-check ">
                   <Field

@@ -1861,6 +1861,18 @@ export const mikrotikTesting = async (IDs) => {
     });
 };
 
+//---> OLT Connection check function
+export const getOLTConnection = async (ispOwner, olt, name, setIsLoading) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.get(`/olt/${ispOwner}/${olt}/connection`);
+    toast.success(`${name} ${res.data?.message}`);
+  } catch (error) {
+    toast.error(`${name} ${error.message}`);
+  }
+  setIsLoading(false);
+};
+
 export const netFeeCustomerGet = async (
   mikrotikId,
   ispOwnerId,
