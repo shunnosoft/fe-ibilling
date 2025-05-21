@@ -94,17 +94,17 @@ const OLT = () => {
         accessor: "oltVendor",
       },
       {
-        width: "15%",
+        width: "20%",
         Header: t("name"),
         accessor: "name",
       },
       {
-        width: "5%",
+        width: "8%",
         Header: t("pon"),
         accessor: "ponPort",
       },
       {
-        width: "15%",
+        width: "12%",
         Header: t("userName"),
         accessor: "username",
       },
@@ -114,7 +114,7 @@ const OLT = () => {
         accessor: "host",
       },
       {
-        width: "5%",
+        width: "8%",
         Header: t("port"),
         accessor: "port",
       },
@@ -123,11 +123,11 @@ const OLT = () => {
         Header: t("createdAt"),
         accessor: "createdAt",
         Cell: ({ cell: { value } }) => {
-          return moment(value).format("YYYY/MM/DD hh:mm a");
+          return moment(value).format("YYYY/MM/DD hh:mm A");
         },
       },
       {
-        width: "5%",
+        width: "7%",
         Header: () => <div className="text-center">{t("action")}</div>,
         id: "option",
         Cell: ({ row: { original } }) => (

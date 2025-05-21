@@ -68,13 +68,14 @@ export const getOLT = async (ispOwner, setIsLoading, dispatch) => {
 export const getActiveCustomerONUInformation = async (
   dispatch,
   ispOwner,
+  mikrotik,
   macAddress,
   setIsLoading
 ) => {
   setIsLoading(true);
   try {
     const res = await apiLink.get(
-      `/olt/${ispOwner}/onu-information?macAddress=${macAddress}`
+      `/olt/${ispOwner}/${mikrotik}/onu-information?macAddress=${macAddress}`
     );
 
     dispatch(getCustomerONUSuccess(res.data?.data));

@@ -113,6 +113,10 @@ const OLTDialog = ({ show, setShow, isUpdate, oltInformation }) => {
           label: "ECom",
           value: "eCom",
         },
+        {
+          label: "DBC GPon",
+          value: "dbc_gPon",
+        },
       ],
     },
     {

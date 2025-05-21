@@ -16,6 +16,7 @@ import { useTranslation } from "react-i18next";
 import {
   ArrowClockwise,
   FilterCircle,
+  HddNetworkFill,
   Router,
   Server,
   ThreeDots,
@@ -32,6 +33,7 @@ import { getBulletinPermission } from "../../features/apiCallAdmin";
 import { badge } from "../../components/common/Utils";
 import BandwidthModal from "../../pages/Customer/BandwidthModal";
 import useISPowner from "../../hooks/useISPOwner";
+import ONUDetails from "../../pages/activeustomer/ONUDetails";
 
 const ResellerActiveCustomer = () => {
   const { t } = useTranslation();
@@ -74,6 +76,12 @@ const ResellerActiveCustomer = () => {
 
   //set customer type bulk oparation
   const [customerType, setCustomerType] = useState();
+
+  // modal show state
+  const [modalStatus, setModalStatus] = useState("");
+  const [show, setShow] = useState(false);
+
+  const [customer, setCustomer] = useState({});
 
   //active customer filter options state
   const [filterOptions, setFilterOptions] = useState({
@@ -325,6 +333,36 @@ const ResellerActiveCustomer = () => {
                 />
 
                 <ul className="dropdown-menu" aria-labelledby="areaDropdown">
+                  {bpSettings?.hasMikrotik &&
+                    bpSettings?.hasOLT &&
+                    original?.running === true && (
+                      <li
+                        onClick={() => {
+                          setCustomer(original);
+                          setModalStatus("onuDetails");
+                          setShow(true);
+                        }}
+                      >
+                        <div className="dropdown-item">
+                          <div className="customerAction">
+                            <HddNetworkFill />
+                            <p className="actionP">{t("onuLaser")}</p>
+                          </div>
+                        </div>
+                      </li>
+                    )}
+
+                  {bpSettings?.hasMikrotik && original?.running === true && (
+                    <li onClick={() => bandwidthModalController(original)}>
+                      <div className="dropdown-item">
+                        <div className="customerAction">
+                          <Server />
+                          <p className="actionP">{t("bandwidth")}</p>
+                        </div>
+                      </div>
+                    </li>
+                  )}
+
                   {role !== "collector" &&
                     bpSettings?.hasMikrotik &&
                     original?.running && (
@@ -352,17 +390,6 @@ const ResellerActiveCustomer = () => {
                         )}
                       </li>
                     )}
-
-                  {bpSettings?.hasMikrotik && original?.running === true && (
-                    <li onClick={() => bandwidthModalController(original)}>
-                      <div className="dropdown-item">
-                        <div className="customerAction">
-                          <Server />
-                          <p className="actionP">{t("bandwidth")}</p>
-                        </div>
-                      </div>
-                    </li>
-                  )}
                 </ul>
               </div>
             </div>
@@ -693,8 +720,13 @@ const ResellerActiveCustomer = () => {
       <BandwidthModal
         setModalShow={setBandWidthModal}
         modalShow={bandWidthModal}
-        customer={bandWidthCustomerData}
+        customer={{ ...bandWidthCustomerData, page: "PPPoE" }}
       />
+
+      {/* Customer ONU Information Dialog */}
+      {modalStatus === "onuDetails" && (
+        <ONUDetails {...{ show, setShow, customer }} />
+      )}
     </>
   );
 };

@@ -18,6 +18,7 @@ const ONUDetails = ({ show, setShow, customer }) => {
       getActiveCustomerONUInformation(
         dispatch,
         customer?.ispOwner,
+        customer?.mikrotik,
         customer?.callerId,
         setIsLoading
       );
