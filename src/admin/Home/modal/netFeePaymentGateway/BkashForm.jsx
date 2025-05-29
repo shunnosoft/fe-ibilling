@@ -28,6 +28,7 @@ const BkashForm = ({ setShow, ispOwner }) => {
     password: "",
     isTokenized: true,
     hasPG: true,
+    payBillUsername: "",
   };
 
   if (ispOwner) {
@@ -39,6 +40,7 @@ const BkashForm = ({ setShow, ispOwner }) => {
         appKey: paymentGateway?.bKash?.appKey,
         password: paymentGateway?.bKash?.password,
         isTokenized: paymentGateway?.bKash?.isTokenized,
+        payBillUsername: paymentGateway?.bKash?.payBillUsername,
       };
     }
 
@@ -69,6 +71,7 @@ const BkashForm = ({ setShow, ispOwner }) => {
             password: values.password,
             appKey: values.appKey,
             isTokenized: values.isTokenized,
+            payBillUsername: values.payBillUsername,
           },
         },
         hasPG: values.hasPG,
@@ -95,12 +98,7 @@ const BkashForm = ({ setShow, ispOwner }) => {
               type="text"
               label="User Name"
               name="username"
-            />
-            <FtextField
-              required
-              type="text"
-              label="App Secret"
-              name="appSecret"
+              validation={true}
             />
 
             <div>
@@ -109,9 +107,10 @@ const BkashForm = ({ setShow, ispOwner }) => {
                 type={passType}
                 label="Password"
                 name="password"
+                validation={true}
               />
 
-              <div className="showPassword">
+              {/* <div className="showPassword">
                 <input
                   style={{ cursor: "pointer" }}
                   className="form-check-input shadow-none"
@@ -129,10 +128,24 @@ const BkashForm = ({ setShow, ispOwner }) => {
                 >
                   &nbsp; Show Password
                 </label>
-              </div>
+              </div> */}
             </div>
 
-            <FtextField required type="text" label="App Key" name="appKey" />
+            <FtextField
+              required
+              type="text"
+              label="App Key"
+              name="appKey"
+              validation={true}
+            />
+
+            <FtextField
+              required
+              type="text"
+              label="App Secret"
+              name="appSecret"
+              validation={true}
+            />
           </div>
 
           <div className="displayGrid3">
@@ -156,9 +169,16 @@ const BkashForm = ({ setShow, ispOwner }) => {
                 name="hasPG"
               />
               <label className="form-check-label" for="hasPG">
-                Has PG
+                Has PG <span className="text-danger me-4">*</span>
               </label>
             </div>
+
+            <FtextField
+              required
+              type="text"
+              label="Pay Bill Username"
+              name="payBillUsername"
+            />
           </div>
 
           <div className="displayGrid1 float-end mt-4">

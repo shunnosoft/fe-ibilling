@@ -16,6 +16,7 @@ import BulkBalanceEdit from "./BulkBalanceEdit";
 import BulkRecharge from "./BulkRecharge";
 import BulkCustomerTransfer from "./bulkCustomerTransfer";
 import BulkPackageEdit from "./bulkPackageEdit";
+import BulkPackageEditReseller from "../../../../reseller/Customer/bulkOpration/bulkPackageEdit";
 import BulkAutoConnectionEdit from "./bulkAutoConnectionEdit";
 import BulkCustomerDelete from "./BulkdeleteModal";
 import BulkMikrotikEdit from "./bulkMikrotikEdit";
@@ -25,7 +26,7 @@ const BulkOptions = ({ bulkCustomers, pageOption, page }) => {
   const { t } = useTranslation();
 
   // get user & current user data form useISPOwner hook
-  const { role, bpSettings, hasMikrotik, permissions, permission } =
+  const { role, bpSettings, hasMikrotik, permissions, permission, userData } =
     useISPowner();
 
   //bulk menu show and hide
@@ -34,6 +35,14 @@ const BulkOptions = ({ bulkCustomers, pageOption, page }) => {
   // bulk modal handle state
   const [modalStatus, setModalStatus] = useState("");
   const [show, setShow] = useState(false);
+
+  //---> User role permission
+  const adminUser =
+    role === "ispOwner" ||
+    role === "manager" ||
+    (role === "collector" && !userData.reseller);
+  const resellerUser =
+    role === "reseller" || (role === "collector" && userData.reseller);
 
   // customer data update bulk option
   const bulkOption = [
@@ -344,14 +353,21 @@ const BulkOptions = ({ bulkCustomers, pageOption, page }) => {
       )}
 
       {/* bulk package edit */}
-      {modalStatus === "updatePackage" && (
-        <BulkPackageEdit
-          show={show}
-          page={page}
-          setShow={setShow}
-          bulkCustomer={bulkCustomers}
-        />
-      )}
+      {modalStatus === "updatePackage" &&
+        (resellerUser ? (
+          <BulkPackageEditReseller
+            show={show}
+            setShow={setShow}
+            bulkCustomer={bulkCustomers}
+          />
+        ) : (
+          <BulkPackageEdit
+            show={show}
+            page={page}
+            setShow={setShow}
+            bulkCustomer={bulkCustomers}
+          />
+        ))}
 
       {/* bulk auto connection edit */}
       {modalStatus === "automaticConnectionOff" && (

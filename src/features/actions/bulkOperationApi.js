@@ -205,22 +205,19 @@ export const bulkPackageEdit = async (
   setIsLoading,
   setShow
 ) => {
+  setIsLoading(true);
   try {
-    setIsLoading(true);
     const res = await apiLink.patch(
       "/customer/bulk-mikrotik-package-pppoe",
       data
     );
-    dispatch(bulkUpdate(res.data.data));
     setShow(false);
     toast.success("কাস্টমার প্যকেজ আপডেট সফল হয়েছে!");
-    setIsLoading(false);
-  } catch (err) {
-    if (err.response) {
-      setIsLoading(false);
-      toast.error(err.response.data.message);
-    }
+    dispatch(bulkUpdate(res.data.data));
+  } catch (error) {
+    toast.error(error.message);
   }
+  setIsLoading(false);
 };
 
 export const bulkResellerRecharge = async (

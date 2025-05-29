@@ -13,17 +13,20 @@ const ONUDetails = ({ show, setShow, customer }) => {
 
   const [isLoading, setIsLoading] = useState(false);
 
+  const macAddress =
+    customer?.userType === "pppoe" ? customer?.callerId : customer?.macAddress;
+
   useEffect(() => {
-    if (show && customer?.callerId?.toLowerCase() !== onu?.macAddress) {
+    if (show && macAddress.toLowerCase() !== onu?.macAddress) {
       getActiveCustomerONUInformation(
         dispatch,
         customer?.ispOwner,
         customer?.mikrotik,
-        customer?.callerId,
+        macAddress,
         setIsLoading
       );
     }
-  }, [show, customer?.callerId]);
+  }, [show, customer]);
 
   const ONUFields = [
     // { label: "MAC Address", key: "macAddress" },
@@ -45,7 +48,9 @@ const ONUDetails = ({ show, setShow, customer }) => {
         setShow,
         centered: true,
         size: "md",
-        header: customer?.pppoe.name + " " + t("onuLaser"),
+        header: customer?.pppoe?.name
+          ? customer?.pppoe?.name
+          : customer?.name + " " + t("onuLaser"),
       }}
     >
       <div>

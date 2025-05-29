@@ -150,7 +150,19 @@ const Report = () => {
   }, [filterDate]);
 
   useEffect(() => {
-    setMainData(allBills);
+    if (!allBills) return;
+
+    const enrichedBills = allBills.map((bill) => {
+      const commission = adminResellerCommission(userData, bill, role);
+
+      return {
+        ...bill,
+        ispOwnerCommission: commission.ispOwnerCommission,
+        resellerCommission: commission.resellerCommission,
+      };
+    });
+
+    setMainData(enrichedBills);
   }, [allBills]);
 
   useEffect(() => {
@@ -258,12 +270,14 @@ const Report = () => {
         accessor: "customer.name",
       },
       {
-        width: "11%",
+        width: "9%",
         Header: t("package"),
-        accessor: "customer.mikrotikPackage",
-        Cell: ({ cell: { value } }) => (
-          <div>{getCustomerPackage(value)?.name}</div>
-        ),
+        accessor: (field) =>
+          field.customer?.mikrotikPackage?.name
+            ? field.customer?.mikrotikPackage?.name
+            : field.customer?.userType === "pppoe"
+            ? field.customer?.pppoe?.profile
+            : field?.hotspotCustomer?.hotspot.profile,
       },
       {
         width: "11%",
@@ -271,9 +285,14 @@ const Report = () => {
         accessor: "amount",
       },
       {
-        width: "11%",
-        Header: t("discount"),
-        accessor: "discount",
+        width: "10%",
+        Header: t("admin"),
+        accessor: "ispOwnerCommission",
+      },
+      {
+        width: "10%",
+        Header: t("reseller"),
+        accessor: "resellerCommission",
       },
       {
         width: "11%",
@@ -324,16 +343,6 @@ const Report = () => {
                   {value?.month && value?.month?.length > 15 && "..."}
                 </span>
               </p>
-              <span
-                className="see_more"
-                data-bs-toggle="modal"
-                data-bs-target="#reportView"
-                onClick={() => {
-                  setViewId(value?.id);
-                }}
-              >
-                ...See More
-              </span>
             </>
           );
         },
@@ -363,33 +372,11 @@ const Report = () => {
       //total amount
       previous.amount += current.amount;
 
-      // sum of all reseller online collection
-      if (
-        current.medium === "sslcommerz" ||
-        current.medium === "uddoktapay" ||
-        current.medium === "sslpay" ||
-        current.medium === "bKashPG"
-      ) {
-        previous.onlineCollection += adminResellerCommission(
-          userData,
-          current,
-          role
-        )?.resellerCommission;
-      }
-
       // sum of all reseller commission
-      previous.resellerCommission += adminResellerCommission(
-        userData,
-        current,
-        role
-      )?.resellerCommission;
+      previous.resellerCommission += current.resellerCommission;
 
       // sum of all ispOwner commission
-      previous.ispOwnerCommission += adminResellerCommission(
-        userData,
-        current,
-        role
-      )?.ispOwnerCommission;
+      previous.ispOwnerCommission += current.ispOwnerCommission;
 
       return previous;
     }, initialValue);

@@ -190,6 +190,7 @@ const StaticActiveCustomer = () => {
   // customer bandwidth handler
   const bandwidthModalController = (customer) => {
     setBandWidthCustomerData(customer);
+    setModalStatus("bandwidth");
     setShow(true);
   };
 
@@ -700,11 +701,14 @@ const StaticActiveCustomer = () => {
         </div>
       </div>
 
-      <BandwidthModal
-        modalShow={show}
-        setModalShow={setShow}
-        customer={{ ...bandWidthCustomerData, page: "Static" }}
-      />
+      {/* Customer Live Bandwidth Dialog */}
+      {modalStatus === "bandwidth" && (
+        <BandwidthModal
+          modalShow={show}
+          setModalShow={setShow}
+          customer={{ ...bandWidthCustomerData, page: "Static" }}
+        />
+      )}
 
       {/* Customer ONU Information Dialog */}
       {modalStatus === "onuDetails" && (

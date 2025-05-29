@@ -2699,7 +2699,7 @@ export const billCollect = async (
     setShow(false);
     resetForm();
   } catch (error) {
-    toast.error(error.response?.data.message);
+    toast.error(error.message);
   }
   setLoading(false);
 };

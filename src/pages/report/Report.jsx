@@ -362,26 +362,50 @@ const Report = () => {
             : field?.customer?.customerId,
       },
       {
-        width: "8%",
-        Header: t("name"),
+        width: "15%",
+        Header: t("pppoeIp"),
         accessor: (field) =>
-          field?.hotspotCustomer
-            ? field?.hotspotCustomer?.name
-            : field?.customer?.name,
-      },
-      {
-        width: "10%",
-        Header: t("PPIPHp"),
-        accessor: (field) =>
-          field.customer?.userType === "pppoe"
-            ? field.customer?.pppoe.name
-            : field.customer?.userType === "firewall-queue"
-            ? field.customer?.queue.address
-            : field.customer?.userType === "core-queue"
-            ? field.customer?.queue.srcAddress
-            : field.customer?.userType === "simple-queue"
-            ? field.customer?.queue.target
-            : field?.hotspotCustomer?.hotspot.name,
+          `${
+            field?.hotspotCustomer
+              ? field?.hotspotCustomer?.name
+              : field?.customer?.name
+          } ${
+            field.customer?.userType === "pppoe"
+              ? field.customer?.pppoe.name
+              : field.customer?.userType === "firewall-queue"
+              ? field.customer?.queue.address
+              : field.customer?.userType === "core-queue"
+              ? field.customer?.queue.srcAddress
+              : field.customer?.userType === "simple-queue"
+              ? field.customer?.queue.target
+              : field?.hotspotCustomer?.hotspot.name
+          }`,
+        Cell: ({ row: { original } }) => {
+          const customer = original?.customer;
+          const hotspotCustomer = original?.hotspotCustomer;
+
+          const name = hotspotCustomer?.name || customer?.name;
+
+          let addressInfo = "";
+          if (customer?.userType === "pppoe") {
+            addressInfo = customer?.pppoe?.name;
+          } else if (customer?.userType === "firewall-queue") {
+            addressInfo = customer?.queue?.address;
+          } else if (customer?.userType === "core-queue") {
+            addressInfo = customer?.queue?.srcAddress;
+          } else if (customer?.userType === "simple-queue") {
+            addressInfo = customer?.queue?.target;
+          } else {
+            addressInfo = hotspotCustomer?.hotspot?.name;
+          }
+
+          return (
+            <div>
+              <p>{name}</p>
+              <p>{addressInfo}</p>
+            </div>
+          );
+        },
       },
       {
         width: "9%",
@@ -410,7 +434,7 @@ const Report = () => {
       },
       {
         width: "8%",
-        Header: t("agent"),
+        Header: t("medium"),
         accessor: "medium",
       },
       {

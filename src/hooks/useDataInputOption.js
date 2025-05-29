@@ -43,8 +43,6 @@ const useDataInputOption = (inputPermission, page, status, data) => {
     permissions,
   } = useISPowner();
 
-  console.log(permission?.promiseDate);
-
   // admin staff user role permission
   const ispOwner = role === "ispOwner";
   const adminUser =

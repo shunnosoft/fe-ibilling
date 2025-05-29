@@ -30,6 +30,7 @@ import {
   Cash,
   CashStack,
   Phone,
+  ArrowClockwise,
 } from "react-bootstrap-icons";
 import {
   csutomerWebhookRegister,
@@ -57,6 +58,7 @@ import DeleteByMobileModal from "./modal/DeleteByMobileModal";
 import { useTranslation } from "react-i18next";
 import IspOwnerCustomerUpdate from "./modal/IspOwnerCustomerUpdate";
 import { Accordion } from "react-bootstrap";
+import Loader from "../../components/common/Loader";
 
 const districts = districtsJSON.districts;
 
@@ -128,6 +130,11 @@ export default function Home() {
 
     Object?.values(filterOptions) && handleClintFilter();
   }, [ispOwners]);
+
+  // reload handler
+  const reloadHandler = () => {
+    getIspOwners(dispatch, setIsLoading);
+  };
 
   // edit modal method
   const editModal = (ispOwnerId) => {
@@ -437,8 +444,8 @@ export default function Home() {
           `${data?.bpSettings?.paymentStatus} ${data?.status}`,
         Cell: ({ row: { original } }) => (
           <div className="text-center">
-            <p>{badge(original?.bpSettings?.paymentStatus)}</p>
             <p>{badge(original?.status)}</p>
+            <p>{badge(original?.bpSettings?.paymentStatus)}</p>
           </div>
         ),
       },
@@ -741,6 +748,18 @@ export default function Home() {
                 title={t("filter")}
               >
                 <FilterCircle className="addcutmButton" />
+              </div>
+
+              <div className="reloadBtn">
+                {isLoading ? (
+                  <Loader />
+                ) : (
+                  <ArrowClockwise
+                    className="arrowClock"
+                    title="Refresh"
+                    onClick={reloadHandler}
+                  />
+                )}
               </div>
 
               <TrashFill

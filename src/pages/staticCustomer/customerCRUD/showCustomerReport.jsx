@@ -15,6 +15,7 @@ import { useTranslation } from "react-i18next";
 import { fetchPackagefromDatabase } from "../../../features/apiCalls";
 import ComponentCustomModal from "../../../components/common/customModal/ComponentCustomModal";
 import useISPowner from "../../../hooks/useISPOwner";
+import { editCustomerSuccess } from "../../../features/customerSlice";
 
 const CustomerReport = ({ show, setShow, single }) => {
   const dispatch = useDispatch();
@@ -23,7 +24,7 @@ const CustomerReport = ({ show, setShow, single }) => {
   // get user & current user data form useISPOwner
   const { role, bpSettings, userData, permissions } = useISPowner();
 
-  const [customerReport, setCustomerReport] = useState([]);
+  const [customerReportData, setCustomerReport] = useState([]);
   const billRefwithNote = useRef();
   const billRefStaticWithOutNote = useRef();
   const [isLoading, setIsLoading] = useState(false);
@@ -68,15 +69,14 @@ const CustomerReport = ({ show, setShow, single }) => {
     if (con) {
       try {
         const res = await apiLink.delete(`/bill/monthlyBill/${reportId}`);
-        const updatedState = customerReport.filter(
-          (item) => item.id !== reportId
+        const updatedState = customerReportData.filter(
+          (item) => item._id !== reportId
         );
         setCustomerReport(updatedState);
-        // dispatch(editCustomerSuccess(res.data.customer));
+        dispatch(editCustomerSuccess(res.data.customer));
         toast.success(t("deleteAlertSuccess"));
       } catch (error) {
-        toast.error(error.response?.data?.message);
-        console.log(error);
+        toast.error(error.message);
       }
     }
   };
@@ -85,7 +85,6 @@ const CustomerReport = ({ show, setShow, single }) => {
   const handlePrint = (val, stat) => {
     setStatus(stat);
     setPrintVal(val);
-    console.log(val);
     setTimeout(function () {
       if (val.note || val.start || val.end || val.month) {
         document.getElementById("PrintWithNote").click();
@@ -121,8 +120,8 @@ const CustomerReport = ({ show, setShow, single }) => {
             <tbody>
               {isLoading ? (
                 <TdLoader colspan={5} />
-              ) : customerReport.length > 0 ? (
-                customerReport.map((val, index) => {
+              ) : customerReportData.length > 0 ? (
+                customerReportData.map((val, index) => {
                   return (
                     <tr className="spetialSortingRow" key={index}>
                       <td>
@@ -322,7 +321,7 @@ const CustomerReport = ({ show, setShow, single }) => {
                             <div title={t("deleteReport")}>
                               <button
                                 className="border-0 bg-transparent me-4"
-                                onClick={() => deletReport(val.id)}
+                                onClick={() => deletReport(val._id)}
                               >
                                 <TrashFill
                                   color="#dc3545"
@@ -419,7 +418,7 @@ const CustomerReport = ({ show, setShow, single }) => {
                               ].includes(val.medium) && (
                                 <button
                                   className="border-0 bg-transparent me-4"
-                                  onClick={() => deletReport(val.id)}
+                                  onClick={() => deletReport(val._id)}
                                 >
                                   <TrashFill
                                     color="#dc3545"

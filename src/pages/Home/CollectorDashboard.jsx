@@ -111,15 +111,6 @@ const CollectorDashboard = () => {
       collectorId,
       filterData
     );
-
-    //---> @Get collector dashboard middle monthly collection chart data
-    getCollectorDashboardCharts(
-      setLoading,
-      dispatch,
-      collectorId,
-      filterDate.getFullYear(),
-      filterDate.getMonth()
-    );
   };
 
   //---> IspOwner dashboard monthly filter refresh handler
@@ -310,7 +301,7 @@ const CollectorDashboard = () => {
                   <div></div>
                   <div className="d-flex justify-content-end">
                     <div className="addcutmButton me-1">
-                      {isLoading ? (
+                      {loading || loadingDashboardData ? (
                         <Loader />
                       ) : (
                         <ArrowClockwise

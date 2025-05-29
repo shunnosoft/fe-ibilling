@@ -82,14 +82,7 @@ const Summary = () => {
             <p>
               {t("rate")} <b>{FormatNumber(original.packageRate)}</b>
             </p>
-          </div>
-        ),
-      },
-      {
-        width: "12%",
-        Header: t("packageCommission"),
-        Cell: ({ row: { original } }) => (
-          <div className="package-based-customer">
+
             <p>
               {t("isp")} <b>{FormatNumber(original.ispOwnerRate)}</b>
             </p>
@@ -99,6 +92,20 @@ const Summary = () => {
           </div>
         ),
       },
+      // {
+      //   width: "12%",
+      //   Header: t("packageCommission"),
+      //   Cell: ({ row: { original } }) => (
+      //     <div className="package-based-customer">
+      //       <p>
+      //         {t("isp")} <b>{FormatNumber(original.ispOwnerRate)}</b>
+      //       </p>
+      //       <p>
+      //         {t("own")} <b>{FormatNumber(original.resellerRate)}</b>
+      //       </p>
+      //     </div>
+      //   ),
+      // },
       {
         width: "11%",
         Header: t("allCustomer"),

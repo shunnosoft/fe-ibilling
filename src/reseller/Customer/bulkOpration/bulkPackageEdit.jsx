@@ -101,7 +101,7 @@ const BulkPackageEdit = ({ bulkCustomer, show, setShow }) => {
     <RootBulkModal show={show} setShow={setShow} header={t("updatePackage")}>
       <form onSubmit={changePackage}>
         {Getmikrotik.length > 0 ? (
-          <div className="displayGrid2">
+          <div className="displayGrid">
             <div>
               <label className="form-control-label changeLabelFontColor">
                 {t("mikrotik")} <span className="text-danger">*</span>

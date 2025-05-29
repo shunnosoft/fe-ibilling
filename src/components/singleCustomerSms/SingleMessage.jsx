@@ -9,19 +9,18 @@ import Loader from "../common/Loader";
 import { smsCount } from "../common/UtilityMethods";
 import apiLink from "../../api/apiLink";
 import ComponentCustomModal from "../common/customModal/ComponentCustomModal";
+import useISPowner from "../../hooks/useISPOwner";
 
 const SingleMessage = ({ show, setShow, single, sendCustomer }) => {
   const { t } = useTranslation();
 
-  //get role from redux
-  const currentUser = useSelector(
-    (state) => state.persistedReducer.auth?.currentUser
-  );
+  //---> Get user & current user data form useISPOwner hooks
+  const { role, ispOwnerData, currentUser } = useISPowner();
 
   let cureentAuth;
-  if (currentUser?.user?.role === "ispOwner") {
-    cureentAuth = currentUser?.ispOwner;
-  } else if (currentUser?.user?.role === "reseller") {
+  if (["ispOwner", "manager"].includes(role)) {
+    cureentAuth = ispOwnerData;
+  } else if (role === "reseller") {
     cureentAuth = currentUser?.reseller;
   }
 

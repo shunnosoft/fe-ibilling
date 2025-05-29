@@ -91,14 +91,6 @@ const ResellerSummary = () => {
             <p>
               {t("rate")} <b>{FormatNumber(original.packageRate)} </b>
             </p>
-          </div>
-        ),
-      },
-      {
-        width: "9%",
-        Header: t("packageCommission"),
-        Cell: ({ row: { original } }) => (
-          <div className="package-based-customer">
             <p>
               {t("own")} <b>{FormatNumber(original.ispOwnerRate)}</b>
             </p>
@@ -108,6 +100,20 @@ const ResellerSummary = () => {
           </div>
         ),
       },
+      // {
+      //   width: "9%",
+      //   Header: t("packageCommission"),
+      //   Cell: ({ row: { original } }) => (
+      //     <div className="package-based-customer">
+      //       <p>
+      //         {t("own")} <b>{FormatNumber(original.ispOwnerRate)}</b>
+      //       </p>
+      //       <p>
+      //         {t("reseller")} <b>{FormatNumber(original.resellerRate)}</b>
+      //       </p>
+      //     </div>
+      //   ),
+      // },
       {
         width: "11%",
         Header: t("allCustomer"),

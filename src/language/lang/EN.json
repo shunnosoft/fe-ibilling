@@ -921,7 +921,7 @@
   "allManager": "All Manager",
   "collectorCollection": "Collector Collection",
   "totalSalary": "Total Salary",
-  "offlinePaymentCustomer": "Offline Payment Customer",
+  "offlinePaymentCustomer": "Offline Payment",
   "onlinePaymentCustomer": "Online Payment (PGW)",
   "hotspotCustomerSync": "Hotspot Customer Sync",
   "willContinue": "Will continue",
