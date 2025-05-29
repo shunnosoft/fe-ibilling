@@ -70,7 +70,7 @@ const CustomerReport = ({ show, setShow, single }) => {
       try {
         const res = await apiLink.delete(`/bill/monthlyBill/${reportId}`);
         const updatedState = customerReportData.filter(
-          (item) => item._id !== reportId
+          (item) => item.id !== reportId
         );
         setCustomerReport(updatedState);
         dispatch(editCustomerSuccess(res.data.customer));
@@ -321,7 +321,7 @@ const CustomerReport = ({ show, setShow, single }) => {
                             <div title={t("deleteReport")}>
                               <button
                                 className="border-0 bg-transparent me-4"
-                                onClick={() => deletReport(val._id)}
+                                onClick={() => deletReport(val.id)}
                               >
                                 <TrashFill
                                   color="#dc3545"
@@ -418,7 +418,7 @@ const CustomerReport = ({ show, setShow, single }) => {
                               ].includes(val.medium) && (
                                 <button
                                   className="border-0 bg-transparent me-4"
-                                  onClick={() => deletReport(val._id)}
+                                  onClick={() => deletReport(val.id)}
                                 >
                                   <TrashFill
                                     color="#dc3545"

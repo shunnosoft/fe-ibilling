@@ -119,7 +119,7 @@ const CustomerBillReport = ({ customerId, customerData }) => {
                             size={19}
                             className="text-danger ms-2"
                             title={t("delete")}
-                            onClick={() => singleReportDelete(val?._id)}
+                            onClick={() => singleReportDelete(val?.id)}
                           />
                         )}
                     </div>

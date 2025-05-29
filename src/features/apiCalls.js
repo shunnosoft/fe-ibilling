@@ -2765,7 +2765,7 @@ export const addDeposit = async (dispatch, data, setLoading, setShow) => {
     setShow(false);
   } catch (error) {
     setLoading(false);
-    toast.error(error.response?.data.message);
+    toast.error(error.message);
   }
 };
 

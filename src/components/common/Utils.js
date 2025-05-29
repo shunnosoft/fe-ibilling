@@ -50,6 +50,7 @@ const addClass = {
   Unpaid: "warning",
   Expired: "danger",
 
+  message: "info",
   SENT: "success",
   UNSENT: "primary",
   REJECTED: "danger",
