@@ -1041,5 +1041,9 @@
   "mikrotikHistory": "Mikrotik History",
   "selectPonPort": "Select PON Port",
   "requiredField": "is a required field",
-  "oltVendor": "OLT Vendor"
+  "oltVendor": "OLT Vendor",
+  "startBillDate": "Start Bill Date",
+  "endBillDate": "End Bill Date",
+  "startCreateDate": "Start Create Date",
+  "endCreateDate": "End Create Date"
 }

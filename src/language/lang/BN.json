@@ -1048,5 +1048,9 @@
   "mikrotikHistory": "মাইক্রোটিক ইতিহাস",
   "selectPonPort": "পন পোর্ট নির্বাচন করুন",
   "requiredField": "অবশ্যই প্রয়োজন",
-  "oltVendor": "ওএলটি ভেন্ডর"
+  "oltVendor": "ওএলটি ভেন্ডর",
+  "startBillDate": "বিল শুরু তারিখ",
+  "endBillDate": "বিল শেষ তারিখ",
+  "startCreateDate": "ক্রিয়েট শুরু তারিখ",
+  "endCreateDate": "ক্রিয়েট শেষ তারিখ"
 }

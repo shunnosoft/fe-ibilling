@@ -23,27 +23,24 @@ import useISPowner from "../../../hooks/useISPOwner";
 import { toast } from "react-toastify";
 import InformationTooltip from "../../../components/common/tooltipInformation/InformationTooltip";
 import { areasSubareasChecked } from "../../staff/staffCustomFucn";
+import useDataInputOption from "../../../hooks/useDataInputOption";
+import ComponentCustomModal from "../../../components/common/customModal/ComponentCustomModal";
 
 const ManagerEdit = ({ show, setShow, managerId }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
-  //manager Validate with yup
-  const managerValidate = Yup.object({
-    name: Yup.string()
-      .min(3, t("minimumContaining3letter"))
-      .required(t("enterManagerName")),
-    mobile: Yup.string()
-      .min(11, t("write11DigitMobileNumber"))
-      .max(11, t("over11DigitMobileNumber"))
-      .required(t("enterManagerNumber")),
-    address: Yup.string().required(t("enterManagerAddress")),
-    email: Yup.string()
-      .email(t("incorrectEmail"))
-      .required(t("enterManagerEmail")),
-    nid: Yup.string().required(t("enterManagerNID")),
-    salary: Yup.string(),
-  });
+  // call the data input option function
+  const inputPermission = {
+    name: true,
+    mobile: true,
+    address: true,
+    email: true,
+    nid: true,
+    status: true,
+    addStaff: true,
+    salary: true,
+  };
 
   //get current language
   const language = localStorage.getItem("netFee:lang");
@@ -70,6 +67,14 @@ const ManagerEdit = ({ show, setShow, managerId }) => {
 
   //get single manager by id
   const single = manager?.find((val) => val.id === managerId);
+
+  //---> Get form input option from hook
+  const dataInputOption = useDataInputOption(
+    inputPermission,
+    null,
+    null,
+    single
+  );
 
   //get manager permissions
   useEffect(() => {
@@ -169,209 +174,176 @@ const ManagerEdit = ({ show, setShow, managerId }) => {
 
   return (
     <>
-      <Modal
-        show={show}
-        onHide={closeHandler}
-        backdrop="static"
-        keyboard={false}
-        size="xl"
-      >
-        <ModalHeader closeButton>
-          <ModalTitle>
+      <ComponentCustomModal
+        {...{
+          show,
+          setShow,
+          size: "xl",
+          header: (
             <h4 className="modal-title" id="exampleModalLabel">
               {t("edit")} {single?.name} {t("manager")}
             </h4>
-          </ModalTitle>
-        </ModalHeader>
-        <ModalBody>
-          <Formik
-            initialValues={{
-              name: single?.name || "",
-              mobile: single?.mobile || "",
-              address: single?.address || "",
-              email: single?.email || "",
-              nid: single?.nid || "",
-            }}
-            validationSchema={managerValidate}
-            onSubmit={(values) => {
-              managerUpdateHandler(values);
-            }}
-            enableReinitialize
-          >
-            {() => (
-              <Form id="managerEdit">
-                <Tabs
-                  defaultActiveKey={"editManager"}
-                  id="uncontrolled-tab-example"
-                  className="mb-3"
-                >
-                  {/* manager profile information tab start */}
-                  <Tab eventKey="editManager" title={t("details")}>
-                    <div className="d-flex justify-content-center">
-                      <div className="displayGrid col-6">
-                        <FtextField
-                          type="text"
-                          label={t("managerName")}
-                          name="name"
-                        />
-                        <FtextField
-                          type="text"
-                          label={t("managerMobile")}
-                          name="mobile"
-                        />
-
-                        <FtextField
-                          type="text"
-                          label={t("managerAddress")}
-                          name="address"
-                        />
-                        <FtextField
-                          type="email"
-                          label={t("managerEmail")}
-                          name="email"
-                        />
-
-                        <FtextField
-                          type="text"
-                          label={t("managerNID")}
-                          name="nid"
-                        />
-                      </div>
-                    </div>
-                  </Tab>
-                  {/* manager profile information tab end */}
-
-                  {/* manager areas tab start */}
-                  <Tab eventKey="area" title={t("area")}>
-                    <div className="AllAreaClass">
-                      {area?.map((val, key) => (
-                        <div key={key}>
-                          <div className="form-check">
-                            <input
-                              type="checkbox"
-                              className="form-check-input"
-                              name="area"
-                              id={val.id}
-                              onChange={areaSubareaSelectHandler}
-                              checked={
-                                areaSubareas &&
-                                areasSubareasChecked(val.id, areaSubareas)
-                              }
-                            />
-
-                            <label htmlFor={val.id} className="areaParent ms-1">
-                              {val.name}
-                            </label>
-                          </div>
-
-                          {areaSubareas?.map(
-                            (subarea, k) =>
-                              subarea.area === val.id && (
-                                <div key={k} className="displayFlex">
-                                  <input
-                                    type="checkbox"
-                                    id={subarea.id}
-                                    onChange={areaSubareaSelectHandler}
-                                    checked={subarea.isChecked}
-                                  />
-                                  <label
-                                    htmlFor={subarea.id}
-                                    className="text-secondary"
-                                  >
-                                    {subarea.name}
-                                  </label>
-                                </div>
-                              )
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  </Tab>
-                  {/* manager areas tab end */}
-
-                  {/* manager permissions tab start */}
-                  <Tab eventKey="permission" title={t("changePermission")}>
-                    <div className="displayGrid3">
-                      <div className="CheckboxContainer">
-                        <input
-                          type="checkbox"
-                          className="CheckBox"
-                          name="allPermissions"
-                          onChange={managerPermissionHandler}
-                          id="editAllPermissions"
-                          checked={managerPermissions.every(
-                            (item) => item.isChecked
-                          )}
-                        />
-                        <label
-                          htmlFor="editAllPermissions"
-                          className="checkboxLabel text-info fw-bold"
-                        >
-                          {t("allPermission")}
-                        </label>
-                      </div>
-                      {managerPermissions.map(
-                        (val, key) =>
-                          !val.disabled && (
-                            <div
-                              className={
-                                !val?.disabled &&
-                                "CheckboxContainer d-flex justify-content-between"
-                              }
-                              key={key}
-                            >
-                              <div>
-                                <input
-                                  type="checkbox"
-                                  className="CheckBox"
-                                  name={val.value}
-                                  checked={val.isChecked}
-                                  onChange={managerPermissionHandler}
-                                  id={val.value + key + "edit"}
-                                />
-
-                                <label
-                                  htmlFor={val.value + key + "edit"}
-                                  className="checkboxLabel"
-                                >
-                                  {t(val.label)}
-                                </label>
-                              </div>
-
-                              {/* there is information to grant permission tooltip */}
-                              {val?.info && <InformationTooltip data={val} />}
-                            </div>
-                          )
+          ),
+        }}
+      >
+        <Formik
+          initialValues={{
+            ...dataInputOption?.inputInitialValues,
+          }}
+          validationSchema={dataInputOption?.validationSchema}
+          onSubmit={(values) => {
+            managerUpdateHandler(values);
+          }}
+          enableReinitialize
+        >
+          {() => (
+            <Form id="managerEdit">
+              <Tabs
+                defaultActiveKey={"editManager"}
+                id="uncontrolled-tab-example"
+                className="mb-3"
+              >
+                {/* manager profile information tab start */}
+                <Tab eventKey="editManager" title={t("profile")}>
+                  <div className="d-flex justify-content-center">
+                    <div className="displayGrid col-6">
+                      {dataInputOption?.inputOption.map(
+                        (item) => item?.isVisible && <FtextField {...item} />
                       )}
                     </div>
-                  </Tab>
-                  {/* manager permissions tab end */}
-                </Tabs>
-              </Form>
-            )}
-          </Formik>
-        </ModalBody>
-        <ModalFooter>
-          <div className="displayGrid1">
-            <button
-              type="button"
-              className="btn btn-secondary"
-              disabled={isLoading}
-              onClick={closeHandler}
-            >
-              {t("cancel")}
-            </button>
-            <button
-              type="submit"
-              form="managerEdit"
-              className="btn btn-success"
-              disabled={isLoading}
-            >
-              {isLoading ? <Loader /> : t("save")}
-            </button>
-          </div>
-        </ModalFooter>
-      </Modal>
+                  </div>
+                </Tab>
+                {/* manager profile information tab end */}
+
+                {/* manager areas tab start */}
+                <Tab eventKey="area" title={t("area")}>
+                  <div className="AllAreaClass">
+                    {area?.map((val, key) => (
+                      <div key={key}>
+                        <div className="form-check">
+                          <input
+                            type="checkbox"
+                            className="form-check-input"
+                            name="area"
+                            id={val.id}
+                            onChange={areaSubareaSelectHandler}
+                            checked={
+                              areaSubareas &&
+                              areasSubareasChecked(val.id, areaSubareas)
+                            }
+                          />
+
+                          <label htmlFor={val.id} className="areaParent ms-1">
+                            {val.name}
+                          </label>
+                        </div>
+
+                        {areaSubareas?.map(
+                          (subarea, k) =>
+                            subarea.area === val.id && (
+                              <div key={k} className="displayFlex">
+                                <input
+                                  type="checkbox"
+                                  id={subarea.id}
+                                  onChange={areaSubareaSelectHandler}
+                                  checked={subarea.isChecked}
+                                />
+                                <label
+                                  htmlFor={subarea.id}
+                                  className="text-secondary"
+                                >
+                                  {subarea.name}
+                                </label>
+                              </div>
+                            )
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </Tab>
+                {/* manager areas tab end */}
+
+                {/* manager permissions tab start */}
+                <Tab eventKey="permission" title={t("changePermission")}>
+                  <div className="displayGrid3">
+                    <div className="CheckboxContainer">
+                      <input
+                        type="checkbox"
+                        className="CheckBox"
+                        name="allPermissions"
+                        onChange={managerPermissionHandler}
+                        id="editAllPermissions"
+                        checked={managerPermissions.every(
+                          (item) => item.isChecked
+                        )}
+                      />
+                      <label
+                        htmlFor="editAllPermissions"
+                        className="checkboxLabel text-info fw-bold"
+                      >
+                        {t("allPermission")}
+                      </label>
+                    </div>
+                    {managerPermissions.map(
+                      (val, key) =>
+                        !val.disabled && (
+                          <div
+                            className={
+                              !val?.disabled &&
+                              "CheckboxContainer d-flex justify-content-between"
+                            }
+                            key={key}
+                          >
+                            <div>
+                              <input
+                                type="checkbox"
+                                className="CheckBox"
+                                name={val.value}
+                                checked={val.isChecked}
+                                onChange={managerPermissionHandler}
+                                id={val.value + key + "edit"}
+                              />
+
+                              <label
+                                htmlFor={val.value + key + "edit"}
+                                className="checkboxLabel"
+                              >
+                                {t(val.label)}
+                              </label>
+                            </div>
+
+                            {/* there is information to grant permission tooltip */}
+                            {val?.info && <InformationTooltip data={val} />}
+                          </div>
+                        )
+                    )}
+                  </div>
+                </Tab>
+                {/* manager permissions tab end */}
+              </Tabs>
+
+              <div className="displayGrid1 float-end mt-4">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  disabled={isLoading}
+                  onClick={closeHandler}
+                >
+                  {t("cancel")}
+                </button>
+                <button
+                  type="submit"
+                  form="managerEdit"
+                  className="btn btn-success"
+                  disabled={isLoading}
+                >
+                  {isLoading ? <Loader /> : t("save")}
+                </button>
+              </div>
+            </Form>
+          )}
+        </Formik>
+      </ComponentCustomModal>
     </>
   );
 };

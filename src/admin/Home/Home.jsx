@@ -59,6 +59,7 @@ import { useTranslation } from "react-i18next";
 import IspOwnerCustomerUpdate from "./modal/IspOwnerCustomerUpdate";
 import { Accordion } from "react-bootstrap";
 import Loader from "../../components/common/Loader";
+import useDataState from "../../hooks/useDataState";
 
 const districts = districtsJSON.districts;
 
@@ -107,18 +108,8 @@ export default function Home() {
   // filter Accordion handle state
   const [activeKeys, setActiveKeys] = useState("");
 
-  // filter options state
-  const [filterOptions, setFilterOptions] = useState({
-    status: "",
-    paymentStatus: "",
-    billingCycle: "",
-    queueType: "",
-    customerType: "",
-    mikrotik: "",
-    district: "",
-    startDate: "",
-    endDate: "",
-  });
+  // get user data set from useDataState hooks
+  const { filterOptions, setFilterOption } = useDataState();
 
   // api call
   useEffect(() => {
@@ -128,7 +119,7 @@ export default function Home() {
   useEffect(() => {
     setClintData(ispOwners);
 
-    Object?.values(filterOptions) && handleClintFilter();
+    Object?.values(filterOptions) && handleActiveFilter();
   }, [ispOwners]);
 
   // reload handler
@@ -159,94 +150,6 @@ export default function Home() {
   const fileModal = (ownerId, mtk) => {
     setOwnerId(ownerId);
     setMikrotikStatus(mtk);
-  };
-
-  // clint filter handler
-  const handleClintFilter = () => {
-    const {
-      status,
-      paymentStatus,
-      billingCycle,
-      queueType,
-      customerType,
-      mikrotik,
-      district,
-      startDate,
-      endDate,
-    } = filterOptions;
-
-    let tempClint = [...ispOwners];
-
-    // payment filter
-    if (paymentStatus && paymentStatus !== "") {
-      tempClint = tempClint.filter(
-        (value) => value.bpSettings.paymentStatus === paymentStatus
-      );
-    }
-
-    if (status && status !== "") {
-      tempClint = tempClint.filter((item) => item.status === status);
-    }
-
-    // execute billing cycle filter
-    if (billingCycle && billingCycle !== "") {
-      let billCycle;
-      if (billingCycle === "true") {
-        billCycle = true;
-      } else if (billingCycle === "false") {
-        billCycle = false;
-      }
-
-      tempClint = tempClint.filter(
-        (value) => value.bpSettings.executeBillingCycle === billCycle
-      );
-    }
-
-    // ispOwner queue type filter
-    if (queueType && queueType !== "") {
-      tempClint = tempClint.filter(
-        (value) => value.bpSettings.queueType === queueType
-      );
-    }
-
-    // customer type filter
-    if (customerType && customerType !== "") {
-      tempClint = tempClint.filter((value) =>
-        value.bpSettings?.customerType.includes(customerType)
-      );
-    }
-
-    // mikrotik filter
-    if (mikrotik && mikrotik !== "") {
-      let mtkStatus;
-      if (mikrotik === "true") {
-        mtkStatus = true;
-      } else if (mikrotik === "false") {
-        mtkStatus = false;
-      }
-
-      tempClint = tempClint.filter(
-        (value) => value.bpSettings.hasMikrotik === mtkStatus
-      );
-    }
-
-    //divisional area filter
-    if (district && district !== "") {
-      const districtName = getName(districts, district)?.name;
-      tempClint = tempClint.filter((item) => item.district === districtName);
-    }
-
-    // create date filter
-    if (startDate && endDate) {
-      tempClint = tempClint.filter(
-        (item) =>
-          new Date(moment(item.createdAt).format("YYYY-MM-DD")).getTime() >=
-            new Date(moment(startDate).format("YYYY-MM-DD")).getTime() &&
-          new Date(moment(item.createdAt).format("YYYY-MM-DD")).getTime() <=
-            new Date(moment(endDate).format("YYYY-MM-DD")).getTime()
-      );
-    }
-    setClintData(tempClint);
   };
 
   const ipsOwnerBillingCycleHandler = (ispOwner) => {
@@ -727,6 +630,408 @@ export default function Home() {
     []
   );
 
+  // filter inputs options
+  const filterInputs = [
+    {
+      name: "status",
+      type: "select",
+      id: "status",
+      value: filterOptions.status,
+      isVisible: true,
+      disabled: false,
+      onChange: (e) => {
+        setFilterOption({
+          ...filterOptions,
+          status: e.target.value,
+        });
+      },
+      options: [
+        {
+          text: "New",
+          value: "new",
+        },
+        {
+          text: "Active",
+          value: "active",
+        },
+        {
+          text: "Inactive",
+          value: "inactive",
+        },
+        {
+          text: "Banned",
+          value: "banned",
+        },
+        {
+          text: "Deleted",
+          value: "deleted",
+        },
+        {
+          text: "Trial",
+          value: "trial",
+        },
+      ],
+      firstOptions: t("status"),
+      textAccessor: "text",
+      valueAccessor: "value",
+    },
+    {
+      name: "paymentStatus",
+      type: "select",
+      id: "paymentStatus",
+      value: filterOptions.paymentStatus,
+      isVisible: true,
+      disabled: false,
+      onChange: (e) => {
+        setFilterOption({
+          ...filterOptions,
+          paymentStatus: e.target.value,
+        });
+      },
+      options: [
+        {
+          text: t("paid"),
+          value: "paid",
+        },
+        {
+          text: t("unpaid"),
+          value: "unpaid",
+        },
+      ],
+      firstOptions: t("paymentStatus"),
+      textAccessor: "text",
+      valueAccessor: "value",
+    },
+    {
+      name: "billingCycle",
+      type: "select",
+      id: "billingCycle",
+      value: filterOptions.billingCycle,
+      isVisible: true,
+      disabled: false,
+      onChange: (e) => {
+        setFilterOption({
+          ...filterOptions,
+          billingCycle: e.target.value,
+        });
+      },
+      options: [
+        {
+          text: "Run Billing Cycle",
+          value: "true",
+        },
+        {
+          text: `Don't Billing Cycle`,
+          value: "false",
+        },
+      ],
+      firstOptions: "Execute Billing Cycle",
+      textAccessor: "text",
+      valueAccessor: "value",
+    },
+    {
+      name: "queueType",
+      type: "select",
+      id: "queueType",
+      value: filterOptions.queueType,
+      isVisible: true,
+      disabled: false,
+      onChange: (e) => {
+        setFilterOption({
+          ...filterOptions,
+          queueType: e.target.value,
+        });
+      },
+      options: [
+        {
+          text: "Simple Queue",
+          value: "simple-queue",
+        },
+        {
+          text: "Firewall Queue",
+          value: "firewall-queue",
+        },
+        {
+          text: "Core Queue",
+          value: "core-queue",
+        },
+      ],
+      firstOptions: "Queue Type",
+      textAccessor: "text",
+      valueAccessor: "value",
+    },
+    {
+      name: "customerType",
+      type: "select",
+      id: "customerType",
+      value: filterOptions.customerType,
+      isVisible: true,
+      disabled: false,
+      onChange: (e) => {
+        setFilterOption({
+          ...filterOptions,
+          customerType: e.target.value,
+        });
+      },
+      options: [
+        {
+          text: "PPPoE",
+          value: "pppoe",
+        },
+        {
+          text: "Static",
+          value: "static",
+        },
+        {
+          text: "Hotspot",
+          value: "hotspot",
+        },
+      ],
+      firstOptions: "Customer Type",
+      textAccessor: "text",
+      valueAccessor: "value",
+    },
+    {
+      name: "mikrotik",
+      type: "select",
+      id: "mikrotik",
+      value: filterOptions.mikrotik,
+      isVisible: true,
+      disabled: false,
+      onChange: (e) => {
+        setFilterOption({
+          ...filterOptions,
+          mikrotik: e.target.value,
+        });
+      },
+      options: [
+        {
+          text: "With Mikrotik",
+          value: "true",
+        },
+        {
+          text: "WithOut Mikrotik",
+          value: "false",
+        },
+      ],
+      firstOptions: "Mikrotik",
+      textAccessor: "text",
+      valueAccessor: "value",
+    },
+    {
+      name: "district",
+      type: "select",
+      id: "district",
+      value: filterOptions.district,
+      isVisible: true,
+      disabled: false,
+      onChange: (e) => {
+        setFilterOption({
+          ...filterOptions,
+          district: e.target.value,
+        });
+      },
+      options: districts,
+      firstOptions: "All District",
+      textAccessor: "name",
+      valueAccessor: "name",
+    },
+    {
+      name: "startCreateDate",
+      type: "date",
+      id: "startCreateDate",
+      isVisible: true,
+      disabled: false,
+      placeholderText: t("startCreateDate"),
+      component: "DatePicker",
+      dateFormat: "yyyy MM dd hh:mm a",
+      timeIntervals: 60,
+      showTimeSelect: "showTimeSelect",
+      selected: filterOptions?.startCreateDate,
+      onChange: (date) => {
+        setFilterOption({
+          ...filterOptions,
+          startCreateDate: date,
+        });
+      },
+    },
+    {
+      name: "endCreateDate",
+      type: "date",
+      id: "endCreateDate",
+      isVisible: true,
+      disabled: false,
+      placeholderText: t("endCreateDate"),
+      component: "DatePicker",
+      dateFormat: "yyyy MM dd hh:mm a",
+      timeIntervals: 60,
+      showTimeSelect: "showTimeSelect",
+      selected: filterOptions?.endCreateDate,
+      onChange: (date) => {
+        setFilterOption({
+          ...filterOptions,
+          endCreateDate: date,
+        });
+      },
+    },
+    {
+      name: "startBillDate",
+      type: "date",
+      id: "startBillDate",
+      isVisible: true,
+      disabled: false,
+      placeholderText: t("startBillDate"),
+      component: "DatePicker",
+      dateFormat: "yyyy MM dd hh:mm a",
+      timeIntervals: 60,
+      showTimeSelect: "showTimeSelect",
+      selected: filterOptions.startBillDate,
+      onChange: (date) => {
+        setFilterOption({
+          ...filterOptions,
+          startBillDate: date,
+        });
+      },
+    },
+    {
+      name: "endBillDate",
+      type: "date",
+      id: "endBillDate",
+      isVisible: true,
+      disabled: false,
+      placeholderText: t("endBillDate"),
+      component: "DatePicker",
+      dateFormat: "yyyy MM dd hh:mm a",
+      timeIntervals: 60,
+      showTimeSelect: "showTimeSelect",
+      selected: filterOptions.endBillDate,
+      onChange: (date) => {
+        setFilterOption({
+          ...filterOptions,
+          endBillDate: date,
+        });
+      },
+    },
+  ];
+
+  const handleActiveFilter = () => {
+    let findAnyIspOwner = ispOwners.reduce((acc, c) => {
+      const {
+        status,
+        paymentStatus,
+        billingCycle,
+        queueType,
+        customerType,
+        mikrotik,
+        district,
+        startCreateDate,
+        endCreateDate,
+        startBillDate,
+        endBillDate,
+      } = filterOptions;
+
+      // make date object
+      const createDate = new Date(
+        moment(c.createdAt).format("YYYY-MM-DD hh:mm a")
+      );
+      const billDate = new Date(
+        moment(c?.bpSettings?.monthlyDueDate).format("YYYY-MM-DD hh:mm a")
+      );
+
+      const monthCreateDateStart = new Date(
+        moment(startCreateDate).format("YYYY-MM-DD hh:mm a")
+      );
+      const monthCreateDateEnd = new Date(
+        moment(endCreateDate).format("YYYY-MM-DD hh:mm a")
+      );
+
+      const monthBillDateStart = new Date(
+        moment(startBillDate).format("YYYY-MM-DD hh:mm a")
+      );
+      const monthBillDateEnd = new Date(
+        moment(endBillDate).format("YYYY-MM-DD hh:mm a")
+      );
+
+      // make possible conditions objects if the filter value not selected thats return true
+      //if filter value exist then compare
+      const conditions = {
+        status: status ? c.status === status : true,
+        paymentStatus: paymentStatus
+          ? c.bpSettings?.paymentStatus === paymentStatus
+          : true,
+        billingCycle: billingCycle
+          ? `${c.bpSettings.executeBillingCycle}` === billingCycle
+          : true,
+        queueType: queueType ? c.bpSettings.queueType === queueType : true,
+        customerType: customerType
+          ? c.bpSettings?.customerType.includes(customerType)
+          : true,
+        mikrotik: mikrotik ? `${c.bpSettings.hasMikrotik}` === mikrotik : true,
+        district: district ? c.district === district : true,
+        createDate:
+          startCreateDate && endCreateDate
+            ? monthCreateDateStart <= createDate &&
+              monthCreateDateEnd >= createDate
+            : true,
+        billDate:
+          startBillDate && endBillDate
+            ? monthBillDateStart <= billDate && monthBillDateEnd >= billDate
+            : true,
+      };
+
+      //check if condition pass got for next step or is fail stop operation
+      //if specific filter option value not exist it will return true
+
+      let isPass = false;
+
+      isPass = conditions["status"];
+      if (!isPass) return acc;
+
+      isPass = conditions["paymentStatus"];
+      if (!isPass) return acc;
+
+      isPass = conditions["billingCycle"];
+      if (!isPass) return acc;
+
+      isPass = conditions["queueType"];
+      if (!isPass) return acc;
+
+      isPass = conditions["customerType"];
+      if (!isPass) return acc;
+
+      isPass = conditions["mikrotik"];
+      if (!isPass) return acc;
+
+      isPass = conditions["district"];
+      if (!isPass) return acc;
+
+      isPass = conditions["createDate"];
+      if (!isPass) return acc;
+
+      isPass = conditions["billDate"];
+      if (!isPass) return acc;
+
+      if (isPass) acc.push(c);
+
+      return acc;
+    }, []);
+
+    // set filter customer in customer state
+    setClintData(findAnyIspOwner);
+  };
+
+  // filter reset controller
+  const handleFilterReset = () => {
+    if (Object.keys(filterOptions).length > 0) {
+      // set empty filter option
+      setFilterOption(
+        Object.fromEntries(filterInputs.map((input) => [input.name, ""]))
+      );
+
+      setClintData(ispOwners);
+    }
+  };
+
   return (
     <>
       <FontColor>
@@ -789,156 +1094,47 @@ export default function Home() {
               <Accordion.Item eventKey="filter">
                 <Accordion.Body>
                   <div className="displayGrid6">
-                    <select
-                      className="form-select mt-0"
-                      aria-label="Default select example"
-                      onChange={(e) =>
-                        setFilterOptions({
-                          ...filterOptions,
-                          paymentStatus: e.target.value,
-                        })
+                    {filterInputs.map((item) => {
+                      if (item.isVisible) {
+                        return item.type === "select" ? (
+                          <select
+                            className="form-select shadow-none mt-0"
+                            onChange={item.onChange}
+                            value={item.value}
+                          >
+                            <option value="">{item.firstOptions}</option>
+                            {item.options?.map((opt) => (
+                              <option value={opt[item.valueAccessor]}>
+                                {opt[item.textAccessor]}
+                              </option>
+                            ))}
+                          </select>
+                        ) : (
+                          <div>
+                            <DatePicker
+                              className="form-control mt-0"
+                              {...item}
+                            />
+                          </div>
+                        );
                       }
-                    >
-                      <option value="" selected>
-                        All
-                      </option>
-                      <option value="paid">Paid</option>
-                      <option value="unpaid">Unpaid</option>
-                    </select>
+                    })}
 
-                    <select
-                      className="form-select mt-0"
-                      aria-label="Default select example"
-                      onChange={(e) =>
-                        setFilterOptions({
-                          ...filterOptions,
-                          status: e.target.value,
-                        })
-                      }
-                    >
-                      <option value="" selected>
-                        Status
-                      </option>
-                      <option value="new">New</option>
-                      <option value="active">Active</option>
-                      <option value="inactive">Inactive</option>
-                      <option value="banned">Banned</option>
-                      <option value="deleted">Deleted</option>
-                      <option value="trial">Trial</option>
-                    </select>
-
-                    <select
-                      className="form-select mt-0"
-                      aria-label="Default select example"
-                      onChange={(e) =>
-                        setFilterOptions({
-                          ...filterOptions,
-                          billingCycle: e.target.value,
-                        })
-                      }
-                    >
-                      <option value="" selected>
-                        Execute Billing Cycle
-                      </option>
-                      <option value="true">Run Billing Cycle</option>
-                      <option value="false">Don't Billing Cycle</option>
-                    </select>
-
-                    <select
-                      className="form-select mt-0"
-                      aria-label="Default select example"
-                      onChange={(e) =>
-                        setFilterOptions({
-                          ...filterOptions,
-                          queueType: e.target.value,
-                        })
-                      }
-                    >
-                      <option value="">Queue Type</option>
-                      <option value="simple-queue">Simple Queue</option>
-                      <option value="firewall-queue">Firewall Queue</option>
-                      <option value="core-queue">Core Queue</option>
-                    </select>
-
-                    <select
-                      className="form-select mt-0"
-                      aria-label="Default select example"
-                      onChange={(e) =>
-                        setFilterOptions({
-                          ...filterOptions,
-                          customerType: e.target.value,
-                        })
-                      }
-                    >
-                      <option value="">Customer Type</option>
-                      <option value="pppoe">PPPoE</option>
-                      <option value="static">Static</option>
-                      <option value="hotspot">Hotspot</option>
-                    </select>
-
-                    <select
-                      className="form-select mt-0"
-                      aria-label="Default select example"
-                      onChange={(e) =>
-                        setFilterOptions({
-                          ...filterOptions,
-                          mikrotik: e.target.value,
-                        })
-                      }
-                    >
-                      <option value="" selected>
-                        Mikrotik
-                      </option>
-                      <option value="true">With Mikrotik</option>
-                      <option value="false">WithOut Mikrotik</option>
-                    </select>
-
-                    <select
-                      className="form-select mt-0"
-                      aria-label="Default select example"
-                      onChange={(e) =>
-                        setFilterOptions({
-                          ...filterOptions,
-                          district: e.target.value,
-                        })
-                      }
-                    >
-                      <option value="" selected>
-                        All District
-                      </option>
-                      {districts.map((item) => {
-                        return <option value={item.id}>{item.name}</option>;
-                      })}
-                    </select>
-
-                    <div>
-                      <DatePicker
-                        className="form-control mt-0"
-                        selected={filterOptions.startDate}
-                        onChange={(date) =>
-                          setFilterOptions({
-                            ...filterOptions,
-                            startDate: date,
-                          })
-                        }
-                        dateFormat="dd-MM-yyyy"
-                        placeholderText={t("startDate")}
-                      />
-                    </div>
-
-                    <div>
-                      <DatePicker
-                        className="form-control mt-0"
-                        selected={filterOptions.endDate}
-                        onChange={(date) =>
-                          setFilterOptions({
-                            ...filterOptions,
-                            endDate: date,
-                          })
-                        }
-                        dateFormat="dd-MM-yyyy"
-                        placeholderText={t("endDate")}
-                      />
+                    <div className="displayGrid1">
+                      <button
+                        className="btn btn-outline-primary"
+                        type="button"
+                        onClick={handleActiveFilter}
+                      >
+                        {t("filter")}
+                      </button>
+                      <button
+                        className="btn btn-outline-secondary"
+                        type="button"
+                        onClick={handleFilterReset}
+                      >
+                        {t("reset")}
+                      </button>
                     </div>
 
                     <Link to={"/admin/all-comments"}>
@@ -958,16 +1154,6 @@ export default function Home() {
                         </div>
                       </Link>
                     )}
-
-                    <div className="displayGrid1 mt-0 ">
-                      <button
-                        className="btn btn-outline-primary"
-                        type="button"
-                        onClick={handleClintFilter}
-                      >
-                        Filter
-                      </button>
-                    </div>
                   </div>
                 </Accordion.Body>
               </Accordion.Item>

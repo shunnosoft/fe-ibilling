@@ -45,23 +45,6 @@ const ManagerPost = ({ show, setShow }) => {
   //---> Get form input option from hook
   const dataInputOption = useDataInputOption(inputPermission, null);
 
-  //manager Validate with yup
-  const managerValidate = Yup.object({
-    name: Yup.string()
-      .min(3, t("minimumContaining3letter"))
-      .required(t("enterManagerName")),
-    mobile: Yup.string()
-      .min(11, t("write11DigitMobileNumber"))
-      .max(11, t("over11DigitMobileNumber"))
-      .required(t("enterManagerNumber")),
-    address: Yup.string().required(t("enterManagerAddress")),
-    email: Yup.string()
-      .email(t("incorrectEmail"))
-      .required(t("enterManagerEmail")),
-    nid: Yup.string().required(t("enterManagerNID")),
-    salary: Yup.string(),
-  });
-
   //get current language
   const language = localStorage.getItem("netFee:lang");
 

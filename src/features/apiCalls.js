@@ -920,10 +920,8 @@ export const deleteManager = async (
       dispatch(managerDeleteSuccess(res.data));
       // window.location.reload();
     })
-    .catch((err) => {
-      if (err.response) {
-        toast.error(err.response.data.message);
-      }
+    .catch((error) => {
+      toast.error(error.message);
     });
 };
 
@@ -1111,10 +1109,8 @@ export const editSubArea = async (
         "Sub-Area Updated Successfully"
       );
     })
-    .catch((err) => {
-      if (err.response) {
-        toast.error(err.response.data.message);
-      }
+    .catch((error) => {
+      toast.error(error.message);
     });
   setIsLoading(false);
 };
@@ -1146,10 +1142,8 @@ export const editPoleBox = async (
         "Pole Box Updated Successfully"
       );
     })
-    .catch((err) => {
-      if (err.response) {
-        toast.error(err.response.data.message);
-      }
+    .catch((error) => {
+      toast.error(error.message);
     });
   setIsLoading(false);
 };
@@ -1249,10 +1243,8 @@ export const editCollector = async (dispatch, data, setIsLoading, setShow) => {
       "Collector Updated Successfully"
     );
     setShow(false);
-  } catch (err) {
-    if (err.response) {
-      toast.error(err.response.data.message);
-    }
+  } catch (error) {
+    toast.error(error.message);
   }
   setIsLoading(false);
 };
@@ -1267,18 +1259,15 @@ export const deleteCollector = async (
   try {
     await apiLink.delete(`ispOwner/collector/${ispOwnerId}/${collectorId}`);
     dispatch(deleteCollectorSuccess(collectorId));
-    setIsDeleting(false);
     langMessage(
       "success",
       "কালেক্টর ডিলিট সফল হয়েছে",
       "Collector Deleted Successfully"
     );
-  } catch (err) {
-    if (err.response) {
-      setIsDeleting(false);
-      toast.error(err.response.data.message);
-    }
+  } catch (error) {
+    toast.error(error.message);
   }
+  setIsDeleting(false);
 };
 
 export const getCollectorBillReport = async (
@@ -1443,7 +1432,6 @@ export const addCustomer = async (
   try {
     const res = await apiLink.post("/ispOwner/customer", data);
     dispatch(addCustomerSuccess(res.data));
-    setIsloading(false);
     langMessage(
       "success",
       "কাস্টমার সংযুক্ত সফল হয়েছে",
@@ -1452,11 +1440,9 @@ export const addCustomer = async (
     setShow(false);
     resetForm();
   } catch (err) {
-    if (err.response) {
-      setIsloading(false);
-      toast.error(err.response.data.message);
-    }
+    toast.error(err.message);
   }
+  setIsloading(false);
 };
 
 // customer profile update api
@@ -1500,10 +1486,8 @@ export const editCustomer = async (
       );
     }
     setShow(false);
-  } catch (err) {
-    if (err.response) {
-      toast.error(err.response.data.message);
-    }
+  } catch (error) {
+    toast.error(error.message);
   }
   setIsloading(false);
 };
@@ -1538,10 +1522,8 @@ export const deleteACustomer = async (
     );
 
     setShow(false);
-  } catch (err) {
-    if (err.response) {
-      toast.error(err.response.data.message);
-    }
+  } catch (error) {
+    toast.error(error.message);
   }
   setIsLoading(false);
 };
@@ -1566,8 +1548,8 @@ export const deleteStaticCustomerApi = async (
       "কাস্টমার ডিলিট সফল হয়েছে",
       "Customer Deleted Successfully"
     );
-  } catch (err) {
-    toast.error(err.response.data.message);
+  } catch (error) {
+    toast.error(error.message);
   }
   setIsLoading(false);
 };
@@ -1584,8 +1566,8 @@ export const deleteNetFeeCustomer = async (dispatch, data, setIsLoading) => {
       "কাস্টমার ডিলিট সফল হয়েছে",
       "Customer Deleted Successfully"
     );
-  } catch (err) {
-    toast.error(err.response.data.message);
+  } catch (error) {
+    toast.error(error.message);
   }
   setIsLoading(false);
 };
@@ -1602,8 +1584,8 @@ export const deleteMikrotikCustomer = async (dispatch, data, setIsLoading) => {
       "কাস্টমার ডিলিট সফল হয়েছে",
       "Customer Deleted Successfully"
     );
-  } catch (err) {
-    toast.error(err.response.data.message);
+  } catch (error) {
+    toast.error(error.message);
   }
   setIsLoading(false);
 };
@@ -1724,10 +1706,8 @@ export const postMikrotik = async (dispatch, data, setIsLoading, setShow) => {
         "Mikrotik Connected Successfully"
       );
     })
-    .catch((err) => {
-      if (err.response) {
-        toast.error(err.response.data.message);
-      }
+    .catch((error) => {
+      toast.error(error.message);
     });
   setIsLoading(false);
 };
@@ -1791,10 +1771,8 @@ export const editSingleMikrotik = async (dispatch, data, setShow) => {
         "Mikrotik Edited Successfully"
       );
     })
-    .catch((err) => {
-      if (err.response) {
-        toast.error(err.response.data.message);
-      }
+    .catch((error) => {
+      toast.error(error.message);
     });
 };
 
@@ -2350,10 +2328,8 @@ export const deletePPPoEpackage = async (dispatch, IDs) => {
         "PPPoE Package Deleted Successfully"
       );
     })
-    .catch((err) => {
-      if (err.response) {
-        toast.error(err.response.data.message);
-      }
+    .catch((error) => {
+      toast.error(error.message);
     });
 };
 
@@ -2380,65 +2356,46 @@ export const postReseller = async (
   setShow
 ) => {
   setIsLoading(true);
-  await apiLink({
-    url: "/ispOwner/reseller",
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    data: data,
-  })
-    .then((res) => {
-      dispatch(addResellerSuccess(res.data));
-      setIsLoading(false);
-      setShow(false);
-      langMessage(
-        "success",
-        "রিসেলার এড সফল হয়েছে !",
-        "Reseller Added Successfully"
-      );
-      resetForm();
-    })
-    .catch((err) => {
-      if (err.response) {
-        setIsLoading(false);
-        toast.error(err.response.data.message);
-      }
-    });
+  try {
+    const res = await apiLink.post("/ispOwner/reseller", data);
+    dispatch(addResellerSuccess(res.data));
+    setShow(false);
+    langMessage(
+      "success",
+      "রিসেলার এড সফল হয়েছে !",
+      "Reseller Added Successfully"
+    );
+    resetForm();
+  } catch (error) {
+    toast.error(error.message);
+  }
+  setIsLoading(false);
 };
 
 // Edit reseller
 export const editReseller = async (dispatch, data, setIsLoading, setShow) => {
   setIsLoading(true);
-  const { ispId, resellerId, ...rest } = data;
-  await apiLink({
-    url: `/ispOwner/reseller/${ispId}/${resellerId}`,
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    data: rest,
-  })
-    .then((res) => {
-      dispatch(editResellerSuccess(res.data));
-      setIsLoading(false);
-      setShow(false);
-      langMessage(
-        "success",
-        "রিসেলার আপডেট সফল হয়েছে ",
-        "Reseller Updated Successfully"
-      );
-    })
-    .catch((err) => {
-      if (err.response) {
-        setIsLoading(false);
-        toast.error(err.response.data.message);
-      }
-    });
+  try {
+    const { ispId, resellerId, ...rest } = data;
+    const res = await apiLink.patch(
+      `/ispOwner/reseller/${ispId}/${resellerId}`,
+      rest
+    );
+
+    dispatch(editResellerSuccess(res.data));
+    setShow(false);
+    langMessage(
+      "success",
+      "রিসেলার আপডেট সফল হয়েছে ",
+      "Reseller Updated Successfully"
+    );
+  } catch (error) {
+    toast.error(error.message);
+  }
+  setIsLoading(false);
 };
 
 //update reseller balance
-
 export const updateResellerBalance = async (
   dispatch,
   data,
@@ -2448,13 +2405,11 @@ export const updateResellerBalance = async (
   setIsLoading(true);
   const { ispId, resellerId, ...rest } = data;
   try {
-    setIsLoading(true);
     const res = await apiLink.patch(
       `/ispOwner/reseller/${ispId}/${resellerId}`,
       rest
     );
     dispatch(editResellerSuccess(res.data));
-
     setShow(false);
     langMessage(
       "success",
@@ -2462,9 +2417,7 @@ export const updateResellerBalance = async (
       "Reseller Balance Updated Successfully"
     );
   } catch (error) {
-    if (error.response) {
-      toast.error(error.response.data.message);
-    }
+    toast.error(error.message);
   }
   setIsLoading(false);
 };
@@ -2473,26 +2426,22 @@ export const updateResellerBalance = async (
 export const deleteReseller = async (dispatch, IDs, setIsLoading) => {
   setIsLoading(true);
   const { ispId, resellerId } = IDs;
-  await apiLink({
-    url: `/ispOwner/reseller/${ispId}/${resellerId}`,
-    method: "DELETE",
-  })
-    .then(() => {
-      dispatch(deleteResellerSuccess(resellerId));
-      setIsLoading(false);
-      document.querySelector("#resellerModal").click();
-      langMessage(
-        "success",
-        "রিসেলার ডিলিট সফল হয়েছে",
-        "Reseller Deleted Successfully"
-      );
-    })
-    .catch((err) => {
-      if (err.response) {
-        setIsLoading(false);
-        toast.error(err.response.data.message);
-      }
-    });
+  try {
+    const res = await apiLink.delete(
+      `/ispOwner/reseller/${ispId}/${resellerId}`
+    );
+
+    dispatch(deleteResellerSuccess(resellerId));
+    document.querySelector("#resellerModal").click();
+    langMessage(
+      "success",
+      "রিসেলার ডিলিট সফল হয়েছে",
+      "Reseller Deleted Successfully"
+    );
+  } catch (error) {
+    toast.error(error.message);
+  }
+  setIsLoading(false);
 };
 
 //password update
@@ -3289,10 +3238,8 @@ export const deleteStaticPackage = async (dispatch, packageId) => {
         "Static Package Deleted Successfully"
       );
     })
-    .catch((err) => {
-      if (err.response) {
-        toast.error(err.response.data.message);
-      }
+    .catch((error) => {
+      toast.error(error.message);
     });
 };
 

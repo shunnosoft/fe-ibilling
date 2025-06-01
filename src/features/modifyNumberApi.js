@@ -39,8 +39,7 @@ export const SearchByNumber = async (number, setCustomer, setIsLoading) => {
     .catch((error) => {
       setIsLoading(false);
       setCustomer("");
-      console.log(error);
-      toast.error(error.response.data.message);
+      toast.error(error.message);
     });
 };
 
@@ -55,7 +54,6 @@ export const DeleteByNumber = async (number, setCustomer) => {
     })
 
     .catch((error) => {
-      console.log(error);
-      toast.error(error.response.data.message);
+      toast.error(error.message);
     });
 };
