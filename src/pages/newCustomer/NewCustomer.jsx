@@ -108,6 +108,7 @@ const NewCustomer = ({
         filterOptions?.month.getMonth() + 1,
         0
       );
+      createEnd.setHours(23, 59, 59, 999);
 
       if (createEnd?.getMonth() + 1 === today.getMonth() + 1) {
         setFilterOption({

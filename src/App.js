@@ -126,6 +126,7 @@ import Device from "./pages/network/device/Device";
 import UserActivityLog from "./pages/activityLog/UserActivityLog";
 import OLT from "./pages/olt/OLT";
 import { ToastContainer } from "react-toastify";
+import CronLog from "./admin/Home/cronLog/CronLog";
 
 function App() {
   const [theme, setTheme] = useState("light");
@@ -434,6 +435,7 @@ function App() {
                 path="admin/netFee/support/:ispOwnerId"
                 element={<NetFeeIspOwnerSupport />}
               />
+              <Route path="admin/netFee/cronLog" element={<CronLog />} />
 
               <Route path="*" element={<NotFound />} />
             </Route>

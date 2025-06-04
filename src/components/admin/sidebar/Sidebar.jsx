@@ -45,6 +45,7 @@ import {
   Diagram3Fill,
   ClockHistory,
   HddFill,
+  Recycle,
 } from "react-bootstrap-icons";
 import { NavLink } from "react-router-dom";
 import activeClass from "../../../assets/css/active.module.css";
@@ -1760,6 +1761,27 @@ export default function Sidebar() {
                     >
                       <div className="sidebarIcon">{<PhoneVibrate />}</div>
                       <span className="sidebarLinksName">Support Number</span>
+                    </li>
+                  </FontColor>
+                </NavLink>
+
+                <NavLink
+                  to={"/admin/netFee/cronLog"}
+                  className={(navInfo) =>
+                    navInfo.isActive ? activeClass.active : ""
+                  }
+                >
+                  <FontColor>
+                    <li
+                      className="sidebarItems"
+                      id={
+                        window.location.pathname === "/admin/netFee/cronLog"
+                          ? "active"
+                          : ""
+                      }
+                    >
+                      <div className="sidebarIcon">{<Recycle />}</div>
+                      <span className="sidebarLinksName">Cron Log</span>
                     </li>
                   </FontColor>
                 </NavLink>

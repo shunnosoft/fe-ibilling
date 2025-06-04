@@ -22,6 +22,8 @@ import {
   deleteIspOwnerSupport,
   getAdminSupport,
   getIspOwnerSupport,
+  getNetFeeCronLogSuccess,
+  getNetFeeCronUserLogSuccess,
   updateAdminSupport,
   updateIspOwnerSupport,
 } from "./adminNetFeeSupportSlice";
@@ -458,4 +460,30 @@ export const csutomerWebhookRegister = async (data) => {
   } catch (error) {
     toast.error(error.response.data);
   }
+};
+
+//===> @Get netFee cron job log
+export const getNetFeeCronLog = async (dispatch, setIsLoading) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.get(`/admin/cronLog`);
+
+    dispatch(getNetFeeCronLogSuccess(res.data?.data));
+  } catch (error) {
+    toast.error(error.message);
+  }
+  setIsLoading(false);
+};
+
+//===> @Get netFee cron job user log
+export const getNetFeeCronUserLog = async (dispatch, cronId, setIsLoading) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.get(`/admin/user/cronLog/${cronId}`);
+
+    dispatch(getNetFeeCronUserLogSuccess(res.data?.data));
+  } catch (error) {
+    toast.error(error.message);
+  }
+  setIsLoading(false);
 };

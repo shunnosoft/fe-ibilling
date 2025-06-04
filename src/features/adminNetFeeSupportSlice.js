@@ -6,6 +6,8 @@ const adminNetFeeSupportSlice = createSlice({
     adminSupport: [],
     ispOwnerSupport: [],
     bulletinPermission: [],
+    cronLog: [],
+    userCronLog: [],
   },
   reducers: {
     getAdminSupport: (state, action) => {
@@ -47,6 +49,14 @@ const adminNetFeeSupportSlice = createSlice({
       );
       state.bulletinPermission[permissionIndex] = action.payload;
     },
+
+    getNetFeeCronLogSuccess: (state, action) => {
+      state.cronLog = action.payload;
+    },
+
+    getNetFeeCronUserLogSuccess: (state, action) => {
+      state.userCronLog = action.payload;
+    },
   },
 });
 
@@ -59,5 +69,7 @@ export const {
   updateIspOwnerSupport,
   bulletinPermissionSuccess,
   updatePermissionSuccess,
+  getNetFeeCronLogSuccess,
+  getNetFeeCronUserLogSuccess,
 } = adminNetFeeSupportSlice.actions;
 export default adminNetFeeSupportSlice.reducer;

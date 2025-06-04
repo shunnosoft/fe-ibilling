@@ -159,7 +159,6 @@ const ResellerPackage = ({ reseller, useState }) => {
 
     setPackageCommission(tempPackageCommission);
   };
-  console.log(resellerPackage);
   return (
     <>
       <div className="d-flex justify-content-evenly mt-4">
