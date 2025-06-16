@@ -45,7 +45,7 @@ const paymentSlice = createSlice({
 
     editBillReportSuccess: (state, action) => {
       state.allBills[
-        state.allBills.findIndex((item) => item.id === action.payload.id)
+        state.allBills.findIndex((item) => item._id === action.payload.id)
       ] = action.payload;
     },
 

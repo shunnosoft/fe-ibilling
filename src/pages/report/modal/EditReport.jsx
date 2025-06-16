@@ -31,7 +31,7 @@ const EditReport = ({ show, setShow, reportId, note, setNote }) => {
     const sendingData = {
       note,
     };
-    editBillReport(dispatch, setIsLoading, data?.id, sendingData, setShow);
+    editBillReport(dispatch, setIsLoading, data?._id, sendingData, setShow);
   };
 
   return (
