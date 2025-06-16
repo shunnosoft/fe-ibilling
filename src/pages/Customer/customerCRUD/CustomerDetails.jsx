@@ -55,7 +55,6 @@ const CustomerDetails = ({ show, setShow, customerId }) => {
 
   // get owner users
   const ownerUsers = useSelector((state) => state?.ownerUsers?.ownerUser);
-  console.log(ownerUsers);
 
   //get all areas
   const areas = useSelector((state) => state.area?.area);

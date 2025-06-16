@@ -208,6 +208,7 @@ import {
   updateNetworkDeviceSuccess,
   updateNetworkDiagramDeviceSuccess,
 } from "./network.slice";
+import { data } from "jquery";
 
 const netFeeLang = localStorage.getItem("netFee:lang");
 
@@ -870,39 +871,22 @@ export const addManager = async (
   setShow
 ) => {
   setIsLoading(true);
-  const button = document.querySelector(".marginLeft");
-  button.style.display = "none";
+  try {
+    const res = await apiLink.post(
+      `/ispOwner/manager?addStaff=${addStaffStatus}`,
+      managerData
+    );
 
-  await apiLink({
-    url: `/ispOwner/manager?addStaff=${addStaffStatus}`,
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    data: managerData,
-  })
-    .then((res) => {
-      dispatch(managerAddSuccess(res.data));
-      button.style.display = "initial";
-
-      langMessage(
-        "success",
-        "ম্যানেজার সংযুক্ত সফল হয়েছে",
-        "Manager Create Successfully"
-      );
-
-      setShow(false);
-    })
-    .catch((err) => {
-      if (err.response) {
-        button.style.display = "initial";
-        langMessage(
-          "error",
-          err.response?.data?.message,
-          err.response?.data?.message
-        );
-      }
-    });
+    dispatch(managerAddSuccess(res.data));
+    setShow(false);
+    langMessage(
+      "success",
+      "ম্যানেজার সংযুক্ত সফল হয়েছে",
+      "Manager Create Successfully"
+    );
+  } catch (error) {
+    toast.error(error.message);
+  }
   setIsLoading(false);
 };
 
@@ -2617,7 +2601,7 @@ export const billCollect = async (
   resetForm = null,
   setResponseData,
   setTest,
-  setShow
+  setShow = null
 ) => {
   setLoading(true);
   try {
@@ -2645,7 +2629,9 @@ export const billCollect = async (
       `${res.data.billType} Acceptance is Successful.`
     );
 
-    setShow(false);
+    if (typeof setShow === "function") {
+      setShow(false);
+    }
     resetForm();
   } catch (error) {
     toast.error(error.message);

@@ -106,8 +106,12 @@ const OLTDialog = ({ show, setShow, isUpdate, oltInformation }) => {
           value: "cData",
         },
         {
-          label: "BDCom",
-          value: "bdCom",
+          label: "BDCom EPon",
+          value: "bdCom_ePon",
+        },
+        {
+          label: "BDCom GPon",
+          value: "bdCom_gPon",
         },
         {
           label: "ECom",
@@ -116,6 +120,10 @@ const OLTDialog = ({ show, setShow, isUpdate, oltInformation }) => {
         {
           label: "DBC GPon",
           value: "dbc_gPon",
+        },
+        {
+          label: "Aveis EPon",
+          value: "aveis_ePon",
         },
       ],
     },

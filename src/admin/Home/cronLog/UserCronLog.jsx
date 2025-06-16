@@ -1,10 +1,14 @@
 import React, { useEffect, useMemo, useState } from "react";
 import ComponentCustomModal from "../../../components/common/customModal/ComponentCustomModal";
-import { getNetFeeCronUserLog } from "../../../features/apiCallAdmin";
+import {
+  getIspOwner,
+  getNetFeeCronUserLog,
+  getReseller,
+} from "../../../features/apiCallAdmin";
 import { useDispatch, useSelector } from "react-redux";
 import { badge } from "../../../components/common/Utils";
 import moment from "moment";
-import { ArrowClockwise, FilterCircle } from "react-bootstrap-icons";
+import { ArrowClockwise, FilterCircle, Recycle } from "react-bootstrap-icons";
 import Loader from "../../../components/common/Loader";
 import { FontColor, FourGround } from "../../../assets/js/theme";
 import { Accordion } from "react-bootstrap";
@@ -21,6 +25,11 @@ const UserCronLog = ({ show, setShow, cron }) => {
   //===============|| Local State ||===============//
   const [isLoading, setIsLoading] = useState(false);
   const [activeKeys, setActiveKeys] = useState("");
+  // billing cycle response data state
+  const [billingCycle, setBillingCycle] = useState("");
+
+  //reseller data state
+  const [resellerBillCycleData, setResellerBillCycleData] = useState("");
 
   useEffect(() => {
     getNetFeeCronUserLog(dispatch, cron?._id, setIsLoading);
@@ -28,6 +37,22 @@ const UserCronLog = ({ show, setShow, cron }) => {
 
   const reloadHandler = () => {
     getNetFeeCronUserLog(dispatch, cron?._id, setIsLoading);
+  };
+
+  const handleBillingCycle = (row) => {
+    if (row?.reseller) {
+      let confirm = window.confirm("Reseller wants to continue billing cycle");
+      if (confirm) {
+        getReseller(row?.ispOwner, setResellerBillCycleData);
+      }
+    } else {
+      let confirm = window.confirm(
+        "The isp owner wants to continue the billing cycle"
+      );
+      if (confirm) {
+        getIspOwner(row?.ispOwner, setBillingCycle);
+      }
+    }
   };
 
   const columns = useMemo(
@@ -67,6 +92,24 @@ const UserCronLog = ({ show, setShow, cron }) => {
         Cell: ({ cell: { value } }) => {
           return moment(value).format("MMM DD YYYY hh:mm A");
         },
+      },
+      {
+        width: "5%",
+        Header: "Action",
+        id: "option",
+        Cell: ({ row: { original } }) => (
+          <div className="d-flex justify-content-center align-items-center">
+            <button
+              className={`btn btn-sm ${
+                original?.status === "failed" ? "btn-danger" : "btn-success"
+              }`}
+              title="Billing Cycle"
+              onClick={() => handleBillingCycle(original)}
+            >
+              <Recycle size={19} />
+            </button>
+          </div>
+        ),
       },
     ],
     []

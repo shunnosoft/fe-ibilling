@@ -157,7 +157,7 @@ export default function Home() {
       "The isp owner wants to continue the billing cycle"
     );
     if (confirm) {
-      getIspOwner(ispOwner, setBillingCycle);
+      getIspOwner(ispOwner?.id, setBillingCycle);
     }
   };
 
@@ -165,7 +165,7 @@ export default function Home() {
   const resellerBillingCycleHandle = (ispOwner) => {
     let confirm = window.confirm("Reseller wants to continue billing cycle");
     if (confirm) {
-      getReseller(ispOwner, setResellerBillCycleData);
+      getReseller(ispOwner?.id, setResellerBillCycleData);
     }
   };
 
