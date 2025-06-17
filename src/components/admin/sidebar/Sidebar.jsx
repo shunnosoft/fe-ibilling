@@ -1785,6 +1785,29 @@ export default function Sidebar() {
                     </li>
                   </FontColor>
                 </NavLink>
+
+                <NavLink
+                  to={"/admin/activity-log"}
+                  className={(navInfo) =>
+                    navInfo.isActive ? activeClass.active : ""
+                  }
+                >
+                  <FontColor>
+                    <li
+                      className="sidebarItems"
+                      id={
+                        window.location.pathname === "/admin/activity-log"
+                          ? "active"
+                          : ""
+                      }
+                    >
+                      <div className="sidebarIcon">
+                        <ClockHistory />
+                      </div>
+                      <span className="sidebarLinksName">Activity Log</span>
+                    </li>
+                  </FontColor>
+                </NavLink>
               </ul>
             </FourGround>
           )}

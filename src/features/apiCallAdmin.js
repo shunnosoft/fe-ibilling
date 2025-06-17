@@ -29,6 +29,7 @@ import {
 } from "./adminNetFeeSupportSlice";
 import axios from "axios";
 import { config } from "../config";
+import { getAdminActivityLogSuccess } from "./activityLogSlice";
 
 // get owners
 export const getIspOwners = async (dispatch, setIsLoading) => {
@@ -461,6 +462,18 @@ export const getNetFeeCronLog = async (dispatch, setIsLoading) => {
     const res = await apiLink.get(`/admin/cronLog`);
 
     dispatch(getNetFeeCronLogSuccess(res.data?.data));
+  } catch (error) {
+    toast.error(error.message);
+  }
+  setIsLoading(false);
+};
+
+//===> @Get admin admin activity log
+export const getAdminActivityLog = async (dispatch, setIsLoading, userId) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.get(`/admin/activity-log/${userId}`);
+    dispatch(getAdminActivityLogSuccess(res.data?.data));
   } catch (error) {
     toast.error(error.message);
   }

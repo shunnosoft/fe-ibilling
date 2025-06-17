@@ -447,7 +447,7 @@ const Report = () => {
         Header: t("note"),
         accessor: (data) => {
           return {
-            id: data.id,
+            id: data._id,
             note: data.note,
             start: data.start,
             end: data.end,
@@ -514,7 +514,7 @@ const Report = () => {
               <ul className="dropdown-menu" aria-labelledby="customerDrop">
                 <li
                   onClick={() => {
-                    getReportId(original?.id);
+                    getReportId(original?._id);
                     setModalStatus("reportEdit");
                     setShow(true);
                   }}

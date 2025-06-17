@@ -17,12 +17,12 @@ const BillingCycle = ({ show, setShow, ispOwner }) => {
   // ispOwner customer billing cycle function handler
   const handleBillingCycle = async () => {
     if (panel === "admin") {
-      getIspOwner(ispOwner, setBillingCycle);
+      getIspOwner(ispOwner?.id, setBillingCycle);
       setShow(false);
     }
 
     if (panel === "reseller") {
-      getReseller(ispOwner, setResellerBillCycleData);
+      getReseller(ispOwner?.id, setResellerBillCycleData);
       setShow(false);
     }
   };

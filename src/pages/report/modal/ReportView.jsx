@@ -19,12 +19,14 @@ const ReportView = ({ show, setShow, reportId, status }) => {
       ? state.collector.collectorBill
       : state.payment?.allBills
   );
+  console.log(report, reportId);
 
   // get all packages
   const allPackages = useSelector((state) => state.package.allPackages);
 
   // customer bill report find
-  const data = report.find((item) => item.id === reportId);
+  const data = report.find((item) => item._id === reportId);
+  console.log(data);
 
   // customer current package find
   const getCustomerPackage = (pack) => {

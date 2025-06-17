@@ -34,6 +34,27 @@ function CreateCustomerSmsTemplate() {
   const textRef = useRef();
   const formRef = useRef();
 
+  const messageTypes = [
+    {
+      id: "nonMasking",
+      name: "nonMasking",
+      label: t("nonMasking"),
+      value: "nonMasking",
+    },
+    {
+      id: "masking",
+      name: "masking",
+      label: t("masking"),
+      value: "masking",
+    },
+    {
+      id: "fixedNumber",
+      name: "fixedNumber",
+      label: t("fixedNumber"),
+      value: "fixedNumber",
+    },
+  ];
+
   const itemSettingHandler = (item) => {
     if (billconfarmationparametres.includes(item)) {
       const index = billconfarmationparametres.indexOf(item);
@@ -177,22 +198,32 @@ function CreateCustomerSmsTemplate() {
           <div className="messageStatus d-flex justify-content-between">
             <div className="sending-status">
               <h4> {t("newCustomerTemplate")} </h4>
-              <input
-                name="billConfirmation"
-                type="radio"
-                checked={billConfirmation === "on"}
-                value={"on"}
-                onChange={radioCheckHandler}
-              />{" "}
-              {t("on")} {"              "}
-              <input
-                name="billConfirmation"
-                type="radio"
-                checked={billConfirmation === "off"}
-                value={"off"}
-                onChange={radioCheckHandler}
-              />{" "}
-              {t("off")}
+              <div className="displayGrid1 mb-3">
+                <div className="message_radio">
+                  <input
+                    type="radio"
+                    name="billConfirmation"
+                    id="onTemplate_04"
+                    value={"on"}
+                    checked={billConfirmation === "on"}
+                    onChange={radioCheckHandler}
+                  />
+                  <label htmlFor="onTemplate_04">{t("ON")}</label>
+                </div>
+
+                <div className="message_radio">
+                  <input
+                    type="radio"
+                    name="billConfirmation"
+                    id="offTemplate_04"
+                    value={"off"}
+                    checked={billConfirmation === "off"}
+                    onChange={radioCheckHandler}
+                  />
+                  <label htmlFor="offTemplate_04">{t("OFF")}</label>
+                </div>
+              </div>
+
               <div className="">
                 {/* <label className="templatelabel" htmlFor="20">
                     {"ID: CUSTOMER_ID"}
@@ -208,31 +239,22 @@ function CreateCustomerSmsTemplate() {
               </div>
             </div>
             <div className="message-sending-type">
-              <h4> {t("sendingMessageType")} </h4>
-              <input
-                name="messageSendingType"
-                type="radio"
-                checked={sendingType === "nonMasking"}
-                value={"nonMasking"}
-                onChange={(event) => setSendingType(event.target.value)}
-              />{" "}
-              {t("nonMasking")} {"              "}
-              <input
-                name="messageSendingType"
-                type="radio"
-                checked={sendingType === "masking"}
-                value={"masking"}
-                onChange={(event) => setSendingType(event.target.value)}
-              />{" "}
-              {t("masking")} {"              "}
-              <input
-                name="messageSendingType"
-                type="radio"
-                checked={sendingType === "fixedNumber"}
-                value={"fixedNumber"}
-                onChange={(event) => setSendingType(event.target.value)}
-              />{" "}
-              {t("fixedNumber")} {"              "}
+              <h4>{t("sendingMessageType")}</h4>
+              <div className="smsType">
+                {messageTypes.map((type) => (
+                  <div className="message_radio" key={type.id}>
+                    <input
+                      type="radio"
+                      id={type.id}
+                      name={type.name}
+                      value={type.value}
+                      onChange={(event) => setSendingType(event.target.value)}
+                      checked={sendingType === type.value}
+                    />
+                    <label htmlFor={type.id}>{type.label}</label>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
           <div className="billconfirm">

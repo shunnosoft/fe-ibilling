@@ -56,6 +56,8 @@ const addClass = {
   REJECTED: "danger",
   TRASH: "warning",
 
+  superadmin: "primary",
+  admin: "primary",
   ispOwner: "primary",
   manager: "primary",
   collector: "primary",
@@ -73,6 +75,7 @@ const addClass = {
   online: "success",
   offline: "secondary",
 
+  dashboard: "info",
   report: "success",
 };
 

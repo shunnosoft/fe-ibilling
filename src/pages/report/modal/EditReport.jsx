@@ -17,7 +17,7 @@ const EditReport = ({ show, setShow, reportId, note, setNote }) => {
   const report = useSelector((state) => state?.payment?.allBills);
 
   // single report find
-  const data = report.find((item) => item.id === reportId);
+  const data = report.find((item) => item._id === reportId);
 
   // loading state
   const [isLoading, setIsLoading] = useState(false);

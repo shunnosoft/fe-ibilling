@@ -13,10 +13,16 @@ const activityLogSlice = createSlice({
     getCustomerActivityLogSlice: (state, action) => {
       state.customerActivityLog = action.payload;
     },
+    getAdminActivityLogSuccess: (state, action) => {
+      state.activityLog = action.payload;
+    },
   },
 });
 
-export const { getActivityLogSlice, getCustomerActivityLogSlice } =
-  activityLogSlice.actions;
+export const {
+  getActivityLogSlice,
+  getCustomerActivityLogSlice,
+  getAdminActivityLogSuccess,
+} = activityLogSlice.actions;
 
 export default activityLogSlice.reducer;

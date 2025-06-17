@@ -1,7 +1,7 @@
 // external imports
 import React, { useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import moment from "moment";
 import DatePicker from "react-datepicker";
 import { useDispatch, useSelector } from "react-redux";
@@ -31,6 +31,8 @@ import {
   CashStack,
   Phone,
   ArrowClockwise,
+  BoxArrowInLeft,
+  ClockHistory,
 } from "react-bootstrap-icons";
 import {
   csutomerWebhookRegister,
@@ -66,6 +68,7 @@ const districts = districtsJSON.districts;
 export default function Home() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // get isp owner
   let ispOwners = useSelector((state) => state.admin?.ispOwners);
@@ -237,6 +240,13 @@ export default function Home() {
       alert(resellerBillCycleData.msg);
     }
   }, [resellerBillCycleData]);
+
+  // single customer activity log handle
+  const handleCustomerActivityLog = (data) => {
+    navigate(`/admin/activity-log/${data?.id}`, {
+      state: { ...data, role: "ispOwner" },
+    });
+  };
 
   // table column
   const columns = React.useMemo(
@@ -598,7 +608,7 @@ export default function Home() {
                   >
                     <div className="dropdown-item">
                       <div className="customerAction">
-                        <i class="fa-solid fa-money-bill-wave"></i>
+                        <BoxArrowInLeft />
                         <p className="actionP">
                           Create Customer Login Credential
                         </p>
@@ -620,6 +630,19 @@ export default function Home() {
                       </div>
                     </li>
                   )}
+
+                  <li
+                    onClick={() => {
+                      handleCustomerActivityLog(original);
+                    }}
+                  >
+                    <div className="dropdown-item">
+                      <div className="customerAction">
+                        <ClockHistory />
+                        <p className="actionP">Activity Log</p>
+                      </div>
+                    </div>
+                  </li>
                 </ul>
               </div>
             </div>
