@@ -42,12 +42,12 @@ export const managerPermission = (permission, bpSettings) => {
     //   isChecked: permission?.pppoeNameUpdate || false,
     //   disabled: false,
     // },
-    // {
-    //   value: "billingCycleUpdate",
-    //   label: "billingCycleUpdate",
-    //   isChecked: permission?.billingCycleUpdate || false,
-    //   disabled: false,
-    // },
+    {
+      value: "billingCycleUpdate",
+      label: "billingCycleUpdate",
+      isChecked: permission?.billingCycleUpdate || false,
+      disabled: false,
+    },
     // {
     //   value: "promiseDateUpdate",
     //   label: "promiseDateUpdate",

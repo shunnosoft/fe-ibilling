@@ -132,7 +132,7 @@ const customerSliec = createSlice({
       //get the value from state based on userType
       if (userType === "pppoe") {
         customers = [...state.customer];
-      } else if (userType === "simple-queue" || userType === "firewall-queue") {
+      } else if (userType === "static") {
         customers = [...state.staticCustomer];
       }
       for (let i = 0; i < customers.length; i++) {
@@ -146,7 +146,7 @@ const customerSliec = createSlice({
       //update the state based on userType with modified state
       if (userType === "pppoe") {
         state.customer = [...customers];
-      } else if (userType === "simple-queue" || userType === "firewall-queue") {
+      } else if (userType === "static") {
         state.staticCustomer = [...customers];
       }
     },

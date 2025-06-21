@@ -2,6 +2,7 @@ import React, { forwardRef } from "react";
 import { Wifi, WifiOff } from "react-bootstrap-icons";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
+import { badge } from "../../components/common/Utils";
 
 const ActiveCustomerPrint = forwardRef((props, ref) => {
   const { t } = useTranslation();
@@ -74,9 +75,9 @@ const ActiveCustomerPrint = forwardRef((props, ref) => {
             ) : (
               <>
                 <th scope="col">{t("address")}</th>
-                <th scope="col">{t("macAddress")}</th>
               </>
             )}
+            <th scope="col">{t("macAddress")}</th>
           </tr>
         </thead>
         <tbody>
@@ -87,9 +88,9 @@ const ActiveCustomerPrint = forwardRef((props, ref) => {
                 <td className="prin_td">
                   <div>
                     {val?.running === true ? (
-                      <Wifi color="green" />
+                      <p>{badge("online")}</p>
                     ) : (
-                      <WifiOff color="red" />
+                      <p>{badge("offline")}</p>
                     )}
                   </div>
                 </td>
@@ -117,9 +118,9 @@ const ActiveCustomerPrint = forwardRef((props, ref) => {
               ) : (
                 <>
                   <td className="prin_td">{val.address}</td>
-                  <td className="prin_td">{val.macAddress}</td>
                 </>
               )}
+              <td className="prin_td">{val.macAddress}</td>
             </tr>
           ))}
         </tbody>

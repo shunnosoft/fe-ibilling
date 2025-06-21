@@ -124,12 +124,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       due: data?.due,
       email: data?.email,
       fatherName: data?.fatherName,
-      ipAddress:
-        data?.userType === "firewall-queue"
-          ? data?.queue?.address
-          : data?.userType === "core-queue"
-          ? data?.queue?.srcAddress
-          : data?.queue?.target,
+      ipAddress: data?.queue?.target,
       mikrotikId: data?.mikrotik,
       mobile: data?.mobile,
       maxUpLimit: data?.queue?.maxLimit?.split("/")[0],
@@ -269,34 +264,6 @@ const useDataInputOption = (inputPermission, page, status, data) => {
 
   // select Mikrotik Package
   const staticPackageChangeHandler = (target) => {
-    if (target.id === "firewall-queue") {
-      const temp = ppPackage.find((val) => val.id === target.value);
-
-      // package limit set function
-      const getLimit = setPackageLimit(target.value, false);
-
-      // set single package data
-      setFormData({
-        ...formData,
-        packageId: temp.id,
-        packageRate: temp.rate,
-        packageName: temp.name,
-        maxUpLimit: getLimit,
-      });
-    }
-
-    if (target.id === "core-queue") {
-      const temp = ppPackage.find((val) => val.id === target.value);
-
-      // set single package data
-      setFormData({
-        ...formData,
-        packageId: temp.id,
-        packageRate: temp.rate,
-        packageName: temp.name,
-      });
-    }
-
     if (target.id === "uploadPackge") {
       // package limit set function
       const getLimit = setPackageLimit(target.value, false);
@@ -612,17 +579,13 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       id: 30,
       name: "maxUpLimit",
       value: formData.maxUpLimit || "",
-      isVisible:
-        ["firewall-queue", "simple-queue"].includes(userType) &&
-        inputPermission.mikrotikPackage,
+      isVisible: inputPermission.mikrotikPackage,
     },
     {
       id: 30,
       name: "maxDownLimit",
       value: formData.maxDownLimit || "",
-      isVisible:
-        ["firewall-queue", "simple-queue"].includes(userType) &&
-        inputPermission.mikrotikPackage,
+      isVisible: inputPermission.mikrotikPackage,
     },
     {
       id: 16,
@@ -712,7 +675,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       id: 23,
       name: "profile",
       value: formData.packageName || "",
-      isVisible: page === "pppoe" && inputPermission.mikrotikPackage,
+      isVisible: inputPermission.mikrotikPackage,
     },
   ];
 
@@ -797,39 +760,36 @@ const useDataInputOption = (inputPermission, page, status, data) => {
         packageChangeHandler(e.target.value);
       },
     },
-    {
-      name: "mikrotikPackage",
-      as: "select",
-      type: "select",
-      id: userType,
-      isVisible:
-        page === "static" &&
-        ["firewall-queue", "core-queue"].includes(userType) &&
-        inputPermission.mikrotikPackage,
-      disabled: bpSettings?.hasMikrotik
-        ? status === "post"
-          ? !formData.mikrotikId
-          : resellerUser && !permission?.customerMikrotikPackageEdit
-        : false,
-      validation: true,
-      label: t("selectPackage"),
-      firstOptions: t("selectPackage"),
-      textAccessor: "name",
-      valueAccessor: "id",
-      options:
-        page === "static"
-          ? bpSettings?.hasMikrotik
-            ? ppPackage?.filter(
-                (pack) =>
-                  pack.packageType === "queue" &&
-                  pack.mikrotik === formData.mikrotikId
-              )
-            : ppPackage
-          : "",
-      onChange: (e) => {
-        staticPackageChangeHandler(e.target);
-      },
-    },
+    // {
+    //   name: "mikrotikPackage",
+    //   as: "select",
+    //   type: "select",
+    //   id: userType,
+    //   isVisible: page === "static" && inputPermission.mikrotikPackage,
+    //   disabled: bpSettings?.hasMikrotik
+    //     ? status === "post"
+    //       ? !formData.mikrotikId
+    //       : resellerUser && !permission?.customerMikrotikPackageEdit
+    //     : false,
+    //   validation: true,
+    //   label: t("selectPackage"),
+    //   firstOptions: t("selectPackage"),
+    //   textAccessor: "name",
+    //   valueAccessor: "id",
+    //   options:
+    //     page === "static"
+    //       ? bpSettings?.hasMikrotik
+    //         ? ppPackage?.filter(
+    //             (pack) =>
+    //               pack.packageType === "queue" &&
+    //               pack.mikrotik === formData.mikrotikId
+    //           )
+    //         : ppPackage
+    //       : "",
+    //   onChange: (e) => {
+    //     staticPackageChangeHandler(e.target);
+    //   },
+    // },
     {
       name: "uploadPackge",
       as: "select",
@@ -837,7 +797,6 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       id: "uploadPackge",
       isVisible:
         page === "static" &&
-        userType === "simple-queue" &&
         bpSettings?.hasMikrotik &&
         inputPermission.mikrotikPackage,
       disabled: adminUser ? (status ? !formData.mikrotikId : false) : true,
@@ -864,10 +823,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       as: "select",
       type: "select",
       id: "downloadPackge",
-      isVisible:
-        page === "static" &&
-        userType === "simple-queue" &&
-        inputPermission.mikrotikPackage,
+      isVisible: page === "static" && inputPermission.mikrotikPackage,
       disabled: bpSettings?.hasMikrotik
         ? adminUser
           ? status
@@ -952,7 +908,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
           : !permission?.customerEdit,
       validation: true,
       label: t("ipAddress"),
-      placeholder: "e.g. 192.168.0.1",
+      placeholder: "e.g. 192.168.0.1/32",
       onChange: (e) => {
         setFormData({
           ...formData,
@@ -1253,7 +1209,8 @@ const useDataInputOption = (inputPermission, page, status, data) => {
             : true
           : status === "edit"
           ? adminUser
-            ? !formData.packageId
+            ? !ispOwner &&
+              !(permissions?.customerEdit || permissions?.billingCycleUpdate)
             : !(permission?.customerEdit || permission?.billingCycleEdit)
           : false,
       validation: true,
@@ -1504,8 +1461,14 @@ const useDataInputOption = (inputPermission, page, status, data) => {
             status === "post"
               ? false
               : status === "edit"
-              ? (rsRole && !permission?.customerStatusEdit) ||
-                (rscRole && !permissions?.customerActivate)
+              ? adminUser
+                ? !ispOwner &&
+                  (!(
+                    permissions?.customerEdit || permissions?.customerActivate
+                  ) ??
+                    true)
+                : (rsRole && !permission?.customerStatusEdit) ||
+                  (rscRole && !permissions?.customerActivate)
               : false,
           label: t("active"),
           value: "active",
@@ -1518,10 +1481,16 @@ const useDataInputOption = (inputPermission, page, status, data) => {
             status === "post"
               ? false
               : status === "edit"
-              ? (rsRole &&
-                  ((!permission?.logicalInactive && formData.balance > 0) ||
-                    !permission?.customerStatusEdit)) ||
-                (rscRole && !permissions?.customerDeactivate)
+              ? adminUser
+                ? !ispOwner &&
+                  (!(
+                    permissions?.customerEdit || permissions?.customerDeactivate
+                  ) ??
+                    true)
+                : (rsRole &&
+                    ((!permission?.logicalInactive && formData.balance > 0) ||
+                      !permission?.customerStatusEdit)) ||
+                  (rscRole && !permissions?.customerDeactivate)
               : false,
           label: t("inactive"),
           value: "inactive",

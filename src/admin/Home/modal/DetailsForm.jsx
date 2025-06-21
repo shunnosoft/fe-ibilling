@@ -350,7 +350,7 @@ const DetailsForm = ({ setShow, ispOwner }) => {
               </div>
             )}
 
-            <div>
+            {/* <div>
               <lable>Queue Type</lable>
               <Field
                 as="select"
@@ -361,7 +361,7 @@ const DetailsForm = ({ setShow, ispOwner }) => {
                 <option value="firewall-queue">Firewall Queue</option>
                 <option value="core-queue">Core Queue</option>
               </Field>
-            </div>
+            </div> */}
 
             <div>
               <lable className="customerFieldsTitle mb-0">Invoice Date</lable>

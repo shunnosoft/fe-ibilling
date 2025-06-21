@@ -82,6 +82,7 @@ const EditStaticCustomer = ({ show, setShow, single }) => {
     division: true,
     district: true,
     thana: true,
+    comment: true,
     status: true,
     referenceName: true,
     referenceMobile: true,
@@ -130,6 +131,8 @@ const EditStaticCustomer = ({ show, setShow, single }) => {
       thana,
       maxUpLimit,
       maxDownLimit,
+      profile,
+      comment,
       ...rest
     } = formValue;
 
@@ -142,6 +145,13 @@ const EditStaticCustomer = ({ show, setShow, single }) => {
       ispOwner: ispOwnerId,
       nextMonthAutoDisable: nextMonthAutoDisable,
       ...rest,
+      queue: {
+        name: queueName,
+        target: ipAddress,
+        profile: profile,
+        maxLimit: `${maxUpLimit}/${maxDownLimit}`,
+        comment: comment,
+      },
     };
 
     // set the value of division district and thana dynamically
@@ -169,40 +179,6 @@ const EditStaticCustomer = ({ show, setShow, single }) => {
     // if poleBox is empty then delete poleBox
     if (!poleBox) {
       delete mainData.poleBox;
-    }
-
-    if (userType === "firewall-queue") {
-      mainData.userType = "firewall-queue";
-      mainData.queue = {
-        name: queueName,
-        type: userType,
-        address: ipAddress,
-        list: "allow_ip",
-        disabled: customerModifiedData?.queue?.disabled,
-      };
-      if (maxUpLimit) {
-        mainData.queue.maxLimit = `${maxUpLimit}/${maxUpLimit}`;
-      }
-    }
-
-    if (userType === "core-queue") {
-      mainData.userType = "core-queue";
-      mainData.queue = {
-        type: userType,
-        srcAddress: ipAddress,
-        disabled: customerModifiedData?.status === "active" ? false : true,
-      };
-    }
-
-    if (userType === "simple-queue") {
-      mainData.userType = "simple-queue";
-      mainData.queue = {
-        name: queueName,
-        type: userType,
-        target: ipAddress,
-        maxLimit: `${maxUpLimit}/${maxDownLimit}`,
-        disabled: customerModifiedData?.status === "active" ? false : true,
-      };
     }
 
     // sending data to api

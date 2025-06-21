@@ -69,8 +69,8 @@ export const purchaseSMS = async (data, setIsLoading, dispatch, setShow) => {
       "এসএমএস-এর জন্য মালিকের কাছে অনুরোধ পাঠানো হয়েছে।",
       "Request sent to Admin for SMS."
     );
-  } catch (err) {
-    toast.error(err.response.data.message);
+  } catch (error) {
+    toast.error(error.message);
   }
   setIsLoading(false);
 };

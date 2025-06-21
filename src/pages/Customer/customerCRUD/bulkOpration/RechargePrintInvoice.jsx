@@ -61,10 +61,9 @@ const RechargePrintInvoice = React.forwardRef((props, ref) => {
                 <p>
                   {t("package")}:
                   <strong style={{ marginLeft: "4rem" }}>
-                    {customerData?.userType === "simple-queue" ||
-                    customerData?.userType === "firewall-queue"
-                      ? customerData?.queue.package
-                      : customerData?.pppoe.profile}
+                    {customerData?.userType === "static"
+                      ? customerData?.queue?.profile
+                      : customerData?.pppoe?.profile}
                   </strong>
                 </p>
                 <p>
@@ -206,10 +205,9 @@ const RechargePrintInvoice = React.forwardRef((props, ref) => {
                   <p>
                     <span>{t("package")}:</span>
                     <strong style={{ marginLeft: "4rem" }}>
-                      {customerData?.userType === "simple-queue" ||
-                      customerData?.userType === "firewall-queue"
-                        ? customerData?.queue.package
-                        : customerData?.pppoe.profile}
+                      {customerData?.userType === "static"
+                        ? customerData?.queue?.profile
+                        : customerData?.pppoe?.profile}
                     </strong>
                   </p>
                   <p>

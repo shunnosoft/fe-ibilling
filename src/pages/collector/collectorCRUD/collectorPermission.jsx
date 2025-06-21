@@ -4,6 +4,8 @@ export const collectorPermission = (
   ispOwnerPermission,
   managerPermission
 ) => {
+  console.log(permission);
+
   const permissionBn = [
     {
       id: 1,
@@ -144,6 +146,18 @@ export const collectorPermission = (
       disabled: false,
     },
     {
+      value: "customerActivate",
+      label: "customerActivate",
+      isChecked: permission?.customerActivate || false,
+      disabled: false,
+    },
+    {
+      value: "customerDeactivate",
+      label: "customerDeactivate",
+      isChecked: permission?.customerDeactivate || false,
+      disabled: false,
+    },
+    {
       id: 3,
       value: "viewCustomerList",
       label: "View Customer",
@@ -155,6 +169,12 @@ export const collectorPermission = (
       value: "connectionFee",
       label: "Connection Fee",
       isChecked: permission?.connectionFee, //ToDo
+      disabled: false,
+    },
+    {
+      value: "billingCycleUpdate",
+      label: "billingCycleUpdate",
+      isChecked: permission?.billingCycleUpdate || false,
       disabled: false,
     },
     {

@@ -104,10 +104,8 @@ export const bulkStatusEdit = async (dispatch, data, setIsLoading, setShow) => {
 
     setShow(false);
     toast.success("কাস্টমার স্টাটাস আপডেট সফল হয়েছে!");
-  } catch (err) {
-    if (err.response) {
-      toast.error(err.response.data.message);
-    }
+  } catch (error) {
+    toast.error(error.message);
   }
   setIsLoading(false);
 };

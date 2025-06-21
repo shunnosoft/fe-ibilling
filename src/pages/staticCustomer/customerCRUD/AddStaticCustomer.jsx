@@ -70,6 +70,7 @@ const AddStaticCustomer = ({ show, setShow }) => {
     division: true,
     district: true,
     thana: true,
+    comment: true,
     status: true,
     referenceName: true,
     referenceMobile: true,
@@ -99,6 +100,8 @@ const AddStaticCustomer = ({ show, setShow }) => {
       thana,
       maxUpLimit,
       maxDownLimit,
+      profile,
+      comment,
       ...rest
     } = formValue;
 
@@ -111,7 +114,15 @@ const AddStaticCustomer = ({ show, setShow }) => {
       ispOwner: ispOwnerId,
       nextMonthAutoDisable: nextMonthAutoDisable,
       paymentStatus: "unpaid",
+      userType: "static",
       ...rest,
+      queue: {
+        name: queueName,
+        target: ipAddress,
+        profile: profile,
+        maxLimit: `${maxUpLimit}/${maxDownLimit}`,
+        comment: comment,
+      },
     };
 
     // set the value of division district and thana dynamically
@@ -139,36 +150,6 @@ const AddStaticCustomer = ({ show, setShow }) => {
     // if poleBox is empty then delete poleBox
     if (!poleBox) {
       delete mainData.poleBox;
-    }
-
-    if (userType === "firewall-queue") {
-      mainData.userType = "firewall-queue";
-      mainData.queue = {
-        type: userType,
-        address: ipAddress,
-        list: "allow_ip",
-      };
-      if (maxUpLimit) {
-        mainData.queue.maxLimit = `${maxUpLimit}/${maxUpLimit}`;
-      }
-    }
-
-    if (userType === "core-queue") {
-      mainData.userType = "core-queue";
-      mainData.queue = {
-        type: userType,
-        srcAddress: ipAddress,
-      };
-    }
-
-    if (userType === "simple-queue") {
-      mainData.userType = "simple-queue";
-      mainData.queue = {
-        name: queueName,
-        type: userType,
-        target: ipAddress,
-        maxLimit: `${maxUpLimit}/${maxDownLimit}`,
-      };
     }
 
     // sending data to api

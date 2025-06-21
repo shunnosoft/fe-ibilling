@@ -73,7 +73,7 @@ const addClass = {
   drop: "danger",
 
   online: "success",
-  offline: "secondary",
+  offline: "danger",
 
   dashboard: "info",
   report: "success",
