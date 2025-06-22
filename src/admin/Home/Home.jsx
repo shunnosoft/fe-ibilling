@@ -752,37 +752,37 @@ export default function Home() {
       textAccessor: "text",
       valueAccessor: "value",
     },
-    {
-      name: "queueType",
-      type: "select",
-      id: "queueType",
-      value: filterOptions.queueType,
-      isVisible: true,
-      disabled: false,
-      onChange: (e) => {
-        setFilterOption({
-          ...filterOptions,
-          queueType: e.target.value,
-        });
-      },
-      options: [
-        {
-          text: "Simple Queue",
-          value: "simple-queue",
-        },
-        {
-          text: "Firewall Queue",
-          value: "firewall-queue",
-        },
-        {
-          text: "Core Queue",
-          value: "core-queue",
-        },
-      ],
-      firstOptions: "Queue Type",
-      textAccessor: "text",
-      valueAccessor: "value",
-    },
+    // {
+    //   name: "queueType",
+    //   type: "select",
+    //   id: "queueType",
+    //   value: filterOptions.queueType,
+    //   isVisible: true,
+    //   disabled: false,
+    //   onChange: (e) => {
+    //     setFilterOption({
+    //       ...filterOptions,
+    //       queueType: e.target.value,
+    //     });
+    //   },
+    //   options: [
+    //     {
+    //       text: "Simple Queue",
+    //       value: "simple-queue",
+    //     },
+    //     {
+    //       text: "Firewall Queue",
+    //       value: "firewall-queue",
+    //     },
+    //     {
+    //       text: "Core Queue",
+    //       value: "core-queue",
+    //     },
+    //   ],
+    //   firstOptions: "Queue Type",
+    //   textAccessor: "text",
+    //   valueAccessor: "value",
+    // },
     {
       name: "customerType",
       type: "select",

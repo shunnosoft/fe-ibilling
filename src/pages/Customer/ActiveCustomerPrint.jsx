@@ -67,17 +67,16 @@ const ActiveCustomerPrint = forwardRef((props, ref) => {
             {status === "pppoe" ? (
               <>
                 <th scope="col">{t("pppoeName")}</th>
-                <th scope="col">{t("ip")}</th>
+                <th scope="col">{t("IPMac")}</th>
                 <th scope="col">{t("package")}</th>
-                <th scope="col">{t("login")}</th>
-                <th scope="col">{t("logout")}</th>
+                <th scope="col">{t("loggedInOut")}</th>
               </>
             ) : (
               <>
-                <th scope="col">{t("address")}</th>
+                <th scope="col">{t("ipAddress")}</th>
+                <th scope="col">{t("macAddress")}</th>
               </>
             )}
-            <th scope="col">{t("macAddress")}</th>
           </tr>
         </thead>
         <tbody>
@@ -98,9 +97,9 @@ const ActiveCustomerPrint = forwardRef((props, ref) => {
                 <td className="prin_td">
                   <div>
                     {val?.complete === true ? (
-                      <Wifi color="green" />
+                      <p>{badge("online")}</p>
                     ) : (
-                      <WifiOff color="red" />
+                      <p>{badge("offline")}</p>
                     )}
                   </div>
                 </td>
@@ -110,17 +109,22 @@ const ActiveCustomerPrint = forwardRef((props, ref) => {
               {status === "pppoe" ? (
                 <>
                   <td className="prin_td">{val?.pppoe?.name}</td>
-                  <td className="prin_td">{val.ip}</td>
+                  <td className="prin_td">
+                    <p>{val.ip}</p>
+                    <p>{val.callerId}</p>
+                  </td>
                   <td className="prin_td">{val?.pppoe?.profile}</td>
-                  <td className="prin_td">{val.lastLinkUpTime}</td>
-                  <td className="prin_td">{val.lastLogoutTime}</td>
+                  <td className="prin_td">
+                    <p>{val.lastLinkUpTime}</p>
+                    <p>{val.lastLogoutTime}</p>
+                  </td>
                 </>
               ) : (
                 <>
-                  <td className="prin_td">{val.address}</td>
+                  <td className="prin_td">{val.ipAddress}</td>
+                  <td className="prin_td">{val.macAddress}</td>
                 </>
               )}
-              <td className="prin_td">{val.macAddress}</td>
             </tr>
           ))}
         </tbody>

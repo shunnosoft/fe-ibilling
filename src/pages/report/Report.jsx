@@ -315,14 +315,10 @@ const Report = () => {
         : data?.customer?.name,
       pppoe:
         data.customer?.userType === "pppoe"
-          ? data.customer?.pppoe.name
-          : data.customer?.userType === "firewall-queue"
-          ? data.customer?.queue.address
-          : data.customer?.userType === "core-queue"
-          ? data.customer?.queue.srcAddress
-          : data.customer?.userType === "simple-queue"
-          ? data.customer?.queue.target
-          : data?.hotspotCustomer?.hotspot.name,
+          ? data.customer?.pppoe?.name
+          : data.customer?.userType === "static"
+          ? data.customer?.queue?.target
+          : data?.hotspotCustomer?.hotspot?.name,
       package: data?.customer?.mikrotikPackage?.name
         ? data.customer?.mikrotikPackage?.name
         : data.customer?.userType === "pppoe"
@@ -371,14 +367,10 @@ const Report = () => {
               : field?.customer?.name
           } ${
             field.customer?.userType === "pppoe"
-              ? field.customer?.pppoe.name
-              : field.customer?.userType === "firewall-queue"
-              ? field.customer?.queue.address
-              : field.customer?.userType === "core-queue"
-              ? field.customer?.queue.srcAddress
-              : field.customer?.userType === "simple-queue"
-              ? field.customer?.queue.target
-              : field?.hotspotCustomer?.hotspot.name
+              ? field.customer?.pppoe?.name
+              : field.customer?.userType === "static"
+              ? field.customer?.queue?.target
+              : field?.hotspotCustomer?.hotspot?.name
           }`,
         Cell: ({ row: { original } }) => {
           const customer = original?.customer;

@@ -953,7 +953,6 @@ export const editManager = async (
 export const getArea = async (dispatch, ispOwnerId, setIsLoading) => {
   try {
     setIsLoading(true);
-    console.log("Call");
 
     const res = await apiLink.get(`/ispOwner/area/v2/${ispOwnerId}`);
     dispatch(FetchAreaSuccess(res.data));
@@ -1992,7 +1991,7 @@ export const getPPPoEActiveCustomer = async (
       if (userType === "user") {
         customers.forEach((i) => {
           const match = interfaaceList.find(
-            (item) => item.name === "<pppoe-" + i.pppoe.name + ">"
+            (item) => item.name === "<pppoe-" + i.pppoe?.name + ">"
           );
           if (match) {
             temp.push({

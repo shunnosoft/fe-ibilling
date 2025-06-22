@@ -164,14 +164,10 @@ const InactiveCustomer = ({
       name: customer.name,
       pppoeIp:
         customer?.userType === "pppoe"
-          ? customer?.pppoe.name
-          : customer?.userType === "firewall-queue"
-          ? customer?.queue.address
-          : customer?.userType === "core-queue"
-          ? customer?.queue.srcAddress
-          : customer?.userType === "simple-queue"
-          ? customer?.queue.target
-          : customer?.hotspot.name,
+          ? customer?.pppoe?.name
+          : customer?.userType === "static"
+          ? customer?.queue?.target
+          : customer?.hotspot?.name,
       mobile: customer?.mobile || "",
       status: customer.status,
       paymentStatus: customer.paymentStatus,
@@ -233,14 +229,10 @@ const InactiveCustomer = ({
             <p>{original?.name}</p>
             <p>
               {original?.userType === "pppoe"
-                ? original?.pppoe.name
-                : original?.userType === "firewall-queue"
-                ? original?.queue.address
-                : original?.userType === "core-queue"
-                ? original?.queue.srcAddress
-                : original?.userType === "simple-queue"
-                ? original?.queue.target
-                : original?.hotspot.name}
+                ? original?.pppoe?.name
+                : original?.userType === "static"
+                ? original?.queue?.target
+                : original?.hotspot?.name}
             </p>
           </div>
         ),

@@ -125,6 +125,10 @@ const OLTDialog = ({ show, setShow, isUpdate, oltInformation }) => {
           label: "Aveis EPon",
           value: "aveis_ePon",
         },
+        {
+          label: "TBS EPon",
+          value: "tbs_ePon",
+        },
       ],
     },
     {

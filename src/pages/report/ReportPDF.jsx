@@ -99,14 +99,8 @@ const PrintReport = React.forwardRef((props, ref) => {
               </th>
 
               <th style={{ fontFamily: "sans-serif" }} scope="col">
-                {t("name")}
+                {t("pppoeIp")}
               </th>
-
-              {status === "report" && (
-                <th style={{ fontFamily: "sans-serif" }} scope="col">
-                  {t("pppoeIp")}
-                </th>
-              )}
 
               <th style={{ fontFamily: "sans-serif" }} scope="col">
                 {t("package")}
@@ -125,6 +119,10 @@ const PrintReport = React.forwardRef((props, ref) => {
                   {t("due")}
                 </th>
               )}
+
+              <th style={{ fontFamily: "sans-serif" }} scope="col">
+                {t("medium")}
+              </th>
 
               <th style={{ fontFamily: "sans-serif" }} scope="col">
                 {t("collector")}
@@ -163,20 +161,14 @@ const PrintReport = React.forwardRef((props, ref) => {
                   {val?.hotspotCustomer
                     ? val.hotspotCustomer?.name
                     : val.customer?.name}
+                  {status === "report" &&
+                    (val?.customer?.userType === "pppoe"
+                      ? val?.customer?.pppoe?.name
+                      : val?.customer?.userType === "static"
+                      ? val?.customer?.queue?.target
+                      : val?.hotspotCustomer?.hotspot?.name)}
                 </td>
-                {status === "report" && (
-                  <td className="p-1">
-                    {val?.customer?.userType === "pppoe"
-                      ? val?.customer?.pppoe.name
-                      : val?.customer?.userType === "firewall-queue"
-                      ? val?.customer?.queue.address
-                      : val?.customer?.userType === "core-queue"
-                      ? val?.customer?.queue.srcAddress
-                      : val?.customer?.userType === "simple-queue"
-                      ? val?.customer?.queue.target
-                      : val?.hotspotCustomer?.hotspot.name}
-                  </td>
-                )}
+
                 <td className="p-1">
                   {status === "report"
                     ? val?.customer?.mikrotikPackage?.name
@@ -191,6 +183,7 @@ const PrintReport = React.forwardRef((props, ref) => {
                 {status === "report" && (
                   <td className="p-1">{FormatNumber(val?.due)}</td>
                 )}
+                <td className="p-1">{val?.medium}</td>
                 <td className="p-1">{val?.name}</td>
                 {status !== "report" && (
                   <td className="p-1">{val?.resellerCommission}</td>

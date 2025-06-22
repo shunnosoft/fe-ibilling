@@ -806,7 +806,7 @@ const PPPOECustomer = () => {
           email: customer.email || "",
           monthlyFee: customer.monthlyFee,
           balance: customer.balance,
-          userType: customer?.queue.type,
+          userType: customer?.userType,
           billingCycle: moment(customer.billingCycle).format("YYYY-MM-DD"),
         };
       }),

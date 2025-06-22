@@ -107,10 +107,7 @@ const DetailsModal = ({ show, setShow, ownerId }) => {
 
   // ispOwner total customer
   const totalCustomer =
-    customerCount +
-    staffs.pppoeCustomerCount +
-    staffs.firewallQueueCustomerCount +
-    staffs.simpleQueueCustomerCount;
+    customerCount + staffs.pppoeCustomerCount + staffs.staticCustomerCount;
 
   //API call
   useEffect(() => {
@@ -206,14 +203,7 @@ const DetailsModal = ({ show, setShow, ownerId }) => {
                   </strong>
                   <strong>
                     <p class="h6 m-2">
-                      Firewall Customer:
-                      {staffs.firewallQueueCustomerCount}
-                    </p>
-                  </strong>
-
-                  <strong>
-                    <p class="h6 m-2">
-                      Simple Customer: {staffs.simpleQueueCustomerCount}
+                      Static Customer: {staffs.staticCustomerCount}
                     </p>
                   </strong>
                   <strong>
