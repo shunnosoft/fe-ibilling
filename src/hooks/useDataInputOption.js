@@ -22,6 +22,8 @@ import {
 import { adminResellerCommission } from "../pages/reseller/resellerCollection/CommissionShear";
 
 const useDataInputOption = (inputPermission, page, status, data) => {
+  console.log({ data });
+
   const { t } = useTranslation();
 
   // current date
@@ -76,13 +78,14 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       ? hasMikrotik
         ? adminUser
           ? state?.package?.packages
-          : ""
+          : state?.mikrotik?.pppoePackage
         : state?.package?.packages
       : ""
   );
 
   // get all area form redux store
   const areas = useSelector((state) => state?.area?.area);
+  console.log({ areas });
 
   // get areas subarea form redux store
   const subAreas = useSelector((state) =>
@@ -117,7 +120,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       connectionDate: Date.parse(data?.connectionDate),
       customerBillingType: data?.customerBillingType,
       connectionFee: data?.connectionFee,
-      comment: data?.pppoe?.comment,
+      comment: data?.pppoe?.comment || data?.queue?.comment,
       dateOFbirth: Date.parse(data?.birthDate),
       division: divisionId,
       district: districtId,
@@ -182,7 +185,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
         });
       }
     }
-  }, [formData?.packageId]);
+  }, [formData?.packageId, ppPackage]);
 
   // single mikrotik package change handler
   const packageChangeHandler = async (id) => {
@@ -360,11 +363,11 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       validation: adminUser
         ? Yup.number().integer().min(0, t("minimumPackageRate"))
         : Yup.number()
-            .required(t("writeMonthFee"))
             .min(
-              packageCommission?.ispOwnerRate,
+              Number(packageCommission?.ispOwnerRate),
               t("packageRateMustBeUpToIspOwnerCommission")
-            ),
+            )
+            .required(t("writeMonthFee")),
       isVisible: inputPermission.monthlyFee,
     },
     {
@@ -386,7 +389,12 @@ const useDataInputOption = (inputPermission, page, status, data) => {
     },
     {
       name: "ipAddress",
-      validation: Yup.string().required(t("writeIPAddress")),
+      validation: Yup.string()
+        .matches(
+          /^(?:(?:25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)\.){3}(?:25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)\/(3[0-2]|[12]?\d)$/,
+          t("writeIPAddress")
+        )
+        .required(t("writeIPAddress")),
       isVisible: inputPermission.ipAddress,
     },
     {
@@ -799,7 +807,15 @@ const useDataInputOption = (inputPermission, page, status, data) => {
         page === "static" &&
         bpSettings?.hasMikrotik &&
         inputPermission.mikrotikPackage,
-      disabled: adminUser ? (status ? !formData.mikrotikId : false) : true,
+      disabled: bpSettings?.hasMikrotik
+        ? status === "post"
+          ? !formData.mikrotikId
+          : data?.status === "expired"
+          ? true
+          : adminUser
+          ? !ispOwner && !(permissions?.customerEdit || permissions?.package)
+          : resellerUser && !permission?.customerMikrotikPackageEdit
+        : false,
       validation: true,
       label: t("uploadPackge"),
       firstOptions: t("selectPackage"),
@@ -825,11 +841,13 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       id: "downloadPackge",
       isVisible: page === "static" && inputPermission.mikrotikPackage,
       disabled: bpSettings?.hasMikrotik
-        ? adminUser
-          ? status
-            ? !formData.mikrotikId
-            : false
-          : true
+        ? status === "post"
+          ? !formData.mikrotikId
+          : data?.status === "expired"
+          ? true
+          : adminUser
+          ? !ispOwner && !(permissions?.customerEdit || permissions?.package)
+          : resellerUser && !permission?.customerMikrotikPackageEdit
         : false,
       validation: true,
       label: t("downloadPackge"),

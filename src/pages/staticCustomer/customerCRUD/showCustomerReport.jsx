@@ -125,12 +125,12 @@ const CustomerReport = ({ show, setShow, single }) => {
                   return (
                     <tr className="spetialSortingRow" key={index}>
                       <td>
-                        <p>
+                        {/* <p>
                           {t("bandWith")}{" "}
                           <b className="text-secondary">
                             {single.pppoe.profile}
                           </b>
-                        </p>
+                        </p> */}
                         <p>
                           {t("amount")}{" "}
                           <b className="text-secondary">

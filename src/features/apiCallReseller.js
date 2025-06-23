@@ -307,7 +307,7 @@ export const addResellerStaticCustomer = async (
 
     resetForm();
   } catch (error) {
-    toast.error(error.response?.data?.message);
+    toast.error(error.message);
   }
   setIsloading(false);
 };
@@ -319,7 +319,8 @@ export const updateResellerStaticCustomer = async (
   dispatch,
   data,
   setIsloading,
-  status
+  status,
+  setShow
 ) => {
   setIsloading(true);
   try {
@@ -349,9 +350,9 @@ export const updateResellerStaticCustomer = async (
       );
     }
 
-    document.getElementById("resellerCustomerEdit").click();
+    setShow(false);
   } catch (error) {
-    toast.error(error.response?.data?.message);
+    toast.error(error.message);
   }
   setIsloading(false);
 };
@@ -389,10 +390,9 @@ export const passwordUpdate = async (data, setIsLoadingpass) => {
       "Password Updated Successfully"
     );
   } catch (error) {
-    console.log(error.message);
-    setIsLoadingpass(false);
-    toast.error(error.response?.data.message);
+    toast.error(error.message);
   }
+  setIsLoadingpass(false);
 };
 
 export const profileUpdate = async (dispatch, data, id, setIsLoading) => {
@@ -409,9 +409,9 @@ export const profileUpdate = async (dispatch, data, id, setIsLoading) => {
       "Profile Updated Successfully"
     );
   } catch (error) {
-    setIsLoading(false);
-    toast.error(error.response?.data.message);
+    toast.error(error.message);
   }
+  setIsLoading(false);
 };
 
 //get reseller info
@@ -483,7 +483,7 @@ export const billCollect = async (
     setShow(false);
     resetForm();
   } catch (error) {
-    toast.error(error.response?.data.message);
+    toast.error(error.message);
   }
   setLoading(false);
 };
@@ -500,7 +500,7 @@ export const addDeposit = async (dispatch, data, setLoading) => {
       "Deposit Payment Successfully"
     );
   } catch (error) {
-    toast.error(error.response?.data.message);
+    toast.error(error.message);
   }
   setLoading(false);
 };
@@ -514,9 +514,9 @@ export const getTotalbal = async (dispatch, setLoading) => {
     dispatch(getTotalBalanceSuccess(res.data));
     setLoading(false);
   } catch (error) {
-    setLoading(false);
-    toast.error(error.response?.data.message);
+    toast.error(error.message);
   }
+  setLoading(false);
 };
 
 export const getDeposit = async (dispatch, setResellerPageLoader) => {
@@ -525,7 +525,7 @@ export const getDeposit = async (dispatch, setResellerPageLoader) => {
     const res = await apiLink.get(`/deposit`);
     dispatch(getmyDepositSucces(res.data));
   } catch (error) {
-    console.log(error.response?.data.message);
+    toast.error(error.message);
   }
   setResellerPageLoader(false);
 };
@@ -540,7 +540,7 @@ export const getDepositforReseller = async (
     const res = await apiLink.get(`/deposit/reseller/collector/${resellerId}`);
     dispatch(getDepositSuccess(res.data));
   } catch (error) {
-    console.log(error);
+    toast.error(error.message);
   }
   setIsLoading(false);
 };
@@ -571,10 +571,9 @@ export const depositAcceptReject = async (
       );
     }
   } catch (error) {
-    setAccLoading(false);
-
-    toast.error(error.response?.data.message);
+    toast.error(error.message);
   }
+  setAccLoading(false);
 };
 
 export const getAllBills = async (
@@ -591,7 +590,7 @@ export const getAllBills = async (
     );
     dispatch(getAllBillsSuccess(res.data));
   } catch (error) {
-    toast.error(error.response?.data.message);
+    toast.error(error.message);
   }
   setIsLoading(false);
 };
@@ -603,7 +602,7 @@ export const getMyDeposit = async (dispatch) => {
     const res = await apiLink.get("/deposit");
     dispatch(getmyDepositSucces(res.data));
   } catch (error) {
-    console.log(error?.response?.data.message);
+    toast.error(error.message);
   }
 };
 
@@ -614,7 +613,7 @@ export const getCollectorBill = async (dispatch) => {
     const res = await apiLink.get("/bill/monthlyBill");
     dispatch(getCollectorBills(res.data));
   } catch (error) {
-    console.log(error.response?.data.message);
+    toast.error(error.message);
   }
 };
 
@@ -649,7 +648,7 @@ export const fetchpppoePackage = async (dispatch, IDs) => {
     });
     dispatch(getpppoePackageSuccess(res.data));
   } catch (error) {
-    console.log(error.response);
+    toast.error(error.message);
   }
 };
 
@@ -661,7 +660,7 @@ export const getResellerPackages = async (dispatch, resellerId) => {
     });
     dispatch(getpppoePackageSuccess(res.data.packages));
   } catch (error) {
-    console.log(error.response);
+    toast.error(error.message);
   }
 };
 
@@ -764,7 +763,7 @@ export const putResellerNetFeeSupport = async (
       "NetFee Support Update Successfully"
     );
   } catch (error) {
-    console.log(error.response);
+    toast.error(error.message);
   }
 
   setIsLoading(false);
@@ -833,7 +832,6 @@ export const getOnlineBalance = async (
 
 // reseller online customer payment withdraw balance
 export const postOnlinePayment = async (dispatch, data, setIsLoading) => {
-  console.log(data);
   setIsLoading(true);
   try {
     const res = await apiLink.post(
@@ -842,7 +840,7 @@ export const postOnlinePayment = async (dispatch, data, setIsLoading) => {
     );
     dispatch(postWithdrawBalance(res.data));
   } catch (error) {
-    toast.error(error.response?.data.message);
+    toast.error(error.message);
   }
   setIsLoading(false);
 };
@@ -862,7 +860,7 @@ export const getPaymentWithdrawReport = async (
     );
     dispatch(getWithdrawBalance(res.data));
   } catch (error) {
-    toast.error(error.response?.data.message);
+    toast.error(error.message);
   }
   setIsLoading(false);
 };
@@ -874,7 +872,7 @@ export const getResellerUsers = async (dispatch, resellerId, setIsLoading) => {
     const res = await apiLink.get(`reseller/staffs/${resellerId}`);
     dispatch(getResellerUsersData(res.data));
   } catch (error) {
-    toast.error(error.response?.data.message);
+    toast.error(error.message);
   }
   setIsLoading(false);
 };

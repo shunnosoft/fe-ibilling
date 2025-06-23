@@ -197,7 +197,7 @@ const BillCollectInvoiceWithNote = React.forwardRef((props, ref) => {
                 </p>
               </div>
               <div>
-                <p>
+                {/* <p>
                   <span>{t("package")}:</span>
                   <strong style={{ marginLeft: ".7rem" }}>
                     {customerData?.userType === "simple-queue" ||
@@ -205,7 +205,7 @@ const BillCollectInvoiceWithNote = React.forwardRef((props, ref) => {
                       ? customerData?.queue.package
                       : customerData?.pppoe.profile}
                   </strong>
-                </p>
+                </p> */}
                 <p>
                   {t("paidDate")}:
                   <strong style={{ marginLeft: ".7rem" }}>

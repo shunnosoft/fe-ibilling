@@ -39,6 +39,7 @@ const CustomerModal = ({ show, setShow }) => {
     balance: true,
     pppoeName: true,
     password: true,
+    area: true,
     subArea: true,
     name: true,
     mobile: true,

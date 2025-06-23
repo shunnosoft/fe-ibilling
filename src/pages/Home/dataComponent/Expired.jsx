@@ -154,11 +154,7 @@ const Expired = ({
             <p>
               {original?.userType === "pppoe"
                 ? original?.pppoe.name
-                : original?.userType === "firewall-queue"
-                ? original?.queue.address
-                : original?.userType === "core-queue"
-                ? original?.queue.srcAddress
-                : original?.userType === "simple-queue"
+                : original?.userType === "static"
                 ? original?.queue.target
                 : original?.hotspot.name}
             </p>

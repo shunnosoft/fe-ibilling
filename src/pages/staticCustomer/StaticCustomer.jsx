@@ -462,17 +462,12 @@ const Customer = () => {
       {
         width: "13%",
         Header: t("nameIP"),
-        accessor: (data) =>
-          `${data?.name} ${data?.queue.address} ${data?.queue.srcAddress} ${data?.queue.target}`,
+        accessor: (data) => `${data?.name} ${data.queue?.target}`,
         Cell: ({ row: { original } }) => (
           <div>
             <p>{original?.name}</p>
             <p>
-              {original.userType === "firewall-queue"
-                ? original.queue.address
-                : original.userType === "core-queue"
-                ? original.queue.srcAddress
-                : original.queue.target}
+              {original.queue.target}
 
               <span className="ms-1">
                 {firstDate <= new Date(original?.createdAt) &&

@@ -74,6 +74,7 @@ const DetailsForm = ({ setShow, ispOwner }) => {
     hasOLT: Yup.string(),
     inventory: Yup.string(),
     executeBillingCycle: Yup.string(),
+    executeExpiredCron: Yup.string(),
     hasWebHook: Yup.string(),
     customerType: Yup.array(),
   });
@@ -100,6 +101,7 @@ const DetailsForm = ({ setShow, ispOwner }) => {
       hasOLT: ispOwner?.bpSettings?.hasOLT,
       inventory: ispOwner?.bpSettings?.inventory,
       executeBillingCycle: ispOwner?.bpSettings?.executeBillingCycle,
+      executeExpiredCron: ispOwner?.bpSettings?.executeExpiredCron,
       hasWebHook: ispOwner?.bpSettings?.hasWebHook,
       pppoe: customerType,
       static: customerType,
@@ -132,6 +134,7 @@ const DetailsForm = ({ setShow, ispOwner }) => {
         inventory: values.inventory,
         monthlyDueDate: billDate,
         executeBillingCycle: values.executeBillingCycle,
+        executeExpiredCron: values.executeExpiredCron,
         hasWebHook: values.hasWebHook,
         customerType: customerType,
       },
@@ -431,6 +434,30 @@ const DetailsForm = ({ setShow, ispOwner }) => {
                   value="false"
                   selected={
                     ispOwner?.bpSettings?.executeBillingCycle === "false"
+                  }
+                >
+                  No
+                </option>
+              </Field>
+            </div>
+
+            <div>
+              <lable>Execute Expired Cron</lable>
+              <Field
+                as="select"
+                name="executeExpiredCron"
+                className="form-select mw-100 mt-0"
+              >
+                <option
+                  value="true"
+                  selected={ispOwner?.bpSettings?.executeExpiredCron === "true"}
+                >
+                  Yes
+                </option>
+                <option
+                  value="false"
+                  selected={
+                    ispOwner?.bpSettings?.executeExpiredCron === "false"
                   }
                 >
                   No

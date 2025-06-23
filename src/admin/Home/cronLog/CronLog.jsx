@@ -41,7 +41,7 @@ const CronLog = () => {
   const columns = useMemo(
     () => [
       {
-        width: "5%",
+        width: "3%",
         Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
@@ -54,18 +54,26 @@ const CronLog = () => {
       },
       {
         Header: "Owner",
-        width: "10%",
+        width: "8%",
         accessor: "ispOwnerCount",
       },
       {
         Header: "Reseller",
-        width: "10%",
+        width: "8%",
         accessor: "resellerCount",
       },
       {
         Header: "Duration",
-        width: "8%",
+        width: "7%",
         accessor: "duration",
+      },
+      {
+        width: "7%",
+        Header: "Job",
+        accessor: "jobType",
+        Cell: ({ cell: { value } }) => {
+          return badge(value);
+        },
       },
       {
         width: "7%",

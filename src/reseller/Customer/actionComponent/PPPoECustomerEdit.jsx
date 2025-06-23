@@ -39,9 +39,6 @@ const PPPoECustomerEdit = ({ show, setShow, single }) => {
   // reseller all areas customer from redux store
   const customer = useSelector((state) => state?.customer?.customer);
 
-  // get reseller subAreas form reseller data
-  const storeSubArea = useSelector((state) => state?.area?.area);
-
   // find single customer data
   const data = customer.find((item) => item.id === single);
 
@@ -50,9 +47,6 @@ const PPPoECustomerEdit = ({ show, setShow, single }) => {
 
   // loading state
   const [isLoading, setIsloading] = useState(false);
-
-  // set customer modified data
-  const [customerModifiedData, setCustomerModifiedData] = useState({});
 
   // customer auto disable state
   const [autoDisable, setAutoDisable] = useState(true);
@@ -66,17 +60,6 @@ const PPPoECustomerEdit = ({ show, setShow, single }) => {
 
     // set customer next month auto disable
     setNextMonthAutoDisable(data?.nextMonthAutoDisable);
-
-    // set customer data area id
-    storeSubArea?.map((sub) => {
-      if (sub?.id === data?.subArea) {
-        const customerData = {
-          ...data,
-          area: sub.area,
-        };
-        setCustomerModifiedData(customerData);
-      }
-    });
   }, [data]);
 
   // call the data input option function
@@ -87,6 +70,7 @@ const PPPoECustomerEdit = ({ show, setShow, single }) => {
     balance: true,
     pppoeName: true,
     password: true,
+    area: true,
     subArea: true,
     name: true,
     mobile: true,
@@ -111,7 +95,7 @@ const PPPoECustomerEdit = ({ show, setShow, single }) => {
     inputPermission,
     "pppoe",
     "edit",
-    customerModifiedData
+    data
   );
 
   // sending data to backed
@@ -139,7 +123,7 @@ const PPPoECustomerEdit = ({ show, setShow, single }) => {
       ispOwner: userData?.ispOwner,
       nextMonthAutoDisable: nextMonthAutoDisable,
       paymentStatus: "unpaid",
-      singleCustomerID: customerModifiedData?.id,
+      singleCustomerID: data?.id,
       reseller: resellerId,
       ...rest,
       pppoe: {
