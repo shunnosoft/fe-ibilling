@@ -6,6 +6,9 @@ const addClass = {
   active: "primary",
   inactive: "secondary",
 
+  monthly: "primary",
+  daily: "info",
+
   new: "info",
   prepaid: "info",
   banned: "warning",
@@ -77,6 +80,7 @@ const addClass = {
 
   dashboard: "info",
   report: "success",
+  billing: "success",
 };
 
 export const badge = (item) => {

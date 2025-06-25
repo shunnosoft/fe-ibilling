@@ -104,6 +104,7 @@ const CustomerBillCollect = ({ single, status, page, setShow }) => {
   //response data after API call after payment
   const [responseData, setResponseData] = useState();
   const [test, setTest] = useState(false);
+  const [billingType, setBillingType] = useState("monthly");
 
   // calculation
   const totalAmount =
@@ -173,13 +174,46 @@ const CustomerBillCollect = ({ single, status, page, setShow }) => {
   };
 
   // handle form customer bill amount & due
-  const handleFormValue = (event) => {
+  const handleFormValue = (event, setFieldValue) => {
     if (event.target.name === "amount") {
-      setBillAmount(event.target.value);
-      setSelectedMonth(customerBillMonth(data, event.target.value));
+      if (billingType === "monthly") {
+        const months = customerBillMonth(data, event.target.value);
+        setSelectedMonth(months);
+      }
     }
-    if (event.target.name === "due") {
-      setBalanceDue(event.target.value);
+
+    if (event.target.name === "billingType") {
+      setBillingType(event.target.value);
+      setFieldValue("billingType", event.target.value);
+      if (event.target.value === "daily") {
+        setFieldValue("dayLength", 1);
+
+        const date = new Date();
+        const monthDate = new Date(
+          date.getFullYear(),
+          date.getMonth() + 1,
+          0
+        ).getDate();
+        const customerPerDayBill = data?.monthlyFee / monthDate;
+
+        setFieldValue("amount", Math.trunc(customerPerDayBill));
+      } else {
+        setFieldValue("amount", data?.monthlyFee);
+      }
+    }
+
+    if (event.target.name === "dayLength") {
+      setFieldValue("dayLength", Number(event.target.value));
+      const date = new Date();
+      const monthDate = new Date(
+        date.getFullYear(),
+        date.getMonth() + 1,
+        0
+      ).getDate();
+      const customerPerDayBill = data?.monthlyFee / monthDate;
+
+      const dayTodayFee = customerPerDayBill * event.target.value;
+      setFieldValue("amount", Math.trunc(dayTodayFee));
     }
   };
 
@@ -200,6 +234,7 @@ const CustomerBillCollect = ({ single, status, page, setShow }) => {
     }
 
     const sendingData = {
+      ...formValue,
       amount: Number(formValue.amount) + Number(formValue.due),
       discount: formValue.discount,
       name: userData.name,
@@ -236,6 +271,8 @@ const CustomerBillCollect = ({ single, status, page, setShow }) => {
       }
     }
 
+    delete sendingData.due;
+
     // customer bill collect api
     billCollect(
       dispatch,
@@ -260,6 +297,7 @@ const CustomerBillCollect = ({ single, status, page, setShow }) => {
       <Card.Body className={page === "recharge" ? "pt-0" : ""}>
         <Formik
           initialValues={{
+            billingType: "monthly",
             amount: billType === "bill" ? billAmount : totalAmount,
             due: balanceDue,
             discount: 0,
@@ -270,8 +308,8 @@ const CustomerBillCollect = ({ single, status, page, setShow }) => {
           }}
           enableReinitialize
         >
-          {() => (
-            <Form onChange={handleFormValue}>
+          {({ setFieldValue }) => (
+            <Form onChange={(event) => handleFormValue(event, setFieldValue)}>
               <div className="monthlyBill">
                 <span className="text-secondary">{data?.name}</span>&nbsp;
                 <span className="text-secondary">{t("totalAmount")} ৳</span>
@@ -280,14 +318,10 @@ const CustomerBillCollect = ({ single, status, page, setShow }) => {
 
               <div className="displayGrid">
                 <div className="displayGrid2">
-                  <FtextField type="number" name="amount" label={t("bill")} />
-
-                  <FtextField type="number" name="due" label={t("due")} />
-                </div>
-                <div className="displayGrid2">
                   <div>
                     <label className="form-control-label changeLabelFontColor">
                       {t("billType")}
+                      <span className="text-danger mx-1">*</span>
                     </label>
                     <select
                       className="form-select mt-0 mw-100"
@@ -304,12 +338,49 @@ const CustomerBillCollect = ({ single, status, page, setShow }) => {
                     </select>
                   </div>
 
+                  {billType === "bill" && (
+                    <>
+                      <div>
+                        <label
+                          htmlFor="billingType_type"
+                          className="form-control-label changeLabelFontColor"
+                        >
+                          {t("billingType")}
+                          <span className="text-danger mx-1">*</span>
+                        </label>
+
+                        <select
+                          as="select"
+                          name="billingType"
+                          id="billingType_type"
+                          className="form-select mt-0 mw-100"
+                        >
+                          <option value="monthly"> {t("monthly")} </option>
+                          <option value="daily"> {t("daily")} </option>
+                        </select>
+                      </div>
+
+                      {billingType === "daily" && (
+                        <FtextField
+                          type="number"
+                          label="Day Length"
+                          name="dayLength"
+                          validation={"true"}
+                        />
+                      )}
+                    </>
+                  )}
+
+                  <FtextField type="number" name="amount" label={t("bill")} />
+
+                  <FtextField type="number" name="due" label={t("due")} />
+
                   <div>
                     <label
                       htmlFor="receiver_type"
                       className="form-control-label changeLabelFontColor"
                     >
-                      {t("medium")}
+                      {t("medium")} <span className="text-danger mx-1">*</span>
                     </label>
 
                     <select
@@ -341,6 +412,7 @@ const CustomerBillCollect = ({ single, status, page, setShow }) => {
 
                     <Select
                       className="mt-0"
+                      name="month"
                       value={selectedMonth}
                       onChange={(data) => setSelectedMonth(data)}
                       options={options}

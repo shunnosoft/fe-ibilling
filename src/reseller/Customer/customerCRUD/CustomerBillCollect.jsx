@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Form, Formik } from "formik";
 import { useSelector } from "react-redux";
 import * as Yup from "yup";
@@ -63,6 +63,8 @@ const CustomerBillCollect = ({ customerId, customerData, page, setShow }) => {
     currentUser,
   } = useISPowner();
 
+  console.log({ userData });
+
   // get customers form redux store
   const customer = useSelector((state) => state?.customer?.customer);
 
@@ -101,6 +103,8 @@ const CustomerBillCollect = ({ customerId, customerData, page, setShow }) => {
 
   //calculation total bill due & amount
   const [balanceDue, setBalanceDue] = useState();
+  const [billingType, setBillingType] = useState("monthly");
+  const [dayOfLength, setDayOfLength] = useState(1);
 
   // total bill calculation
   const totalAmount =
@@ -110,14 +114,13 @@ const CustomerBillCollect = ({ customerId, customerData, page, setShow }) => {
 
   useEffect(() => {
     //get reseller package based commission
-    data &&
-      userData?.commissionType === "packageBased" &&
-      userData?.commissionStyle === "fixedRate" &&
+    if (data && userData?.commissionType === "packageBased") {
       getResellerPackageRate(
         data?.reseller,
         data?.mikrotikPackage,
         setPackageRate
       );
+    }
 
     //set customer priv month due amount
     setBalanceDue(data?.balance < 0 ? Math.abs(data?.balance) : 0);
@@ -164,30 +167,143 @@ const CustomerBillCollect = ({ customerId, customerData, page, setShow }) => {
   }, [test]);
 
   // customer recharge bilkl validation
-  const BillValidatoin = Yup.object({
-    amount: Yup.number()
-      .min(
-        billType === "bill"
-          ? ((userData?.commissionType === "packageBased" &&
-              userData?.commissionStyle === "fixedRate" &&
-              packageRate?.ispOwnerRate) ||
-              !(
+  const getBillValidationSchema = (context, t) => {
+    return Yup.object({
+      amount: Yup.number()
+        .required(t("required"))
+        .integer(t("decimalNumberNotAcceptable"))
+        .min(
+          (() => {
+            const { billType, billingType, userData, packageRate, data } =
+              context;
+
+            if (billType === "bill" && billingType === "monthly") {
+              if (
                 userData?.commissionType === "packageBased" &&
                 userData?.commissionStyle === "fixedRate"
-              )) &&
-            data?.balance < data?.monthlyFee
-            ? data?.monthlyFee - data?.balance
-            : data?.monthlyFee
-          : "",
-        t("billNotAcceptable")
-      )
-      .integer(t("decimalNumberNotAcceptable")),
-  });
+              ) {
+                return packageRate?.ispOwnerRate;
+              } else if (
+                userData?.commissionType === "packageBased" &&
+                userData?.commissionStyle === "percentage"
+              ) {
+                return Math.round(
+                  (packageRate?.ispOwnerRate * data?.monthlyFee) / 100
+                );
+              } else {
+                return Math.round(
+                  (userData?.commissionRate?.isp * data?.monthlyFee) / 100
+                );
+              }
+            } else if (billType === "bill" && billingType === "daily") {
+              if (
+                userData?.commissionType === "global" &&
+                userData?.commissionStyle === "percentage"
+              ) {
+                const date = new Date();
+                const monthDate = new Date(
+                  date.getFullYear(),
+                  date.getMonth() + 1,
+                  0
+                ).getDate();
+                const customerPerDayBill = data?.monthlyFee / monthDate;
+
+                const ispOwnerDailyCommission =
+                  (userData?.commissionRate?.isp *
+                    (dayOfLength * customerPerDayBill)) /
+                  100;
+
+                return Math.round(ispOwnerDailyCommission);
+              } else if (
+                userData?.commissionType === "packageBased" &&
+                userData?.commissionStyle === "fixedRate"
+              ) {
+                const date = new Date();
+                const monthDate = new Date(
+                  date.getFullYear(),
+                  date.getMonth() + 1,
+                  0
+                ).getDate();
+                const ispOwnerPerDayCommission =
+                  packageRate?.ispOwnerRate / monthDate;
+
+                const ispOwnerDailyCommission =
+                  dayOfLength * ispOwnerPerDayCommission;
+
+                return Math.round(ispOwnerDailyCommission);
+              } else {
+                const date = new Date();
+                const monthDate = new Date(
+                  date.getFullYear(),
+                  date.getMonth() + 1,
+                  0
+                ).getDate();
+                const customerPerDayBill = data?.monthlyFee / monthDate;
+
+                const ispOwnerDailyCommission =
+                  (packageRate?.ispOwnerRate *
+                    (dayOfLength * customerPerDayBill)) /
+                  100;
+
+                return Math.round(ispOwnerDailyCommission);
+              }
+            }
+          })(),
+          t("billNotAcceptable")
+        ),
+    });
+  };
+
+  const validationSchema = useMemo(() => {
+    return getBillValidationSchema(
+      { billType, billingType, dayOfLength, userData, packageRate, data },
+      t
+    );
+  }, [billType, billingType, dayOfLength, userData, packageRate, data, t]);
+
+  // handle form customer bill amount & due
+  const handleFormValue = (event, setFieldValue) => {
+    if (event.target.name === "billingType") {
+      setBillingType(event.target.value);
+      setFieldValue("billingType", event.target.value);
+      if (event.target.value === "daily") {
+        setFieldValue("dayLength", 1);
+
+        const date = new Date();
+        const monthDate = new Date(
+          date.getFullYear(),
+          date.getMonth() + 1,
+          0
+        ).getDate();
+        const customerPerDayBill = data?.monthlyFee / monthDate;
+
+        setFieldValue("amount", Math.round(customerPerDayBill));
+      } else {
+        setFieldValue("amount", data?.monthlyFee);
+      }
+    }
+
+    if (event.target.name === "dayLength") {
+      setDayOfLength(Number(event.target.value));
+      setFieldValue("dayLength", Number(event.target.value));
+      const date = new Date();
+      const monthDate = new Date(
+        date.getFullYear(),
+        date.getMonth() + 1,
+        0
+      ).getDate();
+      const customerPerDayBill = data?.monthlyFee / monthDate;
+
+      const dayTodayFee = customerPerDayBill * event.target.value;
+      setFieldValue("amount", Math.round(dayTodayFee));
+    }
+  };
 
   // bill amount
   const customerBillHandler = (formValue) => {
     if (
       billType === "bill" &&
+      billingType === "monthly" &&
       userData?.commissionType === "packageBased" &&
       userData?.commissionStyle === "fixedRate" &&
       packageRate.ispOwnerRate > formValue.amount
@@ -198,6 +314,7 @@ const CustomerBillCollect = ({ customerId, customerData, page, setShow }) => {
 
     if (
       billType === "bill" &&
+      billingType === "monthly" &&
       !(
         userData?.commissionType === "packageBased" &&
         userData?.commissionStyle === "fixedRate"
@@ -209,7 +326,7 @@ const CustomerBillCollect = ({ customerId, customerData, page, setShow }) => {
     }
 
     const sendingData = {
-      amount: formValue.amount,
+      ...formValue,
       collectedBy: currentUser?.user.role,
       billType: billType,
       name: userData.name,
@@ -241,6 +358,8 @@ const CustomerBillCollect = ({ customerId, customerData, page, setShow }) => {
         sendingData.month = monthValues.join(",");
       }
     }
+
+    console.log({ sendingData });
 
     billCollect(
       dispatch,
@@ -278,14 +397,14 @@ const CustomerBillCollect = ({ customerId, customerData, page, setShow }) => {
             amount: totalAmount,
             medium: "cash",
           }}
-          validationSchema={BillValidatoin}
+          validationSchema={validationSchema}
           onSubmit={(values) => {
             customerBillHandler(values);
           }}
           enableReinitialize
         >
-          {() => (
-            <Form>
+          {({ setFieldValue }) => (
+            <Form onChange={(event) => handleFormValue(event, setFieldValue)}>
               <div className="monthlyBill">
                 <span className="text-secondary">{data?.name}</span>&nbsp;
                 <span className="text-secondary">{t("totalAmount")} ৳</span>
@@ -294,6 +413,54 @@ const CustomerBillCollect = ({ customerId, customerData, page, setShow }) => {
 
               <div className="displayGrid">
                 <div className="displayGrid2">
+                  <div>
+                    <label className="form-control-label changeLabelFontColor">
+                      {t("billType")}
+                    </label>
+                    <select
+                      className="form-select mt-0 mw-100"
+                      onChange={(e) => setBillType(e.target.value)}
+                    >
+                      <option value="bill"> {t("bill")} </option>
+                      <option value="connectionFee">
+                        {t("connectionFee")}
+                      </option>
+                    </select>
+                  </div>
+
+                  {billType === "bill" && (
+                    <>
+                      <div>
+                        <label
+                          htmlFor="billingType_type"
+                          className="form-control-label changeLabelFontColor"
+                        >
+                          {t("billingType")}
+                          <span className="text-danger mx-1">*</span>
+                        </label>
+
+                        <select
+                          as="select"
+                          name="billingType"
+                          id="billingType_type"
+                          className="form-select mt-0 mw-100"
+                        >
+                          <option value="monthly"> {t("monthly")} </option>
+                          <option value="daily"> {t("daily")} </option>
+                        </select>
+                      </div>
+
+                      {billingType === "daily" && (
+                        <FtextField
+                          type="number"
+                          label="Day Length"
+                          name="dayLength"
+                          validation={"true"}
+                        />
+                      )}
+                    </>
+                  )}
+
                   <FtextField type="number" name="amount" label={t("bill")} />
 
                   <div>
@@ -330,21 +497,6 @@ const CustomerBillCollect = ({ customerId, customerData, page, setShow }) => {
                 )}
 
                 <div className="displayGrid2">
-                  <div>
-                    <label className="form-control-label changeLabelFontColor">
-                      {t("billType")}
-                    </label>
-                    <select
-                      className="form-select mt-0 mw-100"
-                      onChange={(e) => setBillType(e.target.value)}
-                    >
-                      <option value="bill"> {t("bill")} </option>
-                      <option value="connectionFee">
-                        {t("connectionFee")}
-                      </option>
-                    </select>
-                  </div>
-
                   <div className="d-flex align-self-end">
                     <input
                       type="checkbox"

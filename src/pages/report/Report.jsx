@@ -49,6 +49,7 @@ import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
 import { userStaffs } from "../../features/getIspOwnerUsersApi";
 import PlayTutorial from "../tutorial/PlayTutorial";
+import { badge } from "../../components/common/Utils";
 
 const Report = () => {
   const { t } = useTranslation();
@@ -381,11 +382,7 @@ const Report = () => {
           let addressInfo = "";
           if (customer?.userType === "pppoe") {
             addressInfo = customer?.pppoe?.name;
-          } else if (customer?.userType === "firewall-queue") {
-            addressInfo = customer?.queue?.address;
-          } else if (customer?.userType === "core-queue") {
-            addressInfo = customer?.queue?.srcAddress;
-          } else if (customer?.userType === "simple-queue") {
+          } else if (customer?.userType === "static") {
             addressInfo = customer?.queue?.target;
           } else {
             addressInfo = hotspotCustomer?.hotspot?.name;
@@ -400,22 +397,31 @@ const Report = () => {
         },
       },
       {
-        width: "9%",
-        Header: t("package"),
+        width: "10%",
+        Header: t("packageBill"),
         accessor: (field) =>
           field.customer?.mikrotikPackage?.name
             ? field.customer?.mikrotikPackage?.name
             : field.customer?.userType === "pppoe"
             ? field.customer?.pppoe?.profile
             : field?.hotspotCustomer?.hotspot.profile,
+        Cell: ({ row: { original } }) => {
+          return (
+            <div>
+              <p>
+                {original.customer?.mikrotikPackage?.name
+                  ? original.customer?.mikrotikPackage?.name
+                  : original.customer?.userType === "pppoe"
+                  ? original.customer?.pppoe?.profile
+                  : original?.hotspotCustomer?.hotspot.profile}
+              </p>
+              <p style={{ fontWeight: "500" }}>৳{original?.amount}</p>
+            </div>
+          );
+        },
       },
       {
         width: "8%",
-        Header: t("bill"),
-        accessor: "amount",
-      },
-      {
-        width: "9%",
         Header: t("discount"),
         accessor: "discount",
       },
@@ -425,9 +431,17 @@ const Report = () => {
         accessor: "due",
       },
       {
-        width: "8%",
-        Header: t("medium"),
-        accessor: "medium",
+        width: "10%",
+        Header: t("TypeMedium"),
+        accessor: (field) => `${field?.billingType} ${field?.medium}`,
+        Cell: ({ row: { original } }) => {
+          return (
+            <div>
+              <p>{badge(original?.billingType)}</p>
+              <p style={{ fontWeight: "500" }}>{original?.medium}</p>
+            </div>
+          );
+        },
       },
       {
         width: "9%",

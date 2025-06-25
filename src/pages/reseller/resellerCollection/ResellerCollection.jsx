@@ -37,6 +37,7 @@ import EditReport from "../../report/modal/EditReport";
 import FormatNumber from "../../../components/common/NumberFormat";
 import PrintReport from "../../report/ReportPDF";
 import { adminResellerCommission } from "./CommissionShear";
+import { badge } from "../../../components/common/Utils";
 
 const ResellerCollection = () => {
   const { t } = useTranslation();
@@ -248,9 +249,17 @@ const ResellerCollection = () => {
         accessor: "discount",
       },
       {
-        width: "7%",
-        Header: t("agent"),
-        accessor: "medium",
+        width: "10%",
+        Header: t("TypeMedium"),
+        accessor: (field) => `${field?.billingType} ${field?.medium}`,
+        Cell: ({ row: { original } }) => {
+          return (
+            <div>
+              <p>{badge(original?.billingType)}</p>
+              <p style={{ fontWeight: "500" }}>{original?.medium}</p>
+            </div>
+          );
+        },
       },
       {
         width: "8%",

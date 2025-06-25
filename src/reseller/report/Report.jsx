@@ -41,6 +41,7 @@ import ReportView from "../../pages/report/modal/ReportView";
 import { getOwnerUsers } from "../../features/getIspOwnerUsersApi";
 import { adminResellerCommission } from "../../pages/reseller/resellerCollection/CommissionShear";
 import useISPowner from "../../hooks/useISPOwner";
+import { badge } from "../../components/common/Utils";
 
 const Report = () => {
   const { t } = useTranslation();
@@ -299,6 +300,13 @@ const Report = () => {
         Header: t("billType"),
         accessor: "billType",
       },
+      {
+        width: "10%",
+        Header: t("billingType"),
+        accessor: "billingType",
+        Cell: ({ cell: { value } }) => badge(value),
+      },
+
       {
         width: "11%",
         Header: t("medium"),

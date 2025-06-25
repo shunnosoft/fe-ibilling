@@ -462,7 +462,7 @@ const Customer = () => {
       {
         width: "13%",
         Header: t("nameIP"),
-        accessor: (data) => `${data?.name} ${data.queue?.target}`,
+        accessor: (data) => `${data.queue?.target}`,
         Cell: ({ row: { original } }) => (
           <div>
             <p>{original?.name}</p>

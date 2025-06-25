@@ -1045,5 +1045,9 @@
   "startBillDate": "Start Bill Date",
   "endBillDate": "End Bill Date",
   "startCreateDate": "Start Create Date",
-  "endCreateDate": "End Create Date"
+  "endCreateDate": "End Create Date",
+  "billingType": "Billing Type",
+  "daily": "Daily",
+  "packageBill": "Package/Bill",
+  "TypeMedium": "Type/Medium"
 }

@@ -877,7 +877,7 @@
   "wrrtePassword": "কমপক্ষে আটটি সংখ্যার সংমিশ্রণ লিখুন",
   "mobileNumberPassword": "মোবাইল নম্বর পাসওয়ার্ড",
   "minimumDay": "নূন্যতম ১দিন",
-  "dayLength": "ডে লেংথ",
+  "dayLength": "কত দিন",
   "startBillingCycleDate": "বিলিং সাইকেল শুরু তারিখ",
   "endBillingCycleDate": "বিলিং সাইকেল শেষ তারিখ",
   "manualInactive": "ম্যানুয়াল এক্টিভ/ইন-এক্টিভ",
@@ -1052,5 +1052,9 @@
   "startBillDate": "বিল শুরু তারিখ",
   "endBillDate": "বিল শেষ তারিখ",
   "startCreateDate": "ক্রিয়েট শুরু তারিখ",
-  "endCreateDate": "ক্রিয়েট শেষ তারিখ"
+  "endCreateDate": "ক্রিয়েট শেষ তারিখ",
+  "billingType": "বিলিং টাইপ",
+  "daily": "দৈনিক",
+  "packageBill": "প্যাকেজ/বিল",
+  "TypeMedium": "ধরণ/মাধ্যম"
 }

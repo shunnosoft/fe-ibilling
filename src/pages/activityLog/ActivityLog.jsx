@@ -332,7 +332,13 @@ const ActivityLog = () => {
                               type="button"
                               onClick={() =>
                                 setActivityLogData(
-                                  handleActiveFilter(data, filterOptions)
+                                  handleActiveFilter(
+                                    data.map((value) => ({
+                                      ...value,
+                                      createdBy: value.user,
+                                    })),
+                                    filterOptions
+                                  )
                                 )
                               }
                             >

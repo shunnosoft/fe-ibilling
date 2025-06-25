@@ -22,8 +22,6 @@ import {
 import { adminResellerCommission } from "../pages/reseller/resellerCollection/CommissionShear";
 
 const useDataInputOption = (inputPermission, page, status, data) => {
-  console.log({ data });
-
   const { t } = useTranslation();
 
   // current date
@@ -85,7 +83,6 @@ const useDataInputOption = (inputPermission, page, status, data) => {
 
   // get all area form redux store
   const areas = useSelector((state) => state?.area?.area);
-  console.log({ areas });
 
   // get areas subarea form redux store
   const subAreas = useSelector((state) =>
@@ -933,6 +930,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
           ipAddress: e.target.value,
         });
       },
+      info: informationEnBn()?.[4],
     },
     {
       name: "pppoeName",
