@@ -65,7 +65,6 @@ const DetailsForm = ({ setShow, ispOwner }) => {
       .min(11, "এগারো  ডিজিট এর মোবাইল নম্বর লিখুন")
       .max(11, "এগারো  ডিজিট এর বেশি হয়ে গেছে"),
     paymentStatus: Yup.string().required("পেমেন্ট স্ট্যাটাস দিন"),
-    queueType: Yup.string().required("queueType দিন"),
     packType: Yup.string().required("প্যাকেজ টাইপ দিন"),
     pack: Yup.string().required("প্যাকেজ দিন"),
     customerLimit: Yup.string().required("কাস্টমার লিমিট দিন"),
@@ -111,6 +110,8 @@ const DetailsForm = ({ setShow, ispOwner }) => {
 
   //  handle submit
   const ownerHandler = (values) => {
+    console.log({ values });
+
     //  delete id & mobile from value
     delete values.id;
     delete values.mobile;

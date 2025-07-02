@@ -128,6 +128,8 @@ import OLT from "./pages/olt/OLT";
 import { ToastContainer } from "react-toastify";
 import CronLog from "./admin/Home/cronLog/CronLog";
 import AdminActivityLog from "./admin/activityLog/AdminActivityLog";
+import HotspotExecute from "./pages/execute/HotspotExecute";
+import HotspotSuccess from "./pages/success/HotspotSuccess";
 
 function App() {
   const [theme, setTheme] = useState("light");
@@ -485,7 +487,15 @@ function App() {
             />
 
             <Route path="/payment/execute" element={<Execute />} />
+            <Route
+              path="/hotspot/payment/execute"
+              element={<HotspotExecute />}
+            />
             <Route path="/payment/success" element={<Success />} />
+            <Route
+              path="/hotspot/payment/success"
+              element={<HotspotSuccess />}
+            />
             <Route path="/payment/cancel" element={<Cancel />} />
             <Route path="/payment/failed" element={<Failed />} />
             {/* <Route

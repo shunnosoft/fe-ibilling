@@ -12,6 +12,7 @@ import Loader from "../common/Loader";
 import ComponentCustomModal from "../common/customModal/ComponentCustomModal";
 import { getCollector, getManger } from "../../features/apiCalls";
 import useISPowner from "../../hooks/useISPOwner";
+import { getStaffs } from "../../features/apiCallStaff";
 
 const CreateSupportTicket = ({ show, setShow, customer, ispOwner }) => {
   const { t } = useTranslation();
@@ -28,6 +29,9 @@ const CreateSupportTicket = ({ show, setShow, customer, ispOwner }) => {
 
   // get manager
   const manager = useSelector((state) => state.manager?.manager);
+
+  // get ispOwner all staffs
+  const staffs = useSelector((state) => state.staff.staff);
 
   //get ticket category
   const allTicketCategory = useSelector(
@@ -51,6 +55,7 @@ const CreateSupportTicket = ({ show, setShow, customer, ispOwner }) => {
       if (collectors.length === 0)
         getCollector(dispatch, ispOwnerId, setIsLoading);
       role === "ispOwner" && getManger(dispatch, ispOwnerId);
+      role === "ispOwner" && getStaffs(dispatch, ispOwnerId, setIsLoading);
     }
 
     getTicketCategoryApi(dispatch, ispOwner, setIsLoading);
@@ -149,7 +154,12 @@ const CreateSupportTicket = ({ show, setShow, customer, ispOwner }) => {
 
                 {collectors &&
                   collectors.map((item) => (
-                    <option value={item?.user}>{item.name}</option>
+                    <option value={item?.user}>{item.name} (Collector)</option>
+                  ))}
+
+                {staffs &&
+                  staffs.map((item) => (
+                    <option value={item?.user}>{item.name} (Staff)</option>
                   ))}
               </select>
             </div>

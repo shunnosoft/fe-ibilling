@@ -1049,5 +1049,10 @@
   "billingType": "Billing Type",
   "daily": "Daily",
   "packageBill": "Package/Bill",
-  "TypeMedium": "Type/Medium"
+  "TypeMedium": "Type/Medium",
+  "user": "User",
+  "dataLimit": "Data Limit",
+  "rateLimit": "Rate Limit",
+  "validity": "Validity",
+  "selectPackageType": "Select Package Type"
 }

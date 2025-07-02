@@ -30,7 +30,7 @@ export const hotspotUserCreate = async (
   ispOwner,
   data,
   setIsLoading,
-  setModalStatus
+  setHotspotUser
 ) => {
   setIsLoading(true);
   try {
@@ -39,9 +39,8 @@ export const hotspotUserCreate = async (
         apiKey,
       },
     });
-    dispatch(getCreateUser(res.data));
-    toast.success("User Created successfully.");
-    setModalStatus("");
+
+    setHotspotUser(res.data);
   } catch (err) {
     toast.error(err.response?.data?.message);
   }

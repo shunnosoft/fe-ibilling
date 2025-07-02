@@ -61,8 +61,8 @@ const UserCronLog = ({ show, setShow, cron }) => {
         width: "5%",
         Header: "#",
         id: "row",
-        accessor: (row) => Number(row.id + 1),
-        Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
+        accessor: (row, index) => index,
+        Cell: ({ row, data }) => <strong>{data.length - row.index}</strong>,
       },
       {
         Header: "Description",

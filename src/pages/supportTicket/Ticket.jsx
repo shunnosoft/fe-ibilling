@@ -122,6 +122,7 @@ const Ticket = () => {
         accessor: "assignedStaff",
         Cell: ({ cell: { value } }) => {
           const performer = ownerUsers?.find((item) => item[value]);
+          console.log({ ownerUsers });
 
           return (
             <div>

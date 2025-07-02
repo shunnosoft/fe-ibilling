@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { Card } from "react-bootstrap";
 import { useSelector } from "react-redux";
+import "../qrCodeHotspot.css";
 
-const HotspotPackage = ({ setModalStatus }) => {
+const HotspotPackage = ({ selectedPackage, setHotspotPackage }) => {
   // get customer package form store
   const packags = useSelector((state) => state.publicSlice?.publicPackage);
 
@@ -13,15 +14,26 @@ const HotspotPackage = ({ setModalStatus }) => {
           <h5 className="profileInfo">Monthly Package</h5>
         </Card.Title>
         <Card.Body className="displayGrid packagePage">
-          {packags?.map((pack) => (
+          {packags?.map((pack, index) => (
             <div
-              className="package shadow-sm rounded"
-              onClick={() => {
-                setModalStatus("createUser");
-              }}
+              key={index}
+              className={`package-card d-flex gap-3 align-items-center p-3 mb-3 rounded shadow-sm ${
+                selectedPackage?.name === pack.name ? "selected" : ""
+              }`}
+              onClick={() => setHotspotPackage(pack)}
+              style={{ cursor: "pointer" }}
             >
-              <h5>{pack?.name}</h5>
-              <p>{pack?.rate} tk/</p>
+              <input
+                type="radio"
+                name="package"
+                checked={selectedPackage?.name === pack.name}
+                onChange={() => setHotspotPackage(pack)}
+                className="form-check-input"
+              />
+              <div>
+                <h6 className="mb-1">{pack?.name}</h6>
+                <p className="mb-0 text-muted">{pack?.rate} tk</p>
+              </div>
             </div>
           ))}
         </Card.Body>

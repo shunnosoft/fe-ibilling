@@ -394,6 +394,7 @@ const CustomerBillCollect = ({ customerId, customerData, page, setShow }) => {
       <Card.Body className={page === "recharge" ? "pt-0" : ""}>
         <Formik
           initialValues={{
+            billingType: "monthly",
             amount: totalAmount,
             medium: "cash",
           }}

@@ -117,33 +117,49 @@ const Hotspot = () => {
   const packageColumn = React.useMemo(
     () => [
       {
-        width: "15%",
+        width: "5%",
         Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        width: "25%",
-        Header: t("package"),
+        width: "15%",
+        Header: t("name"),
         accessor: "name",
       },
       {
-        width: "20%",
+        width: "15%",
+        Header: t("packageType"),
+        accessor: "packageType",
+      },
+      {
+        width: "10%",
+        Header: t("rateLimit"),
+        accessor: "rateLimit",
+      },
+      {
+        width: "10%",
         Header: t("rate"),
         accessor: "rate",
       },
       {
-        width: "25%",
-        Header: t("createdAt"),
-        accessor: "createdAt",
-        Cell: ({ cell: { value } }) => {
-          return moment(value).format("MMM DD YYYY hh:mm A");
-        },
+        width: "10%",
+        Header: t("validity"),
+        accessor: "validity",
       },
-
       {
-        width: "20%",
+        width: "10%",
+        Header: t("user"),
+        accessor: "sharedUsers",
+      },
+      {
+        width: "10%",
+        Header: t("dataLimit"),
+        accessor: "dataLimit",
+      },
+      {
+        width: "10%",
         Header: () => <div className="text-center">{t("action")}</div>,
         id: "option",
 
@@ -237,81 +253,79 @@ const Hotspot = () => {
 
   return (
     <>
-      <div className="collectorWrapper mt-2 py-2">
-        <div className="addCollector">
-          <div className=" d-flex justify-content-around">
-            <div className="rightSideMikrotik">
-              {/* package & customer filter */}
-              <h5 className="mb-1"> {t("select")} </h5>
-              <select
-                id="selectMikrotikOption"
-                className="form-select mt-0"
-                onChange={(event) => setShowSection(event.target.value)}
-              >
-                <option value="hotspotPackage">{t("package")}</option>
-                <option value="hotsPotCustomer">{t("sokolCustomer")}</option>
-              </select>
-            </div>
-
-            {/* mikrotik information */}
-            <div className="mikrotikDetails">
-              <p className="lh-sm">
-                {t("name")} : <b>{configMikrotik?.name || "..."}</b>
-              </p>
-              <p className="lh-sm">
-                {t("ip")} : <b>{configMikrotik?.host || "..."}</b>
-              </p>
-              <p className="lh-sm">
-                {t("userName")} : <b>{configMikrotik?.username || "..."}</b>
-              </p>
-              <p className="lh-sm">
-                {t("port")} : <b>{configMikrotik?.port || "..."}</b>
-              </p>
-            </div>
-
-            {/* setting button */}
-            <div className="addAndSettingIcon">
-              {/* hotspot package sync button */}
-              <button
-                onClick={hotspotPackageHandle}
-                title={t("packageSync")}
-                className="btn btn-outline-primary mb-2"
-              >
-                {hotspotPackageLoading ? <Loader /> : t("packageSync")}
-                <BagCheckFill />
-              </button>
-              <br />
-
-              {/* hotspot customer sync button */}
-              <button
-                title={t("hotspotpackageSync")}
-                className="btn btn-outline-primary"
-                onClick={() => {
-                  setModalStatus("customerSync");
-                  setShow(true);
-                }}
-              >
-                {hotspotCustomerLoading ? <Loader /> : t("customerSync")}
-                <PersonCheckFill />
-              </button>
-            </div>
+      <div className="addCollector mt-2">
+        <div className=" d-flex justify-content-around">
+          <div className="rightSideMikrotik">
+            {/* package & customer filter */}
+            <h5 className="mb-1"> {t("select")} </h5>
+            <select
+              id="selectMikrotikOption"
+              className="form-select mt-0"
+              onChange={(event) => setShowSection(event.target.value)}
+            >
+              <option value="hotspotPackage">{t("package")}</option>
+              <option value="hotsPotCustomer">{t("sokolCustomer")}</option>
+            </select>
           </div>
 
-          {showSection === "hotspotPackage" && (
-            <Table
-              isLoading={hotspotPackageLoading}
-              columns={packageColumn}
-              data={mtkPackage}
-            ></Table>
-          )}
-          {showSection === "hotsPotCustomer" && (
-            <Table
-              isLoading={hotspotPackageLoading}
-              columns={customerColumn}
-              data={mikrotikCustomer}
-            ></Table>
-          )}
+          {/* mikrotik information */}
+          <div className="mikrotikDetails">
+            <p className="lh-sm">
+              {t("name")} : <b>{configMikrotik?.name || "..."}</b>
+            </p>
+            <p className="lh-sm">
+              {t("ip")} : <b>{configMikrotik?.host || "..."}</b>
+            </p>
+            <p className="lh-sm">
+              {t("userName")} : <b>{configMikrotik?.username || "..."}</b>
+            </p>
+            <p className="lh-sm">
+              {t("port")} : <b>{configMikrotik?.port || "..."}</b>
+            </p>
+          </div>
+
+          {/* setting button */}
+          <div className="addAndSettingIcon">
+            {/* hotspot package sync button */}
+            <button
+              onClick={hotspotPackageHandle}
+              title={t("packageSync")}
+              className="btn btn-outline-primary mb-2"
+            >
+              {hotspotPackageLoading ? <Loader /> : t("packageSync")}
+              <BagCheckFill />
+            </button>
+            <br />
+
+            {/* hotspot customer sync button */}
+            <button
+              title={t("hotspotpackageSync")}
+              className="btn btn-outline-primary"
+              onClick={() => {
+                setModalStatus("customerSync");
+                setShow(true);
+              }}
+            >
+              {hotspotCustomerLoading ? <Loader /> : t("customerSync")}
+              <PersonCheckFill />
+            </button>
+          </div>
         </div>
+
+        {showSection === "hotspotPackage" && (
+          <Table
+            isLoading={hotspotPackageLoading}
+            columns={packageColumn}
+            data={mtkPackage}
+          ></Table>
+        )}
+        {showSection === "hotsPotCustomer" && (
+          <Table
+            isLoading={hotspotPackageLoading}
+            columns={customerColumn}
+            data={mikrotikCustomer}
+          ></Table>
+        )}
       </div>
 
       {/* pakcage edit modal */}

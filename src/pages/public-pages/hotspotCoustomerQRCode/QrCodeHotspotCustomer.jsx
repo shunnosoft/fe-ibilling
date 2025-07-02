@@ -16,6 +16,7 @@ import {
 } from "../../../features/publicHotspotApi/publicHotspot";
 import Loader from "../../../components/common/Loader";
 import HotspotUser from "./hotspotCustomerPage/HotspotUser";
+import SelfRegistration from "./SelfRegistration";
 
 const QrCodeHotspotCustomer = () => {
   const dispatch = useDispatch();
@@ -133,10 +134,12 @@ const QrCodeHotspotCustomer = () => {
                         <HotspotUser ispInfo={ispInfo} />
                       )}
 
+                      {!hotspotUser && <SelfRegistration ispInfo={ispInfo} />}
+
                       {/* hotspot package modal */}
-                      {modalStatus === "package" && (
+                      {/* {modalStatus === "package" && (
                         <HotspotPackage setModalStatus={setModalStatus} />
-                      )}
+                      )} */}
 
                       {/* new account create modal */}
                       {modalStatus === "createUser" && (

@@ -358,7 +358,8 @@ export default function Home() {
         Cell: ({ row: { original } }) => (
           <div className="text-center">
             <p>{badge(original?.status)}</p>
-            <p>{badge(original?.bpSettings?.paymentStatus)}</p>
+            {/* <p>{badge(original?.bpSettings?.paymentStatus)}</p> */}
+            <p>{badge(original?.bpSettings?.monthlyPaymentStatus)}</p>
           </div>
         ),
       },
@@ -980,7 +981,7 @@ export default function Home() {
       const conditions = {
         status: status ? c.status === status : true,
         paymentStatus: paymentStatus
-          ? c.bpSettings?.paymentStatus === paymentStatus
+          ? c.bpSettings?.monthlyPaymentStatus === paymentStatus
           : true,
         billingCycle: billingCycle
           ? `${c.bpSettings.executeBillingCycle}` === billingCycle

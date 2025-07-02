@@ -12,6 +12,7 @@ import { supportTicketsEditApi } from "../../../features/supportTicketApi";
 import { getManger } from "../../../features/apiCalls";
 import Loader from "../../../components/common/Loader";
 import ComponentCustomModal from "../../../components/common/customModal/ComponentCustomModal";
+import { getStaffs } from "../../../features/apiCallStaff";
 
 const SupportTicketEdit = ({ show, setShow, ticketEditId, allCollector }) => {
   const dispatch = useDispatch();
@@ -21,6 +22,9 @@ const SupportTicketEdit = ({ show, setShow, ticketEditId, allCollector }) => {
 
   // get manager
   const manager = useSelector((state) => state.manager?.manager);
+
+  // get ispOwner all staffs
+  const staffs = useSelector((state) => state.staff.staff);
 
   // storing data form redux
   const supportTickets = useSelector(
@@ -96,6 +100,7 @@ const SupportTicketEdit = ({ show, setShow, ticketEditId, allCollector }) => {
 
   useEffect(() => {
     role === "ispOwner" && getManger(dispatch, ispOwnerId);
+    role === "ispOwner" && getStaffs(dispatch, ispOwnerId, setIsLoading);
   }, []);
 
   return (
@@ -162,10 +167,20 @@ const SupportTicketEdit = ({ show, setShow, ticketEditId, allCollector }) => {
                     value={collector?.user}
                     selected={singleTicket?.assignedStaff === collector?.user}
                   >
-                    {collector?.name}
+                    {collector?.name} (Collector)
                   </option>
                 );
               })}
+
+              {staffs &&
+                staffs.map((item) => (
+                  <option
+                    value={item?.user}
+                    selected={singleTicket?.assignedStaff === item?.user}
+                  >
+                    {item.name} (Staff)
+                  </option>
+                ))}
             </select>
           </div>
 

@@ -50,7 +50,7 @@ export const asyncLogin = async (dispatch, loginData) => {
     dispatch(logInSuccess(res.data));
   } catch (error) {
     document.querySelector(".Loader").style.display = "none";
-    toast.error(error.response?.data.message);
+    toast.error(error.message);
   }
 };
 

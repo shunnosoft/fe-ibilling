@@ -32,18 +32,71 @@ const EditHotspotPackage = ({ show, setShow, packageId }) => {
   // set mikrotik id into variable
   var mikrotikId = data?.mikrotik;
 
-  // hotspot edit handler
-  const editHotspotPackage = (value) => {
-    const data = {
-      rate: value.rate.toString(),
-    };
+  // Define input fields with properties
+  const inputOptions = [
+    {
+      as: "select",
+      id: "packageType",
+      name: "packageType",
+      label: t("packageType"),
+      firstOptions: t("selectPackageType"),
+      options: [
+        {
+          label: "Hour",
+          value: "hour",
+        },
+        {
+          label: "Day",
+          value: "day",
+        },
+        {
+          label: "Month",
+          value: "month",
+        },
+      ],
+      textAccessor: "label",
+      valueAccessor: "value",
+      validation: true,
+      isVisible: true,
+      disabled: false,
+    },
+    {
+      type: "number",
+      id: "validity",
+      name: "validity",
+      label: t("validity"),
+      validation: true,
+      isVisible: true,
+      disabled: false,
+    },
+    {
+      type: "number",
+      id: "rate",
+      name: "rate",
+      label: t("packageRate"),
+      validation: true,
+      isVisible: true,
+      disabled: false,
+    },
+    {
+      type: "text",
+      id: "dataLimit",
+      name: "dataLimit",
+      label: t("dataLimit"),
+      validation: false,
+      isVisible: true,
+      disabled: false,
+    },
+  ];
 
+  // hotspot edit handler
+  const editHotspotPackage = (formValues) => {
     // edit api call
     hotspotPackageEdit(
       dispatch,
       mikrotikId,
       packageId,
-      data,
+      formValues,
       setEditLoading,
       setShow
     );
@@ -60,7 +113,10 @@ const EditHotspotPackage = ({ show, setShow, packageId }) => {
       >
         <Formik
           initialValues={{
-            rate: data?.rate || "",
+            packageType: data?.packageType,
+            validity: data?.validity,
+            rate: data?.rate || 1,
+            dataLimit: data?.dataLimit,
           }}
           validationSchema={pppoeValidator}
           onSubmit={(values) => {
@@ -70,12 +126,11 @@ const EditHotspotPackage = ({ show, setShow, packageId }) => {
         >
           {() => (
             <Form>
-              <FtextField
-                min={0}
-                type="number"
-                label={t("packageRate")}
-                name="rate"
-              />
+              <div className="displayGrid mb-3">
+                {inputOptions?.map(
+                  (item) => item?.isVisible && <FtextField {...item} />
+                )}
+              </div>
 
               <div className="displayGrid1 float-end mt-4">
                 <button

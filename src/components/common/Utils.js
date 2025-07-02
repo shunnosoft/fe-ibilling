@@ -36,6 +36,7 @@ const addClass = {
   bill: "success",
   bulk: "primary",
   alert: "warning",
+  resellerAlert: "warning",
   processed: "warning",
   failed: "danger",
 
@@ -80,7 +81,10 @@ const addClass = {
 
   dashboard: "info",
   report: "success",
-  billing: "success",
+  billing: "primary",
+
+  resellerBilling: "info",
+  invoice: "success",
 };
 
 export const badge = (item) => {

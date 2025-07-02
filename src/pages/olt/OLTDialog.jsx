@@ -129,6 +129,10 @@ const OLTDialog = ({ show, setShow, isUpdate, oltInformation }) => {
           label: "TBS EPon",
           value: "tbs_ePon",
         },
+        {
+          label: "TBS GPon",
+          value: "tbs_gPon",
+        },
       ],
     },
     {
