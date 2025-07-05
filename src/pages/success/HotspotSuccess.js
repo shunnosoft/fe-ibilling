@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import "./success.css";
 import "../public-pages/hotspotCoustomerQRCode/qrCodeHotspot.css";
 import PaymentSuccessful from "../../assets/img/HotspotSuccessful.png";
@@ -7,12 +7,24 @@ export default function HotspotSuccess() {
   const userName = localStorage.getItem("username");
   const password = localStorage.getItem("password");
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      window.location.href = `http://ibnul.net/login?username=${userName}&password=${password}`;
-    }, 3000);
+  const [countdown, setCountdown] = useState(3);
 
-    return () => clearTimeout(timer);
+  useEffect(() => {
+    let intervalId;
+    if (userName && password) {
+      intervalId = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev <= 1) {
+            clearInterval(intervalId);
+            window.location.href = `http://ibnul.net/login?username=${userName}&password=${password}`;
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+
+    return () => clearInterval(intervalId);
   }, [userName, password]);
 
   return (
@@ -24,7 +36,7 @@ export default function HotspotSuccess() {
       />
 
       <h2 className="text-success">Paid successfully</h2>
-      <p className="countdown-text">Connecting in 3 seconds...</p>
+      <p className="countdown-text">Connecting in {countdown} seconds...</p>
     </div>
   );
 }

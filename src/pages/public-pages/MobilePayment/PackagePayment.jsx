@@ -9,6 +9,16 @@ const PackagePayment = ({ customer, ispInfo }) => {
 
   const [hotspotPackage, setHotspotPackage] = useState({});
 
+  function generateNumericPassword(length = 6) {
+    const digits = "0123456789";
+    let password = "";
+    for (let i = 0; i < length; i++) {
+      password += digits[Math.floor(Math.random() * digits.length)];
+    }
+    return password;
+  }
+  const userPassword = generateNumericPassword();
+
   const bKash = window.bkash;
 
   let URL = {
@@ -24,14 +34,16 @@ const PackagePayment = ({ customer, ispInfo }) => {
       bKash.init({
         paymentMode: "checkout", //fixed value ‘checkout’
         paymentRequest: {
-          amount: hotspotPackage.rate, //paymentAmount
+          amount: 1,
           merchantInvoiceNumber: Date.now(),
           intent: "sale",
           ispOwnerId: ispInfo.id,
           name: customer.name,
           mobile: customer.mobile,
+          password: userPassword,
           billType: "bill",
           hotspotPackage: hotspotPackage.id,
+          ...(customer?.id && { customer: customer.id }),
         },
         createRequest: async function (request) {
           try {
@@ -40,7 +52,7 @@ const PackagePayment = ({ customer, ispInfo }) => {
             if (data?.statusCode === "0000") {
               localStorage.setItem("paymentAmount", 1);
               localStorage.setItem("username", customer.name);
-              localStorage.setItem("password", "NF123456");
+              localStorage.setItem("password", userPassword);
 
               sessionStorage.setItem("qrispid", ispInfo.id);
               window.location.href = data?.bkashURL;
@@ -132,16 +144,18 @@ const PackagePayment = ({ customer, ispInfo }) => {
         ))}
       </Card.Body>
 
-      <div className="d-flex justify-content-end">
-        <button
-          id={gatewayType === "bKashPG" ? "bKash_button" : ""}
-          onClick={gatewayType !== "bKashPG" ? "" : () => {}}
-          type="button"
-          className="btn btn-primary"
-        >
-          Payment
-        </button>
-      </div>
+      {ispInfo?.bpSettings?.hasPG && (
+        <div className="d-flex justify-content-end">
+          <button
+            id={gatewayType === "bKashPG" ? "bKash_button" : ""}
+            onClick={gatewayType !== "bKashPG" ? "" : () => {}}
+            type="button"
+            className="btn btn-primary"
+          >
+            Payment
+          </button>
+        </div>
+      )}
     </>
   );
 };

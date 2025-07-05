@@ -1,10 +1,6 @@
 import { Form, Formik } from "formik";
 import React, { useState } from "react";
 import { FtextField } from "../../../components/common/FtextField";
-import Loader from "../../../components/common/Loader";
-import { useDispatch } from "react-redux";
-import { hotspotUserCreate } from "../../../features/publicHotspotApi/publicHotspot";
-import HotspotPackage from "./hotspotCustomerPage/HotspotPackage";
 import * as Yup from "yup";
 import "./qrCodeHotspot.css";
 import PackagePayment from "../MobilePayment/PackagePayment";
@@ -12,7 +8,12 @@ import PackagePayment from "../MobilePayment/PackagePayment";
 const SelfRegistration = ({ ispInfo, mobile }) => {
   // customer create validator
   const customerValidator = Yup.object({
-    name: Yup.string().required("Write Customer Name"),
+    name: Yup.string()
+      .required("Write Customer Name")
+      .test("no-leading-zero", "Name cannot start with 0", (value) => {
+        if (!value) return true;
+        return !value.trim().startsWith("0");
+      }),
     mobile: Yup.string()
       .matches(/^(01){1}[3456789]{1}(\d){8}$/, "Incorrect Mobile Number")
       .min(11, "Write 11 Digit Mobile Number")
@@ -20,22 +21,16 @@ const SelfRegistration = ({ ispInfo, mobile }) => {
       .required("Write Mobile Number"),
   });
 
-  const [isLoading, setIsLoading] = useState(false);
   const [showComponent, setShowComponent] = useState("");
-  const [selectedPackage, setHotspotPackage] = useState(null);
   const [customer, setCustomer] = useState({});
 
   const handleSelfRegistrationInHotspot = (formValues) => {
     const sendingData = {
       ...formValues,
-      // hotspotPackage: selectedPackage.id,
-      // monthlyFee: selectedPackage.rate,
     };
 
     setShowComponent("packages");
     setCustomer(sendingData);
-
-    // hotspotUserCreate(dispatch, ispInfo?.id, sendingData, setIsLoading);
   };
 
   return (
@@ -70,12 +65,8 @@ const SelfRegistration = ({ ispInfo, mobile }) => {
 
             {showComponent !== "packages" && (
               <div className="d-flex justify-content-end mt-4">
-                <button
-                  type="submit"
-                  className="btn btn-success customBtn"
-                  disabled={isLoading}
-                >
-                  {isLoading ? <Loader /> : "Continue"}
+                <button type="submit" className="btn btn-success customBtn">
+                  Continue
                 </button>
               </div>
             )}

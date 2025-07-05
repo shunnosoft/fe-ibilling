@@ -5,10 +5,9 @@ import moment from "moment";
 
 //internal import
 import { badge } from "../../../../components/common/Utils";
-import { getCustomerDayLeft } from "../../../Customer/customerCRUD/customerBillDayPromiseDate";
-import bkashImg from "../../../../assets/img/BKash-Icon-Logo.wine.png";
 import apiLink, { publicRequest } from "../../../../api/apiLink";
 import { billPayment } from "../../../../features/getIspOwnerUsersApi";
+import PackagePayment from "../../MobilePayment/PackagePayment";
 
 const HotspotUser = ({ ispInfo }) => {
   let isPublic = true;
@@ -18,6 +17,16 @@ const HotspotUser = ({ ispInfo }) => {
 
   // loading state
   const [isLoading, setLoading] = useState(false);
+
+  function generateNumericPassword(length = 6) {
+    const digits = "0123456789";
+    let password = "";
+    for (let i = 0; i < length; i++) {
+      password += digits[Math.floor(Math.random() * digits.length)];
+    }
+    return password;
+  }
+  const userPassword = generateNumericPassword();
 
   const billPaymentController = async () => {
     const data = {
@@ -37,19 +46,11 @@ const HotspotUser = ({ ispInfo }) => {
   };
 
   const bKash = window.bkash;
-
   let URL = {
-    create: "bkash/createPayment",
-    execute: "bkash/executePayment",
-    baseURL: apiLink,
+    create: "hotspot/bkash/payment-create",
+    execute: "hotspot/bkash/payment-execute",
+    baseURL: publicRequest,
   };
-  if (isPublic) {
-    URL = {
-      create: "bkash/createPublicPayment",
-      execute: "bkash/executePublicPayment",
-      baseURL: publicRequest,
-    };
-  }
 
   useEffect(() => {
     let paymentID = "";
@@ -57,24 +58,25 @@ const HotspotUser = ({ ispInfo }) => {
       bKash.init({
         paymentMode: "checkout", //fixed value ‘checkout’
         paymentRequest: {
-          amount: hotspotUser?.monthlyFee,
+          amount: 1,
           merchantInvoiceNumber: Date.now(),
           intent: "sale",
-          ispOwnerId: hotspotUser?.ispOwner,
-          name: hotspotUser?.name,
+          ispOwnerId: ispInfo.id,
+          name: hotspotUser.name,
+          mobile: hotspotUser.mobile,
+          password: userPassword,
           billType: "bill",
-          customer: hotspotUser?.id,
-          user: hotspotUser?.user,
-          userType: hotspotUser?.userType,
-          medium: ispInfo?.bpSettings?.paymentGateway?.gatewayType,
-          paymentStatus: "pending",
-          collectedBy: "customer",
+          hotspotPackage: hotspotUser.hotspotPackage,
+          customer: hotspotUser.id,
         },
         createRequest: async function (request) {
           try {
             const { data } = await URL.baseURL.post(URL.create, request);
             if (data?.statusCode === "0000") {
               localStorage.setItem("paymentAmount", hotspotUser?.monthlyFee);
+              localStorage.setItem("username", hotspotUser.name);
+              localStorage.setItem("password", userPassword);
+
               sessionStorage.setItem("qrispid", hotspotUser?.ispOwner);
               window.location.href = data?.bkashURL;
             }
@@ -133,8 +135,14 @@ const HotspotUser = ({ ispInfo }) => {
       <Card.Title className="clintTitle mb-0">
         <h5 className="profileInfo">{hotspotUser?.name}</h5>
       </Card.Title>
+
       <Card.Body>
         <div>
+          <div className="displayGridHorizontalFill5_5 profileDetails">
+            <p>Status</p>
+            <p>{badge(hotspotUser?.status)}</p>
+          </div>
+
           <div className="displayGridHorizontalFill5_5 profileDetails">
             <p>User Name</p>
             <p>{hotspotUser.hotspot?.name}</p>
@@ -156,41 +164,32 @@ const HotspotUser = ({ ispInfo }) => {
           </div>
 
           <div className="displayGridHorizontalFill5_5 profileDetails">
-            <p>Status</p>
-            <p>{badge(hotspotUser?.status)}</p>
-          </div>
-
-          <div className="displayGridHorizontalFill5_5 profileDetails">
-            <p>Payment Status</p>
-            <p>{badge(hotspotUser?.paymentStatus)}</p>
-          </div>
-
-          <div className="displayGridHorizontalFill5_5 profileDetails">
             <p>Bill Date</p>
             <p>
               {moment(hotspotUser?.billingCycle).format("MMM DD YYYY hh:mm A")}
             </p>
           </div>
 
-          {ispInfo?.bpSettings?.hasPG && (
-            <div
-              className="d-flex justify-content-center aling-items-center mt-4"
-              title="Payment"
-            >
+          {ispInfo?.bpSettings?.hasPG && hotspotUser.status !== "expired" && (
+            <div className="d-flex justify-content-end mt-3">
               <button
-                className="btn border border-2"
                 id={gatewayType === "bKashPG" ? "bKash_button" : ""}
                 onClick={
                   gatewayType !== "bKashPG" ? billPaymentController : () => {}
                 }
+                type="button"
+                className="btn btn-primary"
               >
-                <span className="fs-5">Payment</span>
-                <img className="bkashPic" src={bkashImg}></img>
+                Payment
               </button>
             </div>
           )}
         </div>
       </Card.Body>
+
+      {hotspotUser.status === "expired" && (
+        <PackagePayment {...{ customer: hotspotUser, ispInfo }} />
+      )}
     </>
   );
 };

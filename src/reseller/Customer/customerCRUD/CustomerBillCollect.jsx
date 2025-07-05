@@ -63,8 +63,6 @@ const CustomerBillCollect = ({ customerId, customerData, page, setShow }) => {
     currentUser,
   } = useISPowner();
 
-  console.log({ userData });
-
   // get customers form redux store
   const customer = useSelector((state) => state?.customer?.customer);
 
@@ -112,9 +110,10 @@ const CustomerBillCollect = ({ customerId, customerData, page, setShow }) => {
       ? Number(billAmount) + Number(balanceDue)
       : Number(data.connectionFee - paidConnectionFee);
 
+  const currentUserData = role === "reseller" ? userData : resellerData;
   useEffect(() => {
     //get reseller package based commission
-    if (data && userData?.commissionType === "packageBased") {
+    if (data && currentUserData?.commissionType === "packageBased") {
       getResellerPackageRate(
         data?.reseller,
         data?.mikrotikPackage,
@@ -179,13 +178,13 @@ const CustomerBillCollect = ({ customerId, customerData, page, setShow }) => {
 
             if (billType === "bill" && billingType === "monthly") {
               if (
-                userData?.commissionType === "packageBased" &&
-                userData?.commissionStyle === "fixedRate"
+                currentUserData?.commissionType === "packageBased" &&
+                currentUserData?.commissionStyle === "fixedRate"
               ) {
                 return packageRate?.ispOwnerRate;
               } else if (
-                userData?.commissionType === "packageBased" &&
-                userData?.commissionStyle === "percentage"
+                currentUserData?.commissionType === "packageBased" &&
+                currentUserData?.commissionStyle === "percentage"
               ) {
                 return Math.round(
                   (packageRate?.ispOwnerRate * data?.monthlyFee) / 100
@@ -197,8 +196,8 @@ const CustomerBillCollect = ({ customerId, customerData, page, setShow }) => {
               }
             } else if (billType === "bill" && billingType === "daily") {
               if (
-                userData?.commissionType === "global" &&
-                userData?.commissionStyle === "percentage"
+                currentUserData?.commissionType === "global" &&
+                currentUserData?.commissionStyle === "percentage"
               ) {
                 const date = new Date();
                 const monthDate = new Date(
@@ -215,8 +214,8 @@ const CustomerBillCollect = ({ customerId, customerData, page, setShow }) => {
 
                 return Math.round(ispOwnerDailyCommission);
               } else if (
-                userData?.commissionType === "packageBased" &&
-                userData?.commissionStyle === "fixedRate"
+                currentUserData?.commissionType === "packageBased" &&
+                currentUserData?.commissionStyle === "fixedRate"
               ) {
                 const date = new Date();
                 const monthDate = new Date(
@@ -304,8 +303,8 @@ const CustomerBillCollect = ({ customerId, customerData, page, setShow }) => {
     if (
       billType === "bill" &&
       billingType === "monthly" &&
-      userData?.commissionType === "packageBased" &&
-      userData?.commissionStyle === "fixedRate" &&
+      currentUserData?.commissionType === "packageBased" &&
+      currentUserData?.commissionStyle === "fixedRate" &&
       packageRate.ispOwnerRate > formValue.amount
     ) {
       toast.error(t("rechargeAmountMustBeUptoIspOwnerRate"));
@@ -316,8 +315,8 @@ const CustomerBillCollect = ({ customerId, customerData, page, setShow }) => {
       billType === "bill" &&
       billingType === "monthly" &&
       !(
-        userData?.commissionType === "packageBased" &&
-        userData?.commissionStyle === "fixedRate"
+        currentUserData?.commissionType === "packageBased" &&
+        currentUserData?.commissionStyle === "fixedRate"
       ) &&
       data?.monthlyFee > formValue.amount + data?.balance
     ) {
@@ -358,8 +357,6 @@ const CustomerBillCollect = ({ customerId, customerData, page, setShow }) => {
         sendingData.month = monthValues.join(",");
       }
     }
-
-    console.log({ sendingData });
 
     billCollect(
       dispatch,

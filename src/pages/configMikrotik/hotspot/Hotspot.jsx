@@ -129,19 +129,14 @@ const Hotspot = () => {
         accessor: "name",
       },
       {
-        width: "15%",
-        Header: t("packageType"),
-        accessor: "packageType",
-      },
-      {
-        width: "10%",
-        Header: t("rateLimit"),
-        accessor: "rateLimit",
-      },
-      {
         width: "10%",
         Header: t("rate"),
         accessor: "rate",
+      },
+      {
+        width: "15%",
+        Header: t("packageType"),
+        accessor: "packageType",
       },
       {
         width: "10%",
@@ -150,9 +145,14 @@ const Hotspot = () => {
       },
       {
         width: "10%",
-        Header: t("user"),
-        accessor: "sharedUsers",
+        Header: t("rateLimit"),
+        accessor: "rateLimit",
       },
+      // {
+      //   width: "10%",
+      //   Header: t("user"),
+      //   accessor: "sharedUsers",
+      // },
       {
         width: "10%",
         Header: t("dataLimit"),
