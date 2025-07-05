@@ -9,9 +9,7 @@ import * as Yup from "yup";
 import "./qrCodeHotspot.css";
 import PackagePayment from "../MobilePayment/PackagePayment";
 
-const SelfRegistration = ({ ispInfo }) => {
-  const dispatch = useDispatch();
-
+const SelfRegistration = ({ ispInfo, mobile }) => {
   // customer create validator
   const customerValidator = Yup.object({
     name: Yup.string().required("Write Customer Name"),
@@ -45,7 +43,7 @@ const SelfRegistration = ({ ispInfo }) => {
       <Formik
         initialValues={{
           name: "",
-          mobile: "",
+          mobile: mobile || "",
         }}
         validationSchema={customerValidator}
         onSubmit={(values) => {
@@ -56,19 +54,31 @@ const SelfRegistration = ({ ispInfo }) => {
         {() => (
           <Form>
             <div className="displayGrid mb-3">
-              <FtextField type="text" name="name" label="Name" />
-              <FtextField type="text" name="mobile" label="Mobile" />
+              <FtextField
+                type="text"
+                name="name"
+                label="Name"
+                validation={true}
+              />
+              <FtextField
+                type="text"
+                name="mobile"
+                label="Mobile"
+                validation={true}
+              />
             </div>
 
-            <div className="displayGrid1 float-end mt-4">
-              <button
-                type="submit"
-                className="btn btn-success customBtn"
-                disabled={isLoading}
-              >
-                {isLoading ? <Loader /> : "Continue"}
-              </button>
-            </div>
+            {showComponent !== "packages" && (
+              <div className="d-flex justify-content-end mt-4">
+                <button
+                  type="submit"
+                  className="btn btn-success customBtn"
+                  disabled={isLoading}
+                >
+                  {isLoading ? <Loader /> : "Continue"}
+                </button>
+              </div>
+            )}
           </Form>
         )}
       </Formik>

@@ -25,6 +25,8 @@ const QrCodeHotspotCustomer = () => {
   // get customer package form store
   const hotspotUser = useSelector((state) => state.publicSlice?.hotspotUser);
 
+  //===============|| Local State ||===============//
+
   // loading state
   const [isLoading, setIsLoading] = useState(false);
 
@@ -69,7 +71,7 @@ const QrCodeHotspotCustomer = () => {
       <div className="createUserPage">
         <div className="w-100">
           <div className="mainPage">
-            <Card className="shadow-sm mb-4 bg-white rounded mw-100">
+            <Card className="mainCard mb-4 bg-white rounded mw-100">
               <Card.Title className="userTitle p-2">
                 <div className="d-flex flex-column justify-content-center align-items-center">
                   <h4 className="company">{ispInfo?.company}</h4>
@@ -80,46 +82,22 @@ const QrCodeHotspotCustomer = () => {
                 </div>
               </Card.Title>
               <Card.Body>
-                <div className="tableHader displayGrid2">
-                  <div className="displayGrid1">
-                    <button
-                      className="btn btn-outline-primary"
-                      onClick={() => {
-                        setModalStatus("createUser");
-                      }}
+                <div className="tableHader">
+                  <InputGroup>
+                    <input
+                      className="form-control shadow-none "
+                      type="text"
+                      value={mobile}
+                      onChange={userSearchMobile}
+                      placeholder="Enter Mobile Number"
+                    />
+                    <InputGroup.Text
+                      onClick={searchHotspotUser}
+                      style={{ cursor: "pointer" }}
                     >
-                      Create User
-                    </button>
-
-                    <button
-                      className="btn btn-outline-success"
-                      onClick={() => {
-                        setModalStatus("package");
-                      }}
-                    >
-                      Package
-                    </button>
-                  </div>
-
-                  <div>
-                    <div>
-                      <InputGroup>
-                        <input
-                          className="form-control shadow-none"
-                          type="text"
-                          value={mobile}
-                          onChange={userSearchMobile}
-                          placeholder="Enter Mobile Number"
-                        />
-                        <InputGroup.Text
-                          onClick={searchHotspotUser}
-                          style={{ cursor: "pointer" }}
-                        >
-                          <Search />
-                        </InputGroup.Text>
-                      </InputGroup>
-                    </div>
-                  </div>
+                      <Search />
+                    </InputGroup.Text>
+                  </InputGroup>
                 </div>
 
                 <div>
@@ -130,23 +108,14 @@ const QrCodeHotspotCustomer = () => {
                   ) : (
                     <div>
                       {/* search hotspot customer modal */}
-                      {!modalStatus && hotspotUser && (
-                        <HotspotUser ispInfo={ispInfo} />
-                      )}
+                      {!modalStatus &&
+                        Object.keys(hotspotUser).length > 0 &&
+                        hotspotUser.status !== "new" && (
+                          <HotspotUser ispInfo={ispInfo} />
+                        )}
 
-                      {!hotspotUser && <SelfRegistration ispInfo={ispInfo} />}
-
-                      {/* hotspot package modal */}
-                      {/* {modalStatus === "package" && (
-                        <HotspotPackage setModalStatus={setModalStatus} />
-                      )} */}
-
-                      {/* new account create modal */}
-                      {modalStatus === "createUser" && (
-                        <CustomerCreate
-                          setModalStatus={setModalStatus}
-                          ispInfo={ispInfo}
-                        />
+                      {hotspotUser.status === "new" && (
+                        <SelfRegistration ispInfo={ispInfo} mobile={mobile} />
                       )}
                     </div>
                   )}

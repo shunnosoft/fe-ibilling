@@ -77,10 +77,21 @@
 
   .packagePage {
     padding: 0 !important;
+    margin-bottom: 1rem;
   }
 
-  .package {
+  .packageCard {
     padding: 0.6rem;
+  }
+}
+
+@media only screen and (min-width: 578px) {
+  .mainCard {
+    width: 30%;
+  }
+
+  .packageCard {
+    padding: 0.8rem;
   }
 }
 
@@ -101,4 +112,26 @@
   border-radius: 50%;
   padding: 4px 8px;
   font-size: 14px;
+}
+
+.center-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  max-width: 500px;
+  margin: auto;
+  padding: 20px;
+}
+
+.countdown-text {
+  font-size: 18px;
+  color: #666;
+}
+
+.success-image {
+  width: 100%;
+  max-width: 450px;
+  height: auto;
 }

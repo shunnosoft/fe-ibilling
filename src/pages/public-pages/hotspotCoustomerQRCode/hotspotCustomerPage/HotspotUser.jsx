@@ -136,41 +136,13 @@ const HotspotUser = ({ ispInfo }) => {
       <Card.Body>
         <div>
           <div className="displayGridHorizontalFill5_5 profileDetails">
-            <p>User Id</p>
-            <p>{hotspotUser?.customerId}</p>
-          </div>
-
-          <div className="displayGridHorizontalFill5_5 profileDetails">
-            <p>Day Left</p>
-            <p
-              className={`text-center ${
-                getCustomerDayLeft(hotspotUser?.billingCycle) >= 20
-                  ? "border border-2 border-success"
-                  : getCustomerDayLeft(hotspotUser?.billingCycle) >= 10
-                  ? "border border-2 border-primary"
-                  : getCustomerDayLeft(hotspotUser?.billingCycle) >= 0
-                  ? "magantaColor"
-                  : "bg-danger text-white"
-              }`}
-              style={{ width: "2rem", height: "auto" }}
-            >
-              {getCustomerDayLeft(hotspotUser?.billingCycle)}
-            </p>
-          </div>
-
-          <div className="displayGridHorizontalFill5_5 profileDetails">
-            <p>Hotspot Name</p>
+            <p>User Name</p>
             <p>{hotspotUser.hotspot?.name}</p>
           </div>
 
           <div className="displayGridHorizontalFill5_5 profileDetails">
             <p>Mobile</p>
             <p>{hotspotUser?.mobile}</p>
-          </div>
-
-          <div className="displayGridHorizontalFill5_5 profileDetails">
-            <p>Password</p>
-            <p>{hotspotUser.hotspot?.password}</p>
           </div>
 
           <div className="displayGridHorizontalFill5_5 profileDetails">
@@ -184,11 +156,6 @@ const HotspotUser = ({ ispInfo }) => {
           </div>
 
           <div className="displayGridHorizontalFill5_5 profileDetails">
-            <p>Balance</p>
-            <p>৳{hotspotUser?.balance}</p>
-          </div>
-
-          <div className="displayGridHorizontalFill5_5 profileDetails">
             <p>Status</p>
             <p>{badge(hotspotUser?.status)}</p>
           </div>
@@ -199,18 +166,11 @@ const HotspotUser = ({ ispInfo }) => {
           </div>
 
           <div className="displayGridHorizontalFill5_5 profileDetails">
-            <p>BillDate</p>
+            <p>Bill Date</p>
             <p>
               {moment(hotspotUser?.billingCycle).format("MMM DD YYYY hh:mm A")}
             </p>
           </div>
-
-          {hotspotUser?.address && (
-            <div className="displayGridHorizontalFill5_5 profileDetails">
-              <p>Address</p>
-              <p>{hotspotUser?.address}</p>
-            </div>
-          )}
 
           {ispInfo?.bpSettings?.hasPG && (
             <div

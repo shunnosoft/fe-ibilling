@@ -24,7 +24,7 @@ const PackagePayment = ({ customer, ispInfo }) => {
       bKash.init({
         paymentMode: "checkout", //fixed value ‘checkout’
         paymentRequest: {
-          amount: 1, //paymentAmount
+          amount: hotspotPackage.rate, //paymentAmount
           merchantInvoiceNumber: Date.now(),
           intent: "sale",
           ispOwnerId: ispInfo.id,
@@ -32,14 +32,6 @@ const PackagePayment = ({ customer, ispInfo }) => {
           mobile: customer.mobile,
           billType: "bill",
           hotspotPackage: hotspotPackage.id,
-
-          // customer: userData.id,
-          // user: userData.id,
-          // userType: userData.userType,
-          // medium: userData.ispOwner.bpSettings?.paymentGateway?.gatewayType,
-          // month: selectedMonth?.map((item) => item.value).join(","),
-          paymentStatus: "pending",
-          collectedBy: "customer",
         },
         createRequest: async function (request) {
           try {
@@ -108,11 +100,16 @@ const PackagePayment = ({ customer, ispInfo }) => {
 
   return (
     <>
+      <Card.Title className="mt-4">
+        <div className="monthlyBill">
+          <span className="text-secondary">Packages</span>
+        </div>
+      </Card.Title>
       <Card.Body className="displayGrid packagePage">
         {packags?.map((pack, index) => (
           <div
             key={index}
-            className={`package-card d-flex gap-3 align-items-center p-3 mb-3 rounded shadow-sm ${
+            className={`packageCard package-card d-flex gap-3 align-items-center rounded shadow-sm ${
               hotspotPackage?.name === pack.name ? "selected" : ""
             }`}
             onClick={() => setHotspotPackage(pack)}
@@ -127,20 +124,24 @@ const PackagePayment = ({ customer, ispInfo }) => {
             />
             <div>
               <h6 className="mb-1">{pack?.name}</h6>
-              <p className="mb-0 text-muted">{pack?.rate} tk</p>
+              <p className="mb-0 text-muted">
+                {pack?.rate} tk/{pack.validity + pack.packageType}
+              </p>
             </div>
           </div>
         ))}
       </Card.Body>
 
-      <button
-        id={gatewayType === "bKashPG" ? "bKash_button" : ""}
-        onClick={gatewayType !== "bKashPG" ? "" : () => {}}
-        type="button"
-        className="btn btn-sm btn-success shadow-none mt-3"
-      >
-        {"Pay"}
-      </button>
+      <div className="d-flex justify-content-end">
+        <button
+          id={gatewayType === "bKashPG" ? "bKash_button" : ""}
+          onClick={gatewayType !== "bKashPG" ? "" : () => {}}
+          type="button"
+          className="btn btn-primary"
+        >
+          Payment
+        </button>
+      </div>
     </>
   );
 };
