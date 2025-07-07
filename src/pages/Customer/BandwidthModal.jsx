@@ -24,8 +24,10 @@ const BandwidthModal = ({ customer, modalShow, setModalShow }) => {
     return (value / 1024).toFixed(2); // Convert to Kbps otherwise
   };
 
+  console.log({ customer });
+
   useEffect(() => {
-    if (customer?.page === "PPPoE") {
+    if (customer?.page === "PPPoE" || customer?.page === "Hotspot") {
       if (!modalShow) {
         setDps1([]);
         setDps2([]);

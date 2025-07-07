@@ -489,58 +489,74 @@ export default function Sidebar() {
                             !currentUser.collector?.reseller)) &&
                           bpSettings?.hasMikrotik &&
                           hasCustomerType.includes("hotspot") && (
-                            <NavLink
-                              key={120}
-                              to={"/hotspot/customer"}
-                              className={(navInfo) =>
-                                navInfo.isActive ? activeClass.active : ""
-                              }
-                            >
-                              <FontColor>
-                                <li
-                                  className="sidebarItems"
-                                  id={
-                                    window.location.pathname ===
-                                    "/hotspot/customer"
-                                      ? "active"
-                                      : ""
+                            <>
+                              <NavLink
+                                key={120}
+                                to={"/hotspot/customer"}
+                                className={(navInfo) =>
+                                  navInfo.isActive ? activeClass.active : ""
+                                }
+                              >
+                                <FontColor>
+                                  <li
+                                    className="sidebarItems"
+                                    id={
+                                      window.location.pathname ===
+                                      "/hotspot/customer"
+                                        ? "active"
+                                        : ""
+                                    }
+                                  >
+                                    <div className="sidebarIcon">
+                                      {<People />}
+                                    </div>
+                                    <span className="sidebarLinksName">
+                                      {t("hotspot")}
+                                    </span>
+                                  </li>
+                                </FontColor>
+                              </NavLink>
+
+                              {ispOwnerData?.bpSettings?.hasMikrotik && (
+                                <NavLink
+                                  key={161}
+                                  to={
+                                    role === "reseller" ||
+                                    (role === "collector" &&
+                                      currentUser.collector.reseller)
+                                      ? "/reseller/staticActiveCustomer"
+                                      : "/hotspot/active/customer"
+                                  }
+                                  className={(navInfo) =>
+                                    navInfo.isActive ? activeClass.active : ""
                                   }
                                 >
-                                  <div className="sidebarIcon">
-                                    {<People />}
-                                  </div>
-                                  <span className="sidebarLinksName">
-                                    {t("hotspot")}
-                                  </span>
-                                </li>
-                              </FontColor>
-                            </NavLink>
+                                  <FontColor>
+                                    <li
+                                      className="sidebarItems"
+                                      id={
+                                        window.location.pathname ===
+                                        (role === "reseller" ||
+                                        (role === "collector" &&
+                                          currentUser.collector.reseller)
+                                          ? "/reseller/staticActiveCustomer"
+                                          : "/hotspot/active/customer")
+                                          ? "active"
+                                          : ""
+                                      }
+                                    >
+                                      <div className="sidebarIcon">
+                                        {<PersonCheck />}
+                                      </div>
+                                      <span className="sidebarLinksName">
+                                        {t("activeHotspot")}
+                                      </span>
+                                    </li>
+                                  </FontColor>
+                                </NavLink>
+                              )}
+                            </>
                           )}
-
-                        {/* <NavLink
-                          key={121}
-                          to={"/active/hotspot/customer"}
-                          className={(navInfo) =>
-                            navInfo.isActive ? activeClass.active : ""
-                          }
-                        >
-                          <FontColor>
-                            <li
-                              className="sidebarItems"
-                              id={
-                                window.location.pathname ===
-                                "/active/hotspot/customer"
-                                  ? "active"
-                                  : ""
-                              }
-                            >
-                              <div className="sidebarIcon">{<People />}</div>
-                              <span className="sidebarLinksName">
-                                {t("activeHotspot")}
-                              </span>
-                            </li>
-                          </FontColor>
-                        </NavLink> */}
 
                         <NavLink
                           key={126}

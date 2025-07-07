@@ -222,19 +222,19 @@ export const getHotspotActiveCustomer = async (
   dispatch,
   ispOwnerId,
   mikrotikId,
-  setHotspotActiveLoading
+  setIsLoading
 ) => {
-  setHotspotActiveLoading(false);
+  setIsLoading(true);
   try {
     const res = await apiLink.get(
       `hotspot/active-users/${ispOwnerId}/${mikrotikId}`
     );
-    console.log(res.data);
-    dispatch(getHotspotActiveCustomerSuccess(res.data.hotspotCustomer));
-  } catch (err) {
-    console.log(err.response?.data);
-    toast.error(err.response?.data?.message);
+
+    dispatch(getHotspotActiveCustomerSuccess(res.data?.data));
+  } catch (error) {
+    toast.error(error.message);
   }
+  setIsLoading(false);
 };
 
 // get hotspot package

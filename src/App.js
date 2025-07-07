@@ -86,7 +86,6 @@ import AllResellerCustomer from "./pages/reseller/resellerCustomer/ResellerAllCu
 import MessageLog from "./pages/messageLog/MessageLog";
 import CustomerSupportTicket from "./pages/supportTicket/SupportTicket";
 import CollectorSupportTicket from "./pages/supportTicket/CollectorSupportTicket";
-import ActiveHotspotCustomer from "./pages/hotspot/activeHotspotCustomer/ActiveHotspotCustomer";
 import Summary from "./reseller/summary/Summary";
 import { getUserApi } from "./features/actions/authAsyncAction";
 import ResellerSummary from "./pages/reseller/resellerSummary/ResellerSummary";
@@ -130,6 +129,7 @@ import CronLog from "./admin/Home/cronLog/CronLog";
 import AdminActivityLog from "./admin/activityLog/AdminActivityLog";
 import HotspotExecute from "./pages/execute/HotspotExecute";
 import HotspotSuccess from "./pages/success/HotspotSuccess";
+import HotspotActiveCustomer from "./pages/hotspot/HotspotActiveCustomer";
 
 function App() {
   const [theme, setTheme] = useState("light");
@@ -574,12 +574,11 @@ function App() {
               }
             />
 
-            {/* Hotspot Customer  */}
             <Route
-              path="/active/hotspot/customer"
+              path="/hotspot/active/customer"
               element={
                 userRole === "ispOwner" ? (
-                  <ActiveHotspotCustomer />
+                  <HotspotActiveCustomer />
                 ) : (
                   <Navigate to={"/home"} />
                 )

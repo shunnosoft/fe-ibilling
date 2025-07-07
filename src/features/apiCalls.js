@@ -1433,7 +1433,7 @@ export const editCustomer = async (
   dispatch,
   data,
   setIsloading,
-  setShow,
+  setShow = null,
   status
 ) => {
   const { singleCustomerID, ispOwner, ...sendingData } = data;
@@ -1468,7 +1468,9 @@ export const editCustomer = async (
         "Customer Updated Successfully"
       );
     }
-    setShow(false);
+    if (typeof setShow === "function") {
+      setShow(false);
+    }
   } catch (error) {
     toast.error(error.message);
   }

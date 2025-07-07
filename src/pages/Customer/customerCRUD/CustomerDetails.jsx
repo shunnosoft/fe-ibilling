@@ -456,6 +456,7 @@ const CustomerDetails = ({ show, setShow, customerId }) => {
                             <p>{t("autoConnection")}</p>
                             <div className="form-check form-switch">
                               <input
+                                style={{ cursor: "pointer" }}
                                 className="form-check-input"
                                 type="checkbox"
                                 role="switch"
