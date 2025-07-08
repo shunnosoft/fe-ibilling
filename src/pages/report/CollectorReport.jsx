@@ -21,8 +21,9 @@ import {
 } from "react-bootstrap-icons";
 import Loader from "../../components/common/Loader";
 import ReactToPrint from "react-to-print";
-import { Accordion } from "react-bootstrap";
+import { Accordion, Badge } from "react-bootstrap";
 import PrintReport from "../../reseller/report/CollectorReportPDF";
+import { badge } from "../../components/common/Utils";
 
 export default function CollectorReport() {
   const { t } = useTranslation();
@@ -201,37 +202,77 @@ export default function CollectorReport() {
   const columns = React.useMemo(
     () => [
       {
-        width: "10%",
+        width: "6%",
         Header: t("id"),
         accessor: (field) =>
           field?.hotspotCustomer
             ? field?.hotspotCustomer?.customerId
             : field?.customer?.customerId,
-      },
-      {
-        width: "15%",
-        Header: t("name"),
-        accessor: (field) =>
-          field?.hotspotCustomer
-            ? field?.hotspotCustomer?.name
-            : field?.customer?.name,
+        Cell: ({ row: { original } }) => (
+          <div>
+            <p className="text-center">
+              {original?.hotspotCustomer
+                ? original?.hotspotCustomer?.customerId
+                : original?.customer?.customerId}
+            </p>
+            <Badge
+              bg={
+                original.customer?.userType === "pppoe"
+                  ? "primary"
+                  : original.customer?.userType === "static"
+                  ? "info"
+                  : "secondary"
+              }
+            >
+              {original.customer?.userType === "pppoe"
+                ? "PPPoE"
+                : original.customer?.userType === "static"
+                ? "Static"
+                : "Hotspot"}
+            </Badge>
+          </div>
+        ),
       },
       {
         width: "15%",
         Header: t("pppoeIp"),
         accessor: (field) =>
-          field?.customer?.userType === "pppoe"
-            ? field.customer?.name
-            : field.customer?.userType === "firewall-queue"
-            ? field.customer?.address
-            : field.customer?.userType === "core-queue"
-            ? field.customer?.srcAddress
-            : field.customer?.userType === "simple-queue"
-            ? field.customer.queue?.target
-            : field?.hotspotCustomer?.hotspot.name,
+          `${
+            field?.hotspotCustomer
+              ? field?.hotspotCustomer?.name
+              : field?.customer?.name
+          } ${
+            field.customer?.userType === "pppoe"
+              ? field.customer?.pppoe?.name
+              : field.customer?.userType === "static"
+              ? field.customer?.queue?.target
+              : field?.hotspotCustomer?.hotspot?.name
+          }`,
+        Cell: ({ row: { original } }) => {
+          const customer = original?.customer;
+          const hotspotCustomer = original?.hotspotCustomer;
+
+          const name = hotspotCustomer?.name || customer?.name;
+
+          let addressInfo = "";
+          if (customer?.userType === "pppoe") {
+            addressInfo = customer?.pppoe?.name;
+          } else if (customer?.userType === "static") {
+            addressInfo = customer?.queue?.target;
+          } else {
+            addressInfo = hotspotCustomer?.hotspot?.name;
+          }
+
+          return (
+            <div>
+              <p>{name}</p>
+              <p>{addressInfo}</p>
+            </div>
+          );
+        },
       },
       {
-        width: "15%",
+        width: "10%",
         Header: t("package"),
         accessor: (field) =>
           field.customer?.mikrotikPackage?.name
@@ -241,19 +282,62 @@ export default function CollectorReport() {
             : field?.hotspotCustomer?.hotspot.profile,
       },
       {
-        width: "12%",
-        Header: t("medium"),
-        accessor: "medium",
-      },
-      {
-        width: "12%",
+        width: "10%",
         Header: t("amount"),
         accessor: "amount",
       },
       {
+        width: "10%",
+        Header: t("due"),
+        accessor: "due",
+      },
+      {
+        width: "10%",
+        Header: t("TypeMedium"),
+        accessor: (field) => `${field?.billingType} ${field?.medium}`,
+        Cell: ({ row: { original } }) => {
+          return (
+            <div>
+              <p style={{ fontWeight: "500" }}>{original?.medium}</p>
+              <p>{badge(original?.billingType)}</p>
+            </div>
+          );
+        },
+      },
+      {
         width: "8%",
         Header: t("note"),
-        accessor: "note",
+        accessor: (data) => {
+          return {
+            id: data._id,
+            note: data.note,
+            start: data.start,
+            end: data.end,
+            month: data.month,
+          };
+        },
+        Cell: ({ cell: { value } }) => {
+          return (
+            <>
+              <p>
+                {value.note && value.note.slice(0, 15)}{" "}
+                <span>{value?.note && value?.note?.length > 15 && "..."}</span>
+              </p>
+              {value?.start && value?.end && (
+                <span className="badge bg-secondary">
+                  {moment(value.start).format("YYYY/MM/DD")}
+                  {moment(value.end).format("YYYY/MM/DD")}
+                </span>
+              )}
+              <p>
+                {value?.month && value.month.slice(0, 15)}{" "}
+                <span>
+                  {value?.month && value?.month?.length > 15 && "..."}
+                </span>
+              </p>
+            </>
+          );
+        },
       },
       {
         width: "12%",

@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import moment from "moment";
-import { Accordion } from "react-bootstrap";
+import { Accordion, Badge } from "react-bootstrap";
 import { CSVLink } from "react-csv";
 import { GeoAlt, Person, Phone } from "react-bootstrap-icons";
 
@@ -202,18 +202,16 @@ const DueCustomer = ({
         width: "6%",
         Header: t("id"),
         accessor: "customerId",
-      },
-      {
-        width: "5%",
-        Header: t("type"),
-        accessor: "userType",
         Cell: ({ row: { original } }) => (
           <div>
-            {original?.userType === "pppoe"
-              ? "PPPoE"
-              : original?.userType === "hotspot"
-              ? "Hotspot"
-              : "Static"}
+            <p className="text-center">{original?.customerId}</p>
+            <Badge bg="primary">
+              {original?.userType === "pppoe"
+                ? "PPPoE"
+                : original?.userType === "hotspot"
+                ? "Hotspot"
+                : "Static"}
+            </Badge>
           </div>
         ),
       },

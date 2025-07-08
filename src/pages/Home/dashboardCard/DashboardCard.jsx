@@ -257,6 +257,18 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
                       </span>
                     )}
                   </div>
+                  <p class="m-b-0">
+                    {t("newCustomer")}
+                    <span class="f-right">
+                      {FormatNumber(dashboardCard.newCustomerExpired)}
+                      {userHandle && (
+                        <span>
+                          / ৳
+                          {FormatNumber(dashboardCard.newCustomerExpiredAmount)}
+                        </span>
+                      )}
+                    </span>
+                  </p>
                 </div>
               </div>
             </div>
@@ -282,6 +294,20 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
                       </span>
                     )}
                   </div>
+                  <p class="m-b-0">
+                    {t("newCustomer")}
+                    <span class="f-right">
+                      {FormatNumber(dashboardCard.newCustomerInactive)}
+                      {userHandle && (
+                        <span>
+                          / ৳
+                          {FormatNumber(
+                            dashboardCard.newCustomerInactiveAmount
+                          )}
+                        </span>
+                      )}
+                    </span>
+                  </p>
                 </div>
               </div>
             </div>

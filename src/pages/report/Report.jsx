@@ -18,7 +18,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { CSVLink } from "react-csv";
 import DatePicker from "react-datepicker";
-import { Accordion, Card, Collapse } from "react-bootstrap";
+import { Accordion, Badge, Card, Collapse } from "react-bootstrap";
 
 // custom hooks import
 import useISPowner from "../../hooks/useISPOwner";
@@ -351,12 +351,36 @@ const Report = () => {
   const columns = useMemo(
     () => [
       {
-        width: "7%",
+        width: "6%",
         Header: t("id"),
         accessor: (field) =>
           field?.hotspotCustomer
             ? field?.hotspotCustomer?.customerId
             : field?.customer?.customerId,
+        Cell: ({ row: { original } }) => (
+          <div>
+            <p className="text-center">
+              {original?.hotspotCustomer
+                ? original?.hotspotCustomer?.customerId
+                : original?.customer?.customerId}
+            </p>
+            <Badge
+              bg={
+                original.customer?.userType === "pppoe"
+                  ? "primary"
+                  : original.customer?.userType === "static"
+                  ? "info"
+                  : "secondary"
+              }
+            >
+              {original.customer?.userType === "pppoe"
+                ? "PPPoE"
+                : original.customer?.userType === "static"
+                ? "Static"
+                : "Hotspot"}
+            </Badge>
+          </div>
+        ),
       },
       {
         width: "15%",
@@ -437,8 +461,8 @@ const Report = () => {
         Cell: ({ row: { original } }) => {
           return (
             <div>
-              <p>{badge(original?.billingType)}</p>
               <p style={{ fontWeight: "500" }}>{original?.medium}</p>
+              <p>{badge(original?.billingType)}</p>
             </div>
           );
         },

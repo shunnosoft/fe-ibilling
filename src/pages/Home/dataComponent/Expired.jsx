@@ -50,6 +50,11 @@ const Expired = ({
     (state) => state.dashboardInformation?.expiredCustomer
   );
 
+  // current Date
+  let today = new Date();
+  let firstDate = new Date(today.getFullYear(), today.getMonth(), 1);
+  let lastDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+
   // is Loading state
   const [isLoading, setIsLoading] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -157,6 +162,14 @@ const Expired = ({
                 : original?.userType === "static"
                 ? original?.queue.target
                 : original?.hotspot.name}
+              <span className="ms-1">
+                {firstDate <= new Date(original?.createdAt) &&
+                  lastDate >= new Date(original?.createdAt) && (
+                    <small className="new_badge badge bg-secondary">
+                      {"new"}
+                    </small>
+                  )}
+              </span>
             </p>
           </div>
         ),

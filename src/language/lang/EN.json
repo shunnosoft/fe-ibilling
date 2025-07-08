@@ -1049,7 +1049,7 @@
   "billingType": "Billing Type",
   "daily": "Daily",
   "packageBill": "Package/Bill",
-  "TypeMedium": "Type/Medium",
+  "TypeMedium": "Medium/Type",
   "user": "User",
   "dataLimit": "Data Limit",
   "rateLimit": "Rate Limit",

@@ -483,10 +483,7 @@ export default function Sidebar() {
                             )}
                           </>
                         )}
-                        {(role === "ispOwner" ||
-                          role === "manager" ||
-                          (role === "collector" &&
-                            !currentUser.collector?.reseller)) &&
+                        {role === "ispOwner" &&
                           bpSettings?.hasMikrotik &&
                           hasCustomerType.includes("hotspot") && (
                             <>
