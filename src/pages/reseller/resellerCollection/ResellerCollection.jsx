@@ -1,5 +1,11 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Accordion, Card, Collapse, ToastContainer } from "react-bootstrap";
+import {
+  Accordion,
+  Badge,
+  Card,
+  Collapse,
+  ToastContainer,
+} from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
@@ -221,32 +227,85 @@ const ResellerCollection = () => {
   const columns = useMemo(
     () => [
       {
-        width: "5%",
+        width: "6%",
         Header: t("id"),
-        accessor: "customer.customerId",
-      },
-      {
-        width: "7%",
-        Header: t("PPIPHp"),
-        accessor: "customer.name",
-      },
-      {
-        width: "8%",
-        Header: t("package"),
-        accessor: "customer.mikrotikPackage",
-        Cell: ({ cell: { value } }) => (
-          <div>{currentData && getCustomerPackage(value)?.name}</div>
+        accessor: (field) =>
+          field?.hotspotCustomer
+            ? field?.hotspotCustomer?.customerId
+            : field?.customer?.customerId,
+        Cell: ({ row: { original } }) => (
+          <div>
+            <p className="text-center">
+              {original?.hotspotCustomer
+                ? original?.hotspotCustomer?.customerId
+                : original?.customer?.customerId}
+            </p>
+            <Badge
+              bg={
+                original.customer?.userType === "pppoe"
+                  ? "primary"
+                  : original.customer?.userType === "static"
+                  ? "info"
+                  : "secondary"
+              }
+            >
+              {original.customer?.userType === "pppoe"
+                ? "PPPoE"
+                : original.customer?.userType === "static"
+                ? "Static"
+                : original.customer?.userType === "hotspot"
+                ? "Hotspot"
+                : ""}
+            </Badge>
+          </div>
         ),
       },
       {
-        width: "8%",
-        Header: t("bill"),
-        accessor: "amount",
+        width: "15%",
+        Header: t("pppoeIp"),
+        accessor: (data) =>
+          `${data.customer?.name} ${data.customer?.pppoe?.name} ${data.customer?.queue?.target} ${data.hotspotCustomer?.hotspot?.name}`,
+        Cell: ({ row: { original } }) => (
+          <div>
+            <p>{original.customer?.name}</p>
+            <p>
+              {original.customer?.userType === "pppoe"
+                ? original.customer?.pppoe.name
+                : original.customer?.userType === "static"
+                ? original.customer?.queue.target
+                : original.hotspotCustomer?.hotspot.name}
+            </p>
+          </div>
+        ),
+      },
+      {
+        width: "10%",
+        Header: t("packageBill"),
+        accessor: (field) =>
+          field.customer?.mikrotikPackage?.name
+            ? field.customer?.mikrotikPackage?.name
+            : field.customer?.userType === "pppoe"
+            ? field.customer?.pppoe?.profile
+            : field?.hotspotCustomer?.hotspot.profile,
+        Cell: ({ row: { original } }) => {
+          return (
+            <div>
+              <p>
+                {original.customer?.mikrotikPackage?.name
+                  ? original.customer?.mikrotikPackage?.name
+                  : original.customer?.userType === "pppoe"
+                  ? original.customer?.pppoe?.profile
+                  : original?.hotspotCustomer?.hotspot.profile}
+              </p>
+              <p style={{ fontWeight: "500" }}>৳{original?.amount}</p>
+            </div>
+          );
+        },
       },
       {
         width: "8%",
-        Header: t("discount"),
-        accessor: "discount",
+        Header: t("due"),
+        accessor: "due",
       },
       {
         width: "10%",
@@ -255,33 +314,43 @@ const ResellerCollection = () => {
         Cell: ({ row: { original } }) => {
           return (
             <div>
-              <p>{badge(original?.billingType)}</p>
               <p style={{ fontWeight: "500" }}>{original?.medium}</p>
+              <p>{badge(original?.billingType)}</p>
             </div>
           );
         },
       },
       {
         width: "8%",
-        Header: t("collector"),
+        Header: t("collected"),
         accessor: "name",
       },
+      {
+        width: "10%",
+        Header: t("otherCommission"),
+        Cell: ({ row: { original } }) => (
+          <div>
+            <p>
+              {t("own")} &nbsp;
+              <span style={{ fontWeight: "500" }}>
+                ৳
+                {
+                  adminResellerCommission(reseller, original)
+                    ?.ispOwnerCommission
+                }
+              </span>
+            </p>
 
-      {
-        width: "10%",
-        Header: t("admin"),
-        Cell: ({ row: { original } }) => (
-          <div>
-            {adminResellerCommission(reseller, original)?.ispOwnerCommission}
-          </div>
-        ),
-      },
-      {
-        width: "10%",
-        Header: t("reseller"),
-        Cell: ({ row: { original } }) => (
-          <div>
-            {adminResellerCommission(reseller, original)?.resellerCommission}
+            <p>
+              {t("reseller")} &nbsp;
+              <span style={{ fontWeight: "500" }}>
+                ৳
+                {
+                  adminResellerCommission(reseller, original)
+                    ?.resellerCommission
+                }
+              </span>
+            </p>
           </div>
         ),
       },
@@ -316,7 +385,7 @@ const ResellerCollection = () => {
                   {value?.month && value?.month?.length > 15 && "..."}
                 </span>
               </p>
-              <span
+              {/* <span
                 className="see_more"
                 data-bs-toggle="modal"
                 data-bs-target="#reportView"
@@ -325,7 +394,7 @@ const ResellerCollection = () => {
                 }}
               >
                 ...See More
-              </span>
+              </span> */}
             </>
           );
         },
@@ -339,41 +408,41 @@ const ResellerCollection = () => {
           return moment(value).format("YYYY/MM/DD hh:mm a");
         },
       },
-      {
-        width: "6%",
-        Header: () => <div className="text-center">{t("action")}</div>,
-        id: "option",
+      // {
+      //   width: "6%",
+      //   Header: () => <div className="text-center">{t("action")}</div>,
+      //   id: "option",
 
-        Cell: ({ row: { original } }) => (
-          <div className="d-flex justify-content-center align-items-center">
-            <div className="dropdown">
-              <ThreeDots
-                className="dropdown-toggle ActionDots"
-                id="areaDropdown"
-                type="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              />
-              <ul className="dropdown-menu" aria-labelledby="customerDrop">
-                <li
-                  data-bs-toggle="modal"
-                  data-bs-target="#reportEditModal"
-                  onClick={() => {
-                    getReportId(original?.id);
-                  }}
-                >
-                  <div className="dropdown-item">
-                    <div className="customerAction">
-                      <PenFill />
-                      <p className="actionP">{t("edit")}</p>
-                    </div>
-                  </div>
-                </li>
-              </ul>
-            </div>
-          </div>
-        ),
-      },
+      //   Cell: ({ row: { original } }) => (
+      //     <div className="d-flex justify-content-center align-items-center">
+      //       <div className="dropdown">
+      //         <ThreeDots
+      //           className="dropdown-toggle ActionDots"
+      //           id="areaDropdown"
+      //           type="button"
+      //           data-bs-toggle="dropdown"
+      //           aria-expanded="false"
+      //         />
+      //         <ul className="dropdown-menu" aria-labelledby="customerDrop">
+      //           <li
+      //             data-bs-toggle="modal"
+      //             data-bs-target="#reportEditModal"
+      //             onClick={() => {
+      //               getReportId(original?.id);
+      //             }}
+      //           >
+      //             <div className="dropdown-item">
+      //               <div className="customerAction">
+      //                 <PenFill />
+      //                 <p className="actionP">{t("edit")}</p>
+      //               </div>
+      //             </div>
+      //           </li>
+      //         </ul>
+      //       </div>
+      //     </div>
+      //   ),
+      // },
     ],
     [t, allPackages]
   );
