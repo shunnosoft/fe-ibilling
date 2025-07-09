@@ -8,6 +8,7 @@ const addClass = {
 
   monthly: "primary",
   daily: "info",
+  hotspot: "secondary",
 
   new: "info",
   prepaid: "info",

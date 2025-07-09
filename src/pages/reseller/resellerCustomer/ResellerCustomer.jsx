@@ -325,46 +325,46 @@ const ResellerCustomer = () => {
         accessor: "customerId",
         Cell: ({ row: { original } }) => (
           <div>
-            {original?.autoDisable ? (
-              <p className="text-success">{original?.customerId}</p>
-            ) : (
-              <p className="text-danger">{original?.customerId}</p>
-            )}
+            <p
+              className={`text-center ${
+                original?.autoDisable ? "text-success" : "text-danger"
+              }`}
+            >
+              {original?.customerId}
+            </p>
+            <Badge
+              bg={
+                original?.userType === "pppoe"
+                  ? "primary"
+                  : original?.userType === "static"
+                  ? "info"
+                  : "secondary"
+              }
+            >
+              {original?.userType === "pppoe"
+                ? "PPPoE"
+                : original?.userType === "static"
+                ? "Static"
+                : "Hotspot"}
+            </Badge>
           </div>
         ),
       },
       {
-        width: "5%",
-        Header: t("type"),
-        accessor: "userType",
-        Cell: ({ row: { original } }) => (
-          <Badge bg="info">
-            {original?.userType === "pppoe"
-              ? "PPPoE"
-              : original?.userType === "hotspot"
-              ? "Hotspot"
-              : "Static"}
-          </Badge>
-        ),
-      },
-      {
-        width: "12%",
-        Header: t("namePPPoE"),
-        accessor: (
-          data
-        ) => `${data?.name} ${data.pppoe?.name} ${data.queue?.address}
-         ${data.queue?.srcAddress} ${data.queue?.target}`,
+        width: "15%",
+        Header: t("pppoeIp"),
+        accessor: (data) =>
+          `${data?.name} ${data.pppoe?.name} ${data.queue?.address}
+           ${data.queue?.srcAddress} ${data.queue?.target} ${data.hotspot?.name}`,
         Cell: ({ row: { original } }) => (
           <div>
             <p>{original?.name}</p>
             <p>
               {original?.userType === "pppoe"
                 ? original?.pppoe.name
-                : original?.userType === "firewall-queue"
-                ? original?.queue.address
-                : original?.userType === "core-queue"
-                ? original?.queue.srcAddress
-                : original?.queue.target}
+                : original?.userType === "static"
+                ? original?.queue.target
+                : original?.hotspot.name}
             </p>
           </div>
         ),
@@ -410,7 +410,7 @@ const ResellerCustomer = () => {
         ),
       },
       {
-        width: "18%",
+        width: "16%",
         Header: t("billPromise"),
         accessor: (data) =>
           `${moment(data?.billingCycle).format("YYYY/MM/DD hh:mm A")} 

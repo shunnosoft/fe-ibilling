@@ -363,16 +363,33 @@ const AllResellerCustomer = () => {
         width: "2%",
       },
       {
-        width: "5%",
+        width: "6%",
         Header: t("id"),
         accessor: "customerId",
         Cell: ({ row: { original } }) => (
           <div>
-            {original?.autoDisable ? (
-              <p className="text-success">{original?.customerId}</p>
-            ) : (
-              <p className="text-danger">{original?.customerId}</p>
-            )}
+            <p
+              className={`text-center ${
+                original?.autoDisable ? "text-success" : "text-danger"
+              }`}
+            >
+              {original?.customerId}
+            </p>
+            <Badge
+              bg={
+                original?.userType === "pppoe"
+                  ? "primary"
+                  : original?.userType === "static"
+                  ? "info"
+                  : "secondary"
+              }
+            >
+              {original?.userType === "pppoe"
+                ? "PPPoE"
+                : original?.userType === "static"
+                ? "Static"
+                : "Hotspot"}
+            </Badge>
           </div>
         ),
       },
@@ -382,27 +399,26 @@ const AllResellerCustomer = () => {
         width: "6%",
       },
       {
-        width: "12%",
-        Header: t("nameType"),
-        accessor: (
-          data
-        ) => `${data?.name} ${data.pppoe?.name} ${data.queue?.address}
-         ${data.queue?.srcAddress} ${data.queue?.target}`,
+        width: "15%",
+        Header: t("pppoeIp"),
+        accessor: (data) =>
+          `${data?.name} ${data.pppoe?.name} ${data.queue?.address}
+           ${data.queue?.srcAddress} ${data.queue?.target} ${data.hotspot?.name}`,
         Cell: ({ row: { original } }) => (
           <div>
             <p>{original?.name}</p>
-            <Badge bg="info">
+            <p>
               {original?.userType === "pppoe"
-                ? "PPPoE"
-                : original?.userType === "hotspot"
-                ? "Hotspot"
-                : "Static"}
-            </Badge>
+                ? original?.pppoe.name
+                : original?.userType === "static"
+                ? original?.queue.target
+                : original?.hotspot.name}
+            </p>
           </div>
         ),
       },
       {
-        width: "18%",
+        width: "15%",
         Header: t("mobileAddress"),
         accessor: (data) => `${data?.mobile} ${data?.address}`,
         Cell: ({ row: { original } }) => (
@@ -442,7 +458,7 @@ const AllResellerCustomer = () => {
         ),
       },
       {
-        width: "18%",
+        width: "16%",
         Header: t("billPromise"),
         accessor: (data) =>
           `${moment(data?.billingCycle).format("YYYY/MM/DD hh:mm A")} 
