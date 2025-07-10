@@ -16,7 +16,7 @@ export default function HotspotSuccess() {
         setCountdown((prev) => {
           if (prev <= 1) {
             clearInterval(intervalId);
-            window.location.href = `http://ibnul.net/login?username=${userName}&password=${password}`;
+            window.location.href = `http://wifi.login/login?username=${userName}&password=${password}`;
             return 0;
           }
           return prev - 1;

@@ -377,7 +377,7 @@ const Report = () => {
                 ? "PPPoE"
                 : original.customer?.userType === "static"
                 ? "Static"
-                : original.customer?.userType === "hotspot"
+                : original.hotspotCustomer?.userType === "hotspot"
                 ? "Hotspot"
                 : ""}
             </Badge>

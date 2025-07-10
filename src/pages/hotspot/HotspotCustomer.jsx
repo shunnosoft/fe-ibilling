@@ -225,8 +225,6 @@ const HotspotCustomer = () => {
       // make possible conditions objects if the filter value not selected thats return true
       //if filter value exist then compare
       const conditions = {
-        area: area ? getSubarea.some((val) => val.id === c.subArea) : true,
-        subArea: subArea ? subArea === c.subArea : true,
         status: status ? status === c.status : true,
         paymentStatus: paymentStatus ? paymentStatus === c.paymentStatus : true,
         mikrotik: mikrotik ? mikrotik === c.mikrotik : true,
@@ -288,38 +286,34 @@ const HotspotCustomer = () => {
   const filterInputs = [
     {
       type: "select",
-      name: "area",
-      id: "area",
-      value: filterOptions.area,
-      isVisible: true,
+      name: "mikrotik",
+      id: "mikrotik",
+      value: filterOptions.mikrotik,
+      isVisible: bpSettings?.hasMikrotik,
       disable: false,
-      options: areas,
+      options: mikrotiks,
       onChange: (e) => {
-        setAreaId(e.target.value);
-        setFilterOptions({
-          ...filterOptions,
-          area: e.target.value,
-        });
+        mikrotikHandler(e.target.value);
       },
-      firstOption: t("allArea"),
+      firstOption: t("mikrotik"),
       textAccessor: "name",
       valueAccessor: "id",
     },
     {
       type: "select",
-      name: "subarea",
-      id: "subarea",
-      value: filterOptions.subArea,
+      name: "package",
+      id: "package",
+      value: filterOptions.package,
       isVisible: true,
       disable: false,
-      options: subAreas.filter((item) => item?.area === areaId),
+      options: filterPackage,
       onChange: (e) => {
         setFilterOptions({
           ...filterOptions,
-          subArea: e.target.value,
+          package: e.target.value,
         });
       },
-      firstOption: t("subArea"),
+      firstOption: t("package"),
       textAccessor: "name",
       valueAccessor: "id",
     },
@@ -365,39 +359,6 @@ const HotspotCustomer = () => {
       firstOption: t("paymentStatus"),
       textAccessor: "text",
       valueAccessor: "value",
-    },
-    {
-      type: "select",
-      name: "mikrotik",
-      id: "mikrotik",
-      value: filterOptions.mikrotik,
-      isVisible: bpSettings?.hasMikrotik,
-      disable: false,
-      options: mikrotiks,
-      onChange: (e) => {
-        mikrotikHandler(e.target.value);
-      },
-      firstOption: t("mikrotik"),
-      textAccessor: "name",
-      valueAccessor: "id",
-    },
-    {
-      type: "select",
-      name: "package",
-      id: "package",
-      value: filterOptions.package,
-      isVisible: true,
-      disable: false,
-      options: filterPackage,
-      onChange: (e) => {
-        setFilterOptions({
-          ...filterOptions,
-          package: e.target.value,
-        });
-      },
-      firstOption: t("package"),
-      textAccessor: "name",
-      valueAccessor: "id",
     },
   ];
 
@@ -558,46 +519,22 @@ const HotspotCustomer = () => {
         ),
       },
       {
-        width: "18%",
-        Header: t("mobileAddress"),
-        accessor: (data) => `${data?.mobile} ${data?.address}`,
-        Cell: ({ row: { original } }) => (
-          <div>
-            <p style={{ fontWeight: "500" }}>
-              <Phone className="text-info" />
-              {original?.mobile}
-            </p>
-            <p>
-              <GeoAlt />
-              {original?.address || "N/A"}
-            </p>
-          </div>
-        ),
+        width: "10%",
+        Header: t("mobile"),
+        accessor: "mobile",
       },
       {
-        width: "13%",
+        width: "16%",
         Header: t("package"),
         accessor: "hotspot.profile",
       },
       {
-        width: "11%",
-        Header: t("billBalance"),
-        accessor: (data) => `${data?.monthlyFee} ${data?.balance}`,
-        Cell: ({ row: { original } }) => (
-          <div style={{ fontWeight: "500" }}>
-            <p>৳{original?.monthlyFee}</p>
-            <p
-              className={`text-${
-                original?.balance > -1 ? "success" : "danger"
-              }`}
-            >
-              ৳{original?.balance}
-            </p>
-          </div>
-        ),
+        width: "10%",
+        Header: t("bill"),
+        accessor: "monthlyFee",
       },
       {
-        width: "18%",
+        width: "16%",
         Header: t("billDate"),
         accessor: "billingCycle",
         Cell: ({ cell: { value } }) => {

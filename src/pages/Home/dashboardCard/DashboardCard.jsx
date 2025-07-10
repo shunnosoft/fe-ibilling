@@ -42,6 +42,7 @@ import Discount from "../dataComponent/Discount";
 import AllCollector from "../dataComponent/AllCollector";
 import Reseller from "../dataComponent/Reseller";
 import AllManager from "../dataComponent/AllManager";
+import OnlinePaid from "../dataComponent/OnlinePaid";
 
 const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
   const { t } = useTranslation();
@@ -393,7 +394,12 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
                         <p className="card_Icon">
                           <Phone />
                         </p>
-                        <h2>
+                        <h2
+                          className={adminUser && "clickable"}
+                          onClick={() =>
+                            adminUser && modlaClickHandler("onlinePaid")
+                          }
+                        >
                           {FormatNumber(
                             dashboardCard.onlinePaymentCustomerCount
                           )}
@@ -1423,6 +1429,19 @@ const DashboardCard = ({ dashboardCard, isLoading, filterDate, cardRole }) => {
           month={filterDate.getMonth() + 1}
         />
       )}
+
+      {/* Online paid customer modal */}
+      {status === "onlinePaid" && (
+        <OnlinePaid
+          status={status}
+          modalShow={show}
+          setModalShow={setShow}
+          ispOwnerId={ispOwnerId}
+          year={filterDate.getFullYear()}
+          month={filterDate.getMonth() + 1}
+        />
+      )}
+
       {status === "discount" && (
         <Discount
           status={status}

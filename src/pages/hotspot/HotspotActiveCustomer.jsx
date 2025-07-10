@@ -10,13 +10,18 @@ import useISPowner from "../../hooks/useISPOwner";
 import { useDispatch, useSelector } from "react-redux";
 import { getHotspotActiveCustomer } from "../../features/hotspotApi";
 import useSelectorState from "../../hooks/useSelectorState";
-import { fetchMikrotik } from "../../features/apiCalls";
+import {
+  fetchMikrotik,
+  hotspotMACBinding,
+  hotspotMACBindingRemove,
+} from "../../features/apiCalls";
 import { badge } from "../../components/common/Utils";
 import {
   ArrowBarLeft,
   ArrowBarRight,
   ArrowClockwise,
   FilterCircle,
+  Router,
   Server,
   ThreeDots,
   Wifi,
@@ -92,6 +97,14 @@ const HotspotActiveCustomer = () => {
     setBandWidthModal(true);
   };
 
+  const activeUserMACBinding = (customerId) => {
+    hotspotMACBinding(customerId);
+  };
+
+  const activeUserMACBindingRemove = (customerId) => {
+    hotspotMACBindingRemove(customerId);
+  };
+
   const columns = useMemo(
     () => [
       {
@@ -142,7 +155,10 @@ const HotspotActiveCustomer = () => {
             >
               {original?.address}
             </p>
-            <p>{original?.macAddress}</p>
+
+            <p className={`text-${original?.macBinding && "success fw-bold"}`}>
+              {original?.macAddress}
+            </p>
           </div>
         ),
       },
@@ -260,14 +276,13 @@ const HotspotActiveCustomer = () => {
                     </li>
                   )}
 
-                  {/* {(role === "ispOwner" || role === "manager") &&
-                    bpSettings?.hasMikrotik &&
-                    original?.running && (
+                  {(role === "ispOwner" || role === "manager") &&
+                    bpSettings?.hasMikrotik && (
                       <li>
                         {!original?.macBinding ? (
                           <div
                             className="dropdown-item"
-                            onClick={() => macBindingCall(original.id)}
+                            onClick={() => activeUserMACBinding(original.id)}
                           >
                             <div className="customerAction">
                               <Router />
@@ -277,7 +292,9 @@ const HotspotActiveCustomer = () => {
                         ) : (
                           <div
                             className="dropdown-item"
-                            onClick={() => macBindingRemove(original.id)}
+                            onClick={() =>
+                              activeUserMACBindingRemove(original.id)
+                            }
                           >
                             <div className="customerAction">
                               <Router />
@@ -286,7 +303,7 @@ const HotspotActiveCustomer = () => {
                           </div>
                         )}
                       </li>
-                    )} */}
+                    )}
                 </ul>
               </div>
             </div>

@@ -762,6 +762,26 @@ export const getPaidCustomer = async (
   setIsLoading(false);
 };
 
+export const getOnlinePaidCustomer = async (
+  dispatch,
+  ispOwnerId,
+  year,
+  month,
+  setIsLoading
+) => {
+  setIsLoading(true);
+  try {
+    const res = await apiLink.get(
+      `ispOwner/online/paid/customer/${ispOwnerId}?month=${month}&year=${year}`
+    );
+    dispatch(getPaidCustomerSuccess(res.data));
+  } catch (error) {
+    console.log(error.response.data.message);
+  }
+
+  setIsLoading(false);
+};
+
 // get unpaid customer
 export const getUnpaidCustomer = async (
   dispatch,
@@ -4186,6 +4206,24 @@ export const staticMACBinding = async (customerId) => {
   try {
     await apiLink.patch(`mikrotik/static/mac/binding/${customerId}`);
     toast.success("Customer MAC-Binding Add Successful");
+  } catch (error) {
+    toast.error(error.response?.data?.message);
+  }
+};
+
+export const hotspotMACBinding = async (customerId) => {
+  try {
+    await apiLink.patch(`mikrotik/hotspot/mac/binding/${customerId}`);
+    toast.success("Customer MAC-Binding Add Successful");
+  } catch (error) {
+    toast.error(error.response?.data?.message);
+  }
+};
+
+export const hotspotMACBindingRemove = async (customerId) => {
+  try {
+    await apiLink.patch(`mikrotik/hotspot/remove/mac/binding/${customerId}`);
+    toast.success("Customer MAC-Binding Successful Remove");
   } catch (error) {
     toast.error(error.response?.data?.message);
   }
