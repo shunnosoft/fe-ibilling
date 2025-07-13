@@ -86,6 +86,7 @@ const addClass = {
 
   resellerBilling: "info",
   invoice: "success",
+  account: "success",
 };
 
 export const badge = (item) => {

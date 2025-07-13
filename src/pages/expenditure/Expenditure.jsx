@@ -30,6 +30,7 @@ import { FourGround, FontColor } from "../../assets/js/theme";
 import Footer from "../../components/admin/footer/Footer";
 import {
   deleteExpenditure,
+  deleteExpenditurePurpose,
   getAllExpenditure,
   getExpenditureSectors,
 } from "../../features/apiCalls";
@@ -57,7 +58,7 @@ const Expenditure = () => {
   today.setHours(23, 59, 59, 999);
 
   // get user & current user data form useISPOwner hooks
-  const { role, ispOwnerId, userData, bpSettings } = useISPowner();
+  const { role, ispOwnerId, userData, bpSettings, permissions } = useISPowner();
 
   // get owner users from redux store
   const ownerUsers = useSelector((state) => state?.ownerUsers?.ownerUser);
@@ -132,6 +133,13 @@ const Expenditure = () => {
     const confirm = window.confirm(t("areYouSureWantToDelete"));
     if (confirm) {
       deleteExpenditure(dispatch, expenditureId);
+    }
+  };
+
+  const deleteExpenditurePurposeHandler = (purposeId) => {
+    const confirm = window.confirm(t("areYouSureWantToDelete"));
+    if (confirm) {
+      deleteExpenditurePurpose(dispatch, purposeId);
     }
   };
 
@@ -243,8 +251,9 @@ const Expenditure = () => {
                 </li>
               )}
 
-              {role === "ispOwner" &&
-                bpSettings.expenditureDelete &&
+              {bpSettings.expenditureDelete &&
+                (role === "ispOwner" ||
+                  (role === "manager" && permissions?.expenditureDelete)) &&
                 new Date(original.createdAt).getMonth() ===
                   new Date().getMonth() && (
                   <li
@@ -331,6 +340,23 @@ const Expenditure = () => {
                     </div>
                   </li>
                 )}
+
+                {bpSettings.expenditureDelete &&
+                  (role === "ispOwner" ||
+                    (role === "manager" && permissions?.expenditureDelete)) && (
+                    <li
+                      onClick={() => {
+                        deleteExpenditurePurposeHandler(original.id);
+                      }}
+                    >
+                      <div className="dropdown-item">
+                        <div className="customerAction">
+                          <ArchiveFill />
+                          <p className="actionP">{t("delete")}</p>
+                        </div>
+                      </div>
+                    </li>
+                  )}
               </ul>
             </div>
           </div>

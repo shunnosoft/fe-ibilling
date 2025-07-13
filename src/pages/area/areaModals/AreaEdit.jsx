@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
@@ -31,6 +31,11 @@ const AreaEdit = ({ show, setShow, areaId }) => {
 
   // loading state
   const [isLoading, setIsLoading] = useState(false);
+  const [remarks, setRemarks] = useState("");
+
+  useEffect(() => {
+    setRemarks(oneArea?.remarks || "");
+  }, [oneArea]);
 
   const checkMikrotikName = () => {
     const match = mikrotiks.some((item) => item.name == oneArea?.name);
@@ -42,7 +47,7 @@ const AreaEdit = ({ show, setShow, areaId }) => {
     name: Yup.string().required(t("enterName")),
   });
 
-  // edit handler
+  // edit handleroneArea
   const areaEditHandler = async (data) => {
     setIsLoading(true);
     if (ispOwnerId) {
@@ -50,6 +55,7 @@ const AreaEdit = ({ show, setShow, areaId }) => {
         name: data.name,
         ispOwner: ispOwnerId,
         id: oneArea ? oneArea.id : "",
+        remarks,
       };
       editArea(dispatch, sendingData, setIsLoading, setShow);
     }
@@ -76,12 +82,25 @@ const AreaEdit = ({ show, setShow, areaId }) => {
         >
           {() => (
             <Form>
-              <FtextField
-                type="text"
-                label={t("editAreaName")}
-                name="name"
-                disabled={checkMikrotikName()}
-              />
+              <div className="displayGrid">
+                <FtextField
+                  type="text"
+                  label={t("editAreaName")}
+                  name="name"
+                  disabled={checkMikrotikName()}
+                />
+
+                <div>
+                  <label className="changeLabelFontColor">{t("remarks")}</label>
+                  <textarea
+                    cols={200}
+                    className="form-control shadow-none"
+                    id="noteField"
+                    value={remarks}
+                    onChange={(e) => setRemarks(e.target.value)}
+                  />
+                </div>
+              </div>
 
               <div className="displayGrid1 float-end mt-4">
                 <button

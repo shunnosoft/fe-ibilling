@@ -160,14 +160,13 @@ export const deleteHotspotCustomer = async (
       `hotspot/${data?.customerID}?removeFromMikrotik=${data?.mikrotik}`
     );
     dispatch(deleteCustomerSuccess(data?.customerID));
-    setShow(false);
 
     langMessage(
       "success",
       "গ্রাহক ডিলিট সফল হয়েছে!",
       "Customer Deleted Successfully"
     );
-    document.querySelector("#hotsportCustomerDelete").click();
+    setShow(false);
   } catch (err) {
     console.log(err.response?.data);
     toast.error(err.response?.data?.message);
@@ -180,6 +179,7 @@ export const billCollect = async (
   dispatch,
   billData,
   setLoading,
+  setShow,
   resetForm = null
 ) => {
   setLoading(true);
@@ -191,13 +191,12 @@ export const billCollect = async (
       "বিল গ্রহণ সফল হয়েছে।",
       "Bill Acceptance is Successful."
     );
-    document.querySelector("#customerRecharge").click();
+    setShow(false);
     resetForm();
   } catch (error) {
-    document.querySelector("#customerRecharge").click();
-    toast.error(error.response?.data.message);
+    toast.error(error.message);
   }
-  setLoading(true);
+  setLoading(false);
 };
 
 // get hotspot customer

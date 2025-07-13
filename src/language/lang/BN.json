@@ -1062,5 +1062,8 @@
   "rateLimit": "গতি সীমা",
   "validity": "মেয়াদ",
   "selectPackageType": "প্যাকেজের ধরণ নির্বাচন করুন",
-  "activeHotspot": "একটিভ হটস্পট"
+  "activeHotspot": "একটিভ হটস্পট",
+  "writeHotspotName": "হটস্পট নাম লিখুন",
+  "remarks": "মন্তব্য",
+  "expenditureDelete": "খরচ মুছে ফেলুন"
 }

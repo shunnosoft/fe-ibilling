@@ -107,21 +107,25 @@ export default function SubArea({ isOpen, setIsOpen, areaId }) {
   const columns = React.useMemo(
     () => [
       {
-        width: "25%",
+        width: "5%",
         Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        width: "50%",
+        width: "15%",
         Header: t("subArea"),
         accessor: "name",
       },
       {
         width: "25%",
+        Header: t("remarks"),
+        accessor: "remarks",
+      },
+      {
+        width: "10%",
         Header: t("action"),
-
         Cell: ({ row: { original } }) => (
           <div>
             <>

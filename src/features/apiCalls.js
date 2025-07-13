@@ -145,6 +145,7 @@ import {
 import {
   addExpenditureSectorsSuccess,
   addExpenditureSuccess,
+  deleteExpenditurePurposeSuccess,
   deleteExpenditureSuccess,
   editExpenditureSectorsSuccess,
   editExpenditureSuccess,
@@ -3447,6 +3448,7 @@ export const addExpenditurePourpose = async (
   }
   setIsloading(false);
 };
+
 export const editExpenditurePourpose = async (
   dispatch,
   data,
@@ -3477,6 +3479,20 @@ export const editExpenditurePourpose = async (
     );
   }
   setIsloading(false);
+};
+
+export const deleteExpenditurePurpose = async (dispatch, purposeId) => {
+  try {
+    await apiLink.delete(`/staff/expenditurePurpose/${purposeId}`);
+    dispatch(deleteExpenditurePurposeSuccess(purposeId));
+    langMessage(
+      "success",
+      "খরচ খাত ডিলিট সফল হয়েছে",
+      "Expenditure Type Deleted Successfully"
+    );
+  } catch (error) {
+    toast.error(error.message);
+  }
 };
 
 //add netFee support

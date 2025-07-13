@@ -222,6 +222,12 @@ export const managerPermission = (permission, bpSettings) => {
       isChecked: permission?.supportTicketCategory || false,
       disabled: false,
     },
+    {
+      value: "expenditureDelete",
+      label: "expenditureDelete",
+      isChecked: permission?.expenditureDelete || false,
+      disabled: !bpSettings?.expenditureDelete,
+    },
   ];
 
   return permissions;

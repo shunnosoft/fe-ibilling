@@ -78,8 +78,10 @@ const useDataInputOption = (inputPermission, page, status, data) => {
           ? state?.package?.packages
           : state?.mikrotik?.pppoePackage
         : state?.package?.packages
-      : ""
+      : state.hotspot.package
   );
+
+  console.log({ ppPackage });
 
   // get all area form redux store
   const areas = useSelector((state) => state?.area?.area);
@@ -134,10 +136,14 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       note: data?.note,
       nextMonthAutoDisable: data?.nextMonthAutoDisable,
       pppoeName: data?.pppoe?.name,
-      password: data?.pppoe?.password,
-      packageId: data?.mikrotikPackage,
+      hotspotName: data?.hotspot?.name,
+      password:
+        page === "pppoe" ? data?.pppoe?.password : data?.hotspot?.password,
+      packageId:
+        page === "pppoe" ? data?.mikrotikPackage : data?.hotspotPackage,
       packageRate: data?.monthlyFee,
-      packageName: data?.pppoe?.profile,
+      packageName:
+        page === "pppoe" ? data?.pppoe?.profile : data?.hotspot?.profile,
       promiseDate: Date.parse(data?.promiseDate),
       poleBoxId: data?.poleBox,
       queueName: data?.queue?.name,
@@ -413,9 +419,19 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       isVisible: inputPermission.mikrotikPackage,
     },
     {
+      name: "hotspotPackage",
+      validation: Yup.string().required(t("selectMikrotikPackage")),
+      isVisible: inputPermission.hotspotPackage,
+    },
+    {
       name: "pppoeName",
       validation: Yup.string().required(t("writePPPoEName")),
       isVisible: inputPermission.pppoeName,
+    },
+    {
+      name: "hotspotName",
+      validation: Yup.string().required(t("writeHotspotName")),
+      isVisible: inputPermission.hotspotName,
     },
     {
       name: "password",
@@ -576,6 +592,12 @@ const useDataInputOption = (inputPermission, page, status, data) => {
     },
     {
       id: 15,
+      name: "hotspotPackage",
+      value: formData.packageId || "",
+      isVisible: inputPermission.hotspotPackage,
+    },
+    {
+      id: 15,
       name: "mobile",
       value: formData.mobile || "",
       isVisible: inputPermission.mobile,
@@ -615,6 +637,12 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       name: "pppoeName",
       value: formData.pppoeName || "",
       isVisible: inputPermission.pppoeName,
+    },
+    {
+      id: 18,
+      name: "hotspotName",
+      value: formData.hotspotName || "",
+      isVisible: inputPermission.hotspotName,
     },
     {
       id: 19,
@@ -680,7 +708,8 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       id: 23,
       name: "profile",
       value: formData.packageName || "",
-      isVisible: inputPermission.mikrotikPackage,
+      isVisible:
+        inputPermission.mikrotikPackage || inputPermission.hotspotPackage,
     },
   ];
 
@@ -718,7 +747,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       isVisible: bpSettings?.hasMikrotik && inputPermission.mikrotik,
       disabled: status === "edit" ? true : false,
       validation: true,
-      label: t("selectMikrotik"),
+      label: t("mikrotik"),
       firstOptions: t("selectMikrotik"),
       textAccessor: "name",
       valueAccessor: "id",
@@ -747,7 +776,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
           : resellerUser && !permission?.customerMikrotikPackageEdit
         : false,
       validation: true,
-      label: t("selectPackage"),
+      label: t("package"),
       firstOptions: t("selectPackage"),
       textAccessor: "name",
       valueAccessor: "id",
@@ -761,6 +790,29 @@ const useDataInputOption = (inputPermission, page, status, data) => {
               )
             : ppPackage
           : "",
+      onChange: (e) => {
+        packageChangeHandler(e.target.value);
+      },
+    },
+    {
+      name: "hotspotPackage",
+      as: "select",
+      type: "select",
+      id: "hotspotPackage",
+      isVisible: inputPermission.hotspotPackage,
+      disabled: bpSettings?.hasMikrotik
+        ? status === "post"
+          ? !formData.mikrotikId
+          : data?.status === "expired"
+          ? true
+          : false
+        : false,
+      validation: true,
+      label: t("package"),
+      firstOptions: t("selectPackage"),
+      textAccessor: "name",
+      valueAccessor: "id",
+      options: ppPackage,
       onChange: (e) => {
         packageChangeHandler(e.target.value);
       },
@@ -971,6 +1023,22 @@ const useDataInputOption = (inputPermission, page, status, data) => {
         setFormData({
           ...formData,
           queueName: e.target.value,
+        });
+      },
+    },
+    {
+      name: "hotspotName",
+      type: "text",
+      id: "hotspotName",
+      isVisible: inputPermission.hotspotName,
+      disabled: status === "post" ? !formData.packageId : false,
+      validation: true,
+      label: t("hotspotName"),
+      placeholder: "e.g. User-Name",
+      onChange: (e) => {
+        setFormData({
+          ...formData,
+          hotspotName: e.target.value,
         });
       },
     },
@@ -1514,7 +1582,9 @@ const useDataInputOption = (inputPermission, page, status, data) => {
         {
           type: "radio",
           id: "expiredCustomer",
-          isVisible: ["pppoe", "static"].includes(page) ? true : false,
+          isVisible: ["pppoe", "static", "hotspot"].includes(page)
+            ? true
+            : false,
           disabled: true,
           label: t("expired"),
           value: "expired",

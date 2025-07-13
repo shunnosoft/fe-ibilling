@@ -589,27 +589,12 @@ const HotspotCustomer = () => {
                 aria-expanded="false"
               />
               <ul className="dropdown-menu" aria-labelledby="customerDrop">
-                <li
-                  onClick={() => {
-                    setCustomerId(original.id);
-                    setModalStatus("profile");
-                    setShow(true);
-                  }}
-                >
-                  <div className="dropdown-item">
-                    <div className="customerAction">
-                      <PersonFill />
-                      <p className="actionP">{t("profile")}</p>
-                    </div>
-                  </div>
-                </li>
-
                 {(permission?.billPosting || role === "ispOwner") && (
                   <li
-                    data-bs-toggle="modal"
-                    data-bs-target="#customerRecharge"
                     onClick={() => {
                       setCustomerId(original.id);
+                      setModalStatus("customerRecharge");
+                      setShow(true);
                     }}
                   >
                     <div className="dropdown-item">
@@ -655,9 +640,11 @@ const HotspotCustomer = () => {
 
                 {(permission?.customerDelete || role === "ispOwner") && (
                   <li
-                    data-bs-toggle="modal"
-                    data-bs-target="#hotsportCustomerDelete"
-                    onClick={() => setCustomerId(original.id)}
+                    onClick={() => {
+                      setCustomerId(original.id);
+                      setModalStatus("customerDelete");
+                      setShow(true);
+                    }}
                   >
                     <div className="dropdown-item">
                       <div className="customerAction">
@@ -667,26 +654,6 @@ const HotspotCustomer = () => {
                     </div>
                   </li>
                 )}
-
-                {/* {original.mobile &&
-                  (permission?.sendSMS || role !== "collector" ? (
-                    <li
-                      data-bs-toggle="modal"
-                      data-bs-target="#customerMessageModal"
-                      onClick={() => {
-                        getSpecificCustomer(original.id);
-                      }}
-                    >
-                      <div className="dropdown-item">
-                        <div className="customerAction">
-                          <ChatText />
-                          <p className="actionP">{t("message")}</p>
-                        </div>
-                      </div>
-                    </li>
-                  ) : (
-                    ""
-                  ))} */}
               </ul>
             </div>
           </div>
@@ -931,13 +898,13 @@ const HotspotCustomer = () => {
 
       {/* modal start */}
 
-      {modalStatus === "profile" && (
+      {/* {modalStatus === "profile" && (
         <CustomerDetails
           show={show}
           setShow={setShow}
           customerId={customerId}
         />
-      )}
+      )} */}
 
       {/* hotspot customer post modal */}
       {modalStatus === "customerPost" && (
@@ -950,14 +917,24 @@ const HotspotCustomer = () => {
       )}
 
       {/* single customer delete modal */}
-      <DeleteCustomer
-        customerId={customerId}
-        mikrotikCheck={checkMikrotik}
-        setMikrotikCheck={setMikrotikCheck}
-      />
+      {modalStatus === "customerDelete" && (
+        <DeleteCustomer
+          show={show}
+          setShow={setShow}
+          customerId={customerId}
+          mikrotikCheck={checkMikrotik}
+          setMikrotikCheck={setMikrotikCheck}
+        />
+      )}
 
       {/* customer recharge modal */}
-      <RechargeCustomer customerId={customerId} />
+      {modalStatus === "customerRecharge" && (
+        <RechargeCustomer
+          show={show}
+          setShow={setShow}
+          customerId={customerId}
+        />
+      )}
 
       {/* customers number update or delete modal */}
       <CustomersNumber showModal={numberModalShow} />

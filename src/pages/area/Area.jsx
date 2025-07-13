@@ -140,19 +140,19 @@ const Area = () => {
   const columns = React.useMemo(
     () => [
       {
-        width: "15%",
+        width: "5%",
         Header: "#",
         id: "row",
         accessor: (row) => Number(row.id + 1),
         Cell: ({ row }) => <strong>{Number(row.id) + 1}</strong>,
       },
       {
-        width: "25%",
+        width: "15%",
         Header: t("area"),
         accessor: "name",
       },
       {
-        width: "25%",
+        width: "15%",
         Header: t("subArea"),
         accessor: "subArea",
         Cell: ({ row: { original } }) => (
@@ -180,7 +180,7 @@ const Area = () => {
         ),
       },
       {
-        width: bpSettings?.poleBox ? "25%" : "0%",
+        width: bpSettings?.poleBox ? "15%" : "0%",
         Header: bpSettings?.poleBox && <div>{t("poleBox")}</div>,
         id: "option1",
         Cell: ({ row: { original } }) => {
@@ -213,9 +213,13 @@ const Area = () => {
         },
       },
       {
-        width: "10%",
+        width: "25%",
+        Header: t("remarks"),
+        accessor: "remarks",
+      },
+      {
+        width: "6%",
         Header: t("action"),
-
         Cell: ({ row: { original } }) => (
           <ActionButton
             getSpecificArea={getSpecificArea}

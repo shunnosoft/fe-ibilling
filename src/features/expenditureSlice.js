@@ -34,6 +34,11 @@ const expenditureSlice = createSlice({
         state.expenditurePourposes.findIndex((item) => item.id === payload.id)
       ] = payload;
     },
+    deleteExpenditurePurposeSuccess: (state, { payload }) => {
+      state.expenditurePourposes = state.expenditurePourposes.filter(
+        (item) => item.id !== payload
+      );
+    },
   },
 });
 
@@ -45,5 +50,6 @@ export const {
   editExpenditureSectorsSuccess,
   getExpenditureSectorsSuccess,
   addExpenditureSectorsSuccess,
+  deleteExpenditurePurposeSuccess,
 } = expenditureSlice.actions;
 export default expenditureSlice.reducer;

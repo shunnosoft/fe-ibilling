@@ -154,6 +154,11 @@ const HotspotUser = ({ ispInfo }) => {
           </div>
 
           <div className="displayGridHorizontalFill5_5 profileDetails">
+            <p>Password</p>
+            <p>{hotspotUser?.hotspot?.password}</p>
+          </div>
+
+          <div className="displayGridHorizontalFill5_5 profileDetails">
             <p>Package</p>
             <p>{hotspotUser.hotspot?.profile}</p>
           </div>

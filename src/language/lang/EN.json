@@ -1054,5 +1054,8 @@
   "dataLimit": "Data Limit",
   "rateLimit": "Rate Limit",
   "validity": "Validity",
-  "selectPackageType": "Select Package Type"
+  "selectPackageType": "Select Package Type",
+  "writeHotspotName": "Write Hostpot Name",
+  "remarks": "Remarks",
+  "expenditureDelete": "Expenditure Delete"
 }

@@ -10,9 +10,12 @@ import { FtextField } from "../../../components/common/FtextField";
 import makeAnimated from "react-select/animated";
 import Loader from "../../../components/common/Loader";
 import { billCollect } from "../../../features/hotspotApi";
+import ComponentCustomModal from "../../../components/common/customModal/ComponentCustomModal";
+import { Card } from "react-bootstrap";
+import { CashStack } from "react-bootstrap-icons";
 const animatedComponents = makeAnimated();
 
-const RechargeCustomer = ({ customerId }) => {
+const RechargeCustomer = ({ show, setShow, customerId }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
@@ -107,13 +110,13 @@ const RechargeCustomer = ({ customerId }) => {
       collectedBy: currentUser?.user.role,
       billType: billType,
       hotspotCustomer: data?.id,
-      customer: data?.id,
       ispOwner: ispOwner,
       user: currentUser?.user.id,
       collectorId: userData.id, //when collector is logged in
       userType: data?.userType,
       medium,
       package: data.hotspot.profile,
+      due: 0,
     };
     if (note) sendingData.note = note;
 
@@ -129,113 +132,116 @@ const RechargeCustomer = ({ customerId }) => {
     }
 
     // recharge api call
-    billCollect(dispatch, sendingData, setIsLoading, resetForm);
+    billCollect(dispatch, sendingData, setIsLoading, setShow, resetForm);
     setAmount(data.amount);
   };
 
   return (
-    <div
-      className="modal fade"
-      id="customerRecharge"
-      tabIndex="-1"
-      aria-labelledby="customerModalDetails"
-      aria-hidden="true"
-    >
-      <div className="modal-dialog modal-dialog-scrollable">
-        <div className="modal-content px-3">
-          <div className="modal-header">
-            <h5
-              style={{ color: "#0abb7a" }}
-              className="modal-title"
-              id="customerModalDetails"
-            >
-              {t("recharge")} {data?.name}
-            </h5>
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-              onClick={resetForm}
-            ></button>
-          </div>
-          <div className="modal-body">
-            <Formik
-              initialValues={{
-                amount:
-                  data?.balance < data?.monthlyFee
-                    ? data?.monthlyFee - data?.balance
-                    : data?.monthlyFee,
-              }}
-              validationSchema={BillValidatoin}
-              onSubmit={(values) => {
-                customerBillHandler(values);
-              }}
-              enableReinitialize
-            >
-              {() => (
-                <Form>
-                  <div className="d-flex flex-wrap">
-                    <h5 className="me-3 text-secondary">
-                      {t("hotspotName")} {data?.hotspot?.name}
-                    </h5>
-                    <h5 className="text-secondary">
-                      {t("ID")} {data?.customerId}
-                    </h5>
-                  </div>
+    <>
+      <ComponentCustomModal
+        show={show}
+        setShow={setShow}
+        centered={false}
+        size={"md"}
+        header={data?.name + " " + t("recharge")}
+      >
+        <Formik
+          initialValues={{
+            amount:
+              data?.balance < data?.monthlyFee
+                ? data?.monthlyFee - data?.balance
+                : data?.monthlyFee,
+          }}
+          validationSchema={BillValidatoin}
+          onSubmit={(values) => {
+            customerBillHandler(values);
+          }}
+          enableReinitialize
+        >
+          {() => (
+            <Form>
+              <table
+                className="table table-bordered"
+                style={{ lineHeight: "12px" }}
+              >
+                <tbody>
+                  <tr>
+                    <td>{t("id")}</td>
+                    <td>
+                      <b>{data?.customerId}</b>
+                    </td>
+                    <td>{t("hotspot")}</td>
+                    <td>
+                      <b>{data?.hotspot.name}</b>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>{t("name")}</td>
+                    <td>
+                      <b>{data?.name}</b>
+                    </td>
+                    <td>{t("mobile")}</td>
+                    <td className="text-primary">
+                      <b>{data?.mobile}</b>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>{t("monthly")}</td>
+                    <td className="text-primary">
+                      <b>{data?.monthlyFee}</b>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
 
-                  <div className="bill_collect_form">
-                    <div className="w-100 me-2">
-                      <FtextField
-                        type="number"
-                        name="amount"
-                        label={t("amount")}
-                      />
-                    </div>
-                    <div className="d-inline w-100 mb-3">
-                      <label
-                        htmlFor="receiver_type"
-                        className="form-control-label changeLabelFontColor"
-                      >
-                        {t("medium")}
-                      </label>
+              <div className="monthlyBill">
+                <span className="text-secondary">{data?.name}</span>&nbsp;
+                <span className="text-secondary">{t("totalAmount")} ৳</span>
+                <span className="text-primary">{data?.monthlyFee} </span>
+              </div>
 
-                      <select
-                        as="select"
-                        id="receiver_type"
-                        className="form-select mt-0 mw-100"
-                        aria-label="Default select example"
-                        onChange={(e) => setMedium(e.target.value)}
-                      >
-                        <option value="cash" selected>
-                          {t("handCash")}
-                        </option>
-                        <option value="bKash"> {t("bKash")} </option>
-                        <option value="rocket"> {t("rocket")} </option>
-                        <option value="nagad"> {t("nagad")} </option>
-                        <option value="others"> {t("others")} </option>
-                      </select>
-                    </div>
-                  </div>
+              <div className="displayGrid">
+                <div className="displayGrid2">
+                  <FtextField type="number" name="amount" label={t("amount")} />
 
-                  <label className="form-control-label changeLabelFontColor">
-                    {t("billType")}
-                  </label>
-                  <select
-                    className="form-select mt-0 mw-100"
-                    onChange={(e) => setBillType(e.target.value)}
-                  >
-                    <option value="bill"> {t("bill")} </option>
-                    {permission?.connectionFee || role !== "collector" ? (
-                      <option value="connectionFee">
-                        {t("connectionFee")}
+                  <div className="d-inline w-100">
+                    <label
+                      htmlFor="receiver_type"
+                      className="form-control-label changeLabelFontColor"
+                    >
+                      {t("medium")}
+                    </label>
+
+                    <select
+                      as="select"
+                      id="receiver_type"
+                      className="form-select mt-0 mw-100"
+                      aria-label="Default select example"
+                      onChange={(e) => setMedium(e.target.value)}
+                    >
+                      <option value="cash" selected>
+                        {t("handCash")}
                       </option>
-                    ) : (
-                      ""
-                    )}
-                  </select>
+                      <option value="bKash"> {t("bKash")} </option>
+                      <option value="rocket"> {t("rocket")} </option>
+                      <option value="nagad"> {t("nagad")} </option>
+                      <option value="others"> {t("otext-thers")} </option>
+                    </select>
+                  </div>
 
-                  <div className="mb-2 mt-3 text-right">
+                  <div>
+                    <label className="form-control-label changeLabelFontColor">
+                      {t("billType")}
+                    </label>
+                    <select
+                      className="form-select mt-0 mw-100"
+                      onChange={(e) => setBillType(e.target.value)}
+                    >
+                      <option value="bill"> {t("bill")} </option>
+                    </select>
+                  </div>
+
+                  <div className="text-right mt-4">
                     <input
                       type="checkbox"
                       className="form-check-input me-1"
@@ -250,80 +256,88 @@ const RechargeCustomer = ({ customerId }) => {
                       {t("noteAndDate")}
                     </label>
                   </div>
-                  {noteCheck && (
-                    <>
-                      <div className=" mb-1">
-                        <div className="d-flex">
-                          <div className="me-2">
-                            <label className="form-control-label changeLabelFontColor">
-                              {t("startDate")}
-                            </label>
-                            <ReactDatePicker
-                              className="form-control mw-100"
-                              selected={startDate}
-                              onChange={(date) => setStartDate(date)}
-                              dateFormat="dd/MM/yyyy"
-                              placeholderText={t("selectDate")}
-                            />
-                          </div>
-                          <div>
-                            <label className="form-control-label changeLabelFontColor">
-                              {t("endDate")}
-                            </label>
+                </div>
 
-                            <ReactDatePicker
-                              className="form-control mw-100"
-                              selected={endDate}
-                              onChange={(date) => setEndDate(date)}
-                              dateFormat="dd/MM/yyyy"
-                              placeholderText={t("selectDate")}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      <div className="month">
-                        <label
-                          className="form-check-label changeLabelFontColor"
-                          htmlFor="selectMonth"
-                        >
-                          {t("selectMonth")}
+                {noteCheck && (
+                  <div className="displayGrid">
+                    <div className="displayGrid2">
+                      <div>
+                        <label className="form-control-label changeLabelFontColor">
+                          {t("startDate")}
                         </label>
-                        <Select
-                          className="mt-1"
-                          defaultValue={selectedMonth}
-                          onChange={setSelectedMonth}
-                          options={options}
-                          isMulti={true}
-                          placeholder={t("selectMonth")}
-                          isSearchable
-                          components={animatedComponents}
-                          id="selectMonth"
+                        <ReactDatePicker
+                          className="form-control mw-100"
+                          selected={startDate}
+                          onChange={(date) => setStartDate(date)}
+                          dateFormat="dd/MM/yyyy"
+                          placeholderText={t("selectDate")}
                         />
                       </div>
-                      <div class="form-floating mt-3">
-                        <textarea
-                          cols={200}
-                          class="form-control shadow-none"
-                          placeholder={t("writeNote")}
-                          id="noteField"
-                          onChange={(e) => setNote(e.target.value)}
-                        ></textarea>
-                        <label for="noteField"> {t("addNote")} </label>
+
+                      <div>
+                        <label className="form-control-label changeLabelFontColor">
+                          {t("endDate")}
+                        </label>
+                        <ReactDatePicker
+                          className="form-control mw-100"
+                          selected={endDate}
+                          onChange={(date) => setEndDate(date)}
+                          dateFormat="dd/MM/yyyy"
+                          placeholderText={t("selectDate")}
+                        />
                       </div>
-                    </>
-                  )}
-                  <div className="mt-4">
-                    <button type="submit" className="btn btn-success">
-                      {isLoading ? <Loader /> : t("submit")}
-                    </button>
+                    </div>
+
+                    <div className="month">
+                      <label
+                        className="form-check-label changeLabelFontColor"
+                        htmlFor="selectMonth"
+                      >
+                        {t("selectMonth")}
+                      </label>
+                      <Select
+                        defaultValue={selectedMonth}
+                        onChange={setSelectedMonth}
+                        options={options}
+                        isMulti={true}
+                        placeholder={t("selectMonth")}
+                        isSearchable
+                        components={animatedComponents}
+                        id="selectMonth"
+                      />
+                    </div>
+
+                    <div class="form-floating">
+                      <textarea
+                        cols={200}
+                        class="form-control shadow-none"
+                        placeholder={t("writeNote")}
+                        id="noteField"
+                        onChange={(e) => setNote(e.target.value)}
+                      />
+                      <label for="noteField"> {t("addNote")} </label>
+                    </div>
                   </div>
-                </Form>
-              )}
-            </Formik>
-          </div>
-        </div>
-      </div>
-    </div>
+                )}
+              </div>
+
+              <div className="d-flex justify-content-end mt-4">
+                <button type="submit" className="btn btn-outline-success">
+                  {isLoading ? (
+                    <Loader />
+                  ) : (
+                    <span className="submitButton">
+                      {t("pay")}
+                      <CashStack />
+                    </span>
+                  )}
+                </button>
+              </div>
+            </Form>
+          )}
+        </Formik>
+      </ComponentCustomModal>
+    </>
   );
 };
 

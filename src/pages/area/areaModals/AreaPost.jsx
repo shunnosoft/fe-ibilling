@@ -23,6 +23,7 @@ const AreaPost = ({ show, setShow }) => {
 
   // loading state
   const [isLoading, setIsLoading] = useState(false);
+  const [remarks, setRemarks] = useState("");
 
   //validator
   const linemanValidator = Yup.object({
@@ -36,6 +37,7 @@ const AreaPost = ({ show, setShow }) => {
       const sendingData = {
         name: data.name,
         ispOwner: ispOwnerId,
+        remarks,
       };
       addArea(dispatch, sendingData, setIsLoading, setShow);
     }
@@ -61,7 +63,24 @@ const AreaPost = ({ show, setShow }) => {
         >
           {() => (
             <Form>
-              <FtextField type="text" label={t("areaName")} name="name" />
+              <div className="displayGrid">
+                <FtextField
+                  type="text"
+                  label={t("areaName")}
+                  name="name"
+                  validation={true}
+                />
+
+                <div>
+                  <label className="changeLabelFontColor">{t("remarks")}</label>
+                  <textarea
+                    cols={200}
+                    className="form-control shadow-none"
+                    id="noteField"
+                    onChange={(e) => setRemarks(e.target.value)}
+                  />
+                </div>
+              </div>
 
               <div className="displayGrid1 float-end mt-4">
                 <button

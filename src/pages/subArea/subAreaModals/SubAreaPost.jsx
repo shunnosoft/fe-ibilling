@@ -10,13 +10,7 @@ import Loader from "../../../components/common/Loader";
 
 import { addSubArea } from "../../../features/apiCalls";
 import { useTranslation } from "react-i18next";
-import {
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
-  ModalTitle,
-} from "react-bootstrap";
+import ComponentCustomModal from "../../../components/common/customModal/ComponentCustomModal";
 
 export default function SubAreaPost({ postShow, setPostShow, name, id }) {
   const { t } = useTranslation();
@@ -24,6 +18,7 @@ export default function SubAreaPost({ postShow, setPostShow, name, id }) {
 
   const auth = useSelector((state) => state.persistedReducer.auth.currentUser);
   const [isLoading, setIsLoading] = useState(false);
+  const [remarks, setRemarks] = useState("");
 
   //validator
   const linemanValidator = Yup.object({
@@ -39,6 +34,7 @@ export default function SubAreaPost({ postShow, setPostShow, name, id }) {
     if (auth.ispOwner) {
       const sendingData = {
         name: data.name,
+        remarks,
         area: id,
         ispOwner: auth.ispOwner.id,
       };
@@ -47,18 +43,32 @@ export default function SubAreaPost({ postShow, setPostShow, name, id }) {
   };
 
   return (
-    <Modal
-      show={postShow}
-      onHide={handleClose}
-      backdrop="static"
-      keyboard={false}
-    >
-      <ModalHeader closeButton>
-        <ModalTitle>
-          {name || ""} - {t("addSubArea")}
-        </ModalTitle>
-      </ModalHeader>
-      <ModalBody>
+    <>
+      <ComponentCustomModal
+        show={postShow}
+        setShow={setPostShow}
+        header={`${name || ""} - ${t("addSubArea")}`}
+        footer={
+          <div className="displayGrid1">
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={handleClose}
+              disabled={isLoading}
+            >
+              {t("cancel")}
+            </button>
+            <button
+              type="submit"
+              form="subAreaPost"
+              className="btn btn-success"
+              disabled={isLoading}
+            >
+              {isLoading ? <Loader /> : t("save")}
+            </button>
+          </div>
+        }
+      >
         <Formik
           initialValues={{
             name: "",
@@ -70,29 +80,28 @@ export default function SubAreaPost({ postShow, setPostShow, name, id }) {
         >
           {() => (
             <Form id="subAreaPost">
-              <FtextField type="text" label={t("nameSubArea")} name="name" />
+              <div className="displayGrid">
+                <FtextField
+                  type="text"
+                  label={t("nameSubArea")}
+                  name="name"
+                  validation={true}
+                />
+
+                <div>
+                  <label className="changeLabelFontColor">{t("remarks")}</label>
+                  <textarea
+                    cols={200}
+                    className="form-control shadow-none"
+                    id="noteField"
+                    onChange={(e) => setRemarks(e.target.value)}
+                  />
+                </div>
+              </div>
             </Form>
           )}
         </Formik>
-      </ModalBody>
-      <ModalFooter>
-        <button
-          type="button"
-          className="btn btn-secondary"
-          onClick={handleClose}
-          disabled={isLoading}
-        >
-          {t("cancel")}
-        </button>
-        <button
-          type="submit"
-          form="subAreaPost"
-          className="btn btn-success customBtn"
-          disabled={isLoading}
-        >
-          {isLoading ? <Loader /> : t("save")}
-        </button>
-      </ModalFooter>
-    </Modal>
+      </ComponentCustomModal>
+    </>
   );
 }
