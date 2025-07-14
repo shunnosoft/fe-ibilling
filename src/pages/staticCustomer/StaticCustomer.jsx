@@ -456,6 +456,14 @@ const Customer = () => {
             ) : (
               <p className="text-danger">{original?.customerId}</p>
             )}
+            <span>
+              {firstDate <= new Date(original?.createdAt) &&
+                lastDate >= new Date(original?.createdAt) && (
+                  <small className="new_badge badge bg-secondary">
+                    {"new"}
+                  </small>
+                )}
+            </span>
           </div>
         ),
       },
@@ -466,18 +474,7 @@ const Customer = () => {
         Cell: ({ row: { original } }) => (
           <div>
             <p>{original?.name}</p>
-            <p>
-              {original.queue.target}
-
-              <span className="ms-1">
-                {firstDate <= new Date(original?.createdAt) &&
-                  lastDate >= new Date(original?.createdAt) && (
-                    <small className="new_badge badge bg-secondary">
-                      {"new"}
-                    </small>
-                  )}
-              </span>
-            </p>
+            <p>{original.queue.target}</p>
           </div>
         ),
       },
@@ -500,11 +497,26 @@ const Customer = () => {
       {
         width: "13%",
         Header: t("package"),
-        accessor: (data) => customerPackageFind(data?.mikrotikPackage)?.name,
+        accessor: (data) =>
+          customerPackageFind(
+            data?.uploadPackage ? data?.uploadPackage : data?.mikrotikPackage
+          )?.name,
         Cell: ({ row: { original } }) => (
-          <div>
-            {customers && customerPackageFind(original?.mikrotikPackage)?.name}
-          </div>
+          <p>
+            {customers &&
+              customerPackageFind(
+                original?.uploadPackage
+                  ? original?.uploadPackage
+                  : original?.mikrotikPackage
+              )?.name}
+            /
+            {customers &&
+              customerPackageFind(
+                original?.downloadPackage
+                  ? original?.downloadPackage
+                  : original?.mikrotikPackage
+              )?.name}
+          </p>
         ),
       },
       {

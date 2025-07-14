@@ -81,8 +81,6 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       : state.hotspot.package
   );
 
-  console.log({ ppPackage });
-
   // get all area form redux store
   const areas = useSelector((state) => state?.area?.area);
 
@@ -131,6 +129,12 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       mobile: data?.mobile,
       maxUpLimit: data?.queue?.maxLimit?.split("/")[0],
       maxDownLimit: data?.queue?.maxLimit?.split("/")[1],
+      uploadPackage: data?.uploadPackage
+        ? data?.uploadPackage
+        : data?.mikrotikPackage,
+      downloadPackage: data?.downloadPackage
+        ? data?.downloadPackage
+        : data?.mikrotikPackage,
       name: data?.name,
       nid: data?.nid,
       note: data?.note,
@@ -140,7 +144,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       password:
         page === "pppoe" ? data?.pppoe?.password : data?.hotspot?.password,
       packageId:
-        page === "pppoe" ? data?.mikrotikPackage : data?.hotspotPackage,
+        page === "hotspot" ? data?.hotspotPackage : data?.mikrotikPackage,
       packageRate: data?.monthlyFee,
       packageName:
         page === "pppoe" ? data?.pppoe?.profile : data?.hotspot?.profile,
@@ -154,7 +158,6 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       status: data?.status,
       salary: data?.salary,
       thana: thanaId,
-      uploadPackgeId: data?.mikrotikPackage,
     });
   }, [data]);
 
@@ -270,19 +273,19 @@ const useDataInputOption = (inputPermission, page, status, data) => {
 
   // select Mikrotik Package
   const staticPackageChangeHandler = (target) => {
-    if (target.id === "uploadPackge") {
+    if (target.id === "uploadPackage") {
       // package limit set function
       const getLimit = setPackageLimit(target.value, false);
 
       // set single package data
       setFormData({
         ...formData,
-        uploadPackgeId: target.value,
+        uploadPackage: target.value,
         maxUpLimit: getLimit,
       });
     }
 
-    if (target.id === "downloadPackge") {
+    if (target.id === "downloadPackage") {
       const temp = ppPackage.find((val) => val.id === target.value);
 
       // package limit set function
@@ -292,6 +295,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       setFormData({
         ...formData,
         packageId: temp.id,
+        downloadPackage: target.value,
         packageRate: temp.rate,
         packageName: temp.name,
         maxDownLimit: getLimit,
@@ -615,6 +619,18 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       isVisible: inputPermission.mikrotikPackage,
     },
     {
+      id: 31,
+      name: "uploadPackage",
+      value: formData.uploadPackage || "",
+      isVisible: page === "static" && inputPermission.mikrotikPackage,
+    },
+    {
+      id: 31,
+      name: "downloadPackage",
+      value: formData.downloadPackage || "",
+      isVisible: page === "static" && inputPermission.mikrotikPackage,
+    },
+    {
       id: 16,
       name: "name",
       value: formData.name || "",
@@ -848,10 +864,10 @@ const useDataInputOption = (inputPermission, page, status, data) => {
     //   },
     // },
     {
-      name: "uploadPackge",
+      name: "uploadPackage",
       as: "select",
       type: "select",
-      id: "uploadPackge",
+      id: "uploadPackage",
       isVisible:
         page === "static" &&
         bpSettings?.hasMikrotik &&
@@ -870,7 +886,6 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       firstOptions: t("selectPackage"),
       textAccessor: "name",
       valueAccessor: "id",
-      value: formData.uploadPackgeId || "",
       options:
         page === "static" &&
         bpSettings?.hasMikrotik &&
@@ -884,10 +899,10 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       },
     },
     {
-      name: "mikrotikPackage",
+      name: "downloadPackage",
       as: "select",
       type: "select",
-      id: "downloadPackge",
+      id: "downloadPackage",
       isVisible: page === "static" && inputPermission.mikrotikPackage,
       disabled: bpSettings?.hasMikrotik
         ? status === "post"

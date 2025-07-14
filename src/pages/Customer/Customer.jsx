@@ -387,6 +387,15 @@ const PPPOECustomer = () => {
               )}
 
               {!bpSettings.hasMikrotik && <p>{original?.customerId}</p>}
+
+              <span>
+                {firstDate <= new Date(original?.createdAt) &&
+                  lastDate >= new Date(original?.createdAt) && (
+                    <small className="new_badge badge bg-secondary">
+                      {"new"}
+                    </small>
+                  )}
+              </span>
             </>
           );
         },
@@ -398,17 +407,7 @@ const PPPOECustomer = () => {
         Cell: ({ row: { original } }) => (
           <div>
             <p>{original?.name}</p>
-            <p>
-              {original.pppoe?.name}
-              <span className="ms-1">
-                {firstDate <= new Date(original?.createdAt) &&
-                  lastDate >= new Date(original?.createdAt) && (
-                    <small className="new_badge badge bg-secondary">
-                      {"new"}
-                    </small>
-                  )}
-              </span>
-            </p>
+            <p>{original.pppoe?.name}</p>
           </div>
         ),
       },

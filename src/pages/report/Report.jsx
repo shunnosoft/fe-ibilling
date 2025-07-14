@@ -435,11 +435,24 @@ const Report = () => {
           return (
             <div>
               <p>
-                {original.customer?.mikrotikPackage?.name
+                {original.customer?.userType === "pppoe"
+                  ? original.customer?.mikrotikPackage?.name
+                  : original.customer?.userType === "static"
+                  ? `${
+                      original.customer?.uploadPackage
+                        ? original.customer?.uploadPackage?.name
+                        : original.customer?.mikrotikPackage?.name
+                    }/${
+                      original.customer?.downloadPackage
+                        ? original.customer?.downloadPackage?.name
+                        : original.customer?.mikrotikPackage?.name
+                    }`
+                  : original.hotspotCustomer?.hotspotPackage?.name}
+                {/* {original.customer?.mikrotikPackage?.name
                   ? original.customer?.mikrotikPackage?.name
                   : original.customer?.userType === "pppoe"
                   ? original.customer?.pppoe?.profile
-                  : original?.hotspotCustomer?.hotspot.profile}
+                  : original?.hotspotCustomer?.hotspot.profile} */}
               </p>
               <p style={{ fontWeight: "500" }}>৳{original?.amount}</p>
             </div>

@@ -117,6 +117,8 @@ const EditStaticCustomer = ({ show, setShow, single }) => {
 
   // sending data to backed
   const customerHandler = async (formValue, resetForm) => {
+    console.log({ formValue });
+
     const {
       birthDate,
       billingCycle,

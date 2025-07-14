@@ -2719,7 +2719,9 @@ export const addDeposit = async (dispatch, data, setLoading, setShow) => {
     const res = await apiLink.post(`/deposit`, data);
     dispatch(addDepositSucces(res.data));
     langMessage("success", "একসেপ্ট এর জন্য অপেক্ষা করেন", "Wait for Accept");
-    setShow(false);
+    if (typeof setShow === "function") {
+      setShow(false);
+    }
   } catch (error) {
     setLoading(false);
     toast.error(error.message);

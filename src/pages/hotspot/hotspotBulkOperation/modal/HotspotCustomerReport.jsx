@@ -109,7 +109,6 @@ const HotspotCustomerReport = ({ show, setShow, customerData }) => {
                   <th scope="col">{t("amount")}</th>
                   <th scope="col">{t("previousState")}</th>
                   <th scope="col">{t("currentState")}</th>
-                  <th scope="col">{t("note")}</th>
                   <th scope="col">{t("action")}</th>
                 </tr>
               </thead>
@@ -168,18 +167,6 @@ const HotspotCustomerReport = ({ show, setShow, customerData }) => {
                               {FormatNumber(val.due)}
                             </b>
                           </p>
-                          <p>
-                            {t("previousBalance")}:
-                            <b className="text-secondary">
-                              {FormatNumber(val?.prevState?.balance)}
-                            </b>
-                          </p>
-                          <p>
-                            {t("currentBalance")}:
-                            <b className="text-secondary">
-                              {FormatNumber(val?.currentState?.balance)}
-                            </b>
-                          </p>
                         </td>
                         <td>
                           <p>
@@ -199,26 +186,6 @@ const HotspotCustomerReport = ({ show, setShow, customerData }) => {
                                 "MMM DD YYYY hh:mm a"
                               )}
                             </b>
-                          </p>
-                        </td>
-                        <td>
-                          <p>
-                            {val.note && val.note.slice(0, 20)}
-                            <span>
-                              {val?.note && val?.note?.length > 20 && "..."}
-                            </span>
-                          </p>
-                          {val.start && val.end && (
-                            <span className="badge bg-secondary">
-                              {moment(val.start).format("MMM/DD/YY")}--
-                              {moment(val.end).format("MMM/DD/YY")}
-                            </span>
-                          )}
-                          <p>
-                            {val?.month && val.month.slice(0, 20)}
-                            <span>
-                              {val?.month && val?.month?.length > 20 && "..."}
-                            </span>
                           </p>
                         </td>
 
@@ -266,7 +233,6 @@ const HotspotCustomerReport = ({ show, setShow, customerData }) => {
                                     amount: singleInvoice.amount,
                                     due: singleInvoice.due,
                                     discount: singleInvoice.discount,
-                                    note: singleInvoice.note,
                                     billType: singleInvoice.billType,
                                     medium: singleInvoice.medium,
                                     billingCycle: singleInvoice?.updatedAt,

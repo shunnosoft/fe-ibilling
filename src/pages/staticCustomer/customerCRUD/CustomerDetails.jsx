@@ -567,11 +567,6 @@ const CustomerDetails = ({ show, setShow, customerId }) => {
                             <p>{data?.referenceMobile}</p>
                           </div>
                         )}
-
-                        <div className="displayGridHorizontalFill5_5 profileDetails">
-                          <p>{t("queueType")}</p>
-                          <p>{data?.queue?.type}</p>
-                        </div>
                       </div>
                     </FontColor>
                   </Card.Body>
