@@ -253,9 +253,7 @@ const Expenditure = () => {
 
               {bpSettings.expenditureDelete &&
                 (role === "ispOwner" ||
-                  (role === "manager" && permissions?.expenditureDelete)) &&
-                new Date(original.createdAt).getMonth() ===
-                  new Date().getMonth() && (
+                  (role === "manager" && permissions?.expenditureDelete)) && (
                   <li
                     onClick={() => {
                       deleteExpenditureHandler(original.id);

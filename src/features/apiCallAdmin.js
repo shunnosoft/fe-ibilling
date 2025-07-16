@@ -96,9 +96,8 @@ export const uploadCsvFile = async (data, setIsLoading, mikrotikStatus) => {
 
     document.querySelector("#fileUploadModal").click();
     toast.success(`File Uploaded Successfully`);
-  } catch (err) {
-    console.log(err?.response?.data?.message);
-    toast.error(err?.response?.data?.message);
+  } catch (error) {
+    toast.error(error?.message);
   }
   setIsLoading(false);
 };

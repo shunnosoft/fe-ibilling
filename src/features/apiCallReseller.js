@@ -193,7 +193,6 @@ export const addCustomer = async (
   try {
     const res = await apiLink.post("/reseller/customer", data);
     dispatch(addCustomerSuccess(res.data));
-    setIsloading(false);
     setShow(false);
     langMessage(
       "success",
@@ -202,12 +201,10 @@ export const addCustomer = async (
     );
     document.querySelector("#customerModal").click();
     resetForm();
-  } catch (err) {
-    if (err.response) {
-      setIsloading(false);
-      toast.error(err.response.data.message);
-    }
+  } catch (error) {
+    toast.error(error.message);
   }
+  setIsloading(false);
 };
 
 export const editCustomer = async (
