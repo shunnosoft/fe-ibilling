@@ -1057,5 +1057,8 @@
   "selectPackageType": "Select Package Type",
   "writeHotspotName": "Write Hostpot Name",
   "remarks": "Remarks",
-  "expenditureDelete": "Expenditure Delete"
+  "expenditureDelete": "Expenditure Delete",
+  "expenditureUpdate": "Expenditure Update",
+  "selectOlt": "Select OLT for MAC-address search",
+  "allOlt": "Select all OLTs"
 }

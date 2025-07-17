@@ -232,9 +232,7 @@ const Expenditure = () => {
               aria-expanded="false"
             />
             <ul className="dropdown-menu" aria-labelledby="customerDrop">
-              {((role.match("collector") &&
-                original.user.match(userData.user)) ||
-                role !== "collector") && (
+              {(role === "ispOwner" || permissions?.expenditureUpdate) && (
                 <li
                   onClick={() => {
                     setSingleExp(original);

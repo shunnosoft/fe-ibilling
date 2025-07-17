@@ -228,6 +228,12 @@ export const managerPermission = (permission, bpSettings) => {
       isChecked: permission?.expenditureDelete || false,
       disabled: !bpSettings?.expenditureDelete,
     },
+    {
+      value: "expenditureUpdate",
+      label: "expenditureUpdate",
+      isChecked: permission?.expenditureUpdate || false,
+      disabled: false,
+    },
   ];
 
   return permissions;

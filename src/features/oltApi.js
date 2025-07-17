@@ -70,12 +70,13 @@ export const getActiveCustomerONUInformation = async (
   ispOwner,
   mikrotik,
   macAddress,
-  setIsLoading
+  setIsLoading,
+  olt = null
 ) => {
   setIsLoading(true);
   try {
     const res = await apiLink.get(
-      `/olt/${ispOwner}/${mikrotik}/onu-information?macAddress=${macAddress}`
+      `/olt/${ispOwner}/${mikrotik}/onu-information?olt=${olt}&macAddress=${macAddress}`
     );
 
     dispatch(getCustomerONUSuccess(res.data?.data));

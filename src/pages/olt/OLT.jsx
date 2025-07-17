@@ -27,6 +27,49 @@ const OLT = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
+  const oltVendorOptions = [
+    {
+      label: "V.Sole EPon",
+      value: "vSole_ePon",
+    },
+    {
+      label: "V.Sole GPon",
+      value: "vSole_gPon",
+    },
+    {
+      label: "CData",
+      value: "cData",
+    },
+    {
+      label: "BDCom EPon",
+      value: "bdCom_ePon",
+    },
+    {
+      label: "BDCom GPon",
+      value: "bdCom_gPon",
+    },
+    {
+      label: "ECom",
+      value: "eCom",
+    },
+    {
+      label: "DBC GPon",
+      value: "dbc_gPon",
+    },
+    {
+      label: "Aveis EPon",
+      value: "aveis_ePon",
+    },
+    {
+      label: "TBS EPon",
+      value: "tbs_ePon",
+    },
+    {
+      label: "TBS GPon",
+      value: "tbs_gPon",
+    },
+  ];
+
   //---> Get user & current user data form useISPOwner hooks
   const { ispOwnerId, bpSettings } = useISPowner();
 
@@ -79,6 +122,10 @@ const OLT = () => {
     }
   };
 
+  const findOltVendor = (value) => {
+    return oltVendorOptions.find((option) => option.value === value)?.label;
+  };
+
   const columns = React.useMemo(
     () => [
       {
@@ -92,6 +139,7 @@ const OLT = () => {
         width: "10%",
         Header: t("vendor"),
         accessor: "oltVendor",
+        Cell: ({ cell: { value } }) => <p>{findOltVendor(value)}</p>,
       },
       {
         width: "20%",

@@ -1065,5 +1065,8 @@
   "activeHotspot": "একটিভ হটস্পট",
   "writeHotspotName": "হটস্পট নাম লিখুন",
   "remarks": "মন্তব্য",
-  "expenditureDelete": "খরচ মুছে ফেলুন"
+  "expenditureDelete": "খরচ মুছে ফেলুন",
+  "expenditureUpdate": "খরচ আপডেট করুন",
+  "selectOlt": "ম্যাক-ঠিকানা অনুসন্ধানের জন্য ওএলটি নির্বাচন করুন",
+  "allOlt": "সকল ওএলটি নির্বাচন করুন"
 }

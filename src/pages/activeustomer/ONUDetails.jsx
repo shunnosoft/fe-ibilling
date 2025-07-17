@@ -1,32 +1,42 @@
 import React, { useEffect, useState } from "react";
 import ComponentCustomModal from "../../components/common/customModal/ComponentCustomModal";
 import { useDispatch, useSelector } from "react-redux";
-import { getActiveCustomerONUInformation } from "../../features/oltApi";
+import { getActiveCustomerONUInformation, getOLT } from "../../features/oltApi";
 import { badge } from "../../components/common/Utils";
 import { useTranslation } from "react-i18next";
+import useISPowner from "../../hooks/useISPOwner";
 
 const ONUDetails = ({ show, setShow, customer }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
+  //---> Get user & current user data form useISPOwner hooks
+  const { ispOwnerId } = useISPowner();
+
+  //---> Get ISP owner olt from redux store
+  const olt = useSelector((state) => state?.olt.olt);
+
   const onu = useSelector((state) => state?.olt.onu);
 
+  const [loading, setLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const macAddress =
     customer?.userType === "pppoe" ? customer?.callerId : customer?.macAddress;
 
   useEffect(() => {
-    if (show && macAddress.toLowerCase() !== onu?.macAddress) {
+    if (show && macAddress.toLowerCase() !== onu?.macAddress && olt?.length) {
       getActiveCustomerONUInformation(
         dispatch,
         customer?.ispOwner,
         customer?.mikrotik,
         macAddress,
-        setIsLoading
+        setIsLoading,
+        olt[0]?.id
       );
     }
-  }, [show, customer]);
+    !olt.length && getOLT(ispOwnerId, setLoading, dispatch);
+  }, [show, customer, olt]);
 
   const ONUFields = [
     // { label: "MAC Address", key: "macAddress" },
@@ -41,6 +51,17 @@ const ONUDetails = ({ show, setShow, customer }) => {
     { label: t("voltage"), key: "voltage" },
   ];
 
+  const handleOltVendorOnuLaser = (oltId) => {
+    getActiveCustomerONUInformation(
+      dispatch,
+      customer?.ispOwner,
+      customer?.mikrotik,
+      macAddress,
+      setIsLoading,
+      oltId
+    );
+  };
+
   return (
     <ComponentCustomModal
       {...{
@@ -53,6 +74,27 @@ const ONUDetails = ({ show, setShow, customer }) => {
           : customer?.name + " " + t("onuLaser"),
       }}
     >
+      {olt?.length > 0 && (
+        <div>
+          <label className="form-control-label changeLabelFontColor">
+            {t("selectOlt")}
+            <span className="text-danger mx-1">*</span>
+          </label>
+          <select
+            className="form-select mt-0 mw-100"
+            disabled={isLoading}
+            onChange={(e) => handleOltVendorOnuLaser(e.target.value)}
+          >
+            {olt?.map((item) => (
+              <option key={item.value} value={item.id}>
+                {item.name}
+              </option>
+            ))}
+            <option value="all">{t("allOlt")}</option>
+          </select>
+        </div>
+      )}
+
       <div>
         {isLoading
           ? ONUFields.map((field, index) => (
