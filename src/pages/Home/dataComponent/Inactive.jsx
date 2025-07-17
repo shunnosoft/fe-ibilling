@@ -388,9 +388,7 @@ const Inactive = ({
           customerId={customerId}
         />
       )}
-      {(modalStatus === "simple-queue" ||
-        modalStatus === "firewall-queue" ||
-        modalStatus === "core-queue") && (
+      {modalStatus === "static" && (
         <StaticCustomerDetails
           show={show}
           setShow={setShow}

@@ -428,9 +428,7 @@ const DueCustomer = ({
         />
       )}
 
-      {(modalStatus === "simple-queue" ||
-        modalStatus === "firewall-queue" ||
-        modalStatus === "core-queue") &&
+      {modalStatus === "static" &&
         customerId &&
         (ispOwnerStaff ? (
           <StaticCustomerDetails

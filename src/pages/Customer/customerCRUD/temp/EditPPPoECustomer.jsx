@@ -170,7 +170,11 @@ const EditPPPoECustomer = ({ show, setShow, single }) => {
       ispOwner: ispOwnerId,
       birthDate: birthDate ? new Date(birthDate).toISOString() : birthDate,
       billingCycle: new Date(billingCycle).toISOString(),
-      promiseDate: new Date(promiseDate).toISOString(),
+      promiseDate:
+        new Date(customerModifiedData.billingCycle).getTime() !==
+        new Date(billingCycle).getTime()
+          ? new Date(billingCycle)
+          : new Date(promiseDate).toISOString(),
       connectionDate: new Date(connectionDate).toISOString(),
       customerId,
       customerBillingType,

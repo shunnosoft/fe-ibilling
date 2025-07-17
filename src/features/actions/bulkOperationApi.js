@@ -21,14 +21,13 @@ export const bulkDeleteCustomer = async (
     });
     dispatch(bulkDelete(res.data.data));
     setShow(false);
-    setIsLoading(false);
     toast.success("কাস্টমার ডিলিট সফল হয়েছে!");
   } catch (err) {
     if (err.response) {
-      setIsLoading(false);
       toast.error(err.response.data.message);
     }
   }
+  setIsLoading(false);
 };
 
 export const hotspotBulkDeleteCustomer = async (

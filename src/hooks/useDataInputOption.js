@@ -1317,7 +1317,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       placeholderText: "YYYY MM DD HH:mm A",
       component: "DatePicker",
       dateFormat: "yyyy MM dd hh:mm a",
-      timeIntervals: 60,
+      timeIntervals: 30,
       showTimeSelect: "showTimeSelect",
       onChange: (date) => {
         setFormData({
@@ -1349,7 +1349,7 @@ const useDataInputOption = (inputPermission, page, status, data) => {
       dateFormat: "yyyy MM dd hh:mm a",
       minDate: today,
       maxDate: lastDayOfMonth,
-      timeIntervals: 60,
+      timeIntervals: 30,
       showTimeSelect: "showTimeSelect",
       onChange: (date) => {
         setFormData({

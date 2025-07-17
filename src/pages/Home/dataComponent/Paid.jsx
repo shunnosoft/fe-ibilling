@@ -370,9 +370,7 @@ const Paid = ({ modalShow, setModalShow, status, ispOwnerId, month, year }) => {
           customerId={customerId}
         />
       )}
-      {(modalStatus === "simple-queue" ||
-        modalStatus === "firewall-queue" ||
-        modalStatus === "core-queue") && (
+      {modalStatus === "static" && (
         <StaticCustomerDetails
           show={show}
           setShow={setShow}
