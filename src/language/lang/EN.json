@@ -1060,5 +1060,6 @@
   "expenditureDelete": "Expenditure Delete",
   "expenditureUpdate": "Expenditure Update",
   "selectOlt": "Select OLT for MAC-address search",
-  "allOlt": "Select all OLTs"
+  "allOlt": "Select all OLTs",
+  "assignResellerToOlt": "Assign OLT to Reseller"
 }

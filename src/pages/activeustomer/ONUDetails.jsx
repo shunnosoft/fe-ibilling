@@ -35,8 +35,8 @@ const ONUDetails = ({ show, setShow, customer }) => {
         olt[0]?.id
       );
     }
-    !olt.length && getOLT(ispOwnerId, setLoading, dispatch);
-  }, [show, customer, olt]);
+    !olt?.length && getOLT(ispOwnerId, setLoading, dispatch);
+  }, [show, customer]);
 
   const ONUFields = [
     // { label: "MAC Address", key: "macAddress" },
@@ -74,7 +74,7 @@ const ONUDetails = ({ show, setShow, customer }) => {
           : customer?.name + " " + t("onuLaser"),
       }}
     >
-      {olt?.length > 0 && (
+      {
         <div>
           <label className="form-control-label changeLabelFontColor">
             {t("selectOlt")}
@@ -93,7 +93,7 @@ const ONUDetails = ({ show, setShow, customer }) => {
             <option value="all">{t("allOlt")}</option>
           </select>
         </div>
-      )}
+      }
 
       <div>
         {isLoading

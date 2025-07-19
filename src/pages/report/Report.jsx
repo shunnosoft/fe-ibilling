@@ -448,11 +448,6 @@ const Report = () => {
                         : original.customer?.mikrotikPackage?.name
                     }`
                   : original.hotspotCustomer?.hotspotPackage?.name}
-                {/* {original.customer?.mikrotikPackage?.name
-                  ? original.customer?.mikrotikPackage?.name
-                  : original.customer?.userType === "pppoe"
-                  ? original.customer?.pppoe?.profile
-                  : original?.hotspotCustomer?.hotspot.profile} */}
               </p>
               <p style={{ fontWeight: "500" }}>৳{original?.amount}</p>
             </div>

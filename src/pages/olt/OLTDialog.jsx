@@ -7,7 +7,8 @@ import * as Yup from "yup";
 import Loader from "../../components/common/Loader";
 import { createOLT, updateOLT } from "../../features/oltApi";
 import useISPowner from "../../hooks/useISPOwner";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import useSelectorState from "../../hooks/useSelectorState";
 
 const DEFAULT_VALUE = {
   mikrotik: "",
@@ -18,6 +19,7 @@ const DEFAULT_VALUE = {
   password: "",
   host: "",
   port: "",
+  reseller: "",
 };
 
 const OLTDialog = ({ show, setShow, isUpdate, oltInformation }) => {
@@ -25,7 +27,10 @@ const OLTDialog = ({ show, setShow, isUpdate, oltInformation }) => {
   const dispatch = useDispatch();
 
   //---> Get user & current user data form useISPOwner hooks
-  const { ispOwnerId, bpSettings } = useISPowner();
+  const { ispOwnerId, role, userData } = useISPowner();
+
+  //---> Get redux store state data from useSelectorState hooks
+  const { mikrotiks } = useSelectorState();
 
   //---> OLT Form Data Validation Schema
   const oltValidator = Yup.object({
@@ -49,10 +54,8 @@ const OLTDialog = ({ show, setShow, isUpdate, oltInformation }) => {
     password: Yup.string().required(t("password") + " " + t("requiredField")),
     host: Yup.string().required(t("ip") + " " + t("requiredField")),
     port: Yup.number().required(t("port") + " " + t("requiredField")),
+    reseller: Yup.string(),
   });
-
-  //---> Get ispOwner mikrotik from redux store
-  const mikrotiks = useSelector((state) => state?.mikrotik?.mikrotik);
 
   //---> Local State
   const [defaultValues, setDefaultValue] = useState(DEFAULT_VALUE);
@@ -221,6 +224,7 @@ const OLTDialog = ({ show, setShow, isUpdate, oltInformation }) => {
     const sendingData = {
       ...formValues,
       ispOwner: ispOwnerId,
+      ...(role === "reseller" && { reseller: userData?.id }),
     };
 
     if (isUpdate) {

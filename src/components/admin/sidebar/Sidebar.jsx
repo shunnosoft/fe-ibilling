@@ -279,7 +279,7 @@ export default function Sidebar() {
                   ""
                 )}
 
-                {["ispOwner", "manager"].includes(role) &&
+                {["ispOwner", "reseller"].includes(role) &&
                 ispOwnerData?.bpSettings?.hasMikrotik ? (
                   <NavLink
                     key={29}

@@ -33,6 +33,9 @@ const useSelectorState = () => {
     (state) => state.adminNetFeeSupport?.bulletinPermission
   );
 
+  //---> Get ISP Owner resellers from redux store
+  const resellers = useSelector((state) => state?.reseller?.reseller);
+
   return {
     areas,
     subAreas,
@@ -44,6 +47,7 @@ const useSelectorState = () => {
     ownerUsers,
     userStaff,
     bulletinPermission,
+    resellers,
   };
 };
 

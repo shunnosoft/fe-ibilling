@@ -32,7 +32,7 @@ import FormatNumber from "../../components/common/NumberFormat";
 import ReactToPrint from "react-to-print";
 import PrintReport from "./ReportPDF";
 import DatePicker from "react-datepicker";
-import { Accordion, Card, Collapse } from "react-bootstrap";
+import { Accordion, Badge, Card, Collapse } from "react-bootstrap";
 import WithdrawOnlinePayment from "./WithdrawOnlinePayment";
 import NetFeeBulletin from "../../components/bulletin/NetFeeBulletin";
 import { getBulletinPermission } from "../../features/apiCallAdmin";
@@ -56,7 +56,7 @@ const Report = () => {
   today.setHours(23, 59, 59, 999);
 
   // get user & current user data form useISPOwner
-  const { role, ispOwnerId, userData } = useISPowner();
+  const { role, ispOwnerId, userData, resellerData } = useISPowner();
 
   // get isp owner data
   const bpSettings = useSelector(
@@ -88,6 +88,7 @@ const Report = () => {
 
   // reseller id from role base
   const resellerId = userRole === "collector" ? userData.reseller : userData.id;
+  const resellerInfo = userRole === "collector" ? resellerData : userData;
 
   // Loading state
   const [isLoading, setIsLoading] = useState(false);
@@ -238,12 +239,6 @@ const Report = () => {
     return findPack;
   };
 
-  //
-  const getCollectedByBill = (collectedId) => {
-    const performer = ownerUsers.find((item) => item[collectedId]);
-    return performer && performer[collectedId];
-  };
-
   // select area & collector find
   const areaName = subAreas.find((item) => item.id === areaIds);
   const collector = resellerUsers.find((item) => item.user === collectorIds);
@@ -261,67 +256,168 @@ const Report = () => {
   const columns = useMemo(
     () => [
       {
-        width: "8%",
+        width: "5%",
         Header: t("id"),
-        accessor: "customer.customerId",
+        accessor: (field) =>
+          field?.hotspotCustomer
+            ? field?.hotspotCustomer?.customerId
+            : field?.customer?.customerId,
+        Cell: ({ row: { original } }) => (
+          <div>
+            <p className="text-center">
+              {original?.hotspotCustomer
+                ? original?.hotspotCustomer?.customerId
+                : original?.customer?.customerId}
+            </p>
+            <Badge
+              bg={
+                original.customer?.userType === "pppoe"
+                  ? "primary"
+                  : original.customer?.userType === "static"
+                  ? "info"
+                  : "secondary"
+              }
+            >
+              {original.customer?.userType === "pppoe"
+                ? "PPPoE"
+                : original.customer?.userType === "static"
+                ? "Static"
+                : original.hotspotCustomer?.userType === "hotspot"
+                ? "Hotspot"
+                : ""}
+            </Badge>
+          </div>
+        ),
       },
       {
-        width: "12%",
-        Header: t("name"),
-        accessor: "customer.name",
+        width: "15%",
+        Header: t("pppoeIp"),
+        accessor: (field) =>
+          `${
+            field?.hotspotCustomer
+              ? field?.hotspotCustomer?.name
+              : field?.customer?.name
+          } ${
+            field.customer?.userType === "pppoe"
+              ? field.customer?.pppoe?.name
+              : field.customer?.userType === "static"
+              ? field.customer?.queue?.target
+              : field?.hotspotCustomer?.hotspot?.name
+          }`,
+        Cell: ({ row: { original } }) => {
+          const customer = original?.customer;
+          const hotspotCustomer = original?.hotspotCustomer;
+
+          const name = hotspotCustomer?.name || customer?.name;
+
+          let addressInfo = "";
+          if (customer?.userType === "pppoe") {
+            addressInfo = customer?.pppoe?.name;
+          } else if (customer?.userType === "static") {
+            addressInfo = customer?.queue?.target;
+          } else {
+            addressInfo = hotspotCustomer?.hotspot?.name;
+          }
+
+          return (
+            <div>
+              <p>{name}</p>
+              <p>{addressInfo}</p>
+            </div>
+          );
+        },
       },
       {
-        width: "9%",
-        Header: t("package"),
+        width: "13%",
+        Header: t("packageBill"),
         accessor: (field) =>
           field.customer?.mikrotikPackage?.name
             ? field.customer?.mikrotikPackage?.name
             : field.customer?.userType === "pppoe"
             ? field.customer?.pppoe?.profile
             : field?.hotspotCustomer?.hotspot.profile,
+        Cell: ({ row: { original } }) => {
+          return (
+            <div>
+              <p>
+                {original.customer?.userType === "pppoe"
+                  ? original.customer?.mikrotikPackage?.name
+                  : original.customer?.userType === "static"
+                  ? `${
+                      original.customer?.uploadPackage
+                        ? original.customer?.uploadPackage?.name
+                        : original.customer?.mikrotikPackage?.name
+                    }/${
+                      original.customer?.downloadPackage
+                        ? original.customer?.downloadPackage?.name
+                        : original.customer?.mikrotikPackage?.name
+                    }`
+                  : original.hotspotCustomer?.hotspotPackage?.name}
+              </p>
+              <p style={{ fontWeight: "500" }}>৳{original?.amount}</p>
+            </div>
+          );
+        },
       },
       {
-        width: "11%",
-        Header: t("bill"),
-        accessor: "amount",
+        width: "7%",
+        Header: t("due"),
+        accessor: "due",
       },
       {
-        width: "10%",
-        Header: t("admin"),
-        accessor: "ispOwnerCommission",
-      },
-      {
-        width: "10%",
-        Header: t("reseller"),
-        accessor: "resellerCommission",
-      },
-      {
-        width: "11%",
+        width: "8%",
         Header: t("billType"),
         accessor: "billType",
       },
       {
-        width: "10%",
-        Header: t("billingType"),
-        accessor: "billingType",
-        Cell: ({ cell: { value } }) => badge(value),
+        width: "12%",
+        Header: t("TypeMedium"),
+        accessor: (field) => `${field?.billingType} ${field?.medium}`,
+        Cell: ({ row: { original } }) => {
+          return (
+            <div>
+              <p style={{ fontWeight: "500" }}>{original?.medium}</p>
+              <p>{badge(original?.billingType)}</p>
+            </div>
+          );
+        },
       },
-
       {
-        width: "11%",
-        Header: t("medium"),
-        accessor: "medium",
-      },
-      {
-        width: "11%",
+        width: "8%",
         Header: t("collected"),
-        accessor: (data) => `${getCollectedByBill(data?.user)?.name}`,
-        Cell: ({ row: { original } }) => (
-          <div>{getCollectedByBill(original?.user)?.name}</div>
-        ),
+        accessor: "name",
       },
       {
         width: "12%",
+        Header: t("otherCommission"),
+        Cell: ({ row: { original } }) => (
+          <div>
+            <p>
+              {t("admin")} &nbsp;
+              <span style={{ fontWeight: "500" }}>
+                ৳
+                {original?.ispOwnerCommission
+                  ? original?.ispOwnerCommission
+                  : adminResellerCommission(resellerInfo, original, "reseller")
+                      ?.ispOwnerCommission}
+              </span>
+            </p>
+
+            <p>
+              {t("own")} &nbsp;
+              <span style={{ fontWeight: "500" }}>
+                ৳
+                {original?.resellerCommission
+                  ? original?.resellerCommission
+                  : adminResellerCommission(resellerInfo, original, "reseller")
+                      ?.resellerCommission}
+              </span>
+            </p>
+          </div>
+        ),
+      },
+      {
+        width: "8%",
         Header: t("note"),
         accessor: (data) => {
           return {
@@ -381,10 +477,16 @@ const Report = () => {
       previous.amount += current.amount;
 
       // sum of all reseller commission
-      previous.resellerCommission += current.resellerCommission;
+      previous.resellerCommission += current?.resellerCommission
+        ? current?.resellerCommission
+        : adminResellerCommission(resellerInfo, current, "reseller")
+            .resellerCommission;
 
       // sum of all ispOwner commission
-      previous.ispOwnerCommission += current.ispOwnerCommission;
+      previous.ispOwnerCommission += current?.ispOwnerCommission
+        ? current?.ispOwnerCommission
+        : adminResellerCommission(resellerInfo, current, "reseller")
+            .ispOwnerCommission;
 
       return previous;
     }, initialValue);
@@ -410,7 +512,7 @@ const Report = () => {
         </span>
       </div>
       <div>
-        {t("reseller")} :
+        {t("own")} :
         <span className="fw-bold">
           &nbsp;৳{FormatNumber(totalSum().resellerCommission)}
         </span>

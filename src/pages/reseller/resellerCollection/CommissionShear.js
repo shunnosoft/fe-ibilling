@@ -77,8 +77,6 @@ export const adminResellerCommission = (reseller, data, role) => {
     }
   }
 
-  console.log(ispOwnerCommission);
-
   // set ispOwner & reseller commission
   return {
     resellerCommission,

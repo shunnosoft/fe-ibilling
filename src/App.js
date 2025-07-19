@@ -215,6 +215,12 @@ function App() {
             <Route path="/activity" element={<ActivityLog />} />
 
             <Route path="/activity/:userId" element={<UserActivityLog />} />
+
+            {/* OLT Route */}
+            <Route
+              path="olt"
+              element={user ? <OLT /> : <Navigate to={"/home"} />}
+            />
           </Routes>
         )}
 
@@ -630,12 +636,6 @@ function App() {
                   <Navigate to={"/home"} />
                 )
               }
-            />
-
-            {/* OLT Route */}
-            <Route
-              path="olt"
-              element={user ? <OLT /> : <Navigate to={"/home"} />}
             />
 
             {/* network diagram */}

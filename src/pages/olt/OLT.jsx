@@ -20,8 +20,13 @@ import { deleteOLT, getOLT } from "../../features/oltApi";
 import useISPowner from "../../hooks/useISPOwner";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
-import { fetchMikrotik, getOLTConnection } from "../../features/apiCalls";
+import {
+  fetchMikrotik,
+  fetchReseller,
+  getOLTConnection,
+} from "../../features/apiCalls";
 import useSelectorState from "../../hooks/useSelectorState";
+import { getMikrotik } from "../../features/apiCallReseller";
 
 const OLT = () => {
   const { t } = useTranslation();
@@ -71,11 +76,12 @@ const OLT = () => {
   ];
 
   //---> Get user & current user data form useISPOwner hooks
-  const { ispOwnerId, bpSettings } = useISPowner();
+  const { role, ispOwnerId, bpSettings, userData } = useISPowner();
 
   //---> Get redux store state data from useSelectorState hooks
-  const { mikrotiks } = useSelectorState();
+  const { mikrotiks, resellers } = useSelectorState();
 
+  //---> Get ISP owner or reseller olt from redux store
   const olt = useSelector((state) => state?.olt.olt);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -88,10 +94,18 @@ const OLT = () => {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
-    getOLT(ispOwnerId, setIsLoading, dispatch);
+    !olt?.length && getOLT(ispOwnerId, setIsLoading, dispatch);
 
-    //---> @Get ispOwner mikrotiks data
-    !mikrotiks?.length && fetchMikrotik(dispatch, ispOwnerId, setLoading);
+    //===> @Get ISP Owner reseller data api
+    !resellers?.length && fetchReseller(dispatch, ispOwnerId, setLoading);
+
+    if (role === "reseller") {
+      //---> @Get reseller mikrotiks data
+      !mikrotiks?.length && getMikrotik(dispatch, userData.id);
+    } else {
+      //---> @Get ispOwner mikrotiks data
+      !mikrotiks?.length && fetchMikrotik(dispatch, ispOwnerId, setLoading);
+    }
   }, [ispOwnerId]);
 
   const reloadHandler = () => {

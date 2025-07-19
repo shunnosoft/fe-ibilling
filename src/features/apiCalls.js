@@ -3852,7 +3852,7 @@ export const getMultipleManager = async (dispatch, currentUser) => {
     );
     dispatch(getMultipleManagerSuccess(res.data));
   } catch (error) {
-    toast.error(error.response?.data?.message);
+    toast.error(error?.message);
   }
 };
 
