@@ -355,7 +355,7 @@
   "note": "Note",
   "action": "Action",
   "medium": "Medium",
-  "printInvoiceBill": "Print Invoice Bill",
+  "printInvoiceBill": "Bill invoice print",
   "billIvoice": "Bill Invoice",
   "deleteReport": "Delete Report",
   "doNotGetAnyData": "Don't Get Any Data !",
@@ -1061,5 +1061,6 @@
   "expenditureUpdate": "Expenditure Update",
   "selectOlt": "Select OLT for MAC-address search",
   "allOlt": "Select all OLTs",
-  "assignResellerToOlt": "Assign OLT to Reseller"
+  "assignResellerToOlt": "Assign OLT to Reseller",
+  "expenditure": "Expenditure"
 }

@@ -361,7 +361,7 @@
   "action": "একশন",
   "medium": "মাধ্যম",
   "addStaff": "কর্মচারী এড করুন",
-  "printInvoiceBill": "প্রিন্ট ইনভয়েস বিল",
+  "printInvoiceBill": "বিল ইনভয়েস প্রিন্ট",
   "billIvoice": "বিল ইনভয়েস",
   "deleteReport": "ডিলিট রিপোর্ট",
   "doNotGetAnyData": "কোন ডাটা পাওয়া যাই নি !",
@@ -1069,5 +1069,6 @@
   "expenditureUpdate": "খরচ আপডেট করুন",
   "selectOlt": "ম্যাক-ঠিকানা অনুসন্ধানের জন্য ওএলটি নির্বাচন করুন",
   "allOlt": "সকল ওএলটি নির্বাচন করুন",
-  "assignResellerToOlt": "রিসেলারকে ওএলটি বরাদ্দ করুন"
+  "assignResellerToOlt": "রিসেলারকে ওএলটি বরাদ্দ করুন",
+  "expenditure": "খরচ"
 }

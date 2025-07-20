@@ -19,7 +19,6 @@ const DEFAULT_VALUE = {
   password: "",
   host: "",
   port: "",
-  reseller: "",
 };
 
 const OLTDialog = ({ show, setShow, isUpdate, oltInformation }) => {

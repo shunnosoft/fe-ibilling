@@ -273,8 +273,7 @@ const CollectorEdit = ({ show, setShow, collectorId }) => {
                 {/* collector area tab end*/}
 
                 {/* collector permissions tab start*/}
-                <Tab eventKey="changePermission" title={t("changePermission")}>
-                  <b className="mt-2"> {t("changePermission")} </b>
+                <Tab eventKey="changePermission" title={t("permissions")}>
                   <div className="displayGrid3">
                     <div className="CheckboxContainer">
                       <input
@@ -318,7 +317,7 @@ const CollectorEdit = ({ show, setShow, collectorId }) => {
                                 htmlFor={val.value + key}
                                 className="checkboxLabel"
                               >
-                                {val.label}
+                                {t(val.label)}
                               </label>
                             </div>
 

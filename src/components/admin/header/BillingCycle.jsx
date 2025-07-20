@@ -5,8 +5,6 @@ import { getIspOwner, getReseller } from "../../../features/apiCallAdmin";
 import { toast } from "react-toastify";
 
 const BillingCycle = ({ show, setShow, ispOwner }) => {
-  console.log({ ispOwner });
-
   const { t } = useTranslation();
 
   // billing cycle panel state
