@@ -35,7 +35,7 @@ const WebhookMessage = () => {
   var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
 
   // get user & current user data form useISPOwner hook
-  const { ispOwnerData, userData } = useISPowner();
+  const { ispOwnerData, bpSettings, userData } = useISPowner();
 
   // get customers webhook paymnet message data
   const messages = useSelector((state) => state?.payment?.webhookMessage);
@@ -86,12 +86,11 @@ const WebhookMessage = () => {
   selectLastDay.setHours(23, 59, 59, 999);
 
   // get customer webhook paymnet message sending data from api
-  const limit = localStorage.getItem("webhook");
   const dataGet = {
     netfeeId: ispOwnerData.netFeeId,
     startDate: selectFirstDay,
     endDate: selectLastDay,
-    limit,
+    limit: bpSettings?.customerLimit,
   };
 
   // api call

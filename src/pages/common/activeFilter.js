@@ -18,6 +18,8 @@ export const handleActiveFilter = (mainData, filterOptions) => {
       billDayLeft,
       startDate,
       endDate,
+      startPromiseDate,
+      endPromiseDate,
       changeCustomer,
       userType,
       action,
@@ -39,9 +41,15 @@ export const handleActiveFilter = (mainData, filterOptions) => {
     const billingStartData = new Date(
       moment(startDate).format("YYYY-MM-DD hh:mm a")
     );
-
     const billingEndData = new Date(
       moment(endDate).format("YYYY-MM-DD hh:mm a")
+    );
+
+    const promiseStartData = new Date(
+      moment(startPromiseDate).format("YYYY-MM-DD hh:mm a")
+    );
+    const promiseEndData = new Date(
+      moment(endPromiseDate).format("YYYY-MM-DD hh:mm a")
     );
 
     const monthCreateDateStart = new Date(
@@ -104,7 +112,13 @@ export const handleActiveFilter = (mainData, filterOptions) => {
           ? billingStartData <= billingCycle && billingEndData >= billingCycle
           : true,
       promiseDate:
-        changeCustomer === "promiseDate" ? billingCycle < promiseDate : true,
+        startPromiseDate && endPromiseDate
+          ? promiseStartData <= promiseDate && promiseEndData >= promiseDate
+          : true,
+      promiseDateChange:
+        changeCustomer === "promiseDate"
+          ? billingCycle < promiseDate || billingCycle > promiseDate
+          : true,
       autoDisable: changeCustomer ? c.autoDisable !== connectionStatus : true,
       userType: userType ? c.userType === userType : true,
       action: action ? c.action === action : true,
@@ -159,6 +173,9 @@ export const handleActiveFilter = (mainData, filterOptions) => {
     if (!isPass) return acc;
 
     isPass = conditions["promiseDate"];
+    if (!isPass) return acc;
+
+    isPass = conditions["promiseDateChange"];
     if (!isPass) return acc;
 
     isPass = conditions["autoDisable"];

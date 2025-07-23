@@ -500,6 +500,44 @@ const DataFilter = ({
       },
     },
     {
+      name: "startPromiseDate",
+      type: "date",
+      id: "startPromiseDate",
+      isVisible: adminUser || resellerUser ? true : false,
+      disabled: false,
+      placeholderText: t("startPromiseDate"),
+      component: "DatePicker",
+      dateFormat: "yyyy MM dd hh:mm a",
+      timeIntervals: 60,
+      showTimeSelect: "showTimeSelect",
+      selected: filterOptions.startPromiseDate,
+      onChange: (date) => {
+        setFilterOption({
+          ...filterOptions,
+          startPromiseDate: date,
+        });
+      },
+    },
+    {
+      name: "endPromiseDate",
+      type: "date",
+      id: "endPromiseDate",
+      isVisible: adminUser || resellerUser ? true : false,
+      disabled: false,
+      placeholderText: t("endPromiseDate"),
+      component: "DatePicker",
+      dateFormat: "yyyy MM dd hh:mm a",
+      timeIntervals: 60,
+      showTimeSelect: "showTimeSelect",
+      selected: filterOptions.endPromiseDate,
+      onChange: (date) => {
+        setFilterOption({
+          ...filterOptions,
+          endPromiseDate: date,
+        });
+      },
+    },
+    {
       name: "changeCustomer",
       type: "select",
       id: "changeCustomer",

@@ -1070,5 +1070,7 @@
   "selectOlt": "ম্যাক-ঠিকানা অনুসন্ধানের জন্য ওএলটি নির্বাচন করুন",
   "allOlt": "সকল ওএলটি নির্বাচন করুন",
   "assignResellerToOlt": "রিসেলারকে ওএলটি বরাদ্দ করুন",
-  "expenditure": "খরচ"
+  "expenditure": "খরচ",
+  "startPromiseDate": "প্রতিশ্রুতি তারিখ শুরু",
+  "endPromiseDate": "প্রতিশ্রুতি তারিখ শেষ"
 }

@@ -114,6 +114,7 @@ const Report = () => {
 
   // customer bill type
   const [billType, setBillType] = useState("");
+  const [billingType, setBillingType] = useState("");
 
   // report note view id
   const [viewId, setViewId] = useState();
@@ -220,6 +221,10 @@ const Report = () => {
 
     if (billType) {
       arr = arr.filter((val) => val.billType === billType);
+    }
+
+    if (billingType) {
+      arr = arr.filter((val) => val.billingType === billingType);
     }
 
     arr = arr.filter(
@@ -633,7 +638,6 @@ const Report = () => {
                               minDate={new Date(userData?.createdAt)}
                             />
                           </div>
-
                           <select
                             className="form-select me-2 mt-0"
                             onChange={(e) => setAreaIds(e.target.value)}
@@ -647,7 +651,6 @@ const Report = () => {
                               </option>
                             ))}
                           </select>
-
                           {userRole !== "collector" && (
                             <select
                               className="form-select me-2 mt-0"
@@ -663,6 +666,19 @@ const Report = () => {
                               ))}
                             </select>
                           )}
+
+                          <select
+                            className="form-select mt-0"
+                            onChange={(e) => setBillType(e.target.value)}
+                          >
+                            <option value="" defaultValue>
+                              {t("billType")}
+                            </option>
+                            <option value="bill">{t("bill")}</option>
+                            <option value="connectionFee">
+                              {t("connectionFee")}
+                            </option>
+                          </select>
 
                           <select
                             className="form-select mt-0"
@@ -683,15 +699,13 @@ const Report = () => {
 
                           <select
                             className="form-select mt-0"
-                            onChange={(e) => setBillType(e.target.value)}
+                            onChange={(e) => setBillingType(e.target.value)}
                           >
                             <option value="" defaultValue>
-                              {t("billType")}
+                              {t("billingType")}
                             </option>
-                            <option value="bill">{t("bill")}</option>
-                            <option value="connectionFee">
-                              {t("connectionFee")}
-                            </option>
+                            <option value="monthly">{t("monthly")}</option>
+                            <option value="daily">{t("daily")}</option>
                           </select>
 
                           <div>
@@ -724,7 +738,6 @@ const Report = () => {
                               placeholderText={t("selectBillDate")}
                             />
                           </div>
-
                           <button
                             className="btn btn-outline-primary w-140 mt-0 chartFilteritem"
                             type="button"

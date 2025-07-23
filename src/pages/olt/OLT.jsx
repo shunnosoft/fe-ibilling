@@ -73,6 +73,14 @@ const OLT = () => {
       label: "TBS GPon",
       value: "tbs_gPon",
     },
+    {
+      label: "BT PON EPon",
+      value: "btPon_ePon",
+    },
+    {
+      label: "Corelink EPon",
+      value: "corelink_ePon",
+    },
   ];
 
   //---> Get user & current user data form useISPOwner hooks

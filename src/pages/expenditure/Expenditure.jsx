@@ -320,7 +320,7 @@ const Expenditure = () => {
                 aria-expanded="false"
               />
               <ul className="dropdown-menu" aria-labelledby="customerDrop">
-                {role !== "collector" && (
+                {(role === "ispOwner" || permissions?.expenditureUpdate) && (
                   <li
                     onClick={() => {
                       setSinglePurpose(original);

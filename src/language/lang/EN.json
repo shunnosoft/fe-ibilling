@@ -1062,5 +1062,7 @@
   "selectOlt": "Select OLT for MAC-address search",
   "allOlt": "Select all OLTs",
   "assignResellerToOlt": "Assign OLT to Reseller",
-  "expenditure": "Expenditure"
+  "expenditure": "Expenditure",
+  "startPromiseDate": "Start Promise Date",
+  "endPromiseDate": "End Promise Date"
 }

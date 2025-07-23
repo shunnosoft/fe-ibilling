@@ -435,7 +435,7 @@ const ResellerCustomer = () => {
       {
         width: "6%",
         Header: t("day"),
-        accessor: (data) => `${new Date(data?.billingCycle).getDay()}`,
+        accessor: (data) => `${getCustomerDayLeft(data?.billingCycle)}`,
         Cell: ({ row: { original } }) => (
           <div className="text-center p-1">
             <p

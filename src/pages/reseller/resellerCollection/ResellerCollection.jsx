@@ -162,13 +162,15 @@ const ResellerCollection = () => {
   //filter handler
   const filterHandler = () => {
     let tempReport = collectionReport.reduce((acc, c) => {
-      const { reseller, medium, startDate, endDate } = filterOption;
+      const { reseller, medium, billingType, startDate, endDate } =
+        filterOption;
 
       // make possible conditions objects if the filter value not selected thats return true
       //if filter value exist then compare
       const conditions = {
         reseller: reseller ? reseller === c.reseller : true,
         medium: medium ? medium === c.medium : true,
+        billingType: billingType ? billingType === c.billingType : true,
         filterDate:
           startDate && endDate
             ? new Date(c.createdAt) >=
@@ -187,6 +189,9 @@ const ResellerCollection = () => {
       if (!isPass) return acc;
 
       isPass = conditions["medium"];
+      if (!isPass) return acc;
+
+      isPass = conditions["billingType"];
       if (!isPass) return acc;
 
       isPass = conditions["filterDate"];
@@ -689,33 +694,47 @@ const ResellerCollection = () => {
                             </select>
                           </div>
 
-                          <div>
-                            <select
-                              className="form-select mt-0 mw-100"
-                              onChange={(e) => {
-                                setFilterOption({
-                                  ...filterOption,
-                                  medium: e.target.value,
-                                });
-                              }}
+                          <select
+                            className="form-select mt-0 mw-100"
+                            onChange={(e) => {
+                              setFilterOption({
+                                ...filterOption,
+                                medium: e.target.value,
+                              });
+                            }}
+                          >
+                            <option
+                              value=""
+                              selected={filterOption.medium == ""}
                             >
-                              <option
-                                value=""
-                                selected={filterOption.medium == ""}
-                              >
-                                {t("medium")}
-                              </option>
+                              {t("medium")}
+                            </option>
 
-                              <option value="cash">{t("handCash")}</option>
-                              <option value="bKashPG"> {t("bKash")} </option>
-                              <option value="uddoktapay">
-                                {t("uddoktaPay")}
-                              </option>
-                              <option value="sslcommerz">
-                                {t("sslCommerz")}
-                              </option>
-                            </select>
-                          </div>
+                            <option value="cash">{t("handCash")}</option>
+                            <option value="bKashPG"> {t("bKash")} </option>
+                            <option value="uddoktapay">
+                              {t("uddoktaPay")}
+                            </option>
+                            <option value="sslcommerz">
+                              {t("sslCommerz")}
+                            </option>
+                          </select>
+
+                          <select
+                            className="form-select mt-0"
+                            onChange={(e) => {
+                              setFilterOption({
+                                ...filterOption,
+                                billingType: e.target.value,
+                              });
+                            }}
+                          >
+                            <option value="" defaultValue>
+                              {t("billingType")}
+                            </option>
+                            <option value="monthly">{t("monthly")}</option>
+                            <option value="daily">{t("daily")}</option>
+                          </select>
 
                           <div>
                             <DatePicker

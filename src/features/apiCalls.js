@@ -443,7 +443,6 @@ export const getIspOwnerDashboardOverViewCustomerData = async (
       `/dashboard/customer-overview/${ispOwnerId}?year=${filterData.year}&month=${filterData.month}`
     );
 
-    localStorage.setItem("webhook", res?.data.customers);
     dispatch(getDashboardOverViewCustomerData(res.data));
     setDashboardLoading(false);
   } catch (err) {

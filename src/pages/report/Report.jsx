@@ -95,6 +95,7 @@ const Report = () => {
 
   const [collectedBy, setCollectedBy] = useState();
   const [billType, setBillType] = useState("");
+  const [billingType, setBillingType] = useState("");
   const [medium, setMedium] = useState("");
   const [open, setOpen] = useState(false);
 
@@ -255,6 +256,10 @@ const Report = () => {
 
     if (billType) {
       arr = arr.filter((bill) => bill.billType === billType);
+    }
+
+    if (billingType) {
+      arr = arr.filter((bill) => bill.billingType === billingType);
     }
 
     if (medium) {
@@ -817,6 +822,7 @@ const Report = () => {
                             </option>
                             <option value="bill"> {t("monthBill")} </option>
                           </select>
+
                           <select
                             className="form-select mt-0"
                             onChange={(e) => setMedium(e.target.value)}
@@ -834,6 +840,17 @@ const Report = () => {
                             <option value="nagad"> {t("nagad")} </option>
                             <option value="Webhook">{t("webhook")} </option>
                             <option value="others"> {t("others")} </option>
+                          </select>
+
+                          <select
+                            className="form-select mt-0"
+                            onChange={(e) => setBillingType(e.target.value)}
+                          >
+                            <option value="" defaultValue>
+                              {t("billingType")}
+                            </option>
+                            <option value="monthly">{t("monthly")}</option>
+                            <option value="daily">{t("daily")}</option>
                           </select>
 
                           {(role === "ispOwner" ||

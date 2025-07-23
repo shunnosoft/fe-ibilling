@@ -753,37 +753,6 @@ export default function Home() {
       textAccessor: "text",
       valueAccessor: "value",
     },
-    // {
-    //   name: "queueType",
-    //   type: "select",
-    //   id: "queueType",
-    //   value: filterOptions.queueType,
-    //   isVisible: true,
-    //   disabled: false,
-    //   onChange: (e) => {
-    //     setFilterOption({
-    //       ...filterOptions,
-    //       queueType: e.target.value,
-    //     });
-    //   },
-    //   options: [
-    //     {
-    //       text: "Simple Queue",
-    //       value: "simple-queue",
-    //     },
-    //     {
-    //       text: "Firewall Queue",
-    //       value: "firewall-queue",
-    //     },
-    //     {
-    //       text: "Core Queue",
-    //       value: "core-queue",
-    //     },
-    //   ],
-    //   firstOptions: "Queue Type",
-    //   textAccessor: "text",
-    //   valueAccessor: "value",
-    // },
     {
       name: "customerType",
       type: "select",
@@ -839,6 +808,33 @@ export default function Home() {
         },
       ],
       firstOptions: "Mikrotik",
+      textAccessor: "text",
+      valueAccessor: "value",
+    },
+    {
+      name: "olt",
+      type: "select",
+      id: "olt",
+      value: filterOptions.olt,
+      isVisible: true,
+      disabled: false,
+      onChange: (e) => {
+        setFilterOption({
+          ...filterOptions,
+          olt: e.target.value,
+        });
+      },
+      options: [
+        {
+          text: "With OLT",
+          value: "true",
+        },
+        {
+          text: "WithOut OLT",
+          value: "false",
+        },
+      ],
+      firstOptions: "OLT",
       textAccessor: "text",
       valueAccessor: "value",
     },
@@ -947,6 +943,7 @@ export default function Home() {
         queueType,
         customerType,
         mikrotik,
+        olt,
         district,
         startCreateDate,
         endCreateDate,
@@ -991,6 +988,7 @@ export default function Home() {
           ? c.bpSettings?.customerType.includes(customerType)
           : true,
         mikrotik: mikrotik ? `${c.bpSettings.hasMikrotik}` === mikrotik : true,
+        olt: olt ? `${c.bpSettings.hasOLT}` === olt : true,
         district: district ? c.district === district : true,
         createDate:
           startCreateDate && endCreateDate
@@ -1024,6 +1022,9 @@ export default function Home() {
       if (!isPass) return acc;
 
       isPass = conditions["mikrotik"];
+      if (!isPass) return acc;
+
+      isPass = conditions["olt"];
       if (!isPass) return acc;
 
       isPass = conditions["district"];
