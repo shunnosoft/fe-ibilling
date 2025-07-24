@@ -243,10 +243,8 @@ export const editCustomer = async (
       );
     }
     setShow(false);
-  } catch (err) {
-    if (err.response) {
-      toast.error(err.response.data.message);
-    }
+  } catch (error) {
+    toast.error(error.message);
   }
   setIsloading(false);
 };

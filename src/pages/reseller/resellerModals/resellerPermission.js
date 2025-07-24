@@ -136,14 +136,14 @@ export const resellerPermissions = (permission, bpSettings) => {
     //   isChecked: permission?.customerAutomaticConnectionOnOff,
     //   disabled: false,
     // },
-    {
-      id: 19,
-      label: "Daily Recharge Feature",
-      value: "dailyRechargeFeature",
-      isChecked: permission?.dailyRechargeFeature,
-      disabled: !bpSettings?.dailyRechargeFeature,
-      info: "After paying the customer's bill, the bill amount will not be deducted from the reseller's balance immediately. The daily amount of the customer's monthly bill will be deducted from the daily reseller balance.",
-    },
+    // {
+    //   id: 19,
+    //   label: "Daily Recharge Feature",
+    //   value: "dailyRechargeFeature",
+    //   isChecked: permission?.dailyRechargeFeature,
+    //   disabled: !bpSettings?.dailyRechargeFeature,
+    //   info: "After paying the customer's bill, the bill amount will not be deducted from the reseller's balance immediately. The daily amount of the customer's monthly bill will be deducted from the daily reseller balance.",
+    // },
     {
       id: 20,
       label: "Minus Balance",

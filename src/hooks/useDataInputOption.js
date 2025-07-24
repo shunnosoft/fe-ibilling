@@ -43,6 +43,8 @@ const useDataInputOption = (inputPermission, page, status, data) => {
     permissions,
   } = useISPowner();
 
+  console.log(permission?.billingCycleEdit);
+
   // admin staff user role permission
   const ispOwner = role === "ispOwner";
   const adminUser =
@@ -789,7 +791,11 @@ const useDataInputOption = (inputPermission, page, status, data) => {
           ? true
           : adminUser
           ? !ispOwner && !(permissions?.customerEdit || permissions?.package)
-          : resellerUser && !permission?.customerMikrotikPackageEdit
+          : !(
+              (permission?.customerEdit &&
+                permission?.customerMikrotikPackageEdit) ||
+              permission?.customerMikrotikPackageEdit
+            )
         : false,
       validation: true,
       label: t("package"),
@@ -943,8 +949,10 @@ const useDataInputOption = (inputPermission, page, status, data) => {
           : adminUser
           ? !ispOwner &&
             !(permissions?.customerEdit || permissions?.monthlyFeeEdit)
-          : resellerUser &&
-            !(permission?.customerEdit || permission?.monthlyFeeEdit),
+          : !(
+              (permission?.customerEdit && permission?.monthlyFeeEdit) ||
+              permission?.monthlyFeeEdit
+            ),
       validation: true,
       label: t("monthlyFee"),
       placeholder: "0",
@@ -966,8 +974,10 @@ const useDataInputOption = (inputPermission, page, status, data) => {
           : adminUser
           ? !ispOwner &&
             !(permissions?.customerEdit || permissions?.monthlyFeeEdit)
-          : resellerUser &&
-            !(permission?.customerEdit || permission?.monthlyFeeEdit),
+          : !(
+              (permission?.customerEdit && permission?.monthlyFeeEdit) ||
+              permission?.monthlyFeeEdit
+            ),
       validation: false,
       label: t("balance"),
       onChange: (e) => {
@@ -1187,7 +1197,9 @@ const useDataInputOption = (inputPermission, page, status, data) => {
           : (ispCRole && !permissions?.customerMobileEdit) ||
             (rsRole &&
               !(
-                permission?.customerEdit || permission?.singleCustomerNumberEdit
+                (permission?.customerEdit &&
+                  permission?.singleCustomerNumberEdit) ||
+                permission?.singleCustomerNumberEdit
               )) ||
             (rscRole &&
               !(
@@ -1310,7 +1322,10 @@ const useDataInputOption = (inputPermission, page, status, data) => {
           ? adminUser
             ? !ispOwner &&
               !(permissions?.customerEdit || permissions?.billingCycleUpdate)
-            : !(permission?.customerEdit || permission?.billingCycleEdit)
+            : !(
+                (permission?.customerEdit && permission?.billingCycleEdit) ||
+                permission?.billingCycleEdit
+              )
           : false,
       validation: true,
       label: t("billingCycle"),
