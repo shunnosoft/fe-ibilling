@@ -1147,7 +1147,7 @@ export default function Home() {
 
                     <div className="displayGrid1">
                       <button
-                        className="btn btn-outline-primary"
+                        className="btn btn-outline-success"
                         type="button"
                         onClick={handleActiveFilter}
                       >

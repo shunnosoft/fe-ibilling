@@ -4,102 +4,138 @@
 }
 
 .bg-card-01 {
-  background: linear-gradient(45deg, #0c9397, #05abba);
+  /* background: linear-gradient(45deg, #0c9397, #05abba); */
+  background: linear-gradient(45deg, #4a9782, #6eb9a2);
   height: 9rem;
 }
 
 .bg-card-02 {
-  background: linear-gradient(45deg, #147dda, #25a1db);
+  /* background: linear-gradient(45deg, #147dda, #25a1db); */
+  background: linear-gradient(45deg, #4a9782, #3f9eb3);
   height: 9rem;
 }
 
 .bg-card-03 {
-  background: linear-gradient(45deg, #48995c, #86d63c);
+  /* background: linear-gradient(45deg, #48995c, #86d63c); */
+  background: linear-gradient(45deg, #4a9782, #2c6a5b);
   height: 9rem;
 }
 
 .bg-card-04 {
-  background: linear-gradient(45deg, #f18c0f, #f1c01d);
+  /* background: linear-gradient(45deg, #f18c0f, #f1c01d); */
+  background: linear-gradient(45deg, #4a9782, #79c1aa);
   height: 9rem;
 }
 
 .bg-card-05 {
-  background: linear-gradient(45deg, #ed2a2a, #e36671);
+  /* background: linear-gradient(45deg, #ed2a2a, #e36671); */
+  background: linear-gradient(45deg, #4a9782, #a1d1c0);
+
   height: 9rem;
 }
 
 .bg-card-06 {
-  background: linear-gradient(45deg, #8b8888, #9e9698);
+  /* background: linear-gradient(45deg, #8b8888, #9e9698); */
+  background: linear-gradient(45deg, #4a9782, #5083bd);
+
   height: 9rem;
 }
 
 .bg-card-07 {
-  background: linear-gradient(45deg, #7991ac, #9db0c7);
+  /* background: linear-gradient(45deg, #7991ac, #9db0c7); */
+  background: linear-gradient(45deg, #4a9782, #2f4d4a);
+
   height: 9rem;
 }
 
 .bg-card-08 {
-  background: linear-gradient(45deg, #4b75a5, #348aec);
+  /* background: linear-gradient(45deg, #4b75a5, #348aec); */
+  background: linear-gradient(45deg, #4a9782, #d6a16d);
+
   height: 9rem;
 }
 
 .bg-card-09 {
-  background: linear-gradient(45deg, #b2a409, #aca443);
+  /* background: linear-gradient(45deg, #b2a409, #aca443); */
+  background: linear-gradient(45deg, #4a9782, #b8e994);
+
   height: 9rem;
 }
 
 .bg-card-10 {
-  background: linear-gradient(45deg, rgb(100, 57, 95), rgb(133, 78, 126));
+  /* background: linear-gradient(45deg, rgb(100, 57, 95), rgb(133, 78, 126)); */
+  background: linear-gradient(45deg, #4a9782, #8a9ba8);
+
   height: 9rem;
 }
 
 .bg-card-11 {
-  background: linear-gradient(45deg, #19bbe8, #1cdad6);
+  /* background: linear-gradient(45deg, #19bbe8, #1cdad6); */
+  background: linear-gradient(45deg, #4a9782, #5fb3b3);
+
   height: 9rem;
 }
 
 .bg-card-12 {
-  background: linear-gradient(45deg, #435859, #36b9bd);
+  /* background: linear-gradient(45deg, #435859, #36b9bd); */
+  background: linear-gradient(45deg, #4a9782, #aab7b8);
+
   height: 9rem;
 }
 
 .bg-card-13 {
-  background: linear-gradient(45deg, #5a693b, #3c6e63);
+  /* background: linear-gradient(45deg, #5a693b, #3c6e63); */
+  background: linear-gradient(45deg, #4a9782, #f7d794);
+
   height: 9rem;
 }
 
 .bg-card-14 {
-  background: linear-gradient(45deg, #4256b1, #7c52d8);
+  /* background: linear-gradient(45deg, #4256b1, #7c52d8); */
+  background: linear-gradient(45deg, #4a9782, #34495e);
+
   height: 9rem;
 }
 
 .bg-card-15 {
-  background: linear-gradient(45deg, #067448, #45855b);
+  /* background: linear-gradient(45deg, #067448, #45855b); */
+  background: linear-gradient(45deg, #4a9782, #00c9a7);
+
   height: 9rem;
 }
 
 .bg-card-16 {
-  background: linear-gradient(45deg, #36626e, #4b8387);
+  /* background: linear-gradient(45deg, #36626e, #4b8387); */
+  background: linear-gradient(45deg, #4a9782, #8fd3c8);
+
   height: 9rem;
 }
 
 .bg-card-17 {
-  background: linear-gradient(45deg, #23c7cc, #4bc8cc);
+  /* background: linear-gradient(45deg, #23c7cc, #4bc8cc); */
+  background: linear-gradient(45deg, #5ca18c, #72d4c9);
+
   height: 9rem;
 }
 
 .bg-card-18 {
-  background: linear-gradient(45deg, #1f7bac, #35a6e3);
+  /* background: linear-gradient(45deg, #1f7bac, #35a6e3); */
+  background: linear-gradient(45deg, #4a9782, #a7cbbe);
+
   height: 9rem;
 }
 
 .bg-card-19 {
-  background: linear-gradient(45deg, #6f6d6d, #97c4b9);
+  /* background: linear-gradient(45deg, #6f6d6d, #97c4b9); */
+  background: linear-gradient(45deg, #4a9782, #88a6a6);
+
   height: 9rem;
 }
 
 .bg-card-20 {
-  background: linear-gradient(45deg, #454545, #a98467);
+  /* background: linear-gradient(45deg, #454545, #a98467); */
+  background: linear-gradient(45deg, #4a9782, #c5ded7);
+
   height: 9rem;
 }
 

@@ -18,7 +18,7 @@ const CustomerInvoicePrint = React.forwardRef((props, ref) => {
             <div className="container">
               <div
                 className="text-center text-white fw-bold p-1"
-                style={{ borderRadius: "10px", backgroundColor: "#328eea" }}
+                style={{ borderRadius: "10px", backgroundColor: "#4A9782" }}
               >
                 <h2 className="mt-1">{ispOwnerData?.company}</h2>
                 {ispOwnerData?.address && (
@@ -156,7 +156,7 @@ const CustomerInvoicePrint = React.forwardRef((props, ref) => {
           <div className="container">
             <div
               className="text-center text-white fw-bold p-1 "
-              style={{ borderRadius: "10px", backgroundColor: "#328eea" }}
+              style={{ borderRadius: "10px", backgroundColor: "#4A9782" }}
             >
               <h2 className="mt-1">{ispOwnerData?.company}</h2>
               {ispOwnerData?.address && (

@@ -145,7 +145,7 @@ export default function Header(props) {
         <div className="container-fluied">
           <header className="headerBar">
             {pathName === "/login" || pathName === "/register" ? (
-              <NavLink to={"/netfee"}>
+              <NavLink to={"/login"}>
                 <div className="homediv">
                   <img className="newLogoo" src="/assets/img/logo.png" alt="" />
                 </div>

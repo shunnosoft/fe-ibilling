@@ -589,7 +589,7 @@ const IspOwnerDashboard = () => {
                       />
                     </div>
                     <button
-                      className="btn btn-primary w-140 ms-1"
+                      className="btn btn-success w-140 ms-1"
                       onClick={dashboardFilterController}
                     >
                       {isLoading ? <Loader /> : t("filter")}

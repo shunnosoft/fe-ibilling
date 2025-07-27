@@ -92,7 +92,7 @@ const CustomerMessage = ({ customerId, page }) => {
       const sendingData = {
         items: [
           {
-            app: "netfee",
+            app: "onebilling",
             type: "other",
             senderId: cureentAuth?.id,
             message: messageLength,

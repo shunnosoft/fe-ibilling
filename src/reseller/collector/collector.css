@@ -1,9 +1,9 @@
 .collectorTitle {
   padding: 15px 0;
   font-weight: 500;
-  /* background: repeating-linear-gradient(45deg, #328eea, #3f72af 100px); */
-  background: linear-gradient(0deg, #328eea, #297fd4);
-  /* background: #328eea; */
+  /* background: repeating-linear-gradient(45deg, #4A9782, #3f72af 100px); */
+  background: linear-gradient(0deg, #4a9782, #5fa78f);
+  /* background: #4A9782; */
   text-align: center;
   font-size: 1.7rem;
   color: white;
@@ -96,7 +96,7 @@
   width: 100%;
   border: none;
   padding: 5px 9px;
-  background: #297fd4;
+  background: #5fa78f;
   border-radius: 5px;
   color: white;
 }

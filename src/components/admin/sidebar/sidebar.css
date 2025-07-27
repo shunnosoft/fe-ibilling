@@ -49,9 +49,9 @@ a {
   background: #ff0000;
 } */
 #active {
-  box-shadow: 6px 0px 0px #297fd4 inset;
+  box-shadow: 6px 0px 0px #5fa78f inset;
   /* filter: contrast(5); */
-  color: #297fd4;
+  color: #5fa78f;
 }
 .removeSidebar {
   display: none;
@@ -110,8 +110,9 @@ a {
   font-size: 18px;
   margin-right: 15px;
   margin-top: -1px;
-  /* color: var(---primaryColor) !important; */
-  color: #328eea;
+  /* color: var(--seconderyColor) !important; */
+  color: var(--primaryColor) !important;
+  /* color: #4a9782; */
 }
 .arrowRightFillStyle {
   padding-left: 20%;

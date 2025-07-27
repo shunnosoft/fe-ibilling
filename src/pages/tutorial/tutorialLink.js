@@ -14,13 +14,13 @@ export const tutorialLink = [
   {
     id: 2,
     role: "ispOwner",
-    title: "NetFee Support",
+    title: "OneBilling Support",
     link: "https://www.youtube.com/embed/rX33-TqCIwU?si=UcFv5_ySnFFjRhBq",
   },
   {
     id: 3,
     role: "ispOwner",
-    title: "NetFee Admin Panel",
+    title: "OneBilling Admin Panel",
     link: "https://www.youtube.com/embed/7DVn0mQGGH0?si=nV1SuLt3SlNU0sIT",
   },
   {

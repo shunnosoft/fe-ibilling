@@ -86,6 +86,15 @@
 .selectGraph > label {
   color: #1b975e;
 }
+
+.CircularProgressbar .CircularProgressbar-path {
+  stroke: #4a9782 !important;
+}
+
+.CircularProgressbar .CircularProgressbar-text {
+  fill: #4a9782 !important;
+}
+
 #card1 {
   background: linear-gradient(17deg, #364f6b, #5083bd);
 }

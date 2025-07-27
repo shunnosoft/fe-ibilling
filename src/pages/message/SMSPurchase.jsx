@@ -320,7 +320,7 @@ const SMSPurchase = ({ show, setShow }) => {
                         onChange={(e) => setBuyStatus(e.target.value)}
                       >
                         <option value="netFee" selected>
-                          NetFee
+                          One Billing
                         </option>
                         <option value="ispOwner">Isp Owner</option>
                       </select>

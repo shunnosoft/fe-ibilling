@@ -3,7 +3,7 @@ const lightTheme = {
   body: "#f1f0f0",
   furGround: "#fff",
   titleColor: "#fff",
-  fontColor: "#686e6b",
+  fontColor: "#57564F",
 };
 const darkTheme = {
   body: "#121317",
