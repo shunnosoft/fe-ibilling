@@ -3095,7 +3095,9 @@ export const ispOwnerPayment = async (invoice, setIsLoading) => {
   setIsLoading(true);
   try {
     const res = await apiLink.post(`/payment/generate-payment-url`, invoice);
-    if (res.data) window.location.href = res.data.paymentUrl;
+
+    if (res.data)
+      window.location.href = res.data.paymentUrl?.data?.payment_gateway_url;
   } catch (err) {
     console.log("ispOwnerPayment error: ", err);
   }
