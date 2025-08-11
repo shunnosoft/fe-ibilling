@@ -32,7 +32,7 @@ const ISPOwnerEditModal = ({ show, setShow, ownerId }) => {
         header={
           <div className="d-flex">
             <h5>
-              netFee Id:
+              oneBilling Id:
               <span className="text-success"> {ispData?.netFeeId} </span>
             </h5>
             <h5 className="ms-3">

@@ -73,7 +73,7 @@ export const netFeeSupportSlice = createSlice({
       state.resellerChangeRequest[changeRequest] = action.payload;
     },
 
-    // netFee support numbers
+    // oneBilling support numbers
     getSupportNumbers: (state, action) => {
       state.supportNumbers = action.payload;
     },
@@ -92,7 +92,7 @@ export const netFeeSupportSlice = createSlice({
       state.supportNumbers[changeRequest] = action.payload;
     },
 
-    // netFee bulletin
+    // oneBilling bulletin
     getBulletinSuccess: (state, action) => {
       state.bulletin = action.payload;
     },

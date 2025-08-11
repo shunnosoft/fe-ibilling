@@ -18,7 +18,7 @@ import moment from "moment";
 const Bulletin = () => {
   const dispatch = useDispatch();
 
-  //  netFee Bulletin all data
+  //  oneBilling Bulletin all data
   const bulletinData = useSelector((state) => state.netFeeSupport?.bulletin);
 
   // Loading state

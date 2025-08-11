@@ -136,7 +136,7 @@ const Reseller = () => {
       shunnoId: Number(ispOwnerData.netFeeId).toString(),
       password: `${reseller.mobile}NF`,
       resellerMobile: reseller.mobile,
-      clientApp: "NETFEE",
+      clientApp: "ONEBILLING",
       role: "WEBHOOK_USER",
     };
 

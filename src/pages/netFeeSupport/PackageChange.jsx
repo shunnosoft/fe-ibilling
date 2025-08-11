@@ -25,7 +25,7 @@ const PackageChange = () => {
     (state) => state.persistedReducer.auth?.ispOwnerId
   );
 
-  // netFee support data
+  // oneBilling support data
   const packageChangeRequest = useSelector(
     (state) => state.netFeeSupport?.packageChangeRequest
   );

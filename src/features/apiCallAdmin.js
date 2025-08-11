@@ -253,11 +253,11 @@ export const getInvoices = async (dispatch, setIsLoading) => {
   setIsLoading(false);
 };
 
-//get all netFee support
+//get all oneBilling support
 export const getAllNetFeeSupport = async (dispatch, setIsLoading) => {
   setIsLoading(true);
   try {
-    const res = await apiLink.get(`/ispOwner/netFee/support`);
+    const res = await apiLink.get(`/ispOwner/oneBilling/support`);
     dispatch(getAdminSupport(res.data));
   } catch (error) {
     console.log(error.response);
@@ -274,7 +274,7 @@ export const updateAdminNetFeeSupport = async (
   setIsLoading(true);
   try {
     const res = await apiLink.patch(
-      `/ispOwner/netFee/support-edit/${updateData.id}`,
+      `/ispOwner/oneBilling/support-edit/${updateData.id}`,
       updateData
     );
     dispatch(updateAdminSupport(res.data));
@@ -295,7 +295,7 @@ export const deleteAdminNetFeeSupport = async (
   setIsLoading(true);
   try {
     const res = await apiLink.delete(
-      `/ispOwner/netFee/support-delete/${deleteId}`
+      `/ispOwner/oneBilling/support-delete/${deleteId}`
     );
     dispatch(deleteAdminSupport(res.data));
   } catch (error) {
@@ -313,7 +313,7 @@ export const getIspOwnerCreateSupport = async (
   setIsLoading(true);
 
   try {
-    const res = await apiLink.get(`ispOwner/netFee/support/${ispOwnerId}`);
+    const res = await apiLink.get(`ispOwner/oneBilling/support/${ispOwnerId}`);
     dispatch(getIspOwnerSupport(res.data));
   } catch (error) {
     console.log(error.response);
@@ -331,7 +331,7 @@ export const editIspOwnerCreateSupport = async (
   setIsLoading(true);
   try {
     const res = await apiLink.patch(
-      `/ispOwner/netFee/support-edit/${editSupport.id}`,
+      `/ispOwner/oneBilling/support-edit/${editSupport.id}`,
       editSupport
     );
     dispatch(updateIspOwnerSupport(res.data));
@@ -351,7 +351,7 @@ export const deleteIspOwnerCreateSupport = async (
   setIsLoading(true);
   try {
     const res = await apiLink.delete(
-      `/ispOwner/netFee/support-delete/${supportId}`
+      `/ispOwner/oneBilling/support-delete/${supportId}`
     );
     dispatch(deleteIspOwnerSupport(res.data));
   } catch (error) {
@@ -402,7 +402,7 @@ export const updateIspOwnerCustomerStatus = async (
 // get ispOwner bulletin
 export const getIspOwnerBulletin = async (setBulletins) => {
   try {
-    const res = await apiLink.get(`ispOwner/netFee/bulletin`);
+    const res = await apiLink.get(`ispOwner/oneBilling/bulletin`);
     setBulletins(res.data);
   } catch (error) {
     console.log(error.response.data);
@@ -412,7 +412,7 @@ export const getIspOwnerBulletin = async (setBulletins) => {
 // get reseller bulletin
 export const getResellerBulletin = async (setBulletins) => {
   try {
-    const res = await apiLink.get(`reseller/netFee/bulletin`);
+    const res = await apiLink.get(`reseller/oneBilling/bulletin`);
     setBulletins(res.data);
   } catch (error) {
     console.log(error.response.data);
@@ -454,7 +454,7 @@ export const csutomerWebhookRegister = async (data) => {
   }
 };
 
-//===> @Get netFee cron job log
+//===> @Get oneBilling cron job log
 export const getNetFeeCronLog = async (dispatch, setIsLoading) => {
   setIsLoading(true);
   try {
@@ -479,7 +479,7 @@ export const getAdminActivityLog = async (dispatch, setIsLoading, userId) => {
   setIsLoading(false);
 };
 
-//===> @Get netFee cron job user log
+//===> @Get oneBilling cron job user log
 export const getNetFeeCronUserLog = async (dispatch, cronId, setIsLoading) => {
   setIsLoading(true);
   try {

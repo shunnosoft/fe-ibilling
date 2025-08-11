@@ -27,7 +27,6 @@ export const asyncRegister = async (userData, setLoading) => {
     toast.success(res.data?.message);
     // console.log(res);
     setTimeout(() => {
-      // window.location.href("https://netfeebd.com/login");
       window.location.href = "/login";
     }, 5000);
   } catch (err) {

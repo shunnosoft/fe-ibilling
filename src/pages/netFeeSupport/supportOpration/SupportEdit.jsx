@@ -13,7 +13,7 @@ const SupportEdit = ({ editId }) => {
   // update support data state
   const [supportEditData, setSupportEditData] = useState("");
 
-  // netFee support data
+  // oneBilling support data
   const supportAllData = useSelector(
     (state) => state.netFeeSupport?.netFeeSupport
   );
@@ -24,14 +24,14 @@ const SupportEdit = ({ editId }) => {
   //single support update data find
   const singleSupport = supportAllData.find((support) => support.id === editId);
 
-  // netFee support handler
+  // oneBilling support handler
   const handleSupportEdit = (e) => {
     let value = e.target.value;
     let name = e.target.name;
     setSupportEditData({ ...supportEditData, [name]: value });
   };
 
-  // update netFee support submit handle
+  // update oneBilling support submit handle
   const netFeeSupportUpdate = (e) => {
     e.preventDefault();
     if (!description) {

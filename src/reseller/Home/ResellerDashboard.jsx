@@ -103,7 +103,7 @@ const ResellerDashboard = () => {
       setChartLoading
     );
 
-    // get netFee bulletin permission api
+    // get oneBilling bulletin permission api
     Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
   }, []);
 

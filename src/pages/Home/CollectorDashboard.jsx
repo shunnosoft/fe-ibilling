@@ -93,7 +93,7 @@ const CollectorDashboard = () => {
         Month
       );
 
-    //---> @Get netFee app page bulletin permission data
+    //---> @Get oneBilling app page bulletin permission data
     !Object.keys(butPermission)?.length && getBulletinPermission(dispatch);
   }, []);
 
@@ -420,7 +420,7 @@ const CollectorDashboard = () => {
         </FontColor>
       </div>
 
-      {/* dashboard netFee bulletin added */}
+      {/* dashboard oneBilling bulletin added */}
       {(butPermission?.dashboard || butPermission?.allPage) && (
         <NetFeeBulletin />
       )}

@@ -44,7 +44,7 @@ const AcountWorning = () => {
 
   // api call
   useEffect(() => {
-    // get ispOwner netFee support api
+    // get ispOwner oneBilling support api
     getIspOwnerNetFeeSupport(dispatch, setIsLoading);
   }, []);
 

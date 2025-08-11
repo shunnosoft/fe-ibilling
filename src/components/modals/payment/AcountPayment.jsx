@@ -51,7 +51,7 @@ const AcountPayment = () => {
 
   // api call
   useEffect(() => {
-    // get ispOwner netFee support api
+    // get ispOwner oneBilling support api
     getIspOwnerNetFeeSupport(dispatch, setIsloading);
   }, []);
 
@@ -172,7 +172,7 @@ const AcountPayment = () => {
                         type="button"
                         className="btn btn-secondary fw-bold"
                         disabled={isLoading}
-                        onClick={() => navigate("/netfee")}
+                        onClick={() => navigate("/onebilling")}
                       >
                         Cancel
                       </button>

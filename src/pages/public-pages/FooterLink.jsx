@@ -1,10 +1,10 @@
 import { NavLink } from "react-router-dom";
-import "./netfee.css";
+import "./onebilling.css";
 export default function FooterLink() {
   return (
     <div className="textnew">
       <div className="alllinks">
-        <NavLink className={"navnew"} to={"/netfee"}>
+        <NavLink className={"navnew"} to={"/onebilling"}>
           <p className="newLink">Home</p>
         </NavLink>
         |

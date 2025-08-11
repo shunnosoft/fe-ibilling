@@ -132,7 +132,7 @@ const Report = () => {
     // get sub area api
     subAreas.length === 0 && getSubAreasApi(dispatch, ispOwnerId);
 
-    // get netfee bulletin permission api
+    // get onebilling bulletin permission api
     Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
   }, []);
 

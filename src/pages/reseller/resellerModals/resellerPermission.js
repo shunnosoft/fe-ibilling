@@ -392,6 +392,6 @@ export const resellerPermissions = (permission, bpSettings) => {
     },
   ];
 
-  if (localStorage.getItem("netFee:lang") === "bn") return permissionBn;
+  if (localStorage.getItem("oneBilling:lang") === "bn") return permissionBn;
   return permissionEn;
 };

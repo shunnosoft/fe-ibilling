@@ -7,7 +7,7 @@ import {
   getInvoiceHistorySuccess,
 } from "./resellerParchaseSmsSlice";
 
-const netFeeLang = localStorage.getItem("netFee:lang");
+const netFeeLang = localStorage.getItem("oneBilling:lang");
 const langMessage = (color, bangla, english) => {
   // Notification for english language
   if (netFeeLang === "bn") {

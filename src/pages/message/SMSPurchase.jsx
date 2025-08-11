@@ -44,7 +44,7 @@ const SMSPurchase = ({ show, setShow }) => {
   const [count, setCount] = useState(Number(amount) / user.smsRate);
 
   // buy place status
-  const [buyStatus, setBuyStatus] = useState("netFee");
+  const [buyStatus, setBuyStatus] = useState("oneBilling");
 
   // sms purchase message type
   const [messageType, setMessageType] = useState(
@@ -93,7 +93,7 @@ const SMSPurchase = ({ show, setShow }) => {
     } else {
       if (
         ["ispOwner", "manager"].includes(role) ||
-        (role === "reseller" && buyStatus === "netFee")
+        (role === "reseller" && buyStatus === "oneBilling")
       ) {
         const sendData = {
           amount: Math.ceil(amount),
@@ -110,7 +110,7 @@ const SMSPurchase = ({ show, setShow }) => {
           sendData.reseller = userData.id;
         }
 
-        // netfee sms purchase api call
+        // onebilling sms purchase api call
         purchaseSms(sendData, setIsloading, dispatch, setShow, navigate);
       } else {
         if (invoiceStatus.length === 0) {
@@ -190,7 +190,7 @@ const SMSPurchase = ({ show, setShow }) => {
                         fontFamily: "sans-serif",
                       }}
                     >
-                      {localStorage.getItem("netFee:lang") === "en"
+                      {localStorage.getItem("oneBilling:lang") === "en"
                         ? "10,000 SMS (+1000 SMS Bonus)"
                         : "১০,০০০ এসএমএস (+১০০০ এসএমএস বোনাস)"}
                     </p>
@@ -209,7 +209,7 @@ const SMSPurchase = ({ show, setShow }) => {
                   }}
                 >
                   ৳
-                  {localStorage.getItem("netFee:lang") === "en"
+                  {localStorage.getItem("oneBilling:lang") === "en"
                     ? "3000"
                     : "৩০০০"}
                 </p>
@@ -319,7 +319,7 @@ const SMSPurchase = ({ show, setShow }) => {
                         className="form-select mw-100 mt-0 bg-white"
                         onChange={(e) => setBuyStatus(e.target.value)}
                       >
-                        <option value="netFee" selected>
+                        <option value="oneBilling" selected>
                           One Billing
                         </option>
                         <option value="ispOwner">Isp Owner</option>

@@ -21,7 +21,7 @@ import { ToastContainer } from "react-toastify";
 const NetFeeSupportNumbers = () => {
   const dispatch = useDispatch();
 
-  // netFee support Numbers
+  // oneBilling support Numbers
   const supportNumbers = useSelector(
     (state) => state.netFeeSupport?.supportNumbers
   );
@@ -38,7 +38,7 @@ const NetFeeSupportNumbers = () => {
       getNetFeeSupportNumbers(dispatch, setIsLoading);
   }, []);
 
-  // netFee support numbers delete handle
+  // oneBilling support numbers delete handle
   const supportNUmberDelete = (supportId) => {
     const confirm = window.confirm("Do you want to delete the number?");
 
@@ -47,7 +47,7 @@ const NetFeeSupportNumbers = () => {
     }
   };
 
-  // netFee support online offline handle
+  // oneBilling support online offline handle
   const supportOnlineHandle = (value) => {
     const data = { isShow: value.checked };
     updateNetFeeSupportNumbers(dispatch, data, value.id);

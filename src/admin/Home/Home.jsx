@@ -182,7 +182,7 @@ export default function Home() {
     const sendingData = {
       name: ispOwner.name,
       shunnoId: Number(ispOwner.netFeeId).toString(),
-      clientApp: "NETFEE",
+      clientApp: "ONEBILLING",
       password: `${ispOwner.mobile}NF`,
       role: "WEBHOOK_USER",
     };
@@ -472,12 +472,12 @@ export default function Home() {
                       </div>
                     </div>
                   </li>
-                  <Link to={`/admin/netFee/support/${original.id}`}>
+                  <Link to={`/admin/oneBilling/support/${original.id}`}>
                     <li>
                       <div className="dropdown-item">
                         <div className="customerAction">
                           <Award />
-                          <p className="actionP">NetFee Support</p>
+                          <p className="actionP">OneBilling Support</p>
                         </div>
                       </div>
                     </li>

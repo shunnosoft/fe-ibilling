@@ -37,7 +37,7 @@ const CreateCustomerSmsTemplate = () => {
   const [paymentLink, setPaymentLink] = useState("");
 
   // ispOwner payment gateway payment link
-  const customerPaymentLink = `Payment Link: https://app.netfeebd.com/isp/${ispOwnerData?.netFeeId}`;
+  const customerPaymentLink = `Payment Link: https://app.one-billing.com/isp/${ispOwnerData?.netFeeId}`;
 
   // customer payment link handler
   const paymentLinkHandler = (e) => {

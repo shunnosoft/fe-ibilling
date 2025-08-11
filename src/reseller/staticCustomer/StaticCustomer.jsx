@@ -156,7 +156,7 @@ export default function RstaticCustomer() {
     // get ispOwner & staffs api
     getOwnerUsers(dispatch, ispOwnerId);
 
-    // netFee bulletin api
+    // oneBilling bulletin api
     Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
   }, [role]);
 

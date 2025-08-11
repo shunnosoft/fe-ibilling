@@ -160,7 +160,7 @@ const ManagerDashboard = () => {
 
     //===========================================================> LAST API
 
-    //---> @Get netFee app page bulletin permission data
+    //---> @Get oneBilling app page bulletin permission data
     !Object.keys(butPermission)?.length && getBulletinPermission(dispatch);
   }, []);
 
@@ -652,7 +652,7 @@ const ManagerDashboard = () => {
         </FontColor>
       </div>
 
-      {/* dashboard netFee bulletin added */}
+      {/* dashboard oneBilling bulletin added */}
       {(butPermission?.dashboard || butPermission?.allPage) && (
         <NetFeeBulletin />
       )}

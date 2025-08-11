@@ -122,7 +122,7 @@ const OLT = () => {
 
   const handleOLTCreate = () => {
     if (!bpSettings?.hasOLT) {
-      toast.error("Please contact netFee support.");
+      toast.error("Please contact oneBilling support.");
     } else {
       setModalStatus("oltCreateAndUpdate");
       setIsUpdate(false);

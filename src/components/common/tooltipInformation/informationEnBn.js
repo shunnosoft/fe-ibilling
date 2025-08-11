@@ -46,6 +46,6 @@ export const informationEnBn = () => {
     },
   ];
 
-  if (localStorage.getItem("netFee:lang") === "bn") return informationBn;
+  if (localStorage.getItem("oneBilling:lang") === "bn") return informationBn;
   return informationEn;
 };

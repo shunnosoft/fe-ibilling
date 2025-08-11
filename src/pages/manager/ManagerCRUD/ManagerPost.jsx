@@ -46,7 +46,7 @@ const ManagerPost = ({ show, setShow }) => {
   const dataInputOption = useDataInputOption(inputPermission, null);
 
   //get current language
-  const language = localStorage.getItem("netFee:lang");
+  const language = localStorage.getItem("oneBilling:lang");
 
   //---> Get user & current user data form useISPOwner hooks
   const { ispOwnerId, bpSettings } = useISPowner();

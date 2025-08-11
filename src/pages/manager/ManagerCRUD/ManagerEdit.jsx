@@ -43,7 +43,7 @@ const ManagerEdit = ({ show, setShow, managerId }) => {
   };
 
   //get current language
-  const language = localStorage.getItem("netFee:lang");
+  const language = localStorage.getItem("oneBilling:lang");
 
   // get user & current user data form useISPOwner
   const { ispOwnerId, bpSettings } = useISPowner();

@@ -25,8 +25,8 @@ const Permissions = ({ show, setShow, ownerId }) => {
   // permission state
   const [permissions, setPermissions] = useState([]);
 
-  // get netFee language
-  const netFeeLang = localStorage.getItem("netFee:lang");
+  // get oneBilling language
+  const netFeeLang = localStorage.getItem("oneBilling:lang");
 
   // set permission in state
   useEffect(() => {
@@ -74,7 +74,7 @@ const Permissions = ({ show, setShow, ownerId }) => {
           <div className="d-flex">
             <h4 className="text-success me-3">Change Permissions : </h4>
             <h5 className="text-secondary me-3">
-              NetFee Id:
+              OneBilling Id:
               <span className="text-success">{ownerData?.netFeeId}</span>
             </h5>
             <h5 className="text-secondary me-3">

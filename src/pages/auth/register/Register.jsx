@@ -76,7 +76,7 @@ export default function Register() {
       .max(11, t("over11DigitMobileNumber")),
   });
 
-  // get netfee settings api call
+  // get onebilling settings api call
   useEffect(() => {
     getNetfeeSettings(dispatch, setSettingsLoading);
   }, []);
@@ -108,7 +108,7 @@ export default function Register() {
       packType: pakage?.packageName,
       customerType,
       reference: {
-        name: refName || "নেটফি",
+        name: refName || "ওয়ানবিলিং",
         mobile: refMobile || "01321141785",
       },
     };

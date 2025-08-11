@@ -1431,7 +1431,7 @@ export default function Sidebar() {
                           {role === "ispOwner" && (
                             <NavLink
                               key={13}
-                              to="/netFee/supportNumber"
+                              to="/oneBilling/supportNumber"
                               className={(navInfo) =>
                                 navInfo.isActive ? activeClass.active : ""
                               }
@@ -1441,7 +1441,7 @@ export default function Sidebar() {
                                   className="sidebarItems"
                                   id={
                                     window.location.pathname ===
-                                    "/netFee/supportNumber"
+                                    "/oneBilling/supportNumber"
                                       ? "active"
                                       : ""
                                   }
@@ -1463,7 +1463,7 @@ export default function Sidebar() {
                               to={
                                 role === "reseller"
                                   ? "/reseller/customer/package/changes"
-                                  : "/netFee/packageChange"
+                                  : "/oneBilling/packageChange"
                               }
                               className={(navInfo) =>
                                 navInfo.isActive ? activeClass.active : ""
@@ -1476,7 +1476,7 @@ export default function Sidebar() {
                                     window.location.pathname ===
                                     (role === "reseller"
                                       ? "/reseller/customer/package/changes"
-                                      : "/netFee/packageChange")
+                                      : "/oneBilling/packageChange")
                                       ? "active"
                                       : ""
                                   }
@@ -1580,7 +1580,7 @@ export default function Sidebar() {
                             </NavLink> */}
                             <NavLink
                               key={16}
-                              to={"/netFee/support/numbers"}
+                              to={"/oneBilling/support/numbers"}
                               className={(navInfo) =>
                                 navInfo.isActive ? activeClass.active : ""
                               }
@@ -1606,7 +1606,7 @@ export default function Sidebar() {
 
                     <NavLink
                       key={16}
-                      to={"/netFee/tutorial"}
+                      to={"/oneBilling/tutorial"}
                       className={(navInfo) =>
                         navInfo.isActive ? activeClass.active : ""
                       }
@@ -1736,7 +1736,7 @@ export default function Sidebar() {
 
                 {role === "superadmin" && (
                   <NavLink
-                    to={"/admin/netFee/bulletin"}
+                    to={"/admin/oneBilling/bulletin"}
                     className={(navInfo) =>
                       navInfo.isActive ? activeClass.active : ""
                     }
@@ -1745,7 +1745,8 @@ export default function Sidebar() {
                       <li
                         className="sidebarItems"
                         id={
-                          window.location.pathname === "/admin/netFee/bulletin"
+                          window.location.pathname ===
+                          "/admin/oneBilling/bulletin"
                             ? "active"
                             : ""
                         }
@@ -1758,7 +1759,7 @@ export default function Sidebar() {
                 )}
 
                 <NavLink
-                  to={"/admin/netFee/numbers"}
+                  to={"/admin/oneBilling/numbers"}
                   className={(navInfo) =>
                     navInfo.isActive ? activeClass.active : ""
                   }
@@ -1767,7 +1768,7 @@ export default function Sidebar() {
                     <li
                       className="sidebarItems"
                       id={
-                        window.location.pathname === "/admin/netFee/numbers"
+                        window.location.pathname === "/admin/oneBilling/numbers"
                           ? "active"
                           : ""
                       }
@@ -1779,7 +1780,7 @@ export default function Sidebar() {
                 </NavLink>
 
                 <NavLink
-                  to={"/admin/netFee/cronLog"}
+                  to={"/admin/oneBilling/cronLog"}
                   className={(navInfo) =>
                     navInfo.isActive ? activeClass.active : ""
                   }
@@ -1788,7 +1789,7 @@ export default function Sidebar() {
                     <li
                       className="sidebarItems"
                       id={
-                        window.location.pathname === "/admin/netFee/cronLog"
+                        window.location.pathname === "/admin/oneBilling/cronLog"
                           ? "active"
                           : ""
                       }

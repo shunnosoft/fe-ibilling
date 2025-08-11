@@ -117,7 +117,7 @@ const SingleMessage = ({ show, setShow, single, sendCustomer }) => {
       const sendingData = {
         items: [
           {
-            app: "netfee",
+            app: "onebilling",
             type: "other",
             senderId: cureentAuth?.id,
             message: messageLength,

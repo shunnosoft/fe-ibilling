@@ -39,7 +39,7 @@ const RecehargeSMS = () => {
   // get data
   const data = useSelector((state) => state?.smsHistory?.smsParchase);
 
-  // get history with netfee
+  // get history with onebilling
   const netfeeinvoice = useSelector(
     (state) => state?.smsHistory?.smsParchaseNetfee
   );
@@ -108,7 +108,7 @@ const RecehargeSMS = () => {
     [t]
   );
 
-  // parchase from netfee
+  // parchase from onebilling
   // column
   const historyColumn = React.useMemo(
     () => [
@@ -251,7 +251,7 @@ const RecehargeSMS = () => {
                         />
                       </div>
                     </Tab>
-                    <Tab eventKey="netFee" title="From NetFee">
+                    <Tab eventKey="oneBilling" title="From OneBilling">
                       <div className="table-section">
                         <Table
                           isLoading={historyLoading}

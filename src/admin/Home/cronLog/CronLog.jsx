@@ -20,7 +20,7 @@ import UserCronLog from "./UserCronLog";
 const CronLog = () => {
   const dispatch = useDispatch();
 
-  //---> Get netFee cron log from redux store
+  //---> Get oneBilling cron log from redux store
   const cronJobLog = useSelector((state) => state.adminNetFeeSupport?.cronLog);
 
   //===============|| Local State ||===============//

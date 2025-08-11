@@ -35,7 +35,7 @@ const BulletinPost = ({ show, setShow, editId }) => {
     othersCustomer: Yup.string(),
   });
 
-  //  netFee Bulletin all data
+  //  oneBilling Bulletin all data
   const bulletinData = useSelector((state) =>
     modalStatus === "bulletinEdit" ? state.netFeeSupport?.bulletin : ""
   );

@@ -51,7 +51,7 @@ import {
   updateResellerChangePackageRequest,
 } from "./netFeeSupportSlice";
 
-const netFeeLang = localStorage.getItem("netFee:lang");
+const netFeeLang = localStorage.getItem("oneBilling:lang");
 const langMessage = (color, bangla, english) => {
   // Notification for english language
   if (netFeeLang === "bn") {
@@ -704,7 +704,7 @@ export const getResellerNetFeeSupport = async (
 ) => {
   setIsLoading(true);
   try {
-    const res = await apiLink.get(`reseller/netFee/support/${resellerId}`);
+    const res = await apiLink.get(`reseller/oneBilling/support/${resellerId}`);
     dispatch(getResellerSupport(res.data));
   } catch (error) {
     console.log(error.response);
@@ -721,14 +721,14 @@ export const postResellerNetFeeSupport = async (
   setIsLoading(true);
   try {
     const res = await apiLink.post(
-      `reseller/create/netFee-support`,
+      `reseller/create/oneBilling-support`,
       supportData
     );
     dispatch(addResellerSupport(res.data));
     langMessage(
       "success",
-      "নেটফি সাপর্ট অ্যাড সফল হয়েছে",
-      "NetFee Support Add Successfully"
+      "ওয়ানবিলিং সাপোর্ট অ্যাড সফল হয়েছে",
+      "OneBilling Support Add Successfully"
     );
     document.querySelector("#resellerSupportAdd").click();
   } catch (error) {
@@ -747,15 +747,15 @@ export const putResellerNetFeeSupport = async (
 
   try {
     const res = await apiLink.patch(
-      `reseller/netFee/support-edit/${editSupport.id}`,
+      `reseller/oneBilling/support-edit/${editSupport.id}`,
       editSupport
     );
     document.querySelector("#resellerSupportEditId").click();
     dispatch(updateResellerSupport(res.data));
     langMessage(
       "success",
-      "নেটফি সাপর্ট আপডেট সফল হয়েছে",
-      "NetFee Support Update Successfully"
+      "ওয়ানবিলিং সাপর্ট আপডেট সফল হয়েছে",
+      "OneBilling Support Update Successfully"
     );
   } catch (error) {
     toast.error(error.message);

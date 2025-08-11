@@ -211,7 +211,7 @@ import {
 } from "./network.slice";
 import { data } from "jquery";
 
-const netFeeLang = localStorage.getItem("netFee:lang");
+const netFeeLang = localStorage.getItem("oneBilling:lang");
 
 const langMessage = (color, bangla, english) => {
   // Notification for english language for
@@ -1865,7 +1865,7 @@ export const netFeeCustomerGet = async (
   setIsLoading(true);
   await apiLink({
     method: "GET",
-    url: `/mikrotik/netFee/users/${ispOwnerId}/${mikrotikId}`,
+    url: `/mikrotik/oneBilling/users/${ispOwnerId}/${mikrotikId}`,
   })
     .then((res) => {
       dispatch(getNetFeeCustomerSuccess(res.data));
@@ -1885,7 +1885,7 @@ export const getNetFeeStaticCustomer = async (
   setIsLoading(true);
   await apiLink({
     method: "GET",
-    url: `/mikrotik/netFee/static/users/${ispOwnerId}/${mikrotikId}`,
+    url: `/mikrotik/oneBilling/static/users/${ispOwnerId}/${mikrotikId}`,
   })
     .then((res) => {
       dispatch(getNetFeeStaticCustomerSuccess(res.data));
@@ -3272,7 +3272,7 @@ export const getIspOwnerData = async (
   setIsLoading(false);
 };
 
-// get ispOwner status from netfee
+// get ispOwner status from onebilling
 export const getIspOwnerStatus = async (dispatch, ispOwnerId) => {
   const res = await apiLink.get(`auth/status/check/${ispOwnerId}`);
 
@@ -3498,20 +3498,20 @@ export const deleteExpenditurePurpose = async (dispatch, purposeId) => {
   }
 };
 
-//add netFee support
+//add oneBilling support
 export const addNetFeeSupport = async (dispatch, supportData, setIsLoading) => {
   setIsLoading(true);
   try {
     const res = await apiLink.post(
-      `/ispOwner/create/netFee-support`,
+      `/ispOwner/create/oneBilling-support`,
       supportData
     );
     dispatch(AddNetFeeSupport(res.data));
     document.querySelector("#addNetFeeSupport").click();
     langMessage(
       "success",
-      "নেটফি সাপর্ট অ্যাড সফল হয়েছে",
-      "NetFee Support Add Successfully"
+      "ওয়ানবিলিং সাপর্ট অ্যাড সফল হয়েছে",
+      "OneBilling Support Add Successfully"
     );
   } catch (error) {
     console.log(error.response?.data.message);
@@ -3519,7 +3519,7 @@ export const addNetFeeSupport = async (dispatch, supportData, setIsLoading) => {
   setIsLoading(false);
 };
 
-// get netFee support
+// get oneBilling support
 export const getNetFeeSupportData = async (
   dispatch,
   ispOwner,
@@ -3527,7 +3527,7 @@ export const getNetFeeSupportData = async (
 ) => {
   setIsLoading(true);
   try {
-    const res = await apiLink.get(`/ispOwner/netFee/support/${ispOwner}`);
+    const res = await apiLink.get(`/ispOwner/oneBilling/support/${ispOwner}`);
     dispatch(getNetFeeSupport(res.data));
   } catch (error) {
     console.log(error.response?.data.message);
@@ -3535,7 +3535,7 @@ export const getNetFeeSupportData = async (
   setIsLoading(false);
 };
 
-// update netFee support
+// update oneBilling support
 export const updateNetFeeSupportData = async (
   dispatch,
   setIsLoading,
@@ -3546,15 +3546,15 @@ export const updateNetFeeSupportData = async (
   setIsLoading(true);
   try {
     const res = await apiLink.patch(
-      `/ispOwner/netFee/support-edit/${updateSupport.id}`,
+      `/ispOwner/oneBilling/support-edit/${updateSupport.id}`,
       updateSupport
     );
     dispatch(updateNetFeeSupport(res.data));
     document.querySelector("#supportEdit").click();
     langMessage(
       "success",
-      "নেটফি সাপর্ট আপডেট সফল হয়েছে",
-      "NetFee Support Update Successfully"
+      "ওয়ানবিলিং সাপর্ট আপডেট সফল হয়েছে",
+      "OneBilling Support Update Successfully"
     );
   } catch (error) {
     console.log(error.response?.data.message);
@@ -3562,7 +3562,7 @@ export const updateNetFeeSupportData = async (
   setIsLoading(false);
 };
 
-// delete netFee support
+// delete oneBilling support
 export const deleteNetFeeSupportData = async (
   dispatch,
   setIsLoading,
@@ -3571,14 +3571,14 @@ export const deleteNetFeeSupportData = async (
   setIsLoading(true);
   try {
     const res = await apiLink.delete(
-      `/ispOwner/netFee/support-delete/${supportId}`
+      `/ispOwner/oneBilling/support-delete/${supportId}`
     );
     dispatch(deleteNetFeeSupport(res.data));
     document.querySelector("#supportDelete").click();
     langMessage(
       "success",
-      "নেটফি সাপর্ট ডিলিট সফল হয়েছে",
-      "NetFee Support Delete Successfully"
+      "ওয়ানবিলিং সাপর্ট ডিলিট সফল হয়েছে",
+      "OneBilling Support Delete Successfully"
     );
   } catch (error) {
     console.log(error.response?.data.message);
@@ -4133,7 +4133,7 @@ export const deleteWithOutMikrotikPackage = async (dispatch, packId) => {
   }
 };
 
-// get netFee bulletin api call
+// get oneBilling bulletin api call
 export const getBulletin = async (dispatch, setIsLoading) => {
   setIsLoading(true);
   try {
@@ -4145,7 +4145,7 @@ export const getBulletin = async (dispatch, setIsLoading) => {
   setIsLoading(false);
 };
 
-// post netFee bulletin api call
+// post oneBilling bulletin api call
 export const postBulletin = async (dispatch, data, setIsLoading, setShow) => {
   setIsLoading(true);
   try {
@@ -4159,7 +4159,7 @@ export const postBulletin = async (dispatch, data, setIsLoading, setShow) => {
   setIsLoading(false);
 };
 
-// edit netFee bulletin api call
+// edit oneBilling bulletin api call
 export const patchBulletin = async (
   dispatch,
   bulletinId,
@@ -4179,7 +4179,7 @@ export const patchBulletin = async (
   setIsLoading(false);
 };
 
-// delete netFee bulletin api call
+// delete oneBilling bulletin api call
 export const deleteBulletin = async (dispatch, bulletinId) => {
   try {
     const res = await apiLink.delete(`admin/bulletin/${bulletinId}`);
@@ -4190,7 +4190,7 @@ export const deleteBulletin = async (dispatch, bulletinId) => {
   }
 };
 
-// post & update netFee bulletin parmission api call
+// post & update oneBilling bulletin parmission api call
 export const patchBulletinPermission = async (dispatch, data) => {
   try {
     const res = await apiLink.patch(`admin/page/permission`, data);

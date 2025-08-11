@@ -24,7 +24,7 @@ const QrCode = ({ ispInfo, size }) => {
     <div className="d-flex flex-column align-items-center">
       <QRCode
         id="qr-gen"
-        value={`https://app.netfeebd.com/isp/${ispInfo.netFeeId}`}
+        value={`https://app.one-billing.com/isp/${ispInfo.netFeeId}`}
         size={size}
         level={"H"}
         includeMargin={true}

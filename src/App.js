@@ -209,8 +209,8 @@ function App() {
             {/* ispOwoner invoice payment */}
             <Route path="/payment" element={<AcountPayment />} />
 
-            {/* netFee tutorial */}
-            <Route path="/netFee/tutorial" element={<Tutorial />} />
+            {/* oneBilling tutorial */}
+            <Route path="/oneBilling/tutorial" element={<Tutorial />} />
 
             <Route path="/activity" element={<ActivityLog />} />
 
@@ -228,7 +228,7 @@ function App() {
         {userRole === "reseller" && (
           <Routes>
             <Route
-              path="/netfee"
+              path="/onebilling"
               element={
                 !user ? (
                   <Landing></Landing>
@@ -246,13 +246,13 @@ function App() {
         (userRole === "collector" && user.collector.reseller) ? (
           //for reseller
           <Routes>
-            <Route path="/" element={<Navigate to="/netfee" />} />
+            <Route path="/" element={<Navigate to="/login" />} />
             <Route
               path="/login"
               element={!user ? <Login /> : <Navigate to={"/reseller/home"} />}
             />
             <Route
-              path="/netfee"
+              path="/onebilling"
               element={
                 !user ? <Landing></Landing> : <Navigate to={"/reseller/home"} />
               }
@@ -335,7 +335,7 @@ function App() {
                 }
               />
               <Route
-                path="reseller/netFee/support"
+                path="reseller/oneBilling/support"
                 element={userRole === "reseller" && <ResellerNetFeeSupport />}
               />
 
@@ -353,19 +353,19 @@ function App() {
           </Routes>
         ) : userRole === "admin" || userRole === "superadmin" ? (
           <Routes>
-            <Route path="/" element={<Navigate to="/netfee" />} />
+            <Route path="/" element={<Navigate to="/onebilling" />} />
             <Route
               path="/login"
               element={!user ? <Login /> : <Navigate to={"/admin/home"} />}
             />
             <Route
-              path="/netfee"
+              path="/onebilling"
               element={
                 !user ? <Landing></Landing> : <Navigate to={"/admin/home"} />
               }
             />
             <Route
-              path="/netfee"
+              path="/onebilling"
               element={
                 !user ? (
                   <Landing></Landing>
@@ -375,7 +375,7 @@ function App() {
               }
             />
             <Route
-              path="/netfee"
+              path="/onebilling"
               element={
                 !user ? (
                   <Landing></Landing>
@@ -385,7 +385,7 @@ function App() {
               }
             />
             <Route
-              path="/netfee"
+              path="/onebilling"
               element={
                 !user ? (
                   <Landing></Landing>
@@ -396,31 +396,39 @@ function App() {
             />
 
             <Route
-              path="/netfee"
+              path="/onebilling"
               element={!user ? <Landing /> : <Navigate to={"/admin/support"} />}
             />
 
             <Route
-              path="/netfee"
-              element={
-                !user ? <Landing /> : <Navigate to={"/admin/netFee/bulletin"} />
-              }
-            />
-
-            <Route
-              path="/netfee"
-              element={
-                !user ? <Landing /> : <Navigate to={"/admin/netFee/numbers"} />
-              }
-            />
-
-            <Route
-              path="/netfee"
+              path="/onebilling"
               element={
                 !user ? (
                   <Landing />
                 ) : (
-                  <Navigate to={"/admin/netFee/support/:ispOwnerId"} />
+                  <Navigate to={"/admin/oneBilling/bulletin"} />
+                )
+              }
+            />
+
+            <Route
+              path="/onebilling"
+              element={
+                !user ? (
+                  <Landing />
+                ) : (
+                  <Navigate to={"/admin/oneBilling/numbers"} />
+                )
+              }
+            />
+
+            <Route
+              path="/onebilling"
+              element={
+                !user ? (
+                  <Landing />
+                ) : (
+                  <Navigate to={"/admin/oneBilling/support/:ispOwnerId"} />
                 )
               }
             />
@@ -435,16 +443,16 @@ function App() {
               <Route path="admin/all-comments" element={<AllComments />} />
               <Route path="admin/invoices" element={<AllInvoices />} />
               <Route path="admin/support" element={<Supports />} />
-              <Route path="admin/netFee/bulletin" element={<Bulletin />} />
+              <Route path="admin/oneBilling/bulletin" element={<Bulletin />} />
               <Route
-                path="admin/netFee/numbers"
+                path="admin/oneBilling/numbers"
                 element={<NetFeeSupportNumbers />}
               />
               <Route
-                path="admin/netFee/support/:ispOwnerId"
+                path="admin/oneBilling/support/:ispOwnerId"
                 element={<NetFeeIspOwnerSupport />}
               />
-              <Route path="admin/netFee/cronLog" element={<CronLog />} />
+              <Route path="admin/oneBilling/cronLog" element={<CronLog />} />
               <Route
                 path="admin/activity-log/*"
                 element={<AdminActivityLog />}
@@ -457,13 +465,13 @@ function App() {
           //NOt for reseller routes
 
           <Routes>
-            <Route path="/" element={<Navigate to="/netfee" />} />
+            <Route path="/" element={<Navigate to="/onebilling" />} />
             <Route
               path="/login"
               element={!user ? <Login /> : <Navigate to={"/home"} />}
             />
             <Route
-              path="/netfee"
+              path="/onebilling"
               element={!user ? <Landing></Landing> : <Navigate to={"/home"} />}
             />
             <Route
@@ -714,7 +722,7 @@ function App() {
               }
             />
             <Route
-              path="/netFee/support"
+              path="/oneBilling/support"
               element={
                 user && (userRole === "ispOwner" || userRole === "manager") ? (
                   <NetFeeSupport />
@@ -725,7 +733,7 @@ function App() {
             />
 
             <Route
-              path="/netFee/support/numbers"
+              path="/oneBilling/support/numbers"
               element={
                 user &&
                 (userRole === "ispOwner" ||
@@ -739,7 +747,7 @@ function App() {
             />
 
             <Route
-              path="/netFee/supportNumber"
+              path="/oneBilling/supportNumber"
               element={
                 user &&
                 (userRole === "ispOwner" ||
@@ -753,7 +761,7 @@ function App() {
             />
 
             <Route
-              path="/netFee/packageChange"
+              path="/oneBilling/packageChange"
               element={
                 user && userRole === "ispOwner" ? (
                   <PackageChange />

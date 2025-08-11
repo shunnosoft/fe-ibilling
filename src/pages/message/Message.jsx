@@ -162,7 +162,7 @@ export default function Message() {
   }, [ispOwnerId]);
 
   // ispOwner payment gateway payment link
-  const customerPaymentLink = `Payment Link: https://app.netfeebd.com/isp/${ispOwnerData?.netFeeId}`;
+  const customerPaymentLink = `Payment Link: https://app.one-billing.com/isp/${ispOwnerData?.netFeeId}`;
 
   useEffect(() => {
     if (role === "ispOwner" || role === "manager") {
@@ -171,7 +171,7 @@ export default function Message() {
       getSubAreasApi(dispatch, ispOwnerId);
     }
 
-    //get netFee bulletin api
+    //get oneBilling bulletin api
     Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
   }, [role, getIspownerwitSMS]);
 

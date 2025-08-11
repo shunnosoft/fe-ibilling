@@ -106,9 +106,9 @@ export default function Header(props) {
   const [getLang, setGetLang] = useState("bn");
 
   useEffect(() => {
-    const lang = localStorage.getItem("netFee:lang");
-    setGetLang(lang ? lang : localStorage.setItem("netFee:lang", "bn"));
-    i18n.changeLanguage(localStorage.getItem("netFee:lang"));
+    const lang = localStorage.getItem("oneBilling:lang");
+    setGetLang(lang ? lang : localStorage.setItem("oneBilling:lang", "bn"));
+    i18n.changeLanguage(localStorage.getItem("oneBilling:lang"));
   }, [getLang]);
 
   // ispOwner and reseller total sms balance
@@ -124,7 +124,7 @@ export default function Header(props) {
 
   const selectLanguage = (event) => {
     setGetLang(event.target.value);
-    localStorage.setItem("netFee:lang", event.target.value);
+    localStorage.setItem("oneBilling:lang", event.target.value);
   };
   // end change language settings
 
@@ -418,7 +418,7 @@ export default function Header(props) {
                   </div>
                 </>
               ) : pathName === "/register" ||
-                pathName === "/netfee" ||
+                pathName === "/onebilling" ||
                 pathName === "/terms-conditions" ||
                 pathName === "/privacy-policy" ||
                 pathName === "/about" ||

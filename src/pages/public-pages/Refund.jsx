@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import FooterLink from "./FooterLink";
 import { useTranslation } from "react-i18next";
-import "./netfee.css";
+import "./onebilling.css";
 
 export default function Landing() {
   const { t } = useTranslation();
@@ -35,7 +35,7 @@ export default function Landing() {
                     <p className="goToLoginPage custom-btn">{t("signUp")}</p>
                   </NavLink>
                 </div>
-                {/* <h2 className="LandingTitle">নেটফি</h2> */}
+                {/* <h2 className="LandingTitle">ওয়ানবিলিং</h2> */}
               </div>
             </div>
           ) : (

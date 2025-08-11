@@ -17,7 +17,7 @@ const SupportCall = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
-  // netFee support Numbers
+  // oneBilling support Numbers
   const supportNumbers = useSelector(
     (state) => state.netFeeSupport?.supportCall
   );
