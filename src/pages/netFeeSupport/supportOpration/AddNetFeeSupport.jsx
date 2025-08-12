@@ -25,12 +25,12 @@ const AddNetFeeSupport = () => {
     (state) => state.persistedReducer.auth?.ispOwnerData.company
   );
 
-  // add oneBilling support state
+  // add iBilling support state
   const [support, setSupport] = useState("");
   const [description, setDescription] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  //add oneBilling support submit handler
+  //add iBilling support submit handler
   const netFeeSupportSubmit = (e) => {
     e.preventDefault();
     if (!support) {

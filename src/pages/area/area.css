@@ -15,8 +15,8 @@
   text-align: left;
 }
 .gotoSubAreaBtn {
-  /* background: linear-gradient(45deg, #9449f5, #681ec9); */
-  background: #04a753;
+  background: linear-gradient(17deg, #5c374c, #a67194);
+  /* background: #04a753; */
   color: white !important;
   padding: 3px 12px;
   font-size: 13px;
@@ -24,7 +24,7 @@
   border-radius: 4px;
 }
 .gotoSubAreaBtn:hover {
-  background: #048b46;
+  background: var(--primaryColor);
 }
 
 .header_icon {

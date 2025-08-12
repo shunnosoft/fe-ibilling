@@ -3,7 +3,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 
 const AdminSupportDetails = ({ detailsId }) => {
-  // oneBilling support all data
+  // iBilling support all data
   const allSupportData = useSelector(
     (state) => state.adminNetFeeSupport?.adminSupport
   );
@@ -24,7 +24,7 @@ const AdminSupportDetails = ({ detailsId }) => {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                OneBilling Support Details
+                iBilling Support Details
               </h5>
               <button
                 type="button"

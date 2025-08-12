@@ -17,7 +17,7 @@ import Table from "../../../components/table/Table";
 const UserCronLog = ({ show, setShow, cron }) => {
   const dispatch = useDispatch();
 
-  //---> Get oneBilling cron log from redux store
+  //---> Get iBilling cron log from redux store
   const userCronLog = useSelector(
     (state) => state.adminNetFeeSupport?.userCronLog
   );

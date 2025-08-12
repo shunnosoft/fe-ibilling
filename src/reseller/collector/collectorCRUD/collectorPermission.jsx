@@ -160,6 +160,6 @@ export const collectorPermission = (permission, resellerPermission) => {
     },
   ];
 
-  if (localStorage.getItem("oneBilling:lang") === "bn") return permissionBn;
+  if (localStorage.getItem("iBilling:lang") === "bn") return permissionBn;
   return permissionEn;
 };

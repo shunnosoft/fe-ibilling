@@ -36,7 +36,7 @@ const BulkCustomerTransfer = ({ show, setShow, bulkCustomer }) => {
   }
 
   const bulkCustomerTransferController = () => {
-    const enBn = localStorage.getItem("oneBilling:lang");
+    const enBn = localStorage.getItem("iBilling:lang");
     if (!resellerId) return alert("Please select a reseler");
     if (!subAreaId) return alert("Please select a Sub Area");
 

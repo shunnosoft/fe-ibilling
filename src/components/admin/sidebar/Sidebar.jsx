@@ -1431,7 +1431,7 @@ export default function Sidebar() {
                           {role === "ispOwner" && (
                             <NavLink
                               key={13}
-                              to="/oneBilling/supportNumber"
+                              to="/iBilling/supportNumber"
                               className={(navInfo) =>
                                 navInfo.isActive ? activeClass.active : ""
                               }
@@ -1441,7 +1441,7 @@ export default function Sidebar() {
                                   className="sidebarItems"
                                   id={
                                     window.location.pathname ===
-                                    "/oneBilling/supportNumber"
+                                    "/iBilling/supportNumber"
                                       ? "active"
                                       : ""
                                   }
@@ -1463,7 +1463,7 @@ export default function Sidebar() {
                               to={
                                 role === "reseller"
                                   ? "/reseller/customer/package/changes"
-                                  : "/oneBilling/packageChange"
+                                  : "/iBilling/packageChange"
                               }
                               className={(navInfo) =>
                                 navInfo.isActive ? activeClass.active : ""
@@ -1476,7 +1476,7 @@ export default function Sidebar() {
                                     window.location.pathname ===
                                     (role === "reseller"
                                       ? "/reseller/customer/package/changes"
-                                      : "/oneBilling/packageChange")
+                                      : "/iBilling/packageChange")
                                       ? "active"
                                       : ""
                                   }
@@ -1580,7 +1580,7 @@ export default function Sidebar() {
                             </NavLink> */}
                             <NavLink
                               key={16}
-                              to={"/oneBilling/support/numbers"}
+                              to={"/iBilling/support/numbers"}
                               className={(navInfo) =>
                                 navInfo.isActive ? activeClass.active : ""
                               }
@@ -1606,7 +1606,7 @@ export default function Sidebar() {
 
                     <NavLink
                       key={16}
-                      to={"/oneBilling/tutorial"}
+                      to={"/iBilling/tutorial"}
                       className={(navInfo) =>
                         navInfo.isActive ? activeClass.active : ""
                       }
@@ -1736,7 +1736,7 @@ export default function Sidebar() {
 
                 {role === "superadmin" && (
                   <NavLink
-                    to={"/admin/oneBilling/bulletin"}
+                    to={"/admin/iBilling/bulletin"}
                     className={(navInfo) =>
                       navInfo.isActive ? activeClass.active : ""
                     }
@@ -1746,7 +1746,7 @@ export default function Sidebar() {
                         className="sidebarItems"
                         id={
                           window.location.pathname ===
-                          "/admin/oneBilling/bulletin"
+                          "/admin/iBilling/bulletin"
                             ? "active"
                             : ""
                         }
@@ -1759,7 +1759,7 @@ export default function Sidebar() {
                 )}
 
                 <NavLink
-                  to={"/admin/oneBilling/numbers"}
+                  to={"/admin/iBilling/numbers"}
                   className={(navInfo) =>
                     navInfo.isActive ? activeClass.active : ""
                   }
@@ -1768,7 +1768,7 @@ export default function Sidebar() {
                     <li
                       className="sidebarItems"
                       id={
-                        window.location.pathname === "/admin/oneBilling/numbers"
+                        window.location.pathname === "/admin/iBilling/numbers"
                           ? "active"
                           : ""
                       }
@@ -1780,7 +1780,7 @@ export default function Sidebar() {
                 </NavLink>
 
                 <NavLink
-                  to={"/admin/oneBilling/cronLog"}
+                  to={"/admin/iBilling/cronLog"}
                   className={(navInfo) =>
                     navInfo.isActive ? activeClass.active : ""
                   }
@@ -1789,7 +1789,7 @@ export default function Sidebar() {
                     <li
                       className="sidebarItems"
                       id={
-                        window.location.pathname === "/admin/oneBilling/cronLog"
+                        window.location.pathname === "/admin/iBilling/cronLog"
                           ? "active"
                           : ""
                       }

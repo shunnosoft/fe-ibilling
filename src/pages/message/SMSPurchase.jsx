@@ -44,7 +44,7 @@ const SMSPurchase = ({ show, setShow }) => {
   const [count, setCount] = useState(Number(amount) / user.smsRate);
 
   // buy place status
-  const [buyStatus, setBuyStatus] = useState("oneBilling");
+  const [buyStatus, setBuyStatus] = useState("iBilling");
 
   // sms purchase message type
   const [messageType, setMessageType] = useState(
@@ -93,7 +93,7 @@ const SMSPurchase = ({ show, setShow }) => {
     } else {
       if (
         ["ispOwner", "manager"].includes(role) ||
-        (role === "reseller" && buyStatus === "oneBilling")
+        (role === "reseller" && buyStatus === "iBilling")
       ) {
         const sendData = {
           amount: Math.ceil(amount),
@@ -190,7 +190,7 @@ const SMSPurchase = ({ show, setShow }) => {
                         fontFamily: "sans-serif",
                       }}
                     >
-                      {localStorage.getItem("oneBilling:lang") === "en"
+                      {localStorage.getItem("iBilling:lang") === "en"
                         ? "10,000 SMS (+1000 SMS Bonus)"
                         : "১০,০০০ এসএমএস (+১০০০ এসএমএস বোনাস)"}
                     </p>
@@ -209,7 +209,7 @@ const SMSPurchase = ({ show, setShow }) => {
                   }}
                 >
                   ৳
-                  {localStorage.getItem("oneBilling:lang") === "en"
+                  {localStorage.getItem("iBilling:lang") === "en"
                     ? "3000"
                     : "৩০০০"}
                 </p>
@@ -319,7 +319,7 @@ const SMSPurchase = ({ show, setShow }) => {
                         className="form-select mw-100 mt-0 bg-white"
                         onChange={(e) => setBuyStatus(e.target.value)}
                       >
-                        <option value="oneBilling" selected>
+                        <option value="iBilling" selected>
                           One Billing
                         </option>
                         <option value="ispOwner">Isp Owner</option>

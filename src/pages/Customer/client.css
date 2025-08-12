@@ -218,9 +218,9 @@ ul.client_service_list2 li {
 }
 
 #activeSetting {
-  box-shadow: 6px 0px 0px #5fa78f inset;
+  box-shadow: 6px 0px 0px #754a64 inset;
   filter: contrast(5);
-  color: #5fa78f;
+  color: #754a64;
 }
 
 .displayGridManual4_6 {
@@ -418,7 +418,7 @@ ul.client_service_list2 li {
   }
 
   #activeSetting {
-    box-shadow: 0px 0px 6px #5fa78f inset;
+    box-shadow: 0px 0px 6px #754a64 inset;
   }
 
   #clintSetting {
@@ -529,7 +529,7 @@ ul.client_service_list2 li {
   }
 
   #activeSetting {
-    box-shadow: 0px 0px 6px #5fa78f inset;
+    box-shadow: 0px 0px 6px #754a64 inset;
   }
 
   #clintSetting {
@@ -631,7 +631,7 @@ ul.client_service_list2 li {
   }
 
   #activeSetting {
-    box-shadow: 0px 0px 6px #5fa78f inset;
+    box-shadow: 0px 0px 6px #754a64 inset;
   }
 
   #clintSetting {

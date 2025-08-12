@@ -163,7 +163,7 @@ const DetailsModal = ({ show, setShow, ownerId }) => {
           header: (
             <div className="d-flex">
               <h5 className="modal-title me-3">
-                oneBilling Id:
+                iBilling Id:
                 <span className="text-success"> {ownerData?.netFeeId} </span>
               </h5>
               <h5 className="modal-title me-3">

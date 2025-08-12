@@ -195,7 +195,7 @@ const NetFeeIspOwnerSupport = () => {
             <div className="card">
               <div className="card-header">
                 <h2 className="dashboardTitle text-center">
-                  All OneBilling Support
+                  All iBilling Support
                 </h2>
               </div>
               <div className="card-body">

@@ -209,8 +209,8 @@ function App() {
             {/* ispOwoner invoice payment */}
             <Route path="/payment" element={<AcountPayment />} />
 
-            {/* oneBilling tutorial */}
-            <Route path="/oneBilling/tutorial" element={<Tutorial />} />
+            {/* iBilling tutorial */}
+            <Route path="/iBilling/tutorial" element={<Tutorial />} />
 
             <Route path="/activity" element={<ActivityLog />} />
 
@@ -335,7 +335,7 @@ function App() {
                 }
               />
               <Route
-                path="reseller/oneBilling/support"
+                path="reseller/iBilling/support"
                 element={userRole === "reseller" && <ResellerNetFeeSupport />}
               />
 
@@ -406,7 +406,7 @@ function App() {
                 !user ? (
                   <Landing />
                 ) : (
-                  <Navigate to={"/admin/oneBilling/bulletin"} />
+                  <Navigate to={"/admin/iBilling/bulletin"} />
                 )
               }
             />
@@ -417,7 +417,7 @@ function App() {
                 !user ? (
                   <Landing />
                 ) : (
-                  <Navigate to={"/admin/oneBilling/numbers"} />
+                  <Navigate to={"/admin/iBilling/numbers"} />
                 )
               }
             />
@@ -428,7 +428,7 @@ function App() {
                 !user ? (
                   <Landing />
                 ) : (
-                  <Navigate to={"/admin/oneBilling/support/:ispOwnerId"} />
+                  <Navigate to={"/admin/iBilling/support/:ispOwnerId"} />
                 )
               }
             />
@@ -443,16 +443,16 @@ function App() {
               <Route path="admin/all-comments" element={<AllComments />} />
               <Route path="admin/invoices" element={<AllInvoices />} />
               <Route path="admin/support" element={<Supports />} />
-              <Route path="admin/oneBilling/bulletin" element={<Bulletin />} />
+              <Route path="admin/iBilling/bulletin" element={<Bulletin />} />
               <Route
-                path="admin/oneBilling/numbers"
+                path="admin/iBilling/numbers"
                 element={<NetFeeSupportNumbers />}
               />
               <Route
-                path="admin/oneBilling/support/:ispOwnerId"
+                path="admin/iBilling/support/:ispOwnerId"
                 element={<NetFeeIspOwnerSupport />}
               />
-              <Route path="admin/oneBilling/cronLog" element={<CronLog />} />
+              <Route path="admin/iBilling/cronLog" element={<CronLog />} />
               <Route
                 path="admin/activity-log/*"
                 element={<AdminActivityLog />}
@@ -722,7 +722,7 @@ function App() {
               }
             />
             <Route
-              path="/oneBilling/support"
+              path="/iBilling/support"
               element={
                 user && (userRole === "ispOwner" || userRole === "manager") ? (
                   <NetFeeSupport />
@@ -733,7 +733,7 @@ function App() {
             />
 
             <Route
-              path="/oneBilling/support/numbers"
+              path="/iBilling/support/numbers"
               element={
                 user &&
                 (userRole === "ispOwner" ||
@@ -747,7 +747,7 @@ function App() {
             />
 
             <Route
-              path="/oneBilling/supportNumber"
+              path="/iBilling/supportNumber"
               element={
                 user &&
                 (userRole === "ispOwner" ||
@@ -761,7 +761,7 @@ function App() {
             />
 
             <Route
-              path="/oneBilling/packageChange"
+              path="/iBilling/packageChange"
               element={
                 user && userRole === "ispOwner" ? (
                   <PackageChange />

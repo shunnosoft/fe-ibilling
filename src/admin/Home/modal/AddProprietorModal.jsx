@@ -27,7 +27,7 @@ const AddProprietorModal = ({ ownerId }) => {
     refRelation: "",
     remarks: "",
     storeName: "",
-    storeType: "oneBilling",
+    storeType: "iBilling",
   });
 
   const createProprietor = async () => {

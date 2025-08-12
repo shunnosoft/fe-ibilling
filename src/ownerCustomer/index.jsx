@@ -41,12 +41,12 @@ const Client = () => {
   const hasPG = userData.ispOwner.bpSettings.hasPG;
 
   useEffect(() => {
-    const rText = localStorage.getItem("nf:textR"); //render page from local storage
+    const rText = localStorage.getItem("ib:textR"); //render page from local storage
     if (rText) setRenderText(rText);
   }, []);
 
   const renderPageController = (text) => {
-    localStorage.setItem("nf:textR", text); //set page in local storage
+    localStorage.setItem("ib:textR", text); //set page in local storage
     setRenderText(text);
   };
   const [isMenuOpen, setMenuOpen] = useState(false);

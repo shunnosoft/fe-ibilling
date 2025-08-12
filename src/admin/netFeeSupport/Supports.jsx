@@ -23,7 +23,7 @@ import AdminSupportDetails from "./supportOpration/AdminSupportDetails";
 const Supports = () => {
   const dispatch = useDispatch();
 
-  // oneBilling support all data
+  // iBilling support all data
   const supportAllData = useSelector(
     (state) => state.adminNetFeeSupport?.adminSupport
   );
@@ -205,7 +205,7 @@ const Supports = () => {
             <div className="card">
               <div className="card-header">
                 <h2 className="dashboardTitle text-center">
-                  All OneBilling Support
+                  All iBilling Support
                 </h2>
               </div>
               <div className="card-body">

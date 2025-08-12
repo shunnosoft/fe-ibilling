@@ -30,7 +30,7 @@ const NetFeeSupport = () => {
 
   const dispatch = useDispatch();
 
-  // oneBilling support data
+  // iBilling support data
   const supportAllData = useSelector(
     (state) => state.netFeeSupport?.netFeeSupport
   );
@@ -43,7 +43,7 @@ const NetFeeSupport = () => {
   // get owner users
   const ownerUsers = useSelector((state) => state?.ownerUsers?.ownerUser);
 
-  //oneBilling support isLoading state
+  //iBilling support isLoading state
   const [isLoading, setIsLoading] = useState(false);
 
   // support edit data state

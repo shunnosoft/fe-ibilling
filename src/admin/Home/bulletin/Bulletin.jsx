@@ -18,7 +18,7 @@ import moment from "moment";
 const Bulletin = () => {
   const dispatch = useDispatch();
 
-  //  oneBilling Bulletin all data
+  //  iBilling Bulletin all data
   const bulletinData = useSelector((state) => state.netFeeSupport?.bulletin);
 
   // Loading state

@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 const SupportDetails = ({ supportId }) => {
   const { t } = useTranslation();
 
-  // oneBilling support data
+  // iBilling support data
   const supportAllData = useSelector(
     (state) => state.netFeeSupport?.netFeeSupport
   );

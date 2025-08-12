@@ -103,7 +103,7 @@ const ResellerDashboard = () => {
       setChartLoading
     );
 
-    // get oneBilling bulletin permission api
+    // get iBilling bulletin permission api
     Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
   }, []);
 

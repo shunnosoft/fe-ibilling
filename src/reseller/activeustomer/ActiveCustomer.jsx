@@ -133,7 +133,7 @@ const ResellerActiveCustomer = () => {
       getMikrotik(dispatch, currentUser?.reseller.id);
     }
 
-    //---> @Get oneBilling bulletin permissions data
+    //---> @Get iBilling bulletin permissions data
     Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
   }, []);
 

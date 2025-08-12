@@ -88,58 +88,76 @@
 }
 
 .CircularProgressbar .CircularProgressbar-path {
-  stroke: #4a9782 !important;
+  stroke: #5c374c !important;
 }
 
 .CircularProgressbar .CircularProgressbar-text {
-  fill: #4a9782 !important;
+  fill: #5c374c !important;
 }
 
 #card1 {
-  background: linear-gradient(17deg, #364f6b, #5083bd);
+  /* 1. Soft Mauve */
+  background: linear-gradient(17deg, #5c374c, #a67194);
 }
 #card2 {
-  background: linear-gradient(17deg, #8551a4, #2dd4a7);
+  /* 2. Romantic Rose */
+  background: linear-gradient(17deg, #5c374c, #d8a7b1);
 }
 
 #card3 {
-  background: linear-gradient(17deg, #097cf1, #4596e7);
+  /* 3. Subtle Burgundy Fade */
+  background: linear-gradient(17deg, #5c374c, #754a64);
 }
 
 #card4 {
-  background: linear-gradient(17deg, #314592, #606c38);
+  /* 4. Wine & Blush */
+  background: linear-gradient(17deg, #5c374c, #f4c2c2);
 }
 
 #card5 {
-  background: linear-gradient(17deg, #454545, #588157);
+  /* 5. Purple Gold Elegance */
+  background: linear-gradient(17deg, #5c374c, #d4af37);
 }
 
 #card6 {
-  background: linear-gradient(17deg, #2285bb, #003049);
+  /* 6. Burgundy to Teal */
+  background: linear-gradient(17deg, #5c374c, #4a9782);
 }
 #card7 {
-  background: linear-gradient(17deg, #454545, #84a59d);
+  /* 7. Dusky Sunset */
+  background: linear-gradient(17deg, #5c374c, #e27d60);
 }
 #card8 {
-  background: linear-gradient(17deg, #454545, #a98467);
+  /* 8. Night Sky */
+  background: linear-gradient(17deg, #5c374c, #364f6b);
 }
 #card9 {
-  background: linear-gradient(17deg, #454545, #34ccd1);
+  /* 9. Amethyst Dream */
+  background: linear-gradient(17deg, #5c374c, #8e7cc3);
 }
 #card10 {
-  background: linear-gradient(17deg, #454545, #4a4e69);
+  /* 10. Berry Mint */
+  background: linear-gradient(17deg, #5c374c, #76b39d);
 }
 #card11 {
-  background: linear-gradient(17deg, #454545, #669bbc);
+  /* 11. Velvet Plum */
+  background: linear-gradient(17deg, #5c374c, #7b4a69);
 }
 #card12 {
-  background: linear-gradient(17deg, #454545, #34ccd1);
+  /* 12. Mystic Violet */
+  background: linear-gradient(17deg, #5c374c, #9c6ba2);
 }
 #card13 {
-  background: linear-gradient(17deg, #9f2362, #0e4c72);
+  /* 13. Royal Navy */
+  background: linear-gradient(17deg, #5c374c, #2e4a62);
 }
 #card14 {
-  background: linear-gradient(17deg, #784860, #3988b8);
+  /* 14. Desert Rose */
+  background: linear-gradient(17deg, #5c374c, #c48793);
+}
+#card14 {
+  /* 15. Mauve Mist */
+  background: linear-gradient(17deg, #5c374c, #bda0b2);
 }
 
 .chartTitle {

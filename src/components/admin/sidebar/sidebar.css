@@ -49,9 +49,9 @@ a {
   background: #ff0000;
 } */
 #active {
-  box-shadow: 6px 0px 0px #5fa78f inset;
+  box-shadow: 6px 0px 0px #754a64 inset;
   /* filter: contrast(5); */
-  color: #5fa78f;
+  color: #754a64;
 }
 .removeSidebar {
   display: none;
@@ -112,7 +112,7 @@ a {
   margin-top: -1px;
   /* color: var(--seconderyColor) !important; */
   color: var(--primaryColor) !important;
-  /* color: #4a9782; */
+  /* color: #5c374c; */
 }
 .arrowRightFillStyle {
   padding-left: 20%;

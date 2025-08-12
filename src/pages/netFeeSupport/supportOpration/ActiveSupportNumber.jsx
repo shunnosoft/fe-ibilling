@@ -7,7 +7,7 @@ const ActiveSupportNumber = () => {
   // get user & current user data form useISPOwner hooks
   const { role, ispOwnerData } = useISPowner();
 
-  // oneBilling support Numbers
+  // iBilling support Numbers
   const supportNumbers = useSelector(
     (state) => state.netFeeSupport?.supportCall
   );

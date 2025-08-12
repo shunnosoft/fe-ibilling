@@ -171,7 +171,7 @@ export default function Message() {
       getSubAreasApi(dispatch, ispOwnerId);
     }
 
-    //get oneBilling bulletin api
+    //get iBilling bulletin api
     Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
   }, [role, getIspownerwitSMS]);
 

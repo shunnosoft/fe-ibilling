@@ -15,7 +15,7 @@ const InvoiceCreate = ({ ispOwnerId, modal }) => {
   //get single ispOwner
   const ispOwnerData = useSelector((state) => state.admin?.singleIspOwner);
 
-  // get all package in oneBilling
+  // get all package in iBilling
   const allPackage = useSelector(
     (state) => state.netfeeSettings?.netfeeSettings
   );
@@ -187,7 +187,7 @@ const InvoiceCreate = ({ ispOwnerId, modal }) => {
     }
   }, [messageType, allPackage, modal]);
 
-  // get oneBilling settings api call
+  // get iBilling settings api call
   useEffect(() => {
     if (type === "migration") {
       getNetfeeSettings(dispatch, setIsLoading);

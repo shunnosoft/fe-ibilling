@@ -4,233 +4,250 @@
 }
 
 .bg-card-01 {
-  /* background: linear-gradient(45deg, #0c9397, #05abba); */
-  background: linear-gradient(45deg, #4a9782, #6eb9a2);
+  /* 1. Soft Mauve */
+  background: linear-gradient(17deg, #5c374c, #a67194);
   height: 9rem;
 }
 
 .bg-card-02 {
-  /* background: linear-gradient(45deg, #147dda, #25a1db); */
-  background: linear-gradient(45deg, #4a9782, #3f9eb3);
+  /* 40. Mulberry Sky */
+  background: linear-gradient(17deg, #5c374c, #708090);
   height: 9rem;
 }
 
 .bg-card-03 {
-  /* background: linear-gradient(45deg, #48995c, #86d63c); */
-  background: linear-gradient(45deg, #4a9782, #2c6a5b);
+  /* 3. Subtle Burgundy Fade */
+  background: linear-gradient(17deg, #5c374c, #754a64);
   height: 9rem;
 }
 
 .bg-card-04 {
-  /* background: linear-gradient(45deg, #f18c0f, #f1c01d); */
-  background: linear-gradient(45deg, #4a9782, #79c1aa);
+  /* 4. Wine & Blush */
+  background: linear-gradient(17deg, #5c374c, #f4c2c2);
   height: 9rem;
 }
 
 .bg-card-05 {
-  /* background: linear-gradient(45deg, #ed2a2a, #e36671); */
-  background: linear-gradient(45deg, #4a9782, #a1d1c0);
+  /* 5. Purple Gold Elegance */
+  background: linear-gradient(17deg, #5c374c, #d4af37);
 
   height: 9rem;
 }
 
 .bg-card-06 {
-  /* background: linear-gradient(45deg, #8b8888, #9e9698); */
-  background: linear-gradient(45deg, #4a9782, #5083bd);
+  /* 6. Burgundy to Teal */
+  background: linear-gradient(17deg, #5c374c, #4a9782);
 
   height: 9rem;
 }
 
 .bg-card-07 {
-  /* background: linear-gradient(45deg, #7991ac, #9db0c7); */
-  background: linear-gradient(45deg, #4a9782, #2f4d4a);
+  /* 7. Dusky Sunset */
+  background: linear-gradient(17deg, #5c374c, #e27d60);
 
   height: 9rem;
 }
 
 .bg-card-08 {
-  /* background: linear-gradient(45deg, #4b75a5, #348aec); */
-  background: linear-gradient(45deg, #4a9782, #d6a16d);
+  /* 8. Night Sky */
+  background: linear-gradient(17deg, #5c374c, #364f6b);
 
   height: 9rem;
 }
 
 .bg-card-09 {
-  /* background: linear-gradient(45deg, #b2a409, #aca443); */
-  background: linear-gradient(45deg, #4a9782, #b8e994);
+  /* 9. Amethyst Dream */
+  background: linear-gradient(17deg, #5c374c, #8e7cc3);
 
   height: 9rem;
 }
 
 .bg-card-10 {
-  /* background: linear-gradient(45deg, rgb(100, 57, 95), rgb(133, 78, 126)); */
-  background: linear-gradient(45deg, #4a9782, #8a9ba8);
+  /* 10. Berry Mint */
+  background: linear-gradient(17deg, #5c374c, #76b39d);
 
   height: 9rem;
 }
 
 .bg-card-11 {
-  /* background: linear-gradient(45deg, #19bbe8, #1cdad6); */
-  background: linear-gradient(45deg, #4a9782, #5fb3b3);
+  /* 11. Velvet Plum */
+  background: linear-gradient(17deg, #5c374c, #7b4a69);
 
   height: 9rem;
 }
 
 .bg-card-12 {
-  /* background: linear-gradient(45deg, #435859, #36b9bd); */
-  background: linear-gradient(45deg, #4a9782, #aab7b8);
+  /* 12. Mystic Violet */
+  background: linear-gradient(17deg, #5c374c, #9c6ba2);
 
   height: 9rem;
 }
 
 .bg-card-13 {
-  /* background: linear-gradient(45deg, #5a693b, #3c6e63); */
-  background: linear-gradient(45deg, #4a9782, #f7d794);
+  /* 13. Royal Navy */
+  background: linear-gradient(17deg, #5c374c, #2e4a62);
 
   height: 9rem;
 }
 
 .bg-card-14 {
-  /* background: linear-gradient(45deg, #4256b1, #7c52d8); */
-  background: linear-gradient(45deg, #4a9782, #34495e);
+  /* 14. Desert Rose */
+  background: linear-gradient(17deg, #5c374c, #c48793);
 
   height: 9rem;
 }
 
 .bg-card-15 {
-  /* background: linear-gradient(45deg, #067448, #45855b); */
-  background: linear-gradient(45deg, #4a9782, #00c9a7);
-
-  height: 9rem;
+  /* 40. Mulberry Sky */
+  background: linear-gradient(17deg, #5c374c, #708090);
 }
 
 .bg-card-16 {
-  /* background: linear-gradient(45deg, #36626e, #4b8387); */
-  background: linear-gradient(45deg, #4a9782, #8fd3c8);
+  /* 16. Orchid Bloom */
+  background: linear-gradient(17deg, #5c374c, #daa1c0);
 
   height: 9rem;
 }
 
 .bg-card-17 {
-  /* background: linear-gradient(45deg, #23c7cc, #4bc8cc); */
-  background: linear-gradient(45deg, #5ca18c, #72d4c9);
+  /* 17. Vintage Rose */
+  background: linear-gradient(17deg, #5c374c, #b77a85);
 
   height: 9rem;
 }
 
 .bg-card-18 {
-  /* background: linear-gradient(45deg, #1f7bac, #35a6e3); */
-  background: linear-gradient(45deg, #4a9782, #a7cbbe);
+  /* 18. Lavender Mist */
+  background: linear-gradient(17deg, #5c374c, #cbb4d4);
 
   height: 9rem;
 }
 
 .bg-card-19 {
-  /* background: linear-gradient(45deg, #6f6d6d, #97c4b9); */
-  background: linear-gradient(45deg, #4a9782, #88a6a6);
+  /* 19. Coral Glow */
+  background: linear-gradient(17deg, #5c374c, #ff7e6b);
 
   height: 9rem;
 }
 
 .bg-card-20 {
-  /* background: linear-gradient(45deg, #454545, #a98467); */
-  background: linear-gradient(45deg, #4a9782, #c5ded7);
+  /* 20. Midnight Grape */
+  background: linear-gradient(17deg, #5c374c, #3a1f3e);
 
   height: 9rem;
 }
 
 .bg-card-21 {
-  background: linear-gradient(45deg, #30d4da, #608ba6);
+  /* 21. Blush Sand */
+  background: linear-gradient(17deg, #5c374c, #e6c5b8);
   height: 9rem;
 }
 
 .bg-card-22 {
-  background: linear-gradient(45deg, #488a8d, #73bb70);
+  /* 22. Deep Forest Berry */
+  background: linear-gradient(17deg, #5c374c, #355e57);
   height: 9rem;
 }
 
 .bg-card-23 {
-  background: linear-gradient(45deg, #22b096, #53b5f2);
+  /* 23. Royal Wine */
+  background: linear-gradient(17deg, #5c374c, #73264d);
   height: 9rem;
 }
 
 .bg-card-24 {
-  background: linear-gradient(45deg, #8e4f4f, #ab9148);
+  /* 24. Copper Plum */
+  background: linear-gradient(17deg, #5c374c, #a86b5b);
   height: 9rem;
 }
 
 .bg-card-25 {
-  background: linear-gradient(45deg, #435859, #36b9bd);
+  /* 25. Arctic Plum */
+  background: linear-gradient(17deg, #5c374c, #5d8aa8);
   height: 9rem;
 }
 
 .bg-card-26 {
-  background: linear-gradient(45deg, #486378, #39b88c);
+  /* 26. Soft Lilac */
+  background: linear-gradient(17deg, #5c374c, #c8a2c8);
   height: 9rem;
 }
 
 .bg-card-27 {
-  background: linear-gradient(45deg, #784860, #3988b8);
+  /* 27. Warm Taupe */
+  background: linear-gradient(17deg, #5c374c, #b38b6d);
   height: 9rem;
 }
 
 .bg-card-28 {
-  background: linear-gradient(45deg, #307ea5, #45cc77);
+  /* 28. Rosewood Glow */
+  background: linear-gradient(17deg, #5c374c, #a14d5e);
   height: 9rem;
 }
 
 .bg-card-29 {
-  background: linear-gradient(45deg, #435859, #36b9bd);
+  /* 29. Heather Mist */
+  background: linear-gradient(17deg, #5c374c, #d1b6c4);
   height: 9rem;
 }
 
 .bg-card-30 {
-  background: linear-gradient(45deg, #435859, #7c9992);
+  /* 30. Peach Mauve */
+  background: linear-gradient(17deg, #5c374c, #e7afaf);
   height: 9rem;
 }
 
 .bg-card-31 {
-  background: linear-gradient(45deg, #914c71, #378353);
+  /* 31. Burgundy Peach */
+  background: linear-gradient(17deg, #5c374c, #f4b183);
   height: 9rem;
 }
 
 .bg-card-32 {
-  background: linear-gradient(45deg, #5f6a8b, #26c0c5);
+  /* 32. Sunset Plum */
+  background: linear-gradient(17deg, #5c374c, #d95d77);
   height: 9rem;
 }
 
 .bg-card-33 {
-  background: linear-gradient(45deg, #4ad97c, #6b9df8);
+  /* 33. Orchid Gray */
+  background: linear-gradient(17deg, #5c374c, #ada4ba);
   height: 9rem;
 }
 
 .bg-card-34 {
-  background: linear-gradient(45deg, #729194, #43e4e4);
+  /* 34. Pink Champagne */
+  background: linear-gradient(17deg, #5c374c, #f7c5cc);
   height: 9rem;
 }
 
 .bg-card-35 {
-  background: linear-gradient(45deg, #c44da6, #56c068);
+  /* 35. Rustic Berry */
+  background: linear-gradient(17deg, #5c374c, #7f4f50);
   height: 9rem;
 }
 
 .bg-card-36 {
-  background: linear-gradient(45deg, #4d79c4, #56c0b9);
+  /* 36. Frosted Plum */
+  background: linear-gradient(17deg, #5c374c, #d6cad9);
   height: 9rem;
 }
 
 .bg-card-37 {
-  background: linear-gradient(45deg, #4d859d, #628fa3);
+  /* 37. Golden Berry */
+  background: linear-gradient(17deg, #5c374c, #d8a657);
   height: 9rem;
 }
 
 .bg-card-38 {
-  background: linear-gradient(45deg, #0c78a7, #025d85);
+  /* 38. Crimson Wine */
+  background: linear-gradient(17deg, #5c374c, #991f3d);
   height: 9rem;
 }
 
 .bg-card-39 {
-  background: linear-gradient(45deg, #83b23a, #8f9b3d);
+  /* 39. Dusty Coral */
+  background: linear-gradient(17deg, #5c374c, #e49b8b);
   height: 9rem;
 }
 

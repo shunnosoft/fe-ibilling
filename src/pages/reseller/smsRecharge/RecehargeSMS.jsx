@@ -251,7 +251,7 @@ const RecehargeSMS = () => {
                         />
                       </div>
                     </Tab>
-                    <Tab eventKey="oneBilling" title="From OneBilling">
+                    <Tab eventKey="iBilling" title="From iBilling">
                       <div className="table-section">
                         <Table
                           isLoading={historyLoading}

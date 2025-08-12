@@ -14,13 +14,13 @@ export const tutorialLink = [
   {
     id: 2,
     role: "ispOwner",
-    title: "OneBilling Support",
+    title: "iBilling Support",
     link: "https://www.youtube.com/embed/rX33-TqCIwU?si=UcFv5_ySnFFjRhBq",
   },
   {
     id: 3,
     role: "ispOwner",
-    title: "OneBilling Admin Panel",
+    title: "iBilling Admin Panel",
     link: "https://www.youtube.com/embed/7DVn0mQGGH0?si=nV1SuLt3SlNU0sIT",
   },
   {

@@ -14,7 +14,7 @@ import {
   getResellerCustomerSuccess,
 } from "./resellerCustomerAdminSlice";
 
-const netFeeLang = localStorage.getItem("oneBilling:lang");
+const netFeeLang = localStorage.getItem("iBilling:lang");
 const langMessage = (color, bangla, english) => {
   // Notification for english language
   if (netFeeLang === "bn") {

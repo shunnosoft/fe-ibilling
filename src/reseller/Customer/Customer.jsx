@@ -160,7 +160,7 @@ const Customer = () => {
     //---> @Get reseller profile data
     role === "collector" && getResellerProfile(resellerId, dispatch);
 
-    //---> @Get oneBilling bulletin permissions data
+    //---> @Get iBilling bulletin permissions data
     Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
   }, [resellerId]);
 

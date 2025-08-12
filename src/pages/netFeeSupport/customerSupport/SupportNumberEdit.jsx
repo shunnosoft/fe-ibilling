@@ -20,7 +20,7 @@ const SupportNumberEdit = ({ supportId, editShow, setEditShow }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
-  // oneBilling support data
+  // iBilling support data
   const ispOwnerSupportNumbers = useSelector(
     (state) => state.netFeeSupport?.ispOwnerSupport
   );

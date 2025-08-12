@@ -10,7 +10,7 @@ const AdminSupportUpdate = ({ editId }) => {
   // update support data state
   const [supportEditData, setSupportEditData] = useState("");
 
-  // oneBilling support data
+  // iBilling support data
   const supportData = useSelector(
     (state) => state.adminNetFeeSupport?.adminSupport
   );
@@ -21,14 +21,14 @@ const AdminSupportUpdate = ({ editId }) => {
   // isLoading state
   const [isLoading, setIsLoading] = useState(false);
 
-  // oneBilling support handler
+  // iBilling support handler
   const handleSupportEdit = (e) => {
     let value = e.target.value;
     let name = e.target.name;
     setSupportEditData({ ...supportEditData, [name]: value });
   };
 
-  // update oneBilling support submit handle
+  // update iBilling support submit handle
   const netFeeSupportUpdate = (e) => {
     e.preventDefault();
     if (!description) {

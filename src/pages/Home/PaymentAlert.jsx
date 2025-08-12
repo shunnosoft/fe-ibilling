@@ -45,7 +45,7 @@ const PaymentAlert = ({ invoice }) => {
               />
               <div className="ms-2">
                 <h5 className="mb-0" style={{ color: "#000" }}>
-                  {t("oneBilling")} {invoiceType[invoice.type]} {t("fee")}{" "}
+                  {t("iBilling")} {invoiceType[invoice.type]} {t("fee")}{" "}
                   <span className="badge bg-info bg-opacity-25 text-primary fs-5">
                     {invoice?.amount} {t("tk")}
                   </span>{" "}

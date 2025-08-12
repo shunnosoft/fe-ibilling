@@ -211,7 +211,7 @@ import {
 } from "./network.slice";
 import { data } from "jquery";
 
-const netFeeLang = localStorage.getItem("oneBilling:lang");
+const netFeeLang = localStorage.getItem("iBilling:lang");
 
 const langMessage = (color, bangla, english) => {
   // Notification for english language for
@@ -1865,7 +1865,7 @@ export const netFeeCustomerGet = async (
   setIsLoading(true);
   await apiLink({
     method: "GET",
-    url: `/mikrotik/oneBilling/users/${ispOwnerId}/${mikrotikId}`,
+    url: `/mikrotik/iBilling/users/${ispOwnerId}/${mikrotikId}`,
   })
     .then((res) => {
       dispatch(getNetFeeCustomerSuccess(res.data));
@@ -1885,7 +1885,7 @@ export const getNetFeeStaticCustomer = async (
   setIsLoading(true);
   await apiLink({
     method: "GET",
-    url: `/mikrotik/oneBilling/static/users/${ispOwnerId}/${mikrotikId}`,
+    url: `/mikrotik/iBilling/static/users/${ispOwnerId}/${mikrotikId}`,
   })
     .then((res) => {
       dispatch(getNetFeeStaticCustomerSuccess(res.data));
@@ -3498,12 +3498,12 @@ export const deleteExpenditurePurpose = async (dispatch, purposeId) => {
   }
 };
 
-//add oneBilling support
+//add iBilling support
 export const addNetFeeSupport = async (dispatch, supportData, setIsLoading) => {
   setIsLoading(true);
   try {
     const res = await apiLink.post(
-      `/ispOwner/create/oneBilling-support`,
+      `/ispOwner/create/iBilling-support`,
       supportData
     );
     dispatch(AddNetFeeSupport(res.data));
@@ -3511,7 +3511,7 @@ export const addNetFeeSupport = async (dispatch, supportData, setIsLoading) => {
     langMessage(
       "success",
       "ওয়ানবিলিং সাপর্ট অ্যাড সফল হয়েছে",
-      "OneBilling Support Add Successfully"
+      "iBilling Support Add Successfully"
     );
   } catch (error) {
     console.log(error.response?.data.message);
@@ -3519,7 +3519,7 @@ export const addNetFeeSupport = async (dispatch, supportData, setIsLoading) => {
   setIsLoading(false);
 };
 
-// get oneBilling support
+// get iBilling support
 export const getNetFeeSupportData = async (
   dispatch,
   ispOwner,
@@ -3527,7 +3527,7 @@ export const getNetFeeSupportData = async (
 ) => {
   setIsLoading(true);
   try {
-    const res = await apiLink.get(`/ispOwner/oneBilling/support/${ispOwner}`);
+    const res = await apiLink.get(`/ispOwner/iBilling/support/${ispOwner}`);
     dispatch(getNetFeeSupport(res.data));
   } catch (error) {
     console.log(error.response?.data.message);
@@ -3535,7 +3535,7 @@ export const getNetFeeSupportData = async (
   setIsLoading(false);
 };
 
-// update oneBilling support
+// update iBilling support
 export const updateNetFeeSupportData = async (
   dispatch,
   setIsLoading,
@@ -3546,7 +3546,7 @@ export const updateNetFeeSupportData = async (
   setIsLoading(true);
   try {
     const res = await apiLink.patch(
-      `/ispOwner/oneBilling/support-edit/${updateSupport.id}`,
+      `/ispOwner/iBilling/support-edit/${updateSupport.id}`,
       updateSupport
     );
     dispatch(updateNetFeeSupport(res.data));
@@ -3554,7 +3554,7 @@ export const updateNetFeeSupportData = async (
     langMessage(
       "success",
       "ওয়ানবিলিং সাপর্ট আপডেট সফল হয়েছে",
-      "OneBilling Support Update Successfully"
+      "iBilling Support Update Successfully"
     );
   } catch (error) {
     console.log(error.response?.data.message);
@@ -3562,7 +3562,7 @@ export const updateNetFeeSupportData = async (
   setIsLoading(false);
 };
 
-// delete oneBilling support
+// delete iBilling support
 export const deleteNetFeeSupportData = async (
   dispatch,
   setIsLoading,
@@ -3571,14 +3571,14 @@ export const deleteNetFeeSupportData = async (
   setIsLoading(true);
   try {
     const res = await apiLink.delete(
-      `/ispOwner/oneBilling/support-delete/${supportId}`
+      `/ispOwner/iBilling/support-delete/${supportId}`
     );
     dispatch(deleteNetFeeSupport(res.data));
     document.querySelector("#supportDelete").click();
     langMessage(
       "success",
       "ওয়ানবিলিং সাপর্ট ডিলিট সফল হয়েছে",
-      "OneBilling Support Delete Successfully"
+      "iBilling Support Delete Successfully"
     );
   } catch (error) {
     console.log(error.response?.data.message);
@@ -4133,7 +4133,7 @@ export const deleteWithOutMikrotikPackage = async (dispatch, packId) => {
   }
 };
 
-// get oneBilling bulletin api call
+// get iBilling bulletin api call
 export const getBulletin = async (dispatch, setIsLoading) => {
   setIsLoading(true);
   try {
@@ -4145,7 +4145,7 @@ export const getBulletin = async (dispatch, setIsLoading) => {
   setIsLoading(false);
 };
 
-// post oneBilling bulletin api call
+// post iBilling bulletin api call
 export const postBulletin = async (dispatch, data, setIsLoading, setShow) => {
   setIsLoading(true);
   try {
@@ -4159,7 +4159,7 @@ export const postBulletin = async (dispatch, data, setIsLoading, setShow) => {
   setIsLoading(false);
 };
 
-// edit oneBilling bulletin api call
+// edit iBilling bulletin api call
 export const patchBulletin = async (
   dispatch,
   bulletinId,
@@ -4179,7 +4179,7 @@ export const patchBulletin = async (
   setIsLoading(false);
 };
 
-// delete oneBilling bulletin api call
+// delete iBilling bulletin api call
 export const deleteBulletin = async (dispatch, bulletinId) => {
   try {
     const res = await apiLink.delete(`admin/bulletin/${bulletinId}`);
@@ -4190,7 +4190,7 @@ export const deleteBulletin = async (dispatch, bulletinId) => {
   }
 };
 
-// post & update oneBilling bulletin parmission api call
+// post & update iBilling bulletin parmission api call
 export const patchBulletinPermission = async (dispatch, data) => {
   try {
     const res = await apiLink.patch(`admin/page/permission`, data);
