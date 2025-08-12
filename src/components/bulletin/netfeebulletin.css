@@ -1,5 +1,5 @@
 .bulletin {
-  background-color: #2e87df;
+  background-color: var(--primaryColor); /* #2e87df; */
   bottom: 0;
   position: fixed;
   margin-right: 12px;
