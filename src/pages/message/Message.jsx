@@ -65,7 +65,7 @@ const makeMessageObj = (
     }
 
     return {
-      app: "onebilling",
+      app: "ibilling",
       type: "bulk",
       senderId: ispOwnerId,
       message: msg,

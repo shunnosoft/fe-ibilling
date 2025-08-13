@@ -172,7 +172,7 @@ const AcountPayment = () => {
                         type="button"
                         className="btn btn-secondary fw-bold"
                         disabled={isLoading}
-                        onClick={() => navigate("/onebilling")}
+                        onClick={() => navigate("/ibilling")}
                       >
                         Cancel
                       </button>

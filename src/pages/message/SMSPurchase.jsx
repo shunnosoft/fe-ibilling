@@ -110,7 +110,7 @@ const SMSPurchase = ({ show, setShow }) => {
           sendData.reseller = userData.id;
         }
 
-        // onebilling sms purchase api call
+        // ibilling sms purchase api call
         purchaseSms(sendData, setIsloading, dispatch, setShow, navigate);
       } else {
         if (invoiceStatus.length === 0) {

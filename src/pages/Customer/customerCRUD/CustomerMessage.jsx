@@ -92,7 +92,7 @@ const CustomerMessage = ({ customerId, page }) => {
       const sendingData = {
         items: [
           {
-            app: "onebilling",
+            app: "ibilling",
             type: "other",
             senderId: cureentAuth?.id,
             message: messageLength,

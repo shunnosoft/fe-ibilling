@@ -39,7 +39,7 @@ const RecehargeSMS = () => {
   // get data
   const data = useSelector((state) => state?.smsHistory?.smsParchase);
 
-  // get history with onebilling
+  // get history with ibilling
   const netfeeinvoice = useSelector(
     (state) => state?.smsHistory?.smsParchaseNetfee
   );
@@ -108,7 +108,7 @@ const RecehargeSMS = () => {
     [t]
   );
 
-  // parchase from onebilling
+  // parchase from ibilling
   // column
   const historyColumn = React.useMemo(
     () => [

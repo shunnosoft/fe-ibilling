@@ -45,7 +45,7 @@ const makeMessageObj = (template, ispOwnerId, customer, subAreaIds = null) => {
     }
 
     return {
-      app: "onebilling",
+      app: "ibilling",
       type: "bulk",
       senderId: ispOwnerId,
       message: msg,

@@ -2,7 +2,7 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import FooterLink from "./FooterLink";
 import { useTranslation } from "react-i18next";
-import "./onebilling.css";
+import "./ibilling.css";
 
 export default function Landing() {
   const { t } = useTranslation();
@@ -29,7 +29,7 @@ export default function Landing() {
                   <p className="goToLoginPage custom-btn">{t("signUp")}</p>
                 </NavLink>
               </div>
-              {/* <h2 className="LandingTitle">ওয়ান বিলিং</h2> */}
+              {/* <h2 className="LandingTitle">iBilling</h2> */}
             </div>
           </div>
           <div className="textBox2">
@@ -41,7 +41,7 @@ export default function Landing() {
               ব্যবহারযোগ্য এবং মাতৃভাষা বাংলায় দেশের প্রথম আইএসপি বিলিং
               সফটওয়্যার{" "}
               <strong>
-                <i>ওয়ান বিলিং </i>
+                <i>iBilling </i>
               </strong>
               । <br /> <br />
               সম্পূর্ন অনলাইন এই সফটওয়্যারটি, সার্ভিস এবং গ্রাহক সংখ্যার উপর
@@ -50,7 +50,7 @@ export default function Landing() {
               গ্রাহক সেবায় নিয়োজিত আছেন।
             </p>
             <br />
-            <h3>ওয়ান বিলিং সফটওয়্যার এ রয়েছে উপযোগী কিছু আকর্ষণীয় ফিচার।</h3>
+            <h3>iBilling সফটওয়্যার এ রয়েছে উপযোগী কিছু আকর্ষণীয় ফিচার।</h3>
             <ul className="bulletul">
               <li className="bullet">রিসেলার প্যানেল</li>
               <li className="bullet">কাস্টমার প্যানেল</li>
@@ -60,19 +60,19 @@ export default function Landing() {
               <li className="bullet">কাস্টমার পেমেন্ট গেটওয়ে ইন্ট্রিগ্রেশন</li>
             </ul>
             <br />
-            <h3>ওয়ান বিলিং এর সুবিধাসমূহঃ</h3>
+            <h3>iBilling এর সুবিধাসমূহঃ</h3>
             <ul className="bulletul2 mb-5">
               <li>
                 ওয়ান বিলিংতে আপনি পাবেন এডমিন, ম্যানেজার, রিসেলার, কালেক্টর,
                 লাইনম্যান এবং কাস্টমার প্যনেল।
               </li>
               <li>
-                এডমিন এবং ম্যানেজার ওয়েবসাইটের মাধ্যমে ওয়ান বিলিং সফটওয়্যার
+                এডমিন এবং ম্যানেজার ওয়েবসাইটের মাধ্যমে iBilling সফটওয়্যার
                 ব্যবহার করতে পারবে।
               </li>
               <li>
                 রিসেলার, কালেক্টর এবং লাইনম্যান ওয়েবসাইট এবং মোবাইল এপের মাধ্যমে
-                ওয়ান বিলিং সফটওয়্যার ব্যবহার করতে পারবে।
+                iBilling সফটওয়্যার ব্যবহার করতে পারবে।
               </li>
               <li>
                 আপনার গ্রাহকগণ মোবাইল এপের মধ্যমে তাদের সকল তথ্য দেখতে পারবেন

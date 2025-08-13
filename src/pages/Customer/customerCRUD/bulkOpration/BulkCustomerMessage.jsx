@@ -68,7 +68,7 @@ const BulkCustomerMessage = ({ bulkCustomer, show, setShow }) => {
     let customerInfo = [];
     bulkCustomer.forEach((cus) => {
       customerInfo.push({
-        app: "onebilling",
+        app: "ibilling",
         type: "bulk",
         senderId: ispOwnerData?.id,
         message: messageText,

@@ -76,7 +76,7 @@ export default function Register() {
       .max(11, t("over11DigitMobileNumber")),
   });
 
-  // get onebilling settings api call
+  // get ibilling settings api call
   useEffect(() => {
     getNetfeeSettings(dispatch, setSettingsLoading);
   }, []);

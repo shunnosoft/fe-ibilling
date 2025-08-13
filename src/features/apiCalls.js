@@ -3272,7 +3272,7 @@ export const getIspOwnerData = async (
   setIsLoading(false);
 };
 
-// get ispOwner status from onebilling
+// get ispOwner status from ibilling
 export const getIspOwnerStatus = async (dispatch, ispOwnerId) => {
   const res = await apiLink.get(`auth/status/check/${ispOwnerId}`);
 

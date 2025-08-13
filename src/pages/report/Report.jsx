@@ -132,7 +132,7 @@ const Report = () => {
     // get sub area api
     subAreas.length === 0 && getSubAreasApi(dispatch, ispOwnerId);
 
-    // get onebilling bulletin permission api
+    // get ibillingulletin permission api
     Object.keys(butPermission)?.length === 0 && getBulletinPermission(dispatch);
   }, []);
 

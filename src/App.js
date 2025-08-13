@@ -228,7 +228,7 @@ function App() {
         {userRole === "reseller" && (
           <Routes>
             <Route
-              path="/onebilling"
+              path="/ibilling"
               element={
                 !user ? (
                   <Landing></Landing>
@@ -252,7 +252,7 @@ function App() {
               element={!user ? <Login /> : <Navigate to={"/reseller/home"} />}
             />
             <Route
-              path="/onebilling"
+              path="/ibilling"
               element={
                 !user ? <Landing></Landing> : <Navigate to={"/reseller/home"} />
               }
@@ -353,19 +353,19 @@ function App() {
           </Routes>
         ) : userRole === "admin" || userRole === "superadmin" ? (
           <Routes>
-            <Route path="/" element={<Navigate to="/onebilling" />} />
+            <Route path="/" element={<Navigate to="/ibilling" />} />
             <Route
               path="/login"
               element={!user ? <Login /> : <Navigate to={"/admin/home"} />}
             />
             <Route
-              path="/onebilling"
+              path="/ibilling"
               element={
                 !user ? <Landing></Landing> : <Navigate to={"/admin/home"} />
               }
             />
             <Route
-              path="/onebilling"
+              path="/ibilling"
               element={
                 !user ? (
                   <Landing></Landing>
@@ -375,7 +375,7 @@ function App() {
               }
             />
             <Route
-              path="/onebilling"
+              path="/ibilling"
               element={
                 !user ? (
                   <Landing></Landing>
@@ -385,7 +385,7 @@ function App() {
               }
             />
             <Route
-              path="/onebilling"
+              path="/ibilling"
               element={
                 !user ? (
                   <Landing></Landing>
@@ -396,12 +396,12 @@ function App() {
             />
 
             <Route
-              path="/onebilling"
+              path="/ibilling"
               element={!user ? <Landing /> : <Navigate to={"/admin/support"} />}
             />
 
             <Route
-              path="/onebilling"
+              path="/ibilling"
               element={
                 !user ? (
                   <Landing />
@@ -412,7 +412,7 @@ function App() {
             />
 
             <Route
-              path="/onebilling"
+              path="/ibilling"
               element={
                 !user ? (
                   <Landing />
@@ -423,7 +423,7 @@ function App() {
             />
 
             <Route
-              path="/onebilling"
+              path="/ibilling"
               element={
                 !user ? (
                   <Landing />
@@ -465,13 +465,13 @@ function App() {
           //NOt for reseller routes
 
           <Routes>
-            <Route path="/" element={<Navigate to="/onebilling" />} />
+            <Route path="/" element={<Navigate to="/ibilling" />} />
             <Route
               path="/login"
               element={!user ? <Login /> : <Navigate to={"/home"} />}
             />
             <Route
-              path="/onebilling"
+              path="/ibilling"
               element={!user ? <Landing></Landing> : <Navigate to={"/home"} />}
             />
             <Route

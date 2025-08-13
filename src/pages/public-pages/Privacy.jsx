@@ -3,7 +3,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import FooterLink from "./FooterLink";
-import "./onebilling.css";
+import "./ibilling.css";
 
 export default function Landing() {
   const currentUser = useSelector(

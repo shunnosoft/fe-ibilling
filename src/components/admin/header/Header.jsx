@@ -418,7 +418,7 @@ export default function Header(props) {
                   </div>
                 </>
               ) : pathName === "/register" ||
-                pathName === "/onebilling" ||
+                pathName === "/ibilling" ||
                 pathName === "/terms-conditions" ||
                 pathName === "/privacy-policy" ||
                 pathName === "/about" ||
